@@ -1,6 +1,6 @@
 RoadRunner
 ==========
-Embeddable PHP application server library for Golang.
+PHP application server library for Golang.
 
 Features:
 --------
