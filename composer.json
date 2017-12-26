@@ -1,0 +1,29 @@
+{
+  "name": "spiral/roadrunner",
+  "type": "goridge",
+  "description": "High-performance PHP process supervisor and load balancer written in Go",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Anton Titov / Wolfy-J",
+      "email": "wolfy.jd@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.0",
+    "spiral/goridge": "^2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Spiral\\RoadRunner\\": "source/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Spiral\\Tests\\": "tests/Cases/"
+    }
+  }
+}
