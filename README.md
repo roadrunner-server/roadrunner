@@ -7,8 +7,8 @@ Features:
 - load balancer, process manager and task pipeline
 - hot-swap of workers
 - build for multiple frontends (queue, rest, psr-7, async php, etc)
-- works over TPC, unix sockets and standard pipes
-- controlled worker termination
+- works over TPC, unix sockets, standard pipes
+- safe worker termination
 - timeout management
 - payload context
 - protocol, job and worker level error management
