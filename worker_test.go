@@ -1,81 +1,46 @@
 package roadrunner
 
 import (
-	"github.com/spiral/goridge"
 	"github.com/stretchr/testify/assert"
-	"io"
 	"os/exec"
 	"testing"
 	"time"
 )
 
-func getPipes(cmd *exec.Cmd) (io.ReadCloser, io.WriteCloser) {
-	in, err := cmd.StdoutPipe()
-	if err != nil {
-		panic(err)
-	}
+func TestGetState(t *testing.T) {
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	w, _ := new(PipeFactory).NewWorker(cmd)
+	defer w.Stop()
 
-	out, err := cmd.StdinPipe()
-	if err != nil {
-		panic(err)
-	}
-
-	return in, out
-}
-
-func TestOnStarted(t *testing.T) {
-	pr := exec.Command("php", "tests/echo-client.php")
-	pr.Start()
-
-	_, err := NewWorker(pr)
-	assert.NotNil(t, err)
-	assert.Equal(t, "can't attach to running process", err.Error())
-}
-
-func TestNewWorkerState(t *testing.T) {
-	w, err := NewWorker(exec.Command("php", "tests/echo-client.php"))
-	assert.Nil(t, err)
-	assert.Equal(t, StateInactive, w.State)
-
-	w.attach(goridge.NewPipeRelay(getPipes(w.cmd)))
-	assert.Equal(t, StateBooting, w.State)
-
-	assert.Nil(t, w.Start())
-	assert.Equal(t, StateReady, w.State)
+	assert.Equal(t, StateReady, w.State().Value())
 }
 
 func TestStop(t *testing.T) {
-	w, err := NewWorker(exec.Command("php", "tests/echo-client.php"))
-	assert.Nil(t, err)
-
-	w.attach(goridge.NewPipeRelay(getPipes(w.cmd)))
-	assert.Nil(t, w.Start())
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	w, _ := new(PipeFactory).NewWorker(cmd)
+	defer w.Stop()
 
 	w.Stop()
-	assert.Equal(t, StateStopped, w.State)
+	assert.Equal(t, StateStopped, w.State().Value())
 }
 
 func TestEcho(t *testing.T) {
-	w, err := NewWorker(exec.Command("php", "tests/echo-client.php"))
-	assert.Nil(t, err)
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	w, _ := new(PipeFactory).NewWorker(cmd)
+	defer w.Stop()
 
-	w.attach(goridge.NewPipeRelay(getPipes(w.cmd)))
-	assert.Nil(t, w.Start())
-
-	r, ctx, err := w.Execute([]byte("hello"), nil)
+	r, ctx, err := w.Exec([]byte("hello"), nil)
 	assert.Nil(t, err)
 	assert.Nil(t, ctx)
 	assert.Equal(t, "hello", string(r))
 }
 
 func TestError(t *testing.T) {
-	w, err := NewWorker(exec.Command("php", "tests/error-client.php"))
-	assert.Nil(t, err)
+	cmd := exec.Command("php", "tests/client.php", "error", "pipes")
+	w, _ := new(PipeFactory).NewWorker(cmd)
+	defer w.Stop()
 
-	w.attach(goridge.NewPipeRelay(getPipes(w.cmd)))
-	assert.Nil(t, w.Start())
-
-	r, ctx, err := w.Execute([]byte("hello"), nil)
+	r, ctx, err := w.Exec([]byte("hello"), nil)
 	assert.Nil(t, r)
 	assert.NotNil(t, err)
 	assert.Nil(t, ctx)
@@ -85,13 +50,11 @@ func TestError(t *testing.T) {
 }
 
 func TestBroken(t *testing.T) {
-	w, err := NewWorker(exec.Command("php", "tests/broken-client.php"))
-	assert.Nil(t, err)
+	cmd := exec.Command("php", "tests/client.php", "broken", "pipes")
+	w, _ := new(PipeFactory).NewWorker(cmd)
+	defer w.Stop()
 
-	w.attach(goridge.NewPipeRelay(getPipes(w.cmd)))
-	assert.Nil(t, w.Start())
-
-	r, ctx, err := w.Execute([]byte("hello"), nil)
+	r, ctx, err := w.Exec([]byte("hello"), nil)
 	assert.Nil(t, r)
 	assert.NotNil(t, err)
 	assert.Nil(t, ctx)
@@ -100,31 +63,27 @@ func TestBroken(t *testing.T) {
 	assert.Contains(t, err.Error(), "undefined_function()")
 }
 
-func TestNumExecutions(t *testing.T) {
-	w, err := NewWorker(exec.Command("php", "tests/echo-client.php"))
-	assert.Nil(t, err)
+func TestCalled(t *testing.T) {
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	w, _ := new(PipeFactory).NewWorker(cmd)
+	defer w.Stop()
 
-	w.attach(goridge.NewPipeRelay(getPipes(w.cmd)))
-	assert.Nil(t, w.Start())
+	w.Exec([]byte("hello"), nil)
+	assert.Equal(t, uint64(1), w.NumExecs())
 
-	w.Execute([]byte("hello"), nil)
-	assert.Equal(t, uint64(1), w.NumExecutions)
+	w.Exec([]byte("hello"), nil)
+	assert.Equal(t, uint64(2), w.NumExecs())
 
-	w.Execute([]byte("hello"), nil)
-	assert.Equal(t, uint64(2), w.NumExecutions)
-
-	w.Execute([]byte("hello"), nil)
-	assert.Equal(t, uint64(3), w.NumExecutions)
+	w.Exec([]byte("hello"), nil)
+	assert.Equal(t, uint64(3), w.NumExecs())
 }
 
-func TestLastExecution(t *testing.T) {
-	w, err := NewWorker(exec.Command("php", "tests/echo-client.php"))
-	assert.Nil(t, err)
-
-	w.attach(goridge.NewPipeRelay(getPipes(w.cmd)))
-	assert.Nil(t, w.Start())
+func TestStateChanged(t *testing.T) {
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	w, _ := new(PipeFactory).NewWorker(cmd)
+	defer w.Stop()
 
 	tm := time.Now()
-	w.Execute([]byte("hello"), nil)
-	assert.True(t, w.Last.After(tm))
+	w.Exec([]byte("hello"), nil)
+	assert.True(t, w.State().Updated().After(tm))
 }

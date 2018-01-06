@@ -21,7 +21,7 @@ type Pool struct {
 	numWorkers uint64           // current number of tasks workers
 	tasks      sync.WaitGroup   // counts all tasks executions
 	mua        sync.Mutex       // protects worker allocation
-	muw        sync.RWMutex     // protects state of worker list
+	muw        sync.RWMutex     // protects st of worker list
 	workers    []*Worker        // all registered workers
 	free       chan *Worker     // freed workers
 }
@@ -46,9 +46,9 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*Pool, error) {
 	return p, nil
 }
 
-// Execute one task with given payload and context, returns result and context or error. Must not be used once pool is
+// Exec one task with given payload and context, returns result and context or error. Must not be used once pool is
 // being destroyed.
-func (p *Pool) Execute(payload []byte, ctx interface{}) (resp []byte, rCtx []byte, err error) {
+func (p *Pool) Exec(payload []byte, ctx interface{}) (resp []byte, rCtx []byte, err error) {
 	p.tasks.Add(1)
 	defer p.tasks.Done()
 
@@ -57,7 +57,7 @@ func (p *Pool) Execute(payload []byte, ctx interface{}) (resp []byte, rCtx []byt
 		return nil, nil, err
 	}
 
-	if resp, rCtx, err = w.Execute(payload, ctx); err != nil {
+	if resp, rCtx, err = w.Exec(payload, ctx); err != nil {
 		if !p.cfg.DestroyOnError {
 			if err, jobError := err.(JobError); jobError {
 				p.free <- w
@@ -84,7 +84,7 @@ func (p *Pool) Execute(payload []byte, ctx interface{}) (resp []byte, rCtx []byt
 		return p.Execute(payload, ctx)
 	}
 
-	if p.cfg.MaxExecutions != 0 && atomic.LoadUint64(&w.NumExecutions) > p.cfg.MaxExecutions {
+	if p.cfg.MaxExecutions != 0 && atomic.LoadUint64(&w.numExecs) > p.cfg.MaxExecutions {
 		p.destroyWorker(w)
 	} else {
 		p.free <- w
@@ -143,7 +143,7 @@ func (p *Pool) allocateWorker() (*Worker, error) {
 		timeout := time.NewTimer(p.cfg.AllocateTimeout)
 		select {
 		case <-timeout.C:
-			return nil, fmt.Errorf("unable to allocate worker, timeout (%s)", p.cfg.AllocateTimeout)
+			return nil, fmt.Errorf("unable to allocate worker, timeout (%st)", p.cfg.AllocateTimeout)
 		case w := <-p.free:
 			timeout.Stop()
 			return w, nil
@@ -170,7 +170,7 @@ func (p *Pool) destroyWorker(w *Worker) {
 	}()
 }
 
-// creates new worker (must be called in a locked state).
+// creates new worker (must be called in a locked st).
 func (p *Pool) createWorker() (*Worker, error) {
 	w, err := p.factory.NewWorker(p.cmd())
 	if err != nil {

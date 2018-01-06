@@ -11,6 +11,6 @@ func TestWorkerError_Error(t *testing.T) {
 }
 
 func TestJobError_Error(t *testing.T) {
-	e := JobError("error")
+	e := JobError([]byte("error"))
 	assert.Equal(t, "error", e.Error())
 }

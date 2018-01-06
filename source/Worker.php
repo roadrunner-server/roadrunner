@@ -136,26 +136,23 @@ class Worker
             return true;
         }
 
-        $parsed = json_decode($body, true);
-        if ($parsed === false) {
+        $p = json_decode($body, true);
+        if ($p === false) {
             throw new RoadRunnerException("invalid task context, JSON payload is expected");
         }
 
         // PID negotiation (socket connections only)
-        if (!empty($parsed['pid'])) {
-            $this->relay->send(json_encode([
-                'pid'    => getmypid(),
-                'parent' => $parsed['pid'],
-            ]), Relay::PAYLOAD_CONTROL);
+        if (!empty($p['pid'])) {
+            $this->relay->send(sprintf('{"pid":%s}', getmypid()), Relay::PAYLOAD_CONTROL);
         }
 
         // termination request
-        if (!empty($parsed['terminate'])) {
+        if (!empty($p['stop'])) {
             return false;
         }
 
         // not a command but execution context
-        $context = $parsed;
+        $context = $p;
 
         return true;
     }

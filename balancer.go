@@ -35,14 +35,14 @@ func (b *Balancer) Spawn(cmd func() *exec.Cmd, factory Factory, cfg Config) erro
 	return nil
 }
 
-// Execute one task with given payload and context, returns result and context or error. Must not be used once pool is
-// being destroyed.
-func (b *Balancer) Execute(payload []byte, ctx interface{}) (resp []byte, rCtx []byte, err error) {
+// Exec one task with given payload and context, returns result and context
+// or error. Must not be used once pool is being destroyed.
+func (b *Balancer) Exec(payload []byte, ctx interface{}) (resp []byte, rCtx []byte, err error) {
 	b.mu.Lock()
 	pool := b.pool
 	b.mu.Unlock()
 
-	return pool.Execute(payload, ctx)
+	return pool.Exec(payload, ctx)
 }
 
 // Workers return list of active workers.
