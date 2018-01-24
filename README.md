@@ -16,7 +16,7 @@ Features:
 - worker lifecycle management (create/stop/allocate timeouts)
 - payload context
 - protocol, job and worker level error management
-- very fast (~250k calls per second on Ryzen 1700X over 17 threads)
+- very fast (~250k calls per second on Ryzen 1700X over 16 threads)
 - works on Windows
 
 Examples:
