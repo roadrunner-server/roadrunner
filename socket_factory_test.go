@@ -140,7 +140,7 @@ func Test_Unix_Start(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "tests/client.php", "echo", "tcp")
+	cmd := exec.Command("php", "tests/client.php", "echo", "unix")
 
 	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
 	assert.NoError(t, err)
@@ -185,7 +185,7 @@ func Test_Unix_Timeout(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "tests/slow-client.php", "echo", "tcp", "200", "0")
+	cmd := exec.Command("php", "tests/slow-client.php", "echo", "unix", "200", "0")
 
 	w, err := NewSocketFactory(ls, time.Millisecond*100).SpawnWorker(cmd)
 	assert.Nil(t, w)
@@ -224,7 +224,7 @@ func Test_Unix_Broken(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "tests/client.php", "broken", "tcp")
+	cmd := exec.Command("php", "tests/client.php", "broken", "unix")
 
 	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
 	go func() {
@@ -253,7 +253,7 @@ func Test_Unix_Echo(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "tests/client.php", "echo", "tcp")
+	cmd := exec.Command("php", "tests/client.php", "echo", "unix")
 
 	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
 	go func() {
