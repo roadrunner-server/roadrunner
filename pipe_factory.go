@@ -2,45 +2,59 @@ package roadrunner
 
 import (
 	"github.com/spiral/goridge"
+	"io"
 	"os/exec"
+	"github.com/pkg/errors"
 )
 
-// PipeFactory connects to workers using standard streams (STDIN, STDOUT pipes).
+// PipeFactory connects to workers using standard
+// streams (STDIN, STDOUT pipes).
 type PipeFactory struct {
 }
 
-// NewPipeFactory returns new factory instance and starts listening
+// NewPipeFactory returns new factory instance and starts
+// listening
 func NewPipeFactory() *PipeFactory {
 	return &PipeFactory{}
 }
 
-// NewWorker creates worker and connects it to appropriate relay or returns error
-func (f *PipeFactory) NewWorker(cmd *exec.Cmd) (w *Worker, err error) {
-	w, err = NewWorker(cmd)
-	if err != nil {
+// SpawnWorker creates new worker and connects it to goridge relay,
+// method Wait() must be handled on level above.
+func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
+	if w, err = newWorker(cmd); err != nil {
 		return nil, err
 	}
 
-	in, err := cmd.StdoutPipe()
-	if err != nil {
+	var (
+		in  io.ReadCloser
+		out io.WriteCloser
+	)
+
+	if in, err = cmd.StdoutPipe(); err != nil {
 		return nil, err
 	}
 
-	out, err := cmd.StdinPipe()
-	if err != nil {
+	if out, err = cmd.StdinPipe(); err != nil {
 		return nil, err
 	}
+
+	w.rl = goridge.NewPipeRelay(in, out)
 
 	if err := w.Start(); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "process error")
 	}
 
-	w.attach(goridge.NewPipeRelay(in, out))
+	// todo: timeout ?
+	if pid, err := fetchPID(w.rl); pid != *w.Pid {
+		go func(w *Worker) { w.Kill() }(w)
 
+		if wErr := w.Wait(); wErr != nil {
+			err = errors.Wrap(wErr, err.Error())
+		}
+
+		return nil, errors.Wrap(err, "unable to connect to worker")
+	}
+
+	w.state.set(StateReady)
 	return w, nil
-}
-
-// Close closes all open factory descriptors.
-func (f *PipeFactory) Close() error {
-	return nil
 }

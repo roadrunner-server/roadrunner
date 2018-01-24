@@ -1,15 +1,12 @@
 <?php
+/**
+ * @var Goridge\RelayInterface $relay
+ */
 
 use Spiral\Goridge;
 use Spiral\RoadRunner;
 
-/**
- * echo client over pipes.
- */
-ini_set('display_errors', 'stderr');
-require "vendor/autoload.php";
-
-$rr = new RoadRunner\Worker(new Goridge\StreamRelay(STDIN, STDOUT));
+$rr = new RoadRunner\Worker($relay);
 
 while ($in = $rr->receive($ctx)) {
     try {
