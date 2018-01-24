@@ -126,7 +126,7 @@ func (w *Worker) Start() error {
 func (w *Worker) Wait() error {
 	<-w.waitDone
 
-	// ensure that all pipe descriptors are closed
+	// ensure that all read/write operations are complete
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
