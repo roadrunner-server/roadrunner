@@ -106,11 +106,11 @@ func (w *Worker) Start() error {
 		if w.waitDone != nil {
 			w.state.set(StateStopped)
 
-			//w.mu.Lock()
-			//defer w.mu.Unlock()
-
 			close(w.waitDone)
 			if w.rl != nil {
+				w.mu.Lock()
+				defer w.mu.Unlock()
+
 				w.rl.Close()
 			}
 		}
@@ -127,6 +127,9 @@ func (w *Worker) Wait() error {
 	<-w.waitDone
 
 	// ensure that all pipe descriptors are closed
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
 	w.cmd.Wait()
 
 	if w.endState.Success() {
