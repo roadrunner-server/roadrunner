@@ -188,7 +188,7 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 
 	wg.Wait()
 
-	log.Println(b.N / int(time.Now().Sub(s).Seconds()))
+	log.Println(float64(b.N) / time.Now().Sub(s).Seconds())
 }
 
 func Benchmark_Pool_Echo_Replaced(b *testing.B) {
