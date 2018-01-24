@@ -10,6 +10,8 @@ import (
 )
 
 func Test_Tcp_Start(t *testing.T) {
+	time.Sleep(time.Millisecond * 10) // to ensure free socket
+
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer ls.Close()
@@ -31,6 +33,8 @@ func Test_Tcp_Start(t *testing.T) {
 }
 
 func Test_Tcp_Failboot(t *testing.T) {
+	time.Sleep(time.Millisecond * 10) // to ensure free socket
+
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer ls.Close()
@@ -47,6 +51,8 @@ func Test_Tcp_Failboot(t *testing.T) {
 }
 
 func Test_Tcp_Timeout(t *testing.T) {
+	time.Sleep(time.Millisecond * 10) // to ensure free socket
+
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer ls.Close()
@@ -63,6 +69,8 @@ func Test_Tcp_Timeout(t *testing.T) {
 }
 
 func Test_Tcp_Invalid(t *testing.T) {
+	time.Sleep(time.Millisecond * 10) // to ensure free socket
+
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer ls.Close()
@@ -78,6 +86,8 @@ func Test_Tcp_Invalid(t *testing.T) {
 }
 
 func Test_Tcp_Broken(t *testing.T) {
+	time.Sleep(time.Millisecond * 10) // to ensure free socket
+
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer ls.Close()
@@ -103,6 +113,8 @@ func Test_Tcp_Broken(t *testing.T) {
 }
 
 func Test_Tcp_Echo(t *testing.T) {
+	time.Sleep(time.Millisecond * 10) // to ensure free socket
+
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer ls.Close()
