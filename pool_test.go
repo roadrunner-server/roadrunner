@@ -8,6 +8,7 @@ import (
 	"sync"
 	"testing"
 	"time"
+	"log"
 )
 
 var cfg = Config{
@@ -185,7 +186,9 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 	}
 
 	wg.Wait()
-}
+
+	log.Println(p.Workers())
+	}
 
 func Benchmark_Pool_Echo_Replaced(b *testing.B) {
 	p, _ := NewPool(
