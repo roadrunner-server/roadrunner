@@ -15,9 +15,9 @@ before_install:
 
 install:
   - composer install --no-interaction --prefer-source
-  - go get "github.com/spiral/goridge"
-  - go get "github.com/pkg/errors"
-  - go get "github.com/stretchr/testify/assert"
+  - go get -u "github.com/spiral/goridge"
+  - go get -u "github.com/pkg/errors"
+  - go get -u "github.com/stretchr/testify/assert"
 
 script:
   - go test -race -bench=. -benchmem -v
