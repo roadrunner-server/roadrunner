@@ -23,7 +23,7 @@ Examples:
 --------
 
 ```go
-pool, err := NewPool(
+p, err := NewPool(
     func() *exec.Cmd { return exec.Command("php", "worker.php") },
     NewPipeFactory(),
     Config{
