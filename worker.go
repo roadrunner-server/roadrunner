@@ -105,12 +105,12 @@ func (w *Worker) Start() error {
 		w.endState, _ = w.cmd.Process.Wait()
 		if w.waitDone != nil {
 			w.state.set(StateStopped)
+
+			//w.mu.Lock()
+			//defer w.mu.Unlock()
+
 			close(w.waitDone)
-
 			if w.rl != nil {
-				w.mu.Lock()
-				defer w.mu.Unlock()
-
 				w.rl.Close()
 			}
 		}
