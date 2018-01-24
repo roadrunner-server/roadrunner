@@ -3,7 +3,7 @@ RoadRunner
 [![GoDoc](https://godoc.org/github.com/spiral/roadrunner?status.svg)](https://godoc.org/github.com/spiral/roadrunner)
 [![Build Status](https://travis-ci.org/spiral/roadrunner.svg?branch=master)](https://travis-ci.org/spiral/roadrunner)
 
-Embeddable PHP application server library for Golang.
+High-performance PHP application server for Golang.
 
 Features:
 --------
