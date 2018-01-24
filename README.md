@@ -11,8 +11,8 @@ Features:
 - swaps workers without stopping the server
 - build for multiple frontends (queue, rest, psr-7, async php, etc)
 - works over TPC, unix sockets and standard pipes
-- controlled worker termination
 - automatic worker replacement
+- safe worker destruction
 - worker lifecycle management (create/stop/allocate timeouts)
 - payload context
 - protocol, job and worker level error management
