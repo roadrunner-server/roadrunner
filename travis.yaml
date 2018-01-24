@@ -1,0 +1,23 @@
+language: php
+
+sudo: required
+
+php:
+  - 7.0
+  - 7.1
+  - 7.2
+
+go:
+  - 1.8
+
+before_install:
+  - composer self-update
+
+install:
+  - composer install --no-interaction --prefer-source
+  - go get "github.com/spiral/goridge"
+  - go get "github.com/pkg/errors"
+  - go get "github.com/stretchr/testify/assert"
+
+script:
+  - go test -race -bench=. -benchmem -v

@@ -2,12 +2,12 @@ package roadrunner
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"github.com/spiral/goridge"
 	"net"
 	"os/exec"
 	"sync"
 	"time"
-	"github.com/pkg/errors"
 )
 
 // SocketFactory connects to external workers using socket server.

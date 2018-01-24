@@ -1,10 +1,10 @@
 package roadrunner
 
 import (
+	"github.com/pkg/errors"
 	"github.com/spiral/goridge"
 	"io"
 	"os/exec"
-	"github.com/pkg/errors"
 )
 
 // PipeFactory connects to workers using standard

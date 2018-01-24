@@ -4,10 +4,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"runtime"
+	"strconv"
 	"sync"
 	"testing"
 	"time"
-	"strconv"
 )
 
 var cfg = Config{

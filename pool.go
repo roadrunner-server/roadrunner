@@ -2,11 +2,11 @@ package roadrunner
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"log"
 	"os/exec"
 	"sync"
 	"time"
-	"github.com/pkg/errors"
 )
 
 const (
