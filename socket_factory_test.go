@@ -128,50 +128,151 @@ func Test_Tcp_Echo(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
+func Test_Unix_Start(t *testing.T) {
+	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+		t.Skip("not supported on " + runtime.GOOS)
+	}
+
+	ls, err := net.Listen("unix", "sock.unix")
+	if err == nil {
+		defer ls.Close()
+	} else {
+		t.Skip("socket is busy")
+	}
+
+	cmd := exec.Command("php", "tests/client.php", "echo", "tcp")
+
+	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	assert.NoError(t, err)
+	assert.NotNil(t, w)
+
+	go func() {
+		assert.NoError(t, w.Wait())
+	}()
+
+	w.Stop()
+}
+
+func Test_Unix_Failboot(t *testing.T) {
+	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+		t.Skip("not supported on " + runtime.GOOS)
+	}
+
+	ls, err := net.Listen("unix", "sock.unix")
+	if err == nil {
+		defer ls.Close()
+	} else {
+		t.Skip("socket is busy")
+	}
+
+	cmd := exec.Command("php", "tests/failboot.php")
+
+	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	assert.Nil(t, w)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "failboot")
+}
+
+func Test_Unix_Timeout(t *testing.T) {
+	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+		t.Skip("not supported on " + runtime.GOOS)
+	}
+
+	ls, err := net.Listen("unix", "sock.unix")
+	if err == nil {
+		defer ls.Close()
+	} else {
+		t.Skip("socket is busy")
+	}
+
+	cmd := exec.Command("php", "tests/slow-client.php", "echo", "tcp", "200", "0")
+
+	w, err := NewSocketFactory(ls, time.Millisecond*100).SpawnWorker(cmd)
+	assert.Nil(t, w)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "relay timeout")
+}
+
+func Test_Unix_Invalid(t *testing.T) {
+	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+		t.Skip("not supported on " + runtime.GOOS)
+	}
+
+	ls, err := net.Listen("unix", "sock.unix")
+	if err == nil {
+		defer ls.Close()
+	} else {
+		t.Skip("socket is busy")
+	}
+
+	cmd := exec.Command("php", "tests/invalid.php")
+
+	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	assert.Error(t, err)
+	assert.Nil(t, w)
+}
+
+func Test_Unix_Broken(t *testing.T) {
+	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+		t.Skip("not supported on " + runtime.GOOS)
+	}
+
+	ls, err := net.Listen("unix", "sock.unix")
+	if err == nil {
+		defer ls.Close()
+	} else {
+		t.Skip("socket is busy")
+	}
+
+	cmd := exec.Command("php", "tests/client.php", "broken", "tcp")
+
+	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	go func() {
+		err := w.Wait()
+
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "undefined_function()")
+	}()
+	defer w.Stop()
+
+	res, err := w.Exec(&Payload{Body: []byte("hello")})
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+}
+
+func Test_Unix_Echo(t *testing.T) {
+	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+		t.Skip("not supported on " + runtime.GOOS)
+	}
+
+	ls, err := net.Listen("unix", "sock.unix")
+	if err == nil {
+		defer ls.Close()
+	} else {
+		t.Skip("socket is busy")
+	}
+
+	cmd := exec.Command("php", "tests/client.php", "echo", "tcp")
+
+	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	go func() {
+		assert.NoError(t, w.Wait())
+	}()
+	defer w.Stop()
+
+	res, err := w.Exec(&Payload{Body: []byte("hello")})
+
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+	assert.NotNil(t, res.Body)
+	assert.Nil(t, res.Head)
+
+	assert.Equal(t, "hello", res.String())
+}
+
 //todo: test relay timeout
 //todo: test dead workers
-
-//func Test_Tcp_Errored(t *testing.T) {
-//	defer time.Sleep(time.Millisecond * 10) // free socket
-//
-//	ls, err := net.Listen("tcp", "localhost:9007")
-//	if assert.NoError(t, err) {
-//		defer ls.Destroy()
-//	} else {
-//		t.Skip("socket is busy")
-//	}
-//
-//	cmd := exec.Command("php", "tests/invalid.php")
-//	w, err := NewSocketFactory(ls).SpawnWorker(cmd)
-//	assert.Nil(t, w)
-//	assert.NotNil(t, err)
-//
-//	assert.Equal(t, "unable to connect to worker: worker is gone", err.Error())
-//}
-//
-//func Test_Tcp_Broken(t *testing.T) {
-//	defer time.Sleep(time.Millisecond * 10) // free socket
-//
-//	ls, err := net.Listen("tcp", "localhost:9007")
-//	if assert.NoError(t, err) {
-//		defer ls.Destroy()
-//	} else {
-//		t.Skip("socket is busy")
-//	}
-//
-//	cmd := exec.Command("php", "tests/client.php", "broken", "tcp")
-//	w, err := NewSocketFactory(ls).SpawnWorker(cmd)
-//	defer w.Destroy()
-//
-//	r, ctx, err := w.Exec([]byte("hello"), nil)
-//	assert.Nil(t, r)
-//	assert.NotNil(t, err)
-//	assert.Nil(t, ctx)
-//
-//	assert.IsType(t, WorkerError(errors.New("")), err)
-//	assert.Contains(t, err.Error(), "undefined_function()")
-//}
-//
 
 func Benchmark_Tcp_SpawnWorker_Stop(b *testing.B) {
 	ls, err := net.Listen("tcp", "localhost:9007")
