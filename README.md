@@ -24,9 +24,9 @@ Examples:
 
 ```go
 pool, err := NewPool(
-	func() *exec.Cmd { return exec.Command("php", "worker.php") },
-	NewPipeFactory(),
-	Config{
+    func() *exec.Cmd { return exec.Command("php", "worker.php") },
+    NewPipeFactory(),
+    Config{
         NumWorkers:      uint64(runtime.NumCPU()),
         AllocateTimeout: time.Second,
         DestroyTimeout:  time.Second,
