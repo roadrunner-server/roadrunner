@@ -8,7 +8,6 @@ import (
 	"sync"
 	"testing"
 	"time"
-	"log"
 )
 
 var cfg = Config{
@@ -174,9 +173,8 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 	)
 	defer p.Destroy()
 
-	s := time.Now()
 	var wg sync.WaitGroup
-	for i := 0; i < b.N*10; i++ {
+	for i := 0; i < b.N; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -187,8 +185,6 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 	}
 
 	wg.Wait()
-
-	log.Println(float64(b.N*10) / time.Now().Sub(s).Seconds())
 }
 
 func Benchmark_Pool_Echo_Replaced(b *testing.B) {
