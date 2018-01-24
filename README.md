@@ -19,6 +19,24 @@ Features:
 - very fast (~200k calls per second on Ryzen 1700X over 17 threads)
 - works on Windows
 
+Examples:
+--------
+
+```go
+pool, err := NewPool(
+	func() *exec.Cmd { return exec.Command("php", "worker.php") },
+	NewPipeFactory(),
+	Config{
+        NumWorkers:      uint64(runtime.NumCPU()),
+        AllocateTimeout: time.Second,
+        DestroyTimeout:  time.Second,
+    },
+)
+defer p.Destroy()
+
+rsp, err := p.Exec(&Payload{Body: []byte("hello")})
+```
+
 License:
 --------
 The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information.
