@@ -283,9 +283,6 @@ func Test_Unix_Echo(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
-//todo: test relay timeout
-//todo: test dead workers
-
 func Benchmark_Tcp_SpawnWorker_Stop(b *testing.B) {
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if err == nil {
