@@ -20,4 +20,5 @@ install:
   - go get -u "github.com/stretchr/testify/assert"
 
 script:
-  - go test -race -bench=. -benchmem -v
+  - go test -race -bench=. -benchmem
+  - go test -bench=. -benchmem -v
