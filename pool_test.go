@@ -176,7 +176,7 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 
 	s := time.Now()
 	var wg sync.WaitGroup
-	for i := 0; i < b.N; i++ {
+	for i := 0; i < b.N*10; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -188,7 +188,7 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 
 	wg.Wait()
 
-	log.Println(float64(b.N) / time.Now().Sub(s).Seconds())
+	log.Println(float64(b.N*10) / time.Now().Sub(s).Seconds())
 }
 
 func Benchmark_Pool_Echo_Replaced(b *testing.B) {
