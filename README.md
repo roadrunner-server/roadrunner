@@ -36,7 +36,7 @@ defer p.Destroy()
 
 rsp, err := p.Exec(&Payload{Body: []byte("hello")})
 ```
-```
+```php
 <?php
 /**
  * @var Goridge\RelayInterface $relay
