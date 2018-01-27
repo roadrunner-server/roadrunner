@@ -8,6 +8,7 @@ import (
 	"sync"
 	"testing"
 	"time"
+	"log"
 )
 
 var cfg = Config{
@@ -144,6 +145,7 @@ func Benchmark_Pool_Allocate(b *testing.B) {
 		w, err := p.allocateWorker()
 		if err != nil {
 			b.Fail()
+			log.Println(err)
 		}
 
 		p.free <- w
@@ -180,6 +182,7 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 			defer wg.Done()
 			if _, err := p.Exec(&Payload{Body: []byte("hello")}); err != nil {
 				b.Fail()
+				log.Println(err)
 			}
 		}()
 	}
@@ -203,6 +206,7 @@ func Benchmark_Pool_Echo_Replaced(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		if _, err := p.Exec(&Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
+			log.Println(err)
 		}
 	}
 }
