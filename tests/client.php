@@ -26,7 +26,6 @@ switch ($goridge) {
             null,
             Goridge\SocketRelay::SOCK_UNIX
         );
-
         break;
 
     default:
