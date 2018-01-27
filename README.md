@@ -15,7 +15,7 @@ Features:
 - safe worker destruction
 - worker lifecycle management (create/stop/allocate timeouts)
 - payload context
-- protocol, job and worker level error management
+- protocol, worker and job level error management
 - very fast (~250k calls per second on Ryzen 1700X over 16 threads)
 - works on Windows
 
