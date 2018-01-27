@@ -7,7 +7,7 @@ High-performance PHP job balancer for Golang.
 
 Features:
 --------
-- no extensions, drop in
+- no external dependencies or services, drop-in
 - load balancer, process manager and task pipeline 
 - swaps workers without stopping the server
 - build for multiple frontends (queue, rest, psr-7, async php, etc)
