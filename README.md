@@ -28,8 +28,8 @@ p, err := NewPool(
     NewPipeFactory(),
     Config{
         NumWorkers:      uint64(runtime.NumCPU()),
-        AllocateTimeout: time.Second,
-        DestroyTimeout:  time.Second,
+        AllocateTimeout: time.Second,              
+        DestroyTimeout:  time.Second,               
     },
 )
 defer p.Destroy()
