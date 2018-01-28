@@ -137,6 +137,25 @@ func Test_Pool_JobError(t *testing.T) {
 	assert.Equal(t, "hello", err.Error())
 }
 
+func Test_Pool_Broken_Replace(t *testing.T) {
+	p, err := NewPool(
+		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "broken", "pipes") },
+		NewPipeFactory(),
+		cfg,
+	)
+	defer p.Destroy()
+
+	assert.NotNil(t, p)
+	assert.NoError(t, err)
+
+	res, err := p.Exec(&Payload{Body: []byte("hello")})
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+
+	// todo: handle error in even log
+}
+
 func Test_Pool_AllocateTimeout(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "delay", "pipes") },
