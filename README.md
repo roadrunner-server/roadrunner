@@ -18,7 +18,7 @@ Features:
 - worker lifecycle management (create/allocate/destroy timeouts)
 - payload context
 - control over max jobs per worker
-- protocol, worker and job level error management
+- protocol, worker and job level error management (including PHP errors)
 - very fast (~250k calls per second on Ryzen 1700X over 16 threads)
 - works on Windows
 
