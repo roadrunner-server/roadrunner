@@ -59,7 +59,7 @@ while ($in = $rr->receive($ctx)) {
     }
 }
 ```
->> Check how to init relay [here](./tests/client.php).
+> Check how to init relay [here](./tests/client.php).
 
 License:
 --------
