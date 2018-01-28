@@ -11,7 +11,7 @@ import (
 
 const (
 	// StopRequest can be sent by worker to indicate that restart is required.
-	StopRequest = "{\"stop\": true}"
+	StopRequest = "{\"stop\":true}"
 )
 
 // Pool controls worker creation, destruction and task routing.

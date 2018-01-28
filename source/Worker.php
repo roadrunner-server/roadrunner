@@ -24,7 +24,7 @@ use Spiral\RoadRunner\Exceptions\RoadRunnerException;
 class Worker
 {
     // Send as response context to request worker termination
-    const STOP = '{"stop": true}';
+    const STOP = '{"stop":true}';
 
     /** @var Relay */
     private $relay;
