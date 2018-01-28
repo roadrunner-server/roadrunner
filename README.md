@@ -9,13 +9,6 @@ RoadRunner
 
 High-performance PHP load balancer and process manager library for Golang.
 
-Installation:
---------
-```
-$ go get github.com/spiral/roadrunner
-$ composer require spiral/roadrunner
-```
-
 Features:
 --------
 - no external services, drop-in (based on [Goridge](https://github.com/spiral/goridge))
@@ -29,6 +22,13 @@ Features:
 - protocol, worker and job level error management (including PHP errors)
 - very fast (~250k calls per second on Ryzen 1700X over 16 threads)
 - works on Windows
+
+Installation:
+--------
+```
+$ go get github.com/spiral/roadrunner
+$ composer require spiral/roadrunner
+```
 
 Examples:
 --------
