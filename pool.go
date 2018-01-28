@@ -109,7 +109,7 @@ func (p *Pool) Exec(rqs *Payload) (rsp *Payload, err error) {
 	}
 
 	// worker want's to be terminated
-	if rsp.Body == nil && rsp.Head != nil && string(rsp.Head) == StopRequest {
+	if rsp.Body == nil && rsp.Context != nil && string(rsp.Context) == StopRequest {
 		go p.replaceWorker(w, err)
 		return p.Exec(rqs)
 	}

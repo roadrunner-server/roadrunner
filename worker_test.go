@@ -37,7 +37,7 @@ func Test_Echo(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 	assert.NotNil(t, res.Body)
-	assert.Nil(t, res.Head)
+	assert.Nil(t, res.Context)
 
 	assert.Equal(t, "hello", res.String())
 }
@@ -79,7 +79,7 @@ func Test_Echo_Slow(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 	assert.NotNil(t, res.Body)
-	assert.Nil(t, res.Head)
+	assert.Nil(t, res.Context)
 
 	assert.Equal(t, "hello", res.String())
 }

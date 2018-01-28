@@ -209,7 +209,7 @@ func (w *Worker) start() error {
 }
 
 func (w *Worker) execPayload(rqs *Payload) (rsp *Payload, err error) {
-	if err := sendHead(w.rl, rqs.Head); err != nil {
+	if err := sendHead(w.rl, rqs.Context); err != nil {
 		return nil, errors.Wrap(err, "header error")
 	}
 
@@ -218,7 +218,7 @@ func (w *Worker) execPayload(rqs *Payload) (rsp *Payload, err error) {
 	var pr goridge.Prefix
 	rsp = new(Payload)
 
-	if rsp.Head, pr, err = w.rl.Receive(); err != nil {
+	if rsp.Context, pr, err = w.rl.Receive(); err != nil {
 		return nil, errors.Wrap(err, "worker error")
 	}
 
@@ -227,7 +227,7 @@ func (w *Worker) execPayload(rqs *Payload) (rsp *Payload, err error) {
 	}
 
 	if pr.HasFlag(goridge.PayloadError) {
-		return nil, JobError(rsp.Head)
+		return nil, JobError(rsp.Context)
 	}
 
 	if rsp.Body, pr, err = w.rl.Receive(); err != nil {
