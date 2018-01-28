@@ -20,6 +20,33 @@ func Test_Pipe_Start(t *testing.T) {
 	w.Stop()
 }
 
+func Test_Pipe_StartError(t *testing.T) {
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd.Start()
+
+	w, err := NewPipeFactory().SpawnWorker(cmd)
+	assert.Error(t, err)
+	assert.Nil(t, w)
+}
+
+func Test_Pipe_PipeError(t *testing.T) {
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd.StdinPipe()
+
+	w, err := NewPipeFactory().SpawnWorker(cmd)
+	assert.Error(t, err)
+	assert.Nil(t, w)
+}
+
+func Test_Pipe_PipeError2(t *testing.T) {
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd.StdoutPipe()
+
+	w, err := NewPipeFactory().SpawnWorker(cmd)
+	assert.Error(t, err)
+	assert.Nil(t, w)
+}
+
 func Test_Pipe_Failboot(t *testing.T) {
 	cmd := exec.Command("php", "tests/failboot.php")
 	w, err := NewPipeFactory().SpawnWorker(cmd)

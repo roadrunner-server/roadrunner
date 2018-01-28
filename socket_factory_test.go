@@ -32,6 +32,24 @@ func Test_Tcp_Start(t *testing.T) {
 	w.Stop()
 }
 
+func Test_Tcp_StartError(t *testing.T) {
+	time.Sleep(time.Millisecond * 10) // to ensure free socket
+
+	ls, err := net.Listen("tcp", "localhost:9007")
+	if assert.NoError(t, err) {
+		defer ls.Close()
+	} else {
+		t.Skip("socket is busy")
+	}
+
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd.Start()
+
+	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	assert.Error(t, err)
+	assert.Nil(t, w)
+}
+
 func Test_Tcp_Failboot(t *testing.T) {
 	time.Sleep(time.Millisecond * 10) // to ensure free socket
 

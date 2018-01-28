@@ -40,9 +40,9 @@ func NewSocketFactory(ls net.Listener, tout time.Duration) *SocketFactory {
 }
 
 // SpawnWorker creates worker and connects it to appropriate relay or returns error
-func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, workerError error) {
-	if w, workerError = newWorker(cmd); workerError != nil {
-		return nil, workerError
+func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
+	if w, err = newWorker(cmd); err != nil {
+		return nil, err
 	}
 
 	if err := w.Start(); err != nil {
