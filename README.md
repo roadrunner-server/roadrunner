@@ -27,7 +27,7 @@ Examples:
 
 ```go
 p, err := NewPool(
-    func() *exec.Cmd { return exec.Command("php", "worker.php") },
+    func() *exec.Cmd { return exec.Command("php", "worker.php", "pipes") },
     NewPipeFactory(),
     Config{
         NumWorkers:      uint64(runtime.NumCPU()),
