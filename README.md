@@ -50,9 +50,9 @@ use Spiral\RoadRunner;
 
 $rr = new RoadRunner\Worker($relay);
 
-while ($in = $rr->receive($context)) {
+while ($body = $rr->receive($context)) {
     try {
-        $rr->send((string)$in, (string)$context);
+        $rr->send((string)$body, (string)$context);
     } catch (\Throwable $e) {
         $rr->error((string)$e);
     }
