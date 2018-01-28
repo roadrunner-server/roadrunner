@@ -23,11 +23,8 @@ use Spiral\RoadRunner\Exceptions\RoadRunnerException;
  */
 class Worker
 {
-    // Must be set as context value in order to perform controlled demolition of worker
-    const TERMINATE = "TERMINATE";
-
-    // Must be set as context value in order to represent content as an error
-    const ERROR = "ERROR";
+    // Send as response context to request worker termination
+    const TERMINATE = '{"stop": true}';
 
     /** @var Relay */
     private $relay;
@@ -44,19 +41,19 @@ class Worker
      * Receive packet of information to process, returns null when process must be stopped. Might
      * return Error to wrap error message from server.
      *
-     * @param array $context Contains parsed context array send by the server.
+     * @param mixed $header
      *
      * @return \Error|null|string
      * @throws GoridgeException
      */
-    public function receive(&$context)
+    public function receive(&$header)
     {
         $body = $this->relay->receiveSync($flags);
 
         if ($flags & Relay::PAYLOAD_CONTROL) {
-            if ($this->handleControl($body, $context)) {
+            if ($this->handleControl($body, $header, $flags)) {
                 // wait for the next command
-                return $this->receive($context);
+                return $this->receive($header);
             }
 
             // Expect process termination
@@ -77,17 +74,16 @@ class Worker
      * $worker->respond((string)$response->getBody(), json_encode($response->getHeaders()));
      *
      * @param string $payload
-     * @param string $context
+     * @param string $header
      */
-    public function send(string $payload, string $context = null)
+    public function send(string $payload, string $header = null)
     {
-        if (is_null($context)) {
-            $this->relay->send($context, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
+        if (is_null($header)) {
+            $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
         } else {
-            $this->relay->send($context, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_RAW);
+            $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_RAW);
         }
 
-        //todo: null payload?
         $this->relay->send($payload, Relay::PAYLOAD_RAW);
     }
 
@@ -124,16 +120,18 @@ class Worker
      * Handles incoming control command payload and executes it if required.
      *
      * @param string $body
-     * @param array  $context Exported context (if any).
+     * @param mixed  $header Exported context (if any).
+     * @param int    $flags
      *
      * @returns bool True when continue processing.
      *
      * @throws RoadRunnerException
      */
-    private function handleControl(string $body = null, &$context = null): bool
+    private function handleControl(string $body = null, &$header = null, int $flags): bool
     {
-        if (is_null($body)) {
-            // empty prefix
+        $header = $body;
+        if (is_null($body) || $flags & Relay::PAYLOAD_RAW) {
+            // empty or raw prefix
             return true;
         }
 
@@ -152,8 +150,8 @@ class Worker
             return false;
         }
 
-        // not a command but execution context
-        $context = $p;
+        // parsed header
+        $header = $p;
 
         return true;
     }

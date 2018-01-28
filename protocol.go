@@ -21,7 +21,7 @@ func sendHead(rl goridge.Relay, v interface{}) error {
 	}
 
 	if data, ok := v.([]byte); ok {
-		return rl.Send(data, goridge.PayloadControl)
+		return rl.Send(data, goridge.PayloadControl|goridge.PayloadRaw)
 	}
 
 	data, err := json.Marshal(v)
@@ -43,7 +43,6 @@ func fetchPID(rl goridge.Relay) (pid int, err error) {
 	}
 
 	link := &pidCommand{}
-	//log.Println(string(body))
 	if err := json.Unmarshal(body, link); err != nil {
 		return 0, err
 	}

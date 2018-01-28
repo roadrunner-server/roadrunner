@@ -21,17 +21,17 @@ type Worker struct {
 
 	// state holds information about current worker state,
 	// number of worker executions, last status change time.
-	// publicly this object is read-only and protected using Mutex
+	// publicly this object is receive-only and protected using Mutex
 	// and atomic counter.
 	state *state
 
 	// underlying command with associated process, command must be
 	// provided to worker from outside in non-started form. Cmd
-	// stdErr pipe will be handled by worker to aggregate error message.
+	// stdErr direction will be handled by worker to aggregate error message.
 	cmd *exec.Cmd
 
 	// err aggregates stderr output from underlying process. Value can be
-	// read only once command is completed and all pipes are closed.
+	// receive only once command is completed and all pipes are closed.
 	err *bytes.Buffer
 
 	// channel is being closed once command is complete.
@@ -66,7 +66,7 @@ func newWorker(cmd *exec.Cmd) (*Worker, error) {
 	return w, nil
 }
 
-// State return read-only worker state object, state can be used to safely access
+// State return receive-only worker state object, state can be used to safely access
 // worker status, time when status changed and number of worker executions.
 func (w *Worker) State() State {
 	return w.state
@@ -126,7 +126,7 @@ func (w *Worker) Start() error {
 func (w *Worker) Wait() error {
 	<-w.waitDone
 
-	// ensure that all read/write operations are complete
+	// ensure that all receive/send operations are complete
 	w.mu.Lock()
 	defer w.mu.Unlock()
 

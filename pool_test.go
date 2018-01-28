@@ -75,6 +75,48 @@ func Test_Pool_Echo(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
+func Test_Pool_Echo_NilHead(t *testing.T) {
+	p, err := NewPool(
+		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
+		NewPipeFactory(),
+		cfg,
+	)
+	defer p.Destroy()
+
+	assert.NotNil(t, p)
+	assert.NoError(t, err)
+
+	res, err := p.Exec(&Payload{Body: []byte("hello"), Head: nil})
+
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+	assert.NotNil(t, res.Body)
+	assert.Nil(t, res.Head)
+
+	assert.Equal(t, "hello", res.String())
+}
+
+func Test_Pool_Echo_Head(t *testing.T) {
+	p, err := NewPool(
+		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "head", "pipes") },
+		NewPipeFactory(),
+		cfg,
+	)
+	defer p.Destroy()
+
+	assert.NotNil(t, p)
+	assert.NoError(t, err)
+
+	res, err := p.Exec(&Payload{Body: []byte("hello"), Head: []byte("world")})
+
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+	assert.Nil(t, res.Body)
+	assert.NotNil(t, res.Head)
+
+	assert.Equal(t, "world", string(res.Head))
+}
+
 func Test_Pool_AllocateTimeout(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "delay", "pipes") },
