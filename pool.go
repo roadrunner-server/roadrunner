@@ -95,6 +95,7 @@ func (p *Pool) Exec(rqs *Payload) (rsp *Payload, err error) {
 		return nil, errors.Wrap(err, "unable to allocate worker")
 	}
 
+	//todo: timeout
 	rsp, err = w.Exec(rqs)
 
 	if err != nil {
