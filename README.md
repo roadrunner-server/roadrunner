@@ -52,7 +52,7 @@ $rr = new RoadRunner\Worker($relay);
 
 while ($in = $rr->receive($context)) {
     try {
-        $rr->send((string)$in);
+        $rr->send((string)$in, (string)$context);
     } catch (\Throwable $e) {
         $rr->error((string)$e);
     }
