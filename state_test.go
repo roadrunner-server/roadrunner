@@ -10,6 +10,11 @@ func Test_NewState(t *testing.T) {
 
 	assert.Equal(t, "errored", st.String())
 	assert.NotEqual(t, 0, st.Updated().Unix())
+
+	assert.Equal(t, "inactive", newState(StateInactive).String())
+	assert.Equal(t, "ready", newState(StateReady).String())
+	assert.Equal(t, "working", newState(StateWorking).String())
+	assert.Equal(t, "stopped", newState(StateStopped).String())
 }
 
 func Test_IsActive(t *testing.T) {
