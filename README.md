@@ -34,10 +34,10 @@ Examples:
 --------
 
 ```go
-p, err := NewPool(
+p, err := rr.NewPool(
     func() *exec.Cmd { return exec.Command("php", "worker.php", "pipes") },
-    NewPipeFactory(),
-    Config{
+    rr.NewPipeFactory(),
+    rr.Config{
         NumWorkers:      uint64(runtime.NumCPU()),
         AllocateTimeout: time.Second,              
         DestroyTimeout:  time.Second,               
