@@ -15,7 +15,7 @@ Features:
 - load balancer, process manager and task pipeline
 - build for multiple frontends (queue, REST, PSR-7, async php, etc)
 - works over TPC, unix sockets and standard pipes
-- automatic worker replacement and safe destruction
+- automatic worker replacement and safe PHP process destruction
 - worker lifecycle management (create/allocate/destroy timeouts)
 - payload context and body
 - control over max jobs per worker
