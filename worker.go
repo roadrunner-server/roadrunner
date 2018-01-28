@@ -87,38 +87,6 @@ func (w *Worker) String() string {
 	)
 }
 
-// Start underlying process or return error
-func (w *Worker) Start() error {
-	if w.cmd.Process != nil {
-		return fmt.Errorf("process already running")
-	}
-
-	if err := w.cmd.Start(); err != nil {
-		close(w.waitDone)
-
-		return err
-	}
-
-	w.Pid = &w.cmd.Process.Pid
-
-	// wait for process to complete
-	go func() {
-		w.endState, _ = w.cmd.Process.Wait()
-		if w.waitDone != nil {
-			w.state.set(StateStopped)
-			close(w.waitDone)
-
-			if w.rl != nil {
-				w.mu.Lock()
-				defer w.mu.Unlock()
-				w.rl.Close()
-			}
-		}
-	}()
-
-	return nil
-}
-
 // Wait must be called once for each worker, call will be released once worker is
 // complete and will return process error (if any), if stderr is presented it's value
 // will be wrapped as WorkerError. Method will return error code if php process fails
@@ -212,6 +180,33 @@ func (w *Worker) Exec(rqs *Payload) (rsp *Payload, err error) {
 
 	w.state.set(StateReady)
 	return rsp, err
+}
+
+func (w *Worker) start() error {
+	if err := w.cmd.Start(); err != nil {
+		close(w.waitDone)
+
+		return err
+	}
+
+	w.Pid = &w.cmd.Process.Pid
+
+	// wait for process to complete
+	go func() {
+		w.endState, _ = w.cmd.Process.Wait()
+		if w.waitDone != nil {
+			w.state.set(StateStopped)
+			close(w.waitDone)
+
+			if w.rl != nil {
+				w.mu.Lock()
+				defer w.mu.Unlock()
+				w.rl.Close()
+			}
+		}
+	}()
+
+	return nil
 }
 
 func (w *Worker) execPayload(rqs *Payload) (rsp *Payload, err error) {

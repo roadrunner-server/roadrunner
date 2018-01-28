@@ -23,6 +23,8 @@ func Test_NewPool(t *testing.T) {
 		NewPipeFactory(),
 		cfg,
 	)
+	assert.Equal(t, cfg, p.Config())
+
 	defer p.Destroy()
 
 	assert.NotNil(t, p)

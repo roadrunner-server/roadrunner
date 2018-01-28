@@ -40,7 +40,7 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 
 	w.rl = goridge.NewPipeRelay(in, out)
 
-	if err := w.Start(); err != nil {
+	if err := w.start(); err != nil {
 		return nil, errors.Wrap(err, "process error")
 	}
 

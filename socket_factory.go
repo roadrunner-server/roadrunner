@@ -45,7 +45,7 @@ func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 		return nil, err
 	}
 
-	if err := w.Start(); err != nil {
+	if err := w.start(); err != nil {
 		return nil, errors.Wrap(err, "process error")
 	}
 
