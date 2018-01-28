@@ -26,8 +26,8 @@ const (
 
 // Pool controls worker creation, destruction and task routing.
 type Pool struct {
-	// EventHandler is optional callback to handle worker create/destruct/error events.
-	EventHandler func(event int, w *Worker, ctx interface{})
+	// Observer is optional callback to handle worker create/destruct/error events.
+	Observer func(event int, w *Worker, ctx interface{})
 
 	// pool behaviour
 	cfg Config
@@ -236,7 +236,7 @@ func (p *Pool) createWorker() (*Worker, error) {
 
 // throw invokes event handler if any.
 func (p *Pool) throw(event int, w *Worker, ctx interface{}) {
-	if p.EventHandler != nil {
-		p.EventHandler(event, w, ctx)
+	if p.Observer != nil {
+		p.Observer(event, w, ctx)
 	}
 }

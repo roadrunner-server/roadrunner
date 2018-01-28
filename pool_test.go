@@ -149,8 +149,8 @@ func Test_Pool_Broken_Replace(t *testing.T) {
 
 	assert.NotNil(t, p)
 	assert.NoError(t, err)
-	
-	p.EventHandler = func(e int, w *Worker, ctx interface{}) {
+
+	p.Observer = func(e int, w *Worker, ctx interface{}) {
 		if err, ok := ctx.(error); ok {
 			assert.Contains(t, err.Error(), "undefined_function()")
 		}
