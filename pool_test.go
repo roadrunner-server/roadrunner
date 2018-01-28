@@ -117,6 +117,26 @@ func Test_Pool_Echo_Head(t *testing.T) {
 	assert.Equal(t, "world", string(res.Head))
 }
 
+func Test_Pool_JobError(t *testing.T) {
+	p, err := NewPool(
+		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "error", "pipes") },
+		NewPipeFactory(),
+		cfg,
+	)
+	defer p.Destroy()
+
+	assert.NotNil(t, p)
+	assert.NoError(t, err)
+
+	res, err := p.Exec(&Payload{Body: []byte("hello")})
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+
+	assert.IsType(t, JobError{}, err)
+	assert.Equal(t, "hello", err.Error())
+}
+
 func Test_Pool_AllocateTimeout(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "delay", "pipes") },
