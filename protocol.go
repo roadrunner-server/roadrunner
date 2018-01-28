@@ -16,10 +16,6 @@ type pidCommand struct {
 }
 
 func sendHead(rl goridge.Relay, v interface{}) error {
-	if v == nil {
-		rl.Send(nil, goridge.PayloadControl)
-	}
-
 	if data, ok := v.([]byte); ok {
 		return rl.Send(data, goridge.PayloadControl|goridge.PayloadRaw)
 	}
