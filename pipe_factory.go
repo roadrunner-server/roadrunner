@@ -47,7 +47,6 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 	// todo: timeout ?
 	if pid, err := fetchPID(w.rl); pid != *w.Pid {
 		go func(w *Worker) { w.Kill() }(w)
-
 		if wErr := w.Wait(); wErr != nil {
 			err = errors.Wrap(wErr, err.Error())
 		}

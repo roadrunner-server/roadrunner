@@ -68,8 +68,11 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*Pool, error) {
 		// worker watcher
 		go func(w *Worker) {
 			if err := w.Wait(); err != nil {
+
 				// todo: register error
 				log.Println(err)
+
+				//todo: automatic replace
 			}
 		}(w)
 

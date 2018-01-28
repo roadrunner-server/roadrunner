@@ -2,13 +2,13 @@ package roadrunner
 
 import (
 	"github.com/stretchr/testify/assert"
+	"log"
 	"os/exec"
 	"runtime"
 	"strconv"
 	"sync"
 	"testing"
 	"time"
-	"log"
 )
 
 var cfg = Config{

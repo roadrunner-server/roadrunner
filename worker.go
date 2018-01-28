@@ -7,6 +7,7 @@ import (
 	"github.com/spiral/goridge"
 	"os"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -100,17 +101,16 @@ func (w *Worker) Start() error {
 
 	w.Pid = &w.cmd.Process.Pid
 
-	// relays for process to complete
+	// wait for process to complete
 	go func() {
 		w.endState, _ = w.cmd.Process.Wait()
 		if w.waitDone != nil {
 			w.state.set(StateStopped)
-
 			close(w.waitDone)
+
 			if w.rl != nil {
 				w.mu.Lock()
 				defer w.mu.Unlock()
-
 				w.rl.Close()
 			}
 		}
@@ -130,7 +130,11 @@ func (w *Worker) Wait() error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	w.cmd.Wait()
+	if runtime.GOOS != "windows" {
+		// windows handles processes and close pipes differently,
+		// we can ignore wait here as process.Wait() already being handled above
+		w.cmd.Wait()
+	}
 
 	if w.endState.Success() {
 		return nil
@@ -172,7 +176,7 @@ func (w *Worker) Kill() error {
 		defer w.mu.Unlock()
 
 		w.state.set(StateInactive)
-		err := w.cmd.Process.Kill()
+		err := w.cmd.Process.Signal(os.Kill)
 
 		<-w.waitDone
 		return err

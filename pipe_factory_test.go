@@ -22,7 +22,6 @@ func Test_Pipe_Start(t *testing.T) {
 
 func Test_Pipe_Failboot(t *testing.T) {
 	cmd := exec.Command("php", "tests/failboot.php")
-
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 
 	assert.Nil(t, w)
