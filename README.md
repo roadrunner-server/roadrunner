@@ -50,7 +50,7 @@ use Spiral\RoadRunner;
 
 $rr = new RoadRunner\Worker($relay);
 
-while ($in = $rr->receive($ctx)) {
+while ($in = $rr->receive($context)) {
     try {
         $rr->send((string)$in);
     } catch (\Throwable $e) {
