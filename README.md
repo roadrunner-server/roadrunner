@@ -12,7 +12,6 @@ Features:
 --------
 - no external dependencies or services, drop-in
 - load balancer, process manager and task pipeline 
-- swaps workers without stopping the server
 - build for multiple frontends (queue, rest, psr-7, async php, etc)
 - works over TPC, unix sockets and standard pipes
 - automatic worker replacement
