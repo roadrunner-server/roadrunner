@@ -1,6 +1,6 @@
 {
   "name": "spiral/roadrunner",
-  "type": "goridge",
+  "type": "library",
   "description": "High-performance PHP job balancer and process manager library for Golang",
   "license": "MIT",
   "authors": [
@@ -19,11 +19,6 @@
   "autoload": {
     "psr-4": {
       "Spiral\\RoadRunner\\": "source/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Spiral\\Tests\\": "tests/Cases/"
     }
   }
 }
