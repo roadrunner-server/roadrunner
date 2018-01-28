@@ -11,7 +11,7 @@ High-performance PHP job balancer and process manager library for Golang.
 
 Features:
 --------
-- no external dependencies or services, drop-in
+- no external services, drop-in (based on [Goridge](https://github.com/spiral/goridge))
 - load balancer, process manager and task pipeline
 - build for multiple frontends (queue, rest, psr-7, async php, etc)
 - works over TPC, unix sockets and standard pipes
