@@ -95,7 +95,6 @@ func (p *Pool) Exec(rqs *Payload) (rsp *Payload, err error) {
 		return nil, errors.Wrap(err, "unable to allocate worker")
 	}
 
-	//todo: timeout
 	rsp, err = w.Exec(rqs)
 
 	if err != nil {
@@ -165,6 +164,8 @@ func (p *Pool) replaceWorker(w *Worker, caused interface{}) {
 	go p.destroyWorker(w)
 
 	nw, _ := p.createWorker()
+
+	// if unable to create, retry ? or report error
 	p.free <- nw
 }
 
@@ -207,7 +208,6 @@ func (p *Pool) createWorker() (*Worker, error) {
 
 			log.Println(err)
 
-			//todo: automatic replace
 		}
 	}(w)
 
