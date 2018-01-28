@@ -76,7 +76,7 @@ func (w *Worker) State() State {
 func (w *Worker) String() string {
 	state := w.state.String()
 	if w.Pid != nil {
-		state = state + ", pid.php:" + strconv.Itoa(*w.Pid)
+		state = state + ", pid:" + strconv.Itoa(*w.Pid)
 	}
 
 	return fmt.Sprintf(

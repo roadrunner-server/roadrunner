@@ -42,6 +42,20 @@ func Test_Echo(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
+func Test_String(t *testing.T) {
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+
+	w, _ := NewPipeFactory().SpawnWorker(cmd)
+	go func() {
+		assert.NoError(t, w.Wait())
+	}()
+	defer w.Stop()
+
+	assert.Contains(t, w.String(), "php tests/client.php echo pipes")
+	assert.Contains(t, w.String(), "ready")
+	assert.Contains(t, w.String(), "numExecs: 0")
+}
+
 func Test_Echo_Slow(t *testing.T) {
 	cmd := exec.Command("php", "tests/slow-client.php", "echo", "pipes", "10", "10")
 
