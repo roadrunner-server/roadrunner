@@ -73,10 +73,10 @@ class Worker
      * Example:
      * $worker->respond((string)$response->getBody(), json_encode($response->getHeaders()));
      *
-     * @param string $payload
-     * @param string $header
+     * @param string|null $payload
+     * @param string|null $header
      */
-    public function send(string $payload, string $header = null)
+    public function send(string $payload = null, string $header = null)
     {
         if (is_null($header)) {
             $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
