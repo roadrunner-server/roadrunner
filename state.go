@@ -9,7 +9,7 @@ import (
 // State represents worker status and updated time.
 type State interface {
 	// Value returns state value
-	Value() int64 //todo: change to state value
+	Value() int64
 
 	// NumExecs shows how many times worker was invoked
 	NumExecs() uint64

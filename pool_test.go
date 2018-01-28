@@ -149,13 +149,17 @@ func Test_Pool_Broken_Replace(t *testing.T) {
 
 	assert.NotNil(t, p)
 	assert.NoError(t, err)
+	
+	p.EventHandler = func(e int, w *Worker, ctx interface{}) {
+		if err, ok := ctx.(error); ok {
+			assert.Contains(t, err.Error(), "undefined_function()")
+		}
+	}
 
 	res, err := p.Exec(&Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
 	assert.Nil(t, res)
-
-	// todo: handle error in even log
 }
 
 func Test_Pool_AllocateTimeout(t *testing.T) {
