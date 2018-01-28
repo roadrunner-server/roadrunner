@@ -24,7 +24,7 @@ use Spiral\RoadRunner\Exceptions\RoadRunnerException;
 class Worker
 {
     // Send as response context to request worker termination
-    const TERMINATE = '{"stop": true}';
+    const STOP = '{"stop": true}';
 
     /** @var Relay */
     private $relay;
@@ -107,13 +107,16 @@ class Worker
 
     /**
      * Terminate the process. Server must automatically pass task to the next available process.
-     * Worker will receive TerminateCommand context after calling this method.
+     * Worker will receive StopCommand context after calling this method.
+     *
+     * Attention, you MUST use continue; after invoking this method to let rr to properly
+     * stop worker.
      *
      * @throws GoridgeException
      */
     public function stop()
     {
-        $this->send(null, self::TERMINATE);
+        $this->send(null, self::STOP);
     }
 
     /**

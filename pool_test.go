@@ -188,8 +188,6 @@ func Test_Pool_AllocateTimeout(t *testing.T) {
 	p.Destroy()
 }
 
-//todo: termiante
-
 func Test_Pool_Replace_Worker(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "pid", "pipes") },
@@ -197,6 +195,41 @@ func Test_Pool_Replace_Worker(t *testing.T) {
 		Config{
 			NumWorkers:      1,
 			MaxExecutions:   1,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	)
+	defer p.Destroy()
+
+	assert.NotNil(t, p)
+	assert.NoError(t, err)
+
+	var lastPID string
+	lastPID = strconv.Itoa(*p.Workers()[0].Pid)
+
+	res, err := p.Exec(&Payload{Body: []byte("hello")})
+	assert.Equal(t, lastPID, string(res.Body))
+
+	for i := 0; i < 10; i++ {
+		res, err := p.Exec(&Payload{Body: []byte("hello")})
+
+		assert.NoError(t, err)
+		assert.NotNil(t, res)
+		assert.NotNil(t, res.Body)
+		assert.Nil(t, res.Head)
+
+		assert.NotEqual(t, lastPID, string(res.Body))
+		lastPID = string(res.Body)
+	}
+}
+
+// identical to replace but controlled on worker side
+func Test_Pool_Stop_Worker(t *testing.T) {
+	p, err := NewPool(
+		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "stop", "pipes") },
+		NewPipeFactory(),
+		Config{
+			NumWorkers:      1,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
 		},
