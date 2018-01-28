@@ -178,6 +178,11 @@ func (p *Pool) replaceWorker(w *Worker, caused interface{}) {
 
 	if nw, err := p.createWorker(); err != nil {
 		p.throw(EventError, w, err)
+
+		if len(p.Workers()) == 0 {
+			// possible situation when major error causes all PHP scripts to die (for example dead DB)
+			p.throw(EventError, nil, fmt.Errorf("all workers dead"))
+		}
 	} else {
 		p.free <- nw
 	}
