@@ -21,4 +21,3 @@ install:
 
 script:
   - go test -race -v
-  - go test -bench=. -benchmem
