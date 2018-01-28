@@ -111,7 +111,7 @@ class Worker
      *
      * @throws GoridgeException
      */
-    public function terminate()
+    public function stop()
     {
         $this->send(null, self::TERMINATE);
     }
@@ -142,7 +142,9 @@ class Worker
 
         // PID negotiation (socket connections only)
         if (!empty($p['pid'])) {
-            $this->relay->send(sprintf('{"pid":%s}', getmypid()), Relay::PAYLOAD_CONTROL);
+            $this->relay->send(
+                sprintf('{"pid":%s}', getmypid()), Relay::PAYLOAD_CONTROL
+            );
         }
 
         // termination request
