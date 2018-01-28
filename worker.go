@@ -185,7 +185,6 @@ func (w *Worker) Exec(rqs *Payload) (rsp *Payload, err error) {
 func (w *Worker) start() error {
 	if err := w.cmd.Start(); err != nil {
 		close(w.waitDone)
-
 		return err
 	}
 
