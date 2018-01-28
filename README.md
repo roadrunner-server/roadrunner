@@ -11,12 +11,11 @@ High-performance PHP job balancer and process manager library for Golang.
 Features:
 --------
 - no external dependencies or services, drop-in
-- load balancer, process manager and task pipeline 
+- load balancer, process manager and task pipeline
 - build for multiple frontends (queue, rest, psr-7, async php, etc)
 - works over TPC, unix sockets and standard pipes
-- automatic worker replacement
-- safe worker destruction
-- worker lifecycle management (create/destroy/allocate timeouts)
+- automatic worker replacement and safe destruction
+- worker lifecycle management (create/allocate/destroy timeouts)
 - payload context
 - protocol, worker and job level error management
 - very fast (~250k calls per second on Ryzen 1700X over 16 threads)
