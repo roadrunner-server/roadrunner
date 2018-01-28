@@ -6,7 +6,7 @@ RoadRunner
 [![Go Report Card](https://goreportcard.com/badge/github.com/spiral/roadrunner)](https://goreportcard.com/report/github.com/spiral/roadrunner)
 [![Codecov](https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/roadrunner/)
 
-High-performance PHP job balancer for Golang.
+High-performance PHP job balancer and process manager library for Golang.
 
 Features:
 --------
