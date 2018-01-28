@@ -77,7 +77,7 @@ func Test_Pool_Echo(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
-func Test_Pool_Echo_NilHead(t *testing.T) {
+func Test_Pool_Echo_NilContext(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
@@ -98,7 +98,7 @@ func Test_Pool_Echo_NilHead(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
-func Test_Pool_Echo_Head(t *testing.T) {
+func Test_Pool_Echo_Context(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "head", "pipes") },
 		NewPipeFactory(),
