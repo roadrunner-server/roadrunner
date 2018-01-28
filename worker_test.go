@@ -42,6 +42,15 @@ func Test_Echo(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
+func Test_NotStarted_String(t *testing.T) {
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+
+	w, _ := newWorker(cmd)
+	assert.Contains(t, w.String(), "php tests/client.php echo pipes")
+	assert.Contains(t, w.String(), "inactive")
+	assert.Contains(t, w.String(), "numExecs: 0")
+}
+
 func Test_String(t *testing.T) {
 	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
 
