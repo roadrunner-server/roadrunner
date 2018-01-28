@@ -15,6 +15,7 @@ func Test_NewState(t *testing.T) {
 	assert.Equal(t, "ready", newState(StateReady).String())
 	assert.Equal(t, "working", newState(StateWorking).String())
 	assert.Equal(t, "stopped", newState(StateStopped).String())
+	assert.Equal(t, "undefined", newState(1000).String())
 }
 
 func Test_IsActive(t *testing.T) {
