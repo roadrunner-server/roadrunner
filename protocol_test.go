@@ -1,10 +1,10 @@
 package roadrunner
 
 import (
-	"testing"
+	"github.com/pkg/errors"
 	"github.com/spiral/goridge"
 	"github.com/stretchr/testify/assert"
-	"github.com/pkg/errors"
+	"testing"
 )
 
 type relayMock struct {
@@ -15,9 +15,9 @@ type relayMock struct {
 func (r *relayMock) Send(data []byte, flags byte) (err error) {
 	if r.error {
 		return errors.New("send error")
-	} else {
-		return nil
 	}
+
+	return nil
 }
 
 func (r *relayMock) Receive() (data []byte, p goridge.Prefix, err error) {
