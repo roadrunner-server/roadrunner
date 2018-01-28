@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	// Control header to be made by worker to request termination.
-	TerminateRequest = "{\"terminate\": true}"
+	// StopRequest can be sent by worker to indicate that restart is required.
+	StopRequest = "{\"stop\": true}"
 )
 
 // Pool controls worker creation, destruction and task routing.
@@ -123,7 +123,7 @@ func (p *Pool) Exec(rqs *Payload) (rsp *Payload, err error) {
 	}
 
 	// worker want's to be terminated
-	if rsp.Body == nil && rsp.Head != nil && string(rsp.Head) == TerminateRequest {
+	if rsp.Body == nil && rsp.Head != nil && string(rsp.Head) == StopRequest {
 		go p.replaceWorker(w, err)
 		return p.Exec(rqs)
 	}

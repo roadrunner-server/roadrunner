@@ -148,7 +148,7 @@ func (w *Worker) Wait() error {
 	return &exec.ExitError{ProcessState: w.endState}
 }
 
-// Destroy sends soft termination command to the worker to properly stop the process.
+// Stop sends soft termination command to the worker and waits for process completion.
 func (w *Worker) Stop() error {
 	select {
 	case <-w.waitDone:
@@ -166,7 +166,7 @@ func (w *Worker) Stop() error {
 }
 
 // Kill kills underlying process, make sure to call Wait() func to gather
-// error log from the stderr
+// error log from the stderr. Waits for process completion.
 func (w *Worker) Kill() error {
 	select {
 	case <-w.waitDone:
@@ -183,6 +183,9 @@ func (w *Worker) Kill() error {
 	}
 }
 
+// Exec sends payload to worker, executes it and returns result or
+// error. Make sure to handle worker.Wait() to gather worker level
+// errors. Method might return JobError indicating issue with payload.
 func (w *Worker) Exec(rqs *Payload) (rsp *Payload, err error) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
