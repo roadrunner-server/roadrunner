@@ -52,8 +52,6 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*Pool, error) {
 		free:    make(chan *Worker, cfg.NumWorkers),
 	}
 
-	//todo: watch for error from workers!!!
-
 	// constant number of workers simplify logic
 	for i := uint64(0); i < p.cfg.NumWorkers; i++ {
 		// to test if worker ready
@@ -61,20 +59,8 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*Pool, error) {
 
 		if err != nil {
 			p.Destroy()
-
 			return nil, err
 		}
-
-		// worker watcher
-		go func(w *Worker) {
-			if err := w.Wait(); err != nil {
-
-				// todo: register error
-				log.Println(err)
-
-				//todo: automatic replace
-			}
-		}(w)
 
 		p.free <- w
 	}
@@ -198,10 +184,10 @@ func (p *Pool) destroyWorker(w *Worker) {
 	select {
 	case <-w.waitDone:
 		// worker is dead
-	case <-time.NewTimer(time.Second * 10).C:
+	case <-time.NewTimer(p.cfg.DestroyTimeout).C:
 		// failed to stop process
 		if err := w.Kill(); err != nil {
-			//todo: can't kill or already killed?
+			// todo: handle error
 		}
 	}
 }
@@ -213,6 +199,16 @@ func (p *Pool) createWorker() (*Worker, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	go func(w *Worker) {
+		if err := w.Wait(); err != nil {
+			// todo: register error
+
+			log.Println(err)
+
+			//todo: automatic replace
+		}
+	}(w)
 
 	p.muw.Lock()
 	defer p.muw.Unlock()
