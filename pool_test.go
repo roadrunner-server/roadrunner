@@ -29,6 +29,17 @@ func Test_NewPool(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func Test_Pool_Invalid(t *testing.T) {
+	p, err := NewPool(
+		func() *exec.Cmd { return exec.Command("php", "tests/invalid.php") },
+		NewPipeFactory(),
+		cfg,
+	)
+
+	assert.Nil(t, p)
+	assert.Error(t, err)
+}
+
 func Test_ConfigError(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
