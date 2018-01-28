@@ -7,7 +7,7 @@ RoadRunner
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/spiral/roadrunner/badges/quality-score.png)](https://scrutinizer-ci.com/g/spiral/roadrunner/?branch=master)
 [![Codecov](https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/roadrunner/)
 
-High-performance PHP job balancer and process manager library for Golang.
+High-performance PHP load balancer and process manager library for Golang.
 
 Features:
 --------
