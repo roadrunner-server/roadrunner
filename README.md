@@ -16,7 +16,7 @@ Features:
 - works over TPC, unix sockets and standard pipes
 - automatic worker replacement and safe destruction
 - worker lifecycle management (create/allocate/destroy timeouts)
-- payload context
+- payload context and body
 - control over max jobs per worker
 - protocol, worker and job level error management (including PHP errors)
 - very fast (~250k calls per second on Ryzen 1700X over 16 threads)
