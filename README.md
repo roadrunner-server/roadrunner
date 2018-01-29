@@ -9,7 +9,7 @@ RoadRunner
 
 High-performance PHP load balancer and process manager library for Golang.
 
-Library allows you to embed PHP code into Golang applications as stateless workers.
+Library allows you to embed PHP code into Golang applications as managed pool of stateless workers.
 
 Features:
 --------
