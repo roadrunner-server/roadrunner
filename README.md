@@ -8,7 +8,6 @@ RoadRunner
 [![Codecov](https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/roadrunner/)
 
 High-performance PHP load balancer and process manager library for Golang.
-
 Library allows you to embed PHP code into Golang applications as stateless workers.
 
 Features:
