@@ -16,7 +16,7 @@ Features:
 - no external services, drop-in (based on [Goridge](https://github.com/spiral/goridge))
 - load balancer, process manager and task pipeline
 - frontend agnostic (queue, REST, PSR-7, async php, etc)
-- works over TPC, unix sockets and standard pipes
+- works over TCP, unix sockets and standard pipes
 - automatic worker replacement and safe PHP process destruction
 - worker lifecycle management (create/allocate/destroy timeouts)
 - payload context and body
