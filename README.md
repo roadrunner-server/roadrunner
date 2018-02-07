@@ -47,7 +47,7 @@ p, err := rr.NewPool(
 )
 defer p.Destroy()
 
-rsp, err := p.Exec(&Payload{Body: []byte("hello")})
+rsp, err := p.Exec(&rr.Payload{Body: []byte("hello")})
 ```
 ```php
 <?php
