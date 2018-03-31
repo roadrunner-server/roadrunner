@@ -16,6 +16,9 @@ type Pool interface {
 	// Exec one task with given payload and context, returns result or error.
 	Exec(rqs *Payload) (rsp *Payload, err error)
 
+	// Workers returns worker list associated with the pool.
+	Workers() (workers []*Worker)
+
 	// Destroy all underlying workers (but let them to complete the task).
 	Destroy()
 }

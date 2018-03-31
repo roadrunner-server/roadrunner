@@ -1,6 +1,7 @@
 package roadrunner
 
 import (
+	"fmt"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -8,6 +9,8 @@ import (
 
 // State represents worker status and updated time.
 type State interface {
+	fmt.Stringer
+
 	// Value returns state value
 	Value() int64
 
