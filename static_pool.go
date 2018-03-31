@@ -130,23 +130,6 @@ func (p *StaticPool) Exec(rqs *Payload) (rsp *Payload, err error) {
 	return rsp, nil
 }
 
-// Destroy all underlying workers (but let them to complete the task).
-func (p *StaticPool) Destroy() {
-	p.tasks.Wait()
-
-	var wg sync.WaitGroup
-	for _, w := range p.Workers() {
-		wg.Add(1)
-		go func(w *Worker) {
-			defer wg.Done()
-
-			p.DestroyWorker(w)
-		}(w)
-	}
-
-	wg.Wait()
-}
-
 // DestroyWorker destroys workers and removes it from the pool.
 func (p *StaticPool) DestroyWorker(w *Worker) {
 	p.throw(EventDestruct, w, nil)
@@ -172,6 +155,23 @@ func (p *StaticPool) DestroyWorker(w *Worker) {
 			p.throw(EventError, w, err)
 		}
 	}
+}
+
+// Destroy all underlying workers (but let them to complete the task).
+func (p *StaticPool) Destroy() {
+	p.tasks.Wait()
+
+	var wg sync.WaitGroup
+	for _, w := range p.Workers() {
+		wg.Add(1)
+		go func(w *Worker) {
+			defer wg.Done()
+
+			p.DestroyWorker(w)
+		}(w)
+	}
+
+	wg.Wait()
 }
 
 // finds free worker in a given time interval or creates new if allowed.

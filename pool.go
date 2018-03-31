@@ -19,6 +19,9 @@ type Pool interface {
 	// Workers returns worker list associated with the pool.
 	Workers() (workers []*Worker)
 
+	// DestroyWorker destroys workers and removes it from the pool.
+	DestroyWorker(w *Worker)
+
 	// Destroy all underlying workers (but let them to complete the task).
 	Destroy()
 }
