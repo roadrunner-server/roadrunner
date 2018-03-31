@@ -19,9 +19,6 @@ type Pool interface {
 	// Workers returns worker list associated with the pool.
 	Workers() (workers []*Worker)
 
-	// Replace replaces dead or expired worker with new instance.
-	Replace(w *Worker, caused interface{})
-
 	// Destroy all underlying workers (but let them to complete the task).
 	Destroy()
 }

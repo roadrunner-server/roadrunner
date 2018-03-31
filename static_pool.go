@@ -111,39 +111,23 @@ func (p *StaticPool) Exec(rqs *Payload) (rsp *Payload, err error) {
 			return nil, err
 		}
 
-		go p.Replace(w, err)
+		go p.replaceWorker(w, err)
 		return nil, err
 	}
 
 	// worker want's to be terminated
 	if rsp.Body == nil && rsp.Context != nil && string(rsp.Context) == StopRequest {
-		go p.Replace(w, err)
+		go p.replaceWorker(w, err)
 		return p.Exec(rqs)
 	}
 
 	if p.cfg.MaxExecutions != 0 && w.State().NumExecs() >= p.cfg.MaxExecutions {
-		go p.Replace(w, p.cfg.MaxExecutions)
+		go p.replaceWorker(w, p.cfg.MaxExecutions)
 	} else {
 		p.free <- w
 	}
 
 	return rsp, nil
-}
-
-// Replace replaces dead or expired worker with new instance.
-func (p *StaticPool) Replace(w *Worker, caused interface{}) {
-	go p.destroyWorker(w)
-
-	if nw, err := p.createWorker(); err != nil {
-		p.throw(EventError, w, err)
-
-		if len(p.Workers()) == 0 {
-			// possible situation when major error causes all PHP scripts to die (for example dead DB)
-			p.throw(EventError, nil, fmt.Errorf("all workers dead"))
-		}
-	} else {
-		p.free <- nw
-	}
 }
 
 // Destroy all underlying workers (but let them to complete the task).
@@ -179,6 +163,22 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 	case w := <-p.free:
 		timeout.Stop()
 		return w, nil
+	}
+}
+
+// replaceWorker replaces dead or expired worker with new instance.
+func (p *StaticPool) replaceWorker(w *Worker, caused interface{}) {
+	go p.destroyWorker(w)
+
+	if nw, err := p.createWorker(); err != nil {
+		p.throw(EventError, w, err)
+
+		if len(p.Workers()) == 0 {
+			// possible situation when major error causes all PHP scripts to die (for example dead DB)
+			p.throw(EventError, nil, fmt.Errorf("all workers dead"))
+		}
+	} else {
+		p.free <- nw
 	}
 }
 
