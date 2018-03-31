@@ -31,7 +31,7 @@ func Test_NewPool(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func Test_Pool_Invalid(t *testing.T) {
+func Test_StaticPool_Invalid(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/invalid.php") },
 		NewPipeFactory(),
@@ -56,7 +56,7 @@ func Test_ConfigError(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func Test_Pool_Echo(t *testing.T) {
+func Test_StaticPool_Echo(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
@@ -77,7 +77,7 @@ func Test_Pool_Echo(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
-func Test_Pool_Echo_NilContext(t *testing.T) {
+func Test_StaticPool_Echo_NilContext(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
@@ -98,7 +98,7 @@ func Test_Pool_Echo_NilContext(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
-func Test_Pool_Echo_Context(t *testing.T) {
+func Test_StaticPool_Echo_Context(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "head", "pipes") },
 		NewPipeFactory(),
@@ -119,7 +119,7 @@ func Test_Pool_Echo_Context(t *testing.T) {
 	assert.Equal(t, "world", string(res.Context))
 }
 
-func Test_Pool_JobError(t *testing.T) {
+func Test_StaticPool_JobError(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "error", "pipes") },
 		NewPipeFactory(),
@@ -139,7 +139,7 @@ func Test_Pool_JobError(t *testing.T) {
 	assert.Equal(t, "hello", err.Error())
 }
 
-func Test_Pool_Broken_Replace(t *testing.T) {
+func Test_StaticPool_Broken_Replace(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "broken", "pipes") },
 		NewPipeFactory(),
@@ -150,7 +150,7 @@ func Test_Pool_Broken_Replace(t *testing.T) {
 	assert.NotNil(t, p)
 	assert.NoError(t, err)
 
-	p.Observer = func(e int, w *Worker, ctx interface{}) {
+	p.observer = func(e int, w *Worker, ctx interface{}) {
 		if err, ok := ctx.(error); ok {
 			assert.Contains(t, err.Error(), "undefined_function()")
 		}
@@ -162,7 +162,7 @@ func Test_Pool_Broken_Replace(t *testing.T) {
 	assert.Nil(t, res)
 }
 
-func Test_Pool_AllocateTimeout(t *testing.T) {
+func Test_StaticPool_AllocateTimeout(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "delay", "pipes") },
 		NewPipeFactory(),
@@ -194,7 +194,7 @@ func Test_Pool_AllocateTimeout(t *testing.T) {
 	p.Destroy()
 }
 
-func Test_Pool_Replace_Worker(t *testing.T) {
+func Test_StaticPool_Replace_Worker(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "pid", "pipes") },
 		NewPipeFactory(),
@@ -230,7 +230,7 @@ func Test_Pool_Replace_Worker(t *testing.T) {
 }
 
 // identical to replace but controlled on worker side
-func Test_Pool_Stop_Worker(t *testing.T) {
+func Test_StaticPool_Stop_Worker(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "stop", "pipes") },
 		NewPipeFactory(),
