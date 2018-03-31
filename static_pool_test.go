@@ -150,11 +150,11 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.NotNil(t, p)
 	assert.NoError(t, err)
 
-	p.observer = func(e int, w *Worker, ctx interface{}) {
+	p.Observe(func(e int, w *Worker, ctx interface{}) {
 		if err, ok := ctx.(error); ok {
 			assert.Contains(t, err.Error(), "undefined_function()")
 		}
-	}
+	})
 
 	res, err := p.Exec(&Payload{Body: []byte("hello")})
 
