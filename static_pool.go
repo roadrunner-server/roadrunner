@@ -140,11 +140,38 @@ func (p *StaticPool) Destroy() {
 		go func(w *Worker) {
 			defer wg.Done()
 
-			p.destroyWorker(w)
+			p.DestroyWorker(w)
 		}(w)
 	}
 
 	wg.Wait()
+}
+
+// DestroyWorker destroys workers and removes it from the pool.
+func (p *StaticPool) DestroyWorker(w *Worker) {
+	p.throw(EventDestruct, w, nil)
+
+	// detaching
+	p.muw.Lock()
+	for i, wc := range p.workers {
+		if wc == w {
+			p.workers = p.workers[:i+1]
+			break
+		}
+	}
+	p.muw.Unlock()
+
+	go w.Stop()
+
+	select {
+	case <-w.waitDone:
+		// worker is dead
+	case <-time.NewTimer(p.cfg.DestroyTimeout).C:
+		// failed to stop process
+		if err := w.Kill(); err != nil {
+			p.throw(EventError, w, err)
+		}
+	}
 }
 
 // finds free worker in a given time interval or creates new if allowed.
@@ -168,7 +195,7 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 
 // replaces dead or expired worker with new instance
 func (p *StaticPool) replaceWorker(w *Worker, caused interface{}) {
-	go p.destroyWorker(w)
+	go p.DestroyWorker(w)
 
 	if nw, err := p.createWorker(); err != nil {
 		p.throw(EventError, w, err)
@@ -179,33 +206,6 @@ func (p *StaticPool) replaceWorker(w *Worker, caused interface{}) {
 		}
 	} else {
 		p.free <- nw
-	}
-}
-
-// destroy and remove worker from the pool.
-func (p *StaticPool) destroyWorker(w *Worker) {
-	p.throw(EventDestruct, w, nil)
-
-	// detaching
-	p.muw.Lock()
-	for i, wc := range p.workers {
-		if wc == w {
-			p.workers = p.workers[:i+1]
-			break
-		}
-	}
-	p.muw.Unlock()
-
-	go w.Stop()
-
-	select {
-	case <-w.waitDone:
-		// worker is dead
-	case <-time.NewTimer(p.cfg.DestroyTimeout).C:
-		// failed to stop process
-		if err := w.Kill(); err != nil {
-			p.throw(EventError, w, err)
-		}
 	}
 }
 
