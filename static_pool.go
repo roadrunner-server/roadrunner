@@ -70,8 +70,8 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, er
 	return p, nil
 }
 
-// Observe attaches pool event watcher.
-func (p *StaticPool) Observe(o func(event int, w *Worker, ctx interface{})) {
+// Report attaches pool event watcher.
+func (p *StaticPool) Report(o func(event int, w *Worker, ctx interface{})) {
 	p.observer = o
 }
 
@@ -166,7 +166,7 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 	}
 }
 
-// replaces dead or expired worker with new instance
+// replaceWorker replaces dead or expired worker with new instance.
 func (p *StaticPool) replaceWorker(w *Worker, caused interface{}) {
 	go p.destroyWorker(w)
 
@@ -182,7 +182,7 @@ func (p *StaticPool) replaceWorker(w *Worker, caused interface{}) {
 	}
 }
 
-// destroy and remove worker from the pool.
+// destroyWorker destroys workers and removes it from the pool.
 func (p *StaticPool) destroyWorker(w *Worker) {
 	p.throw(EventDestruct, w, nil)
 

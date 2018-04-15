@@ -13,8 +13,14 @@ const (
 
 // Pool managed set of inner worker processes.
 type Pool interface {
+	// Report attaches pool event watcher.
+	Watch(o func(event int, w *Worker, ctx interface{}))
+
 	// Exec one task with given payload and context, returns result or error.
 	Exec(rqs *Payload) (rsp *Payload, err error)
+
+	// Workers returns worker list associated with the pool.
+	Workers() (workers []*Worker)
 
 	// Destroy all underlying workers (but let them to complete the task).
 	Destroy()
