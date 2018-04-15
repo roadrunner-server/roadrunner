@@ -70,8 +70,8 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, er
 	return p, nil
 }
 
-// Watch attaches pool event watcher.
-func (p *StaticPool) Watch(o func(event int, w *Worker, ctx interface{})) {
+// Report attaches pool event watcher.
+func (p *StaticPool) Report(o func(event int, w *Worker, ctx interface{})) {
 	p.observer = o
 }
 

@@ -13,7 +13,7 @@ const (
 
 // Pool managed set of inner worker processes.
 type Pool interface {
-	// Watch attaches pool event watcher.
+	// Report attaches pool event watcher.
 	Watch(o func(event int, w *Worker, ctx interface{}))
 
 	// Exec one task with given payload and context, returns result or error.
