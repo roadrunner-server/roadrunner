@@ -54,11 +54,11 @@ func (f *UnixSocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 	socketFile := fmt.Sprintf("%s.%d", f.file, *w.Pid)
 
 	os.Remove(socketFile)
-        f.ls, err = net.Listen("unix", socketFile)
+	f.ls, err = net.Listen("unix", socketFile)
 
-        if err != nil {
-                return nil, err
-        }
+	if err != nil {
+		return nil, err
+	}
 
 	go f.listen()
 
