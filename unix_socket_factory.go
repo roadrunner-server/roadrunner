@@ -13,9 +13,6 @@ import (
 
 // UnixSocketFactory connects to external workers using socket server.
 type UnixSocketFactory struct {
-	// listens for incoming connections from underlying processes
-	ls net.Listener
-
 	// relay connection timeout
 	tout time.Duration
 
@@ -54,13 +51,12 @@ func (f *UnixSocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 	socketFile := fmt.Sprintf("%s.%d", f.file, *w.Pid)
 
 	os.Remove(socketFile)
-	f.ls, err = net.Listen("unix", socketFile)
-
+	ls, err := net.Listen("unix", socketFile)
 	if err != nil {
 		return nil, err
 	}
 
-	go f.listen()
+	go f.listen(ls)
 
 	rl, err := f.findRelay(w, f.tout)
 	if err != nil {
@@ -79,18 +75,18 @@ func (f *UnixSocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 	return w, nil
 }
 
-// listens for incoming socket connections
-func (f *UnixSocketFactory) listen() {
-	for {
-		conn, err := f.ls.Accept()
-		if err != nil {
-			return
-		}
+// listens for incoming socket connection only a time
+func (f *UnixSocketFactory) listen(ls net.Listener) {
+	conn, err := ls.Accept()
+	if err != nil {
+		return
+	}
 
-		rl := goridge.NewSocketRelay(conn)
-		if pid, err := fetchPID(rl); err == nil {
-			f.relayChan(pid) <- rl
-		}
+	defer ls.Close()
+
+	rl := goridge.NewSocketRelay(conn)
+	if pid, err := fetchPID(rl); err == nil {
+		f.relayChan(pid) <- rl
 	}
 }
 

@@ -163,7 +163,7 @@ func (w *Worker) Exec(rqs *Payload) (rsp *Payload, err error) {
 	}
 
 	if w.state.Value() != StateReady {
-		return nil, fmt.Errorf("worker is not ready (%s)", w.state.Value())
+		return nil, fmt.Errorf("worker is not ready (%s)", w.state.String())
 	}
 
 	w.state.set(StateWorking)
