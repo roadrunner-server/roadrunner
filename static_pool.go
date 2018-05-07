@@ -130,6 +130,28 @@ func (p *StaticPool) Exec(rqs *Payload) (rsp *Payload, err error) {
 	return rsp, nil
 }
 
+// Restart all underlying workers (but let them to complete the task).
+func (p *StaticPool) Restart() {
+	p.tasks.Wait()
+
+	var wg sync.WaitGroup
+	for i := uint64(0); i < p.cfg.NumWorkers; i++ {
+		w, err := p.allocateWorker()
+		if err != nil {
+			continue
+		}
+
+		wg.Add(1)
+		go func(w *Worker) {
+			defer wg.Done()
+
+			p.replaceWorker(w, "restart worker")
+		}(w)
+	}
+
+	wg.Wait()
+}
+
 // Destroy all underlying workers (but let them to complete the task).
 func (p *StaticPool) Destroy() {
 	p.tasks.Wait()
@@ -190,7 +212,7 @@ func (p *StaticPool) destroyWorker(w *Worker) {
 	p.muw.Lock()
 	for i, wc := range p.workers {
 		if wc == w {
-			p.workers = p.workers[:i+1]
+			p.workers = append(p.workers[:i], p.workers[i+1:]...)
 			break
 		}
 	}

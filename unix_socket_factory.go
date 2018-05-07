@@ -55,6 +55,7 @@ func (f *UnixSocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 	if err != nil {
 		return nil, err
 	}
+	os.Chmod(socketFile, 0777)
 
 	go f.listen(ls)
 
