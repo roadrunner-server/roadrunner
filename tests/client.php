@@ -21,8 +21,13 @@ switch ($goridge) {
         break;
 
     case "unix":
+        $sockFile = "sock.unix";
+        if (!empty($argv[3]) && $argv[3] == "withpid") {
+            $sockFile = $sockFile . "." . getmypid();
+        }
+
         $relay = new Goridge\SocketRelay(
-            "sock.unix",
+            $sockFile,
             null,
             Goridge\SocketRelay::SOCK_UNIX
         );
