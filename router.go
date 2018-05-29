@@ -3,7 +3,7 @@ package roadrunner
 import (
 	"sync"
 	"os/exec"
-	"github.com/go-errors/errors"
+	"fmt"
 )
 
 const (
@@ -85,7 +85,7 @@ func (r *Router) Pool() (Pool, error) {
 	defer r.mu.Unlock()
 
 	if r.pool == nil {
-		return nil, errors.New("no associated pool")
+		return nil, fmt.Errorf("no associated pool")
 	}
 
 	return r.pool, nil

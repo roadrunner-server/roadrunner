@@ -20,6 +20,7 @@ import (
 	"os/exec"
 	"log"
 	"time"
+	"github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -43,9 +44,18 @@ func serveHandler(cmd *cobra.Command, args []string) {
 		DestroyTimeout:  time.Minute,
 	})
 
+	r.Observe(func(event int, ctx interface{}) {
+		logrus.Info(ctx)
+	})
+
 	if err != nil {
 		panic(err)
 	}
 
+	for i := 0; i < 10; i++ {
+		r.Exec(&roadrunner.Payload{})
+	}
+
 	log.Print(r.Workers())
+
 }
