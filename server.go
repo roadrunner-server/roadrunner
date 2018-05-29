@@ -58,8 +58,8 @@ func (r *Server) Configure(cfg Config) error {
 
 	r.mu.Lock()
 
-	r.cfg, r.pool = cfg, pool
 	r.pool.Observe(r.poolObserver)
+	r.cfg, r.pool = cfg, pool
 
 	r.mu.Unlock()
 
