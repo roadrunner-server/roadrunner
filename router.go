@@ -135,15 +135,13 @@ func (r *Router) throw(event int, ctx interface{}) {
 	}
 }
 
-// Observe pools
+// Observe pool events
 func (r *Router) poolObserver(event int, ctx interface{}) {
-	if event == EventError {
-		if _, ok := ctx.(PoolError); ok {
-			// pool failure, rebuilding
-			r.Reset()
-		}
-	}
-
 	// bypassing to user specified observer
 	r.throw(event, ctx)
+
+	if event == EventPoolError {
+		// pool failure, rebuilding
+		r.Reset()
+	}
 }

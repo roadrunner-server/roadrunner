@@ -22,11 +22,3 @@ type WorkerError struct {
 func (e WorkerError) Error() string {
 	return e.Caused.Error()
 }
-
-// PoolError is pool wide error
-type PoolError string
-
-// Error converts error context to string
-func (e PoolError) Error() string {
-	return string(e)
-}

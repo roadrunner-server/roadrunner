@@ -1,14 +1,17 @@
 package roadrunner
 
 const (
-	// EventCreated thrown when new worker is spawned.
-	EventCreated = iota
+	// EventWorkerCreate thrown when new worker is spawned.
+	EventWorkerCreate = iota
 
-	// EventDestruct thrown before worker destruction.
-	EventDestruct
+	// EventWorkerDestruct thrown before worker destruction.
+	EventWorkerDestruct
 
-	// EventError thrown any worker related even happen (error passed as context)
-	EventError
+	// EventWorkerError thrown any worker related even happen (passed with WorkerError)
+	EventWorkerError
+
+	// EventPoolError caused on pool wide errors
+	EventPoolError
 )
 
 // Pool managed set of inner worker processes.

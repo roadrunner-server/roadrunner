@@ -170,11 +170,11 @@ func (p *StaticPool) replaceWorker(w *Worker, caused interface{}) {
 	go p.destroyWorker(w)
 
 	if nw, err := p.createWorker(); err != nil {
-		p.throw(EventError, WorkerError{Worker: w, Caused: err})
+		p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
 
 		if len(p.Workers()) == 0 {
 			// possible situation when major error causes all PHP scripts to die (for example dead DB)
-			p.throw(EventError, PoolError("all workers are dead"))
+			p.throw(EventPoolError, fmt.Errorf("all workers are dead"))
 		}
 	} else {
 		p.free <- nw
@@ -183,7 +183,7 @@ func (p *StaticPool) replaceWorker(w *Worker, caused interface{}) {
 
 // destroyWorker destroys workers and removes it from the pool.
 func (p *StaticPool) destroyWorker(w *Worker) {
-	p.throw(EventDestruct, w)
+	p.throw(EventWorkerDestruct, w)
 
 	// detaching
 	p.muw.Lock()
@@ -203,7 +203,7 @@ func (p *StaticPool) destroyWorker(w *Worker) {
 	case <-time.NewTimer(p.cfg.DestroyTimeout).C:
 		// failed to stop process
 		if err := w.Kill(); err != nil {
-			p.throw(EventError, WorkerError{Worker: w, Caused: err})
+			p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
 		}
 	}
 }
@@ -216,11 +216,11 @@ func (p *StaticPool) createWorker() (*Worker, error) {
 		return nil, err
 	}
 
-	p.throw(EventCreated, w)
+	p.throw(EventWorkerCreate, w)
 
 	go func(w *Worker) {
 		if err := w.Wait(); err != nil {
-			p.throw(EventError, WorkerError{Worker: w, Caused: err})
+			p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
 		}
 	}(w)
 
