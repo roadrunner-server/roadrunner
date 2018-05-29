@@ -43,7 +43,7 @@ func NewRouter(cmd func() *exec.Cmd, factory Factory) *Server {
 	}
 }
 
-// Configure configures underlying pool and destroys it's previous version if any
+// Configure configures underlying pool and destroys it's previous version if any.
 func (r *Server) Configure(cfg Config) error {
 	r.mu.Lock()
 	previous := r.pool
@@ -58,8 +58,8 @@ func (r *Server) Configure(cfg Config) error {
 
 	r.mu.Lock()
 
-	r.pool.Observe(r.poolObserver)
 	r.cfg, r.pool = cfg, pool
+	r.pool.Observe(r.poolObserver)
 
 	r.mu.Unlock()
 
@@ -135,7 +135,7 @@ func (r *Server) throw(event int, ctx interface{}) {
 	}
 }
 
-// Observe pool events
+// Observe pool events.
 func (r *Server) poolObserver(event int, ctx interface{}) {
 	// bypassing to user specified observer
 	r.throw(event, ctx)

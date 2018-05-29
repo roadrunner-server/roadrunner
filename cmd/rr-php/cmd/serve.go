@@ -18,9 +18,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spiral/roadrunner"
 	"os/exec"
-	"log"
 	"time"
 	"github.com/sirupsen/logrus"
+	"github.com/spiral/roadrunner/server"
+	"net/http"
 )
 
 func init() {
@@ -31,20 +32,20 @@ func init() {
 }
 
 func serveHandler(cmd *cobra.Command, args []string) {
-	r := roadrunner.NewRouter(
+	rr := roadrunner.NewRouter(
 		func() *exec.Cmd {
 			return exec.Command("php", "/Users/wolfy-j/Projects/phpapp/webroot/index.php", "rr", "pipes")
 		},
 		roadrunner.NewPipeFactory(),
 	)
 
-	err := r.Configure(roadrunner.Config{
+	err := rr.Configure(roadrunner.Config{
 		NumWorkers:      1,
 		AllocateTimeout: time.Minute,
 		DestroyTimeout:  time.Minute,
 	})
 
-	r.Observe(func(event int, ctx interface{}) {
+	rr.Observe(func(event int, ctx interface{}) {
 		logrus.Info(ctx)
 	})
 
@@ -52,10 +53,13 @@ func serveHandler(cmd *cobra.Command, args []string) {
 		panic(err)
 	}
 
-	for i := 0; i < 10; i++ {
-		r.Exec(&roadrunner.Payload{})
-	}
+	logrus.Info("serving")
 
-	log.Print(r.Workers())
-
+	http.ListenAndServe(":8080", server.NewHTTP(
+		server.HTTPConfig{
+			ServeStatic: true,
+			Root:        "/Users/wolfy-j/Projects/phpapp/webroot",
+		},
+		rr,
+	))
 }
