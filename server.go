@@ -7,7 +7,10 @@ import (
 )
 
 const (
-	EventNewPool     = 3
+	// EventNewPool triggered when server creates new pool.
+	EventNewPool = 3
+
+	// EventDestroyPool triggered when server destroys existed pool.
 	EventDestroyPool = 4
 )
 
