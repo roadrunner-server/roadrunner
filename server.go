@@ -84,22 +84,18 @@ func (r *Server) Observe(o func(event int, ctx interface{})) {
 }
 
 // Pool returns active pool or error.
-func (r *Server) Pool() (Pool, error) {
+func (r *Server) Pool() (Pool) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	if r.pool == nil {
-		return nil, fmt.Errorf("no associated pool")
-	}
-
-	return r.pool, nil
+	return r.pool
 }
 
 // Exec one task with given payload and context, returns result or error.
 func (r *Server) Exec(rqs *Payload) (rsp *Payload, err error) {
-	pool, err := r.Pool()
-	if err != nil {
-		return nil, err
+	pool := r.Pool()
+	if pool == nil {
+		return nil, fmt.Errorf("no associared pool")
 	}
 
 	return pool.Exec(rqs)
@@ -107,8 +103,8 @@ func (r *Server) Exec(rqs *Payload) (rsp *Payload, err error) {
 
 // Workers returns worker list associated with the pool.
 func (r *Server) Workers() (workers []*Worker) {
-	pool, err := r.Pool()
-	if err != nil {
+	pool := r.Pool()
+	if pool == nil {
 		return nil
 	}
 
