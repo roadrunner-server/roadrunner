@@ -13,8 +13,8 @@ const (
 
 // Pool managed set of inner worker processes.
 type Pool interface {
-	// Report all caused events to attached watcher.
-	Report(o func(event int, w *Worker, ctx interface{}))
+	// Observe all caused events to attached watcher.
+	Observe(o func(event int, ctx interface{}))
 
 	// Exec one task with given payload and context, returns result or error.
 	Exec(rqs *Payload) (rsp *Payload, err error)

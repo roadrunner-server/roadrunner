@@ -8,7 +8,7 @@ import (
 )
 
 func Test_GetState(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -24,7 +24,7 @@ func Test_GetState(t *testing.T) {
 }
 
 func Test_Echo(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -43,16 +43,16 @@ func Test_Echo(t *testing.T) {
 }
 
 func Test_NotStarted_String(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
 
 	w, _ := newWorker(cmd)
-	assert.Contains(t, w.String(), "php tests/client.php echo pipes")
+	assert.Contains(t, w.String(), "php php/tests/client.php echo pipes")
 	assert.Contains(t, w.String(), "inactive")
 	assert.Contains(t, w.String(), "numExecs: 0")
 }
 
 func Test_String(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -60,13 +60,13 @@ func Test_String(t *testing.T) {
 	}()
 	defer w.Stop()
 
-	assert.Contains(t, w.String(), "php tests/client.php echo pipes")
+	assert.Contains(t, w.String(), "php php/tests/client.php echo pipes")
 	assert.Contains(t, w.String(), "ready")
 	assert.Contains(t, w.String(), "numExecs: 0")
 }
 
 func Test_Echo_Slow(t *testing.T) {
-	cmd := exec.Command("php", "tests/slow-client.php", "echo", "pipes", "10", "10")
+	cmd := exec.Command("php", "php/tests/slow-client.php", "echo", "pipes", "10", "10")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -85,7 +85,7 @@ func Test_Echo_Slow(t *testing.T) {
 }
 
 func Test_Broken(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "broken", "pipes")
+	cmd := exec.Command("php", "php/tests/client.php", "broken", "pipes")
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -101,7 +101,7 @@ func Test_Broken(t *testing.T) {
 }
 
 func Test_OnStarted(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "broken", "pipes")
+	cmd := exec.Command("php", "php/tests/client.php", "broken", "pipes")
 	assert.Nil(t, cmd.Start())
 
 	w, err := newWorker(cmd)
@@ -112,7 +112,7 @@ func Test_OnStarted(t *testing.T) {
 }
 
 func Test_Error(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "error", "pipes")
+	cmd := exec.Command("php", "php/tests/client.php", "error", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -129,7 +129,7 @@ func Test_Error(t *testing.T) {
 }
 
 func Test_NumExecs(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -148,7 +148,7 @@ func Test_NumExecs(t *testing.T) {
 }
 
 func Test_StateUpdated(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {

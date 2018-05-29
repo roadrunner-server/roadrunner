@@ -69,7 +69,7 @@ while ($body = $rr->receive($context)) {
     }
 }
 ```
-> Check how to init relay [here](./tests/client.php). More examples can be found in tests.
+> Check how to init relay [here](./php/tests/client.php). More examples can be found in tests.
 
 License:
 --------
