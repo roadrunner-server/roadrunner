@@ -159,7 +159,7 @@ func Test_Tcp_Echo(t *testing.T) {
 }
 
 func Test_Unix_Start(t *testing.T) {
-	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+	if runtime.GOOS == "windows" {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
@@ -184,7 +184,7 @@ func Test_Unix_Start(t *testing.T) {
 }
 
 func Test_Unix_Failboot(t *testing.T) {
-	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+	if runtime.GOOS == "windows" {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
@@ -204,7 +204,7 @@ func Test_Unix_Failboot(t *testing.T) {
 }
 
 func Test_Unix_Timeout(t *testing.T) {
-	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+	if runtime.GOOS == "windows" {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
@@ -224,7 +224,7 @@ func Test_Unix_Timeout(t *testing.T) {
 }
 
 func Test_Unix_Invalid(t *testing.T) {
-	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+	if runtime.GOOS == "windows" {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
@@ -243,7 +243,7 @@ func Test_Unix_Invalid(t *testing.T) {
 }
 
 func Test_Unix_Broken(t *testing.T) {
-	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+	if runtime.GOOS == "windows" {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
@@ -272,7 +272,7 @@ func Test_Unix_Broken(t *testing.T) {
 }
 
 func Test_Unix_Echo(t *testing.T) {
-	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+	if runtime.GOOS == "windows" {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
