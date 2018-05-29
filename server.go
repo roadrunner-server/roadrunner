@@ -11,7 +11,8 @@ const (
 	EventDestroyPool = 4
 )
 
-type Router struct {
+// Server manages pool creation and swapping.
+type Server struct {
 	// observes pool events (can be attached to multiple pools at the same time)
 	observer func(event int, ctx interface{})
 
@@ -32,15 +33,15 @@ type Router struct {
 }
 
 // NewRouter creates new router. Make sure to call configure before the usage.
-func NewRouter(cmd func() *exec.Cmd, factory Factory) *Router {
-	return &Router{
+func NewRouter(cmd func() *exec.Cmd, factory Factory) *Server {
+	return &Server{
 		cmd:     cmd,
 		factory: factory,
 	}
 }
 
 // Configure configures underlying pool and destroys it's previous version if any
-func (r *Router) Configure(cfg Config) error {
+func (r *Server) Configure(cfg Config) error {
 	r.mu.Lock()
 	previous := r.pool
 	r.mu.Unlock()
@@ -70,17 +71,17 @@ func (r *Router) Configure(cfg Config) error {
 }
 
 // Reset resets the state of underlying pool and rebuilds all of it's workers.
-func (r *Router) Reset() error {
+func (r *Server) Reset() error {
 	return r.Configure(r.cfg)
 }
 
 // Observe attaches event watcher to the router.
-func (r *Router) Observe(o func(event int, ctx interface{})) {
+func (r *Server) Observe(o func(event int, ctx interface{})) {
 	r.observer = o
 }
 
 // Pool returns active pool or error.
-func (r *Router) Pool() (Pool, error) {
+func (r *Server) Pool() (Pool, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -92,7 +93,7 @@ func (r *Router) Pool() (Pool, error) {
 }
 
 // Exec one task with given payload and context, returns result or error.
-func (r *Router) Exec(rqs *Payload) (rsp *Payload, err error) {
+func (r *Server) Exec(rqs *Payload) (rsp *Payload, err error) {
 	pool, err := r.Pool()
 	if err != nil {
 		return nil, err
@@ -102,7 +103,7 @@ func (r *Router) Exec(rqs *Payload) (rsp *Payload, err error) {
 }
 
 // Workers returns worker list associated with the pool.
-func (r *Router) Workers() (workers []*Worker) {
+func (r *Server) Workers() (workers []*Worker) {
 	pool, err := r.Pool()
 	if err != nil {
 		return nil
@@ -112,7 +113,7 @@ func (r *Router) Workers() (workers []*Worker) {
 }
 
 // Destroy all underlying pools and workers workers (but let them to complete the task).
-func (r *Router) Destroy() {
+func (r *Server) Destroy() {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -129,14 +130,14 @@ func (r *Router) Destroy() {
 }
 
 // throw invokes event handler if any.
-func (r *Router) throw(event int, ctx interface{}) {
+func (r *Server) throw(event int, ctx interface{}) {
 	if r.observer != nil {
 		r.observer(event, ctx)
 	}
 }
 
 // Observe pool events
-func (r *Router) poolObserver(event int, ctx interface{}) {
+func (r *Server) poolObserver(event int, ctx interface{}) {
 	// bypassing to user specified observer
 	r.throw(event, ctx)
 
