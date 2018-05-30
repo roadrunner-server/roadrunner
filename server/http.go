@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/server/psr7"
 	"net/http"
 	"strings"
 	"path"
@@ -9,21 +10,11 @@ import (
 	"os"
 	"path/filepath"
 	"encoding/json"
-	"fmt"
 )
 
 var (
 	excludeFiles = []string{".php", ".htaccess"}
 )
-
-type Request struct {
-	Protocol string            `json:"protocol"`
-	Uri      string            `json:"uri"`
-	Method   string            `json:"method"`
-	Headers  http.Header       `json:"headers"`
-	Cookies  map[string]string `json:"cookies"`
-	RawQuery string            `json:"rawQuery"`
-}
 
 // Configures http rr
 type HTTPConfig struct {
@@ -42,6 +33,7 @@ type HTTP struct {
 	rr   *roadrunner.Server
 }
 
+// NewHTTP returns new instance of HTTP PSR7 server.
 func NewHTTP(cfg HTTPConfig, server *roadrunner.Server) *HTTP {
 	h := &HTTP{cfg: cfg, rr: server}
 	if cfg.ServeStatic {
@@ -54,22 +46,33 @@ func NewHTTP(cfg HTTPConfig, server *roadrunner.Server) *HTTP {
 // ServeHTTP serve using PSR-7 requests passed to underlying application.
 func (h *HTTP) ServeHTTP(w http.ResponseWriter, r *http.Request) () {
 	if h.cfg.ServeStatic && h.serveStatic(w, r) {
-		// serving static files
+		// server always attempt to serve static files first
 		return
 	}
 
-	// WHAT TO PUT TO BODY?
-	p, err := h.buildPayload(r)
-	rsp, err := h.rr.Exec(p)
-
+	req, err := psr7.ParseRequest(r)
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		w.Write([]byte(err.Error())) //todo: better errors
+		w.WriteHeader(500)
+		return
+	}
+	defer req.Close()
+
+	rsp, err := h.rr.Exec(req.Payload())
+	if err != nil {
+		w.Write([]byte(err.Error())) //todo: better errors
+		w.WriteHeader(500)
 		return
 	}
 
-	// wrapping the response
+	resp := &psr7.Response{}
+	if err = json.Unmarshal(rsp.Context, resp); err != nil {
+		w.Write([]byte(err.Error())) //todo: better errors
+		w.WriteHeader(500)
+		return
+	}
 
-	w.Header().Add("content-type", "text/html;charset=UTF-8")
+	resp.Write(w)
 	w.Write(rsp.Body)
 }
 
@@ -82,7 +85,7 @@ func (h *HTTP) serveStatic(w http.ResponseWriter, r *http.Request) bool {
 	}
 	fpath = path.Clean(fpath)
 
-	if isForbidden(fpath) {
+	if h.excluded(fpath) {
 		logrus.Warningf("attempt to access forbidden file %s", fpath)
 		return false
 	}
@@ -114,39 +117,8 @@ func (h *HTTP) serveStatic(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
-// todo: add files support
-func (h *HTTP) buildPayload(r *http.Request) (*roadrunner.Payload, error) {
-	request := Request{
-		Protocol: r.Proto,
-		Uri:      fmt.Sprintf("%s%s", r.Host, r.URL.String()),
-		Method:   r.Method,
-		Headers:  r.Header,
-		Cookies:  make(map[string]string),
-		RawQuery: r.URL.RawQuery,
-	}
-
-	logrus.Print(parseData(r))
-
-	//logrus.Print(r.MultipartForm.File["kkk"][0].Header)
-	//logrus.Print(r.MultipartForm.File["kkk"][0].Filename)
-
-	// cookies
-	for _, c := range r.Cookies() {
-		request.Cookies[c.Name] = c.Value
-	}
-
-	data, _ := json.Marshal(request)
-
-	logrus.Info(string(data))
-
-	return &roadrunner.Payload{
-		Context: data,
-		Body:    []byte("lol"),
-	}, nil
-}
-
-// isForbidden returns true if file has forbidden extension.
-func isForbidden(path string) bool {
+// excluded returns true if file has forbidden extension.
+func (h *HTTP) excluded(path string) bool {
 	ext := strings.ToLower(filepath.Ext(path))
 	for _, exl := range excludeFiles {
 		if ext == exl {
@@ -155,65 +127,4 @@ func isForbidden(path string) bool {
 	}
 
 	return false
-}
-
-type postData map[string]interface{}
-
-func (d postData) push(k string, v []string) {
-	if len(v) == 0 {
-		// doing nothing
-		return
-	}
-
-	chunks := make([]string, 0)
-	for _, chunk := range strings.Split(k, "[") {
-		chunks = append(chunks, strings.Trim(chunk, "]"))
-	}
-
-	d.pushChunk(chunks, v)
-}
-
-func (d postData) pushChunk(k []string, v []string) {
-	if len(v) == 0 {
-		return
-	}
-
-	head := k[0]
-	tail := k[1:]
-	if len(k) == 1 {
-		d[head] = v[0]
-		return
-	}
-
-	// unnamed array
-	if len(tail) == 1 && tail[0] == "" {
-		d[head] = v
-		return
-	}
-
-	if p, ok := d[head]; !ok {
-		d[head] = make(postData)
-		d[head].(postData).pushChunk(tail, v)
-	} else {
-		p.(postData).pushChunk(tail, v)
-	}
-}
-
-// parse incoming data request into JSON (including multipart form data)
-func parseData(r *http.Request) (*postData, error) {
-	if r.Method != "POST" && r.Method != "PUT" && r.Method != "PATCH" {
-		return nil, nil
-	}
-
-	r.ParseMultipartForm(32 << 20)
-
-	data := make(postData)
-	for k, v := range r.MultipartForm.Value {
-		data.push(k, v)
-	}
-
-	jd, _ := json.Marshal(data)
-	logrus.Warning(string(jd))
-
-	return nil, nil
 }
