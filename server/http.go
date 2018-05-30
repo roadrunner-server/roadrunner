@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"encoding/json"
+	"fmt"
 )
 
 var (
@@ -117,19 +118,17 @@ func (h *HTTP) serveStatic(w http.ResponseWriter, r *http.Request) bool {
 func (h *HTTP) buildPayload(r *http.Request) (*roadrunner.Payload, error) {
 	request := Request{
 		Protocol: r.Proto,
-		Uri:      r.URL.String(),
+		Uri:      fmt.Sprintf("%s%s", r.Host, r.URL.String()),
 		Method:   r.Method,
 		Headers:  r.Header,
 		Cookies:  make(map[string]string),
 		RawQuery: r.URL.RawQuery,
 	}
 
-	r.ParseMultipartForm(1000000000)
+	logrus.Print(parseData(r))
 
-	logrus.Print(r.MultipartForm.Value)
-	logrus.Print(r.MultipartForm.File["kkk"][0].Header)
-	logrus.Print(r.MultipartForm.File["kkk"][0].Filename)
-	logrus.Print(r.Form)
+	//logrus.Print(r.MultipartForm.File["kkk"][0].Header)
+	//logrus.Print(r.MultipartForm.File["kkk"][0].Filename)
 
 	// cookies
 	for _, c := range r.Cookies() {
@@ -156,4 +155,65 @@ func isForbidden(path string) bool {
 	}
 
 	return false
+}
+
+type postData map[string]interface{}
+
+func (d postData) push(k string, v []string) {
+	if len(v) == 0 {
+		// doing nothing
+		return
+	}
+
+	chunks := make([]string, 0)
+	for _, chunk := range strings.Split(k, "[") {
+		chunks = append(chunks, strings.Trim(chunk, "]"))
+	}
+
+	d.pushChunk(chunks, v)
+}
+
+func (d postData) pushChunk(k []string, v []string) {
+	if len(v) == 0 {
+		return
+	}
+
+	head := k[0]
+	tail := k[1:]
+	if len(k) == 1 {
+		d[head] = v[0]
+		return
+	}
+
+	// unnamed array
+	if len(tail) == 1 && tail[0] == "" {
+		d[head] = v
+		return
+	}
+
+	if p, ok := d[head]; !ok {
+		d[head] = make(postData)
+		d[head].(postData).pushChunk(tail, v)
+	} else {
+		p.(postData).pushChunk(tail, v)
+	}
+}
+
+// parse incoming data request into JSON (including multipart form data)
+func parseData(r *http.Request) (*postData, error) {
+	if r.Method != "POST" && r.Method != "PUT" && r.Method != "PATCH" {
+		return nil, nil
+	}
+
+	r.ParseMultipartForm(32 << 20)
+
+	data := make(postData)
+	for k, v := range r.MultipartForm.Value {
+		data.push(k, v)
+	}
+
+	jd, _ := json.Marshal(data)
+	logrus.Warning(string(jd))
+
+	return nil, nil
 }
