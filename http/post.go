@@ -1,4 +1,4 @@
-package psr7
+package http
 
 import "strings"
 

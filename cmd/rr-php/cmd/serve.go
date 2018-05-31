@@ -20,7 +20,7 @@ import (
 	"os/exec"
 	"time"
 	"github.com/sirupsen/logrus"
-	"github.com/spiral/roadrunner/server"
+	rrhttp "github.com/spiral/roadrunner/http"
 	"net/http"
 )
 
@@ -40,9 +40,10 @@ func serveHandler(cmd *cobra.Command, args []string) {
 	)
 
 	err := rr.Configure(roadrunner.Config{
-		NumWorkers:      1,
+		NumWorkers:      4,
 		AllocateTimeout: time.Minute,
 		DestroyTimeout:  time.Minute,
+		//MaxExecutions:   10,
 	})
 
 	rr.Observe(func(event int, ctx interface{}) {
@@ -55,8 +56,25 @@ func serveHandler(cmd *cobra.Command, args []string) {
 
 	logrus.Info("serving")
 
-	http.ListenAndServe(":8080", server.NewHTTP(
-		server.HTTPConfig{
+	//Enable http2
+	//srv := http.Server{
+	//	Addr: ":8080",
+	//	Handler: rrhttp.NewServer(
+	//		rrhttp.Config{
+	//			ServeStatic: true,
+	//			Root:        "/Users/wolfy-j/Projects/phpapp/webroot",
+	//		},
+	//		rr,
+	//	),
+	//}
+
+	//	srv.ListenAndServe()
+
+	//http2.ConfigureServer(&srv, nil)
+	//srv.ListenAndServeTLS("localhost.cert", "localhost.key")
+
+	http.ListenAndServe(":8080", rrhttp.NewServer(
+		rrhttp.Config{
 			ServeStatic: true,
 			Root:        "/Users/wolfy-j/Projects/phpapp/webroot",
 		},

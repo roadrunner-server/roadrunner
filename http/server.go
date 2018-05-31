@@ -1,8 +1,7 @@
-package server
+package http
 
 import (
 	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/server/psr7"
 	"net/http"
 	"strings"
 	"path"
@@ -17,7 +16,7 @@ var (
 )
 
 // Configures http rr
-type HTTPConfig struct {
+type Config struct {
 	// ServeStatic enables static file serving from desired root directory.
 	ServeStatic bool
 
@@ -25,17 +24,17 @@ type HTTPConfig struct {
 	Root string
 }
 
-// HTTP serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
+// Server serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form data (if any) - todo: do we need to do that?.
-type HTTP struct {
-	cfg  HTTPConfig
+type Server struct {
+	cfg  Config
 	root http.Dir
 	rr   *roadrunner.Server
 }
 
-// NewHTTP returns new instance of HTTP PSR7 server.
-func NewHTTP(cfg HTTPConfig, server *roadrunner.Server) *HTTP {
-	h := &HTTP{cfg: cfg, rr: server}
+// NewServer returns new instance of Server PSR7 server.
+func NewServer(cfg Config, server *roadrunner.Server) *Server {
+	h := &Server{cfg: cfg, rr: server}
 	if cfg.ServeStatic {
 		h.root = http.Dir(h.cfg.Root)
 	}
@@ -44,31 +43,31 @@ func NewHTTP(cfg HTTPConfig, server *roadrunner.Server) *HTTP {
 }
 
 // ServeHTTP serve using PSR-7 requests passed to underlying application.
-func (h *HTTP) ServeHTTP(w http.ResponseWriter, r *http.Request) () {
-	if h.cfg.ServeStatic && h.serveStatic(w, r) {
+func (svr *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) () {
+	if svr.cfg.ServeStatic && svr.serveStatic(w, r) {
 		// server always attempt to serve static files first
 		return
 	}
 
-	req, err := psr7.ParseRequest(r)
+	req, err := ParseRequest(r)
 	if err != nil {
-		w.Write([]byte(err.Error())) //todo: better errors
 		w.WriteHeader(500)
+		w.Write([]byte(err.Error())) //todo: better errors
 		return
 	}
 	defer req.Close()
 
-	rsp, err := h.rr.Exec(req.Payload())
+	rsp, err := svr.rr.Exec(req.Payload())
 	if err != nil {
-		w.Write([]byte(err.Error())) //todo: better errors
 		w.WriteHeader(500)
+		w.Write([]byte(err.Error())) //todo: better errors
 		return
 	}
 
-	resp := &psr7.Response{}
+	resp := &Response{}
 	if err = json.Unmarshal(rsp.Context, resp); err != nil {
-		w.Write([]byte(err.Error())) //todo: better errors
 		w.WriteHeader(500)
+		w.Write([]byte(err.Error())) //todo: better errors
 		return
 	}
 
@@ -78,19 +77,19 @@ func (h *HTTP) ServeHTTP(w http.ResponseWriter, r *http.Request) () {
 
 // serveStatic attempts to serve static file and returns true in case of success, will return false in case if file not
 // found, not allowed or on read error.
-func (h *HTTP) serveStatic(w http.ResponseWriter, r *http.Request) bool {
+func (svr *Server) serveStatic(w http.ResponseWriter, r *http.Request) bool {
 	fpath := r.URL.Path
 	if !strings.HasPrefix(fpath, "/") {
 		fpath = "/" + fpath
 	}
 	fpath = path.Clean(fpath)
 
-	if h.excluded(fpath) {
+	if svr.excluded(fpath) {
 		logrus.Warningf("attempt to access forbidden file %s", fpath)
 		return false
 	}
 
-	f, err := h.root.Open(fpath)
+	f, err := svr.root.Open(fpath)
 	if err != nil {
 		if !os.IsNotExist(err) {
 			// rr or access error
@@ -118,7 +117,7 @@ func (h *HTTP) serveStatic(w http.ResponseWriter, r *http.Request) bool {
 }
 
 // excluded returns true if file has forbidden extension.
-func (h *HTTP) excluded(path string) bool {
+func (svr *Server) excluded(path string) bool {
 	ext := strings.ToLower(filepath.Ext(path))
 	for _, exl := range excludeFiles {
 		if ext == exl {

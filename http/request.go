@@ -1,4 +1,4 @@
-package psr7
+package http
 
 import (
 	"net/http"
@@ -6,19 +6,23 @@ import (
 	"encoding/json"
 	"github.com/spiral/roadrunner"
 	"github.com/sirupsen/logrus"
+	"strings"
+	"io/ioutil"
 )
 
 type Request struct {
-	Protocol string            `json:"protocol"`
-	Uri      string            `json:"uri"`
-	Method   string            `json:"method"`
-	Headers  http.Header       `json:"headers"`
-	Cookies  map[string]string `json:"cookies"`
-	RawQuery string            `json:"rawQuery"`
-	Uploads  fileData          `json:"fileUploads"`
+	Protocol   string            `json:"protocol"`
+	Uri        string            `json:"uri"`
+	Method     string            `json:"method"`
+	Headers    http.Header       `json:"headers"`
+	Cookies    map[string]string `json:"cookies"`
+	RawQuery   string            `json:"rawQuery"`
+	Uploads    fileData          `json:"fileUploads"`
+	ParsedBody bool              `json:"parsedBody"`
 
 	// buffers
 	postData postData
+	body     []byte
 }
 
 func ParseRequest(r *http.Request) (req *Request, err error) {
@@ -49,6 +53,9 @@ func ParseRequest(r *http.Request) (req *Request, err error) {
 		if req.Uploads != nil {
 			logrus.Debug("opening files")
 		}
+		req.ParsedBody = true
+	} else {
+		req.body, _ = ioutil.ReadAll(r.Body)
 	}
 
 	return req, nil
@@ -60,10 +67,15 @@ func (r *Request) Payload() *roadrunner.Payload {
 		panic(err) //todo: change it
 	}
 
-	// todo: non parseble payloads
-	body, err := json.Marshal(r.postData)
-	if err != nil {
-		panic(err) //todo: change it
+	var body []byte
+	if r.ParsedBody {
+		// todo: non parseble payloads
+		body, err = json.Marshal(r.postData)
+		if err != nil {
+			panic(err) //todo: change it
+		}
+	} else {
+		body = r.body
 	}
 
 	return &roadrunner.Payload{Context: ctx, Body: body}
@@ -77,7 +89,21 @@ func (r *Request) Close() {
 
 // HasBody returns true if request might include POST data or file uploads.
 func (r *Request) HasBody() bool {
-	return r.Method == "POST" || r.Method == "PUT" || r.Method == "PATCH"
+	if r.Method != "POST" && r.Method != "PUT" && r.Method != "PATCH" {
+		return false
+	}
+
+	contentType := r.Headers.Get("content-type")
+
+	if strings.Contains(contentType, "multipart/form-data") {
+		return true
+	}
+
+	if contentType == "application/x-www-form-urlencoded" {
+		return true
+	}
+
+	return false
 }
 
 // parse incoming data request into JSON (including multipart form data)
