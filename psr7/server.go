@@ -1,4 +1,4 @@
-package http
+package psr7
 
 import (
 	"github.com/spiral/roadrunner"

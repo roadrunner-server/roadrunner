@@ -20,7 +20,7 @@ import (
 	"os/exec"
 	"time"
 	"github.com/sirupsen/logrus"
-	rrhttp "github.com/spiral/roadrunner/http"
+	rrhttp "github.com/spiral/roadrunner/psr7"
 	"net/http"
 )
 

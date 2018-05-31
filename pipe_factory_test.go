@@ -7,7 +7,7 @@ import (
 )
 
 func Test_Pipe_Start(t *testing.T) {
-	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 	assert.NoError(t, err)
@@ -21,7 +21,7 @@ func Test_Pipe_Start(t *testing.T) {
 }
 
 func Test_Pipe_StartError(t *testing.T) {
-	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 	cmd.Start()
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
@@ -30,7 +30,7 @@ func Test_Pipe_StartError(t *testing.T) {
 }
 
 func Test_Pipe_PipeError(t *testing.T) {
-	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 	cmd.StdinPipe()
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
@@ -39,7 +39,7 @@ func Test_Pipe_PipeError(t *testing.T) {
 }
 
 func Test_Pipe_PipeError2(t *testing.T) {
-	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 	cmd.StdoutPipe()
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
@@ -48,7 +48,7 @@ func Test_Pipe_PipeError2(t *testing.T) {
 }
 
 func Test_Pipe_Failboot(t *testing.T) {
-	cmd := exec.Command("php", "php/tests/failboot.php")
+	cmd := exec.Command("php", "php-src/tests/failboot.php")
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 
 	assert.Nil(t, w)
@@ -57,7 +57,7 @@ func Test_Pipe_Failboot(t *testing.T) {
 }
 
 func Test_Pipe_Invalid(t *testing.T) {
-	cmd := exec.Command("php", "php/tests/invalid.php")
+	cmd := exec.Command("php", "php-src/tests/invalid.php")
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 	assert.Error(t, err)
@@ -65,7 +65,7 @@ func Test_Pipe_Invalid(t *testing.T) {
 }
 
 func Test_Pipe_Echo(t *testing.T) {
-	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -84,7 +84,7 @@ func Test_Pipe_Echo(t *testing.T) {
 }
 
 func Test_Pipe_Broken(t *testing.T) {
-	cmd := exec.Command("php", "php/tests/client.php", "broken", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "broken", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -104,7 +104,7 @@ func Test_Pipe_Broken(t *testing.T) {
 func Benchmark_Pipe_SpawnWorker_Stop(b *testing.B) {
 	f := NewPipeFactory()
 	for n := 0; n < b.N; n++ {
-		cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
+		cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 		w, _ := f.SpawnWorker(cmd)
 		go func() {
 			if w.Wait() != nil {
@@ -117,7 +117,7 @@ func Benchmark_Pipe_SpawnWorker_Stop(b *testing.B) {
 }
 
 func Benchmark_Pipe_Worker_ExecEcho(b *testing.B) {
-	cmd := exec.Command("php", "php/tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
