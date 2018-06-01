@@ -20,8 +20,9 @@ import (
 	"os/exec"
 	"time"
 	"github.com/sirupsen/logrus"
-	rrhttp "github.com/spiral/roadrunner/psr7"
+	rrttp "github.com/spiral/roadrunner/http"
 	"net/http"
+	"os"
 )
 
 func init() {
@@ -61,7 +62,7 @@ func serveHandler(cmd *cobra.Command, args []string) {
 	//	Addr: ":8080",
 	//	Handler: rrhttp.NewServer(
 	//		rrhttp.Config{
-	//			ServeStatic: true,
+	//			serveStatic: true,
 	//			Root:        "/Users/wolfy-j/Projects/phpapp/webroot",
 	//		},
 	//		rr,
@@ -73,10 +74,11 @@ func serveHandler(cmd *cobra.Command, args []string) {
 	//http2.ConfigureServer(&srv, nil)
 	//srv.ListenAndServeTLS("localhost.cert", "localhost.key")
 
-	http.ListenAndServe(":8080", rrhttp.NewServer(
-		rrhttp.Config{
+	http.ListenAndServe(":8080", rrttp.NewServer(
+		rrttp.Config{
 			ServeStatic: true,
 			Root:        "/Users/wolfy-j/Projects/phpapp/webroot",
+			UploadsDir:  os.TempDir(),
 		},
 		rr,
 	))
