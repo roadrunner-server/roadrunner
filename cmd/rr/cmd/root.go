@@ -35,8 +35,8 @@ var (
 	// Shared service bus.
 	Services = service.NewBus()
 
-	// Root is application endpoint.
-	Root = &cobra.Command{
+	// CLI is application endpoint.
+	CLI = &cobra.Command{
 		Use:   "rr",
 		Short: "RoadRunner, PHP application server",
 	}
@@ -45,18 +45,18 @@ var (
 	verbose bool
 )
 
-// Execute adds all child commands to the Root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the Root.
+// Execute adds all child commands to the CLI command and sets flags appropriately.
+// This is called by main.main(). It only needs to happen once to the CLI.
 func Execute() {
-	if err := Root.Execute(); err != nil {
+	if err := CLI.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
 func init() {
-	Root.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-	Root.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is .rr.yaml)")
+	CLI.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
+	CLI.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is .rr.yaml)")
 
 	cobra.OnInitialize(func() {
 		if verbose {

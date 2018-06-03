@@ -29,14 +29,6 @@ import (
 	"strconv"
 )
 
-func init() {
-	rr.Root.AddCommand(&cobra.Command{
-		Use:   "http:workers",
-		Short: "List workers associated with RoadRunner HTTP service",
-		Run:   workersHandler,
-	})
-}
-
 func workersHandler(cmd *cobra.Command, args []string) {
 	client, err := rr.Services.RCPClient()
 	if err != nil {

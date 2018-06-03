@@ -26,14 +26,6 @@ import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 )
 
-func init() {
-	rr.Root.AddCommand(&cobra.Command{
-		Use:   "http:reload",
-		Short: "Reload RoadRunner worker pools for the HTTP service",
-		Run:   reloadHandler,
-	})
-}
-
 func reloadHandler(cmd *cobra.Command, args []string) {
 	client, err := rr.Services.RCPClient()
 	if err != nil {

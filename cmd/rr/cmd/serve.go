@@ -32,7 +32,7 @@ var (
 )
 
 func init() {
-	Root.AddCommand(&cobra.Command{
+	CLI.AddCommand(&cobra.Command{
 		Use:   "serve",
 		Short: "Serve RoadRunner service(s)",
 		Run:   serveHandler,

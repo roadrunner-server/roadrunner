@@ -30,6 +30,6 @@ import (
 )
 
 func main() {
-	// you can register additional commands using cmd.Root
+	// you can register additional commands using cmd.CLI
 	cmd.Execute()
 }
