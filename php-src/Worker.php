@@ -56,6 +56,9 @@ class Worker
                 return $this->receive($header);
             }
 
+            // no context for the termination.
+            $header = null;
+
             // Expect process termination
             return null;
         }
