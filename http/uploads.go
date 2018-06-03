@@ -3,12 +3,30 @@ package http
 import (
 	"mime/multipart"
 	"encoding/json"
-	"log"
 	"strings"
 	"net/http"
 	"io/ioutil"
 	"io"
 	"sync"
+	"os"
+	"fmt"
+)
+
+const (
+	// There is no error, the file uploaded with success.
+	UploadErrorOK = 0
+
+	// No file was uploaded.
+	UploadErrorNoFile = 4
+
+	// Missing a temporary folder.
+	UploadErrorNoTmpDir = 5
+
+	// Failed to write file to disk.
+	UploadErrorCantWrite = 6
+
+	// ForbidUploads file extension.
+	UploadErrorExtension = 7
 )
 
 // FileUpload represents singular file wrapUpload.
@@ -17,46 +35,56 @@ type FileUpload struct {
 	Name string `json:"name"`
 
 	// MimeType contains mime-type provided by the client.
-	MimeType string `json:"mimetype"`
+	MimeType string `json:"type"`
 
 	// Size of the uploaded file.
 	Size int64 `json:"size"`
 
 	// Error indicates file upload error (if any). See http://php.net/manual/en/features.file-upload.errors.php
-	Error int
+	Error int `json:"error"`
 
 	// TempFilename points to temporary file location.
-	TempFilename string `json:"tempFilename"`
+	TempFilename string `json:"tmpName"`
 
 	// associated file header
 	header *multipart.FileHeader
 }
 
-func (f *FileUpload) Open(tmpDir string) error {
-	file, err := f.header.Open()
-	if err != nil {
-		return err
+func (f *FileUpload) Open(cfg *Config) error {
+	if cfg.Forbidden(f.Name) {
+		f.Error = UploadErrorExtension
+		return nil
 	}
 
+	file, err := f.header.Open()
+	if err != nil {
+		f.Error = UploadErrorNoFile
+		return err
+	}
 	defer file.Close()
 
-	tmp, err := ioutil.TempFile(tmpDir, "upload")
+	tmp, err := ioutil.TempFile(cfg.TmpDir, "upload")
 	if err != nil {
+		// most likely cause of this issue is missing tmp dir
+		f.Error = UploadErrorNoTmpDir
 		return err
 	}
 
 	f.TempFilename = tmp.Name()
 	defer tmp.Close()
 
-	f.Size, err = io.Copy(tmp, file)
+	if f.Size, err = io.Copy(tmp, file); err != nil {
+		f.Error = UploadErrorCantWrite
+	}
+
 	return err
 }
 
 func wrapUpload(f *multipart.FileHeader) *FileUpload {
-	log.Print(f.Header)
 	return &FileUpload{
 		Name:     f.Filename,
 		MimeType: f.Header.Get("Content-Type"),
+		Error:    UploadErrorOK,
 		header:   f,
 	}
 }
@@ -119,26 +147,29 @@ func (u *Uploads) MarshalJSON() ([]byte, error) {
 	return json.Marshal(u.tree)
 }
 
-// OpenUploads moves all uploaded files to temp directory, return error in case of issue with temp directory. File errors
+// Open moves all uploaded files to temp directory, return error in case of issue with temp directory. File errors
 // will be handled individually. @todo: do we need it?
-func (u *Uploads) OpenUploads(tmpDir string) error {
+func (u *Uploads) Open(cfg *Config) error {
 	var wg sync.WaitGroup
 	for _, f := range u.list {
 		wg.Add(1)
 		go func(f *FileUpload) {
 			defer wg.Done()
-			f.Open(tmpDir)
+			f.Open(cfg)
 		}(f)
 	}
 
 	wg.Wait()
-	log.Print(u.list)
 	return nil
 }
 
 // Clear deletes all temporary files.
 func (u *Uploads) Clear() {
-
+	for _, f := range u.list {
+		if f.TempFilename != "" && exists(f.TempFilename) {
+			os.Remove(f.TempFilename)
+		}
+	}
 }
 
 // parse incoming dataTree request into JSON (including multipart form dataTree)
@@ -159,4 +190,18 @@ func parseUploads(r *http.Request) (*Uploads, error) {
 	}
 
 	return u, nil
+}
+
+// exists if file exists. by osutils; todo: better?
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true
+	}
+
+	if os.IsNotExist(err) {
+		return false
+	}
+
+	panic(fmt.Errorf("unable to stat path %q; %v", path, err))
 }

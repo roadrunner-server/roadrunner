@@ -42,7 +42,7 @@ func (d dataTree) push(k string, v []string) {
 
 // mount mounts data tree recursively.
 func (d dataTree) mount(i []string, v []string) {
-	if len(v) == 0 || v[0] == "" {
+	if len(v) == 0 {
 		return
 	}
 

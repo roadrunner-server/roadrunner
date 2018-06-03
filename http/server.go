@@ -3,30 +3,21 @@ package http
 import (
 	"github.com/spiral/roadrunner"
 	"net/http"
+	"strconv"
+	"errors"
+	"github.com/sirupsen/logrus"
 )
 
-// Configures RoadRunner HTTP server.
-type Config struct {
-	// serve enables static file serving from desired root directory.
-	ServeStatic bool
-
-	// Root directory, required when serve set to true.
-	Root string
-
-	// UploadsDir contains name of temporary directory to store uploaded files passed to underlying PHP process.
-	UploadsDir string
-}
-
-// Server serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
+// Service serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Server struct {
-	cfg    Config
+	cfg    *Config
 	static *staticServer
 	rr     *roadrunner.Server
 }
 
 // NewServer returns new instance of HTTP PSR7 server.
-func NewServer(cfg Config, server *roadrunner.Server) *Server {
+func NewServer(cfg *Config, server *roadrunner.Server) *Server {
 	h := &Server{cfg: cfg, rr: server}
 
 	if cfg.ServeStatic {
@@ -42,13 +33,26 @@ func (srv *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) () {
 		return
 	}
 
+	// validating request size
+	if srv.cfg.MaxRequest != 0 {
+		if length := r.Header.Get("content-length"); length != "" {
+			if size, err := strconv.ParseInt(length, 10, 64); err != nil {
+				srv.sendError(w, r, err)
+				return
+			} else if size > srv.cfg.MaxRequest {
+				srv.sendError(w, r, errors.New("request body max size is exceeded"))
+				return
+			}
+		}
+	}
+
 	req, err := NewRequest(r)
 	if err != nil {
 		srv.sendError(w, r, err)
 		return
 	}
 
-	if err = req.OpenUploads(srv.cfg.UploadsDir); err != nil {
+	if err = req.Open(srv.cfg); err != nil {
 		srv.sendError(w, r, err)
 		return
 	}
@@ -77,6 +81,10 @@ func (srv *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) () {
 
 // sendError sends error
 func (srv *Server) sendError(w http.ResponseWriter, r *http.Request, err error) {
+	if _, job := err.(roadrunner.JobError); !job {
+		logrus.Error(err)
+	}
+
 	w.WriteHeader(500)
 	w.Write([]byte(err.Error()))
 }

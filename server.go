@@ -8,13 +8,13 @@ import (
 
 const (
 	// EventNewPool triggered when server creates new pool.
-	EventNewPool = 3
+	EventNewPool = 60
 
 	// EventDestroyPool triggered when server destroys existed pool.
-	EventDestroyPool = 4
+	EventDestroyPool = 61
 )
 
-// Server manages pool creation and swapping.
+// Service manages pool creation and swapping.
 type Server struct {
 	// observes pool events (can be attached to multiple pools at the same time)
 	observer func(event int, ctx interface{})
@@ -35,8 +35,8 @@ type Server struct {
 	pool Pool
 }
 
-// NewRouter creates new router. Make sure to call configure before the usage.
-func NewRouter(cmd func() *exec.Cmd, factory Factory) *Server {
+// NewServer creates new router. Make sure to call configure before the usage.
+func NewServer(cmd func() *exec.Cmd, factory Factory) *Server {
 	return &Server{
 		cmd:     cmd,
 		factory: factory,

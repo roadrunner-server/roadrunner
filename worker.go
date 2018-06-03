@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 // Worker - supervised process with api over goridge.Relay.
@@ -19,6 +20,9 @@ type Worker struct {
 	// can be nil while process is not started.
 	Pid *int
 
+	// Created indicates at what time worker has been created.
+	Created time.Time
+
 	// state holds information about current worker state,
 	// number of worker executions, last status change time.
 	// publicly this object is receive-only and protected using Mutex
@@ -26,7 +30,7 @@ type Worker struct {
 	state *state
 
 	// underlying command with associated process, command must be
-	// provided to worker from outside in non-started form. Cmd
+	// provided to worker from outside in non-started form. Command
 	// stdErr direction will be handled by worker to aggregate error message.
 	cmd *exec.Cmd
 
@@ -54,6 +58,7 @@ func newWorker(cmd *exec.Cmd) (*Worker, error) {
 	}
 
 	w := &Worker{
+		Created:  time.Now(),
 		cmd:      cmd,
 		err:      new(bytes.Buffer),
 		waitDone: make(chan interface{}),
@@ -134,15 +139,12 @@ func (w *Worker) Stop() error {
 }
 
 // Kill kills underlying process, make sure to call Wait() func to gather
-// error log from the stderr. Waits for process completion.
+// error log from the stderr. Does not waits for process completion!
 func (w *Worker) Kill() error {
 	select {
 	case <-w.waitDone:
 		return nil
 	default:
-		w.mu.Lock()
-		defer w.mu.Unlock()
-
 		w.state.set(StateInactive)
 		err := w.cmd.Process.Signal(os.Kill)
 
@@ -163,7 +165,7 @@ func (w *Worker) Exec(rqs *Payload) (rsp *Payload, err error) {
 	}
 
 	if w.state.Value() != StateReady {
-		return nil, fmt.Errorf("worker is not ready (%s)", w.state.Value())
+		return nil, fmt.Errorf("worker is not ready (%s)", w.state.String())
 	}
 
 	w.state.set(StateWorking)

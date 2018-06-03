@@ -4,8 +4,11 @@ const (
 	// EventWorkerCreate thrown when new worker is spawned.
 	EventWorkerCreate = iota
 
-	// EventWorkerDestruct thrown before worker destruction.
+	// EventWorkerDestruct thrown after worker destruction.
 	EventWorkerDestruct
+
+	// EventWorkerKill thrown after worker is being forcefully killed.
+	EventWorkerKill
 
 	// EventWorkerError thrown any worker related even happen (passed with WorkerError)
 	EventWorkerError
