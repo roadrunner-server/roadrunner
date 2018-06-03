@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-// Service serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
+// service serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Server struct {
 	cfg    *Config
