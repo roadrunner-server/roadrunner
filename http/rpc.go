@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner/utils"
+	"github.com/pkg/errors"
 )
 
 type rpcServer struct {
@@ -17,14 +18,27 @@ type WorkerList struct {
 
 // Reset resets underlying RR worker pool and restarts all of it's workers.
 func (rpc *rpcServer) Reset(reset bool, r *string) error {
+	if rpc.service.srv == nil {
+		return errors.New("no http server")
+	}
+
 	logrus.Info("http: restarting worker pool")
 	*r = "OK"
 
-	return rpc.service.srv.rr.Reset()
+	err := rpc.service.srv.rr.Reset()
+	if err != nil {
+		logrus.Errorf("http: %s", err)
+	}
+
+	return err
 }
 
 // Workers returns list of active workers and their stats.
 func (rpc *rpcServer) Workers(list bool, r *WorkerList) error {
+	if rpc.service.srv == nil {
+		return errors.New("no http server")
+	}
+
 	r.Workers = utils.FetchWorkers(rpc.service.srv.rr)
 	return nil
 }

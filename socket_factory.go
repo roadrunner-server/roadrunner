@@ -54,7 +54,11 @@ func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 		go func(w *Worker) { w.Kill() }(w)
 
 		if wErr := w.Wait(); wErr != nil {
-			err = errors.Wrap(wErr, err.Error())
+			if _, ok := wErr.(*exec.ExitError); ok {
+				err = errors.Wrap(wErr, err.Error())
+			} else {
+				err = wErr
+			}
 		}
 
 		return nil, errors.Wrap(err, "unable to connect to worker")

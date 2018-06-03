@@ -92,7 +92,7 @@ func (b *Bus) Serve() {
 			defer b.wg.Done()
 
 			if err := s.Serve(); err != nil {
-				logrus.Errorf("%s.start: ", s.Name(), err)
+				logrus.Errorf("%s.start: %s", s.Name(), err)
 			}
 		}()
 	}
@@ -117,7 +117,7 @@ func (b *Bus) Stop() {
 
 	for _, s := range b.enabled {
 		if err := s.Stop(); err != nil {
-			logrus.Errorf("%s.stop: ", s.Name(), err)
+			logrus.Errorf("%s.stop: %s", s.Name(), err)
 		}
 	}
 
