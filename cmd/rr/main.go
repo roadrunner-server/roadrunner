@@ -24,19 +24,12 @@ package main
 
 import (
 	"github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/service"
-	"github.com/spiral/roadrunner/http"
 
 	// service plugins
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
 )
 
-var bus = service.NewBus()
-
 func main() {
-	// http server with PSR7 support
-	bus.Register(&http.Service{})
-
 	// you can register additional commands using cmd.Root
-	cmd.Execute(bus)
+	cmd.Execute()
 }

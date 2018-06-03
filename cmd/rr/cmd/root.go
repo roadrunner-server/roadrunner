@@ -33,7 +33,7 @@ import (
 // Service bus for all the commands.
 var (
 	// Shared service bus.
-	Bus *service.Bus
+	Bus = service.NewBus()
 
 	// Root is application endpoint.
 	Root = &cobra.Command{
@@ -47,8 +47,7 @@ var (
 
 // Execute adds all child commands to the Root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the Root.
-func Execute(serviceBus *service.Bus) {
-	Bus = serviceBus
+func Execute() {
 	if err := Root.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
