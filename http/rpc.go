@@ -17,7 +17,7 @@ type WorkerList struct {
 
 // Reset resets underlying RR worker pool and restarts all of it's workers.
 func (rpc *rpcServer) Reset(reset bool, r *string) error {
-	logrus.Info("resetting worker pool")
+	logrus.Info("http: restarting worker pool")
 	*r = "OK"
 
 	return rpc.service.srv.rr.Reset()

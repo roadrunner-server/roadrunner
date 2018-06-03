@@ -1,9 +1,9 @@
 package http
 
 import (
+	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 	"github.com/spiral/roadrunner/http"
-	"github.com/spf13/cobra"
 )
 
 func init() {
