@@ -26,14 +26,12 @@ import (
 	"github.com/spiral/roadrunner/cmd/rr/cmd"
 	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/http"
+
+	// service plugins
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
 )
 
-var bus *service.Bus
-
-func init() {
-	bus = service.NewBus()
-}
+var bus = service.NewBus()
 
 func main() {
 	// http server with PSR7 support
