@@ -21,7 +21,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -49,7 +48,7 @@ var (
 // This is called by main.main(). It only needs to happen once to the CLI.
 func Execute() {
 	if err := CLI.Execute(); err != nil {
-		fmt.Println(err)
+		logrus.Error(err)
 		os.Exit(1)
 	}
 }

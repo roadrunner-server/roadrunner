@@ -21,22 +21,24 @@
 package http
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
+	"github.com/sirupsen/logrus"
 )
 
 func reloadHandler(cmd *cobra.Command, args []string) {
 	client, err := rr.Services.RCPClient()
 	if err != nil {
-		panic(err) // todo: change
+		logrus.Error(err)
+		return
 	}
 	defer client.Close()
 
 	var r string
 	if err := client.Call("http.Reset", true, &r); err != nil {
-		panic(err)
+		logrus.Error(err)
+		return
 	}
 
-	fmt.Println(r)
+	logrus.Info("restarting http worker pool")
 }

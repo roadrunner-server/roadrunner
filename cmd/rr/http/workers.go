@@ -27,12 +27,14 @@ import (
 	"github.com/spiral/roadrunner/http"
 	"os"
 	"strconv"
+	"github.com/sirupsen/logrus"
 )
 
 func workersHandler(cmd *cobra.Command, args []string) {
 	client, err := rr.Services.RCPClient()
 	if err != nil {
-		panic(err) // todo: change
+		logrus.Error(err)
+		return
 	}
 	defer client.Close()
 
