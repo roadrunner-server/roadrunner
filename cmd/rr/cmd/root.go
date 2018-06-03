@@ -33,7 +33,7 @@ import (
 // Service bus for all the commands.
 var (
 	// Shared service bus.
-	Bus = service.NewBus()
+	Services = service.NewBus()
 
 	// Root is application endpoint.
 	Root = &cobra.Command{
@@ -64,7 +64,7 @@ func init() {
 		}
 
 		if cfg := initConfig(cfgFile, []string{"."}, ".rr"); cfg != nil {
-			if err := Bus.Configure(cfg); err != nil {
+			if err := Services.Configure(cfg); err != nil {
 				panic(err)
 			}
 		}

@@ -6,5 +6,5 @@ import (
 )
 
 func init() {
-	rr.Bus.Register(&http.Service{})
+	rr.Services.Register(&http.Service{})
 }

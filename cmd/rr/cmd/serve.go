@@ -42,7 +42,7 @@ func init() {
 }
 
 func serveHandler(cmd *cobra.Command, args []string) {
-	Bus.Serve()
+	Services.Serve()
 	<-stopSignal
-	Bus.Stop()
+	Services.Stop()
 }

@@ -35,7 +35,7 @@ func init() {
 }
 
 func reloadHandler(cmd *cobra.Command, args []string) {
-	client, err := rr.Bus.RCPClient()
+	client, err := rr.Services.RCPClient()
 	if err != nil {
 		panic(err) // todo: change
 	}
