@@ -1,12 +1,12 @@
 package http
 
 import (
-	"net/http"
 	"encoding/json"
-	"github.com/spiral/roadrunner"
-	"strings"
-	"io/ioutil"
 	"fmt"
+	"github.com/spiral/roadrunner"
+	"io/ioutil"
+	"net/http"
+	"strings"
 )
 
 const (

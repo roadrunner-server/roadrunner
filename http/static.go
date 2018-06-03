@@ -1,12 +1,12 @@
 package http
 
 import (
-	"net/http"
-	"strings"
-	"path"
 	"github.com/sirupsen/logrus"
+	"net/http"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 )
 
 var (

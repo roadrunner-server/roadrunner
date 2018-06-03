@@ -21,12 +21,12 @@
 package http
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/spiral/roadrunner/http"
 	"github.com/olekukonko/tablewriter"
+	"github.com/spf13/cobra"
+	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
+	"github.com/spiral/roadrunner/http"
 	"os"
 	"strconv"
-	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 )
 
 func init() {

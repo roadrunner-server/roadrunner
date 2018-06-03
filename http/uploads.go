@@ -1,15 +1,15 @@
 package http
 
 import (
-	"mime/multipart"
 	"encoding/json"
-	"strings"
-	"net/http"
-	"io/ioutil"
-	"io"
-	"sync"
-	"os"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"mime/multipart"
+	"net/http"
+	"os"
+	"strings"
+	"sync"
 )
 
 const (

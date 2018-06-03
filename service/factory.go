@@ -2,10 +2,10 @@ package service
 
 import (
 	"github.com/spiral/roadrunner"
-	"time"
+	"net"
 	"os/exec"
 	"strings"
-	"net"
+	"time"
 )
 
 type PoolConfig struct {

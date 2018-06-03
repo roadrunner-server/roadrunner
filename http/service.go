@@ -1,10 +1,10 @@
 package http
 
 import (
+	"context"
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner/service"
 	"net/http"
-	"context"
 )
 
 type Service struct {

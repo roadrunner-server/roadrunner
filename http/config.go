@@ -1,12 +1,12 @@
 package http
 
 import (
-	"strings"
-	"path"
-	"github.com/spiral/roadrunner/service"
-	"os"
-	"github.com/spiral/roadrunner/utils"
 	"fmt"
+	"github.com/spiral/roadrunner/service"
+	"github.com/spiral/roadrunner/utils"
+	"os"
+	"path"
+	"strings"
 )
 
 // Configures RoadRunner HTTP server.
@@ -46,7 +46,7 @@ type serviceConfig struct {
 	Host       string
 	Port       string
 	MaxRequest string
-	Static struct {
+	Static     struct {
 		Serve bool
 		Root  string
 	}

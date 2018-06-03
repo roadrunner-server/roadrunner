@@ -1,9 +1,9 @@
 package http
 
 import (
-	"net/http"
 	"encoding/json"
 	"github.com/spiral/roadrunner"
+	"net/http"
 )
 
 // Response handles PSR7 response logic.

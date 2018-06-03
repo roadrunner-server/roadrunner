@@ -1,8 +1,8 @@
 package http
 
 import (
-	"strings"
 	"net/http"
+	"strings"
 )
 
 const maxLevel = 127

@@ -21,13 +21,13 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/cmd/rr/utils"
+	"github.com/spiral/roadrunner/service"
 	"os"
-	"fmt"
 )
 
 // Service bus for all the commands.

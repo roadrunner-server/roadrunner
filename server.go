@@ -1,9 +1,9 @@
 package roadrunner
 
 import (
-	"sync"
-	"os/exec"
 	"fmt"
+	"os/exec"
+	"sync"
 )
 
 const (
@@ -84,7 +84,7 @@ func (r *Server) Observe(o func(event int, ctx interface{})) {
 }
 
 // Pool returns active pool or error.
-func (r *Server) Pool() (Pool) {
+func (r *Server) Pool() Pool {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 

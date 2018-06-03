@@ -1,11 +1,11 @@
 package http
 
 import (
+	"errors"
+	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
 	"net/http"
 	"strconv"
-	"errors"
-	"github.com/sirupsen/logrus"
 )
 
 // Service serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
@@ -28,7 +28,7 @@ func NewServer(cfg *Config, server *roadrunner.Server) *Server {
 }
 
 // ServeHTTP serve using PSR-7 requests passed to underlying application. Attempts to serve static files first if enabled.
-func (srv *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) () {
+func (srv *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if srv.cfg.ServeStatic && srv.static.serve(w, r) {
 		return
 	}

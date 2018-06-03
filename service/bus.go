@@ -1,11 +1,11 @@
 package service
 
 import (
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+	"github.com/spiral/goridge"
 	"net/rpc"
 	"sync"
-	"github.com/spiral/goridge"
-	"github.com/pkg/errors"
 )
 
 const (
