@@ -4,7 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type RPCServer struct {
+type rpcServer struct {
 	Service *Service
 }
 
@@ -33,7 +33,7 @@ type Worker struct {
 }
 
 // Reset resets underlying RR worker pool and restarts all of it's workers.
-func (rpc *RPCServer) Reset(reset bool, r *string) error {
+func (rpc *rpcServer) Reset(reset bool, r *string) error {
 	logrus.Info("resetting worker pool")
 	*r = "OK"
 
@@ -41,7 +41,7 @@ func (rpc *RPCServer) Reset(reset bool, r *string) error {
 }
 
 // Workers returns list of active workers and their stats.
-func (rpc *RPCServer) Workers(list bool, r *WorkerList) error {
+func (rpc *rpcServer) Workers(list bool, r *WorkerList) error {
 	for _, w := range rpc.Service.srv.rr.Workers() {
 		state := w.State()
 		r.Workers = append(r.Workers, Worker{

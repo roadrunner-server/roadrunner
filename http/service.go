@@ -36,7 +36,7 @@ func (s *Service) Configure(cfg service.Config) (bool, error) {
 }
 
 func (s *Service) RPC() interface{} {
-	return &RPCServer{s}
+	return &rpcServer{s}
 }
 
 func (s *Service) Serve() error {
