@@ -46,7 +46,7 @@ http:
     number:   1
 
     # maximum jobs per worker, 0 - unlimited.
-    maxJobs:  0
+    maxJobs:  1
 
     # worker allocation timeouts.
     timeouts:

@@ -81,10 +81,7 @@ func (srv *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // sendError sends error
 func (srv *Server) sendError(w http.ResponseWriter, r *http.Request, err error) {
-	if _, job := err.(roadrunner.JobError); !job {
-		logrus.Error(err)
-	}
-
+	logrus.Errorf("http: %s", err)
 	w.WriteHeader(500)
 	w.Write([]byte(err.Error()))
 }
