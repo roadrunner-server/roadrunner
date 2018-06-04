@@ -23,7 +23,7 @@ http:
     serve:  true
 
     # root directory for static file (http would not serve .php and .htacess files).
-    root:   "c:/goproj/phpapp/webroot"
+    root:   "/Users/wolfy-j/Projects/phpapp/webroot"
 
   # file upload configuration.
   uploads:
@@ -37,7 +37,7 @@ http:
   # http worker pool configuration.
   pool:
     # php worker command.
-    command:  "php c:/goproj/phpapp/webroot/index.php rr pipes --no-ansi"
+    command:  "php /Users/wolfy-j/Projects/phpapp/webroot/index.php rr pipes --no-ansi"
 
     # connection method (pipes, tcp://:9000, unix://socket.unix).
     relay:    "pipes"
@@ -46,7 +46,7 @@ http:
     number:   1
 
     # maximum jobs per worker, 0 - unlimited.
-    maxJobs:  1
+    maxJobs:  0
 
     # worker allocation timeouts.
     timeouts:

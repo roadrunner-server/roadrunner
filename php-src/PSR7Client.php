@@ -5,35 +5,47 @@
  * @author Wolfy-J
  */
 
+namespace Spiral\RoadRunner;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Spiral\RoadRunner\Worker;
+use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\Stream;
+use Zend\Diactoros\UploadedFile;
 
 /**
- * Class PSR7Worker serves PSR-7 requests and consume responses.
+ * Spiral Framework, SpiralScout LLC.
+ *
+ * @package   spiralFramework
+ * @author    Anton Titov (Wolfy-J)
+ * @copyright ©2009-2011
  */
-class PSR7Worker
+class PSR7Client
 {
     /**
-     * @var \Spiral\RoadRunner\Worker
+     * @varWorker
      */
     private $worker;
 
     /**
-     * @param \Spiral\RoadRunner\Worker $worker
+     * @param Worker $worker
      */
-    public function __construct(\Spiral\RoadRunner\Worker $worker)
+    public function __construct(Worker $worker)
     {
         $this->worker = $worker;
     }
 
     /**
-     * @return \Spiral\RoadRunner\Worker
+     * @return Worker
      */
-    public function getWorker(): \Spiral\RoadRunner\Worker
+    public function getWorker(): Worker
     {
         return $this->worker;
     }
 
     /**
-     * @return \Psr\Http\Message\ServerRequestInterface|null
+     * @return ServerRequestInterface|null
      */
     public function acceptRequest()
     {
@@ -43,23 +55,28 @@ class PSR7Worker
             return null;
         }
 
+        if (empty($ctx = json_decode($ctx, true))) {
+            // invalid context
+            return null;
+        }
+
         parse_str($ctx['rawQuery'], $query);
 
-        $body = 'php://input';
+        $bodyStream = 'php://input';
         $parsedBody = null;
         if ($ctx['parsed']) {
             $parsedBody = json_decode($body, true);
         } elseif ($body != null) {
-            $parsedBody = new \Zend\Diactoros\Stream("php://memory", "rwb");
-            $parsedBody->write($body);
+            $bodyStream = new Stream("php://memory", "rwb");
+            $bodyStream->write($body);
         }
 
-        return new \Zend\Diactoros\ServerRequest(
+        return new ServerRequest(
             $_SERVER,
             $this->wrapUploads($ctx['uploads']),
             $ctx['uri'],
             $ctx['method'],
-            $body,
+            $bodyStream,
             $ctx['headers'],
             $ctx['cookies'],
             $query,
@@ -71,12 +88,10 @@ class PSR7Worker
     /**
      * Send response to the application server.
      *
-     * @param \Psr\Http\Message\ResponseInterface $response
+     * @param ResponseInterface $response
      */
-    public function respond(\Psr\Http\Message\ResponseInterface $response)
+    public function respond(ResponseInterface $response)
     {
-        $this->worker->error("asd");
-
         $this->worker->send($response->getBody(), json_encode([
             'status'  => $response->getStatusCode(),
             'headers' => $response->getHeaders()
@@ -99,7 +114,7 @@ class PSR7Worker
         $result = [];
         foreach ($files as $index => $file) {
             if (isset($file['name'])) {
-                $result[$index] = new \Zend\Diactoros\UploadedFile(
+                $result[$index] = new UploadedFile(
                     $file['tmpName'],
                     $file['size'],
                     $file['error'],
