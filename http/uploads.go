@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -78,15 +77,6 @@ func (f *FileUpload) Open(cfg *Config) error {
 	}
 
 	return err
-}
-
-func wrapUpload(f *multipart.FileHeader) *FileUpload {
-	return &FileUpload{
-		Name:     f.Filename,
-		MimeType: f.Header.Get("Content-Type"),
-		Error:    UploadErrorOK,
-		header:   f,
-	}
 }
 
 type fileTree map[string]interface{}
@@ -192,7 +182,16 @@ func parseUploads(r *http.Request) (*Uploads, error) {
 	return u, nil
 }
 
-// exists if file exists. by osutils; todo: better?
+func wrapUpload(f *multipart.FileHeader) *FileUpload {
+	return &FileUpload{
+		Name:     f.Filename,
+		MimeType: f.Header.Get("Content-Type"),
+		Error:    UploadErrorOK,
+		header:   f,
+	}
+}
+
+// exists if file exists.
 func exists(path string) bool {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -203,5 +202,5 @@ func exists(path string) bool {
 		return false
 	}
 
-	panic(fmt.Errorf("unable to stat path %q; %v", path, err))
+	return false
 }

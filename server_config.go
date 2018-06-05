@@ -1,14 +1,14 @@
 package roadrunner
 
 import (
-	"time"
-	"strings"
-	"net"
 	"errors"
+	"net"
+	"strings"
+	"time"
 )
 
 const (
-	FactoryPipes  = iota
+	FactoryPipes = iota
 	FactorySocket
 )
 
@@ -18,8 +18,8 @@ type ServerConfig struct {
 	// This config section must not change on re-configuration.
 	Relay string
 
-	// FactoryTimeout defines for how long socket factory will be waiting for worker connection. For socket factory only.
-	// This config section must not change on re-configuration.
+	// FactoryTimeout defines for how long socket factory will be waiting for worker connection. This config section
+	// must not change on re-configuration.
 	FactoryTimeout time.Duration
 
 	// Pool defines worker pool configuration, number of workers, timeouts and etc. This config section might change

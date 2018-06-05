@@ -61,3 +61,8 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 	w.state.set(StateReady)
 	return w, nil
 }
+
+// Close the factory.
+func (f *PipeFactory) Close() error {
+	return nil
+}

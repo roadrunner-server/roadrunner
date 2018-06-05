@@ -16,20 +16,23 @@ const (
 
 // Service manages pool creation and swapping.
 type Server struct {
-	// observes pool events (can be attached to multiple pools at the same time)
-	observer func(event int, ctx interface{})
-
 	// worker command creator
 	cmd func() *exec.Cmd
 
-	// pool behaviour
-	cfg Config
+	// defines server wide configuration, behaviour and timeouts.
+	config ServerConfig
+
+	// observes pool events (can be attached to multiple pools at the same time)
+	observer func(event int, ctx interface{})
 
 	// creates and connects to workers
 	factory Factory
 
 	// protects pool while the switch
 	mu sync.Mutex
+
+	// pool behaviour
+	cfg Config
 
 	// currently active pool instance
 	pool Pool
@@ -128,12 +131,23 @@ func (r *Server) Destroy() {
 	r.pool = nil
 }
 
-func (r *Server) Start() {
-	// ????
+// Start the server underlying worker pool and factory.
+func (r *Server) Start() error {
+	if r.factory != nil {
+		//todo: already have started
+		return nil
+	}
+
+	return nil
 }
 
+// Stop the server and close underlying factory.
 func (r *Server) Stop() {
-	// stop factory?
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	r.factory.Close()
+	r.factory = nil
 }
 
 // throw invokes event handler if any.

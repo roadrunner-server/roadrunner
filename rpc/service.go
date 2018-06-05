@@ -62,7 +62,7 @@ func (s *Service) Serve() error {
 	return nil
 }
 
-// Stop stop Service Service.
+// Close stop Service Service.
 func (s *Service) Stop() error {
 	close(s.stop)
 	return nil

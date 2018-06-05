@@ -2,13 +2,13 @@ package roadrunner
 
 import (
 	"github.com/stretchr/testify/assert"
-	"log"
 	"os/exec"
 	"runtime"
-	"strconv"
-	"sync"
 	"testing"
 	"time"
+	"strconv"
+	"log"
+	"sync"
 )
 
 var cfg = Config{
@@ -162,72 +162,111 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.Nil(t, res)
 }
 
-func Test_StaticPool_AllocateTimeout(t *testing.T) {
+func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "delay", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
-		Config{
-			NumWorkers:      1,
-			AllocateTimeout: time.Millisecond * 50,
-			DestroyTimeout:  time.Second,
-		},
-	)
-
-	assert.NotNil(t, p)
-	assert.NoError(t, err)
-
-	done := make(chan interface{})
-	go func() {
-		_, err := p.Exec(&Payload{Body: []byte("100")})
-		assert.NoError(t, err)
-		close(done)
-	}()
-
-	// to ensure that worker is already busy
-	time.Sleep(time.Millisecond * 10)
-
-	_, err = p.Exec(&Payload{Body: []byte("10")})
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "worker timeout")
-
-	<-done
-	p.Destroy()
-}
-
-func Test_StaticPool_Replace_Worker(t *testing.T) {
-	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "pid", "pipes") },
-		NewPipeFactory(),
-		Config{
-			NumWorkers:      1,
-			MaxExecutions:   1,
-			AllocateTimeout: time.Second,
-			DestroyTimeout:  time.Second,
-		},
+		cfg,
 	)
 	defer p.Destroy()
 
 	assert.NotNil(t, p)
 	assert.NoError(t, err)
 
-	var lastPID string
-	lastPID = strconv.Itoa(*p.Workers()[0].Pid)
-
 	res, err := p.Exec(&Payload{Body: []byte("hello")})
-	assert.Equal(t, lastPID, string(res.Body))
 
-	for i := 0; i < 10; i++ {
-		res, err := p.Exec(&Payload{Body: []byte("hello")})
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+	assert.NotNil(t, res.Body)
+	assert.Nil(t, res.Context)
 
-		assert.NoError(t, err)
-		assert.NotNil(t, res)
-		assert.NotNil(t, res.Body)
-		assert.Nil(t, res.Context)
+	assert.Equal(t, "hello", res.String())
+	assert.Equal(t, runtime.NumCPU(), len(p.Workers()))
 
-		assert.NotEqual(t, lastPID, string(res.Body))
-		lastPID = string(res.Body)
+	destructed := make(chan interface{})
+	p.Observe(func(e int, ctx interface{}) {
+		if err, ok := ctx.(error); ok {
+			assert.Contains(t, err.Error(), "exit status 1")
+			close(destructed)
+		}
+	})
+
+	// killing random worker and expecting pool to replace it
+	p.workers[0].cmd.Process.Kill()
+	<-destructed
+
+	for _, w := range p.Workers() {
+		assert.Equal(t, StateReady, w.state.Value())
 	}
 }
+
+//
+//func Test_StaticPool_AllocateTimeout(t *testing.T) {
+//	p, err := NewPool(
+//		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "delay", "pipes") },
+//		NewPipeFactory(),
+//		Config{
+//			NumWorkers:      1,
+//			AllocateTimeout: time.Millisecond * 50,
+//			DestroyTimeout:  time.Second,
+//		},
+//	)
+//
+//	assert.NotNil(t, p)
+//	assert.NoError(t, err)
+//
+//	done := make(chan interface{})
+//	go func() {
+//		_, err := p.Exec(&Payload{Body: []byte("100")})
+//		assert.NoError(t, err)
+//		close(done)
+//	}()
+//
+//	// to ensure that worker is already busy
+//	time.Sleep(time.Millisecond * 10)
+//
+//	_, err = p.Exec(&Payload{Body: []byte("10")})
+//	assert.Error(t, err)
+//	assert.Contains(t, err.Error(), "worker timeout")
+//
+//	<-done
+//	p.Destroy()
+//}
+//
+//func Test_StaticPool_Replace_Worker(t *testing.T) {
+//	p, err := NewPool(
+//		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "pid", "pipes") },
+//		NewPipeFactory(),
+//		Config{
+//			NumWorkers:      1,
+//			MaxExecutions:   1,
+//			AllocateTimeout: time.Second,
+//			DestroyTimeout:  time.Second,
+//		},
+//	)
+//	defer p.Destroy()
+//
+//	assert.NotNil(t, p)
+//	assert.NoError(t, err)
+//
+//	var lastPID string
+//	lastPID = strconv.Itoa(*p.Workers()[0].Pid)
+//
+//	res, err := p.Exec(&Payload{Body: []byte("hello")})
+//	assert.Equal(t, lastPID, string(res.Body))
+//
+//	for i := 0; i < 10; i++ {
+//		res, err := p.Exec(&Payload{Body: []byte("hello")})
+//
+//		assert.NoError(t, err)
+//		assert.NotNil(t, res)
+//		assert.NotNil(t, res.Body)
+//		assert.Nil(t, res.Context)
+//
+//		assert.NotEqual(t, lastPID, string(res.Body))
+//		lastPID = string(res.Body)
+//	}
+//}
 
 // identical to replace but controlled on worker side
 func Test_StaticPool_Stop_Worker(t *testing.T) {

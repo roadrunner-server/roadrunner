@@ -21,9 +21,9 @@
 package http
 
 import (
+	"errors"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/go-errors/errors"
 	"github.com/spiral/roadrunner/rpc"
 )
 

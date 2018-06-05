@@ -9,9 +9,7 @@ import (
 	"strings"
 )
 
-var (
-	forbiddenFiles = []string{".php", ".htaccess"}
-)
+var forbiddenFiles = []string{".php", ".htaccess"}
 
 // staticServer serves static files
 type staticServer struct {

@@ -171,7 +171,7 @@ func (p *StaticPool) release(w *Worker) {
 }
 
 // replaceWorker replaces dead or expired worker with new instance.
-func (p *StaticPool) replaceWorker(w *Worker, caused interface{}) {
+func (p *StaticPool) replaceWorker(w *Worker, caused interface{}) error {
 	go p.destroyWorker(w)
 
 	if nw, err := p.createWorker(); err != nil {
@@ -181,9 +181,12 @@ func (p *StaticPool) replaceWorker(w *Worker, caused interface{}) {
 			// possible situation when major error causes all PHP scripts to die (for example dead DB)
 			p.throw(EventPoolError, fmt.Errorf("all workers are dead"))
 		}
+		return err
 	} else {
 		p.free <- nw
 	}
+
+	return nil
 }
 
 // destroyWorker destroys workers and removes it from the pool.
@@ -226,8 +229,19 @@ func (p *StaticPool) createWorker() (*Worker, error) {
 	p.throw(EventWorkerCreate, w)
 
 	go func(w *Worker) {
-		if err := w.Wait(); err != nil {
-			p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
+		err := w.Wait()
+
+		// worker have died unexpectedly,
+		// pool should attempt to replace it with alive version safely
+		if w.state.Value() != StateStopped {
+			if err != nil {
+				p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
+			}
+
+			// attempting to replace worker
+			if err := p.replaceWorker(w, err); err != nil {
+				p.throw(EventPoolError, fmt.Errorf("unable to replace dead worker: %s", err))
+			}
 		}
 	}(w)
 

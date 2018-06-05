@@ -34,7 +34,7 @@ type Registry interface {
 	// Serve all configured services. Non blocking.
 	Serve() error
 
-	// Stop all active services.
+	// Close all active services.
 	Stop() error
 }
 
@@ -47,7 +47,7 @@ type Service interface {
 	// Serve serves Service.
 	Serve() error
 
-	// Stop stop Service Service.
+	// Close stop Service Service.
 	Stop() error
 }
 
@@ -156,7 +156,7 @@ func (r *registry) Serve() error {
 	return nil
 }
 
-// Stop all active services.
+// Close all active services.
 func (r *registry) Stop() error {
 	return nil
 }

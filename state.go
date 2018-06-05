@@ -28,9 +28,17 @@ const (
 	StateReady
 	// StateWorking - working on given payload.
 	StateWorking
-	// StateStopped - process has been terminated
+
+	// StateDestructing process is being destructed.
+	StateDestructing
+
+	// StateStopping - process is being softly stopped.
+	StateStopping
+
+	// StateStopped - process has been terminated.
 	StateStopped
-	// StateErrored - error state (can't be used)
+
+	// StateErrored - error state (can't be used).
 	StateErrored
 )
 

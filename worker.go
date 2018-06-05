@@ -110,7 +110,14 @@ func (w *Worker) Wait() error {
 	}
 
 	if w.endState.Success() {
+		w.state.set(StateStopped)
 		return nil
+	}
+
+	if w.state.Value() != StateDestructing {
+		w.state.set(StateErrored)
+	} else {
+		w.state.set(StateStopped)
 	}
 
 	if w.err.Len() != 0 {
@@ -123,6 +130,17 @@ func (w *Worker) Wait() error {
 
 // Stop sends soft termination command to the worker and waits for process completion.
 func (w *Worker) Stop() error {
+	return w.doStop(StateStopping)
+}
+
+// Destroy is identical to stop command but does mark workers with different state. Destroyed workers won't
+// throw error state on completion of process destruction (exit status).
+func (w *Worker) Destroy() error {
+	return w.doStop(StateDestructing)
+}
+
+// actual stopping.
+func (w *Worker) doStop(state int64) error {
 	select {
 	case <-w.waitDone:
 		return nil
@@ -130,7 +148,7 @@ func (w *Worker) Stop() error {
 		w.mu.Lock()
 		defer w.mu.Unlock()
 
-		w.state.set(StateInactive)
+		w.state.set(state)
 		err := sendPayload(w.rl, &stopCommand{Stop: true})
 
 		<-w.waitDone
@@ -145,7 +163,7 @@ func (w *Worker) Kill() error {
 	case <-w.waitDone:
 		return nil
 	default:
-		w.state.set(StateInactive)
+		w.state.set(StateDestructing)
 		err := w.cmd.Process.Signal(os.Kill)
 
 		<-w.waitDone
@@ -172,7 +190,6 @@ func (w *Worker) Exec(rqs *Payload) (rsp *Payload, err error) {
 	defer w.state.registerExec()
 
 	rsp, err = w.execPayload(rqs)
-
 	if err != nil {
 		if _, ok := err.(JobError); !ok {
 			w.state.set(StateErrored)
@@ -196,9 +213,7 @@ func (w *Worker) start() error {
 	go func() {
 		w.endState, _ = w.cmd.Process.Wait()
 		if w.waitDone != nil {
-			w.state.set(StateStopped)
 			close(w.waitDone)
-
 			if w.rl != nil {
 				w.mu.Lock()
 				defer w.mu.Unlock()
