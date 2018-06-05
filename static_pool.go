@@ -203,7 +203,7 @@ func (p *StaticPool) createWorker() (*Worker, error) {
 		err := w.Wait()
 
 		// worker have died unexpectedly, pool should attempt to replace it with alive version safely
-		if w.state.Value() != StateStopped {
+		if w.state.Value() == StateErrored {
 			if err != nil {
 				p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
 			}
