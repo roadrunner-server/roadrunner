@@ -5,19 +5,22 @@ import (
 	"github.com/spiral/roadrunner/service"
 )
 
-type ConfigWrapper struct {
+// ViperWrapper provides interface bridge between Viper configs and service.Config.
+type ViperWrapper struct {
 	Viper *viper.Viper
 }
 
-func (w *ConfigWrapper) Get(key string) service.Config {
+// Get nested config section (sub-map), returns nil if section not found.
+func (w *ViperWrapper) Get(key string) service.Config {
 	sub := w.Viper.Sub(key)
 	if sub == nil {
 		return nil
 	}
 
-	return &ConfigWrapper{sub}
+	return &ViperWrapper{sub}
 }
 
-func (w *ConfigWrapper) Unmarshal(out interface{}) error {
+// Unmarshal unmarshal config data into given struct.
+func (w *ViperWrapper) Unmarshal(out interface{}) error {
 	return w.Viper.Unmarshal(out)
 }

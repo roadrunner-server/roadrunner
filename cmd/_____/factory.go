@@ -1,4 +1,4 @@
-package service
+package _____
 
 import (
 	"github.com/spiral/roadrunner"
@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// todo: move out
 type PoolConfig struct {
 	Command string
 	Relay   string
@@ -16,8 +17,9 @@ type PoolConfig struct {
 	MaxJobs uint64
 
 	Timeouts struct {
-		Allocate int
-		Destroy  int
+		Construct int
+		Allocate  int
+		Destroy   int
 	}
 }
 

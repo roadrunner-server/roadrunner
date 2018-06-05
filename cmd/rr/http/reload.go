@@ -23,22 +23,34 @@ package http
 import (
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/sirupsen/logrus"
+	"github.com/go-errors/errors"
+	"github.com/spiral/roadrunner/rpc"
 )
 
-func reloadHandler(cmd *cobra.Command, args []string) {
-	client, err := rr.Services.RCPClient()
+func init() {
+	rr.CLI.AddCommand(&cobra.Command{
+		Use:   "http:reload",
+		Short: "Reload RoadRunner worker pools for the HTTP service",
+		RunE:  reloadHandler,
+	})
+}
+
+func reloadHandler(cmd *cobra.Command, args []string) error {
+	if !rr.Services.Has("rpc") {
+		return errors.New("RPC service is not configured")
+	}
+
+	client, err := rr.Services.Get("rpc").(*rpc.Service).Client()
 	if err != nil {
-		logrus.Error(err)
-		return
+		return err
 	}
 	defer client.Close()
 
 	var r string
 	if err := client.Call("http.Reset", true, &r); err != nil {
-		logrus.Error(err)
-		return
+		return err
 	}
 
-	logrus.Info("restarting http worker pool")
+	rr.Logger.Info("http.service: restarting worker pool")
+	return nil
 }

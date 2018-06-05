@@ -21,38 +21,47 @@
 package http
 
 import (
-	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/http"
-	"os"
-	"strconv"
-	"github.com/sirupsen/logrus"
+	"errors"
+	"github.com/spiral/roadrunner/rpc"
 )
 
-func workersHandler(cmd *cobra.Command, args []string) {
-	client, err := rr.Services.RCPClient()
+func init() {
+	rr.CLI.AddCommand(&cobra.Command{
+		Use:   "http:workers",
+		Short: "List workers associated with RoadRunner HTTP service",
+		RunE:  workersHandler,
+	})
+}
+
+func workersHandler(cmd *cobra.Command, args []string) error {
+	if !rr.Services.Has("rpc") {
+		return errors.New("RPC service is not configured")
+	}
+
+	client, err := rr.Services.Get("rpc").(*rpc.Service).Client()
 	if err != nil {
-		logrus.Error(err)
-		return
+		return err
 	}
 	defer client.Close()
 
-	var r http.WorkerList
-	if err := client.Call("http.Workers", true, &r); err != nil {
-		panic(err)
-	}
-
-	tw := tablewriter.NewWriter(os.Stdout)
-	tw.SetHeader([]string{"PID", "Status", "Num Execs"})
-
-	for _, w := range r.Workers {
-		tw.Append([]string{
-			strconv.Itoa(w.Pid),
-			w.Status,
-			strconv.Itoa(int(w.NumExecs)),
-		})
-	}
-
-	tw.Render()
+	//var r http.WorkerList
+	//if err := client.Call("http.Workers", true, &r); err != nil {
+	//	panic(err)
+	//}
+	//
+	//tw := tablewriter.NewWriter(os.Stdout)
+	//tw.SetHeader([]string{"PID", "Status", "Num Execs"})
+	//
+	//for _, w := range r.Workers {
+	//	tw.Append([]string{
+	//		strconv.Itoa(w.Pid),
+	//		w.Status,
+	//		strconv.Itoa(int(w.NumExecs)),
+	//	})
+	//}
+	//
+	//tw.Render()
+	return nil
 }

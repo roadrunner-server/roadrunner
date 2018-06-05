@@ -31,24 +31,29 @@ import (
 
 // Service bus for all the commands.
 var (
-	// Shared service bus.
-	Services = service.NewBus()
+	cfgFile string
+	verbose bool
+
+	// Logger - shared logger.
+	Logger = logrus.New()
+
+	// Services - shared service bus.
+	Services = service.NewRegistry(Logger)
 
 	// CLI is application endpoint.
 	CLI = &cobra.Command{
-		Use:   "rr",
-		Short: "RoadRunner, PHP application server",
+		Use:           "rr",
+		SilenceErrors: true,
+		SilenceUsage:  true,
+		Short:         utils.Sprintf("<green>RoadRunner, PHP Application Server.</reset>"),
 	}
-
-	cfgFile string
-	verbose bool
 )
 
 // Execute adds all child commands to the CLI command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the CLI.
 func Execute() {
 	if err := CLI.Execute(); err != nil {
-		logrus.Error(err)
+		utils.Printf("Error: <red>%s</reset>\n", err)
 		os.Exit(1)
 	}
 }
@@ -59,7 +64,7 @@ func init() {
 
 	cobra.OnInitialize(func() {
 		if verbose {
-			logrus.SetLevel(logrus.DebugLevel)
+			Logger.SetLevel(logrus.DebugLevel)
 		}
 
 		if cfg := initConfig(cfgFile, []string{"."}, ".rr"); cfg != nil {
@@ -81,6 +86,7 @@ func initConfig(cfgFile string, path []string, name string) service.Config {
 		for _, p := range path {
 			cfg.AddConfigPath(p)
 		}
+
 		cfg.SetConfigName(name)
 	}
 
@@ -89,9 +95,9 @@ func initConfig(cfgFile string, path []string, name string) service.Config {
 
 	// If a cfg file is found, read it in.
 	if err := cfg.ReadInConfig(); err != nil {
-		logrus.Warnf("config: %s", err)
+		Logger.Warnf("config: %s", err)
 		return nil
 	}
 
-	return &utils.ConfigWrapper{cfg}
+	return &utils.ViperWrapper{Viper: cfg}
 }

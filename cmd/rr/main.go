@@ -23,13 +23,17 @@
 package main
 
 import (
-	"github.com/spiral/roadrunner/cmd/rr/cmd"
+	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
+	"github.com/spiral/roadrunner/rpc"
 
-	// service plugins
+	// cli plugins
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
 )
 
 func main() {
+	// provides ability to make local connection to services
+	rr.Services.Register("rpc", new(rpc.Service))
+
 	// you can register additional commands using cmd.CLI
-	cmd.Execute()
+	rr.Execute()
 }

@@ -8,6 +8,8 @@ import (
 	"github.com/spiral/roadrunner"
 )
 
+const ServiceName = "http"
+
 type Service struct {
 	cfg  *serviceConfig
 	http *http.Server
@@ -15,7 +17,7 @@ type Service struct {
 }
 
 func (s *Service) Name() string {
-	return "http"
+	return ServiceName
 }
 
 func (s *Service) Configure(cfg service.Config) (bool, error) {
