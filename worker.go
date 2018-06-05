@@ -36,7 +36,7 @@ type Worker struct {
 
 	// err aggregates stderr output from underlying process. Value can be
 	// receive only once command is completed and all pipes are closed.
-	err *bytes.Buffer
+	err *buffer
 
 	// channel is being closed once command is complete.
 	waitDone chan interface{}
@@ -60,7 +60,7 @@ func newWorker(cmd *exec.Cmd) (*Worker, error) {
 	w := &Worker{
 		Created:  time.Now(),
 		cmd:      cmd,
-		err:      new(bytes.Buffer),
+		err:      &buffer{buffer: new(bytes.Buffer)},
 		waitDone: make(chan interface{}),
 		state:    newState(StateInactive),
 	}
