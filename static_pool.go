@@ -189,6 +189,40 @@ func (p *StaticPool) replaceWorker(w *Worker, caused interface{}) error {
 	return nil
 }
 
+// creates new worker using associated factory. automatically
+// adds worker to the worker list (background)
+func (p *StaticPool) createWorker() (*Worker, error) {
+	w, err := p.factory.SpawnWorker(p.cmd())
+	if err != nil {
+		return nil, err
+	}
+
+	p.throw(EventWorkerCreate, w)
+
+	go func(w *Worker) {
+		err := w.Wait()
+
+		// worker have died unexpectedly, pool should attempt to replace it with alive version safely
+		if w.state.Value() != StateStopped {
+			if err != nil {
+				p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
+			}
+
+			// attempting to replace worker
+			if err := p.replaceWorker(w, err); err != nil {
+				p.throw(EventPoolError, fmt.Errorf("unable to replace dead worker: %s", err))
+			}
+		}
+	}(w)
+
+	p.muw.Lock()
+	defer p.muw.Unlock()
+
+	p.workers = append(p.workers, w)
+
+	return w, nil
+}
+
 // destroyWorker destroys workers and removes it from the pool.
 func (p *StaticPool) destroyWorker(w *Worker) {
 	// detaching
@@ -216,41 +250,6 @@ func (p *StaticPool) destroyWorker(w *Worker) {
 
 		p.throw(EventWorkerKill, w)
 	}
-}
-
-// creates new worker using associated factory. automatically
-// adds worker to the worker list (background)
-func (p *StaticPool) createWorker() (*Worker, error) {
-	w, err := p.factory.SpawnWorker(p.cmd())
-	if err != nil {
-		return nil, err
-	}
-
-	p.throw(EventWorkerCreate, w)
-
-	go func(w *Worker) {
-		err := w.Wait()
-
-		// worker have died unexpectedly,
-		// pool should attempt to replace it with alive version safely
-		if w.state.Value() != StateStopped {
-			if err != nil {
-				p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
-			}
-
-			// attempting to replace worker
-			if err := p.replaceWorker(w, err); err != nil {
-				p.throw(EventPoolError, fmt.Errorf("unable to replace dead worker: %s", err))
-			}
-		}
-	}(w)
-
-	p.muw.Lock()
-	defer p.muw.Unlock()
-
-	p.workers = append(p.workers, w)
-
-	return w, nil
 }
 
 // throw invokes event handler if any.
