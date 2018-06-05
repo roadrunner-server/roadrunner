@@ -30,7 +30,7 @@ type StaticPool struct {
 	// active task executions
 	tasks sync.WaitGroup
 
-	// workers circular allocation buffer
+	// workers circular allocation errBuffer
 	free chan *Worker
 
 	// protects state of worker list, does not affect allocation
