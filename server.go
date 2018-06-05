@@ -128,6 +128,14 @@ func (r *Server) Destroy() {
 	r.pool = nil
 }
 
+func (r *Server) Start() {
+	// ????
+}
+
+func (r *Server) Stop() {
+	// stop factory?
+}
+
 // throw invokes event handler if any.
 func (r *Server) throw(event int, ctx interface{}) {
 	if r.observer != nil {

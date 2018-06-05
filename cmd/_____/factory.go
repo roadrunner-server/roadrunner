@@ -2,7 +2,6 @@ package _____
 
 import (
 	"github.com/spiral/roadrunner"
-	"net"
 	"os/exec"
 	"strings"
 	"time"
@@ -23,21 +22,6 @@ type PoolConfig struct {
 	}
 }
 
-func (f *PoolConfig) NewServer() (*roadrunner.Server, func(), error) {
-	relays, terminator, err := f.relayFactory()
-	if err != nil {
-		terminator()
-		return nil, nil, err
-	}
-
-	rr := roadrunner.NewServer(f.cmd(), relays)
-	if err := rr.Configure(f.rrConfig()); err != nil {
-		return nil, nil, err
-	}
-
-	return rr, nil, nil
-}
-
 func (f *PoolConfig) rrConfig() roadrunner.Config {
 	return roadrunner.Config{
 		NumWorkers:      f.Number,
@@ -50,22 +34,4 @@ func (f *PoolConfig) rrConfig() roadrunner.Config {
 func (f *PoolConfig) cmd() func() *exec.Cmd {
 	cmd := strings.Split(f.Command, " ")
 	return func() *exec.Cmd { return exec.Command(cmd[0], cmd[1:]...) }
-}
-
-func (f *PoolConfig) relayFactory() (roadrunner.Factory, func(), error) {
-	if f.Relay == "pipes" || f.Relay == "pipe" {
-		return roadrunner.NewPipeFactory(), nil, nil
-	}
-
-	dsn := strings.Split(f.Relay, "://")
-	if len(dsn) != 2 {
-		return nil, nil, dsnError
-	}
-
-	ln, err := net.Listen(dsn[0], dsn[1])
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return roadrunner.NewSocketFactory(ln, time.Minute), func() { ln.Close() }, nil
 }

@@ -70,6 +70,11 @@ func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 	return w, nil
 }
 
+// Close socket factory and underlying socket connection.
+func (f *SocketFactory) Close() error {
+	return f.ls.Close()
+}
+
 // listens for incoming socket connections
 func (f *SocketFactory) listen() {
 	for {
