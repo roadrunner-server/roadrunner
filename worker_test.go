@@ -13,6 +13,7 @@ func Test_GetState(t *testing.T) {
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
 		assert.NoError(t, w.Wait())
+		assert.Equal(t, StateStopped, w.State().Value())
 	}()
 
 	assert.NoError(t, err)
@@ -20,7 +21,7 @@ func Test_GetState(t *testing.T) {
 
 	assert.Equal(t, StateReady, w.State().Value())
 	w.Stop()
-	assert.Equal(t, StateStopped, w.State().Value())
+	assert.Equal(t, StateStopping, w.State().Value())
 }
 
 func Test_Echo(t *testing.T) {

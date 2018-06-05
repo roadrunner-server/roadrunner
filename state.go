@@ -24,13 +24,12 @@ type State interface {
 const (
 	// StateInactive - no associated process
 	StateInactive int64 = iota
+
 	// StateReady - ready for job.
 	StateReady
+
 	// StateWorking - working on given payload.
 	StateWorking
-
-	// StateDestructing process is being destructed.
-	StateDestructing
 
 	// StateStopping - process is being softly stopped.
 	StateStopping
