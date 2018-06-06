@@ -5,18 +5,20 @@ import (
 	"github.com/stretchr/testify/assert"
 	"runtime"
 	"time"
+	"os/exec"
 )
 
 func TestServer_PipesEcho(t *testing.T) {
-	srv := NewServer(&ServerConfig{
-		Command: "php php-src/tests/client.php echo pipes",
-		Relay:   "pipes",
-		Pool: &Config{
-			NumWorkers:      uint64(runtime.NumCPU()),
-			AllocateTimeout: time.Second,
-			DestroyTimeout:  time.Second,
-		},
-	}, nil)
+	srv := NewServer(
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
+		&ServerConfig{
+			Relay: "pipes",
+			Pool: Config{
+				NumWorkers:      uint64(runtime.NumCPU()),
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		})
 	defer srv.Stop()
 
 	assert.NoError(t, srv.Start())
@@ -32,16 +34,17 @@ func TestServer_PipesEcho(t *testing.T) {
 }
 
 func TestServer_SocketEcho(t *testing.T) {
-	srv := NewServer(&ServerConfig{
-		Command:      "php php-src/tests/client.php echo tcp",
-		Relay:        "tcp://:9007",
-		RelayTimeout: 10 * time.Second,
-		Pool: &Config{
-			NumWorkers:      uint64(runtime.NumCPU()),
-			AllocateTimeout: time.Second,
-			DestroyTimeout:  time.Second,
-		},
-	}, nil)
+	srv := NewServer(
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "tcp") },
+		&ServerConfig{
+			Relay:        "tcp://:9007",
+			RelayTimeout: 10 * time.Second,
+			Pool: Config{
+				NumWorkers:      uint64(runtime.NumCPU()),
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		})
 	defer srv.Stop()
 
 	assert.NoError(t, srv.Start())
@@ -57,24 +60,24 @@ func TestServer_SocketEcho(t *testing.T) {
 }
 
 func TestServer_Reconfigure(t *testing.T) {
-	srv := NewServer(&ServerConfig{
-		Command: "php php-src/tests/client.php echo pipes",
-		Relay:   "pipes",
-		Pool: &Config{
-			NumWorkers:      1,
-			AllocateTimeout: time.Second,
-			DestroyTimeout:  time.Second,
-		},
-	}, nil)
+	srv := NewServer(
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
+		&ServerConfig{
+			Relay: "pipes",
+			Pool: Config{
+				NumWorkers:      1,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		})
 	defer srv.Stop()
 
 	assert.NoError(t, srv.Start())
 	assert.Len(t, srv.Workers(), 1)
 
 	err := srv.Reconfigure(&ServerConfig{
-		Command: "php php-src/tests/client.php echo pipes",
-		Relay:   "pipes",
-		Pool: &Config{
+		Relay: "pipes",
+		Pool: Config{
 			NumWorkers:      2,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
@@ -86,15 +89,16 @@ func TestServer_Reconfigure(t *testing.T) {
 }
 
 func TestServer_Reset(t *testing.T) {
-	srv := NewServer(&ServerConfig{
-		Command: "php php-src/tests/client.php echo pipes",
-		Relay:   "pipes",
-		Pool: &Config{
-			NumWorkers:      1,
-			AllocateTimeout: time.Second,
-			DestroyTimeout:  time.Second,
-		},
-	}, nil)
+	srv := NewServer(
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
+		&ServerConfig{
+			Relay: "pipes",
+			Pool: Config{
+				NumWorkers:      1,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		})
 	defer srv.Stop()
 
 	assert.NoError(t, srv.Start())

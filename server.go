@@ -4,7 +4,6 @@ import (
 	"sync"
 	"os/exec"
 	"fmt"
-	"errors"
 )
 
 const (
@@ -26,6 +25,9 @@ type Server struct {
 	// configures server, pool, cmd creation and factory.
 	cfg *ServerConfig
 
+	// worker command creator
+	cmd func() *exec.Cmd
+
 	// observes pool events (can be attached to multiple pools at the same time)
 	observer func(event int, ctx interface{})
 
@@ -35,9 +37,6 @@ type Server struct {
 	// indicates that server was started
 	started bool
 
-	// worker command creator
-	cmd func() *exec.Cmd
-
 	// creates and connects to workers
 	factory Factory
 
@@ -46,14 +45,17 @@ type Server struct {
 }
 
 // NewServer creates new router. Make sure to call configure before the usage.
-func NewServer(cfg *ServerConfig, o func(event int, ctx interface{})) *Server {
-	return &Server{
-		cfg:      cfg,
-		observer: o,
-	}
+func NewServer(cmd func() *exec.Cmd, cfg *ServerConfig) *Server {
+	return &Server{cmd: cmd, cfg: cfg}
 }
 
-// Reconfigure re-configures underlying pool and destroys it's previous version if any.
+// Observe attaches server event watcher.
+func (srv *Server) Observe(o func(event int, ctx interface{})) {
+	srv.observer = o
+}
+
+// Reconfigure re-configures underlying pool and destroys it's previous version if any. Reconfigure will ignore factory
+// and relay settings.
 func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 	srv.mu.Lock()
 	if !srv.started {
@@ -62,23 +64,18 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 	}
 	srv.mu.Unlock()
 
-	// we are not allowing factory or cmd changes while the server is running.
-	if srv.cfg.Differs(cfg) {
-		return errors.New("config change while running server (only pool config change is allowed)")
-	}
-
 	srv.mu.Lock()
 	previous := srv.pool
 	srv.mu.Unlock()
 
-	pool, err := NewPool(srv.cmd, srv.factory, *cfg.Pool)
+	pool, err := NewPool(srv.cmd, srv.factory, cfg.Pool)
 	if err != nil {
 		return err
 	}
 	srv.throw(EventNewPool, pool)
 
 	srv.mu.Lock()
-	srv.cfg, srv.pool = cfg, pool
+	srv.cfg.Pool, srv.pool = cfg.Pool, pool
 	srv.pool.Observe(srv.poolObserver)
 	srv.mu.Unlock()
 
@@ -102,15 +99,11 @@ func (srv *Server) Start() (err error) {
 	srv.mu.Lock()
 	defer srv.mu.Unlock()
 
-	if srv.cmd, err = srv.cfg.makeCommand(); err != nil {
-		return err
-	}
-
 	if srv.factory, err = srv.cfg.makeFactory(); err != nil {
 		return err
 	}
 
-	if srv.pool, err = NewPool(srv.cmd, srv.factory, *srv.cfg.Pool); err != nil {
+	if srv.pool, err = NewPool(srv.cmd, srv.factory, srv.cfg.Pool); err != nil {
 		return err
 	}
 
