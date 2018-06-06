@@ -17,6 +17,8 @@ func Test_ServerConfig_PipeFactory(t *testing.T) {
 
 	cfg = &ServerConfig{Relay: "pipe"}
 	f, err = cfg.makeFactory()
+	assert.NoError(t, err)
+	assert.NotNil(t, f)
 	defer f.Close()
 
 	assert.NoError(t, err)
@@ -26,6 +28,8 @@ func Test_ServerConfig_PipeFactory(t *testing.T) {
 func Test_ServerConfig_SocketFactory(t *testing.T) {
 	cfg := &ServerConfig{Relay: "tcp://:9111"}
 	f, err := cfg.makeFactory()
+	assert.NoError(t, err)
+	assert.NotNil(t, f)
 	defer f.Close()
 
 	assert.NoError(t, err)
@@ -33,16 +37,16 @@ func Test_ServerConfig_SocketFactory(t *testing.T) {
 	assert.Equal(t, "tcp", f.(*SocketFactory).ls.Addr().Network(), )
 	assert.Equal(t, "[::]:9111", f.(*SocketFactory).ls.Addr().String())
 
-	cfg = &ServerConfig{Relay: "tcp://localhost:9111"}
+	cfg = &ServerConfig{Relay: "tcp://localhost:9112"}
 	f, err = cfg.makeFactory()
-	assert.NotNil(t, f)
 	assert.NoError(t, err)
+	assert.NotNil(t, f)
 	defer f.Close()
 
 	assert.NoError(t, err)
 	assert.IsType(t, &SocketFactory{}, f)
 	assert.Equal(t, "tcp", f.(*SocketFactory).ls.Addr().Network())
-	assert.Equal(t, "127.0.0.1:9111", f.(*SocketFactory).ls.Addr().String())
+	assert.Equal(t, "127.0.0.1:9112", f.(*SocketFactory).ls.Addr().String())
 }
 
 func Test_ServerConfig_UnixSocketFactory(t *testing.T) {
