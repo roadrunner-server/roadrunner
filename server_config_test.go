@@ -58,3 +58,13 @@ func Test_ServerConfig_ErrorFactory(t *testing.T) {
 	assert.Error(t, err)
 	assert.Equal(t, "invalid relay DSN (pipes, tcp://:6001, unix://rr.sock)", err.Error())
 }
+
+func Test_ServerConfig_Cmd(t *testing.T) {
+	cfg := &ServerConfig{
+		Command: "php php-src/tests/client.php pipes",
+	}
+
+	cmd, err := cfg.makeCommand()
+	assert.NoError(t, err)
+	assert.NotNil(t, cmd)
+}

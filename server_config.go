@@ -6,6 +6,9 @@ import (
 	"strings"
 	"time"
 	"os/exec"
+	"syscall"
+	"os/user"
+	"strconv"
 )
 
 const (
@@ -41,17 +44,66 @@ type ServerConfig struct {
 	Pool *Config
 }
 
-func (f *ServerConfig) makeCommand() (func() *exec.Cmd, error) {
-	return nil, nil
+func (cfg *ServerConfig) makeCommand() (func() *exec.Cmd, error) {
+	var (
+		err error
+		u   *user.User
+		g   *user.Group
+		crd *syscall.Credential
+		cmd = strings.Split(cfg.Command, " ")
+	)
+
+	if cfg.User != "" {
+		if u, err = resolveUser(cfg.User); err != nil {
+			return nil, err
+		}
+	}
+
+	if cfg.Group != "" {
+		if g, err = resolveGroup(cfg.Group); err != nil {
+			return nil, err
+		}
+	}
+
+	if u != nil || g != nil {
+		crd = &syscall.Credential{}
+
+		if u != nil {
+			uid, err := strconv.ParseUint(u.Uid, 10, 32)
+			if err != nil {
+				return nil, err
+			}
+
+			crd.Uid = uint32(uid)
+		}
+
+		if g != nil {
+			gid, err := strconv.ParseUint(g.Gid, 10, 32)
+			if err != nil {
+				return nil, err
+			}
+
+			crd.Gid = uint32(gid)
+		}
+	}
+
+	return func() *exec.Cmd {
+		cmd := exec.Command(cmd[0], cmd[1:]...)
+		if crd != nil {
+			cmd.SysProcAttr.Credential = crd
+		}
+
+		return cmd
+	}, nil
 }
 
 // makeFactory creates and connects new factory instance based on given parameters.
-func (f *ServerConfig) makeFactory() (Factory, error) {
-	if f.Relay == "pipes" || f.Relay == "pipe" {
+func (cfg *ServerConfig) makeFactory() (Factory, error) {
+	if cfg.Relay == "pipes" || cfg.Relay == "pipe" {
 		return NewPipeFactory(), nil
 	}
 
-	dsn := strings.Split(f.Relay, "://")
+	dsn := strings.Split(cfg.Relay, "://")
 	if len(dsn) != 2 {
 		return nil, errors.New("invalid relay DSN (pipes, tcp://:6001, unix://rr.sock)")
 	}
@@ -61,5 +113,5 @@ func (f *ServerConfig) makeFactory() (Factory, error) {
 		return nil, nil
 	}
 
-	return NewSocketFactory(ln, time.Second*f.FactoryTimeout), nil
+	return NewSocketFactory(ln, time.Second*cfg.FactoryTimeout), nil
 }
