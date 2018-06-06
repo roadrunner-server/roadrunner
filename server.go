@@ -8,10 +8,13 @@ import (
 
 const (
 	// EventNewPool triggered when server creates new pool.
-	EventStart = iota + 128
+	EventServerStart = iota + 128
 
 	// EventNewPool triggered when server creates new pool.
-	EventStop
+	EventServerStop
+
+	// EventServerFailure triggered when server is unable to replace dead pool.
+	EventServerFailure
 
 	// EventNewPool triggered when server creates new pool.
 	EventNewPool
@@ -110,6 +113,8 @@ func (srv *Server) Start() (err error) {
 
 	srv.pool.Observe(srv.poolObserver)
 	srv.started = true
+	srv.throw(EventServerStart, srv)
+
 	return nil
 }
 
@@ -130,6 +135,7 @@ func (srv *Server) Stop() error {
 	srv.factory = nil
 	srv.pool = nil
 	srv.started = false
+	srv.throw(EventServerStop, srv)
 
 	return nil
 }
@@ -169,7 +175,10 @@ func (srv *Server) poolObserver(event int, ctx interface{}) {
 
 	if event == EventPoolError {
 		// pool failure, rebuilding
-		srv.Reset()
+		if err := srv.Reset(); err != nil {
+			// everything is dead
+			srv.throw(EventServerFailure, srv)
+		}
 	}
 }
 
