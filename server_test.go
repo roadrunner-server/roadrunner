@@ -95,6 +95,21 @@ func TestServer_Configure_BeforeStart(t *testing.T) {
 	assert.Len(t, srv.Workers(), 2)
 }
 
+func TestServer_StopUnstarted(t *testing.T) {
+	srv := NewServer(
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
+		&ServerConfig{
+			Relay: "pipes",
+			Pool: Config{
+				NumWorkers:      uint64(runtime.NumCPU()),
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		})
+	assert.NoError(t, srv.Stop())
+	assert.Nil(t, srv.Workers())
+}
+
 func TestServer_Reconfigure(t *testing.T) {
 	srv := NewServer(
 		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
