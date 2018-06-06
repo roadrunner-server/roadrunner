@@ -55,3 +55,53 @@ func TestServer_SocketEcho(t *testing.T) {
 
 	assert.Equal(t, "hello", res.String())
 }
+
+func TestServer_Reconfigure(t *testing.T) {
+	srv := NewServer(&ServerConfig{
+		Command: "php php-src/tests/client.php echo pipes",
+		Relay:   "pipes",
+		Pool: &Config{
+			NumWorkers:      1,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	}, nil)
+	defer srv.Stop()
+
+	assert.NoError(t, srv.Start())
+	assert.Len(t, srv.Workers(), 1)
+
+	err := srv.Reconfigure(&ServerConfig{
+		Command: "php php-src/tests/client.php echo pipes",
+		Relay:   "pipes",
+		Pool: &Config{
+			NumWorkers:      2,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	})
+	assert.NoError(t, err)
+
+	assert.Len(t, srv.Workers(), 2)
+}
+
+func TestServer_Reset(t *testing.T) {
+	srv := NewServer(&ServerConfig{
+		Command: "php php-src/tests/client.php echo pipes",
+		Relay:   "pipes",
+		Pool: &Config{
+			NumWorkers:      1,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	}, nil)
+	defer srv.Stop()
+
+	assert.NoError(t, srv.Start())
+	assert.Len(t, srv.Workers(), 1)
+
+	pid := *srv.Workers()[0].Pid
+	assert.NoError(t, srv.Reset())
+	assert.Len(t, srv.Workers(), 1)
+	assert.NotEqual(t, pid, srv.Workers()[0].Pid)
+}
