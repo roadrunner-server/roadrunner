@@ -30,7 +30,7 @@ type Worker struct {
 	state *state
 
 	// underlying command with associated process, command must be
-	// provided to worker from outside in non-started form. Cmd
+	// provided to worker from outside in non-started form. CmdSource
 	// stdErr direction will be handled by worker to aggregate error message.
 	cmd *exec.Cmd
 

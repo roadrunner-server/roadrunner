@@ -42,6 +42,10 @@ http:
     # php worker command.
     command:  "php /Users/wolfy-j/Projects/phpapp/webroot/index.php rr pipes --no-ansi"
 
+    user:  "wolfy-j"
+
+    group: "wolfy-j"
+
     # connection method (pipes, tcp://:9000, unix://socket.unix).
     relay:    "pipes"
 
