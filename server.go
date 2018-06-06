@@ -176,6 +176,13 @@ func (srv *Server) poolObserver(event int, ctx interface{}) {
 	if event == EventPoolError {
 		// pool failure, rebuilding
 		if err := srv.Reset(); err != nil {
+			srv.mu.Lock()
+			defer srv.mu.Unlock()
+
+			srv.started = false
+			srv.pool = nil
+			srv.factory = nil
+
 			// everything is dead
 			srv.throw(EventServerFailure, srv)
 		}
