@@ -35,11 +35,6 @@ func Test_ResolveUser(t *testing.T) {
 	assert.NotNil(t, u)
 	assert.Equal(t, current.Uid, u.Uid)
 
-	u, err = resolveUser(current.Name)
-	assert.NoError(t, err)
-	assert.NotNil(t, u)
-	assert.Equal(t, current.Uid, u.Uid)
-
 	u, err = resolveUser(current.Username)
 	assert.NoError(t, err)
 	assert.NotNil(t, u)
