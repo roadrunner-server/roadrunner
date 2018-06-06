@@ -44,6 +44,18 @@ type ServerConfig struct {
 	Pool *Config
 }
 
+// Differs returns true if configuration has changed but ignores pool changes.
+func (cfg *ServerConfig) Differs(new *ServerConfig) bool {
+	// command configuration has changed
+	if cfg.Command != new.Command || cfg.User != new.User || cfg.Group != new.Group {
+		return true
+	}
+
+	// factory configuration has changed
+	return cfg.Relay != new.Relay || cfg.FactoryTimeout != new.FactoryTimeout
+}
+
+// makeCommands returns new command provider based on configured options.
 func (cfg *ServerConfig) makeCommand() (func() *exec.Cmd, error) {
 	var (
 		err error

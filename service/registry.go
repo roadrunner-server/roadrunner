@@ -22,7 +22,7 @@ type Registry interface {
 	// Register add new service to the registry under given name.
 	Register(name string, service Service)
 
-	// Configure configures all underlying services with given configuration.
+	// Reconfigure configures all underlying services with given configuration.
 	Configure(cfg Config) error
 
 	// Check is Service has been registered and configured.
@@ -92,7 +92,7 @@ func (r *registry) Register(name string, service Service) {
 	r.log.Debugf("%s.service: registered", name)
 }
 
-// Configure configures all underlying services with given configuration.
+// Reconfigure configures all underlying services with given configuration.
 func (r *registry) Configure(cfg Config) error {
 	if r.configured != nil {
 		return fmt.Errorf("service bus has been already configured")

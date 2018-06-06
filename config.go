@@ -25,7 +25,7 @@ type Config struct {
 	DestroyTimeout time.Duration
 }
 
-// Configure returns error if cfg not valid
+// Reconfigure returns error if cfg not valid
 func (cfg *Config) Valid() error {
 	if cfg.NumWorkers == 0 {
 		return fmt.Errorf("cfg.NumWorkers must be set")
