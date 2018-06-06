@@ -59,6 +59,42 @@ func TestServer_SocketEcho(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
+func TestServer_Configure_BeforeStart(t *testing.T) {
+	srv := NewServer(
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
+		&ServerConfig{
+			Relay: "pipes",
+			Pool: Config{
+				NumWorkers:      uint64(runtime.NumCPU()),
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		})
+	defer srv.Stop()
+
+	err := srv.Reconfigure(&ServerConfig{
+		Relay: "pipes",
+		Pool: Config{
+			NumWorkers:      2,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	})
+	assert.NoError(t, err)
+
+	assert.NoError(t, srv.Start())
+
+	res, err := srv.Exec(&Payload{Body: []byte("hello")})
+
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+	assert.NotNil(t, res.Body)
+	assert.Nil(t, res.Context)
+
+	assert.Equal(t, "hello", res.String())
+	assert.Len(t, srv.Workers(), 2)
+}
+
 func TestServer_Reconfigure(t *testing.T) {
 	srv := NewServer(
 		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
