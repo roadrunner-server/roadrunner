@@ -16,6 +16,9 @@ const (
 	// EventServerFailure triggered when server is unable to replace dead pool.
 	EventServerFailure
 
+	// EventReplaceFailure triggered when server can not replace pool while the re-configuration.
+	EventReplaceFailure
+
 	// EventNewPool triggered when server creates new pool.
 	EventNewPool
 
@@ -74,6 +77,7 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 
 	pool, err := NewPool(srv.cmd, srv.factory, cfg.Pool)
 	if err != nil {
+		srv.throw(EventReplaceFailure, err)
 		return err
 	}
 	srv.throw(EventNewPool, pool)
