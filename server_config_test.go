@@ -3,6 +3,9 @@ package roadrunner
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
+	"os/user"
+	"runtime"
+	"strconv"
 )
 
 func Test_ServerConfig_PipeFactory(t *testing.T) {
@@ -67,4 +70,26 @@ func Test_ServerConfig_Cmd(t *testing.T) {
 	cmd, err := cfg.makeCommand()
 	assert.NoError(t, err)
 	assert.NotNil(t, cmd)
+}
+
+func Test_ServerConfig_Cmd_Credentials(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("not supported on " + runtime.GOOS)
+	}
+
+	u, err := user.Current()
+	assert.NoError(t, err)
+
+	cfg := &ServerConfig{
+		Command: "php php-src/tests/client.php pipes",
+		User:    u.Username,
+		Group:   u.Gid,
+	}
+
+	cmd, err := cfg.makeCommand()
+	assert.NoError(t, err)
+	assert.NotNil(t, cmd)
+
+	assert.Equal(t, u.Uid, strconv.Itoa(int(cmd().SysProcAttr.Credential.Uid)))
+	assert.Equal(t, u.Gid, strconv.Itoa(int(cmd().SysProcAttr.Credential.Gid)))
 }

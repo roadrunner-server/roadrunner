@@ -90,7 +90,7 @@ func (cfg *ServerConfig) makeCommand() (func() *exec.Cmd, error) {
 	return func() *exec.Cmd {
 		cmd := exec.Command(cmd[0], cmd[1:]...)
 		if crd != nil {
-			cmd.SysProcAttr.Credential = crd
+			cmd.SysProcAttr = &syscall.SysProcAttr{Credential: crd}
 		}
 
 		return cmd
