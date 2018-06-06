@@ -46,8 +46,11 @@ type Server struct {
 }
 
 // NewServer creates new router. Make sure to call configure before the usage.
-func NewServer(cfg *ServerConfig) *Server {
-	return &Server{cfg: cfg}
+func NewServer(cfg *ServerConfig, o func(event int, ctx interface{})) *Server {
+	return &Server{
+		cfg:      cfg,
+		observer: o,
+	}
 }
 
 // Reconfigure re-configures underlying pool and destroys it's previous version if any.
@@ -92,11 +95,6 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 // Reset resets the state of underlying pool and rebuilds all of it's workers.
 func (srv *Server) Reset() error {
 	return srv.Reconfigure(srv.cfg)
-}
-
-// Observe attaches event watcher to the router.
-func (srv *Server) Observe(o func(event int, ctx interface{})) {
-	srv.observer = o
 }
 
 // Start underlying worker pool, configure factory and command provider.
