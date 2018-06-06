@@ -3,7 +3,7 @@ package roadrunner
 import (
 	"testing"
 	"bytes"
-	"github.com/magiconair/properties/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestErrBuffer_Write_Len(t *testing.T) {
