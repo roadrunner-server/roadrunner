@@ -60,6 +60,7 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 	srv.mu.Lock()
 	if !srv.started {
 		srv.cfg = cfg
+		srv.mu.Unlock()
 		return nil
 	}
 	srv.mu.Unlock()
