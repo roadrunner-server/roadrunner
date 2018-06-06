@@ -203,9 +203,10 @@ func (w *Worker) start() error {
 		w.endState, _ = w.cmd.Process.Wait()
 		if w.waitDone != nil {
 			close(w.waitDone)
+			w.mu.Lock()
+			defer w.mu.Unlock()
+
 			if w.rl != nil {
-				w.mu.Lock()
-				defer w.mu.Unlock()
 				w.rl.Close()
 			}
 		}
