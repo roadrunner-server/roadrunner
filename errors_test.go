@@ -3,7 +3,7 @@ package roadrunner
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/go-errors/errors"
+	"errors"
 )
 
 func Test_JobError_Error(t *testing.T) {
