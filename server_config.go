@@ -35,9 +35,9 @@ type ServerConfig struct {
 	// This config section must not change on re-configuration.
 	Relay string
 
-	// FactoryTimeout defines for how long socket factory will be waiting for worker connection. This config section
+	// RelayTimeout defines for how long socket factory will be waiting for worker connection. This config section
 	// must not change on re-configuration.
-	FactoryTimeout time.Duration
+	RelayTimeout time.Duration
 
 	// Pool defines worker pool configuration, number of workers, timeouts and etc. This config section might change
 	// while server is running.
@@ -52,7 +52,7 @@ func (cfg *ServerConfig) Differs(new *ServerConfig) bool {
 	}
 
 	// factory configuration has changed
-	return cfg.Relay != new.Relay || cfg.FactoryTimeout != new.FactoryTimeout
+	return cfg.Relay != new.Relay || cfg.RelayTimeout != new.RelayTimeout
 }
 
 // makeCommands returns new command provider based on configured options.
@@ -125,5 +125,5 @@ func (cfg *ServerConfig) makeFactory() (Factory, error) {
 		return nil, nil
 	}
 
-	return NewSocketFactory(ln, time.Second*cfg.FactoryTimeout), nil
+	return NewSocketFactory(ln, cfg.RelayTimeout), nil
 }
