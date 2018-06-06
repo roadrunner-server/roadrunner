@@ -35,6 +35,7 @@ func Test_ServerConfig_SocketFactory(t *testing.T) {
 
 	cfg = &ServerConfig{Relay: "tcp://localhost:9111"}
 	f, err = cfg.makeFactory()
+	assert.NotNil(t, f)
 	assert.NoError(t, err)
 	defer f.Close()
 
