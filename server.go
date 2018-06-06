@@ -80,12 +80,13 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 		srv.throw(EventReplaceFailure, err)
 		return err
 	}
-	srv.throw(EventNewPool, pool)
 
 	srv.mu.Lock()
 	srv.cfg.Pool, srv.pool = cfg.Pool, pool
 	srv.pool.Observe(srv.poolObserver)
 	srv.mu.Unlock()
+
+	srv.throw(EventNewPool, pool)
 
 	if previous != nil {
 		go func(previous Pool) {
