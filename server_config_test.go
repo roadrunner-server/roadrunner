@@ -31,7 +31,7 @@ func Test_ServerConfig_SocketFactory(t *testing.T) {
 	assert.NoError(t, err)
 	assert.IsType(t, &SocketFactory{}, f)
 	assert.Equal(t, "tcp", f.(*SocketFactory).ls.Addr().Network(), )
-	assert.Equal(t, "[::]:9000", f.(*SocketFactory).ls.Addr().String())
+	assert.Equal(t, "[::]:9111", f.(*SocketFactory).ls.Addr().String())
 
 	cfg = &ServerConfig{Relay: "tcp://localhost:9111"}
 	f, err = cfg.makeFactory()

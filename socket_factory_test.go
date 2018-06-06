@@ -373,7 +373,7 @@ func Benchmark_Tcp_Worker_ExecEcho(b *testing.B) {
 }
 
 func Benchmark_Unix_SpawnWorker_Stop(b *testing.B) {
-	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+	if runtime.GOOS == "windows" {
 		b.Skip("not supported on " + runtime.GOOS)
 	}
 
@@ -400,7 +400,7 @@ func Benchmark_Unix_SpawnWorker_Stop(b *testing.B) {
 }
 
 func Benchmark_Unix_Worker_ExecEcho(b *testing.B) {
-	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+	if runtime.GOOS == "windows" {
 		b.Skip("not supported on " + runtime.GOOS)
 	}
 
