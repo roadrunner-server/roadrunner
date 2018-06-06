@@ -183,7 +183,7 @@ func (srv *Server) poolObserver(event int, ctx interface{}) {
 			srv.pool = nil
 			srv.factory = nil
 
-			// everything is dead
+			// everything is dead, this is recoverable but heavy state
 			srv.throw(EventServerFailure, srv)
 		}
 	}
