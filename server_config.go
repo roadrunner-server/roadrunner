@@ -28,12 +28,6 @@ type ServerConfig struct {
 	Pool Config
 }
 
-// Differs returns true if configuration has changed but ignores pool changes.
-func (cfg *ServerConfig) Differs(new *ServerConfig) bool {
-	// factory configuration has changed
-	return cfg.Relay != new.Relay || cfg.RelayTimeout != new.RelayTimeout
-}
-
 // makeFactory creates and connects new factory instance based on given parameters.
 func (cfg *ServerConfig) makeFactory() (Factory, error) {
 	if cfg.Relay == "pipes" || cfg.Relay == "pipe" {
