@@ -16,9 +16,6 @@ before_install:
 install:
   - go get "github.com/spiral/roadrunner"
   - cp -r * $GOPATH/src/github.com/spiral/roadrunner
-  - go get -u "github.com/spiral/goridge"
-  - go get -u "github.com/pkg/errors"
-  - go get -u "github.com/stretchr/testify/assert"
   - composer install --no-interaction --prefer-source
 
 script:
