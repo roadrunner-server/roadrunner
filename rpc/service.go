@@ -69,6 +69,11 @@ func (s *Service) Serve() error {
 	}()
 
 	<-s.stop
+
+	s.mu.Lock()
+	s.serving = false
+	s.mu.Unlock()
+
 	return nil
 }
 
