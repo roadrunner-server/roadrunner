@@ -23,6 +23,22 @@ func Test_GetState(t *testing.T) {
 	w.Stop()
 }
 
+func Test_Kill(t *testing.T) {
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
+
+	w, err := NewPipeFactory().SpawnWorker(cmd)
+	go func() {
+		assert.Error(t, w.Wait())
+		assert.Equal(t, StateStopped, w.State().Value())
+	}()
+
+	assert.NoError(t, err)
+	assert.NotNil(t, w)
+
+	assert.Equal(t, StateReady, w.State().Value())
+	w.Kill()
+}
+
 func Test_Echo(t *testing.T) {
 	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 
