@@ -197,7 +197,7 @@ func (p *StaticPool) createWorker() (*Worker, error) {
 		return nil, err
 	}
 
-	p.throw(EventWorkerCreate, w)
+	p.throw(EventWorkerConstruct, w)
 
 	go func(w *Worker) {
 		err := w.Wait()

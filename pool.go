@@ -1,8 +1,8 @@
 package roadrunner
 
 const (
-	// EventWorkerCreate thrown when new worker is spawned.
-	EventWorkerCreate = iota
+	// EventWorkerConstruct thrown when new worker is spawned.
+	EventWorkerConstruct = iota + 100
 
 	// EventWorkerDestruct thrown after worker destruction.
 	EventWorkerDestruct

@@ -185,7 +185,7 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 
 	destructed := make(chan interface{})
 	p.Observe(func(e int, ctx interface{}) {
-		if e == EventWorkerCreate {
+		if e == EventWorkerConstruct {
 			close(destructed)
 		}
 	})

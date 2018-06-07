@@ -7,23 +7,20 @@ import (
 )
 
 const (
-	// EventNewPool triggered when server creates new pool.
-	EventServerStart = iota + 128
+	// EventPoolConstruct triggered when server creates new pool.
+	EventServerStart = iota + 200
 
-	// EventNewPool triggered when server creates new pool.
+	// EventPoolConstruct triggered when server creates new pool.
 	EventServerStop
 
 	// EventServerFailure triggered when server is unable to replace dead pool.
 	EventServerFailure
 
-	// EventReplaceFailure triggered when server can not replace pool while the re-configuration.
-	EventReplaceFailure
+	// EventPoolConstruct triggered when server creates new pool.
+	EventPoolConstruct
 
-	// EventNewPool triggered when server creates new pool.
-	EventNewPool
-
-	// EventDestroyPool triggered when server destroys existed pool.
-	EventDestroyPool
+	// EventPoolDestruct triggered when server destroys existed pool.
+	EventPoolDestruct
 )
 
 // Service manages pool creation and swapping.
@@ -77,7 +74,6 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 
 	pool, err := NewPool(srv.cmd, srv.factory, cfg.Pool)
 	if err != nil {
-		srv.throw(EventReplaceFailure, err)
 		return err
 	}
 
@@ -86,11 +82,11 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 	srv.pool.Observe(srv.poolObserver)
 	srv.mu.Unlock()
 
-	srv.throw(EventNewPool, pool)
+	srv.throw(EventPoolConstruct, pool)
 
 	if previous != nil {
 		go func(previous Pool) {
-			srv.throw(EventDestroyPool, previous)
+			srv.throw(EventPoolDestruct, previous)
 			previous.Destroy()
 		}(previous)
 	}
@@ -132,7 +128,7 @@ func (srv *Server) Stop() error {
 		return nil
 	}
 
-	srv.throw(EventDestroyPool, srv.pool)
+	srv.throw(EventPoolDestruct, srv.pool)
 	srv.pool.Destroy()
 	srv.factory.Close()
 
