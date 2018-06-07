@@ -58,7 +58,6 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, er
 	for i := uint64(0); i < p.cfg.NumWorkers; i++ {
 		// to test if worker ready
 		w, err := p.createWorker()
-
 		if err != nil {
 			p.Destroy()
 			return nil, err

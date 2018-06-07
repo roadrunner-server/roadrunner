@@ -41,7 +41,7 @@ func (cfg *ServerConfig) makeFactory() (Factory, error) {
 
 	ln, err := net.Listen(dsn[0], dsn[1])
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 
 	return NewSocketFactory(ln, cfg.RelayTimeout), nil

@@ -73,3 +73,11 @@ func Test_ServerConfig_ErrorFactory(t *testing.T) {
 	assert.Error(t, err)
 	assert.Equal(t, "invalid relay DSN (pipes, tcp://:6001, unix://rr.sock)", err.Error())
 }
+
+func Test_ServerConfig_ErrorMethod(t *testing.T) {
+	cfg := &ServerConfig{Relay: "xinu://unix.sock"}
+
+	f, err := cfg.makeFactory()
+	assert.Nil(t, f)
+	assert.Error(t, err)
+}
