@@ -52,20 +52,23 @@ func (s *Service) Serve() error {
 	}
 	defer ln.Close()
 
-	for {
-		select {
-		case <-s.stop:
-			return nil
-		default:
-			conn, err := ln.Accept()
-			if err != nil {
-				continue
+	go func() {
+		for {
+			select {
+			case <-s.stop:
+				break
+			default:
+				conn, err := ln.Accept()
+				if err != nil {
+					continue
+				}
+
+				go s.rpc.ServeCodec(goridge.NewCodec(conn))
 			}
-
-			go s.rpc.ServeCodec(goridge.NewCodec(conn))
 		}
-	}
+	}()
 
+	<-s.stop
 	return nil
 }
 

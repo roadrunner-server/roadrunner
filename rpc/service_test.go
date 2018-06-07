@@ -30,6 +30,7 @@ func Test_RegisterNotConfigured(t *testing.T) {
 	client, err := s.Client()
 	assert.Nil(t, client)
 	assert.Error(t, err)
+	assert.Error(t, s.Serve())
 }
 
 func Test_Enabled(t *testing.T) {
