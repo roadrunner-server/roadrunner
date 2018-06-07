@@ -160,3 +160,34 @@ func TestServer_Reset(t *testing.T) {
 	assert.Len(t, srv.Workers(), 1)
 	assert.NotEqual(t, pid, srv.Workers()[0].Pid)
 }
+
+func TestServer_HandleWorkerFailure(t *testing.T) {
+	srv := NewServer(
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
+		&ServerConfig{
+			Relay: "pipes",
+			Pool: Config{
+				NumWorkers:      1,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		})
+	defer srv.Stop()
+
+	assert.NoError(t, srv.Start())
+
+	destructed := make(chan interface{})
+	srv.Observe(func(e int, ctx interface{}) {
+		if e == EventWorkerCreate {
+			close(destructed)
+		}
+	})
+
+	// killing random worker and expecting pool to replace it
+	srv.Workers()[0].cmd.Process.Kill()
+	<-destructed
+
+	for _, w := range srv.Workers() {
+		assert.Equal(t, StateReady, w.state.Value())
+	}
+}
