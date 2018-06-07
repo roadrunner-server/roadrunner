@@ -43,6 +43,23 @@ func Test_Echo(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
+func Test_BadPayload(t *testing.T) {
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
+
+	w, _ := NewPipeFactory().SpawnWorker(cmd)
+	go func() {
+		assert.NoError(t, w.Wait())
+	}()
+	defer w.Stop()
+
+	res, err := w.Exec(nil)
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+
+	assert.Equal(t, "payload can not be empty", err.Error())
+}
+
 func Test_NotStarted_String(t *testing.T) {
 	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 
@@ -50,6 +67,19 @@ func Test_NotStarted_String(t *testing.T) {
 	assert.Contains(t, w.String(), "php php-src/tests/client.php echo pipes")
 	assert.Contains(t, w.String(), "inactive")
 	assert.Contains(t, w.String(), "numExecs: 0")
+}
+
+func Test_NotStarted_Exec(t *testing.T) {
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
+
+	w, _ := newWorker(cmd)
+
+	res, err := w.Exec(&Payload{Body: []byte("hello")})
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+
+	assert.Equal(t, "worker is not ready (inactive)", err.Error())
 }
 
 func Test_String(t *testing.T) {
