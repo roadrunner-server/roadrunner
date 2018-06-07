@@ -21,6 +21,8 @@ type Service struct {
 // WithConfig must return Service instance configured with the given environment. Must return error in case of
 // misconfiguration, might return nil as Service if Service is not enabled.
 func (s *Service) WithConfig(cfg service.Config, reg service.Registry) (service.Service, error) {
+	// todo: logging ?
+
 	config := &config{}
 	if err := cfg.Unmarshal(config); err != nil {
 		return nil, err
@@ -57,10 +59,10 @@ func (s *Service) Serve() error {
 		default:
 			conn, err := ln.Accept()
 			if err != nil {
+				conn.Close()
 				continue
 			}
 
-			s.rpc.Accept(ln)
 			go s.rpc.ServeCodec(goridge.NewCodec(conn))
 		}
 	}

@@ -20,7 +20,9 @@ install:
   - go get -u "github.com/stretchr/testify/assert"
 
 script:
-  - go test -race -v -coverprofile=coverage.txt -covermode=atomic
+  - go test -race -v -coverprofile=lib.txt -covermode=atomic
+  - go test ./rpc -race -v -coverprofile=rpc.txt -covermode=atomic
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -f lib.txt
+  - bash <(curl -s https://codecov.io/bash) -f rpc.txt

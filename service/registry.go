@@ -2,9 +2,9 @@ package service
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"sync"
-	"github.com/pkg/errors"
 )
 
 // Config provides ability to slice configuration sections and unmarshal configuration data into

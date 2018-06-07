@@ -1,9 +1,9 @@
 package rpc
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
 	"runtime"
+	"testing"
 )
 
 func TestConfig_Listener(t *testing.T) {
