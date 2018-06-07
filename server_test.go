@@ -191,7 +191,7 @@ func TestServer_ReplacePool(t *testing.T) {
 	}
 }
 
-func TestServer_HandleServerFailure(t *testing.T) {
+func TestServer_ServerFailure(t *testing.T) {
 	mode := "pipes"
 	srv := NewServer(
 		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", mode) },
