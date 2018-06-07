@@ -153,10 +153,14 @@ func (r *registry) Get(service string) Service {
 
 // Serve all configured services. Non blocking.
 func (r *registry) Serve() error {
+	// todo: serving
+
 	return nil
 }
 
 // Close all active services.
 func (r *registry) Stop() error {
+	// todo: stopping
+
 	return nil
 }

@@ -18,7 +18,7 @@ type config struct {
 func (cfg *config) listener() (net.Listener, error) {
 	dsn := strings.Split(cfg.Listen, "://")
 	if len(dsn) != 2 {
-		return nil, errors.New("invalid socket DSN (tcp://:6001, unix://sock.unix)")
+		return nil, errors.New("invalid socket DSN (tcp://:6001, unix://rpc.sock)")
 	}
 
 	return net.Listen(dsn[0], dsn[1])
@@ -28,7 +28,7 @@ func (cfg *config) listener() (net.Listener, error) {
 func (cfg *config) dialer() (net.Conn, error) {
 	dsn := strings.Split(cfg.Listen, "://")
 	if len(dsn) != 2 {
-		return nil, errors.New("invalid socket DSN (tcp://:6001, unix://sock.unix)")
+		return nil, errors.New("invalid socket DSN (tcp://:6001, unix://rpc.sock)")
 	}
 
 	return net.Dial(dsn[0], dsn[1])
