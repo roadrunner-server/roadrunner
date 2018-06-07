@@ -5,6 +5,7 @@ import (
 	"github.com/spiral/goridge"
 	"github.com/spiral/roadrunner/service"
 	"net/rpc"
+	"sync"
 )
 
 // Service is RPC service.
@@ -12,6 +13,9 @@ type Service struct {
 	cfg  *config
 	stop chan interface{}
 	rpc  *rpc.Server
+
+	mu      sync.Mutex
+	serving bool
 }
 
 // WithConfig must return Service instance configured with the given environment. Must return error in case of
@@ -35,7 +39,10 @@ func (s *Service) Serve() error {
 		return errors.New("RPC service is not configured")
 	}
 
+	s.mu.Lock()
+	s.serving = true
 	s.stop = make(chan interface{})
+	s.mu.Unlock()
 
 	ln, err := s.cfg.listener()
 	if err != nil {
@@ -54,7 +61,6 @@ func (s *Service) Serve() error {
 			}
 
 			s.rpc.Accept(ln)
-
 			go s.rpc.ServeCodec(goridge.NewCodec(conn))
 		}
 	}
@@ -64,8 +70,12 @@ func (s *Service) Serve() error {
 
 // Close stop Service Service.
 func (s *Service) Stop() {
-	//todo: is started?
-	close(s.stop)
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.serving {
+		close(s.stop)
+	}
 }
 
 // Register publishes in the server the set of methods of the
