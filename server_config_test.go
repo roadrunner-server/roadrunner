@@ -1,9 +1,9 @@
 package roadrunner
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
 	"runtime"
+	"testing"
 )
 
 func Test_ServerConfig_PipeFactory(t *testing.T) {
@@ -32,7 +32,7 @@ func Test_ServerConfig_SocketFactory(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.IsType(t, &SocketFactory{}, f)
-	assert.Equal(t, "tcp", f.(*SocketFactory).ls.Addr().Network(), )
+	assert.Equal(t, "tcp", f.(*SocketFactory).ls.Addr().Network())
 	assert.Equal(t, "[::]:9111", f.(*SocketFactory).ls.Addr().String())
 
 	cfg = &ServerConfig{Relay: "tcp://localhost:9112"}

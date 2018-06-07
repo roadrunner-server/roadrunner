@@ -1,9 +1,9 @@
 package roadrunner
 
 import (
-	"sync"
-	"os/exec"
 	"fmt"
+	"os/exec"
+	"sync"
 )
 
 const (

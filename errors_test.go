@@ -1,9 +1,9 @@
 package roadrunner
 
 import (
+	"errors"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"errors"
 )
 
 func Test_JobError_Error(t *testing.T) {

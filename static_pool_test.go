@@ -2,13 +2,13 @@ package roadrunner
 
 import (
 	"github.com/stretchr/testify/assert"
+	"log"
 	"os/exec"
 	"runtime"
+	"strconv"
+	"sync"
 	"testing"
 	"time"
-	"strconv"
-	"log"
-	"sync"
 )
 
 var cfg = Config{
@@ -198,7 +198,6 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 		assert.Equal(t, StateReady, w.state.Value())
 	}
 }
-
 
 func Test_StaticPool_AllocateTimeout(t *testing.T) {
 	p, err := NewPool(

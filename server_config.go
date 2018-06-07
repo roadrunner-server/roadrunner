@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	FactoryPipes  = iota
+	FactoryPipes = iota
 	FactorySocket
 )
 

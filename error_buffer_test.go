@@ -1,9 +1,9 @@
 package roadrunner
 
 import (
-	"testing"
 	"bytes"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestErrBuffer_Write_Len(t *testing.T) {
