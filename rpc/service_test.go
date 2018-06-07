@@ -16,6 +16,13 @@ type testCfg struct{ cfg string }
 func (cfg *testCfg) Get(name string) service.Config  { return nil }
 func (cfg *testCfg) Unmarshal(out interface{}) error { return json.Unmarshal([]byte(cfg.cfg), out) }
 
+func Test_ConfigError(t *testing.T) {
+	s, err := (&Service{}).WithConfig(&testCfg{`{"enable":false`}, nil)
+
+	assert.Error(t, err)
+	assert.Nil(t, s)
+}
+
 func Test_Disabled(t *testing.T) {
 	s, err := (&Service{}).WithConfig(&testCfg{`{"enable":false}`}, nil)
 
