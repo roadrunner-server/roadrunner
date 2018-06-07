@@ -63,9 +63,9 @@ func (s *Service) Serve() error {
 }
 
 // Close stop Service Service.
-func (s *Service) Stop() error {
+func (s *Service) Stop() {
+	//todo: is started?
 	close(s.stop)
-	return nil
 }
 
 // Register publishes in the server the set of methods of the
