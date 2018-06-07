@@ -14,10 +14,11 @@ before_install:
   - composer self-update
 
 install:
-  - composer install --no-interaction --prefer-source
+  - cp -r * $GOPATH/src/github.com/spiral/roadrunner
   - go get -u "github.com/spiral/goridge"
   - go get -u "github.com/pkg/errors"
   - go get -u "github.com/stretchr/testify/assert"
+  - composer install --no-interaction --prefer-source
 
 script:
   - go test -race -v -coverprofile=lib.txt -covermode=atomic
