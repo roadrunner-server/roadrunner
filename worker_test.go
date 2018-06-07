@@ -21,7 +21,6 @@ func Test_GetState(t *testing.T) {
 
 	assert.Equal(t, StateReady, w.State().Value())
 	w.Stop()
-	assert.Equal(t, StateStopping, w.State().Value())
 }
 
 func Test_Echo(t *testing.T) {
