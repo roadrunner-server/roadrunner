@@ -14,6 +14,7 @@ before_install:
   - composer self-update
 
 install:
+  - go get "github.com/spiral/roadrunner"
   - cp -r * $GOPATH/src/github.com/spiral/roadrunner
   - go get -u "github.com/spiral/goridge"
   - go get -u "github.com/pkg/errors"
