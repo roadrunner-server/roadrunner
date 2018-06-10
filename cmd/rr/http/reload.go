@@ -24,7 +24,6 @@ import (
 	"errors"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/rpc"
 )
 
 func init() {
@@ -39,18 +38,20 @@ func reloadHandler(cmd *cobra.Command, args []string) error {
 	if !rr.Container.Has("rpc") {
 		return errors.New("RPC service is not configured")
 	}
-
-	client, err := rr.Container.Get("rpc").(*rpc.Service).Client()
-	if err != nil {
-		return err
-	}
-	defer client.Close()
-
-	var r string
-	if err := client.Call("http.Reset", true, &r); err != nil {
-		return err
-	}
-
-	rr.Logger.Info("http.service: restarting worker pool")
 	return nil
+
+	//todo: change
+	//client, err := rr.Container.Get("rpc").(*rpc.Service).Client()
+	//if err != nil {
+	//	return err
+	//}
+	//defer client.Close()
+	//
+	//var r string
+	//if err := client.Call("http.Reset", true, &r); err != nil {
+	//	return err
+	//}
+	//
+	//rr.Logger.Info("http.service: restarting worker pool")
+	//return nil
 }

@@ -43,7 +43,7 @@ type Container interface {
 type Service interface {
 	// Configure must return configure service and return true if service hasStatus enabled. Must return error in case of
 	// misconfiguration. Services must not be used without proper configuration pushed first.
-	Configure(cfg Config, reg Container) (enabled bool, err error)
+	Configure(cfg Config, c Container) (enabled bool, err error)
 
 	// Serve serves svc.
 	Serve() error
@@ -67,25 +67,25 @@ func NewContainer(log logrus.FieldLogger) Container {
 }
 
 // Register add new service to the container under given name.
-func (r *container) Register(name string, service Service) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
+func (c *container) Register(name string, service Service) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-	r.services = append(r.services, &entry{
+	c.services = append(c.services, &entry{
 		name:   name,
 		svc:    service,
-		status: StatusConfigured,
+		status: StatusRegistered,
 	})
 
-	r.log.Debugf("%s.service: registered", name)
+	c.log.Debugf("%s.service: registered", name)
 }
 
 // Check hasStatus svc has been registered.
-func (r *container) Has(target string) bool {
-	r.mu.Lock()
-	defer r.mu.Unlock()
+func (c *container) Has(target string) bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-	for _, e := range r.services {
+	for _, e := range c.services {
 		if e.name == target {
 			return true
 		}
@@ -95,11 +95,11 @@ func (r *container) Has(target string) bool {
 }
 
 // Get returns svc instance by it's name or nil if svc not found.
-func (r *container) Get(target string) (svc Service, status int) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
+func (c *container) Get(target string) (svc Service, status int) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-	for _, e := range r.services {
+	for _, e := range c.services {
 		if e.name == target {
 			return e.svc, e.getStatus()
 		}
@@ -109,22 +109,22 @@ func (r *container) Get(target string) (svc Service, status int) {
 }
 
 // Configure configures all underlying services with given configuration.
-func (r *container) Configure(cfg Config) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
+func (c *container) Configure(cfg Config) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-	for _, e := range r.services {
+	for _, e := range c.services {
 		if e.getStatus() >= StatusConfigured {
 			return fmt.Errorf("service %s has already been configured", e.name)
 		}
 
 		segment := cfg.Get(e.name)
 		if segment == nil {
-			r.log.Debugf("%s.service: no config has been provided", e.name)
+			c.log.Debugf("%s.service: no config has been provided", e.name)
 			continue
 		}
 
-		ok, err := e.svc.Configure(segment, r)
+		ok, err := e.svc.Configure(segment, c)
 		if err != nil {
 			return errors.Wrap(err, fmt.Sprintf("%s.service", e.name))
 		} else if ok {
@@ -136,38 +136,38 @@ func (r *container) Configure(cfg Config) error {
 }
 
 // Serve all configured services. Non blocking.
-func (r *container) Serve() error {
+func (c *container) Serve() error {
 	var (
 		numServing int
-		done       = make(chan interface{}, len(r.services))
+		done       = make(chan interface{}, len(c.services))
 	)
 	defer close(done)
 
-	r.mu.Lock()
-	for _, e := range r.services {
+	c.mu.Lock()
+	for _, e := range c.services {
 		if e.hasStatus(StatusConfigured) {
 			numServing ++
 		} else {
 			continue
 		}
 
-		go func(s *entry) {
-			s.setStatus(StatusServing)
-			defer s.setStatus(StatusStopped)
+		go func(e *entry) {
+			e.setStatus(StatusServing)
+			defer e.setStatus(StatusStopped)
 
-			if err := s.svc.Serve(); err != nil {
-				done <- err
+			if err := e.svc.Serve(); err != nil {
+				done <- errors.Wrap(err, fmt.Sprintf("%s.service", e.name))
 			}
 		}(e)
 	}
-	r.mu.Unlock()
+	c.mu.Unlock()
 
 	for i := 0; i < numServing; i++ {
 		result := <-done
 
 		// found an error in one of the services, stopping the rest of running services.
 		if err, ok := result.(error); ok {
-			r.Stop()
+			c.Stop()
 			return err
 		}
 	}
@@ -176,13 +176,14 @@ func (r *container) Serve() error {
 }
 
 // Stop sends stop command to all running services.
-func (r *container) Stop() {
-	r.mu.Lock()
-	defer r.mu.Unlock()
+func (c *container) Stop() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-	for _, e := range r.services {
+	for _, e := range c.services {
 		if e.hasStatus(StatusServing) {
 			e.svc.Stop()
+			e.setStatus(StatusStopped)
 		}
 	}
 }

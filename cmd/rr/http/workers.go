@@ -24,7 +24,6 @@ import (
 	"errors"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/rpc"
 )
 
 func init() {
@@ -40,11 +39,12 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 		return errors.New("RPC service is not configured")
 	}
 
-	client, err := rr.Container.Get("rpc").(*rpc.Service).Client()
-	if err != nil {
-		return err
-	}
-	defer client.Close()
+	//todo: change
+	//client, err := rr.Container.Get("rpc").(*rpc.Service).Client()
+	//if err != nil {
+	//	return err
+	//}
+	//defer client.Close()
 
 	//var r http.WorkerList
 	//if err := client.Call("http.Workers", true, &r); err != nil {
