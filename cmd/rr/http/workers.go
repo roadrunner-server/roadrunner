@@ -31,7 +31,8 @@ import (
 	"os"
 	"strconv"
 	"time"
-	"github.com/fatih/color"
+	"github.com/dustin/go-humanize"
+	"github.com/spiral/roadrunner/cmd/rr/utils"
 )
 
 func init() {
@@ -60,11 +61,11 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 	}
 
 	tw := tablewriter.NewWriter(os.Stdout)
-	tw.SetHeader([]string{"PID", "Status", "Handled Jobs", "Alive"})
+	tw.SetHeader([]string{"PID", "Status", "Execs", "Created"})
 
 	for _, w := range r.Workers {
 		tw.Append([]string{
-			color.YellowString(strconv.Itoa(w.Pid)),
+			strconv.Itoa(w.Pid),
 			renderStatus(w.Status),
 			renderJobs(w.NumJobs),
 			renderAlive(time.Unix(0, w.Created)),
@@ -77,13 +78,26 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 }
 
 func renderStatus(status string) string {
+	switch status {
+	case "inactive":
+		return utils.Sprintf("<yellow>inactive</reset>")
+	case "ready":
+		return utils.Sprintf("<cyan>ready</reset>")
+	case "working":
+		return utils.Sprintf("<green>working</reset>")
+	case "stopped":
+		return utils.Sprintf("<red>stopped</reset>")
+	case "errored":
+		return utils.Sprintf("<red>errored</reset>")
+	}
+
 	return status
 }
 
 func renderJobs(number uint64) string {
-	return strconv.Itoa(int(number))
+	return humanize.Comma(int64(number))
 }
 
 func renderAlive(t time.Time) string {
-	return time.Now().Sub(t).String()
+	return humanize.RelTime(t, time.Now(), "ago", "")
 }

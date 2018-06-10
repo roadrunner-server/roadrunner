@@ -5,7 +5,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"sync"
-	"github.com/fatih/color"
 )
 
 // Config provides ability to slice configuration sections and unmarshal configuration data into
@@ -65,7 +64,7 @@ func (c *container) Register(name string, service Service) {
 		status: StatusRegistered,
 	})
 
-	c.log.Debugf("%s: registered", color.YellowString(name))
+	c.log.Debugf("[%s]: registered", name)
 }
 
 // Check hasStatus svc has been registered.
@@ -100,18 +99,18 @@ func (c *container) Get(target string) (svc Service, status int) {
 func (c *container) Configure(cfg Config) error {
 	for _, e := range c.services {
 		if e.getStatus() >= StatusConfigured {
-			return fmt.Errorf("service %s has already been configured", color.RedString(e.name))
+			return fmt.Errorf("service [%s] has already been configured", e.name)
 		}
 
 		segment := cfg.Get(e.name)
 		if segment == nil {
-			c.log.Debugf("%s: no config has been provided", color.YellowString(e.name))
+			c.log.Debugf("[%s]: no config has been provided", e.name)
 			continue
 		}
 
 		ok, err := e.svc.Configure(segment, c)
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("%s", color.RedString(e.name)))
+			return errors.Wrap(err, fmt.Sprintf("[%s]", e.name))
 		} else if ok {
 			e.setStatus(StatusConfigured)
 		}
@@ -135,13 +134,13 @@ func (c *container) Serve() error {
 			continue
 		}
 
-		c.log.Debugf("%s: started", color.GreenString(e.name))
+		c.log.Debugf("[%s]: started", e.name)
 		go func(e *entry) {
 			e.setStatus(StatusServing)
 			defer e.setStatus(StatusStopped)
 
 			if err := e.svc.Serve(); err != nil {
-				done <- errors.Wrap(err, fmt.Sprintf("%s", color.RedString(e.name)))
+				done <- errors.Wrap(err, fmt.Sprintf("[%s]", e.name))
 			}
 		}(e)
 	}
@@ -165,7 +164,7 @@ func (c *container) Stop() {
 		if e.hasStatus(StatusServing) {
 			e.svc.Stop()
 			e.setStatus(StatusStopped)
-			c.log.Debugf("%s: stopped", color.GreenString(e.name))
+			c.log.Debugf("[%s]: stopped", e.name)
 		}
 	}
 }
