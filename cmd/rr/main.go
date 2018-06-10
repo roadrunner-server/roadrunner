@@ -32,8 +32,12 @@ import (
 
 	// cli plugins
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
-	"github.com/spiral/roadrunner/debug"
+	"github.com/spiral/roadrunner/cmd/rr/debug"
+
+	"github.com/spf13/cobra"
 )
+
+var debugMode bool
 
 func main() {
 	// provides ability to make local connection to services
@@ -46,7 +50,15 @@ func main() {
 	rr.Container.Register(static.Name, &static.Service{})
 
 	// provides additional verbosity
-	rr.Container.Register(debug.Name, &debug.Service{Logger: rr.Logger})
+
+	// debug mode
+	rr.CLI.PersistentFlags().BoolVarP(&debugMode, "debug", "d", false, "debug mode", )
+	cobra.OnInitialize(func() {
+		if debugMode {
+			service, _ := rr.Container.Get(http.Name)
+			service.(*http.Service).AddListener(debug.NewListener(rr.Logger).Listener)
+		}
+	})
 
 	// you can register additional commands using cmd.CLI
 	rr.Execute()

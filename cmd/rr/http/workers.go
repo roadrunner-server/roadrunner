@@ -61,7 +61,13 @@ func init() {
 	rr.CLI.AddCommand(workersCommand)
 }
 
-func workersHandler(cmd *cobra.Command, args []string) error {
+func workersHandler(cmd *cobra.Command, args []string) (err error) {
+	defer func() {
+		if r, ok := recover().(error); ok {
+			err = r
+		}
+	}()
+
 	svc, st := rr.Container.Get(rrpc.Name)
 	if st < service.StatusConfigured {
 		return errors.New("RPC service is not configured")
@@ -136,7 +142,7 @@ func renderStatus(status string) string {
 	return status
 }
 
-func renderJobs(number uint64) string {
+func renderJobs(number int64) string {
 	return humanize.Comma(int64(number))
 }
 

@@ -113,6 +113,8 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) listener(event int, ctx interface{}) {
+	// todo: DIE on server failure
+
 	for _, l := range s.listeners {
 		l(event, ctx)
 	}

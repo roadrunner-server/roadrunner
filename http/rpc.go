@@ -21,7 +21,7 @@ type Worker struct {
 	Status string `json:"status"`
 
 	// Number of worker executions.
-	NumJobs uint64 `json:"numExecs"`
+	NumJobs int64 `json:"numExecs"`
 
 	// Created is unix nano timestamp of worker creation time.
 	Created int64 `json:"created"`

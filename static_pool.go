@@ -55,7 +55,7 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, er
 	}
 
 	// constant number of workers simplify logic
-	for i := uint64(0); i < p.cfg.NumWorkers; i++ {
+	for i := int64(0); i < p.cfg.NumWorkers; i++ {
 		// to test if worker ready
 		w, err := p.createWorker()
 		if err != nil {
@@ -143,7 +143,7 @@ func (p *StaticPool) Destroy() {
 // finds free worker in a given time interval or creates new if allowed.
 func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 	// this loop is required to skip issues with dead workers still being in a ring.
-	for i := uint64(0); i < p.cfg.NumWorkers; i++ {
+	for i := int64(0); i < p.cfg.NumWorkers; i++ {
 		select {
 		case w = <-p.free:
 			if w.state.Value() == StateReady {

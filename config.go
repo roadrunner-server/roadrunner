@@ -9,12 +9,12 @@ import (
 type Config struct {
 	// NumWorkers defines how many sub-processes can be run at once. This value
 	// might be doubled by Swapper while hot-swap.
-	NumWorkers uint64
+	NumWorkers int64
 
 	// MaxJobs defines how many executions is allowed for the worker until
 	// it's destruction. set 1 to create new process for each new task, 0 to let
 	// worker handle as many tasks as it can.
-	MaxJobs uint64
+	MaxJobs int64
 
 	// AllocateTimeout defines for how long pool will be waiting for a worker to
 	// be freed to handle the task.

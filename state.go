@@ -2,7 +2,6 @@ package roadrunner
 
 import (
 	"fmt"
-	"sync"
 	"sync/atomic"
 	"time"
 )
@@ -15,7 +14,7 @@ type State interface {
 	Value() int64
 
 	// NumJobs shows how many times worker was invoked
-	NumExecs() uint64
+	NumExecs() int64
 
 	// Updated indicates a moment updated last state change
 	Updated() time.Time
@@ -42,19 +41,18 @@ const (
 )
 
 type state struct {
-	mu       sync.RWMutex
 	value    int64
-	numExecs uint64
-	updated  time.Time
+	numExecs int64
+	updated  int64
 }
 
 func newState(value int64) *state {
-	return &state{value: value, updated: time.Now()}
+	return &state{value: value, updated: time.Now().Unix()}
 }
 
 // String returns current state as string.
 func (s *state) String() string {
-	switch s.value {
+	switch s.Value() {
 	case StateInactive:
 		return "inactive"
 	case StateReady:
@@ -72,10 +70,7 @@ func (s *state) String() string {
 
 // Value state returns state value
 func (s *state) Value() int64 {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-
-	return s.value
+	return atomic.LoadInt64(&s.value)
 }
 
 // IsActive returns true if worker not Inactive or Stopped
@@ -86,26 +81,20 @@ func (s *state) IsActive() bool {
 
 // Updated indicates a moment updated last state change
 func (s *state) Updated() time.Time {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-
-	return s.updated
+	return time.Unix(0, atomic.LoadInt64(&s.updated))
 }
 
-func (s *state) NumExecs() uint64 {
-	return atomic.LoadUint64(&s.numExecs)
+func (s *state) NumExecs() int64 {
+	return atomic.LoadInt64(&s.numExecs)
 }
 
 // change state value (status)
 func (s *state) set(value int64) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	s.value = value
-	s.updated = time.Now()
+	atomic.StoreInt64(&s.value, value)
+	atomic.StoreInt64(&s.updated, time.Now().Unix())
 }
 
 // register new execution atomically
 func (s *state) registerExec() {
-	atomic.AddUint64(&s.numExecs, 1)
+	atomic.AddInt64(&s.numExecs, 1)
 }
