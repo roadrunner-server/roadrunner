@@ -88,15 +88,15 @@ func (s *Service) listener(event int, ctx interface{}) {
 	// rr server events
 	switch event {
 	case roadrunner.EventServerFailure:
-		s.Logger.Error(utils.Sprintf("<red+hb>http.rr</reset>: <red+hb>server is dead</reset>"))
+		s.Logger.Error(utils.Sprintf("<red>server is dead</reset>"))
 	}
 
 	// pool events
 	switch event {
 	case roadrunner.EventPoolConstruct:
-		s.Logger.Debug(utils.Sprintf("<white+hb>http.rr</reset>: <green>new worker pool</reset>"))
+		s.Logger.Debug(utils.Sprintf("<cyan>new worker pool</reset>"))
 	case roadrunner.EventPoolError:
-		s.Logger.Error(utils.Sprintf("<red+hb>http.rr</reset>: <red>%s</reset>", ctx))
+		s.Logger.Error(utils.Sprintf("<red>%s</reset>", ctx))
 	}
 }
 
