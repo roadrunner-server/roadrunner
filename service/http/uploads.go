@@ -29,7 +29,7 @@ const (
 // tree manages uploaded files tree and temporary files.
 type Uploads struct {
 	// associated temp directory and forbidden extensions.
-	cfg *FsConfig
+	cfg *UploadsConfig
 
 	// pre processed data tree for Uploads.
 	tree fileTree
@@ -99,7 +99,7 @@ func NewUpload(f *multipart.FileHeader) *FileUpload {
 	}
 }
 
-func (f *FileUpload) Open(cfg *FsConfig) error {
+func (f *FileUpload) Open(cfg *UploadsConfig) error {
 	if cfg.Forbids(f.Name) {
 		f.Error = UploadErrorExtension
 		return nil

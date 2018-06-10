@@ -21,8 +21,8 @@ type StaticPool struct {
 	// worker command creator
 	cmd func() *exec.Cmd
 
-	// observer is optional callback to handle worker create/destruct/error events.
-	observer func(event int, ctx interface{})
+	// listener is optional callback to handle worker create/destruct/error events.
+	listener func(event int, ctx interface{})
 
 	// creates and connects to workers
 	factory Factory
@@ -69,9 +69,9 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, er
 	return p, nil
 }
 
-// Observe attaches pool event watcher.
-func (p *StaticPool) Observe(o func(event int, ctx interface{})) {
-	p.observer = o
+// Listen attaches pool event watcher.
+func (p *StaticPool) Listen(l func(event int, ctx interface{})) {
+	p.listener = l
 }
 
 // Config returns associated pool configuration. Immutable.
@@ -253,7 +253,7 @@ func (p *StaticPool) destroyWorker(w *Worker) {
 
 // throw invokes event handler if any.
 func (p *StaticPool) throw(event int, ctx interface{}) {
-	if p.observer != nil {
-		p.observer(event, ctx)
+	if p.listener != nil {
+		p.listener(event, ctx)
 	}
 }

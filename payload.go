@@ -9,7 +9,7 @@ type Payload struct {
 	// body contains binary payload to be processed by worker.
 	Body []byte
 
-	// todo: io.Reader support for streamed requests and responses.
+	// add io.Reader support for streamed requests and responses.
 }
 
 // String returns payload body as string

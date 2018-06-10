@@ -29,7 +29,7 @@ type Server struct {
 	cfg *ServerConfig
 
 	// observes pool events (can be attached to multiple pools at the same time)
-	observer func(event int, ctx interface{})
+	listener func(event int, ctx interface{})
 
 	// protects pool while the re-configuration
 	mu sync.Mutex
@@ -49,9 +49,9 @@ func NewServer(cfg *ServerConfig) *Server {
 	return &Server{cfg: cfg}
 }
 
-// Observe attaches server event watcher.
-func (srv *Server) Observe(o func(event int, ctx interface{})) {
-	srv.observer = o
+// Listen attaches server event watcher.
+func (srv *Server) Listen(l func(event int, ctx interface{})) {
+	srv.listener = l
 }
 
 // Reconfigure re-configures underlying pool and destroys it's previous version if any. Reconfigure will ignore factory
@@ -80,7 +80,7 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 
 	srv.mu.Lock()
 	srv.cfg.Pool, srv.pool = cfg.Pool, pool
-	srv.pool.Observe(srv.poolObserver)
+	srv.pool.Listen(srv.poolListener)
 	srv.mu.Unlock()
 
 	srv.throw(EventPoolConstruct, pool)
@@ -113,7 +113,7 @@ func (srv *Server) Start() (err error) {
 		return err
 	}
 
-	srv.pool.Observe(srv.poolObserver)
+	srv.pool.Listen(srv.poolListener)
 	srv.started = true
 	srv.throw(EventServerStart, srv)
 
@@ -169,9 +169,9 @@ func (srv *Server) Pool() Pool {
 	return srv.pool
 }
 
-// Observe pool events.
-func (srv *Server) poolObserver(event int, ctx interface{}) {
-	// bypassing to user specified observer
+// Listen pool events.
+func (srv *Server) poolListener(event int, ctx interface{}) {
+	// bypassing to user specified listener
 	srv.throw(event, ctx)
 
 	if event == EventPoolError {
@@ -192,7 +192,7 @@ func (srv *Server) poolObserver(event int, ctx interface{}) {
 
 // throw invokes event handler if any.
 func (srv *Server) throw(event int, ctx interface{}) {
-	if srv.observer != nil {
-		srv.observer(event, ctx)
+	if srv.listener != nil {
+		srv.listener(event, ctx)
 	}
 }

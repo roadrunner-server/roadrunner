@@ -150,7 +150,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.NotNil(t, p)
 	assert.NoError(t, err)
 
-	p.Observe(func(e int, ctx interface{}) {
+	p.Listen(func(e int, ctx interface{}) {
 		if err, ok := ctx.(error); ok {
 			assert.Contains(t, err.Error(), "undefined_function()")
 		}
@@ -184,7 +184,7 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	assert.Equal(t, runtime.NumCPU(), len(p.Workers()))
 
 	destructed := make(chan interface{})
-	p.Observe(func(e int, ctx interface{}) {
+	p.Listen(func(e int, ctx interface{}) {
 		if e == EventWorkerConstruct {
 			close(destructed)
 		}

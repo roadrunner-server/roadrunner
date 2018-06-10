@@ -17,7 +17,7 @@ type Config struct {
 	MaxRequest int64
 
 	// Uploads configures uploads configuration.
-	Uploads *FsConfig
+	Uploads *UploadsConfig
 
 	// Workers configures roadrunner server and worker pool.
 	Workers *roadrunner.ServerConfig

@@ -17,15 +17,21 @@ type Middleware interface {
 
 // Service manages rr, http servers.
 type Service struct {
-	middleware []Middleware
 	cfg        *Config
+	listener   func(event int, ctx interface{})
+	middleware []Middleware
 	rr         *roadrunner.Server
-	handler    *Handler
+	srv        *Server
 	http       *http.Server
 }
 
 func (s *Service) Add(m Middleware) {
 	s.middleware = append(s.middleware, m)
+}
+
+// Listen attaches server event watcher.
+func (s *Service) Listen(o func(event int, ctx interface{})) {
+	s.listener = o
 }
 
 // Configure must return configure service and return true if service hasStatus enabled. Must return error in case of
@@ -56,11 +62,18 @@ func (s *Service) Serve() error {
 	}
 	defer s.rr.Stop()
 
-	// todo: observer
-
 	s.rr = rr
-	s.handler = &Handler{cfg: s.cfg, rr: s.rr}
-	s.http = &http.Server{Addr: s.cfg.httpAddr(), Handler: s}
+	s.srv = &Server{cfg: s.cfg, rr: s.rr}
+	s.http = &http.Server{Addr: s.cfg.httpAddr()}
+
+	s.rr.Listen(s.listener)
+	s.srv.Listen(s.listener)
+
+	if len(s.middleware) == 0 {
+		s.http.Handler = s.srv
+	} else {
+		s.http.Handler = s
+	}
 
 	if err := s.http.ListenAndServe(); err != nil {
 		return err
@@ -71,6 +84,10 @@ func (s *Service) Serve() error {
 
 // Stop stops the service.
 func (s *Service) Stop() {
+	if s.http == nil {
+		return
+	}
+
 	s.http.Shutdown(context.Background())
 }
 
@@ -82,5 +99,5 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	s.handler.Handle(w, r)
+	s.srv.ServeHTTP(w, r)
 }

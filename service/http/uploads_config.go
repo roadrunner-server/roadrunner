@@ -5,8 +5,8 @@ import (
 	"path"
 )
 
-// FsConfig describes file location and controls access to them.
-type FsConfig struct {
+// UploadsConfig describes file location and controls access to them.
+type UploadsConfig struct {
 	// Dir contains name of directory to control access to.
 	Dir string
 
@@ -16,7 +16,7 @@ type FsConfig struct {
 }
 
 // Forbid must return true if file extension is not allowed for the upload.
-func (cfg FsConfig) Forbids(filename string) bool {
+func (cfg UploadsConfig) Forbids(filename string) bool {
 	ext := strings.ToLower(path.Ext(filename))
 
 	for _, v := range cfg.Forbid {

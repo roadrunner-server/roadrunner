@@ -179,7 +179,7 @@ func TestServer_ReplacePool(t *testing.T) {
 	assert.NoError(t, srv.Start())
 
 	constructed := make(chan interface{})
-	srv.Observe(func(e int, ctx interface{}) {
+	srv.Listen(func(e int, ctx interface{}) {
 		if e == EventPoolConstruct {
 			close(constructed)
 		}
@@ -208,7 +208,7 @@ func TestServer_ServerFailure(t *testing.T) {
 	assert.NoError(t, srv.Start())
 
 	failure := make(chan interface{})
-	srv.Observe(func(e int, ctx interface{}) {
+	srv.Listen(func(e int, ctx interface{}) {
 		if e == EventServerFailure {
 			close(failure)
 		}

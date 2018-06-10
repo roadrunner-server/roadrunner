@@ -44,7 +44,7 @@ type Request struct {
 }
 
 // NewRequest creates new PSR7 compatible request using net/http request.
-func NewRequest(r *http.Request) (req *Request, err error) {
+func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 	req = &Request{
 		Protocol: r.Proto,
 		Method:   r.Method,
@@ -67,11 +67,11 @@ func NewRequest(r *http.Request) (req *Request, err error) {
 		return nil, err
 	}
 
-	if req.body, err = parsePost(r); err != nil {
+	if req.body, err = parseData(r); err != nil {
 		return nil, err
 	}
 
-	if req.Uploads, err = parseUploads(r); err != nil {
+	if req.Uploads, err = parseUploads(r, cfg); err != nil {
 		return nil, err
 	}
 
@@ -80,12 +80,12 @@ func NewRequest(r *http.Request) (req *Request, err error) {
 }
 
 // Open moves all uploaded files to temporary directory so it can be given to php later.
-func (r *Request) Open(cfg *Config) error {
+func (r *Request) Open() error {
 	if r.Uploads == nil {
 		return nil
 	}
 
-	return r.Uploads.Open(cfg)
+	return r.Uploads.Open()
 }
 
 // Close clears all temp file uploads

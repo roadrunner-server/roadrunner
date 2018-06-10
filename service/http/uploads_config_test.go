@@ -6,7 +6,7 @@ import (
 )
 
 func TestFsConfig_Forbids(t *testing.T) {
-	cfg := FsConfig{Forbid: []string{".php"}}
+	cfg := UploadsConfig{Forbid: []string{".php"}}
 
 	assert.True(t, cfg.Forbids("index.php"))
 	assert.True(t, cfg.Forbids("index.PHP"))
