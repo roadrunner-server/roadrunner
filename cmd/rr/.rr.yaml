@@ -33,7 +33,7 @@ http:
     # worker pool configuration.
     pool:
       # number of workers to be serving.
-      numWorkers: 2
+      numWorkers: 16
 
       # maximum jobs per worker, 0 - unlimited.
       maxJobs:  0

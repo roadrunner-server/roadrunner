@@ -33,6 +33,7 @@ import (
 	"time"
 	"github.com/dustin/go-humanize"
 	"github.com/spiral/roadrunner/cmd/rr/utils"
+	"github.com/shirou/gopsutil/process"
 )
 
 func init() {
@@ -61,13 +62,14 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 	}
 
 	tw := tablewriter.NewWriter(os.Stdout)
-	tw.SetHeader([]string{"PID", "Status", "Execs", "Created"})
+	tw.SetHeader([]string{"PID", "Status", "Execs", "Memory", "Created"})
 
 	for _, w := range r.Workers {
 		tw.Append([]string{
 			strconv.Itoa(w.Pid),
 			renderStatus(w.Status),
 			renderJobs(w.NumJobs),
+			renderMemory(w.Pid),
 			renderAlive(time.Unix(0, w.Created)),
 		})
 	}
@@ -100,4 +102,14 @@ func renderJobs(number uint64) string {
 
 func renderAlive(t time.Time) string {
 	return humanize.RelTime(t, time.Now(), "ago", "")
+}
+
+func renderMemory(pid int) string {
+	p, _ := process.NewProcess(int32(pid))
+	i, err := p.MemoryInfo()
+	if err != nil {
+		return err.Error()
+	}
+
+	return humanize.Bytes(i.RSS)
 }
