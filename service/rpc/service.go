@@ -8,7 +8,8 @@ import (
 	"sync"
 )
 
-// todo: improved logging
+// Name contains default service name.
+const Name = "rpc"
 
 // Service is RPC service.
 type Service struct {
@@ -20,8 +21,8 @@ type Service struct {
 	serving bool
 }
 
-// Configure must return configure service and return true if service is enabled. Must return error in case of
-// misconfiguration.
+// Configure must return configure service and return true if service hasStatus enabled. Must return error in case of
+// misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Service) Configure(cfg service.Config, reg service.Container) (enabled bool, err error) {
 	config := &config{}
 	if err := cfg.Unmarshal(config); err != nil {
@@ -38,7 +39,7 @@ func (s *Service) Configure(cfg service.Config, reg service.Container) (enabled 
 	return true, nil
 }
 
-// Serve serves Service.
+// Serve serves the service.
 func (s *Service) Serve() error {
 	if s.rpc == nil {
 		return errors.New("RPC service is not configured")
@@ -80,7 +81,7 @@ func (s *Service) Serve() error {
 	return nil
 }
 
-// Close stop Service Service.
+// Stop stops the service.
 func (s *Service) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
