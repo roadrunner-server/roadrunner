@@ -26,6 +26,7 @@ import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 	"github.com/spiral/roadrunner/rpc"
 	"github.com/spiral/roadrunner/service"
+	"github.com/spiral/roadrunner/cmd/rr/utils"
 )
 
 func init() {
@@ -48,11 +49,13 @@ func reloadHandler(cmd *cobra.Command, args []string) error {
 	}
 	defer client.Close()
 
+	utils.Printf("<green>restarting http worker pool</reset>: ")
+
 	var r string
 	if err := client.Call("http.Reset", true, &r); err != nil {
 		return err
 	}
 
-	rr.Logger.Info("http: restarting worker pool")
+	utils.Printf("<green+hb>done</reset>")
 	return nil
 }

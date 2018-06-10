@@ -24,7 +24,7 @@ import (
 	"errors"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/rpc"
+	rrpc "github.com/spiral/roadrunner/rpc"
 	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/http"
 	"github.com/olekukonko/tablewriter"
@@ -34,28 +34,65 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"github.com/shirou/gopsutil/process"
+	"net/rpc"
+	tm "github.com/buger/goterm"
+)
+
+var (
+	interactive bool
+	stopSignal  = make(chan os.Signal, 1)
 )
 
 func init() {
-	rr.CLI.AddCommand(&cobra.Command{
+	workersCommand := &cobra.Command{
 		Use:   "http:workers",
 		Short: "List workers associated with RoadRunner HTTP service",
 		RunE:  workersHandler,
-	})
+	}
+
+	workersCommand.Flags().BoolVarP(
+		&interactive,
+		"interactive",
+		"i",
+		false,
+		"render interactive workers table",
+	)
+
+	rr.CLI.AddCommand(workersCommand)
 }
 
 func workersHandler(cmd *cobra.Command, args []string) error {
-	svc, st := rr.Container.Get(rpc.Name)
+	svc, st := rr.Container.Get(rrpc.Name)
 	if st < service.StatusConfigured {
 		return errors.New("RPC service is not configured")
 	}
 
-	client, err := svc.(*rpc.Service).Client()
+	client, err := svc.(*rrpc.Service).Client()
 	if err != nil {
 		return err
 	}
 	defer client.Close()
 
+	if !interactive {
+		showWorkers(client)
+		return nil
+	}
+
+	tm.Clear()
+	for {
+		select {
+		case <-time.NewTicker(time.Millisecond * 500).C:
+			tm.MoveCursor(1, 1)
+			showWorkers(client)
+			tm.Flush()
+		}
+	}
+
+	<-stopSignal
+	return nil
+}
+
+func showWorkers(client *rpc.Client) {
 	var r http.WorkerList
 	if err := client.Call("http.Workers", true, &r); err != nil {
 		panic(err)
@@ -63,6 +100,11 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 
 	tw := tablewriter.NewWriter(os.Stdout)
 	tw.SetHeader([]string{"PID", "Status", "Execs", "Memory", "Created"})
+	tw.SetColMinWidth(0, 7)
+	tw.SetColMinWidth(1, 9)
+	tw.SetColMinWidth(2, 7)
+	tw.SetColMinWidth(3, 7)
+	tw.SetColMinWidth(4, 18)
 
 	for _, w := range r.Workers {
 		tw.Append([]string{
@@ -75,8 +117,6 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 	}
 
 	tw.Render()
-
-	return nil
 }
 
 func renderStatus(status string) string {
