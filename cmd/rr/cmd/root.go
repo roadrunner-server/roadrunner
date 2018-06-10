@@ -38,7 +38,7 @@ var (
 	Logger = logrus.New()
 
 	// Services - shared service bus.
-	Services = service.NewRegistry(Logger)
+	Services = service.NewContainer(Logger)
 
 	// CLI is application endpoint.
 	CLI = &cobra.Command{

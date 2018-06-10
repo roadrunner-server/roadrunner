@@ -23,10 +23,6 @@ type Service struct {
 // Configure must return configure service and return true if service is enabled. Must return error in case of
 // misconfiguration.
 func (s *Service) Configure(cfg service.Config, reg service.Container) (enabled bool, err error) {
-	if s.cfg != nil {
-		return true, errors.New("service is already configured")
-	}
-
 	config := &config{}
 	if err := cfg.Unmarshal(config); err != nil {
 		return false, err

@@ -50,18 +50,6 @@ func Test_Enabled(t *testing.T) {
 	assert.True(t, ok)
 }
 
-func Test_TwoConfigurations(t *testing.T) {
-	s := &Service{}
-	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
-
-	assert.NoError(t, err)
-	assert.True(t, ok)
-
-	ok, err = s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
-	assert.Error(t, err)
-	assert.True(t, ok)
-}
-
 func Test_StopNonServing(t *testing.T) {
 	s := &Service{}
 	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
