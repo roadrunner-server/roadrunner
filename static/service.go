@@ -6,7 +6,7 @@ import (
 	"os"
 	"path"
 	"strings"
-	rrttp "github.com/spiral/roadrunner/service/http"
+	rrttp "github.com/spiral/roadrunner/http"
 	"github.com/spiral/roadrunner/service"
 )
 

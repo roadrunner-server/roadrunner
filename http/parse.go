@@ -6,7 +6,8 @@ import (
 	"os"
 )
 
-const maxLevel = 127
+// MaxLevel defines maximum tree depth for incoming request data and files.
+const MaxLevel = 127
 
 type dataTree map[string]interface{}
 type fileTree map[string]interface{}
@@ -37,7 +38,7 @@ func (d dataTree) push(k string, v []string) {
 		indexes = append(indexes, strings.Trim(index, "]"))
 	}
 
-	if len(indexes) <= maxLevel {
+	if len(indexes) <= MaxLevel {
 		d.mount(indexes, v)
 	}
 }
@@ -115,7 +116,7 @@ func (d fileTree) push(k string, v []*FileUpload) {
 		indexes = append(indexes, strings.Trim(index, "]"))
 	}
 
-	if len(indexes) <= maxLevel {
+	if len(indexes) <= MaxLevel {
 		d.mount(indexes, v)
 	}
 }
