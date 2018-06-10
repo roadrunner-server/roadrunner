@@ -17,17 +17,19 @@ func (cfg *testCfg) Get(name string) service.Config  { return nil }
 func (cfg *testCfg) Unmarshal(out interface{}) error { return json.Unmarshal([]byte(cfg.cfg), out) }
 
 func Test_ConfigError(t *testing.T) {
-	s, err := (&Service{}).WithConfig(&testCfg{`{"enable":false`}, nil)
+	s := &Service{}
+	ok, err := s.Configure(&testCfg{`{"enable":false`}, nil)
 
 	assert.Error(t, err)
-	assert.Nil(t, s)
+	assert.False(t, ok)
 }
 
 func Test_Disabled(t *testing.T) {
-	s, err := (&Service{}).WithConfig(&testCfg{`{"enable":false}`}, nil)
+	s := &Service{}
+	ok, err := s.Configure(&testCfg{`{"enable":false}`}, nil)
 
 	assert.NoError(t, err)
-	assert.Nil(t, s)
+	assert.False(t, ok)
 }
 
 func Test_RegisterNotConfigured(t *testing.T) {
@@ -41,47 +43,60 @@ func Test_RegisterNotConfigured(t *testing.T) {
 }
 
 func Test_Enabled(t *testing.T) {
-	s, err := (&Service{}).WithConfig(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
+	s := &Service{}
+	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
 
 	assert.NoError(t, err)
-	assert.NotNil(t, s)
-	assert.IsType(t, &Service{}, s)
+	assert.True(t, ok)
+}
+
+func Test_TwoConfigurations(t *testing.T) {
+	s := &Service{}
+	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
+
+	assert.NoError(t, err)
+	assert.True(t, ok)
+
+	ok, err = s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
+	assert.Error(t, err)
+	assert.True(t, ok)
 }
 
 func Test_StopNonServing(t *testing.T) {
-	s, err := (&Service{}).WithConfig(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
+	s := &Service{}
+	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
 
 	assert.NoError(t, err)
-	assert.NotNil(t, s)
-	assert.IsType(t, &Service{}, s)
+	assert.True(t, ok)
 	s.Stop()
 }
 
 func Test_Serve_Errors(t *testing.T) {
-	s, err := (&Service{}).WithConfig(&testCfg{`{"enable":true, "listen":"mailformed"}`}, nil)
+	s := &Service{}
+	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"mailformed"}`}, nil)
 	assert.NoError(t, err)
-	assert.NotNil(t, s)
-	assert.IsType(t, &Service{}, s)
+	assert.True(t, ok)
 
 	assert.Error(t, s.Serve())
 
-	client, err := s.(*Service).Client()
+	client, err := s.Client()
 	assert.Nil(t, client)
 	assert.Error(t, err)
 }
 
 func Test_Serve_Client(t *testing.T) {
-	s, err := (&Service{}).WithConfig(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
+	s := &Service{}
+	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
 	assert.NoError(t, err)
-	assert.NotNil(t, s)
-	assert.IsType(t, &Service{}, s)
+	assert.True(t, ok)
+
 	defer s.Stop()
 
-	assert.NoError(t, s.(*Service).Register("test", &testService{}))
+	assert.NoError(t, s.Register("test", &testService{}))
 
 	go func() { assert.NoError(t, s.Serve()) }()
 
-	client, err := s.(*Service).Client()
+	client, err := s.Client()
 	assert.NotNil(t, client)
 	assert.NoError(t, err)
 	defer client.Close()

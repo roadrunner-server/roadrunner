@@ -17,8 +17,8 @@ type Config interface {
 	Unmarshal(out interface{}) error
 }
 
-// Registry controls all internal RR services and provides plugin based system.
-type Registry interface {
+// Container controls all internal RR services and provides plugin based system.
+type Container interface {
 	// Register add new service to the registry under given name.
 	Register(name string, service Service)
 
@@ -40,9 +40,9 @@ type Registry interface {
 
 // Service provides high level functionality for road runner Service.
 type Service interface {
-	// WithConfig must return Service instance configured with the given environment. Must return error in case of
-	// misconfiguration, might return nil as Service if Service is not enabled.
-	WithConfig(cfg Config, reg Registry) (Service, error)
+	// Configure must return configure service and return true if service is enabled. Must return error in case of
+	// misconfiguration. Services must not be used without proper configuration pushed first.
+	Configure(cfg Config, reg Container) (enabled bool, err error)
 
 	// Serve serves Service.
 	Serve() error
@@ -96,7 +96,7 @@ func (e *entry) setStopped() {
 }
 
 // NewRegistry creates new registry.
-func NewRegistry(log logrus.FieldLogger) Registry {
+func NewRegistry(log logrus.FieldLogger) Container {
 	return &registry{
 		log:        log,
 		candidates: make([]*entry, 0),
@@ -131,18 +131,18 @@ func (r *registry) Configure(cfg Config) error {
 			continue
 		}
 
-		s, err := e.Service.WithConfig(segment, r)
+		_, err := e.Service.Configure(segment, r)
 		if err != nil {
 			return errors.Wrap(err, fmt.Sprintf("%s.service", e.Name))
 		}
 
-		if s != nil {
-			r.configured = append(r.configured, &entry{
-				Name:    e.Name,
-				Service: s,
-				serving: false,
-			})
-		}
+		//if s != nil {
+		//	r.configured = append(r.configured, &entry{
+		//		Name:    e.Name,
+		//		Service: s,
+		//		serving: false,
+		//	})
+		//}
 	}
 
 	return nil

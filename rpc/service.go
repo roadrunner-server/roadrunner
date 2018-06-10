@@ -20,19 +20,26 @@ type Service struct {
 	serving bool
 }
 
-// WithConfig must return Service instance configured with the given environment. Must return error in case of
-// misconfiguration, might return nil as Service if Service is not enabled.
-func (s *Service) WithConfig(cfg service.Config, reg service.Registry) (service.Service, error) {
+// Configure must return configure service and return true if service is enabled. Must return error in case of
+// misconfiguration.
+func (s *Service) Configure(cfg service.Config, reg service.Container) (enabled bool, err error) {
+	if s.cfg != nil {
+		return true, errors.New("service is already configured")
+	}
+
 	config := &config{}
 	if err := cfg.Unmarshal(config); err != nil {
-		return nil, err
+		return false, err
 	}
 
 	if !config.Enable {
-		return nil, nil
+		return false, nil
 	}
 
-	return &Service{cfg: config, rpc: rpc.NewServer()}, nil
+	s.cfg = config
+	s.rpc = rpc.NewServer()
+
+	return true, nil
 }
 
 // Serve serves Service.
