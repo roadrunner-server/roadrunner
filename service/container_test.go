@@ -8,9 +8,11 @@ import (
 	"encoding/json"
 	"errors"
 	"time"
+	"sync"
 )
 
 type testService struct {
+	mu           sync.Mutex
 	waitForServe chan interface{}
 	delay        time.Duration
 	ok           bool
@@ -33,19 +35,39 @@ func (t *testService) Serve() error {
 		return t.serveE
 	}
 
-	if t.waitForServe != nil {
-		close(t.waitForServe)
-		t.waitForServe = nil
+	if c := t.waitChan(); c != nil {
+		close(c)
+		t.setChan(nil)
 	}
 
+	t.mu.Lock()
 	t.serving = make(chan interface{})
+	t.mu.Unlock()
+
 	<-t.serving
 
 	return nil
 }
 
 func (t *testService) Stop() {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
 	close(t.serving)
+}
+
+func (t *testService) waitChan() chan interface{} {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	return t.waitForServe
+}
+
+func (t *testService) setChan(c chan interface{}) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	t.waitForServe = c
 }
 
 type testCfg struct{ cfg string }
@@ -237,7 +259,7 @@ func TestContainer_Serve(t *testing.T) {
 		assert.NoError(t, c.Serve())
 	}()
 
-	<-svc.waitForServe
+	<-svc.waitChan()
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
