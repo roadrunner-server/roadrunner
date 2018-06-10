@@ -14,7 +14,7 @@ func Test_NumWorkers(t *testing.T) {
 	err := cfg.Valid()
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "cfg.NumWorkers must be set", err.Error())
+	assert.Equal(t, "pool.NumWorkers must be set", err.Error())
 }
 
 func Test_AllocateTimeout(t *testing.T) {
@@ -25,7 +25,7 @@ func Test_AllocateTimeout(t *testing.T) {
 	err := cfg.Valid()
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "cfg.AllocateTimeout must be set", err.Error())
+	assert.Equal(t, "pool.AllocateTimeout must be set", err.Error())
 }
 
 func Test_DestroyTimeout(t *testing.T) {
@@ -36,5 +36,5 @@ func Test_DestroyTimeout(t *testing.T) {
 	err := cfg.Valid()
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "cfg.DestroyTimeout must be set", err.Error())
+	assert.Equal(t, "pool.DestroyTimeout must be set", err.Error())
 }
