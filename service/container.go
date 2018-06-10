@@ -108,7 +108,7 @@ func (r *container) Get(target string) (svc Service, status int) {
 	return nil, StatusUndefined
 }
 
-// Reconfigure configures all underlying services with given configuration.
+// Configure configures all underlying services with given configuration.
 func (r *container) Configure(cfg Config) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
