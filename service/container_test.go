@@ -206,7 +206,7 @@ func TestContainer_ConfigureError(t *testing.T) {
 	err := c.Configure(&testCfg{`{"test":"something"}`})
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "configure error")
-	assert.Contains(t, err.Error(), "test.service")
+	assert.Contains(t, err.Error(), "test")
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
