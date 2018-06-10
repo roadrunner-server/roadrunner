@@ -309,4 +309,6 @@ func TestContainer_ServeErrorMultiple(t *testing.T) {
 	s, st = c.Get("test2")
 	assert.IsType(t, &testService{}, s)
 	assert.Equal(t, StatusStopped, st)
+
+	assert.Equal(t, 6, len(hook.Entries))
 }

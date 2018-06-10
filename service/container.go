@@ -151,11 +151,13 @@ func (c *container) Serve() error {
 			continue
 		}
 
+		c.log.Debugf("%s.service: started", e.name)
 		go func(e *entry) {
 			e.setStatus(StatusServing)
 			defer e.setStatus(StatusStopped)
 
 			if err := e.svc.Serve(); err != nil {
+				c.log.Errorf("%s.service: %s", e.name, err)
 				done <- errors.Wrap(err, fmt.Sprintf("%s.service", e.name))
 			}
 		}(e)
@@ -184,6 +186,7 @@ func (c *container) Stop() {
 		if e.hasStatus(StatusServing) {
 			e.svc.Stop()
 			e.setStatus(StatusStopped)
+			c.log.Debugf("%s.service: stopped", e.name)
 		}
 	}
 }
