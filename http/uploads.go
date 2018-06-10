@@ -112,7 +112,7 @@ func (f *FileUpload) Open(cfg *UploadsConfig) error {
 	}
 	defer file.Close()
 
-	tmp, err := ioutil.TempFile(cfg.Dir, "upload")
+	tmp, err := ioutil.TempFile(cfg.TmpDir(), "upload")
 	if err != nil {
 		// most likely cause of this issue is missing tmp dir
 		f.Error = UploadErrorNoTmpDir

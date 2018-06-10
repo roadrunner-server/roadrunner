@@ -3,6 +3,7 @@ package http
 import (
 	"strings"
 	"path"
+	"os"
 )
 
 // UploadsConfig describes file location and controls access to them.
@@ -15,8 +16,17 @@ type UploadsConfig struct {
 	Forbid []string
 }
 
+// TmpDir returns temporary directory.
+func (cfg *UploadsConfig) TmpDir() string {
+	if cfg.Dir != "" {
+		return cfg.Dir
+	}
+
+	return os.TempDir()
+}
+
 // Forbid must return true if file extension is not allowed for the upload.
-func (cfg UploadsConfig) Forbids(filename string) bool {
+func (cfg *UploadsConfig) Forbids(filename string) bool {
 	ext := strings.ToLower(path.Ext(filename))
 
 	for _, v := range cfg.Forbid {

@@ -237,7 +237,7 @@ func Test_StaticPool_Replace_Worker(t *testing.T) {
 		NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
-			MaxExecutions:   1,
+			MaxJobs:         1,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
 		},
@@ -364,7 +364,7 @@ func Benchmark_Pool_Echo_Replaced(b *testing.B) {
 		NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
-			MaxExecutions:   1,
+			MaxJobs:         1,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
 		},

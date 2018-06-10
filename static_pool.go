@@ -161,8 +161,8 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 
 // release releases or replaces the worker.
 func (p *StaticPool) release(w *Worker) {
-	if p.cfg.MaxExecutions != 0 && w.State().NumExecs() >= p.cfg.MaxExecutions {
-		go p.replaceWorker(w, p.cfg.MaxExecutions)
+	if p.cfg.MaxJobs != 0 && w.State().NumExecs() >= p.cfg.MaxJobs {
+		go p.replaceWorker(w, p.cfg.MaxJobs)
 		return
 	}
 

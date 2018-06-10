@@ -9,59 +9,50 @@ rpc:
 # http service configuration.
 http:
   # set to false to disable http server.
-  enabled:    true
+  enable:    true
 
   # http host to listen.
-  host:       0.0.0.0
+  address:   0.0.0.0:8080
 
-  # http port.
-  port:       8080
-
-  # max POST request size, including file uploads.
-  maxRequest: 1G
-
-  # static file serving.
-  static:
-    # when true rr http will be serving static files.
-    serve:  true
-
-    # root directory for static file (http would not serve .php and .htacess files).
-    root:   "/Users/wolfy-j/Projects/phpapp/webroot"
+  # max POST request size, including file uploads. (default: 1GB)
+  maxRequest: 1073741824
 
   # file upload configuration.
   uploads:
-    # directory to store uploaded files before passing to PHP, keep empty to use default system
-    # temp directory.
-    tmpDir:
-
     # list of file extensions which are forbidden for uploading.
     forbid: [".php", ".exe", ".bat"]
 
   # http worker pool configuration.
-  pool:
+  workers:
     # php worker command.
     command:  "php /Users/wolfy-j/Projects/phpapp/webroot/index.php rr pipes --no-ansi"
-
-    user:  "wolfy-j"
-
-    group: "wolfy-j"
 
     # connection method (pipes, tcp://:9000, unix://socket.unix).
     relay:    "pipes"
 
-    # number of active workers.
-    number:   1
+    # worker pool configuration.
+    pool:
+      # number of workers to be serving.
+      numWorkers: 1
 
-    # maximum jobs per worker, 0 - unlimited.
-    maxJobs:  0
+      # maximum jobs per worker, 0 - unlimited.
+      maxJobs:  0
 
-    # worker allocation timeouts.
-    timeouts:
-      # for how long socket based relay should await worker connection.
-      connect:  10
+      # worker allocation timeouts.
+      timeouts:
+        # for how long worker is allowed to be bootstrapped.
+        allocateTimeout: 6000000
 
-      # for how long worker is allowed to be bootstrapped.
-      allocate: 60
+        # amount of time given to worker to gracefully destruct itself.
+        destroyTimeout:  6000000
 
-      # amount of time given to worker to gracefully destruct itself.
-      destroy:  60
+# static file serving.
+static:
+  # serve http static files
+  enable:  true
+
+  # root directory for static file (http would not serve .php and .htacess files).
+  dir:   "/Users/wolfy-j/Projects/phpapp/webroot"
+
+  # list of extensions for forbid for serving.
+  forbid: [".php", ".htaccess"]

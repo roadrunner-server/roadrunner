@@ -290,7 +290,7 @@ func TestContainer_ServeError(t *testing.T) {
 	err := c.Serve()
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "serve error")
-	assert.Contains(t, err.Error(), "test.service")
+	assert.Contains(t, err.Error(), "test")
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
@@ -322,7 +322,7 @@ func TestContainer_ServeErrorMultiple(t *testing.T) {
 	err := c.Serve()
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "serve error")
-	assert.Contains(t, err.Error(), "test.service")
+	assert.Contains(t, err.Error(), "test")
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)

@@ -11,10 +11,10 @@ type Config struct {
 	// might be doubled by Swapper while hot-swap.
 	NumWorkers uint64
 
-	// MaxExecutions defines how many executions is allowed for the worker until
+	// MaxJobs defines how many executions is allowed for the worker until
 	// it's destruction. set 1 to create new process for each new task, 0 to let
 	// worker handle as many tasks as it can.
-	MaxExecutions uint64
+	MaxJobs uint64
 
 	// AllocateTimeout defines for how long pool will be waiting for a worker to
 	// be freed to handle the task.

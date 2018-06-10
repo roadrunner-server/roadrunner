@@ -11,7 +11,7 @@ import (
 )
 
 // Name contains default service name.
-const Name = "static-server"
+const Name = "static"
 
 // Service serves static files. Potentially convert into middleware?
 type Service struct {

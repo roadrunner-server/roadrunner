@@ -64,7 +64,7 @@ func (s *Service) Serve() error {
 
 	s.rr = rr
 	s.srv = &Server{cfg: s.cfg, rr: s.rr}
-	s.http = &http.Server{Addr: s.cfg.httpAddr()}
+	s.http = &http.Server{Addr: s.cfg.Address}
 
 	s.rr.Listen(s.listener)
 	s.srv.Listen(s.listener)
