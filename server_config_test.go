@@ -81,3 +81,12 @@ func Test_ServerConfig_ErrorMethod(t *testing.T) {
 	assert.Nil(t, f)
 	assert.Error(t, err)
 }
+
+func Test_ServerConfig_Cmd(t *testing.T) {
+	cfg := &ServerConfig{
+		Command: "php php-src/tests/client.php pipes",
+	}
+
+	cmd := cfg.makeCommand()
+	assert.NotNil(t, cmd)
+}

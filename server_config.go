@@ -10,8 +10,7 @@ import (
 
 // Server config combines factory, pool and cmd configurations.
 type ServerConfig struct {
-	// Command includes command strings with all the parameters, example: "php worker.php pipes". This config section
-	// must not change on re-configuration.
+	// Command includes command strings with all the parameters, example: "php worker.php pipes".
 	Command string
 
 	// Relay defines connection method and factory to be used to connect to workers:
@@ -28,17 +27,17 @@ type ServerConfig struct {
 	Pool Config
 }
 
-// Differs returns true if configuration has changed but ignores pool changes.
+// Differs returns true if configuration has changed but ignores pool or cmd changes.
 func (cfg *ServerConfig) Differs(new *ServerConfig) bool {
-	return cfg.Command != new.Command || cfg.Relay != new.Relay || cfg.RelayTimeout != new.RelayTimeout
+	return cfg.Relay != new.Relay || cfg.RelayTimeout != new.RelayTimeout
 }
 
 // makeCommands returns new command provider based on configured options.
-func (cfg *ServerConfig) makeCommand() (func() *exec.Cmd, error) {
+func (cfg *ServerConfig) makeCommand() func() *exec.Cmd {
 	var cmd = strings.Split(cfg.Command, " ")
 	return func() *exec.Cmd {
 		return exec.Command(cmd[0], cmd[1:]...)
-	}, nil
+	}
 }
 
 // makeFactory creates and connects new factory instance based on given parameters.

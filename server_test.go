@@ -2,17 +2,17 @@ package roadrunner
 
 import (
 	"github.com/stretchr/testify/assert"
-	"os/exec"
 	"runtime"
 	"testing"
 	"time"
+	"os/exec"
 )
 
 func TestServer_PipesEcho(t *testing.T) {
 	srv := NewServer(
-		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		&ServerConfig{
-			Relay: "pipes",
+			Command: "php php-src/tests/client.php echo pipes",
+			Relay:   "pipes",
 			Pool: Config{
 				NumWorkers:      uint64(runtime.NumCPU()),
 				AllocateTimeout: time.Second,
@@ -35,8 +35,8 @@ func TestServer_PipesEcho(t *testing.T) {
 
 func TestServer_SocketEcho(t *testing.T) {
 	srv := NewServer(
-		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "tcp") },
 		&ServerConfig{
+			Command:      "php php-src/tests/client.php echo tcp",
 			Relay:        "tcp://:9007",
 			RelayTimeout: 10 * time.Second,
 			Pool: Config{
@@ -61,9 +61,9 @@ func TestServer_SocketEcho(t *testing.T) {
 
 func TestServer_Configure_BeforeStart(t *testing.T) {
 	srv := NewServer(
-		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		&ServerConfig{
-			Relay: "pipes",
+			Command: "php php-src/tests/client.php echo pipes",
+			Relay:   "pipes",
 			Pool: Config{
 				NumWorkers:      uint64(runtime.NumCPU()),
 				AllocateTimeout: time.Second,
@@ -73,7 +73,8 @@ func TestServer_Configure_BeforeStart(t *testing.T) {
 	defer srv.Stop()
 
 	err := srv.Reconfigure(&ServerConfig{
-		Relay: "pipes",
+		Command: "php php-src/tests/client.php echo pipes",
+		Relay:   "pipes",
 		Pool: Config{
 			NumWorkers:      2,
 			AllocateTimeout: time.Second,
@@ -95,11 +96,11 @@ func TestServer_Configure_BeforeStart(t *testing.T) {
 	assert.Len(t, srv.Workers(), 2)
 }
 
-func TestServer_StopUnstarted(t *testing.T) {
+func TestServer_Stop_NotStarted(t *testing.T) {
 	srv := NewServer(
-		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		&ServerConfig{
-			Relay: "pipes",
+			Command: "php php-src/tests/client.php echo pipes",
+			Relay:   "pipes",
 			Pool: Config{
 				NumWorkers:      uint64(runtime.NumCPU()),
 				AllocateTimeout: time.Second,
@@ -112,9 +113,9 @@ func TestServer_StopUnstarted(t *testing.T) {
 
 func TestServer_Reconfigure(t *testing.T) {
 	srv := NewServer(
-		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		&ServerConfig{
-			Relay: "pipes",
+			Command: "php php-src/tests/client.php echo pipes",
+			Relay:   "pipes",
 			Pool: Config{
 				NumWorkers:      1,
 				AllocateTimeout: time.Second,
@@ -127,7 +128,8 @@ func TestServer_Reconfigure(t *testing.T) {
 	assert.Len(t, srv.Workers(), 1)
 
 	err := srv.Reconfigure(&ServerConfig{
-		Relay: "pipes",
+		Command: "php php-src/tests/client.php echo pipes",
+		Relay:   "pipes",
 		Pool: Config{
 			NumWorkers:      2,
 			AllocateTimeout: time.Second,
@@ -141,9 +143,9 @@ func TestServer_Reconfigure(t *testing.T) {
 
 func TestServer_Reset(t *testing.T) {
 	srv := NewServer(
-		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		&ServerConfig{
-			Relay: "pipes",
+			Command: "php php-src/tests/client.php echo pipes",
+			Relay:   "pipes",
 			Pool: Config{
 				NumWorkers:      1,
 				AllocateTimeout: time.Second,
@@ -163,9 +165,9 @@ func TestServer_Reset(t *testing.T) {
 
 func TestServer_ReplacePool(t *testing.T) {
 	srv := NewServer(
-		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		&ServerConfig{
-			Relay: "pipes",
+			Command: "php php-src/tests/client.php echo pipes",
+			Relay:   "pipes",
 			Pool: Config{
 				NumWorkers:      1,
 				AllocateTimeout: time.Second,
@@ -192,17 +194,15 @@ func TestServer_ReplacePool(t *testing.T) {
 }
 
 func TestServer_ServerFailure(t *testing.T) {
-	mode := "pipes"
-	srv := NewServer(
-		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", mode) },
-		&ServerConfig{
-			Relay: "pipes",
-			Pool: Config{
-				NumWorkers:      1,
-				AllocateTimeout: time.Second,
-				DestroyTimeout:  time.Second,
-			},
-		})
+	srv := NewServer(&ServerConfig{
+		Command: "php php-src/tests/client.php echo pipes",
+		Relay:   "pipes",
+		Pool: Config{
+			NumWorkers:      1,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	})
 	defer srv.Stop()
 
 	assert.NoError(t, srv.Start())
@@ -214,8 +214,13 @@ func TestServer_ServerFailure(t *testing.T) {
 		}
 	})
 
+	// emulating potential server failure
+	srv.cfg.Command = "php php-src/tests/client.php echo broken-connection"
+	srv.pool.(*StaticPool).cmd = func() *exec.Cmd {
+		return exec.Command("php", "php-src/tests/client.php", "echo", "broken-connection")
+	}
+
 	// killing random worker and expecting pool to replace it
-	mode = "suddenly-broken"
 	srv.Workers()[0].cmd.Process.Kill()
 
 	<-failure

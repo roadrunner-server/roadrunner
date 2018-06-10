@@ -2,8 +2,8 @@ package roadrunner
 
 import (
 	"fmt"
-	"os/exec"
 	"sync"
+	"github.com/pkg/errors"
 )
 
 const (
@@ -28,9 +28,6 @@ type Server struct {
 	// configures server, pool, cmd creation and factory.
 	cfg *ServerConfig
 
-	// worker command creator
-	cmd func() *exec.Cmd
-
 	// observes pool events (can be attached to multiple pools at the same time)
 	observer func(event int, ctx interface{})
 
@@ -48,8 +45,8 @@ type Server struct {
 }
 
 // NewServer creates new router. Make sure to call configure before the usage.
-func NewServer(cmd func() *exec.Cmd, cfg *ServerConfig) *Server {
-	return &Server{cmd: cmd, cfg: cfg}
+func NewServer(cfg *ServerConfig) *Server {
+	return &Server{cfg: cfg}
 }
 
 // Observe attaches server event watcher.
@@ -68,11 +65,15 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 	}
 	srv.mu.Unlock()
 
+	if srv.cfg.Differs(cfg) {
+		return errors.New("unable to reconfigure server (cmd and pool changes are allowed)")
+	}
+
 	srv.mu.Lock()
 	previous := srv.pool
 	srv.mu.Unlock()
 
-	pool, err := NewPool(srv.cmd, srv.factory, cfg.Pool)
+	pool, err := NewPool(cfg.makeCommand(), srv.factory, cfg.Pool)
 	if err != nil {
 		return err
 	}
@@ -108,7 +109,7 @@ func (srv *Server) Start() (err error) {
 		return err
 	}
 
-	if srv.pool, err = NewPool(srv.cmd, srv.factory, srv.cfg.Pool); err != nil {
+	if srv.pool, err = NewPool(srv.cfg.makeCommand(), srv.factory, srv.cfg.Pool); err != nil {
 		return err
 	}
 
@@ -132,7 +133,6 @@ func (srv *Server) Stop() error {
 	srv.pool.Destroy()
 	srv.factory.Close()
 
-	srv.cmd = nil
 	srv.factory = nil
 	srv.pool = nil
 	srv.started = false
