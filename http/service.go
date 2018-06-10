@@ -51,16 +51,15 @@ func (s *Service) Configure(cfg service.Config, c service.Container) (bool, erro
 	}
 
 	s.cfg = config
+
+	// todo: RPC
+
 	return true, nil
 }
 
 // Serve serves the service.
 func (s *Service) Serve() error {
 	rr := roadrunner.NewServer(s.cfg.Workers)
-	if err := rr.Start(); err != nil {
-		return err
-	}
-	defer s.rr.Stop()
 
 	s.rr = rr
 	s.srv = &Server{cfg: s.cfg, rr: s.rr}
@@ -74,6 +73,11 @@ func (s *Service) Serve() error {
 	} else {
 		s.http.Handler = s
 	}
+
+	if err := rr.Start(); err != nil {
+		return err
+	}
+	defer s.rr.Stop()
 
 	if err := s.http.ListenAndServe(); err != nil {
 		return err

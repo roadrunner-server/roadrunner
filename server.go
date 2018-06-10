@@ -54,52 +54,6 @@ func (srv *Server) Listen(l func(event int, ctx interface{})) {
 	srv.listener = l
 }
 
-// Reconfigure re-configures underlying pool and destroys it's previous version if any. Reconfigure will ignore factory
-// and relay settings.
-func (srv *Server) Reconfigure(cfg *ServerConfig) error {
-	srv.mu.Lock()
-	if !srv.started {
-		srv.cfg = cfg
-		srv.mu.Unlock()
-		return nil
-	}
-	srv.mu.Unlock()
-
-	if srv.cfg.Differs(cfg) {
-		return errors.New("unable to reconfigure server (cmd and pool changes are allowed)")
-	}
-
-	srv.mu.Lock()
-	previous := srv.pool
-	srv.mu.Unlock()
-
-	pool, err := NewPool(cfg.makeCommand(), srv.factory, cfg.Pool)
-	if err != nil {
-		return err
-	}
-
-	srv.mu.Lock()
-	srv.cfg.Pool, srv.pool = cfg.Pool, pool
-	srv.pool.Listen(srv.poolListener)
-	srv.mu.Unlock()
-
-	srv.throw(EventPoolConstruct, pool)
-
-	if previous != nil {
-		go func(previous Pool) {
-			srv.throw(EventPoolDestruct, previous)
-			previous.Destroy()
-		}(previous)
-	}
-
-	return nil
-}
-
-// Reset resets the state of underlying pool and rebuilds all of it's workers.
-func (srv *Server) Reset() error {
-	return srv.Reconfigure(srv.cfg)
-}
-
 // Start underlying worker pool, configure factory and command provider.
 func (srv *Server) Start() (err error) {
 	srv.mu.Lock()
@@ -149,6 +103,52 @@ func (srv *Server) Exec(rqs *Payload) (rsp *Payload, err error) {
 	}
 
 	return pool.Exec(rqs)
+}
+
+// Reconfigure re-configures underlying pool and destroys it's previous version if any. Reconfigure will ignore factory
+// and relay settings.
+func (srv *Server) Reconfigure(cfg *ServerConfig) error {
+	srv.mu.Lock()
+	if !srv.started {
+		srv.cfg = cfg
+		srv.mu.Unlock()
+		return nil
+	}
+	srv.mu.Unlock()
+
+	if srv.cfg.Differs(cfg) {
+		return errors.New("unable to reconfigure server (cmd and pool changes are allowed)")
+	}
+
+	srv.mu.Lock()
+	previous := srv.pool
+	srv.mu.Unlock()
+
+	pool, err := NewPool(cfg.makeCommand(), srv.factory, cfg.Pool)
+	if err != nil {
+		return err
+	}
+
+	srv.mu.Lock()
+	srv.cfg.Pool, srv.pool = cfg.Pool, pool
+	srv.pool.Listen(srv.poolListener)
+	srv.mu.Unlock()
+
+	srv.throw(EventPoolConstruct, pool)
+
+	if previous != nil {
+		go func(previous Pool) {
+			srv.throw(EventPoolDestruct, previous)
+			previous.Destroy()
+		}(previous)
+	}
+
+	return nil
+}
+
+// Reset resets the state of underlying pool and rebuilds all of it's workers.
+func (srv *Server) Reset() error {
+	return srv.Reconfigure(srv.cfg)
 }
 
 // Workers returns worker list associated with the server pool.

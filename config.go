@@ -28,15 +28,15 @@ type Config struct {
 // Reconfigure returns error if cfg not valid
 func (cfg *Config) Valid() error {
 	if cfg.NumWorkers == 0 {
-		return fmt.Errorf("cfg.NumWorkers must be set")
+		return fmt.Errorf("pool.NumWorkers must be set")
 	}
 
 	if cfg.AllocateTimeout == 0 {
-		return fmt.Errorf("cfg.AllocateTimeout must be set")
+		return fmt.Errorf("pool.AllocateTimeout must be set")
 	}
 
 	if cfg.DestroyTimeout == 0 {
-		return fmt.Errorf("cfg.DestroyTimeout must be set")
+		return fmt.Errorf("pool.DestroyTimeout must be set")
 	}
 
 	return nil

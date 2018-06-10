@@ -36,13 +36,13 @@ import (
 
 func main() {
 	// provides ability to make local connection to services
-	rr.Container.Register(rpc.Name, new(rpc.Service))
+	rr.Container.Register(rpc.Name, &rpc.Service{})
 
 	// http serving
-	rr.Container.Register(http.Name, new(http.Service))
+	rr.Container.Register(http.Name, &http.Service{})
 
 	// serving static files
-	rr.Container.Register(static.Name, new(static.Service))
+	rr.Container.Register(static.Name, &static.Service{})
 
 	// you can register additional commands using cmd.CLI
 	rr.Execute()

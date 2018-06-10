@@ -65,7 +65,7 @@ func (c *container) Register(name string, service Service) {
 		status: StatusRegistered,
 	})
 
-	c.log.Debugf("%s: registered", color.GreenString(name))
+	c.log.Debugf("%s: registered", color.YellowString(name))
 }
 
 // Check hasStatus svc has been registered.
@@ -98,23 +98,20 @@ func (c *container) Get(target string) (svc Service, status int) {
 
 // Configure configures all underlying services with given configuration.
 func (c *container) Configure(cfg Config) error {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
 	for _, e := range c.services {
 		if e.getStatus() >= StatusConfigured {
-			return fmt.Errorf("service %s has already been configured", color.GreenString(e.name))
+			return fmt.Errorf("service %s has already been configured", color.RedString(e.name))
 		}
 
 		segment := cfg.Get(e.name)
 		if segment == nil {
-			c.log.Debugf("%s: no config has been provided", color.GreenString(e.name))
+			c.log.Debugf("%s: no config has been provided", color.YellowString(e.name))
 			continue
 		}
 
 		ok, err := e.svc.Configure(segment, c)
 		if err != nil {
-			return errors.Wrap(err, fmt.Sprintf("%s", color.GreenString(e.name)))
+			return errors.Wrap(err, fmt.Sprintf("%s", color.RedString(e.name)))
 		} else if ok {
 			e.setStatus(StatusConfigured)
 		}
@@ -131,7 +128,6 @@ func (c *container) Serve() error {
 	)
 	defer close(done)
 
-	c.mu.Lock()
 	for _, e := range c.services {
 		if e.hasStatus(StatusConfigured) {
 			numServing ++
@@ -145,12 +141,10 @@ func (c *container) Serve() error {
 			defer e.setStatus(StatusStopped)
 
 			if err := e.svc.Serve(); err != nil {
-				c.log.Errorf("%s: %s", color.GreenString(e.name), err)
-				done <- errors.Wrap(err, fmt.Sprintf("%s", color.GreenString(e.name)))
+				done <- errors.Wrap(err, fmt.Sprintf("%s", color.RedString(e.name)))
 			}
 		}(e)
 	}
-	c.mu.Unlock()
 
 	for i := 0; i < numServing; i++ {
 		result := <-done
@@ -167,9 +161,6 @@ func (c *container) Serve() error {
 
 // Stop sends stop command to all running services.
 func (c *container) Stop() {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
 	for _, e := range c.services {
 		if e.hasStatus(StatusServing) {
 			e.svc.Stop()

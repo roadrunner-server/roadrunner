@@ -1,9 +1,7 @@
 package static
 
 import (
-	"github.com/sirupsen/logrus"
 	"net/http"
-	"os"
 	"path"
 	"strings"
 	rrttp "github.com/spiral/roadrunner/http"
@@ -15,9 +13,6 @@ const Name = "static"
 
 // Service serves static files. Potentially convert into middleware?
 type Service struct {
-	// Logger is associated debug and error logger. Can be empty.
-	Logger *logrus.Logger
-
 	// server configuration (location, forbidden files and etc)
 	cfg *Config
 
@@ -52,10 +47,6 @@ func (s *Service) Configure(cfg service.Config, c service.Container) (enabled bo
 		if h, ok := h.(*rrttp.Service); ok {
 			h.Add(s)
 		}
-	} else {
-		if s.Logger != nil {
-			s.Logger.Warningf("no http service found")
-		}
 	}
 
 	return true, nil
@@ -71,7 +62,6 @@ func (s *Service) Serve() error {
 
 // Stop stops the service.
 func (s *Service) Stop() {
-	//todo: this is not safe (TODO CHECK IT?)
 	close(s.done)
 }
 
@@ -84,29 +74,17 @@ func (s *Service) Handle(w http.ResponseWriter, r *http.Request) bool {
 	fPath = path.Clean(fPath)
 
 	if s.cfg.Forbids(fPath) {
-		if s.Logger != nil {
-			s.Logger.Warningf("attempt to access forbidden file %s", fPath)
-		}
 		return false
 	}
 
 	f, err := s.root.Open(fPath)
 	if err != nil {
-		if !os.IsNotExist(err) {
-			if s.Logger != nil {
-				s.Logger.Error(err)
-			}
-		}
-
 		return false
 	}
 	defer f.Close()
 
 	d, err := f.Stat()
 	if err != nil {
-		if s.Logger != nil {
-			s.Logger.Error(err)
-		}
 		return false
 	}
 

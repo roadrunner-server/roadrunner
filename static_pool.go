@@ -43,7 +43,7 @@ type StaticPool struct {
 // NewPool creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
 func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, error) {
 	if err := cfg.Valid(); err != nil {
-		return nil, errors.Wrap(err, "config error")
+		return nil, errors.Wrap(err, "config")
 	}
 
 	p := &StaticPool{

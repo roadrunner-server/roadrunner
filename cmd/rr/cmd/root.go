@@ -53,7 +53,7 @@ var (
 // This is called by main.main(). It only needs to happen once to the CLI.
 func Execute() {
 	if err := CLI.Execute(); err != nil {
-		utils.Printf("Error: <red>%s</reset>\n", err)
+		utils.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
 		os.Exit(1)
 	}
 }
@@ -69,7 +69,8 @@ func init() {
 
 		if cfg := initConfig(cfgFile, []string{"."}, ".rr"); cfg != nil {
 			if err := Container.Configure(cfg); err != nil {
-				panic(err)
+				utils.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
+				os.Exit(1)
 			}
 		}
 	})
