@@ -18,9 +18,6 @@ type Service struct {
 
 	// root is initiated http directory
 	root http.Dir
-
-	// let's service stay running
-	done chan interface{}
 }
 
 // Configure must return configure service and return true if service hasStatus enabled. Must return error in case of
@@ -45,7 +42,7 @@ func (s *Service) Configure(cfg service.Config, c service.Container) (enabled bo
 	// registering as middleware
 	if h, ok := c.Get(rrttp.Name); ok >= service.StatusConfigured {
 		if h, ok := h.(*rrttp.Service); ok {
-			h.Add(s)
+			h.AddMiddleware(s)
 		}
 	}
 
@@ -53,17 +50,10 @@ func (s *Service) Configure(cfg service.Config, c service.Container) (enabled bo
 }
 
 // Serve serves the service.
-func (s *Service) Serve() error {
-	s.done = make(chan interface{})
-	<-s.done
-
-	return nil
-}
+func (s *Service) Serve() error { return nil }
 
 // Stop stops the service.
-func (s *Service) Stop() {
-	close(s.done)
-}
+func (s *Service) Stop() {}
 
 // Handle must return true if request/response pair is handled withing the middleware.
 func (s *Service) Handle(w http.ResponseWriter, r *http.Request) bool {

@@ -7,6 +7,29 @@ import (
 	"github.com/pkg/errors"
 )
 
+const (
+	// EventResponse thrown after the request been processed. See Log as payload.
+	EventResponse = iota + 500
+
+	// EventError thrown on any non job error provided by road runner server.
+	EventError
+)
+
+// Log represents singular http response event.
+type Log struct {
+	// Method of the request.
+	Method string
+
+	// Uri requested by the client.
+	Uri string
+
+	// Status is response status.
+	Status int
+
+	// Associated error, if any.
+	Error error
+}
+
 // Server serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Server struct {
@@ -15,7 +38,7 @@ type Server struct {
 	rr       *roadrunner.Server
 }
 
-// Listen attaches pool event watcher.
+// AddListener attaches pool event watcher.
 func (s *Server) Listen(l func(event int, ctx interface{})) {
 	s.listener = l
 }
@@ -65,12 +88,18 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	s.handleResponse(req, resp)
 	resp.Write(w)
 }
 
-// handleError sends error
+// handleResponse triggers response event.
+func (s *Server) handleResponse(req *Request, resp *Response) {
+	s.throw(EventResponse, &Log{Method: req.Method, Uri: req.Uri, Status: resp.Status})
+}
+
+// handleError sends error.
 func (s *Server) handleError(w http.ResponseWriter, r *http.Request, err error) {
-	s.throw(2332323, err)
+	s.throw(EventError, &Log{Method: r.Method, Uri: uri(r), Status: 500, Error: err})
 
 	w.WriteHeader(500)
 	w.Write([]byte(err.Error()))

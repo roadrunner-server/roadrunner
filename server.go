@@ -49,7 +49,7 @@ func NewServer(cfg *ServerConfig) *Server {
 	return &Server{cfg: cfg}
 }
 
-// Listen attaches server event watcher.
+// AddListener attaches server event watcher.
 func (srv *Server) Listen(l func(event int, ctx interface{})) {
 	srv.listener = l
 }
@@ -169,7 +169,7 @@ func (srv *Server) Pool() Pool {
 	return srv.pool
 }
 
-// Listen pool events.
+// AddListener pool events.
 func (srv *Server) poolListener(event int, ctx interface{}) {
 	// bypassing to user specified listener
 	srv.throw(event, ctx)
@@ -185,7 +185,7 @@ func (srv *Server) poolListener(event int, ctx interface{}) {
 			srv.factory = nil
 
 			// everything is dead, this is recoverable but heavy state
-			srv.throw(EventServerFailure, srv)
+			srv.throw(EventServerFailure, err)
 		}
 	}
 }

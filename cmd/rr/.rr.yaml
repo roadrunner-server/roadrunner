@@ -33,7 +33,7 @@ http:
     # worker pool configuration.
     pool:
       # number of workers to be serving.
-      numWorkers: 16
+      numWorkers: 1
 
       # maximum jobs per worker, 0 - unlimited.
       maxJobs:  0
@@ -54,3 +54,11 @@ static:
 
   # list of extensions for forbid for serving.
   forbid: [".php", ".htaccess"]
+
+# rr debugging
+debug:
+  # enable debug output
+  enable:  true
+
+  # show individual worker events
+  verbose: true

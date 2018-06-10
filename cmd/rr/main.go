@@ -32,6 +32,7 @@ import (
 
 	// cli plugins
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
+	"github.com/spiral/roadrunner/debug"
 )
 
 func main() {
@@ -43,6 +44,9 @@ func main() {
 
 	// serving static files
 	rr.Container.Register(static.Name, &static.Service{})
+
+	// provides additional verbosity
+	rr.Container.Register(debug.Name, &debug.Service{Logger: rr.Logger})
 
 	// you can register additional commands using cmd.CLI
 	rr.Execute()

@@ -22,20 +22,20 @@ package http
 
 import (
 	"errors"
+	tm "github.com/buger/goterm"
+	"github.com/dustin/go-humanize"
+	"github.com/olekukonko/tablewriter"
+	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
+	"github.com/spiral/roadrunner/http"
 	rrpc "github.com/spiral/roadrunner/rpc"
 	"github.com/spiral/roadrunner/service"
-	"github.com/spiral/roadrunner/http"
-	"github.com/olekukonko/tablewriter"
+	"github.com/spiral/roadrunner/utils"
+	"net/rpc"
 	"os"
 	"strconv"
 	"time"
-	"github.com/dustin/go-humanize"
-	"github.com/spiral/roadrunner/cmd/rr/utils"
-	"github.com/shirou/gopsutil/process"
-	"net/rpc"
-	tm "github.com/buger/goterm"
 )
 
 var (

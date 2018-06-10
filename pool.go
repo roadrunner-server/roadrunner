@@ -19,7 +19,7 @@ const (
 
 // Pool managed set of inner worker processes.
 type Pool interface {
-	// Listen all caused events to attached watcher.
+	// AddListener all caused events to attached watcher.
 	Listen(l func(event int, ctx interface{}))
 
 	// Exec one task with given payload and context, returns result or error.

@@ -24,8 +24,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"github.com/spiral/roadrunner/service"
+	"github.com/spiral/roadrunner/utils"
 	"os"
 )
 
@@ -48,6 +48,26 @@ var (
 		Short:         utils.Sprintf("<green>RoadRunner, PHP Application Server.</reset>"),
 	}
 )
+
+// ViperWrapper provides interface bridge between v configs and service.Config.
+type ViperWrapper struct {
+	v *viper.Viper
+}
+
+// Get nested config section (sub-map), returns nil if section not found.
+func (w *ViperWrapper) Get(key string) service.Config {
+	sub := w.v.Sub(key)
+	if sub == nil {
+		return nil
+	}
+
+	return &ViperWrapper{sub}
+}
+
+// Unmarshal unmarshal config data into given struct.
+func (w *ViperWrapper) Unmarshal(out interface{}) error {
+	return w.v.Unmarshal(out)
+}
 
 // Execute adds all child commands to the CLI command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the CLI.
@@ -100,5 +120,5 @@ func initConfig(cfgFile string, path []string, name string) service.Config {
 		return nil
 	}
 
-	return &utils.ViperWrapper{Viper: cfg}
+	return &ViperWrapper{cfg}
 }
