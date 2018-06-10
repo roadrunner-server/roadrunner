@@ -142,21 +142,30 @@ func (p *StaticPool) Destroy() {
 
 // finds free worker in a given time interval or creates new if allowed.
 func (p *StaticPool) allocateWorker() (w *Worker, err error) {
-	select {
-	case w = <-p.free:
-		return w, nil
-	default:
-		// enable timeout handler
+	// this loop is required to skip issues with dead workers still being in a ring.
+	for i := uint64(0); i < p.cfg.NumWorkers; i++ {
+		select {
+		case w = <-p.free:
+			if w.state.Value() == StateReady {
+				return w, nil
+			}
+		default:
+			// enable timeout handler
+		}
+
+		timeout := time.NewTimer(p.cfg.AllocateTimeout)
+		select {
+		case <-timeout.C:
+			return nil, fmt.Errorf("worker timeout (%s)", p.cfg.AllocateTimeout)
+		case w := <-p.free:
+			timeout.Stop()
+			if w.state.Value() == StateReady {
+				return w, nil
+			}
+		}
 	}
 
-	timeout := time.NewTimer(p.cfg.AllocateTimeout)
-	select {
-	case <-timeout.C:
-		return nil, fmt.Errorf("worker timeout (%s)", p.cfg.AllocateTimeout)
-	case w := <-p.free:
-		timeout.Stop()
-		return w, nil
-	}
+	return w, nil
 }
 
 // release releases or replaces the worker.
@@ -209,7 +218,7 @@ func (p *StaticPool) createWorker() (*Worker, error) {
 
 			// attempting to replace worker
 			if err := p.replaceWorker(w, err); err != nil {
-				p.throw(EventPoolError, fmt.Errorf("unable to replace dead worker: %s", err))
+				p.throw(EventPoolError, fmt.Errorf("unable to replace: %s", err))
 			}
 		}
 	}(w)

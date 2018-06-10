@@ -51,14 +51,14 @@ func (s *Service) listener(event int, ctx interface{}) {
 	switch event {
 	case http.EventResponse:
 		log := ctx.(*http.Log)
-		s.Logger.Print(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.Uri))
+		s.Logger.Info(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.Uri))
 	case http.EventError:
 		log := ctx.(*http.Log)
 
 		if _, ok := log.Error.(roadrunner.JobError); ok {
-			s.Logger.Print(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.Uri))
+			s.Logger.Info(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.Uri))
 		} else {
-			s.Logger.Print(utils.Sprintf(
+			s.Logger.Info(utils.Sprintf(
 				"%s <white+hb>%s</reset> %s <red>%s</reset>",
 				statusColor(log.Status),
 				log.Method,
@@ -71,15 +71,15 @@ func (s *Service) listener(event int, ctx interface{}) {
 	switch event {
 	case roadrunner.EventWorkerKill:
 		w := ctx.(*roadrunner.Worker)
-		s.Logger.Print(utils.Sprintf(
-			"<white+hb>worker.%v</reset> <red>killed</red>",
+		s.Logger.Warning(utils.Sprintf(
+			"<white+hb>worker.%v</reset> <yellow>killed</red>",
 			*w.Pid,
 		))
 
 	case roadrunner.EventWorkerError:
 		err := ctx.(roadrunner.WorkerError)
-		s.Logger.Print(utils.Sprintf(
-			"<white+hb>worker.%v</reset> <red></reset>",
+		s.Logger.Error(utils.Sprintf(
+			"<white+hb>worker.%v</reset> <red>%s</reset>",
 			*err.Worker.Pid,
 			err.Caused,
 		))
@@ -88,17 +88,15 @@ func (s *Service) listener(event int, ctx interface{}) {
 	// rr server events
 	switch event {
 	case roadrunner.EventServerFailure:
-		s.Logger.Print(utils.Sprintf("<red+hb>http.rr</reset>: <red>%s</reset>", ctx))
+		s.Logger.Error(utils.Sprintf("<red+hb>http.rr</reset>: <red+hb>server is dead</reset>"))
 	}
 
 	// pool events
 	switch event {
 	case roadrunner.EventPoolConstruct:
-		s.Logger.Print(utils.Sprintf("<white+hb>http.rr</reset>: <green>worker pool constructed</reset>"))
-	case roadrunner.EventPoolDestruct:
-		s.Logger.Print(utils.Sprintf("<white+hb>http.rr</reset>: <yellow>worker pool destructed</reset>"))
+		s.Logger.Debug(utils.Sprintf("<white+hb>http.rr</reset>: <green>new worker pool</reset>"))
 	case roadrunner.EventPoolError:
-		s.Logger.Print(utils.Sprintf("<red+hb>http.rr</reset>: <red>%s</reset>", ctx))
+		s.Logger.Error(utils.Sprintf("<red+hb>http.rr</reset>: <red>%s</reset>", ctx))
 	}
 }
 

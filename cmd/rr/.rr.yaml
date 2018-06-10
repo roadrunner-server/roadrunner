@@ -39,10 +39,10 @@ http:
       maxJobs:  0
 
       # for how long worker is allowed to be bootstrapped.
-      allocateTimeout: 6000000
+      allocateTimeout: 60000000
 
       # amount of time given to worker to gracefully destruct itself.
-      destroyTimeout:  6000000
+      destroyTimeout:  60000000
 
 # static file serving.
 static:
