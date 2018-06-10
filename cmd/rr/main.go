@@ -32,7 +32,7 @@ import (
 
 func main() {
 	// provides ability to make local connection to services
-	rr.Services.Register("rpc", new(rpc.Service))
+	rr.Container.Register("rpc", new(rpc.Service))
 
 	// you can register additional commands using cmd.CLI
 	rr.Execute()

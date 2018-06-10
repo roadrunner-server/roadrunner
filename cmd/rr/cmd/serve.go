@@ -27,9 +27,7 @@ import (
 	"syscall"
 )
 
-var (
-	stopSignal = make(chan os.Signal, 1)
-)
+var stopSignal = make(chan os.Signal, 1)
 
 func init() {
 	CLI.AddCommand(&cobra.Command{
@@ -42,7 +40,7 @@ func init() {
 }
 
 func serveHandler(cmd *cobra.Command, args []string) {
-	Services.Serve()
+	Container.Serve()
 	<-stopSignal
-	Services.Stop()
+	Container.Stop()
 }

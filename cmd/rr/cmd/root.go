@@ -37,8 +37,8 @@ var (
 	// Logger - shared logger.
 	Logger = logrus.New()
 
-	// Services - shared service bus.
-	Services = service.NewContainer(Logger)
+	// Container - shared service bus.
+	Container = service.NewContainer(Logger)
 
 	// CLI is application endpoint.
 	CLI = &cobra.Command{
@@ -68,7 +68,7 @@ func init() {
 		}
 
 		if cfg := initConfig(cfgFile, []string{"."}, ".rr"); cfg != nil {
-			if err := Services.Configure(cfg); err != nil {
+			if err := Container.Configure(cfg); err != nil {
 				panic(err)
 			}
 		}

@@ -36,11 +36,11 @@ func init() {
 }
 
 func reloadHandler(cmd *cobra.Command, args []string) error {
-	if !rr.Services.Has("rpc") {
+	if !rr.Container.Has("rpc") {
 		return errors.New("RPC service is not configured")
 	}
 
-	client, err := rr.Services.Get("rpc").(*rpc.Service).Client()
+	client, err := rr.Container.Get("rpc").(*rpc.Service).Client()
 	if err != nil {
 		return err
 	}
