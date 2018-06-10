@@ -5,9 +5,10 @@ import (
 	"github.com/spiral/roadrunner/service"
 	"context"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/rpc"
 )
 
-// Name contains default service name.
+// Name contains default svc name.
 const Name = "http"
 
 type Middleware interface {
@@ -17,8 +18,11 @@ type Middleware interface {
 
 // Service manages rr, http servers.
 type Service struct {
-	cfg        *Config
-	listener   func(event int, ctx interface{})
+	cfg *Config
+
+	// todo: multiple listeners
+	listener func(event int, ctx interface{})
+
 	middleware []Middleware
 	rr         *roadrunner.Server
 	srv        *Server
@@ -34,7 +38,7 @@ func (s *Service) Listen(o func(event int, ctx interface{})) {
 	s.listener = o
 }
 
-// Configure must return configure service and return true if service hasStatus enabled. Must return error in case of
+// Configure must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Service) Configure(cfg service.Config, c service.Container) (bool, error) {
 	config := &Config{}
@@ -52,12 +56,17 @@ func (s *Service) Configure(cfg service.Config, c service.Container) (bool, erro
 
 	s.cfg = config
 
-	// todo: RPC
+	// registering http RPC interface
+	if r, ok := c.Get(rpc.Name); ok >= service.StatusConfigured {
+		if h, ok := r.(*rpc.Service); ok {
+			h.Register(Name, &rpcServer{s})
+		}
+	}
 
 	return true, nil
 }
 
-// Serve serves the service.
+// Serve serves the svc.
 func (s *Service) Serve() error {
 	rr := roadrunner.NewServer(s.cfg.Workers)
 
@@ -86,7 +95,7 @@ func (s *Service) Serve() error {
 	return nil
 }
 
-// Stop stops the service.
+// Stop stops the svc.
 func (s *Service) Stop() {
 	if s.http == nil {
 		return

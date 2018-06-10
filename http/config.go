@@ -6,7 +6,7 @@ import (
 
 // Configures RoadRunner HTTP server.
 type Config struct {
-	// Enable enables http service.
+	// Enable enables http svc.
 	Enable bool
 
 	// Address and port to handle as http server.

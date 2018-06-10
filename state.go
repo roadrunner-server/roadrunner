@@ -14,7 +14,7 @@ type State interface {
 	// Value returns state value
 	Value() int64
 
-	// NumExecs shows how many times worker was invoked
+	// NumJobs shows how many times worker was invoked
 	NumExecs() uint64
 
 	// Updated indicates a moment updated last state change

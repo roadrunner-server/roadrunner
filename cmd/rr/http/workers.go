@@ -24,6 +24,14 @@ import (
 	"errors"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
+	"github.com/spiral/roadrunner/rpc"
+	"github.com/spiral/roadrunner/service"
+	"github.com/spiral/roadrunner/http"
+	"github.com/olekukonko/tablewriter"
+	"os"
+	"strconv"
+	"time"
+	"github.com/fatih/color"
 )
 
 func init() {
@@ -35,33 +43,47 @@ func init() {
 }
 
 func workersHandler(cmd *cobra.Command, args []string) error {
-	if !rr.Container.Has("rpc") {
+	svc, st := rr.Container.Get(rpc.Name)
+	if st < service.StatusConfigured {
 		return errors.New("RPC service is not configured")
 	}
 
-	//todo: change
-	//client, err := rr.Container.Get("rpc").(*rpc.Service).Client()
-	//if err != nil {
-	//	return err
-	//}
-	//defer client.Close()
+	client, err := svc.(*rpc.Service).Client()
+	if err != nil {
+		return err
+	}
+	defer client.Close()
 
-	//var r http.WorkerList
-	//if err := client.Call("http.Workers", true, &r); err != nil {
-	//	panic(err)
-	//}
-	//
-	//tw := tablewriter.NewWriter(os.Stdout)
-	//tw.SetHeader([]string{"PID", "Status", "Num Execs"})
-	//
-	//for _, w := range r.Workers {
-	//	tw.Append([]string{
-	//		strconv.Itoa(w.Pid),
-	//		w.Status,
-	//		strconv.Itoa(int(w.NumExecs)),
-	//	})
-	//}
-	//
-	//tw.Render()
+	var r http.WorkerList
+	if err := client.Call("http.Workers", true, &r); err != nil {
+		panic(err)
+	}
+
+	tw := tablewriter.NewWriter(os.Stdout)
+	tw.SetHeader([]string{"PID", "Status", "Handled Jobs", "Alive"})
+
+	for _, w := range r.Workers {
+		tw.Append([]string{
+			color.YellowString(strconv.Itoa(w.Pid)),
+			renderStatus(w.Status),
+			renderJobs(w.NumJobs),
+			renderAlive(time.Unix(0, w.Created)),
+		})
+	}
+
+	tw.Render()
+
 	return nil
+}
+
+func renderStatus(status string) string {
+	return status
+}
+
+func renderJobs(number uint64) string {
+	return strconv.Itoa(int(number))
+}
+
+func renderAlive(t time.Time) string {
+	return time.Now().Sub(t).String()
 }
