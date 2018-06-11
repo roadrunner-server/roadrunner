@@ -20,7 +20,7 @@ install:
   - go get -u "github.com/sirupsen/logrus"
   - go get -u "github.com/pkg/errors"
   - go get -u "github.com/stretchr/testify/assert"
-  - composer install --no-interaction --prefer-source
+  - composer install --no-interaction --prefer-source --ignore-platform-reqs
 
 script:
   - go test -race -v -coverprofile=lib.txt -covermode=atomic
