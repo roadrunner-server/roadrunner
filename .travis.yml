@@ -8,7 +8,7 @@ php:
   - 7.2
 
 go:
-  - 1.8
+  - 1.8.0
 
 before_install:
   - composer self-update
