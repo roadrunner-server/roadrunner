@@ -149,6 +149,7 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 			if w.state.Value() == StateReady {
 				return w, nil
 			} else {
+				go p.replaceWorker(w, w.state.Value())
 				continue
 			}
 		default:
@@ -165,6 +166,7 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 			if w.state.Value() == StateReady {
 				return w, nil
 			} else {
+				go p.replaceWorker(w, w.state.Value())
 				continue
 			}
 		}
