@@ -148,6 +148,8 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 		case w = <-p.free:
 			if w.state.Value() == StateReady {
 				return w, nil
+			} else {
+				continue
 			}
 		default:
 			// enable timeout handler
@@ -159,8 +161,11 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 			return nil, fmt.Errorf("worker timeout (%s)", p.cfg.AllocateTimeout)
 		case w := <-p.free:
 			timeout.Stop()
+
 			if w.state.Value() == StateReady {
 				return w, nil
+			} else {
+				continue
 			}
 		}
 	}

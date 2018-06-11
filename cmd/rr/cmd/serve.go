@@ -37,13 +37,11 @@ func init() {
 	})
 
 	signal.Notify(stopSignal, syscall.SIGTERM)
+	signal.Notify(stopSignal, syscall.SIGINT)
 }
 
 func serveHandler(cmd *cobra.Command, args []string) error {
-	if err := Container.Serve(); err != nil {
-		return err
-	}
-
+	go Container.Serve()
 	<-stopSignal
 	Container.Stop()
 

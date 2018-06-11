@@ -26,7 +26,7 @@ import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 
 	// services (plugins)
-	"github.com/spiral/roadrunner/service/http"
+	rrhtp "github.com/spiral/roadrunner/service/http"
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/spiral/roadrunner/service/static"
 
@@ -35,16 +35,33 @@ import (
 	"github.com/spiral/roadrunner/cmd/rr/debug"
 
 	"github.com/spf13/cobra"
+	_ "net/http/pprof"
+	"os"
+	"log"
+	"runtime/pprof"
+	"net/http"
 )
 
 var debugMode bool
 
 func main() {
+	f, err := os.Create("cpu.pprof")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	pprof.StartCPUProfile(f)
+	defer pprof.StopCPUProfile()
+
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	// provides ability to make local connection to services
 	rr.Container.Register(rpc.Name, &rpc.Service{})
 
 	// http serving
-	rr.Container.Register(http.Name, &http.Service{})
+	rr.Container.Register(rrhtp.Name, &rrhtp.Service{})
 
 	// serving static files
 	rr.Container.Register(static.Name, &static.Service{})
@@ -55,8 +72,8 @@ func main() {
 	rr.CLI.PersistentFlags().BoolVarP(&debugMode, "debug", "d", false, "debug mode", )
 	cobra.OnInitialize(func() {
 		if debugMode {
-			service, _ := rr.Container.Get(http.Name)
-			service.(*http.Service).AddListener(debug.NewListener(rr.Logger).Listener)
+			service, _ := rr.Container.Get(rrhtp.Name)
+			service.(*rrhtp.Service).AddListener(debug.NewListener(rr.Logger).Listener)
 		}
 	})
 
