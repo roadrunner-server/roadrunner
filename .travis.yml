@@ -10,8 +10,7 @@ before_install:
   - sudo add-apt-repository -y ppa:ondrej/php
   - sudo apt-get update
   - sudo apt-get install -y php7.0-cli
-  - which php
-  - which php7.0
+  - sudo cp `which php7.0` `which php`
   - php -v
   - composer self-update
 
