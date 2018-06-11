@@ -68,6 +68,11 @@ func (s *state) String() string {
 	return "undefined"
 }
 
+// NumExecs returns number of registered worker execs.
+func (s *state) NumExecs() int64 {
+	return atomic.LoadInt64(&s.numExecs)
+}
+
 // Value state returns state value
 func (s *state) Value() int64 {
 	return atomic.LoadInt64(&s.value)
@@ -77,10 +82,6 @@ func (s *state) Value() int64 {
 func (s *state) IsActive() bool {
 	state := s.Value()
 	return state == StateWorking || state == StateReady
-}
-
-func (s *state) NumExecs() int64 {
-	return atomic.LoadInt64(&s.numExecs)
 }
 
 // change state value (status)
