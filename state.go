@@ -3,7 +3,6 @@ package roadrunner
 import (
 	"fmt"
 	"sync/atomic"
-	"time"
 )
 
 // State represents worker status and updated time.
@@ -15,9 +14,6 @@ type State interface {
 
 	// NumJobs shows how many times worker was invoked
 	NumExecs() int64
-
-	// Updated indicates a moment updated last state change
-	Updated() time.Time
 }
 
 const (
@@ -43,11 +39,10 @@ const (
 type state struct {
 	value    int64
 	numExecs int64
-	updated  int64
 }
 
 func newState(value int64) *state {
-	return &state{value: value, updated: time.Now().UnixNano()}
+	return &state{value: value}
 }
 
 // String returns current state as string.
@@ -79,11 +74,6 @@ func (s *state) IsActive() bool {
 	return state == StateWorking || state == StateReady
 }
 
-// Updated indicates a moment updated last state change
-func (s *state) Updated() time.Time {
-	return time.Unix(0, atomic.LoadInt64(&s.updated))
-}
-
 func (s *state) NumExecs() int64 {
 	return atomic.LoadInt64(&s.numExecs)
 }
@@ -91,7 +81,6 @@ func (s *state) NumExecs() int64 {
 // change state value (status)
 func (s *state) set(value int64) {
 	atomic.StoreInt64(&s.value, value)
-	atomic.StoreInt64(&s.updated, time.Now().UnixNano())
 }
 
 // register new execution atomically

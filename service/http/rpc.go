@@ -25,9 +25,6 @@ type Worker struct {
 
 	// Created is unix nano timestamp of worker creation time.
 	Created int64 `json:"created"`
-
-	// Updated is unix nano timestamp of last worker execution.
-	Updated int64 `json:"updated"`
 }
 
 // Reset resets underlying RR worker pool and restarts all of it's workers.
@@ -53,7 +50,6 @@ func (rpc *rpcServer) Workers(list bool, r *WorkerList) error {
 			Status:  state.String(),
 			NumJobs: state.NumExecs(),
 			Created: w.Created.UnixNano(),
-			Updated: state.Updated().UnixNano(),
 		})
 	}
 

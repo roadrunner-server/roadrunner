@@ -4,7 +4,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"testing"
-	"time"
 )
 
 func Test_GetState(t *testing.T) {
@@ -191,20 +190,4 @@ func Test_NumExecs(t *testing.T) {
 
 	w.Exec(&Payload{Body: []byte("hello")})
 	assert.Equal(t, int64(3), w.State().NumExecs())
-}
-
-func Test_StateUpdated(t *testing.T) {
-	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
-
-	w, _ := NewPipeFactory().SpawnWorker(cmd)
-	go func() {
-		assert.NoError(t, w.Wait())
-	}()
-	defer w.Stop()
-
-	tm := time.Now()
-	time.Sleep(time.Millisecond)
-
-	w.Exec(&Payload{Body: []byte("hello")})
-	assert.True(t, w.State().Updated().After(tm))
 }

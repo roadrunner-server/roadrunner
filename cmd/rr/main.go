@@ -36,23 +36,13 @@ import (
 
 	"github.com/spf13/cobra"
 	_ "net/http/pprof"
-	"os"
 	"log"
-	"runtime/pprof"
 	"net/http"
 )
 
 var debugMode bool
 
 func main() {
-	f, err := os.Create("cpu.pprof")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	pprof.StartCPUProfile(f)
-	defer pprof.StopCPUProfile()
-
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
