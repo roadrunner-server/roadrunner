@@ -13,7 +13,7 @@ func TestServer_PipesEcho(t *testing.T) {
 		&ServerConfig{
 			Command: "php php-src/tests/client.php echo pipes",
 			Relay:   "pipes",
-			Pool: Config{
+			Pool: &Config{
 				NumWorkers:      int64(runtime.NumCPU()),
 				AllocateTimeout: time.Second,
 				DestroyTimeout:  time.Second,
@@ -39,7 +39,7 @@ func TestServer_SocketEcho(t *testing.T) {
 			Command:      "php php-src/tests/client.php echo tcp",
 			Relay:        "tcp://:9007",
 			RelayTimeout: 10 * time.Second,
-			Pool: Config{
+			Pool: &Config{
 				NumWorkers:      int64(runtime.NumCPU()),
 				AllocateTimeout: time.Second,
 				DestroyTimeout:  time.Second,
@@ -64,7 +64,7 @@ func TestServer_Configure_BeforeStart(t *testing.T) {
 		&ServerConfig{
 			Command: "php php-src/tests/client.php echo pipes",
 			Relay:   "pipes",
-			Pool: Config{
+			Pool: &Config{
 				NumWorkers:      int64(runtime.NumCPU()),
 				AllocateTimeout: time.Second,
 				DestroyTimeout:  time.Second,
@@ -75,7 +75,7 @@ func TestServer_Configure_BeforeStart(t *testing.T) {
 	err := srv.Reconfigure(&ServerConfig{
 		Command: "php php-src/tests/client.php echo pipes",
 		Relay:   "pipes",
-		Pool: Config{
+		Pool: &Config{
 			NumWorkers:      2,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
@@ -101,7 +101,7 @@ func TestServer_Stop_NotStarted(t *testing.T) {
 		&ServerConfig{
 			Command: "php php-src/tests/client.php echo pipes",
 			Relay:   "pipes",
-			Pool: Config{
+			Pool: &Config{
 				NumWorkers:      int64(runtime.NumCPU()),
 				AllocateTimeout: time.Second,
 				DestroyTimeout:  time.Second,
@@ -116,7 +116,7 @@ func TestServer_Reconfigure(t *testing.T) {
 		&ServerConfig{
 			Command: "php php-src/tests/client.php echo pipes",
 			Relay:   "pipes",
-			Pool: Config{
+			Pool: &Config{
 				NumWorkers:      1,
 				AllocateTimeout: time.Second,
 				DestroyTimeout:  time.Second,
@@ -130,7 +130,7 @@ func TestServer_Reconfigure(t *testing.T) {
 	err := srv.Reconfigure(&ServerConfig{
 		Command: "php php-src/tests/client.php echo pipes",
 		Relay:   "pipes",
-		Pool: Config{
+		Pool: &Config{
 			NumWorkers:      2,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
@@ -146,7 +146,7 @@ func TestServer_Reset(t *testing.T) {
 		&ServerConfig{
 			Command: "php php-src/tests/client.php echo pipes",
 			Relay:   "pipes",
-			Pool: Config{
+			Pool: &Config{
 				NumWorkers:      1,
 				AllocateTimeout: time.Second,
 				DestroyTimeout:  time.Second,
@@ -168,7 +168,7 @@ func TestServer_ReplacePool(t *testing.T) {
 		&ServerConfig{
 			Command: "php php-src/tests/client.php echo pipes",
 			Relay:   "pipes",
-			Pool: Config{
+			Pool: &Config{
 				NumWorkers:      1,
 				AllocateTimeout: time.Second,
 				DestroyTimeout:  time.Second,
@@ -197,7 +197,7 @@ func TestServer_ServerFailure(t *testing.T) {
 	srv := NewServer(&ServerConfig{
 		Command: "php php-src/tests/client.php echo pipes",
 		Relay:   "pipes",
-		Pool: Config{
+		Pool: &Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,

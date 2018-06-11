@@ -34,7 +34,6 @@ func (r *Response) Write(w http.ResponseWriter) error {
 	for k, v := range r.Headers {
 		for _, h := range v {
 			w.Header().Add(k, h)
-
 		}
 	}
 

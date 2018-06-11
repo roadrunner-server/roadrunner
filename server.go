@@ -63,7 +63,7 @@ func (srv *Server) Start() (err error) {
 		return err
 	}
 
-	if srv.pool, err = NewPool(srv.cfg.makeCommand(), srv.factory, srv.cfg.Pool); err != nil {
+	if srv.pool, err = NewPool(srv.cfg.makeCommand(), srv.factory, *srv.cfg.Pool); err != nil {
 		return err
 	}
 
@@ -124,7 +124,7 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 	previous := srv.pool
 	srv.mu.Unlock()
 
-	pool, err := NewPool(cfg.makeCommand(), srv.factory, cfg.Pool)
+	pool, err := NewPool(cfg.makeCommand(), srv.factory, *cfg.Pool)
 	if err != nil {
 		return err
 	}

@@ -12,7 +12,7 @@ type Config struct {
 	// Address and port to handle as http server.
 	Address string
 
-	// MaxRequest specified max size for payload body in bytes, set 0 to unlimited.
+	// MaxRequest specified max size for payload body in megabytes, set 0 to unlimited.
 	MaxRequest int64
 
 	// Uploads configures uploads configuration.

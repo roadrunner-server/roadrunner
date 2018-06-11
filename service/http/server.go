@@ -51,7 +51,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			if size, err := strconv.ParseInt(length, 10, 64); err != nil {
 				s.handleError(w, r, err)
 				return
-			} else if size > s.cfg.MaxRequest {
+			} else if size > s.cfg.MaxRequest*1024*1024 {
 				s.handleError(w, r, errors.New("request body max size is exceeded"))
 				return
 			}

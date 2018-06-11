@@ -18,11 +18,11 @@ type Config struct {
 
 	// AllocateTimeout defines for how long pool will be waiting for a worker to
 	// be freed to handle the task.
-	AllocateTimeout time.Duration
+	AllocateTimeout time.Duration //todo: to milleseconds?
 
 	// DestroyTimeout defines for how long pool should be waiting for worker to
 	// properly stop, if timeout reached worker will be killed.
-	DestroyTimeout time.Duration
+	DestroyTimeout time.Duration //todo: to milleseconds?
 }
 
 // Reconfigure returns error if cfg not valid

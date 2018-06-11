@@ -24,7 +24,7 @@ type ServerConfig struct {
 
 	// Pool defines worker pool configuration, number of workers, timeouts and etc. This config section might change
 	// while server is running.
-	Pool Config
+	Pool *Config
 }
 
 // Differs returns true if configuration has changed but ignores pool or cmd changes.

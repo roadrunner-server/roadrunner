@@ -9,17 +9,10 @@ namespace Spiral\RoadRunner;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Spiral\RoadRunner\Worker;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\Stream;
-use Zend\Diactoros\UploadedFile;
+use Zend\Diactoros;
 
 /**
- * Spiral Framework, SpiralScout LLC.
- *
- * @package   spiralFramework
- * @author    Anton Titov (Wolfy-J)
- * @copyright ©2009-2011
+ * Manages PSR-7 request and response.
  */
 class PSR7Client
 {
@@ -67,11 +60,11 @@ class PSR7Client
         if ($ctx['parsed']) {
             $parsedBody = json_decode($body, true);
         } elseif ($body != null) {
-            $bodyStream = new Stream("php://memory", "rwb");
+            $bodyStream = new Diactoros\Stream("php://memory", "rwb");
             $bodyStream->write($body);
         }
 
-        return new ServerRequest(
+        return new Diactoros\ServerRequest(
             $_SERVER,
             $this->wrapUploads($ctx['uploads']),
             $ctx['uri'],
@@ -92,9 +85,15 @@ class PSR7Client
      */
     public function respond(ResponseInterface $response)
     {
+        $headers = $response->getHeaders();
+        if (empty($headers)) {
+            // this is required to represent empty header set as map and not as array
+            $headers = new \stdClass();
+        }
+
         $this->worker->send($response->getBody(), json_encode([
             'status'  => $response->getStatusCode(),
-            'headers' => $response->getHeaders()
+            'headers' => $headers
         ]));
     }
 
@@ -113,18 +112,19 @@ class PSR7Client
 
         $result = [];
         foreach ($files as $index => $file) {
-            if (isset($file['name'])) {
-                $result[$index] = new UploadedFile(
-                    $file['tmpName'],
-                    $file['size'],
-                    $file['error'],
-                    $file['name'],
-                    $file['type']
-                );
+            if (!isset($file['name'])) {
+                $result[$index] = $this->wrapUploads($file);
                 continue;
             }
 
-            $result[$index] = $this->wrapUploads($file);
+
+            $result[$index] = new Diactoros\UploadedFile(
+                $file['tmpName'],
+                $file['size'],
+                $file['error'],
+                $file['name'],
+                $file['type']
+            );
         }
 
         return $result;
