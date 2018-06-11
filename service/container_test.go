@@ -57,11 +57,11 @@ func (t *testService) Stop() {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 
+	close(t.serving)
 	if t.serving == nil {
 		return
 	}
 	
-	close(t.serving)
 	t.serving = nil
 }
 
