@@ -14,7 +14,7 @@ func TestServer_PipesEcho(t *testing.T) {
 			Command: "php php-src/tests/client.php echo pipes",
 			Relay:   "pipes",
 			Pool: Config{
-				NumWorkers:      uint64(runtime.NumCPU()),
+				NumWorkers:      int64(runtime.NumCPU()),
 				AllocateTimeout: time.Second,
 				DestroyTimeout:  time.Second,
 			},
@@ -40,7 +40,7 @@ func TestServer_SocketEcho(t *testing.T) {
 			Relay:        "tcp://:9007",
 			RelayTimeout: 10 * time.Second,
 			Pool: Config{
-				NumWorkers:      uint64(runtime.NumCPU()),
+				NumWorkers:      int64(runtime.NumCPU()),
 				AllocateTimeout: time.Second,
 				DestroyTimeout:  time.Second,
 			},
@@ -65,7 +65,7 @@ func TestServer_Configure_BeforeStart(t *testing.T) {
 			Command: "php php-src/tests/client.php echo pipes",
 			Relay:   "pipes",
 			Pool: Config{
-				NumWorkers:      uint64(runtime.NumCPU()),
+				NumWorkers:      int64(runtime.NumCPU()),
 				AllocateTimeout: time.Second,
 				DestroyTimeout:  time.Second,
 			},
@@ -102,7 +102,7 @@ func TestServer_Stop_NotStarted(t *testing.T) {
 			Command: "php php-src/tests/client.php echo pipes",
 			Relay:   "pipes",
 			Pool: Config{
-				NumWorkers:      uint64(runtime.NumCPU()),
+				NumWorkers:      int64(runtime.NumCPU()),
 				AllocateTimeout: time.Second,
 				DestroyTimeout:  time.Second,
 			},

@@ -12,7 +12,7 @@ import (
 )
 
 var cfg = Config{
-	NumWorkers:      uint64(runtime.NumCPU()),
+	NumWorkers:      int64(runtime.NumCPU()),
 	AllocateTimeout: time.Second,
 	DestroyTimeout:  time.Second,
 }

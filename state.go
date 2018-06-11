@@ -47,7 +47,7 @@ type state struct {
 }
 
 func newState(value int64) *state {
-	return &state{value: value, updated: time.Now().Unix()}
+	return &state{value: value, updated: time.Now().UnixNano()}
 }
 
 // String returns current state as string.
@@ -91,7 +91,7 @@ func (s *state) NumExecs() int64 {
 // change state value (status)
 func (s *state) set(value int64) {
 	atomic.StoreInt64(&s.value, value)
-	atomic.StoreInt64(&s.updated, time.Now().Unix())
+	atomic.StoreInt64(&s.updated, time.Now().UnixNano())
 }
 
 // register new execution atomically

@@ -184,13 +184,13 @@ func Test_NumExecs(t *testing.T) {
 	defer w.Stop()
 
 	w.Exec(&Payload{Body: []byte("hello")})
-	assert.Equal(t, uint64(1), w.State().NumExecs())
+	assert.Equal(t, int64(1), w.State().NumExecs())
 
 	w.Exec(&Payload{Body: []byte("hello")})
-	assert.Equal(t, uint64(2), w.State().NumExecs())
+	assert.Equal(t, int64(2), w.State().NumExecs())
 
 	w.Exec(&Payload{Body: []byte("hello")})
-	assert.Equal(t, uint64(3), w.State().NumExecs())
+	assert.Equal(t, int64(3), w.State().NumExecs())
 }
 
 func Test_StateUpdated(t *testing.T) {

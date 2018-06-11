@@ -24,8 +24,8 @@ install:
 
 script:
   - go test -race -v -coverprofile=lib.txt -covermode=atomic
-  - go test ./rpc -race -v -coverprofile=rpc.txt -covermode=atomic
   - go test ./service -race -v -coverprofile=service.txt -covermode=atomic
+  - go test ./service/rpc -race -v -coverprofile=rpc.txt -covermode=atomic
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -f lib.txt
