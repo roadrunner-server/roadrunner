@@ -186,6 +186,9 @@ func (w *Worker) Exec(rqs *Payload) (rsp *Payload, err error) {
 		}
 	}
 
+	// todo: attach when payload is complete
+	// todo: new status
+
 	w.state.set(StateReady)
 	return rsp, err
 }

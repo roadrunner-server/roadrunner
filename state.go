@@ -26,6 +26,9 @@ const (
 	// StateWorking - working on given payload.
 	StateWorking
 
+	// StateStreaming - indicates that worker is streaming the data at the moment.
+	StateStreaming
+
 	// StateStopping - process is being softly stopped.
 	StateStopping
 
@@ -54,6 +57,8 @@ func (s *state) String() string {
 		return "ready"
 	case StateWorking:
 		return "working"
+	case StateStreaming:
+		return "streaming"
 	case StateStopped:
 		return "stopped"
 	case StateErrored:
