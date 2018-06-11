@@ -11,6 +11,7 @@ go:
   - 1.8.0
 
 before_install:
+  - go version
   - composer self-update
 
 install:
