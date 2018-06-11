@@ -25,7 +25,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/spiral/roadrunner/service"
-	"github.com/spiral/roadrunner/utils"
+	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"os"
 )
 

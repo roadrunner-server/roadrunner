@@ -31,7 +31,7 @@ import (
 	"github.com/spiral/roadrunner/http"
 	rrpc "github.com/spiral/roadrunner/rpc"
 	"github.com/spiral/roadrunner/service"
-	"github.com/spiral/roadrunner/utils"
+	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"net/rpc"
 	"os"
 	"strconv"

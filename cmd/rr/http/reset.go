@@ -26,7 +26,7 @@ import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 	"github.com/spiral/roadrunner/rpc"
 	"github.com/spiral/roadrunner/service"
-	"github.com/spiral/roadrunner/utils"
+	"github.com/spiral/roadrunner/cmd/rr/utils"
 )
 
 func init() {

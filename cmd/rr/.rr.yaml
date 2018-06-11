@@ -12,7 +12,7 @@ http:
   enable:    true
 
   # http host to listen.
-  address:   0.0.0.0:8080
+  address:   :8081
 
   # max POST request size, including file uploads. (default: 1GB)
   maxRequest: 1073741824
@@ -25,7 +25,7 @@ http:
   # http worker pool configuration.
   workers:
     # php worker command.
-    command:  "php c:/GoProj/phpapp/webroot/index.php rr pipes --no-ansi"
+    command:  "php /Users/wolfy-j/Projects/phpapp/webroot/index.php rr pipes --no-ansi"
 
     # connection method (pipes, tcp://:9000, unix://socket.unix).
     relay:    "pipes"
@@ -33,7 +33,7 @@ http:
     # worker pool configuration.
     pool:
       # number of workers to be serving.
-      numWorkers: 16
+      numWorkers: 4
 
       # maximum jobs per worker, 0 - unlimited.
       maxJobs:  0
@@ -50,7 +50,7 @@ static:
   enable:  true
 
   # root directory for static file (http would not serve .php and .htaccess files).
-  dir:   "c:/GoProj/phpapp/webroot"
+  dir:   "/Users/wolfy-j/Projects/phpapp/webroot"
 
   # list of extensions for forbid for serving.
   forbid: [".php", ".htaccess"]
