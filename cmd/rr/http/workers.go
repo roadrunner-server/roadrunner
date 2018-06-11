@@ -36,6 +36,8 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"os/signal"
+	"syscall"
 )
 
 var (
@@ -59,6 +61,9 @@ func init() {
 	)
 
 	rr.CLI.AddCommand(workersCommand)
+
+	signal.Notify(stopSignal, syscall.SIGTERM)
+	signal.Notify(stopSignal, syscall.SIGINT)
 }
 
 func workersHandler(cmd *cobra.Command, args []string) (err error) {
@@ -87,6 +92,8 @@ func workersHandler(cmd *cobra.Command, args []string) (err error) {
 	tm.Clear()
 	for {
 		select {
+		case <-stopSignal:
+			return nil
 		case <-time.NewTicker(time.Millisecond * 500).C:
 			tm.MoveCursor(1, 1)
 			showWorkers(client)
@@ -94,7 +101,6 @@ func workersHandler(cmd *cobra.Command, args []string) (err error) {
 		}
 	}
 
-	<-stopSignal
 	return nil
 }
 
