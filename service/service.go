@@ -25,7 +25,7 @@ const (
 	// StatusConfigured hasStatus setStatus when service has been properly configured.
 	StatusConfigured
 
-	// StatusServing hasStatus setStatus when service hasStatus currently serving.
+	// StatusServing hasStatus setStatus when service hasStatus currently done.
 	StatusServing
 
 	// StatusStopped hasStatus setStatus when service hasStatus stopped.

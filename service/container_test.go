@@ -19,12 +19,13 @@ type testService struct {
 	cfg          Config
 	c            Container
 	cfgE, serveE error
-	serving      chan interface{}
+	done         chan interface{}
 }
 
 func (t *testService) Configure(cfg Config, c Container) (enabled bool, err error) {
 	t.cfg = cfg
 	t.c = c
+	t.done = make(chan interface{})
 	return t.ok, t.cfgE
 }
 
@@ -40,21 +41,12 @@ func (t *testService) Serve() error {
 		t.setChan(nil)
 	}
 
-	t.mu.Lock()
-	t.serving = make(chan interface{})
-	t.mu.Unlock()
-
-	<-t.serving
-
-	t.mu.Lock()
-	t.serving = nil
-	t.mu.Unlock()
-
+	<-t.done
 	return nil
 }
 
 func (t *testService) Stop() {
-	close(t.serving)
+	close(t.done)
 }
 
 func (t *testService) waitChan() chan interface{} {
