@@ -12,12 +12,11 @@ php:
 
 before_install:
   - go version
+  - php -v
   - composer self-update
 
 install:
   - go get "github.com/spiral/roadrunner"
-  - rm -rf $GOPATH/src/github.com/spiral/roadrunner/*
-  - cp -r * $GOPATH/src/github.com/spiral/roadrunner
   - go get -u "github.com/spiral/goridge"
   - go get -u "github.com/sirupsen/logrus"
   - go get -u "github.com/pkg/errors"
