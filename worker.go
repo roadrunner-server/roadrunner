@@ -237,6 +237,7 @@ func (w *Worker) execPayload(rqs *Payload) (rsp *Payload, err error) {
 		return nil, JobError(rsp.Context)
 	}
 
+	// add streaming support :)
 	if rsp.Body, pr, err = w.rl.Receive(); err != nil {
 		return nil, errors.Wrap(err, "worker error")
 	}
