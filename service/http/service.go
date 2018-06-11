@@ -113,11 +113,11 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) listener(event int, ctx interface{}) {
-	if event == roadrunner.EventServerFailure {
-		s.Stop()
-	}
-
 	for _, l := range s.listeners {
 		l(event, ctx)
+	}
+
+	if event == roadrunner.EventServerFailure {
+		s.Stop()
 	}
 }
