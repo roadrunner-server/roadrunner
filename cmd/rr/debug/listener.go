@@ -89,5 +89,5 @@ func statusColor(status int) string {
 		return utils.Sprintf("<yellow>%v</reset>", status)
 	}
 
-	return utils.Sprintf("<red+hb>%v</reset>", status)
+	return utils.Sprintf("<red>%v</reset>", status)
 }
