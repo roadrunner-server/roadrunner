@@ -11,7 +11,7 @@ import (
 // Name contains default svc name.
 const Name = "http"
 
-type Middleware interface {
+type middleware interface {
 	// Handle must return true if request/response pair is handled withing the middleware.
 	Handle(w http.ResponseWriter, r *http.Request) bool
 }
@@ -20,13 +20,13 @@ type Middleware interface {
 type Service struct {
 	cfg        *Config
 	listeners  []func(event int, ctx interface{})
-	middleware []Middleware
+	middleware []middleware
 	rr         *roadrunner.Server
 	srv        *Server
 	http       *http.Server
 }
 
-func (s *Service) AddMiddleware(m Middleware) {
+func (s *Service) AddMiddleware(m middleware) {
 	s.middleware = append(s.middleware, m)
 }
 
@@ -114,7 +114,6 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s *Service) listener(event int, ctx interface{}) {
 	// todo: DIE on server failure
-
 	for _, l := range s.listeners {
 		l(event, ctx)
 	}
