@@ -26,8 +26,12 @@ script:
   - go test -race -v -coverprofile=lib.txt -covermode=atomic
   - go test ./service -race -v -coverprofile=service.txt -covermode=atomic
   - go test ./service/rpc -race -v -coverprofile=rpc.txt -covermode=atomic
+  - go test ./service/http -race -v -coverprofile=http.txt -covermode=atomic
+  - go test ./service/static -race -v -coverprofile=static.txt -covermode=atomic
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -f lib.txt
-  - bash <(curl -s https://codecov.io/bash) -f rpc.txt
   - bash <(curl -s https://codecov.io/bash) -f service.txt
+  - bash <(curl -s https://codecov.io/bash) -f rpc.txt
+  - bash <(curl -s https://codecov.io/bash) -f http.txt
+  - bash <(curl -s https://codecov.io/bash) -f static.txt
