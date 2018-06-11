@@ -46,6 +46,10 @@ func (t *testService) Serve() error {
 
 	<-t.serving
 
+	t.mu.Lock()
+	t.serving = nil
+	t.mu.Unlock()
+
 	return nil
 }
 
@@ -53,7 +57,12 @@ func (t *testService) Stop() {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 
+	if t.serving == nil {
+		return
+	}
+	
 	close(t.serving)
+	t.serving = nil
 }
 
 func (t *testService) waitChan() chan interface{} {
