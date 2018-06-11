@@ -5,7 +5,7 @@ import (
 	"github.com/spiral/roadrunner/service"
 	"context"
 	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/rpc"
+	"github.com/spiral/roadrunner/service/rpc"
 )
 
 // Name contains default svc name.

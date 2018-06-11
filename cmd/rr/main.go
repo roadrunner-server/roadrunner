@@ -26,9 +26,9 @@ import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 
 	// services (plugins)
-	"github.com/spiral/roadrunner/http"
-	"github.com/spiral/roadrunner/rpc"
-	"github.com/spiral/roadrunner/static"
+	"github.com/spiral/roadrunner/service/http"
+	"github.com/spiral/roadrunner/service/rpc"
+	"github.com/spiral/roadrunner/service/static"
 
 	// cli plugins
 	_ "github.com/spiral/roadrunner/cmd/rr/http"

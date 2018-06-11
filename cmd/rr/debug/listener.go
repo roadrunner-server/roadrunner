@@ -2,7 +2,7 @@ package debug
 
 import (
 	"github.com/sirupsen/logrus"
-	"github.com/spiral/roadrunner/http"
+	"github.com/spiral/roadrunner/service/http"
 	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"github.com/spiral/roadrunner"
 )

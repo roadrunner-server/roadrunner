@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"path"
 	"strings"
-	rrttp "github.com/spiral/roadrunner/http"
+	rrttp "github.com/spiral/roadrunner/service/http"
 	"github.com/spiral/roadrunner/service"
 )
 
