@@ -7,8 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"context"
-	"bytes"
-	"io"
+	"io/ioutil"
 )
 
 // get request and return body
@@ -19,10 +18,8 @@ func get(url string) (string, *http.Response, error) {
 	}
 	defer r.Body.Close()
 
-	buf := new(bytes.Buffer)
-	io.Copy(buf, r.Body)
-
-	return buf.String(), r, nil
+	b, err := ioutil.ReadAll(r.Body)
+	return string(b), r, err
 }
 
 func TestServer_Echo(t *testing.T) {
@@ -59,7 +56,7 @@ func TestServer_Echo(t *testing.T) {
 	assert.Equal(t, "WORLD", body)
 }
 
-func TestServer_EchoHeaders(t *testing.T) {
+func TestServer_Headers(t *testing.T) {
 	st := &Server{
 		cfg: &Config{
 			MaxRequest: 1024,
@@ -87,8 +84,20 @@ func TestServer_EchoHeaders(t *testing.T) {
 
 	go func() { hs.ListenAndServe() }()
 
-	_, r, err := get("http://localhost:8077/?hello=world")
+	req, err := http.NewRequest("GET", "http://localhost:8077?hello=world", nil)
+	assert.NoError(t, err)
+
+	req.Header.Add("input", "sample")
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
 	assert.NoError(t, err)
 	assert.Equal(t, 200, r.StatusCode)
 	assert.Equal(t, "world", r.Header.Get("Header"))
+	assert.Equal(t, "SAMPLE", string(b))
 }
