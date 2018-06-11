@@ -163,7 +163,5 @@ func renderMemory(pid int) string {
 		return err.Error()
 	}
 
-	return humanize.Bytes(i.RSS) + " " + humanize.Bytes(i.Locked) +
-		" " + humanize.Bytes(i.Data) + " " + humanize.Bytes(i.Stack) + " " + humanize.Bytes(i.Swap) +
-		" " + humanize.Bytes(i.VMS)
+	return humanize.Bytes(i.VMS)
 }
