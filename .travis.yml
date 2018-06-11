@@ -1,14 +1,16 @@
-language: php
+language: go
 
 sudo: required
 
-php:
-  - 7.0
-  - 7.1
-  - 7.2
-
 go:
-  - 1.8.0
+  - "1.8"
+  - "1.9"
+  - "1.10.x"
+
+php:
+  - "7.0"
+  - "7.1"
+  - "7.2"
 
 before_install:
   - go version
