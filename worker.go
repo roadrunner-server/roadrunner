@@ -109,7 +109,6 @@ func (w *Worker) Wait() error {
 		w.cmd.Wait()
 	}
 
-	// todo: is it ok?
 	if w.endState.Success() {
 		w.state.set(StateStopped)
 		return nil
