@@ -8,15 +8,15 @@ import (
 )
 
 const (
-	// EventResponse thrown after the request been processed. See Log as payload.
+	// EventResponse thrown after the request been processed. See Event as payload.
 	EventResponse = iota + 500
 
 	// EventError thrown on any non job error provided by road runner server.
 	EventError
 )
 
-// Log represents singular http response event.
-type Log struct {
+// Event represents singular http response event.
+type Event struct {
 	// Method of the request.
 	Method string
 
@@ -94,12 +94,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // handleResponse triggers response event.
 func (s *Server) handleResponse(req *Request, resp *Response) {
-	s.throw(EventResponse, &Log{Method: req.Method, Uri: req.Uri, Status: resp.Status})
+	s.throw(EventResponse, &Event{Method: req.Method, Uri: req.Uri, Status: resp.Status})
 }
 
 // handleError sends error.
 func (s *Server) handleError(w http.ResponseWriter, r *http.Request, err error) {
-	s.throw(EventError, &Log{Method: r.Method, Uri: uri(r), Status: 500, Error: err})
+	s.throw(EventError, &Event{Method: r.Method, Uri: uri(r), Status: 500, Error: err})
 
 	w.WriteHeader(500)
 	w.Write([]byte(err.Error()))

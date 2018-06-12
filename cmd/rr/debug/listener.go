@@ -20,10 +20,10 @@ func (s *listener) Listener(event int, ctx interface{}) {
 	// http events
 	switch event {
 	case http.EventResponse:
-		log := ctx.(*http.Log)
+		log := ctx.(*http.Event)
 		s.logger.Info(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.Uri))
 	case http.EventError:
-		log := ctx.(*http.Log)
+		log := ctx.(*http.Event)
 
 		if _, ok := log.Error.(roadrunner.JobError); ok {
 			s.logger.Info(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.Uri))

@@ -118,6 +118,9 @@ func (s *Service) listener(event int, ctx interface{}) {
 	}
 
 	if event == roadrunner.EventServerFailure {
-		s.Stop()
+		// attempting rr server restart
+		if err := s.rr.Start(); err != nil {
+			s.Stop()
+		}
 	}
 }
