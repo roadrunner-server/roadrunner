@@ -178,7 +178,7 @@ func TestServer_JsonPayload_POST(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8080", Handler: st,}
+	hs := &http.Server{Addr: ":8090", Handler: st,}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
