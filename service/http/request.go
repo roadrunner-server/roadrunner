@@ -11,6 +11,10 @@ import (
 
 const (
 	defaultMaxMemory = 32 << 20 // 32 MB
+	contentNone      = iota + 900
+	contentUndefined
+	contentMultipart
+	contentFormData
 )
 
 // Request maps net/http requests to PSR7 compatible structure and managed state of temporary uploaded files.
@@ -58,21 +62,33 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 		req.Cookies[c.Name] = c.Value
 	}
 
-	if !req.parsable() {
+	switch req.contentType() {
+	case contentNone:
+		return req, nil
+
+	case contentUndefined:
 		req.body, err = ioutil.ReadAll(r.Body)
 		return req, err
-	}
 
-	if err = r.ParseMultipartForm(defaultMaxMemory); err != nil {
-		return nil, err
-	}
+	case contentMultipart:
+		//if err = r.ParseMultipartForm(defaultMaxMemory); err != nil {
+		//			return nil, err
+		//		}
 
-	if req.body, err = parseData(r); err != nil {
-		return nil, err
-	}
+		/*	if req.Uploads, err = parseUploads(r, cfg); err != nil {
+				return nil, err
+			}
+			fallthrough*/
 
-	if req.Uploads, err = parseUploads(r, cfg); err != nil {
-		return nil, err
+		// todo: debug all that
+	case contentFormData:
+		if err = r.ParseForm(); err != nil {
+			return nil, err
+		}
+
+		if req.body, err = parseData(r); err != nil {
+			return nil, err
+		}
 	}
 
 	req.Parsed = true
@@ -117,14 +133,22 @@ func (r *Request) Payload() (p *roadrunner.Payload, err error) {
 	return p, nil
 }
 
-// parsable returns true if request payload can be parsed (POST dataTree, file tree).
-func (r *Request) parsable() bool {
+// contentType returns the payload content type.
+func (r *Request) contentType() int {
 	if r.Method != "POST" && r.Method != "PUT" && r.Method != "PATCH" {
-		return false
+		return contentNone
 	}
 
 	ct := r.Headers.Get("content-type")
-	return strings.Contains(ct, "multipart/form-data") || ct == "application/x-www-form-urlencoded"
+	if ct == "application/x-www-form-urlencoded" {
+		return contentFormData
+	}
+
+	if strings.Contains(ct, "multipart/form-data") {
+		return contentMultipart
+	}
+
+	return contentUndefined
 }
 
 // uri fetches full uri from request in a form of string (including https scheme if TLS connection is enabled).

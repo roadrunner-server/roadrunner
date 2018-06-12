@@ -4,6 +4,7 @@ import (
 	"strings"
 	"net/http"
 	"os"
+	"log"
 )
 
 // MaxLevel defines maximum tree depth for incoming request data and files.
@@ -15,12 +16,16 @@ type fileTree map[string]interface{}
 // parseData parses incoming request body into data tree.
 func parseData(r *http.Request) (dataTree, error) {
 	data := make(dataTree)
-	for k, v := range r.PostForm {
-		data.push(k, v)
+	if r.PostForm != nil {
+		for k, v := range r.PostForm {
+			data.push(k, v)
+		}
 	}
 
-	for k, v := range r.MultipartForm.Value {
-		data.push(k, v)
+	if r.MultipartForm != nil {
+		for k, v := range r.MultipartForm.Value {
+			data.push(k, v)
+		}
 	}
 
 	return data, nil
@@ -34,8 +39,8 @@ func (d dataTree) push(k string, v []string) {
 	}
 
 	indexes := make([]string, 0)
-	for _, index := range strings.Split(k, "[") {
-		indexes = append(indexes, strings.Trim(index, "]"))
+	for _, index := range strings.Split(strings.Replace(k, "]", "", MaxLevel), "[") {
+		indexes = append(indexes, index)
 	}
 
 	if len(indexes) <= MaxLevel {
@@ -45,6 +50,8 @@ func (d dataTree) push(k string, v []string) {
 
 // mount mounts data tree recursively.
 func (d dataTree) mount(i []string, v []string) {
+	log.Println(i, ">", v)
+
 	if len(v) == 0 {
 		return
 	}
@@ -69,7 +76,7 @@ func (d dataTree) mount(i []string, v []string) {
 	d[i[0]].(dataTree).mount(i[1:], v)
 }
 
-// parse incoming dataTree request into JSON (including multipart form dataTree)
+// parse incoming dataTree request into JSON (including contentMultipart form dataTree)
 func parseUploads(r *http.Request, cfg *UploadsConfig) (*Uploads, error) {
 	u := &Uploads{
 		cfg:  cfg,
@@ -145,4 +152,39 @@ func (d fileTree) mount(i []string, v []*FileUpload) {
 
 	d[i[0]] = make(fileTree)
 	d[i[0]].(fileTree).mount(i[1:], v)
+}
+
+// fetchIndexes parses input name and splits it into separate indexes list.
+func fetchIndexes(s string) []string {
+	var (
+		pos  int
+		ch   string
+		keys = make([]string, 1)
+	)
+
+	for _, c := range s {
+		ch = string(c)
+		switch ch {
+		case " ":
+			// ignore all spaces
+			continue
+		case "[":
+			pos = 1
+			continue
+		case "]":
+			if pos == 1 {
+				keys = append(keys, "")
+			}
+			pos = 2
+		default:
+			if pos == 1 || pos == 2 {
+				keys = append(keys, "")
+			}
+
+			keys[len(keys)-1] += ch
+			pos = 0
+		}
+	}
+
+	return keys
 }
