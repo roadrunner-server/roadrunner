@@ -1,10 +1,8 @@
 package http
 
 import (
-	"strings"
 	"net/http"
 	"os"
-	"log"
 )
 
 // MaxLevel defines maximum tree depth for incoming request data and files.
@@ -38,11 +36,7 @@ func (d dataTree) push(k string, v []string) {
 		return
 	}
 
-	indexes := make([]string, 0)
-	for _, index := range strings.Split(strings.Replace(k, "]", "", MaxLevel), "[") {
-		indexes = append(indexes, index)
-	}
-
+	indexes := fetchIndexes(k)
 	if len(indexes) <= MaxLevel {
 		d.mount(indexes, v)
 	}
@@ -50,8 +44,6 @@ func (d dataTree) push(k string, v []string) {
 
 // mount mounts data tree recursively.
 func (d dataTree) mount(i []string, v []string) {
-	log.Println(i, ">", v)
-
 	if len(v) == 0 {
 		return
 	}
@@ -70,6 +62,7 @@ func (d dataTree) mount(i []string, v []string) {
 
 	if p, ok := d[i[0]]; ok {
 		p.(dataTree).mount(i[1:], v)
+		return
 	}
 
 	d[i[0]] = make(dataTree)
@@ -118,11 +111,7 @@ func (d fileTree) push(k string, v []*FileUpload) {
 		return
 	}
 
-	indexes := make([]string, 0)
-	for _, index := range strings.Split(k, "[") {
-		indexes = append(indexes, strings.Trim(index, "]"))
-	}
-
+	indexes := fetchIndexes(k)
 	if len(indexes) <= MaxLevel {
 		d.mount(indexes, v)
 	}
@@ -148,6 +137,7 @@ func (d fileTree) mount(i []string, v []*FileUpload) {
 
 	if p, ok := d[i[0]]; ok {
 		p.(fileTree).mount(i[1:], v)
+		return
 	}
 
 	d[i[0]] = make(fileTree)
@@ -177,7 +167,7 @@ func fetchIndexes(s string) []string {
 			}
 			pos = 2
 		default:
-			if pos > 0 {
+			if pos == 1 || pos == 2 {
 				keys = append(keys, "")
 			}
 
