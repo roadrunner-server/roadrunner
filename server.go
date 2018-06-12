@@ -123,13 +123,13 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 	srv.mu.Unlock()
 
 	pool, err := NewPool(cfg.makeCommand(), srv.factory, *cfg.Pool)
+	srv.pool.Listen(srv.poolListener)
 	if err != nil {
 		return err
 	}
 
 	srv.mu.Lock()
 	srv.cfg.Pool, srv.pool = cfg.Pool, pool
-	srv.pool.Listen(srv.poolListener)
 	srv.mu.Unlock()
 
 	srv.throw(EventPoolConstruct, pool)

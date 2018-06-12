@@ -2,13 +2,13 @@ package roadrunner
 
 import (
 	"github.com/stretchr/testify/assert"
-	"log"
 	"os/exec"
 	"runtime"
 	"strconv"
-	"sync"
 	"testing"
 	"time"
+	"sync"
+	"log"
 )
 
 var cfg = Config{
@@ -265,6 +265,7 @@ func Test_StaticPool_Replace_Worker(t *testing.T) {
 		lastPID = string(res.Body)
 	}
 }
+
 
 // identical to replace but controlled on worker side
 func Test_StaticPool_Stop_Worker(t *testing.T) {

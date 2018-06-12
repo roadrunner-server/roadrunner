@@ -169,13 +169,15 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 			return nil, fmt.Errorf("worker timeout (%s)", p.cfg.AllocateTimeout)
 		case w = <-p.free:
 			timeout.Stop()
+
 			if w.State().Value() != StateReady {
 				continue
 			}
+			return w, nil
 		}
 	}
 
-	return w, nil
+	return nil, fmt.Errorf("all workers are dead (%v)", p.cfg.NumWorkers)
 }
 
 // release releases or replaces the worker.
