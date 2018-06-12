@@ -22,9 +22,6 @@ type StaticPool struct {
 	// worker command creator
 	cmd func() *exec.Cmd
 
-	// lsn is optional callback to handle worker create/destruct/error events.
-	lsn func(event int, ctx interface{})
-
 	// creates and connects to workers
 	factory Factory
 
@@ -42,6 +39,10 @@ type StaticPool struct {
 
 	// pool is being destroying
 	inDestroy int32
+
+	// lsn is optional callback to handle worker create/destruct/error events.
+	mul sync.Mutex
+	lsn func(event int, ctx interface{})
 }
 
 // NewPool creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
@@ -75,6 +76,9 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, er
 
 // AddListener attaches pool event watcher.
 func (p *StaticPool) Listen(l func(event int, ctx interface{})) {
+	p.mul.Lock()
+	defer p.mul.Unlock()
+
 	p.lsn = l
 }
 
@@ -268,7 +272,11 @@ func (p *StaticPool) destroying() bool {
 
 // throw invokes event handler if any.
 func (p *StaticPool) throw(event int, ctx interface{}) {
-	if p.lsn != nil {
-		p.lsn(event, ctx)
+	p.mul.Lock()
+	lsn := p.lsn
+	p.mul.Unlock()
+
+	if lsn != nil {
+		lsn(event, ctx)
 	}
 }

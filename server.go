@@ -28,9 +28,6 @@ type Server struct {
 	// configures server, pool, cmd creation and factory.
 	cfg *ServerConfig
 
-	// observes pool events (can be attached to multiple pools at the same time)
-	lsn func(event int, ctx interface{})
-
 	// protects pool while the re-configuration
 	mu sync.Mutex
 
@@ -42,6 +39,10 @@ type Server struct {
 
 	// currently active pool instance
 	pool Pool
+
+	// observes pool events (can be attached to multiple pools at the same time)
+	mul sync.Mutex
+	lsn func(event int, ctx interface{})
 }
 
 // NewServer creates new router. Make sure to call configure before the usage.
@@ -51,6 +52,9 @@ func NewServer(cfg *ServerConfig) *Server {
 
 // AddListener attaches server event watcher.
 func (srv *Server) Listen(l func(event int, ctx interface{})) {
+	srv.mul.Lock()
+	defer srv.mul.Unlock()
+
 	srv.lsn = l
 }
 
@@ -146,7 +150,11 @@ func (srv *Server) Reconfigure(cfg *ServerConfig) error {
 
 // Reset resets the state of underlying pool and rebuilds all of it's workers.
 func (srv *Server) Reset() error {
-	return srv.Reconfigure(srv.cfg)
+	srv.mu.Lock()
+	cfg := srv.cfg
+	srv.mu.Unlock()
+
+	return srv.Reconfigure(cfg)
 }
 
 // Workers returns worker list associated with the server pool.
@@ -190,7 +198,11 @@ func (srv *Server) poolListener(event int, ctx interface{}) {
 
 // throw invokes event handler if any.
 func (srv *Server) throw(event int, ctx interface{}) {
-	if srv.lsn != nil {
-		srv.lsn(event, ctx)
+	srv.mul.Lock()
+	lsn := srv.lsn
+	srv.mul.Unlock()
+
+	if lsn != nil {
+		lsn(event, ctx)
 	}
 }
