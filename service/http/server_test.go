@@ -48,7 +48,7 @@ func TestServer_Echo(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st,}
+	hs := &http.Server{Addr: ":8077", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -82,12 +82,12 @@ func TestServer_Headers(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st,}
+	hs := &http.Server{Addr: ":8078", Handler: st,}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
 
-	req, err := http.NewRequest("GET", "http://localhost:8077?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://localhost:8078?hello=world", nil)
 	assert.NoError(t, err)
 
 	req.Header.Add("input", "sample")
@@ -128,12 +128,12 @@ func TestServer_Cookies(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st,}
+	hs := &http.Server{Addr: ":8079", Handler: st,}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
 
-	req, err := http.NewRequest("GET", "http://localhost:8077", nil)
+	req, err := http.NewRequest("GET", "http://localhost:8079", nil)
 	assert.NoError(t, err)
 
 	req.AddCookie(&http.Cookie{Name: "input", Value: "input-value"})
@@ -178,14 +178,14 @@ func TestServer_JsonPayload_POST(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st,}
+	hs := &http.Server{Addr: ":8080", Handler: st,}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
 
 	req, err := http.NewRequest(
 		"POST",
-		"http://localhost:8077",
+		"http://localhost"+hs.Addr,
 		bytes.NewBufferString(`{"key":"value"}`),
 	)
 	assert.NoError(t, err)
@@ -227,14 +227,14 @@ func TestServer_JsonPayload_PUT(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st,}
+	hs := &http.Server{Addr: ":8081", Handler: st,}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
 
 	req, err := http.NewRequest(
 		"PUT",
-		"http://localhost:8077",
+		"http://localhost"+hs.Addr,
 		bytes.NewBufferString(`{"key":"value"}`),
 	)
 	assert.NoError(t, err)
@@ -276,14 +276,14 @@ func TestServer_JsonPayload_PATCH(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st,}
+	hs := &http.Server{Addr: ":8082", Handler: st,}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
 
 	req, err := http.NewRequest(
 		"PATCH",
-		"http://localhost:8077",
+		"http://localhost"+hs.Addr,
 		bytes.NewBufferString(`{"key":"value"}`),
 	)
 	assert.NoError(t, err)
@@ -325,7 +325,7 @@ func TestServer_FormData_POST(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st,}
+	hs := &http.Server{Addr: ":8083", Handler: st,}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -343,7 +343,7 @@ func TestServer_FormData_POST(t *testing.T) {
 
 	req, err := http.NewRequest(
 		"POST",
-		"http://localhost:8077",
+		"http://localhost"+hs.Addr,
 		strings.NewReader(form.Encode()),
 	)
 	assert.NoError(t, err)
@@ -386,7 +386,7 @@ func TestServer_FormData_PUT(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st,}
+	hs := &http.Server{Addr: ":8084", Handler: st,}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -404,7 +404,7 @@ func TestServer_FormData_PUT(t *testing.T) {
 
 	req, err := http.NewRequest(
 		"PUT",
-		"http://localhost:8077",
+		"http://localhost"+hs.Addr,
 		strings.NewReader(form.Encode()),
 	)
 	assert.NoError(t, err)
@@ -447,7 +447,7 @@ func TestServer_FormData_PATCH(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st,}
+	hs := &http.Server{Addr: ":8085", Handler: st,}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -465,7 +465,7 @@ func TestServer_FormData_PATCH(t *testing.T) {
 
 	req, err := http.NewRequest(
 		"PATCH",
-		"http://localhost:8077",
+		"http://localhost"+hs.Addr,
 		strings.NewReader(form.Encode()),
 	)
 	assert.NoError(t, err)
