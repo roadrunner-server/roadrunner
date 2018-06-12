@@ -26,7 +26,7 @@ func get(url string) (string, *http.Response, error) {
 }
 
 func TestServer_Echo(t *testing.T) {
-	st := &Server{
+	st := &Handler{
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -60,7 +60,7 @@ func TestServer_Echo(t *testing.T) {
 }
 
 func TestServer_Headers(t *testing.T) {
-	st := &Server{
+	st := &Handler{
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -106,7 +106,7 @@ func TestServer_Headers(t *testing.T) {
 }
 
 func TestServer_Cookies(t *testing.T) {
-	st := &Server{
+	st := &Handler{
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -156,7 +156,7 @@ func TestServer_Cookies(t *testing.T) {
 }
 
 func TestServer_JsonPayload_POST(t *testing.T) {
-	st := &Server{
+	st := &Handler{
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -205,7 +205,7 @@ func TestServer_JsonPayload_POST(t *testing.T) {
 }
 
 func TestServer_JsonPayload_PUT(t *testing.T) {
-	st := &Server{
+	st := &Handler{
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -254,7 +254,7 @@ func TestServer_JsonPayload_PUT(t *testing.T) {
 }
 
 func TestServer_JsonPayload_PATCH(t *testing.T) {
-	st := &Server{
+	st := &Handler{
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -303,7 +303,7 @@ func TestServer_JsonPayload_PATCH(t *testing.T) {
 }
 
 func TestServer_FormData_POST(t *testing.T) {
-	st := &Server{
+	st := &Handler{
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -364,7 +364,7 @@ func TestServer_FormData_POST(t *testing.T) {
 }
 
 func TestServer_FormData_PUT(t *testing.T) {
-	st := &Server{
+	st := &Handler{
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -425,7 +425,7 @@ func TestServer_FormData_PUT(t *testing.T) {
 }
 
 func TestServer_FormData_PATCH(t *testing.T) {
-	st := &Server{
+	st := &Handler{
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{

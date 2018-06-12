@@ -22,7 +22,7 @@ type Service struct {
 	listeners  []func(event int, ctx interface{})
 	middleware []middleware
 	rr         *roadrunner.Server
-	srv        *Server
+	srv        *Handler
 	http       *http.Server
 }
 
@@ -68,7 +68,7 @@ func (s *Service) Serve() error {
 	rr := roadrunner.NewServer(s.cfg.Workers)
 
 	s.rr = rr
-	s.srv = &Server{cfg: s.cfg, rr: s.rr}
+	s.srv = &Handler{cfg: s.cfg, rr: s.rr}
 	s.http = &http.Server{Addr: s.cfg.Address}
 
 	s.rr.Listen(s.listener)

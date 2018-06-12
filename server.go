@@ -29,7 +29,7 @@ type Server struct {
 	cfg *ServerConfig
 
 	// observes pool events (can be attached to multiple pools at the same time)
-	listener func(event int, ctx interface{})
+	lsn func(event int, ctx interface{})
 
 	// protects pool while the re-configuration
 	mu sync.Mutex
@@ -51,7 +51,7 @@ func NewServer(cfg *ServerConfig) *Server {
 
 // AddListener attaches server event watcher.
 func (srv *Server) Listen(l func(event int, ctx interface{})) {
-	srv.listener = l
+	srv.lsn = l
 }
 
 // Start underlying worker pool, configure factory and command provider.
@@ -171,7 +171,7 @@ func (srv *Server) Pool() Pool {
 
 // AddListener pool events.
 func (srv *Server) poolListener(event int, ctx interface{}) {
-	// bypassing to user specified listener
+	// bypassing to user specified lsn
 	srv.throw(event, ctx)
 
 	if event == EventPoolError {
@@ -192,7 +192,7 @@ func (srv *Server) poolListener(event int, ctx interface{}) {
 
 // throw invokes event handler if any.
 func (srv *Server) throw(event int, ctx interface{}) {
-	if srv.listener != nil {
-		srv.listener(event, ctx)
+	if srv.lsn != nil {
+		srv.lsn(event, ctx)
 	}
 }

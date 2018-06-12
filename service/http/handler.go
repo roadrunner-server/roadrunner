@@ -30,84 +30,84 @@ type Event struct {
 	Error error
 }
 
-// Server serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
+// Handler serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
-type Server struct {
+type Handler struct {
 	cfg      *Config
 	listener func(event int, ctx interface{})
 	rr       *roadrunner.Server
 }
 
 // AddListener attaches pool event watcher.
-func (s *Server) Listen(l func(event int, ctx interface{})) {
-	s.listener = l
+func (h *Handler) Listen(l func(event int, ctx interface{})) {
+	h.listener = l
 }
 
 // Handle serve using PSR-7 requests passed to underlying application. Attempts to serve static files first if enabled.
-func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// validating request size
-	if s.cfg.MaxRequest != 0 {
+	if h.cfg.MaxRequest != 0 {
 		if length := r.Header.Get("content-length"); length != "" {
 			if size, err := strconv.ParseInt(length, 10, 64); err != nil {
-				s.handleError(w, r, err)
+				h.handleError(w, r, err)
 				return
-			} else if size > s.cfg.MaxRequest*1024*1024 {
-				s.handleError(w, r, errors.New("request body max size is exceeded"))
+			} else if size > h.cfg.MaxRequest*1024*1024 {
+				h.handleError(w, r, errors.New("request body max size is exceeded"))
 				return
 			}
 		}
 	}
 
-	req, err := NewRequest(r, s.cfg.Uploads)
+	req, err := NewRequest(r, h.cfg.Uploads)
 	if err != nil {
-		s.handleError(w, r, err)
+		h.handleError(w, r, err)
 		return
 	}
 
 	if err = req.Open(); err != nil {
-		s.handleError(w, r, err)
+		h.handleError(w, r, err)
 		return
 	}
 	defer req.Close()
 
 	p, err := req.Payload()
 	if err != nil {
-		s.handleError(w, r, err)
+		h.handleError(w, r, err)
 		return
 	}
 
-	rsp, err := s.rr.Exec(p)
+	rsp, err := h.rr.Exec(p)
 	if err != nil {
-		s.handleError(w, r, err)
+		h.handleError(w, r, err)
 		return
 	}
 
 	resp, err := NewResponse(rsp)
 	if err != nil {
-		s.handleError(w, r, err)
+		h.handleError(w, r, err)
 		return
 	}
 
-	s.handleResponse(req, resp)
+	h.handleResponse(req, resp)
 	resp.Write(w)
 }
 
 // handleResponse triggers response event.
-func (s *Server) handleResponse(req *Request, resp *Response) {
-	s.throw(EventResponse, &Event{Method: req.Method, Uri: req.Uri, Status: resp.Status})
+func (h *Handler) handleResponse(req *Request, resp *Response) {
+	h.throw(EventResponse, &Event{Method: req.Method, Uri: req.Uri, Status: resp.Status})
 }
 
 // handleError sends error.
-func (s *Server) handleError(w http.ResponseWriter, r *http.Request, err error) {
-	s.throw(EventError, &Event{Method: r.Method, Uri: uri(r), Status: 500, Error: err})
+func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error) {
+	h.throw(EventError, &Event{Method: r.Method, Uri: uri(r), Status: 500, Error: err})
 
 	w.WriteHeader(500)
 	w.Write([]byte(err.Error()))
 }
 
 // throw invokes event srv if any.
-func (s *Server) throw(event int, ctx interface{}) {
-	if s.listener != nil {
-		s.listener(event, ctx)
+func (h *Handler) throw(event int, ctx interface{}) {
+	if h.listener != nil {
+		h.listener(event, ctx)
 	}
 }
