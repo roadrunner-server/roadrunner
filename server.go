@@ -75,12 +75,12 @@ func (srv *Server) Start() (err error) {
 }
 
 // Stop underlying worker pool and close the factory.
-func (srv *Server) Stop() error {
+func (srv *Server) Stop() {
 	srv.mu.Lock()
 	defer srv.mu.Unlock()
 
 	if !srv.started {
-		return nil
+		return
 	}
 
 	srv.throw(EventPoolDestruct, srv.pool)
@@ -91,8 +91,6 @@ func (srv *Server) Stop() error {
 	srv.pool = nil
 	srv.started = false
 	srv.throw(EventServerStop, srv)
-
-	return nil
 }
 
 // Exec one task with given payload and context, returns result or error.

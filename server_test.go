@@ -107,7 +107,8 @@ func TestServer_Stop_NotStarted(t *testing.T) {
 				DestroyTimeout:  time.Second,
 			},
 		})
-	assert.NoError(t, srv.Stop())
+
+	srv.Stop()
 	assert.Nil(t, srv.Workers())
 }
 

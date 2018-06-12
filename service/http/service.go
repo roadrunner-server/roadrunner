@@ -19,9 +19,9 @@ type middleware interface {
 // Service manages rr, http servers.
 type Service struct {
 	cfg        *Config
-	listeners  []func(event int, ctx interface{})
-	middleware []middleware
+	lsns       []func(event int, ctx interface{})
 	rr         *roadrunner.Server
+	middleware []middleware
 	srv        *Handler
 	http       *http.Server
 }
@@ -32,7 +32,7 @@ func (s *Service) AddMiddleware(m middleware) {
 
 // AddListener attaches server event watcher.
 func (s *Service) AddListener(l func(event int, ctx interface{})) {
-	s.listeners = append(s.listeners, l)
+	s.lsns = append(s.lsns, l)
 }
 
 // Configure must return configure svc and return true if svc hasStatus enabled. Must return error in case of
@@ -113,7 +113,7 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) listener(event int, ctx interface{}) {
-	for _, l := range s.listeners {
+	for _, l := range s.lsns {
 		l(event, ctx)
 	}
 

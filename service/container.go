@@ -140,6 +140,7 @@ func (c *container) Serve() error {
 			defer e.setStatus(StatusStopped)
 
 			if err := e.svc.Serve(); err != nil {
+				c.log.Errorf("[%s]: %s", e.name, err)
 				done <- errors.Wrap(err, fmt.Sprintf("[%s]", e.name))
 			}
 		}(e)

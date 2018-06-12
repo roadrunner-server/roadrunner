@@ -34,12 +34,7 @@ func (rpc *rpcServer) Reset(reset bool, r *string) error {
 	}
 
 	*r = "OK"
-
-	for _, w := range rpc.svc.rr.Workers() {
-		w.Kill()
-	}
-
-	return nil //rpc.svc.rr.Reset()
+	return rpc.svc.rr.Reset()
 }
 
 // Workers returns list of active workers and their stats.

@@ -150,20 +150,29 @@ func (p *StaticPool) Destroy() {
 
 // finds free worker in a given time interval or creates new if allowed.
 func (p *StaticPool) allocateWorker() (w *Worker, err error) {
-	// this loop is required to skip issues with dead workers still being in a ring.
-	select {
-	case w = <-p.free:
-		return w, nil
-	default:
-		// enable timeout handler
-	}
+	for i := int64(0); i <= p.cfg.NumWorkers; i++ {
+		// this loop is required to skip issues with dead workers still being in a ring.
+		select {
+		case w = <-p.free:
+			if w.State().Value() != StateReady {
+				continue
+			}
 
-	timeout := time.NewTimer(p.cfg.AllocateTimeout)
-	select {
-	case <-timeout.C:
-		return nil, fmt.Errorf("worker timeout (%s)", p.cfg.AllocateTimeout)
-	case w = <-p.free:
-		timeout.Stop()
+			return w, nil
+		default:
+			// enable timeout handler
+		}
+
+		timeout := time.NewTimer(p.cfg.AllocateTimeout)
+		select {
+		case <-timeout.C:
+			return nil, fmt.Errorf("worker timeout (%s)", p.cfg.AllocateTimeout)
+		case w = <-p.free:
+			timeout.Stop()
+			if w.State().Value() != StateReady {
+				continue
+			}
+		}
 	}
 
 	return w, nil
