@@ -339,6 +339,7 @@ func TestServer_FormData_POST(t *testing.T) {
 	form.Add("arr[x][y][z]", "y")
 	form.Add("arr[x][y][e]", "f")
 	form.Add("arr[c]p", "l")
+	form.Add("arr[c]z", "")
 
 	req, err := http.NewRequest(
 		"POST",
@@ -359,5 +360,5 @@ func TestServer_FormData_POST(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 200, r.StatusCode)
 
-	assert.Equal(t, `{"arr":{"c":{"p":"l"},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
+	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
 }

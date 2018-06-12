@@ -31,23 +31,14 @@ func parseData(r *http.Request) (dataTree, error) {
 
 // pushes value into data tree.
 func (d dataTree) push(k string, v []string) {
-	if len(v) == 0 {
-		// skip empty values
-		return
-	}
-
-	indexes := fetchIndexes(k)
-	if len(indexes) <= MaxLevel {
-		d.mount(indexes, v)
+	keys := fetchIndexes(k)
+	if len(keys) <= MaxLevel {
+		d.mount(keys, v)
 	}
 }
 
 // mount mounts data tree recursively.
 func (d dataTree) mount(i []string, v []string) {
-	if len(v) == 0 {
-		return
-	}
-
 	if len(i) == 1 {
 		// single value context
 		d[i[0]] = v[0]
@@ -106,23 +97,14 @@ func exists(path string) bool {
 
 // pushes new file upload into it's proper place.
 func (d fileTree) push(k string, v []*FileUpload) {
-	if len(v) == 0 {
-		// skip empty values
-		return
-	}
-
-	indexes := fetchIndexes(k)
-	if len(indexes) <= MaxLevel {
-		d.mount(indexes, v)
+	keys := fetchIndexes(k)
+	if len(keys) <= MaxLevel {
+		d.mount(keys, v)
 	}
 }
 
 // mount mounts data tree recursively.
 func (d fileTree) mount(i []string, v []*FileUpload) {
-	if len(v) == 0 {
-		return
-	}
-
 	if len(i) == 1 {
 		// single value context
 		d[i[0]] = v[0]
