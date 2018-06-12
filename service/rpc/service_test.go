@@ -5,6 +5,7 @@ import (
 	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 type testService struct{}
@@ -74,7 +75,7 @@ func Test_Serve_Errors(t *testing.T) {
 
 func Test_Serve_Client(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
+	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9018"}`}, nil)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 
@@ -84,6 +85,7 @@ func Test_Serve_Client(t *testing.T) {
 
 	go func() { assert.NoError(t, s.Serve()) }()
 
+	time.Sleep(time.Millisecond)
 	client, err := s.Client()
 	assert.NotNil(t, client)
 	assert.NoError(t, err)

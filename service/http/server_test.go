@@ -362,3 +362,125 @@ func TestServer_FormData_POST(t *testing.T) {
 
 	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
 }
+
+func TestServer_FormData_PUT(t *testing.T) {
+	st := &Server{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../php-src/tests/http/client.php data pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	assert.NoError(t, st.rr.Start())
+	defer st.rr.Stop()
+
+	hs := &http.Server{Addr: ":8077", Handler: st,}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+
+	form := url.Values{}
+
+	form.Add("key", "value")
+	form.Add("name[]", "name1")
+	form.Add("name[]", "name2")
+	form.Add("name[]", "name3")
+	form.Add("arr[x][y][z]", "y")
+	form.Add("arr[x][y][e]", "f")
+	form.Add("arr[c]p", "l")
+	form.Add("arr[c]z", "")
+
+	req, err := http.NewRequest(
+		"PUT",
+		"http://localhost:8077",
+		strings.NewReader(form.Encode()),
+	)
+	assert.NoError(t, err)
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+
+	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
+}
+
+func TestServer_FormData_PATCH(t *testing.T) {
+	st := &Server{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../php-src/tests/http/client.php data pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	assert.NoError(t, st.rr.Start())
+	defer st.rr.Stop()
+
+	hs := &http.Server{Addr: ":8077", Handler: st,}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+
+	form := url.Values{}
+
+	form.Add("key", "value")
+	form.Add("name[]", "name1")
+	form.Add("name[]", "name2")
+	form.Add("name[]", "name3")
+	form.Add("arr[x][y][z]", "y")
+	form.Add("arr[x][y][e]", "f")
+	form.Add("arr[c]p", "l")
+	form.Add("arr[c]z", "")
+
+	req, err := http.NewRequest(
+		"PATCH",
+		"http://localhost:8077",
+		strings.NewReader(form.Encode()),
+	)
+	assert.NoError(t, err)
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+
+	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
+}
