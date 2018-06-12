@@ -177,7 +177,7 @@ func fetchIndexes(s string) []string {
 			}
 			pos = 2
 		default:
-			if pos == 1 || pos == 2 {
+			if pos > 0 {
 				keys = append(keys, "")
 			}
 
