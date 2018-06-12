@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"github.com/spiral/roadrunner"
 	"github.com/pkg/errors"
+	"sync"
 )
 
 const (
@@ -33,14 +34,18 @@ type Event struct {
 // Handler serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Handler struct {
-	cfg      *Config
-	listener func(event int, ctx interface{})
-	rr       *roadrunner.Server
+	cfg *Config
+	rr  *roadrunner.Server
+	mul sync.Mutex
+	lsn func(event int, ctx interface{})
 }
 
 // AddListener attaches pool event watcher.
 func (h *Handler) Listen(l func(event int, ctx interface{})) {
-	h.listener = l
+	h.mul.Lock()
+	defer h.mul.Unlock()
+
+	h.lsn = l
 }
 
 // Handle serve using PSR-7 requests passed to underlying application. Attempts to serve static files first if enabled.
@@ -107,7 +112,11 @@ func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error)
 
 // throw invokes event srv if any.
 func (h *Handler) throw(event int, ctx interface{}) {
-	if h.listener != nil {
-		h.listener(event, ctx)
+	h.mul.Lock()
+	lsn := h.lsn
+	h.mul.Unlock()
+
+	if lsn != nil {
+		lsn(event, ctx)
 	}
 }
