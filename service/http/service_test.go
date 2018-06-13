@@ -133,6 +133,9 @@ func Test_Service_Echo(t *testing.T) {
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusConfigured, st)
 
+	// should do nothing
+	s.Stop()
+
 	go func() { c.Serve() }()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
