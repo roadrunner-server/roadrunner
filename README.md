@@ -11,8 +11,8 @@ High-performance PHP load balancer, plugin based PSR7 HTTP server and process ma
 
 Features:
 --------
-- extendable service model
 - PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middlewares, event listeners)
+- extendable service model
 - no external services, drop-in (based on [Goridge](https://github.com/spiral/goridge))
 - load balancer, process manager and task pipeline
 - frontend agnostic (queue, REST, PSR-7, async php, etc)
@@ -32,6 +32,24 @@ Installation:
 $ go get github.com/spiral/roadrunner
 $ composer require spiral/roadrunner
 ```
+
+Usage:
+------
+
+```
+$ cd cmd
+$ cd rr
+$ go build && go install
+$ cp .rr.yaml path/to/the/project
+```
+
+> TODO: To be updated with build scripts!
+
+```
+$ rr serve -v
+```
+
+Example [worker](https://github.com/spiral/roadrunner/blob/master/php-src/tests/http/client.php).
 
 Examples:
 --------
