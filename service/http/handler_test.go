@@ -13,6 +13,7 @@ import (
 	"bytes"
 	"mime/multipart"
 	"time"
+	"runtime"
 )
 
 // get request and return body
@@ -660,4 +661,48 @@ func TestServer_Multipart_PATCH(t *testing.T) {
 	assert.Equal(t, 200, r.StatusCode)
 
 	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
+}
+
+func BenchServer_Echo(b *testing.B) {
+	st := &Handler{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../php-src/tests/http/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      int64(runtime.NumCPU()),
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	st.rr.Start()
+	defer st.rr.Stop()
+
+	hs := &http.Server{Addr: ":8077", Handler: st}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	bb := "WORLD"
+	for n := 0; n < b.N; n++ {
+		r, err := http.Get("http://localhost:8077/?hello=world")
+		if err != nil {
+			b.Fail()
+		}
+		defer r.Body.Close()
+
+		br, _ := ioutil.ReadAll(r.Body)
+		if string(br) != bb {
+			b.Fail()
+		}
+	}
 }
