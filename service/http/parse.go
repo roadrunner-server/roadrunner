@@ -2,7 +2,6 @@ package http
 
 import (
 	"net/http"
-	"os"
 )
 
 // MaxLevel defines maximum tree depth for incoming request data and files.
@@ -79,20 +78,6 @@ func parseUploads(r *http.Request, cfg *UploadsConfig) *Uploads {
 	}
 
 	return u
-}
-
-// exists if file exists.
-func exists(path string) bool {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true
-	}
-
-	if os.IsNotExist(err) {
-		return false
-	}
-
-	return false
 }
 
 // pushes new file upload into it's proper place.
