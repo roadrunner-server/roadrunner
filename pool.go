@@ -13,6 +13,9 @@ const (
 	// EventWorkerError thrown any worker related even happen (passed with WorkerError)
 	EventWorkerError
 
+	// EventWorkerDead thrown when worker stops worker for any reason.
+	EventWorkerDead
+
 	// EventPoolError caused on pool wide errors
 	EventPoolError
 )

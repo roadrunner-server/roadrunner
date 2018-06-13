@@ -239,6 +239,7 @@ func (p *StaticPool) destroyWorker(w *Worker, caused interface{}) {
 // watchWorker watches worker state and replaces it if worker fails.
 func (p *StaticPool) watchWorker(w *Worker) {
 	err := w.Wait()
+	p.throw(EventWorkerDead, w)
 
 	// detaching
 	p.muw.Lock()
