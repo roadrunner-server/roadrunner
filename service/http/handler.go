@@ -113,10 +113,9 @@ func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error)
 // throw invokes event srv if any.
 func (h *Handler) throw(event int, ctx interface{}) {
 	h.mul.Lock()
-	lsn := h.lsn
-	h.mul.Unlock()
+	defer h.mul.Unlock()
 
-	if lsn != nil {
-		lsn(event, ctx)
+	if h.lsn != nil {
+		h.lsn(event, ctx)
 	}
 }

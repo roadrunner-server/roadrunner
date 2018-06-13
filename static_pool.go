@@ -273,10 +273,9 @@ func (p *StaticPool) destroying() bool {
 // throw invokes event handler if any.
 func (p *StaticPool) throw(event int, ctx interface{}) {
 	p.mul.Lock()
-	lsn := p.lsn
-	p.mul.Unlock()
+	defer p.mul.Unlock()
 
-	if lsn != nil {
-		lsn(event, ctx)
+	if p.lsn != nil {
+		p.lsn(event, ctx)
 	}
 }
