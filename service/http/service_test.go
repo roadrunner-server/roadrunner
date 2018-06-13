@@ -111,7 +111,7 @@ func Test_Service_Echo(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{`{
 			"enable": true,
-			"address": ":8029",
+			"address": ":6029",
 			"maxRequest": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -132,11 +132,11 @@ func Test_Service_Echo(t *testing.T) {
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusConfigured, st)
 
-	go func() { c.Serve() }()
+	go func() { logrus.Println(c.Serve()) }()
 	time.Sleep(time.Millisecond * 10)
 	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:8029?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
