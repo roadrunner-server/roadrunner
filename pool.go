@@ -1,20 +1,29 @@
 package roadrunner
 
 const (
-	// EventCreated thrown when new worker is spawned.
-	EventCreated = iota
+	// EventWorkerConstruct thrown when new worker is spawned.
+	EventWorkerConstruct = iota + 100
 
-	// EventDestruct thrown before worker destruction.
-	EventDestruct
+	// EventWorkerDestruct thrown after worker destruction.
+	EventWorkerDestruct
 
-	// EventError thrown any worker related even happen (error passed as context)
-	EventError
+	// EventWorkerKill thrown after worker is being forcefully killed.
+	EventWorkerKill
+
+	// EventWorkerError thrown any worker related even happen (passed with WorkerError)
+	EventWorkerError
+
+	// EventWorkerDead thrown when worker stops worker for any reason.
+	EventWorkerDead
+
+	// EventPoolError caused on pool wide errors
+	EventPoolError
 )
 
 // Pool managed set of inner worker processes.
 type Pool interface {
-	// Report all caused events to attached watcher.
-	Report(o func(event int, w *Worker, ctx interface{}))
+	// AddListener all caused events to attached watcher.
+	Listen(l func(event int, ctx interface{}))
 
 	// Exec one task with given payload and context, returns result or error.
 	Exec(rqs *Payload) (rsp *Payload, err error)

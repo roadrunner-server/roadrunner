@@ -46,8 +46,13 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 
 	if pid, err := fetchPID(w.rl); pid != *w.Pid {
 		go func(w *Worker) { w.Kill() }(w)
+
 		if wErr := w.Wait(); wErr != nil {
-			err = errors.Wrap(wErr, err.Error())
+			if _, ok := wErr.(*exec.ExitError); ok {
+				err = errors.Wrap(wErr, err.Error())
+			} else {
+				err = wErr
+			}
 		}
 
 		return nil, errors.Wrap(err, "unable to connect to worker")
@@ -55,4 +60,9 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 
 	w.state.set(StateReady)
 	return w, nil
+}
+
+// Close the factory.
+func (f *PipeFactory) Close() error {
+	return nil
 }

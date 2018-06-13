@@ -1,26 +1,37 @@
-language: php
+language: go
 
 sudo: required
 
-php:
-  - 7.0
-  - 7.1
-  - 7.2
-
 go:
-  - 1.8
+  - "1.10.x"
 
 before_install:
+  - go version
+  - sudo add-apt-repository -y ppa:ondrej/php
+  - sudo apt-get update
+  - sudo apt-get install -y php7.0-cli
+  - sudo cp `which php7.0` `which php`
+  - php -v
   - composer self-update
 
 install:
-  - composer install --no-interaction --prefer-source
+  - go get "github.com/spiral/roadrunner"
   - go get -u "github.com/spiral/goridge"
+  - go get -u "github.com/sirupsen/logrus"
   - go get -u "github.com/pkg/errors"
   - go get -u "github.com/stretchr/testify/assert"
+  - composer install --no-interaction --prefer-source --ignore-platform-reqs
 
 script:
-  - go test -race -v -coverprofile=coverage.txt -covermode=atomic
+  - go test -race -v -coverprofile=lib.txt -covermode=atomic
+  - go test ./service -race -v -coverprofile=service.txt -covermode=atomic
+  - go test ./service/rpc -race -v -coverprofile=rpc.txt -covermode=atomic
+  - go test ./service/http -race -v -coverprofile=http.txt -covermode=atomic
+  - go test ./service/static -race -v -coverprofile=static.txt -covermode=atomic
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -f lib.txt
+  - bash <(curl -s https://codecov.io/bash) -f service.txt
+  - bash <(curl -s https://codecov.io/bash) -f rpc.txt
+  - bash <(curl -s https://codecov.io/bash) -f http.txt
+  - bash <(curl -s https://codecov.io/bash) -f static.txt

@@ -9,7 +9,6 @@ func Test_NewState(t *testing.T) {
 	st := newState(StateErrored)
 
 	assert.Equal(t, "errored", st.String())
-	assert.NotEqual(t, 0, st.Updated().Unix())
 
 	assert.Equal(t, "inactive", newState(StateInactive).String())
 	assert.Equal(t, "ready", newState(StateReady).String())

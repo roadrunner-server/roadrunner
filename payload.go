@@ -3,10 +3,10 @@ package roadrunner
 // Payload carries binary header and body to workers and
 // back to the server.
 type Payload struct {
-	// Context represent payload context, might be omitted
+	// Context represent payload context, might be omitted.
 	Context []byte
 
-	// Body contains binary payload to be processed by worker
+	// body contains binary payload to be processed by worker.
 	Body []byte
 }
 

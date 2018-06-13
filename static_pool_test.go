@@ -2,24 +2,24 @@ package roadrunner
 
 import (
 	"github.com/stretchr/testify/assert"
-	"log"
 	"os/exec"
 	"runtime"
 	"strconv"
-	"sync"
 	"testing"
 	"time"
+	"sync"
+	"log"
 )
 
 var cfg = Config{
-	NumWorkers:      uint64(runtime.NumCPU()),
+	NumWorkers:      int64(runtime.NumCPU()),
 	AllocateTimeout: time.Second,
 	DestroyTimeout:  time.Second,
 }
 
 func Test_NewPool(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
 		cfg,
 	)
@@ -33,7 +33,7 @@ func Test_NewPool(t *testing.T) {
 
 func Test_StaticPool_Invalid(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/invalid.php") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/invalid.php") },
 		NewPipeFactory(),
 		cfg,
 	)
@@ -44,7 +44,7 @@ func Test_StaticPool_Invalid(t *testing.T) {
 
 func Test_ConfigError(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
 		Config{
 			AllocateTimeout: time.Second,
@@ -58,7 +58,7 @@ func Test_ConfigError(t *testing.T) {
 
 func Test_StaticPool_Echo(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
 		cfg,
 	)
@@ -79,7 +79,7 @@ func Test_StaticPool_Echo(t *testing.T) {
 
 func Test_StaticPool_Echo_NilContext(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
 		cfg,
 	)
@@ -100,7 +100,7 @@ func Test_StaticPool_Echo_NilContext(t *testing.T) {
 
 func Test_StaticPool_Echo_Context(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "head", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "head", "pipes") },
 		NewPipeFactory(),
 		cfg,
 	)
@@ -121,7 +121,7 @@ func Test_StaticPool_Echo_Context(t *testing.T) {
 
 func Test_StaticPool_JobError(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "error", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "error", "pipes") },
 		NewPipeFactory(),
 		cfg,
 	)
@@ -141,7 +141,7 @@ func Test_StaticPool_JobError(t *testing.T) {
 
 func Test_StaticPool_Broken_Replace(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "broken", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "broken", "pipes") },
 		NewPipeFactory(),
 		cfg,
 	)
@@ -150,7 +150,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.NotNil(t, p)
 	assert.NoError(t, err)
 
-	p.Report(func(e int, w *Worker, ctx interface{}) {
+	p.Listen(func(e int, ctx interface{}) {
 		if err, ok := ctx.(error); ok {
 			assert.Contains(t, err.Error(), "undefined_function()")
 		}
@@ -162,9 +162,46 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.Nil(t, res)
 }
 
+func Test_StaticPool_Broken_FromOutside(t *testing.T) {
+	p, err := NewPool(
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
+		NewPipeFactory(),
+		cfg,
+	)
+	defer p.Destroy()
+
+	assert.NotNil(t, p)
+	assert.NoError(t, err)
+
+	res, err := p.Exec(&Payload{Body: []byte("hello")})
+
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+	assert.NotNil(t, res.Body)
+	assert.Nil(t, res.Context)
+
+	assert.Equal(t, "hello", res.String())
+	assert.Equal(t, runtime.NumCPU(), len(p.Workers()))
+
+	destructed := make(chan interface{})
+	p.Listen(func(e int, ctx interface{}) {
+		if e == EventWorkerConstruct {
+			destructed <- nil
+		}
+	})
+
+	// killing random worker and expecting pool to replace it
+	p.workers[0].cmd.Process.Kill()
+	<-destructed
+
+	for _, w := range p.Workers() {
+		assert.Equal(t, StateReady, w.state.Value())
+	}
+}
+
 func Test_StaticPool_AllocateTimeout(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "delay", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "delay", "pipes") },
 		NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
@@ -196,11 +233,11 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 
 func Test_StaticPool_Replace_Worker(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "pid", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "pid", "pipes") },
 		NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
-			MaxExecutions:   1,
+			MaxJobs:         1,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
 		},
@@ -229,10 +266,11 @@ func Test_StaticPool_Replace_Worker(t *testing.T) {
 	}
 }
 
+
 // identical to replace but controlled on worker side
 func Test_StaticPool_Stop_Worker(t *testing.T) {
 	p, err := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "stop", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "stop", "pipes") },
 		NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
@@ -266,7 +304,7 @@ func Test_StaticPool_Stop_Worker(t *testing.T) {
 
 func Benchmark_Pool_Allocate(b *testing.B) {
 	p, _ := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
 		cfg,
 	)
@@ -285,7 +323,7 @@ func Benchmark_Pool_Allocate(b *testing.B) {
 
 func Benchmark_Pool_Echo(b *testing.B) {
 	p, _ := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
 		cfg,
 	)
@@ -300,7 +338,7 @@ func Benchmark_Pool_Echo(b *testing.B) {
 
 func Benchmark_Pool_Echo_Batched(b *testing.B) {
 	p, _ := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
 		cfg,
 	)
@@ -323,11 +361,11 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 
 func Benchmark_Pool_Echo_Replaced(b *testing.B) {
 	p, _ := NewPool(
-		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "php-src/tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
-			MaxExecutions:   1,
+			MaxJobs:         1,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
 		},

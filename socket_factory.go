@@ -25,7 +25,7 @@ type SocketFactory struct {
 	relays map[int]chan *goridge.SocketRelay
 }
 
-// NewSocketFactory returns SocketFactory attached to a given socket listener.
+// NewSocketFactory returns SocketFactory attached to a given socket lsn.
 // tout specifies for how long factory should serve for incoming relay connection
 func NewSocketFactory(ls net.Listener, tout time.Duration) *SocketFactory {
 	f := &SocketFactory{
@@ -54,7 +54,11 @@ func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 		go func(w *Worker) { w.Kill() }(w)
 
 		if wErr := w.Wait(); wErr != nil {
-			err = errors.Wrap(wErr, err.Error())
+			if _, ok := wErr.(*exec.ExitError); ok {
+				err = errors.Wrap(wErr, err.Error())
+			} else {
+				err = wErr
+			}
 		}
 
 		return nil, errors.Wrap(err, "unable to connect to worker")
@@ -64,6 +68,11 @@ func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 	w.state.set(StateReady)
 
 	return w, nil
+}
+
+// Close socket factory and underlying socket connection.
+func (f *SocketFactory) Close() error {
+	return f.ls.Close()
 }
 
 // listens for incoming socket connections

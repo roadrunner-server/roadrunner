@@ -4,15 +4,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"testing"
-	"time"
 )
 
 func Test_GetState(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
 		assert.NoError(t, w.Wait())
+		assert.Equal(t, StateStopped, w.State().Value())
 	}()
 
 	assert.NoError(t, err)
@@ -20,11 +20,26 @@ func Test_GetState(t *testing.T) {
 
 	assert.Equal(t, StateReady, w.State().Value())
 	w.Stop()
-	assert.Equal(t, StateStopped, w.State().Value())
+}
+
+func Test_Kill(t *testing.T) {
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
+
+	w, err := NewPipeFactory().SpawnWorker(cmd)
+	go func() {
+		assert.Error(t, w.Wait())
+		assert.Equal(t, StateStopped, w.State().Value())
+	}()
+
+	assert.NoError(t, err)
+	assert.NotNil(t, w)
+
+	assert.Equal(t, StateReady, w.State().Value())
+	w.Kill()
 }
 
 func Test_Echo(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -42,17 +57,8 @@ func Test_Echo(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
-func Test_NotStarted_String(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
-
-	w, _ := newWorker(cmd)
-	assert.Contains(t, w.String(), "php tests/client.php echo pipes")
-	assert.Contains(t, w.String(), "inactive")
-	assert.Contains(t, w.String(), "numExecs: 0")
-}
-
-func Test_String(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+func Test_BadPayload(t *testing.T) {
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -60,13 +66,52 @@ func Test_String(t *testing.T) {
 	}()
 	defer w.Stop()
 
-	assert.Contains(t, w.String(), "php tests/client.php echo pipes")
+	res, err := w.Exec(nil)
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+
+	assert.Equal(t, "payload can not be empty", err.Error())
+}
+
+func Test_NotStarted_String(t *testing.T) {
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
+
+	w, _ := newWorker(cmd)
+	assert.Contains(t, w.String(), "php php-src/tests/client.php echo pipes")
+	assert.Contains(t, w.String(), "inactive")
+	assert.Contains(t, w.String(), "numExecs: 0")
+}
+
+func Test_NotStarted_Exec(t *testing.T) {
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
+
+	w, _ := newWorker(cmd)
+
+	res, err := w.Exec(&Payload{Body: []byte("hello")})
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+
+	assert.Equal(t, "worker is not ready (inactive)", err.Error())
+}
+
+func Test_String(t *testing.T) {
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
+
+	w, _ := NewPipeFactory().SpawnWorker(cmd)
+	go func() {
+		assert.NoError(t, w.Wait())
+	}()
+	defer w.Stop()
+
+	assert.Contains(t, w.String(), "php php-src/tests/client.php echo pipes")
 	assert.Contains(t, w.String(), "ready")
 	assert.Contains(t, w.String(), "numExecs: 0")
 }
 
 func Test_Echo_Slow(t *testing.T) {
-	cmd := exec.Command("php", "tests/slow-client.php", "echo", "pipes", "10", "10")
+	cmd := exec.Command("php", "php-src/tests/slow-client.php", "echo", "pipes", "10", "10")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -85,7 +130,7 @@ func Test_Echo_Slow(t *testing.T) {
 }
 
 func Test_Broken(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "broken", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "broken", "pipes")
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -101,7 +146,7 @@ func Test_Broken(t *testing.T) {
 }
 
 func Test_OnStarted(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "broken", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "broken", "pipes")
 	assert.Nil(t, cmd.Start())
 
 	w, err := newWorker(cmd)
@@ -112,7 +157,7 @@ func Test_OnStarted(t *testing.T) {
 }
 
 func Test_Error(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "error", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "error", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -129,7 +174,7 @@ func Test_Error(t *testing.T) {
 }
 
 func Test_NumExecs(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "php-src/tests/client.php", "echo", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
@@ -138,27 +183,11 @@ func Test_NumExecs(t *testing.T) {
 	defer w.Stop()
 
 	w.Exec(&Payload{Body: []byte("hello")})
-	assert.Equal(t, uint64(1), w.State().NumExecs())
+	assert.Equal(t, int64(1), w.State().NumExecs())
 
 	w.Exec(&Payload{Body: []byte("hello")})
-	assert.Equal(t, uint64(2), w.State().NumExecs())
+	assert.Equal(t, int64(2), w.State().NumExecs())
 
 	w.Exec(&Payload{Body: []byte("hello")})
-	assert.Equal(t, uint64(3), w.State().NumExecs())
-}
-
-func Test_StateUpdated(t *testing.T) {
-	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
-
-	w, _ := NewPipeFactory().SpawnWorker(cmd)
-	go func() {
-		assert.NoError(t, w.Wait())
-	}()
-	defer w.Stop()
-
-	tm := time.Now()
-	time.Sleep(time.Millisecond)
-
-	w.Exec(&Payload{Body: []byte("hello")})
-	assert.True(t, w.State().Updated().After(tm))
+	assert.Equal(t, int64(3), w.State().NumExecs())
 }
