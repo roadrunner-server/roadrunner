@@ -23,7 +23,7 @@ Features:
 - control over max jobs per worker
 - protocol, worker and job level error management (including PHP errors)
 - memory leak failswitch
-- very fast (~250k calls per second on Ryzen 1700X over 16 threads)
+- very fast (~250k rpc calls per second on Ryzen 1700X over 16 threads)
 - works on Windows
 
 Installation:
