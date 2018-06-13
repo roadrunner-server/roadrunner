@@ -11,6 +11,7 @@ import (
 	"time"
 	"net/http"
 	"io/ioutil"
+	"github.com/spiral/roadrunner"
 )
 
 type testCfg struct{ httpCfg string }
@@ -209,7 +210,6 @@ func Test_Service_Middleware(t *testing.T) {
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", string(b))
 
-
 	req, err = http.NewRequest("GET", "http://localhost:6029/halt", nil)
 	assert.NoError(t, err)
 
@@ -223,6 +223,50 @@ func Test_Service_Middleware(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 500, r.StatusCode)
 	assert.Equal(t, "halted", string(b))
+}
+
+func Test_Service_Listener(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(Name, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{`{
+			"enable": true,
+			"address": ":6029",
+			"maxRequest": 1024,
+			"uploads": {
+				"dir": ` + tmpDir() + `,
+				"forbid": []
+			},
+			"workers":{
+				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"relay": "pipes",
+				"pool": {
+					"numWorkers": 1, 
+					"allocateTimeout": 10000000,
+					"destroyTimeout": 10000000 
+				}
+			}
+	}`}))
+
+	s, st := c.Get(Name)
+	assert.NotNil(t, s)
+	assert.Equal(t, service.StatusConfigured, st)
+
+	stop := make(chan interface{})
+	s.(*Service).AddListener(func(event int, ctx interface{}) {
+		if event == roadrunner.EventServerStart {
+			stop <- nil
+		}
+	})
+
+	go func() { c.Serve() }()
+	time.Sleep(time.Millisecond * 100)
+
+	c.Stop()
+	assert.True(t, true)
 }
 
 func tmpDir() string {
