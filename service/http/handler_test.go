@@ -54,6 +54,7 @@ func TestServer_Echo(t *testing.T) {
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	body, r, err := get("http://localhost:8077/?hello=world")
 	assert.NoError(t, err)
@@ -88,6 +89,7 @@ func TestServer_Headers(t *testing.T) {
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	req, err := http.NewRequest("GET", "http://localhost:8078?hello=world", nil)
 	assert.NoError(t, err)
@@ -134,6 +136,7 @@ func TestServer_Cookies(t *testing.T) {
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	req, err := http.NewRequest("GET", "http://localhost:8079", nil)
 	assert.NoError(t, err)
@@ -184,6 +187,7 @@ func TestServer_JsonPayload_POST(t *testing.T) {
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	req, err := http.NewRequest(
 		"POST",
@@ -233,6 +237,7 @@ func TestServer_JsonPayload_PUT(t *testing.T) {
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	req, err := http.NewRequest("PUT", "http://localhost"+hs.Addr, bytes.NewBufferString(`{"key":"value"}`))
 	assert.NoError(t, err)
