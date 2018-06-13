@@ -50,8 +50,6 @@ func main() {
 	// serving static files
 	rr.Container.Register(static.ID, &static.Service{})
 
-	// provides additional verbosity
-
 	// debug mode
 	rr.CLI.PersistentFlags().BoolVarP(&debugMode, "debug", "d", false, "debug mode", )
 	cobra.OnInitialize(func() {
