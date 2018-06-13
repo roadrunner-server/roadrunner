@@ -7,7 +7,7 @@ RoadRunner
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/spiral/roadrunner/badges/quality-score.png)](https://scrutinizer-ci.com/g/spiral/roadrunner/?branch=master)
 [![Codecov](https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/roadrunner/)
 
-High-performance PHP load balancer, PSR-7 HTTP server and process manager.
+High-performance PSR-7 HTTP server, PHP load balancer and process manager.
 
 Features:
 --------
