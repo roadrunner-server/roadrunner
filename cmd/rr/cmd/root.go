@@ -88,7 +88,7 @@ func init() {
 		}
 
 		if cfg := initConfig(cfgFile, []string{"."}, ".rr"); cfg != nil {
-			if err := Container.Configure(cfg); err != nil {
+			if err := Container.Init(cfg); err != nil {
 				utils.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
 				os.Exit(1)
 			}

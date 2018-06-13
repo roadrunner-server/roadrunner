@@ -64,7 +64,7 @@ func Test_Config_NoWorkers(t *testing.T) {
 	assert.Error(t, cfg.Valid())
 }
 
-func Test_Confi_InvalidAddress(t *testing.T) {
+func Test_Config_InvalidAddress(t *testing.T) {
 	cfg := &Config{
 		Enable:     true,
 		Address:    "",

@@ -23,7 +23,7 @@ type Container interface {
 	Register(name string, service Service)
 
 	// Reconfigure configures all underlying services with given configuration.
-	Configure(cfg Config) error
+	Init(cfg Config) error
 
 	// Check if svc has been registered.
 	Has(service string) bool
@@ -96,7 +96,7 @@ func (c *container) Get(target string) (svc Service, status int) {
 }
 
 // Init configures all underlying services with given configuration.
-func (c *container) Configure(cfg Config) error {
+func (c *container) Init(cfg Config) error {
 	for _, e := range c.services {
 		if e.getStatus() >= StatusConfigured {
 			return fmt.Errorf("service [%s] has already been configured", e.name)

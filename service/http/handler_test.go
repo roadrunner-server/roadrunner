@@ -58,7 +58,7 @@ func TestServer_Echo(t *testing.T) {
 
 	body, r, err := get("http://localhost:8077/?hello=world")
 	assert.NoError(t, err)
-	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", body)
 }
 

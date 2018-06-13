@@ -6,6 +6,7 @@ import (
 	"context"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service/rpc"
+	"sync"
 )
 
 // Name contains default svc name.
@@ -18,8 +19,10 @@ type middleware func(w http.ResponseWriter, r *http.Request) bool
 type Service struct {
 	cfg  *Config
 	lsns []func(event int, ctx interface{})
-	rr   *roadrunner.Server
 	mdws []middleware
+
+	mu   sync.Mutex
+	rr   *roadrunner.Server
 	srv  *Handler
 	http *http.Server
 }
@@ -63,6 +66,7 @@ func (s *Service) Init(cfg service.Config, c service.Container) (bool, error) {
 
 // Serve serves the svc.
 func (s *Service) Serve() error {
+	s.mu.Lock()
 	rr := roadrunner.NewServer(s.cfg.Workers)
 
 	s.rr = rr
@@ -77,6 +81,7 @@ func (s *Service) Serve() error {
 	} else {
 		s.http.Handler = s
 	}
+	s.mu.Unlock()
 
 	if err := rr.Start(); err != nil {
 		return err
@@ -92,6 +97,8 @@ func (s *Service) Serve() error {
 
 // Stop stops the svc.
 func (s *Service) Stop() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	if s.http == nil {
 		return
 	}

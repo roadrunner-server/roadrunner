@@ -140,7 +140,7 @@ func TestContainer_Configure(t *testing.T) {
 	c.Register("test", svc)
 	assert.Equal(t, 1, len(hook.Entries))
 
-	assert.NoError(t, c.Configure(&testCfg{`{"test":"something"}`}))
+	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
@@ -157,7 +157,7 @@ func TestContainer_ConfigureNull(t *testing.T) {
 	c.Register("test", svc)
 	assert.Equal(t, 1, len(hook.Entries))
 
-	assert.NoError(t, c.Configure(&testCfg{`{"another":"something"}`}))
+	assert.NoError(t, c.Init(&testCfg{`{"another":"something"}`}))
 	assert.Equal(t, 2, len(hook.Entries))
 
 	s, st := c.Get("test")
@@ -175,7 +175,7 @@ func TestContainer_ConfigureDisabled(t *testing.T) {
 	c.Register("test", svc)
 	assert.Equal(t, 1, len(hook.Entries))
 
-	assert.NoError(t, c.Configure(&testCfg{`{"test":"something"}`}))
+	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
 	assert.Equal(t, 1, len(hook.Entries))
 
 	s, st := c.Get("test")
@@ -196,7 +196,7 @@ func TestContainer_ConfigureError(t *testing.T) {
 	c.Register("test", svc)
 	assert.Equal(t, 1, len(hook.Entries))
 
-	err := c.Configure(&testCfg{`{"test":"something"}`})
+	err := c.Init(&testCfg{`{"test":"something"}`})
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "configure error")
 	assert.Contains(t, err.Error(), "test")
@@ -216,8 +216,8 @@ func TestContainer_ConfigureTwice(t *testing.T) {
 	c.Register("test", svc)
 	assert.Equal(t, 1, len(hook.Entries))
 
-	assert.NoError(t, c.Configure(&testCfg{`{"test":"something"}`}))
-	assert.Error(t, c.Configure(&testCfg{`{"test":"something"}`}))
+	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
+	assert.Error(t, c.Init(&testCfg{`{"test":"something"}`}))
 }
 
 func TestContainer_ServeEmptyContainer(t *testing.T) {
@@ -246,7 +246,7 @@ func TestContainer_Serve(t *testing.T) {
 	c := NewContainer(logger)
 	c.Register("test", svc)
 	assert.Equal(t, 1, len(hook.Entries))
-	assert.NoError(t, c.Configure(&testCfg{`{"test":"something"}`}))
+	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
 
 	go func() {
 		assert.NoError(t, c.Serve())
@@ -278,7 +278,7 @@ func TestContainer_ServeError(t *testing.T) {
 	c := NewContainer(logger)
 	c.Register("test", svc)
 	assert.Equal(t, 1, len(hook.Entries))
-	assert.NoError(t, c.Configure(&testCfg{`{"test":"something"}`}))
+	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
 
 	err := c.Serve()
 	assert.Error(t, err)
@@ -310,7 +310,7 @@ func TestContainer_ServeErrorMultiple(t *testing.T) {
 	c.Register("test2", svc2)
 	c.Register("test", svc)
 	assert.Equal(t, 2, len(hook.Entries))
-	assert.NoError(t, c.Configure(&testCfg{`{"test":"something", "test2":"something-else"}`}))
+	assert.NoError(t, c.Init(&testCfg{`{"test":"something", "test2":"something-else"}`}))
 
 	err := c.Serve()
 	assert.Error(t, err)

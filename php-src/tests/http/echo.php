@@ -6,5 +6,5 @@ use \Psr\Http\Message\ResponseInterface;
 function handleRequest(ServerRequestInterface $req, ResponseInterface $resp): ResponseInterface
 {
     $resp->getBody()->write(strtoupper($req->getQueryParams()['hello']));
-    return $resp;
+    return $resp->withStatus(201);
 }

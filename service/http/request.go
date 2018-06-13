@@ -12,7 +12,7 @@ import (
 const (
 	defaultMaxMemory = 32 << 20 // 32 MB
 	contentNone      = iota + 900
-	contentUndefined
+	contentStream
 	contentMultipart
 	contentFormData
 )
@@ -66,7 +66,7 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 	case contentNone:
 		return req, nil
 
-	case contentUndefined:
+	case contentStream:
 		req.body, err = ioutil.ReadAll(r.Body)
 		return req, err
 
@@ -142,7 +142,7 @@ func (r *Request) contentType() int {
 		return contentMultipart
 	}
 
-	return contentUndefined
+	return contentStream
 }
 
 // uri fetches full uri from request in a form of string (including https scheme if TLS connection is enabled).
