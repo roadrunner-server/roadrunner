@@ -33,4 +33,5 @@ after_success:
   - bash <(curl -s https://codecov.io/bash) -f lib.txt
   - bash <(curl -s https://codecov.io/bash) -f service.txt
   - bash <(curl -s https://codecov.io/bash) -f rpc.txt
+  - bash <(curl -s https://codecov.io/bash) -f http.txt
   - bash <(curl -s https://codecov.io/bash) -f static.txt
