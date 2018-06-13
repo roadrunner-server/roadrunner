@@ -12,7 +12,7 @@ type dataTree map[string]interface{}
 type fileTree map[string]interface{}
 
 // parseData parses incoming request body into data tree.
-func parseData(r *http.Request) (dataTree, error) {
+func parseData(r *http.Request) dataTree {
 	data := make(dataTree)
 	if r.PostForm != nil {
 		for k, v := range r.PostForm {
@@ -26,7 +26,7 @@ func parseData(r *http.Request) (dataTree, error) {
 		}
 	}
 
-	return data, nil
+	return data
 }
 
 // pushes value into data tree.
@@ -61,7 +61,7 @@ func (d dataTree) mount(i []string, v []string) {
 }
 
 // parse incoming dataTree request into JSON (including contentMultipart form dataTree)
-func parseUploads(r *http.Request, cfg *UploadsConfig) (*Uploads, error) {
+func parseUploads(r *http.Request, cfg *UploadsConfig) *Uploads {
 	u := &Uploads{
 		cfg:  cfg,
 		tree: make(fileTree),
@@ -78,7 +78,7 @@ func parseUploads(r *http.Request, cfg *UploadsConfig) (*Uploads, error) {
 		u.tree.push(k, files)
 	}
 
-	return u, nil
+	return u
 }
 
 // exists if file exists.

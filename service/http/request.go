@@ -75,18 +75,14 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 			return nil, err
 		}
 
-		if req.Uploads, err = parseUploads(r, cfg); err != nil {
-			return nil, err
-		}
+		req.Uploads = parseUploads(r, cfg)
 		fallthrough
 	case contentFormData:
 		if err = r.ParseForm(); err != nil {
 			return nil, err
 		}
 
-		if req.body, err = parseData(r); err != nil {
-			return nil, err
-		}
+		req.body = parseData(r)
 	}
 
 	req.Parsed = true

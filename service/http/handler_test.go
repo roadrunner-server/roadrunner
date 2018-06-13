@@ -12,6 +12,7 @@ import (
 	"context"
 	"bytes"
 	"mime/multipart"
+	"time"
 )
 
 // get request and return body
@@ -281,6 +282,7 @@ func TestServer_JsonPayload_PATCH(t *testing.T) {
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	req, err := http.NewRequest(
 		"PATCH",
@@ -330,6 +332,7 @@ func TestServer_FormData_POST(t *testing.T) {
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	form := url.Values{}
 
@@ -391,6 +394,7 @@ func TestServer_FormData_PUT(t *testing.T) {
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	form := url.Values{}
 
@@ -452,6 +456,7 @@ func TestServer_FormData_PATCH(t *testing.T) {
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	form := url.Values{}
 
@@ -513,6 +518,7 @@ func TestServer_Multipart_POST(t *testing.T) {
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	var mb bytes.Buffer
 	w := multipart.NewWriter(&mb)
@@ -578,6 +584,7 @@ func TestServer_Multipart_PUT(t *testing.T) {
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	var mb bytes.Buffer
 	w := multipart.NewWriter(&mb)
@@ -639,10 +646,11 @@ func TestServer_Multipart_PATCH(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8020", Handler: st,}
+	hs := &http.Server{Addr: ":8021", Handler: st,}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
 
 	var mb bytes.Buffer
 	w := multipart.NewWriter(&mb)
