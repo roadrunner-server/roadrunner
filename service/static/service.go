@@ -42,7 +42,7 @@ func (s *Service) Init(cfg service.Config, c service.Container) (enabled bool, e
 	// registering as middleware
 	if h, ok := c.Get(rrttp.Name); ok >= service.StatusConfigured {
 		if h, ok := h.(*rrttp.Service); ok {
-			h.AddMiddleware(s)
+			h.AddMiddleware(s.middleware)
 		}
 	}
 
@@ -55,8 +55,8 @@ func (s *Service) Serve() error { return nil }
 // Stop stops the service.
 func (s *Service) Stop() {}
 
-// Handle must return true if request/response pair is handled withing the middleware.
-func (s *Service) Handle(w http.ResponseWriter, r *http.Request) bool {
+// middleware must return true if request/response pair is handled withing the middleware.
+func (s *Service) middleware(w http.ResponseWriter, r *http.Request) bool {
 	fPath := r.URL.Path
 	if !strings.HasPrefix(fPath, "/") {
 		fPath = "/" + fPath
@@ -78,7 +78,7 @@ func (s *Service) Handle(w http.ResponseWriter, r *http.Request) bool {
 		return false
 	}
 
-	// do not Handle directories
+	// do not middleware directories
 	if d.IsDir() {
 		return false
 	}

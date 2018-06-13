@@ -48,7 +48,7 @@ func (h *Handler) Listen(l func(event int, ctx interface{})) {
 	h.lsn = l
 }
 
-// Handle serve using PSR-7 requests passed to underlying application. Attempts to serve static files first if enabled.
+// middleware serve using PSR-7 requests passed to underlying application. Attempts to serve static files first if enabled.
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// validating request size
 	if h.cfg.MaxRequest != 0 {
