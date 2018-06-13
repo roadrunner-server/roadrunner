@@ -132,8 +132,8 @@ func Test_Service_Echo(t *testing.T) {
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusConfigured, st)
 
-	go func() { logrus.Println(c.Serve()) }()
-	time.Sleep(time.Millisecond * 10)
+	go func() { c.Serve() }()
+	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
 	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
