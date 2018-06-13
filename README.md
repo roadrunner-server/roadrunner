@@ -95,7 +95,7 @@ http:
       # maximum jobs per worker, 0 - unlimited.
       maxJobs:  0
 
-      # for how long worker is allowed to be bootstrapped. In nanoseconds for now :(
+      # for how long pool should attempt to allocate free worker (request timeout). In nanoseconds for now :(
       allocateTimeout: 600000000
 
       # amount of time given to worker to gracefully destruct itself. In nanoseconds for now :(
@@ -109,7 +109,7 @@ static:
   # root directory for static file (http would not serve .php and .htaccess files).
   dir:   "public"
 
-  # list of extensions for forbid for serving.
+  # list of extensions to forbid for serving.
   forbid: [".php", ".htaccess"]
 ```
 
