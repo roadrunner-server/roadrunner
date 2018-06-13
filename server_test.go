@@ -211,7 +211,7 @@ func TestServer_ServerFailure(t *testing.T) {
 	failure := make(chan interface{})
 	srv.Listen(func(e int, ctx interface{}) {
 		if e == EventServerFailure {
-			close(failure)
+			failure <- nil
 		}
 	})
 

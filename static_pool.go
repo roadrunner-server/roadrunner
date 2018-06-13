@@ -257,11 +257,11 @@ func (p *StaticPool) watchWorker(w *Worker) {
 			return
 		}
 
-		p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
-
 		// possible situation when major error causes all PHP scripts to die (for example dead DB)
 		if len(p.Workers()) == 0 {
-			p.throw(EventPoolError, fmt.Errorf("unable to replace (last worker): %s", err))
+			p.throw(EventPoolError, err)
+		} else {
+			p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
 		}
 	}
 }

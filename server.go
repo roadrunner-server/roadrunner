@@ -127,10 +127,11 @@ func (s *Server) Reconfigure(cfg *ServerConfig) error {
 	s.mu.Unlock()
 
 	pool, err := NewPool(cfg.makeCommand(), s.factory, *cfg.Pool)
-	s.pool.Listen(s.poolListener)
 	if err != nil {
 		return err
 	}
+
+	s.pool.Listen(s.poolListener)
 
 	s.mu.Lock()
 	s.cfg.Pool, s.pool = cfg.Pool, pool
@@ -177,23 +178,22 @@ func (s *Server) Pool() Pool {
 
 // AddListener pool events.
 func (s *Server) poolListener(event int, ctx interface{}) {
-	// bypassing to user specified lsn
-	s.throw(event, ctx)
-
 	if event == EventPoolError {
 		// pool failure, rebuilding
 		if err := s.Reset(); err != nil {
 			s.mu.Lock()
-			defer s.mu.Unlock()
-
 			s.started = false
 			s.pool = nil
 			s.factory = nil
+			s.mu.Unlock()
 
 			// everything is dead, this is recoverable but heavy state
 			s.throw(EventServerFailure, err)
 		}
 	}
+
+	// bypassing to user specified lsn
+	s.throw(event, ctx)
 }
 
 // throw invokes event handler if any.
