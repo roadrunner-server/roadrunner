@@ -250,7 +250,7 @@ func (p *StaticPool) watchWorker(w *Worker) {
 	}
 	p.muw.Unlock()
 
-	// registering dead worker
+	// registering a dead worker
 	atomic.AddInt64(&p.numDead, 1)
 
 	// worker have died unexpectedly, pool should attempt to replace it with alive version safely
