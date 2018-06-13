@@ -22,7 +22,7 @@ type testService struct {
 	done         chan interface{}
 }
 
-func (t *testService) Configure(cfg Config, c Container) (enabled bool, err error) {
+func (t *testService) Init(cfg Config, c Container) (enabled bool, err error) {
 	t.cfg = cfg
 	t.c = c
 	t.done = make(chan interface{})
