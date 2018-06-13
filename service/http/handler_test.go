@@ -697,6 +697,40 @@ func TestServer_Error(t *testing.T) {
 	assert.Equal(t, 500, r.StatusCode)
 }
 
+func TestServer_Error2(t *testing.T) {
+	st := &Handler{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../php-src/tests/http/client.php error2 pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	assert.NoError(t, st.rr.Start())
+	defer st.rr.Stop()
+
+	hs := &http.Server{Addr: ":8077", Handler: st}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	_, r, err := get("http://localhost:8077/?hello=world")
+	assert.NoError(t, err)
+	assert.Equal(t, 500, r.StatusCode)
+}
+
 func BenchmarkHandler_Listen_Echo(b *testing.B) {
 	st := &Handler{
 		cfg: &Config{
