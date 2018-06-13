@@ -356,6 +356,33 @@ func Test_Service_Error3(t *testing.T) {
 	}`}))
 }
 
+func Test_Service_Error4(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(Name, &Service{})
+
+	assert.Error(t, c.Init(&testCfg{`{
+			"enable": true,
+			"address": "----",
+			"maxRequest": 1024,
+			"uploads": {
+				"dir": ` + tmpDir() + `,
+				"forbid": []
+			},
+			"workers":{
+				"command": "php ../../php-src/tests/http/client.php broken pipes",
+				"relay": "pipes",
+				"pool": {
+					"numWorkers": 1, 
+					"allocateTimeout": 10000000,
+					"destroyTimeout": 10000000 
+				}
+			}
+	}`}))
+}
+
 func tmpDir() string {
 	p := os.TempDir()
 	r, _ := json.Marshal(p)
