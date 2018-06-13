@@ -79,7 +79,7 @@ func (s *Service) middleware(w http.ResponseWriter, r *http.Request) bool {
 		return false
 	}
 
-	// do not middleware directories
+	// do not serve directories
 	if d.IsDir() {
 		return false
 	}
