@@ -88,11 +88,7 @@ func (s *Service) Serve() error {
 	}
 	defer s.rr.Stop()
 
-	if err := s.http.ListenAndServe(); err != nil {
-		return err
-	}
-
-	return nil
+	return s.http.ListenAndServe()
 }
 
 // Stop stops the svc.
