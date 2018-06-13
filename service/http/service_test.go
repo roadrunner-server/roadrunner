@@ -272,6 +272,65 @@ func Test_Service_Listener(t *testing.T) {
 	assert.True(t, true)
 }
 
+func Test_Service_Error(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(Name, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{`{
+			"enable": true,
+			"address": ":6029",
+			"maxRequest": 1024,
+			"uploads": {
+				"dir": ` + tmpDir() + `,
+				"forbid": []
+			},
+			"workers":{
+				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"relay": "---",
+				"pool": {
+					"numWorkers": 1, 
+					"allocateTimeout": 10000000,
+					"destroyTimeout": 10000000 
+				}
+			}
+	}`}))
+
+	assert.Error(t, c.Serve())
+}
+
+func Test_Service_Error2(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(Name, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{`{
+			"enable": true,
+			"address": ":6029",
+			"maxRequest": 1024,
+			"uploads": {
+				"dir": ` + tmpDir() + `,
+				"forbid": []
+			},
+			"workers":{
+				"command": "php ../../php-src/tests/http/client.php broken pipes",
+				"relay": "pipes",
+				"pool": {
+					"numWorkers": 1, 
+					"allocateTimeout": 10000000,
+					"destroyTimeout": 10000000 
+				}
+			}
+	}`}))
+
+	assert.Error(t, c.Serve())
+}
+
+
 func tmpDir() string {
 	p := os.TempDir()
 	r, _ := json.Marshal(p)
