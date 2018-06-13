@@ -2,6 +2,8 @@ package http
 
 import (
 	"github.com/spiral/roadrunner"
+	"errors"
+	"strings"
 )
 
 // Configures RoadRunner HTTP server.
@@ -24,5 +26,17 @@ type Config struct {
 
 // Valid validates the configuration.
 func (cfg *Config) Valid() error {
+	if cfg.Uploads == nil {
+		return errors.New("mailformed uploads config")
+	}
+
+	if cfg.Workers == nil {
+		return errors.New("mailformed workers config")
+	}
+
+	if !strings.Contains(cfg.Address, ":") {
+		return errors.New("mailformed server address")
+	}
+
 	return nil
 }
