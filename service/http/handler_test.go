@@ -663,7 +663,7 @@ func TestServer_Multipart_PATCH(t *testing.T) {
 	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
 }
 
-func BenchServer_Echo(b *testing.B) {
+func BenchmarkHandler_Listen_Echo(b *testing.B) {
 	st := &Handler{
 		cfg: &Config{
 			MaxRequest: 1024,
