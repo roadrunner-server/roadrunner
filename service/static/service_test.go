@@ -56,7 +56,7 @@ func Test_Files(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{
-		static: `{"enable":true, "dir":"../../php-src/tests/http", "forbid":[]}`,
+		static: `{"enable":true, "dir":"../../php-src/tests", "forbid":[]}`,
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
@@ -93,7 +93,7 @@ func Test_Files_Forbid(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{
-		static: `{"enable":true, "dir":"../../php-src/tests/http", "forbid":[".php"]}`,
+		static: `{"enable":true, "dir":"../../php-src/tests", "forbid":[".php"]}`,
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
@@ -103,7 +103,7 @@ func Test_Files_Forbid(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php pid pipes",
+				"command": "php ../../php-src/tests/http/client.php echo pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1,
@@ -117,8 +117,83 @@ func Test_Files_Forbid(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	b, _, _ := get("http://localhost:6029/client.php")
-	assert.NotEqual(t, "sample", b)
+	b, _, _ := get("http://localhost:6029/client.php?hello=world")
+	assert.Equal(t, "WORLD", b)
+}
+
+func Test_Files_NotFound(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(rrhttp.ID, &rrhttp.Service{})
+	c.Register(ID, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{
+		static: `{"enable":true, "dir":"../../php-src/tests", "forbid":[".php"]}`,
+		httpCfg: `{
+			"enable": true,
+			"address": ":6029",
+			"maxRequest": 1024,
+			"uploads": {
+				"dir": ` + tmpDir() + `,
+				"forbid": []
+			},
+			"workers":{
+				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"relay": "pipes",
+				"pool": {
+					"numWorkers": 1,
+					"allocateTimeout": 10000000,
+					"destroyTimeout": 10000000
+				}
+			}
+	}`}))
+
+	go func() { c.Serve() }()
+	time.Sleep(time.Millisecond * 100)
+	defer c.Stop()
+
+	b, _, _ := get("http://localhost:6029/client.XXX?hello=world")
+	assert.Equal(t, "WORLD", b)
+}
+
+
+func Test_Files_Dir(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(rrhttp.ID, &rrhttp.Service{})
+	c.Register(ID, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{
+		static: `{"enable":true, "dir":"../../php-src/tests", "forbid":[".php"]}`,
+		httpCfg: `{
+			"enable": true,
+			"address": ":6029",
+			"maxRequest": 1024,
+			"uploads": {
+				"dir": ` + tmpDir() + `,
+				"forbid": []
+			},
+			"workers":{
+				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"relay": "pipes",
+				"pool": {
+					"numWorkers": 1,
+					"allocateTimeout": 10000000,
+					"destroyTimeout": 10000000
+				}
+			}
+	}`}))
+
+	go func() { c.Serve() }()
+	time.Sleep(time.Millisecond * 100)
+	defer c.Stop()
+
+	b, _, _ := get("http://localhost:6029/http?hello=world")
+	assert.Equal(t, "WORLD", b)
 }
 
 func Test_Files_NotForbid(t *testing.T) {
@@ -130,7 +205,7 @@ func Test_Files_NotForbid(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{
-		static: `{"enable":true, "dir":"../../php-src/tests/http", "forbid":[]}`,
+		static: `{"enable":true, "dir":"../../php-src/tests", "forbid":[]}`,
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
@@ -155,7 +230,7 @@ func Test_Files_NotForbid(t *testing.T) {
 	defer c.Stop()
 
 	b, _, _ := get("http://localhost:6029/client.php")
-	assert.NotEqual(t, all("../../php-src/tests/http/client.php")+"s", b)
+	assert.Equal(t, all("../../php-src/tests/client.php"), b)
 }
 
 func tmpDir() string {
