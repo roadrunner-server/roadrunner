@@ -7,9 +7,7 @@ RoadRunner
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/spiral/roadrunner/badges/quality-score.png)](https://scrutinizer-ci.com/g/spiral/roadrunner/?branch=master)
 [![Codecov](https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/roadrunner/)
 
-High-performance PHP load balancer and process manager library for Golang.
-
-Library allows you to embed PHP code into Golang applications as managed pool of stateless workers.
+High-performance PHP load balancer, plugin based PSR7 HTTP server and process manager.
 
 Features:
 --------
@@ -24,6 +22,10 @@ Features:
 - protocol, worker and job level error management (including PHP errors)
 - memory leak failswitch
 - very fast (~250k calls per second on Ryzen 1700X over 16 threads)
+- PSR7 HTTP server
+- file uploads
+- RPC server
+- pluging based service model
 - works on Windows
 
 Installation:
@@ -70,6 +72,12 @@ while ($body = $rr->receive($context)) {
 }
 ```
 > Check how to init relay [here](./php-src/tests/client.php). More examples can be found in tests.
+
+Testing:
+--------
+```
+$ make test
+```
 
 License:
 --------
