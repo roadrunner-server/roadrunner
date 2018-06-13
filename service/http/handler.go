@@ -97,17 +97,17 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	resp.Write(w)
 }
 
-// handleResponse triggers response event.
-func (h *Handler) handleResponse(req *Request, resp *Response) {
-	h.throw(EventResponse, &Event{Method: req.Method, Uri: req.Uri, Status: resp.Status})
-}
-
 // handleError sends error.
 func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error) {
 	h.throw(EventError, &Event{Method: r.Method, Uri: uri(r), Status: 500, Error: err})
 
 	w.WriteHeader(500)
 	w.Write([]byte(err.Error()))
+}
+
+// handleResponse triggers response event.
+func (h *Handler) handleResponse(req *Request, resp *Response) {
+	h.throw(EventResponse, &Event{Method: req.Method, Uri: req.Uri, Status: resp.Status})
 }
 
 // throw invokes event srv if any.

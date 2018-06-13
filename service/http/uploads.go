@@ -73,8 +73,8 @@ type FileUpload struct {
 	// Name contains filename specified by the client.
 	Name string `json:"name"`
 
-	// MimeType contains mime-type provided by the client.
-	MimeType string `json:"type"`
+	// Mime contains mime-type provided by the client.
+	Mime string `json:"mime"`
 
 	// Size of the uploaded file.
 	Size int64 `json:"size"`
@@ -92,10 +92,10 @@ type FileUpload struct {
 // NewUpload wraps net/http upload into PRS-7 compatible structure.
 func NewUpload(f *multipart.FileHeader) *FileUpload {
 	return &FileUpload{
-		Name:     f.Filename,
-		MimeType: f.Header.Get("Content-Type"),
-		Error:    UploadErrorOK,
-		header:   f,
+		Name:   f.Filename,
+		Mime:   f.Header.Get("Content-Type"),
+		Error:  UploadErrorOK,
+		header: f,
 	}
 }
 

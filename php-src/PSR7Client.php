@@ -117,13 +117,12 @@ class PSR7Client
                 continue;
             }
 
-
             $result[$index] = new Diactoros\UploadedFile(
                 $file['tmpName'],
                 $file['size'],
                 $file['error'],
                 $file['name'],
-                $file['type']
+                $file['mime']
             );
         }
 

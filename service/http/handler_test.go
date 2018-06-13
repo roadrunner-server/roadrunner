@@ -229,16 +229,12 @@ func TestServer_JsonPayload_PUT(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8081", Handler: st,}
+	hs := &http.Server{Addr: ":8081", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
 
-	req, err := http.NewRequest(
-		"PUT",
-		"http://localhost"+hs.Addr,
-		bytes.NewBufferString(`{"key":"value"}`),
-	)
+	req, err := http.NewRequest("PUT", "http://localhost"+hs.Addr, bytes.NewBufferString(`{"key":"value"}`))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/json")
@@ -278,17 +274,13 @@ func TestServer_JsonPayload_PATCH(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8082", Handler: st,}
+	hs := &http.Server{Addr: ":8082", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
 	time.Sleep(time.Millisecond * 10)
 
-	req, err := http.NewRequest(
-		"PATCH",
-		"http://localhost"+hs.Addr,
-		bytes.NewBufferString(`{"key":"value"}`),
-	)
+	req, err := http.NewRequest("PATCH", "http://localhost"+hs.Addr, bytes.NewBufferString(`{"key":"value"}`))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/json")
@@ -345,11 +337,7 @@ func TestServer_FormData_POST(t *testing.T) {
 	form.Add("arr[c]p", "l")
 	form.Add("arr[c]z", "")
 
-	req, err := http.NewRequest(
-		"POST",
-		"http://localhost"+hs.Addr,
-		strings.NewReader(form.Encode()),
-	)
+	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, strings.NewReader(form.Encode()))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -390,7 +378,7 @@ func TestServer_FormData_PUT(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8084", Handler: st,}
+	hs := &http.Server{Addr: ":8084", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -407,11 +395,7 @@ func TestServer_FormData_PUT(t *testing.T) {
 	form.Add("arr[c]p", "l")
 	form.Add("arr[c]z", "")
 
-	req, err := http.NewRequest(
-		"PUT",
-		"http://localhost"+hs.Addr,
-		strings.NewReader(form.Encode()),
-	)
+	req, err := http.NewRequest("PUT", "http://localhost"+hs.Addr, strings.NewReader(form.Encode()))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -452,7 +436,7 @@ func TestServer_FormData_PATCH(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8085", Handler: st,}
+	hs := &http.Server{Addr: ":8085", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -469,11 +453,7 @@ func TestServer_FormData_PATCH(t *testing.T) {
 	form.Add("arr[c]p", "l")
 	form.Add("arr[c]z", "")
 
-	req, err := http.NewRequest(
-		"PATCH",
-		"http://localhost"+hs.Addr,
-		strings.NewReader(form.Encode()),
-	)
+	req, err := http.NewRequest("PATCH", "http://localhost"+hs.Addr, strings.NewReader(form.Encode()))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -514,7 +494,7 @@ func TestServer_Multipart_POST(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8019", Handler: st,}
+	hs := &http.Server{Addr: ":8019", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -535,11 +515,7 @@ func TestServer_Multipart_POST(t *testing.T) {
 
 	w.Close()
 
-	req, err := http.NewRequest(
-		"POST",
-		"http://localhost"+hs.Addr,
-		&mb,
-	)
+	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, &mb)
 	assert.NoError(t, err)
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
@@ -580,7 +556,7 @@ func TestServer_Multipart_PUT(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8020", Handler: st,}
+	hs := &http.Server{Addr: ":8020", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -601,11 +577,7 @@ func TestServer_Multipart_PUT(t *testing.T) {
 
 	w.Close()
 
-	req, err := http.NewRequest(
-		"PUT",
-		"http://localhost"+hs.Addr,
-		&mb,
-	)
+	req, err := http.NewRequest("PUT", "http://localhost"+hs.Addr, &mb)
 	assert.NoError(t, err)
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
@@ -646,7 +618,7 @@ func TestServer_Multipart_PATCH(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8021", Handler: st,}
+	hs := &http.Server{Addr: ":8021", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -667,11 +639,7 @@ func TestServer_Multipart_PATCH(t *testing.T) {
 
 	w.Close()
 
-	req, err := http.NewRequest(
-		"PATCH",
-		"http://localhost"+hs.Addr,
-		&mb,
-	)
+	req, err := http.NewRequest("PATCH", "http://localhost"+hs.Addr, &mb)
 	assert.NoError(t, err)
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
