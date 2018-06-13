@@ -12,7 +12,7 @@ High-performance PSR-7 HTTP server, PHP load balancer and process manager.
 Features:
 --------
 - PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middlewares, event listeners)
-- extendable service model
+- extendable service model (plus PHP compatible RPC server)
 - no external services, drop-in (based on [Goridge](https://github.com/spiral/goridge))
 - load balancer, process manager and task pipeline
 - frontend agnostic (queue, REST, PSR-7, async php, etc)
