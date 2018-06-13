@@ -11,6 +11,7 @@ import (
 	"strings"
 	"context"
 	"bytes"
+	"mime/multipart"
 )
 
 // get request and return body
@@ -471,6 +472,201 @@ func TestServer_FormData_PATCH(t *testing.T) {
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+
+	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
+}
+
+func TestServer_Multipart_POST(t *testing.T) {
+	st := &Handler{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../php-src/tests/http/client.php data pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	assert.NoError(t, st.rr.Start())
+	defer st.rr.Stop()
+
+	hs := &http.Server{Addr: ":8019", Handler: st,}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+
+	var mb bytes.Buffer
+	w := multipart.NewWriter(&mb)
+	w.WriteField("key", "value")
+
+	w.WriteField("key", "value")
+	w.WriteField("name[]", "name1")
+	w.WriteField("name[]", "name2")
+	w.WriteField("name[]", "name3")
+	w.WriteField("arr[x][y][z]", "y")
+	w.WriteField("arr[x][y][e]", "f")
+	w.WriteField("arr[c]p", "l")
+	w.WriteField("arr[c]z", "")
+
+	w.Close()
+
+	req, err := http.NewRequest(
+		"POST",
+		"http://localhost"+hs.Addr,
+		&mb,
+	)
+	assert.NoError(t, err)
+
+	req.Header.Set("Content-Type", w.FormDataContentType())
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+
+	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
+}
+
+func TestServer_Multipart_PUT(t *testing.T) {
+	st := &Handler{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../php-src/tests/http/client.php data pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	assert.NoError(t, st.rr.Start())
+	defer st.rr.Stop()
+
+	hs := &http.Server{Addr: ":8020", Handler: st,}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+
+	var mb bytes.Buffer
+	w := multipart.NewWriter(&mb)
+	w.WriteField("key", "value")
+
+	w.WriteField("key", "value")
+	w.WriteField("name[]", "name1")
+	w.WriteField("name[]", "name2")
+	w.WriteField("name[]", "name3")
+	w.WriteField("arr[x][y][z]", "y")
+	w.WriteField("arr[x][y][e]", "f")
+	w.WriteField("arr[c]p", "l")
+	w.WriteField("arr[c]z", "")
+
+	w.Close()
+
+	req, err := http.NewRequest(
+		"PUT",
+		"http://localhost"+hs.Addr,
+		&mb,
+	)
+	assert.NoError(t, err)
+
+	req.Header.Set("Content-Type", w.FormDataContentType())
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+
+	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
+}
+
+func TestServer_Multipart_PATCH(t *testing.T) {
+	st := &Handler{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../php-src/tests/http/client.php data pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	assert.NoError(t, st.rr.Start())
+	defer st.rr.Stop()
+
+	hs := &http.Server{Addr: ":8020", Handler: st,}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+
+	var mb bytes.Buffer
+	w := multipart.NewWriter(&mb)
+	w.WriteField("key", "value")
+
+	w.WriteField("key", "value")
+	w.WriteField("name[]", "name1")
+	w.WriteField("name[]", "name2")
+	w.WriteField("name[]", "name3")
+	w.WriteField("arr[x][y][z]", "y")
+	w.WriteField("arr[x][y][e]", "f")
+	w.WriteField("arr[c]p", "l")
+	w.WriteField("arr[c]z", "")
+
+	w.Close()
+
+	req, err := http.NewRequest(
+		"PATCH",
+		"http://localhost"+hs.Addr,
+		&mb,
+	)
+	assert.NoError(t, err)
+
+	req.Header.Set("Content-Type", w.FormDataContentType())
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)

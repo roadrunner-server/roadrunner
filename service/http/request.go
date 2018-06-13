@@ -71,16 +71,14 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 		return req, err
 
 	case contentMultipart:
-		//if err = r.ParseMultipartForm(defaultMaxMemory); err != nil {
-		//			return nil, err
-		//		}
+		if err = r.ParseMultipartForm(defaultMaxMemory); err != nil {
+			return nil, err
+		}
 
-		/*	if req.Uploads, err = parseUploads(r, cfg); err != nil {
-				return nil, err
-			}
-			fallthrough*/
-
-		// todo: debug all that
+		if req.Uploads, err = parseUploads(r, cfg); err != nil {
+			return nil, err
+		}
+		fallthrough
 	case contentFormData:
 		if err = r.ParseForm(); err != nil {
 			return nil, err
