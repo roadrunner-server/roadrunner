@@ -40,6 +40,7 @@ func (s *Service) AddListener(l func(event int, ctx interface{})) {
 // misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Service) Init(cfg service.Config, c service.Container) (bool, error) {
 	config := &Config{}
+
 	if err := cfg.Unmarshal(config); err != nil {
 		return false, err
 	}

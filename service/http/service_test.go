@@ -23,8 +23,7 @@ func (cfg *testCfg) Get(name string) service.Config {
 	return nil
 }
 func (cfg *testCfg) Unmarshal(out interface{}) error {
-	json.Unmarshal([]byte(cfg.httpCfg), out)
-	return nil
+	return json.Unmarshal([]byte(cfg.httpCfg), out)
 }
 
 func Test_Service_NoConfig(t *testing.T) {
@@ -330,6 +329,32 @@ func Test_Service_Error2(t *testing.T) {
 	assert.Error(t, c.Serve())
 }
 
+func Test_Service_Error3(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(Name, &Service{})
+
+	assert.Error(t, c.Init(&testCfg{`{
+			"enable": true,
+			"address": ":6029",
+			"maxRequest": 1024,
+			"uploads": {
+				"dir": ` + tmpDir() + `,
+				"forbid": []
+			},
+			"workers"
+				"command": "php ../../php-src/tests/http/client.php broken pipes",
+				"relay": "pipes",
+				"pool": {
+					"numWorkers": 1, 
+					"allocateTimeout": 10000000,
+					"destroyTimeout": 10000000 
+				}
+			}
+	}`}))
+}
 
 func tmpDir() string {
 	p := os.TempDir()
