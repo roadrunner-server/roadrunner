@@ -1,5 +1,9 @@
 package http
 
+import (
+	"github.com/pkg/errors"
+)
+
 type rpcServer struct{ svc *Service }
 
 // WorkerList contains list of workers.
@@ -25,12 +29,20 @@ type Worker struct {
 
 // Reset resets underlying RR worker pool and restarts all of it's workers.
 func (rpc *rpcServer) Reset(reset bool, r *string) error {
+	if rpc.svc.srv == nil {
+		return errors.New("http server is not running")
+	}
+
 	*r = "OK"
 	return rpc.svc.rr.Reset()
 }
 
 // Workers returns list of active workers and their stats.
 func (rpc *rpcServer) Workers(list bool, r *WorkerList) error {
+	if rpc.svc.srv == nil {
+		return errors.New("http server is not running")
+	}
+
 	for _, w := range rpc.svc.rr.Workers() {
 		state := w.State()
 		r.Workers = append(r.Workers, Worker{
