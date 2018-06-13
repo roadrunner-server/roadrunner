@@ -95,7 +95,7 @@ func (c *container) Get(target string) (svc Service, status int) {
 	return nil, StatusUndefined
 }
 
-// Configure configures all underlying services with given configuration.
+// Init configures all underlying services with given configuration.
 func (c *container) Configure(cfg Config) error {
 	for _, e := range c.services {
 		if e.getStatus() >= StatusConfigured {
@@ -108,7 +108,7 @@ func (c *container) Configure(cfg Config) error {
 			continue
 		}
 
-		ok, err := e.svc.Configure(segment, c)
+		ok, err := e.svc.Init(segment, c)
 		if err != nil {
 			return errors.Wrap(err, fmt.Sprintf("[%s]", e.name))
 		} else if ok {

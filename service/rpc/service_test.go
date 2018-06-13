@@ -19,7 +19,7 @@ func (cfg *testCfg) Unmarshal(out interface{}) error { return json.Unmarshal([]b
 
 func Test_ConfigError(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Configure(&testCfg{`{"enable":false`}, nil)
+	ok, err := s.Init(&testCfg{`{"enable":false`}, nil)
 
 	assert.Error(t, err)
 	assert.False(t, ok)
@@ -27,7 +27,7 @@ func Test_ConfigError(t *testing.T) {
 
 func Test_Disabled(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Configure(&testCfg{`{"enable":false}`}, nil)
+	ok, err := s.Init(&testCfg{`{"enable":false}`}, nil)
 
 	assert.NoError(t, err)
 	assert.False(t, ok)
@@ -45,7 +45,7 @@ func Test_RegisterNotConfigured(t *testing.T) {
 
 func Test_Enabled(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
+	ok, err := s.Init(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
 
 	assert.NoError(t, err)
 	assert.True(t, ok)
@@ -53,7 +53,7 @@ func Test_Enabled(t *testing.T) {
 
 func Test_StopNonServing(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
+	ok, err := s.Init(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
 
 	assert.NoError(t, err)
 	assert.True(t, ok)
@@ -62,7 +62,7 @@ func Test_StopNonServing(t *testing.T) {
 
 func Test_Serve_Errors(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"mailformed"}`}, nil)
+	ok, err := s.Init(&testCfg{`{"enable":true, "listen":"mailformed"}`}, nil)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 
@@ -75,7 +75,7 @@ func Test_Serve_Errors(t *testing.T) {
 
 func Test_Serve_Client(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Configure(&testCfg{`{"enable":true, "listen":"tcp://localhost:9018"}`}, nil)
+	ok, err := s.Init(&testCfg{`{"enable":true, "listen":"tcp://localhost:9018"}`}, nil)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 

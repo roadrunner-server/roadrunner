@@ -12,22 +12,22 @@ import (
 const Name = "http"
 
 type middleware interface {
-	// Handle must return true if request/response pair is handled withing the middleware.
+	// Handle must return true if request/response pair is handled withing the mdws.
 	Handle(w http.ResponseWriter, r *http.Request) bool
 }
 
 // Service manages rr, http servers.
 type Service struct {
-	cfg        *Config
-	lsns       []func(event int, ctx interface{})
-	rr         *roadrunner.Server
-	middleware []middleware
-	srv        *Handler
-	http       *http.Server
+	cfg  *Config
+	lsns []func(event int, ctx interface{})
+	rr   *roadrunner.Server
+	mdws []middleware
+	srv  *Handler
+	http *http.Server
 }
 
 func (s *Service) AddMiddleware(m middleware) {
-	s.middleware = append(s.middleware, m)
+	s.mdws = append(s.mdws, m)
 }
 
 // AddListener attaches server event watcher.
@@ -35,9 +35,9 @@ func (s *Service) AddListener(l func(event int, ctx interface{})) {
 	s.lsns = append(s.lsns, l)
 }
 
-// Configure must return configure svc and return true if svc hasStatus enabled. Must return error in case of
+// Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Service) Configure(cfg service.Config, c service.Container) (bool, error) {
+func (s *Service) Init(cfg service.Config, c service.Container) (bool, error) {
 	config := &Config{}
 	if err := cfg.Unmarshal(config); err != nil {
 		return false, err
@@ -74,7 +74,7 @@ func (s *Service) Serve() error {
 	s.rr.Listen(s.listener)
 	s.srv.Listen(s.listener)
 
-	if len(s.middleware) == 0 {
+	if len(s.mdws) == 0 {
 		s.http.Handler = s.srv
 	} else {
 		s.http.Handler = s
@@ -101,9 +101,9 @@ func (s *Service) Stop() {
 	s.http.Shutdown(context.Background())
 }
 
-// Handle handles connection using set of middleware and rr PSR-7 server.
+// Handle handles connection using set of mdws and rr PSR-7 server.
 func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	for _, m := range s.middleware {
+	for _, m := range s.mdws {
 		if m.Handle(w, r) {
 			return
 		}

@@ -4,9 +4,9 @@ import "sync"
 
 // svc provides high level functionality for road runner svc.
 type Service interface {
-	// Configure must return configure service and return true if service hasStatus enabled. Must return error in case of
+	// Init must return configure service and return true if service hasStatus enabled. Must return error in case of
 	// misconfiguration. Services must not be used without proper configuration pushed first.
-	Configure(cfg Config, c Container) (enabled bool, err error)
+	Init(cfg Config, c Container) (enabled bool, err error)
 
 	// Serve serves.
 	Serve() error
