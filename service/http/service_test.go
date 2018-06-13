@@ -12,18 +12,27 @@ import (
 	"net/http"
 	"io/ioutil"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service/rpc"
 )
 
-type testCfg struct{ httpCfg string }
+type testCfg struct {
+	httpCfg string
+	rpcCfg  string
+	target  string
+}
 
 func (cfg *testCfg) Get(name string) service.Config {
-	if name == Name {
-		return &testCfg{cfg.httpCfg}
+	if name == ID {
+		return &testCfg{target: cfg.httpCfg}
+	}
+
+	if name == rpc.ID {
+		return &testCfg{target: cfg.rpcCfg}
 	}
 	return nil
 }
 func (cfg *testCfg) Unmarshal(out interface{}) error {
-	return json.Unmarshal([]byte(cfg.httpCfg), out)
+	return json.Unmarshal([]byte(cfg.target), out)
 }
 
 func Test_Service_NoConfig(t *testing.T) {
@@ -31,11 +40,11 @@ func Test_Service_NoConfig(t *testing.T) {
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(Name, &Service{})
+	c.Register(ID, &Service{})
 
-	assert.NoError(t, c.Init(&testCfg{`{}`}))
+	assert.NoError(t, c.Init(&testCfg{httpCfg: `{}`}))
 
-	s, st := c.Get(Name)
+	s, st := c.Get(ID)
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusRegistered, st)
 }
@@ -45,9 +54,9 @@ func Test_Service_Configure_Disable(t *testing.T) {
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(Name, &Service{})
+	c.Register(ID, &Service{})
 
-	assert.NoError(t, c.Init(&testCfg{`{
+	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": false,
 			"address": ":8070",
 			"maxRequest": 1024,
@@ -66,7 +75,7 @@ func Test_Service_Configure_Disable(t *testing.T) {
 			}
 	}`}))
 
-	s, st := c.Get(Name)
+	s, st := c.Get(ID)
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusRegistered, st)
 }
@@ -76,9 +85,9 @@ func Test_Service_Configure_Enable(t *testing.T) {
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(Name, &Service{})
+	c.Register(ID, &Service{})
 
-	assert.NoError(t, c.Init(&testCfg{`{
+	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":8070",
 			"maxRequest": 1024,
@@ -97,7 +106,7 @@ func Test_Service_Configure_Enable(t *testing.T) {
 			}
 	}`}))
 
-	s, st := c.Get(Name)
+	s, st := c.Get(ID)
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusConfigured, st)
 }
@@ -107,9 +116,9 @@ func Test_Service_Echo(t *testing.T) {
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(Name, &Service{})
+	c.Register(ID, &Service{})
 
-	assert.NoError(t, c.Init(&testCfg{`{
+	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
 			"maxRequest": 1024,
@@ -128,7 +137,7 @@ func Test_Service_Echo(t *testing.T) {
 			}
 	}`}))
 
-	s, st := c.Get(Name)
+	s, st := c.Get(ID)
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusConfigured, st)
 
@@ -159,9 +168,9 @@ func Test_Service_Middleware(t *testing.T) {
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(Name, &Service{})
+	c.Register(ID, &Service{})
 
-	assert.NoError(t, c.Init(&testCfg{`{
+	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
 			"maxRequest": 1024,
@@ -180,7 +189,7 @@ func Test_Service_Middleware(t *testing.T) {
 			}
 	}`}))
 
-	s, st := c.Get(Name)
+	s, st := c.Get(ID)
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusConfigured, st)
 
@@ -232,9 +241,9 @@ func Test_Service_Listener(t *testing.T) {
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(Name, &Service{})
+	c.Register(ID, &Service{})
 
-	assert.NoError(t, c.Init(&testCfg{`{
+	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
 			"maxRequest": 1024,
@@ -253,7 +262,7 @@ func Test_Service_Listener(t *testing.T) {
 			}
 	}`}))
 
-	s, st := c.Get(Name)
+	s, st := c.Get(ID)
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusConfigured, st)
 
@@ -276,9 +285,9 @@ func Test_Service_Error(t *testing.T) {
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(Name, &Service{})
+	c.Register(ID, &Service{})
 
-	assert.NoError(t, c.Init(&testCfg{`{
+	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
 			"maxRequest": 1024,
@@ -305,9 +314,9 @@ func Test_Service_Error2(t *testing.T) {
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(Name, &Service{})
+	c.Register(ID, &Service{})
 
-	assert.NoError(t, c.Init(&testCfg{`{
+	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
 			"maxRequest": 1024,
@@ -334,9 +343,9 @@ func Test_Service_Error3(t *testing.T) {
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(Name, &Service{})
+	c.Register(ID, &Service{})
 
-	assert.Error(t, c.Init(&testCfg{`{
+	assert.Error(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
 			"maxRequest": 1024,
@@ -361,9 +370,9 @@ func Test_Service_Error4(t *testing.T) {
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(Name, &Service{})
+	c.Register(ID, &Service{})
 
-	assert.Error(t, c.Init(&testCfg{`{
+	assert.Error(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": "----",
 			"maxRequest": 1024,

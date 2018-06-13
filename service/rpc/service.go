@@ -8,8 +8,8 @@ import (
 	"sync"
 )
 
-// Name contains default service name.
-const Name = "rpc"
+// ID contains default service name.
+const ID = "rpc"
 
 // Service is RPC service.
 type Service struct {

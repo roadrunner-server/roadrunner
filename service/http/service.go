@@ -9,8 +9,8 @@ import (
 	"sync"
 )
 
-// Name contains default svc name.
-const Name = "http"
+// ID contains default svc name.
+const ID = "http"
 
 // must return true if request/response pair is handled withing the middleware.
 type middleware func(w http.ResponseWriter, r *http.Request) bool
@@ -56,9 +56,9 @@ func (s *Service) Init(cfg service.Config, c service.Container) (bool, error) {
 	s.cfg = config
 
 	// registering http RPC interface
-	if r, ok := c.Get(rpc.Name); ok >= service.StatusConfigured {
+	if r, ok := c.Get(rpc.ID); ok >= service.StatusConfigured {
 		if h, ok := r.(*rpc.Service); ok {
-			h.Register(Name, &rpcServer{s})
+			h.Register(ID, &rpcServer{s})
 		}
 	}
 

@@ -42,13 +42,13 @@ var debugMode bool
 func main() {
 
 	// provides ability to make local connection to services
-	rr.Container.Register(rpc.Name, &rpc.Service{})
+	rr.Container.Register(rpc.ID, &rpc.Service{})
 
 	// http serving
-	rr.Container.Register(http.Name, &http.Service{})
+	rr.Container.Register(http.ID, &http.Service{})
 
 	// serving static files
-	rr.Container.Register(static.Name, &static.Service{})
+	rr.Container.Register(static.ID, &static.Service{})
 
 	// provides additional verbosity
 
@@ -56,7 +56,7 @@ func main() {
 	rr.CLI.PersistentFlags().BoolVarP(&debugMode, "debug", "d", false, "debug mode", )
 	cobra.OnInitialize(func() {
 		if debugMode {
-			service, _ := rr.Container.Get(http.Name)
+			service, _ := rr.Container.Get(http.ID)
 			service.(*http.Service).AddListener(debug.NewListener(rr.Logger).Listener)
 		}
 	})

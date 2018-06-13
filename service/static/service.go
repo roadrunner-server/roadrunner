@@ -8,8 +8,8 @@ import (
 	"github.com/spiral/roadrunner/service"
 )
 
-// Name contains default service name.
-const Name = "static"
+// ID contains default service name.
+const ID = "static"
 
 // Service serves static files. Potentially convert into middleware?
 type Service struct {
@@ -40,7 +40,7 @@ func (s *Service) Init(cfg service.Config, c service.Container) (enabled bool, e
 	s.root = http.Dir(s.cfg.Dir)
 
 	// registering as middleware
-	if h, ok := c.Get(rrttp.Name); ok >= service.StatusConfigured {
+	if h, ok := c.Get(rrttp.ID); ok >= service.StatusConfigured {
 		if h, ok := h.(*rrttp.Service); ok {
 			h.AddMiddleware(s.middleware)
 		}

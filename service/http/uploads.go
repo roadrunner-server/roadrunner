@@ -70,7 +70,7 @@ func (u *Uploads) Clear() {
 
 // FileUpload represents singular file NewUpload.
 type FileUpload struct {
-	// Name contains filename specified by the client.
+	// ID contains filename specified by the client.
 	Name string `json:"name"`
 
 	// Mime contains mime-type provided by the client.
