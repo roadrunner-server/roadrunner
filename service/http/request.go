@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"net/url"
 )
 
 const (
@@ -59,7 +60,9 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 	}
 
 	for _, c := range r.Cookies() {
-		req.Cookies[c.Name] = c.Value
+		if v, err := url.QueryUnescape(c.Value); err == nil {
+			req.Cookies[c.Name] = v
+		}
 	}
 
 	switch req.contentType() {
