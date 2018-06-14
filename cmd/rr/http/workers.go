@@ -163,5 +163,5 @@ func renderMemory(pid int) string {
 		return err.Error()
 	}
 
-	return humanize.Bytes(i.VMS)
+	return humanize.Bytes(i.RSS)
 }
