@@ -24,9 +24,9 @@ import (
 	"errors"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/service/rpc"
-	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/cmd/rr/utils"
+	"github.com/spiral/roadrunner/service"
+	"github.com/spiral/roadrunner/service/rpc"
 )
 
 func init() {

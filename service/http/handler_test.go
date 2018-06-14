@@ -1,19 +1,19 @@
 package http
 
 import (
-	"net/http"
-	"io/ioutil"
-	"github.com/spiral/roadrunner"
-	"testing"
-	"os"
-	"github.com/stretchr/testify/assert"
-	"net/url"
-	"strings"
-	"context"
 	"bytes"
+	"context"
+	"github.com/spiral/roadrunner"
+	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"mime/multipart"
-	"time"
+	"net/http"
+	"net/url"
+	"os"
 	"runtime"
+	"strings"
+	"testing"
+	"time"
 )
 
 // get request and return body
@@ -86,7 +86,7 @@ func TestServer_Headers(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8078", Handler: st,}
+	hs := &http.Server{Addr: ":8078", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -133,7 +133,7 @@ func TestServer_Cookies(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8079", Handler: st,}
+	hs := &http.Server{Addr: ":8079", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -184,7 +184,7 @@ func TestServer_JsonPayload_POST(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8090", Handler: st,}
+	hs := &http.Server{Addr: ":8090", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -326,7 +326,7 @@ func TestServer_FormData_POST(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8083", Handler: st,}
+	hs := &http.Server{Addr: ":8083", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()

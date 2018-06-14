@@ -1,10 +1,10 @@
 package http
 
 import (
-	"testing"
-	"os"
-	"github.com/stretchr/testify/assert"
 	"github.com/spiral/roadrunner"
+	"github.com/stretchr/testify/assert"
+	"os"
+	"testing"
 	"time"
 )
 

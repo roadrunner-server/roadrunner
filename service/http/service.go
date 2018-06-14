@@ -1,11 +1,11 @@
 package http
 
 import (
-	"net/http"
-	"github.com/spiral/roadrunner/service"
 	"context"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/rpc"
+	"net/http"
 	"sync"
 )
 

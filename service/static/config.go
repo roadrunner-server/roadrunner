@@ -1,10 +1,10 @@
 package static
 
 import (
-	"strings"
-	"path"
-	"os"
 	"github.com/pkg/errors"
+	"os"
+	"path"
+	"strings"
 )
 
 // Config describes file location and controls access to them.

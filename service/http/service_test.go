@@ -1,18 +1,18 @@
 package http
 
 import (
-	"testing"
-	"github.com/spiral/roadrunner/service"
-	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/sirupsen/logrus"
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
-	"os"
-	"time"
-	"net/http"
-	"io/ioutil"
+	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/rpc"
+	"github.com/stretchr/testify/assert"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"testing"
+	"time"
 )
 
 type testCfg struct {

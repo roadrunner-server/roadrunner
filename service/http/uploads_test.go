@@ -1,20 +1,20 @@
 package http
 
 import (
-	"github.com/spiral/roadrunner"
-	"github.com/stretchr/testify/assert"
-	"net/http"
-	"time"
 	"bytes"
-	"mime/multipart"
-	"io/ioutil"
-	"testing"
-	"os"
 	"context"
-	"io"
-	"encoding/json"
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
+	"github.com/spiral/roadrunner"
+	"github.com/stretchr/testify/assert"
+	"io"
+	"io/ioutil"
+	"mime/multipart"
+	"net/http"
+	"os"
+	"testing"
+	"time"
 )
 
 func TestServer_Upload_File(t *testing.T) {
@@ -40,7 +40,7 @@ func TestServer_Upload_File(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8021", Handler: st,}
+	hs := &http.Server{Addr: ":8021", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -101,7 +101,7 @@ func TestServer_Upload_NestedFile(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8021", Handler: st,}
+	hs := &http.Server{Addr: ":8021", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -139,7 +139,6 @@ func TestServer_Upload_NestedFile(t *testing.T) {
 	assert.Equal(t, `{"upload":{"x":{"y":{"z":[`+fs+`]}}}}`, string(b))
 }
 
-
 func TestServer_Upload_File_NoTmpDir(t *testing.T) {
 	st := &Handler{
 		cfg: &Config{
@@ -163,7 +162,7 @@ func TestServer_Upload_File_NoTmpDir(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8021", Handler: st,}
+	hs := &http.Server{Addr: ":8021", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -201,7 +200,6 @@ func TestServer_Upload_File_NoTmpDir(t *testing.T) {
 	assert.Equal(t, `{"upload":`+fs+`}`, string(b))
 }
 
-
 func TestServer_Upload_File_Forbids(t *testing.T) {
 	st := &Handler{
 		cfg: &Config{
@@ -225,7 +223,7 @@ func TestServer_Upload_File_Forbids(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8021", Handler: st,}
+	hs := &http.Server{Addr: ":8021", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()

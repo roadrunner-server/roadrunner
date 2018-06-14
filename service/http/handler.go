@@ -1,10 +1,10 @@
 package http
 
 import (
+	"github.com/pkg/errors"
+	"github.com/spiral/roadrunner"
 	"net/http"
 	"strconv"
-	"github.com/spiral/roadrunner"
-	"github.com/pkg/errors"
 	"sync"
 )
 

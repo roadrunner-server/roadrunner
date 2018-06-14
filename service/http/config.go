@@ -1,8 +1,8 @@
 package http
 
 import (
-	"github.com/spiral/roadrunner"
 	"errors"
+	"github.com/spiral/roadrunner"
 	"strings"
 )
 

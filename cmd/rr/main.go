@@ -31,8 +31,8 @@ import (
 	"github.com/spiral/roadrunner/service/static"
 
 	// cli plugins
-	_ "github.com/spiral/roadrunner/cmd/rr/http"
 	"github.com/spiral/roadrunner/cmd/rr/debug"
+	_ "github.com/spiral/roadrunner/cmd/rr/http"
 
 	"github.com/spf13/cobra"
 )
@@ -51,7 +51,7 @@ func main() {
 	rr.Container.Register(static.ID, &static.Service{})
 
 	// debug mode
-	rr.CLI.PersistentFlags().BoolVarP(&debugMode, "debug", "d", false, "debug mode", )
+	rr.CLI.PersistentFlags().BoolVarP(&debugMode, "debug", "d", false, "debug mode")
 	cobra.OnInitialize(func() {
 		if debugMode {
 			service, _ := rr.Container.Get(http.ID)

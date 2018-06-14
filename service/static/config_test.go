@@ -1,8 +1,8 @@
 package static
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestConfig_Forbids(t *testing.T) {

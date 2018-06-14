@@ -2,9 +2,9 @@ package utils
 
 import (
 	"fmt"
+	"github.com/mgutz/ansi"
 	"regexp"
 	"strings"
-	"github.com/mgutz/ansi"
 )
 
 var reg *regexp.Regexp

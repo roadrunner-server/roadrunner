@@ -129,7 +129,7 @@ func (c *container) Serve() error {
 
 	for _, e := range c.services {
 		if e.hasStatus(StatusConfigured) {
-			numServing ++
+			numServing++
 		} else {
 			continue
 		}

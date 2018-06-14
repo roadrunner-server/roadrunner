@@ -1,9 +1,9 @@
 package http
 
 import (
-	"strings"
-	"path"
 	"os"
+	"path"
+	"strings"
 )
 
 // UploadsConfig describes file location and controls access to them.

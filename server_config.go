@@ -3,9 +3,9 @@ package roadrunner
 import (
 	"errors"
 	"net"
+	"os/exec"
 	"strings"
 	"time"
-	"os/exec"
 )
 
 // Server config combines factory, pool and cmd configurations.

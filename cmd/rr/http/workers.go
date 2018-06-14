@@ -28,16 +28,16 @@ import (
 	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
+	"github.com/spiral/roadrunner/cmd/rr/utils"
+	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/http"
 	rrpc "github.com/spiral/roadrunner/service/rpc"
-	"github.com/spiral/roadrunner/service"
-	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"net/rpc"
 	"os"
-	"strconv"
-	"time"
 	"os/signal"
+	"strconv"
 	"syscall"
+	"time"
 )
 
 var (

@@ -5,8 +5,8 @@ import (
 	"github.com/pkg/errors"
 	"os/exec"
 	"sync"
-	"time"
 	"sync/atomic"
+	"time"
 )
 
 const (

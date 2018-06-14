@@ -1,19 +1,19 @@
 package static
 
 import (
-	"testing"
-	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/sirupsen/logrus"
-	"github.com/spiral/roadrunner/service"
-	"github.com/stretchr/testify/assert"
-	"time"
-	rrhttp "github.com/spiral/roadrunner/service/http"
+	"bytes"
 	"encoding/json"
+	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
+	"github.com/spiral/roadrunner/service"
+	rrhttp "github.com/spiral/roadrunner/service/http"
+	"github.com/stretchr/testify/assert"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"bytes"
-	"io"
+	"testing"
+	"time"
 )
 
 type testCfg struct {
@@ -83,7 +83,6 @@ func Test_Files(t *testing.T) {
 	b, _, _ := get("http://localhost:6029/sample.txt")
 	assert.Equal(t, "sample", b)
 }
-
 
 func Test_Files_Disable(t *testing.T) {
 	logger, _ := test.NewNullLogger()
@@ -255,7 +254,6 @@ func Test_Files_NotFound(t *testing.T) {
 	b, _, _ := get("http://localhost:6029/client.XXX?hello=world")
 	assert.Equal(t, "WORLD", b)
 }
-
 
 func Test_Files_Dir(t *testing.T) {
 	logger, _ := test.NewNullLogger()

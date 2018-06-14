@@ -6,8 +6,8 @@ import (
 	"github.com/spiral/roadrunner"
 	"io/ioutil"
 	"net/http"
-	"strings"
 	"net/url"
+	"strings"
 )
 
 const (

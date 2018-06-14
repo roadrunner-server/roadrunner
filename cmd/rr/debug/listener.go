@@ -2,9 +2,9 @@ package debug
 
 import (
 	"github.com/sirupsen/logrus"
-	"github.com/spiral/roadrunner/service/http"
-	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/cmd/rr/utils"
+	"github.com/spiral/roadrunner/service/http"
 )
 
 // Listener provide debug callback for system events. With colors!

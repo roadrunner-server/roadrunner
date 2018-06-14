@@ -1,11 +1,11 @@
 package static
 
 import (
+	"github.com/spiral/roadrunner/service"
+	rrttp "github.com/spiral/roadrunner/service/http"
 	"net/http"
 	"path"
 	"strings"
-	rrttp "github.com/spiral/roadrunner/service/http"
-	"github.com/spiral/roadrunner/service"
 )
 
 // ID contains default service name.

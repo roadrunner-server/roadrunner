@@ -1,14 +1,14 @@
 package http
 
 import (
-	"testing"
-	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner/service"
-	"github.com/stretchr/testify/assert"
-	"time"
 	"github.com/spiral/roadrunner/service/rpc"
+	"github.com/stretchr/testify/assert"
 	"strconv"
+	"testing"
+	"time"
 )
 
 func Test_RPC(t *testing.T) {

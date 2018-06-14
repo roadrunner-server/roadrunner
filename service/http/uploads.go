@@ -2,11 +2,11 @@ package http
 
 import (
 	"encoding/json"
+	"io"
+	"io/ioutil"
+	"mime/multipart"
 	"os"
 	"sync"
-	"mime/multipart"
-	"io/ioutil"
-	"io"
 )
 
 const (

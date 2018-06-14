@@ -1,12 +1,12 @@
 package http
 
 import (
-	"net/http"
 	"bytes"
-	"testing"
+	"errors"
 	"github.com/spiral/roadrunner"
 	"github.com/stretchr/testify/assert"
-	"errors"
+	"net/http"
+	"testing"
 )
 
 type testWriter struct {

@@ -2,8 +2,8 @@ package roadrunner
 
 import (
 	"fmt"
-	"sync"
 	"github.com/pkg/errors"
+	"sync"
 )
 
 const (

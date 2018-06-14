@@ -1,14 +1,14 @@
 package service
 
 import (
-	"testing"
-	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/stretchr/testify/assert"
-	"github.com/sirupsen/logrus"
 	"encoding/json"
 	"errors"
-	"time"
+	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
+	"github.com/stretchr/testify/assert"
 	"sync"
+	"testing"
+	"time"
 )
 
 type testService struct {
