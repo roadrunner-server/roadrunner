@@ -100,8 +100,6 @@ func workersHandler(cmd *cobra.Command, args []string) (err error) {
 			tm.Flush()
 		}
 	}
-
-	return nil
 }
 
 func showWorkers(client *rpc.Client) {
