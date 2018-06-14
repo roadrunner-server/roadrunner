@@ -150,7 +150,7 @@ func (c *container) Serve() error {
 		result := <-done
 
 		// found an error in one of the services, stopping the rest of running services.
-		if err, ok := result.(error); ok {
+		if err := result.(error); err != nil {
 			c.Stop()
 			return err
 		}
