@@ -55,7 +55,7 @@ func (s *Service) Serve() error { return nil }
 // Stop stops the service.
 func (s *Service) Stop() {}
 
-// middleware must return true if request/response pair is handled withing the middleware.
+// middleware must return true if request/response pair is handled within the middleware.
 func (s *Service) middleware(w http.ResponseWriter, r *http.Request) bool {
 	fPath := r.URL.Path
 

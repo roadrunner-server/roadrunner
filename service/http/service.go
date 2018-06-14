@@ -12,7 +12,7 @@ import (
 // ID contains default svc name.
 const ID = "http"
 
-// must return true if request/response pair is handled withing the middleware.
+// must return true if request/response pair is handled within the middleware.
 type middleware func(w http.ResponseWriter, r *http.Request) bool
 
 // Service manages rr, http servers.
