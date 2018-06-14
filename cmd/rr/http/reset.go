@@ -56,6 +56,6 @@ func reloadHandler(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	utils.Printf("<green+hb>done</reset>")
+	utils.Printf("<green+hb>done</reset>\n")
 	return nil
 }
