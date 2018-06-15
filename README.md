@@ -138,13 +138,13 @@ Working with RoadRunner service:
 RoadRunner application can be started by calling simple command from the root of your PHP application.
 
 ```
-$ rr serve
+$ rr serve -v
 ```
 
 You can also run RR in debug mode to view all incoming requests.
 
 ```
-$ rr serve -d
+$ rr serve -d -v
 ```
 
 You can force RR service to reload it's http workers.
