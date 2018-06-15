@@ -165,10 +165,10 @@ $ rr http:workers -i
 +---------+-----------+---------+---------+--------------------+
 |   PID   |  STATUS   |  EXECS  | MEMORY  |      CREATED       |
 +---------+-----------+---------+---------+--------------------+
-|    9440 | ready     |   42320 | 31 MB   | 22 minutes ago     |
-|    9447 | ready     |   42329 | 31 MB   | 22 minutes ago     |
-|    9454 | ready     |   42306 | 31 MB   | 22 minutes ago     |
-|    9461 | ready     |   42316 | 31 MB   | 22 minutes ago     |
+|    9440 | ready     |  42,320 | 31 MB   | 22 minutes ago     |
+|    9447 | ready     |  42,329 | 31 MB   | 22 minutes ago     |
+|    9454 | ready     |  42,306 | 31 MB   | 22 minutes ago     |
+|    9461 | ready     |  42,316 | 31 MB   | 22 minutes ago     |
 +---------+-----------+---------+---------+--------------------+
 ```
 
