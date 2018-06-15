@@ -30,11 +30,11 @@ Features:
 Getting Started:
 --------
 
-#### Getting RoadRunner
+#### Downloading RoadRunner
 The easiest way to get the latest RoadRunner version is to use one of the pre-built release binaries which are available for
 OSX, Linux, FreeBSD, and Windows. Instructions for using these binaries are on the GitHub [releases page](https://github.com/spiral/roadrunner/releases).
 
-#### Building RoadRunner:
+#### Building RoadRunner
 RoadRunner can be compiled on Linux, OSX, Windows and other 64 bit environments as the only requirement is Go 1.8+ itself.
 
 To build:
