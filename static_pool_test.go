@@ -191,7 +191,9 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	})
 
 	// killing random worker and expecting pool to replace it
+	p.muw.Lock()
 	p.workers[0].cmd.Process.Kill()
+	p.muw.Unlock()
 	<-destructed
 
 	for _, w := range p.Workers() {
