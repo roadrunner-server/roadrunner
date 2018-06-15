@@ -1,6 +1,4 @@
-coverage.txt
-.idea
 .idea/*
 composer.lock
 vendor/
-bin/
+builds/

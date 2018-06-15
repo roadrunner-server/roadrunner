@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	// EventPoolConstruct triggered when server creates new pool.
+	// EventServerStart triggered when server creates new pool.
 	EventServerStart = iota + 200
 
-	// EventPoolConstruct triggered when server creates new pool.
+	// EventServerStop triggered when server creates new pool.
 	EventServerStop
 
 	// EventServerFailure triggered when server is unable to replace dead pool.
@@ -23,7 +23,7 @@ const (
 	EventPoolDestruct
 )
 
-// Service manages pool creation and swapping.
+// Server manages pool creation and swapping.
 type Server struct {
 	// configures server, pool, cmd creation and factory.
 	cfg *ServerConfig
@@ -50,7 +50,7 @@ func NewServer(cfg *ServerConfig) *Server {
 	return &Server{cfg: cfg}
 }
 
-// AddListener attaches server event watcher.
+// Listen attaches server event watcher.
 func (s *Server) Listen(l func(event int, ctx interface{})) {
 	s.mul.Lock()
 	defer s.mul.Unlock()

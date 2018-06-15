@@ -55,7 +55,7 @@ func main() {
 	cobra.OnInitialize(func() {
 		if debugMode {
 			service, _ := rr.Container.Get(http.ID)
-			service.(*http.Service).AddListener(debug.NewListener(rr.Logger).Listener)
+			service.(*http.Service).AddListener(debug.Listener(rr.Logger))
 		}
 	})
 

@@ -45,7 +45,11 @@ var (
 		Use:           "rr",
 		SilenceErrors: true,
 		SilenceUsage:  true,
-		Short:         utils.Sprintf("<green>RoadRunner, PHP Application Server.</reset>"),
+		Short: utils.Sprintf(
+			"<green>RoadRunner, PHP Application Server:</reset>\nVersion: <yellow+hb>%s</reset>, %s",
+			Version,
+			BuildTime,
+		),
 	}
 )
 

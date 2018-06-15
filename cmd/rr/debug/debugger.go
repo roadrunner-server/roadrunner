@@ -7,32 +7,32 @@ import (
 	"github.com/spiral/roadrunner/service/http"
 )
 
-// Listener provide debug callback for system events. With colors!
-type listener struct{ logger *logrus.Logger }
-
-// NewListener creates new debug listener.
-func NewListener(logger *logrus.Logger) *listener {
-	return &listener{logger}
+// Listener creates new debug listener.
+func Listener(logger *logrus.Logger) func(event int, ctx interface{}) {
+	return (&debugger{logger}).listener
 }
 
-// Listener listens to http events and generates nice looking output.
-func (s *listener) Listener(event int, ctx interface{}) {
+// listener provide debug callback for system events. With colors!
+type debugger struct{ logger *logrus.Logger }
+
+// listener listens to http events and generates nice looking output.
+func (s *debugger) listener(event int, ctx interface{}) {
 	// http events
 	switch event {
 	case http.EventResponse:
 		log := ctx.(*http.Event)
-		s.logger.Info(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.Uri))
+		s.logger.Info(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.URI))
 	case http.EventError:
 		log := ctx.(*http.Event)
 
 		if _, ok := log.Error.(roadrunner.JobError); ok {
-			s.logger.Info(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.Uri))
+			s.logger.Info(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.URI))
 		} else {
 			s.logger.Info(utils.Sprintf(
 				"%s <white+hb>%s</reset> %s <red>%s</reset>",
 				statusColor(log.Status),
 				log.Method,
-				log.Uri,
+				log.URI,
 				log.Error,
 			))
 		}
@@ -69,12 +69,6 @@ func (s *listener) Listener(event int, ctx interface{}) {
 		s.logger.Error(utils.Sprintf("<red>%s</reset>", ctx))
 	}
 }
-
-// Serve serves.
-func (s *listener) Serve() error { return nil }
-
-// Stop stops the Listener.
-func (s *listener) Stop() {}
 
 func statusColor(status int) string {
 	if status < 300 {

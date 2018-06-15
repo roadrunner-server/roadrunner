@@ -21,8 +21,8 @@ type Event struct {
 	// Method of the request.
 	Method string
 
-	// Uri requested by the client.
-	Uri string
+	// URI requested by the client.
+	URI string
 
 	// Status is response status.
 	Status int
@@ -40,7 +40,7 @@ type Handler struct {
 	lsn func(event int, ctx interface{})
 }
 
-// AddListener attaches pool event watcher.
+// Listen attaches handler event watcher.
 func (h *Handler) Listen(l func(event int, ctx interface{})) {
 	h.mul.Lock()
 	defer h.mul.Unlock()
@@ -99,7 +99,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // handleError sends error.
 func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error) {
-	h.throw(EventError, &Event{Method: r.Method, Uri: uri(r), Status: 500, Error: err})
+	h.throw(EventError, &Event{Method: r.Method, URI: uri(r), Status: 500, Error: err})
 
 	w.WriteHeader(500)
 	w.Write([]byte(err.Error()))
@@ -107,7 +107,7 @@ func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error)
 
 // handleResponse triggers response event.
 func (h *Handler) handleResponse(req *Request, resp *Response) {
-	h.throw(EventResponse, &Event{Method: req.Method, Uri: req.Uri, Status: resp.Status})
+	h.throw(EventResponse, &Event{Method: req.Method, URI: req.URI, Status: resp.Status})
 }
 
 // throw invokes event srv if any.

@@ -19,5 +19,5 @@ v1.0.0 (14.06.2018)
 - less dependencies
 - yaml/json configs (thx viper)
 - CLI application server
-- middlewares and event listeners
+- middleware and event listeners support
 - psr7 library for php

@@ -26,8 +26,8 @@ type Request struct {
 	// Method contains name of HTTP method used for the request.
 	Method string `json:"method"`
 
-	// Uri contains full request Uri with scheme and query.
-	Uri string `json:"uri"`
+	// URI contains full request URI with scheme and query.
+	URI string `json:"uri"`
 
 	// Headers contains list of request headers.
 	Headers http.Header `json:"headers"`
@@ -53,7 +53,7 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 	req = &Request{
 		Protocol: r.Proto,
 		Method:   r.Method,
-		Uri:      uri(r),
+		URI:      uri(r),
 		Headers:  r.Header,
 		Cookies:  make(map[string]string),
 		RawQuery: r.URL.RawQuery,

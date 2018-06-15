@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Configures RoadRunner HTTP server.
+// Config configures RoadRunner HTTP server.
 type Config struct {
 	// Enable enables http svc.
 	Enable bool

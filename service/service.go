@@ -2,7 +2,7 @@ package service
 
 import "sync"
 
-// svc provides high level functionality for road runner svc.
+// Service provides high level functionality for road runner modules.
 type Service interface {
 	// Init must return configure service and return true if service hasStatus enabled. Must return error in case of
 	// misconfiguration. Services must not be used without proper configuration pushed first.

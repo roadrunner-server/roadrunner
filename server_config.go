@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// Server config combines factory, pool and cmd configurations.
+// ServerConfig config combines factory, pool and cmd configurations.
 type ServerConfig struct {
 	// Command includes command strings with all the parameters, example: "php worker.php pipes".
 	Command string

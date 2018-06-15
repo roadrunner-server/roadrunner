@@ -18,14 +18,14 @@ type Config struct {
 
 	// AllocateTimeout defines for how long pool will be waiting for a worker to
 	// be freed to handle the task.
-	AllocateTimeout time.Duration //todo: to milleseconds?
+	AllocateTimeout time.Duration
 
 	// DestroyTimeout defines for how long pool should be waiting for worker to
 	// properly stop, if timeout reached worker will be killed.
-	DestroyTimeout time.Duration //todo: to milleseconds?
+	DestroyTimeout time.Duration
 }
 
-// Reconfigure returns error if cfg not valid
+// Valid returns error if config not valid.
 func (cfg *Config) Valid() error {
 	if cfg.NumWorkers == 0 {
 		return fmt.Errorf("pool.NumWorkers must be set")

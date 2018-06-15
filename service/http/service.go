@@ -27,6 +27,7 @@ type Service struct {
 	http *http.Server
 }
 
+// AddMiddleware adds new net/http middleware.
 func (s *Service) AddMiddleware(m middleware) {
 	s.mdws = append(s.mdws, m)
 }

@@ -47,7 +47,7 @@ http:
 # static file serving.
 static:
   # serve http static files
-  enable:  false
+  enable:  true
 
   # root directory for static file (http would not serve .php and .htaccess files).
   dir:   "public"

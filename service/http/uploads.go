@@ -10,23 +10,23 @@ import (
 )
 
 const (
-	// There is no error, the file uploaded with success.
+	// UploadErrorOK - no error, the file uploaded with success.
 	UploadErrorOK = 0
 
-	// No file was uploaded.
+	// UploadErrorNoFile - no file was uploaded.
 	UploadErrorNoFile = 4
 
-	// Missing a temporary folder.
+	// UploadErrorNoTmpDir - missing a temporary folder.
 	UploadErrorNoTmpDir = 5
 
-	// Failed to write file to disk.
+	// UploadErrorCantWrite - failed to write file to disk.
 	UploadErrorCantWrite = 6
 
-	// Forbid file extension.
+	// UploadErrorExtension - forbidden file extension.
 	UploadErrorExtension = 7
 )
 
-// tree manages uploaded files tree and temporary files.
+// Uploads tree manages uploaded files tree and temporary files.
 type Uploads struct {
 	// associated temp directory and forbidden extensions.
 	cfg *UploadsConfig
@@ -99,6 +99,7 @@ func NewUpload(f *multipart.FileHeader) *FileUpload {
 	}
 }
 
+// Open moves file content into temporary file available for PHP.
 func (f *FileUpload) Open(cfg *UploadsConfig) error {
 	if cfg.Forbids(f.Name) {
 		f.Error = UploadErrorExtension
