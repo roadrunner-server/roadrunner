@@ -95,11 +95,11 @@ http:
       # maximum jobs per worker, 0 - unlimited.
       maxJobs:  0
 
-      # for how long pool should attempt to allocate free worker (request timeout). Nanoseconds atm.
-      allocateTimeout: 1000000000
+      # for how long pool should attempt to allocate free worker (request timeout). Nanoseconds atm. (60s)
+      allocateTimeout: 60000000000
 
-      # amount of time given to worker to gracefully destruct itself. Nanoseconds atm.
-      destroyTimeout:  1000000000
+      # amount of time given to worker to gracefully destruct itself. Nanoseconds atm. (30s)
+      destroyTimeout:  30000000000
 
 # static file serving.
 static:
