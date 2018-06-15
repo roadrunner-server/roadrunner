@@ -61,15 +61,15 @@ rpc:
   enable: true
 
   # rpc connection DSN. Supported TCP and Unix sockets.
-  listen:     tcp://127.0.0.1:6001
+  listen: tcp://127.0.0.1:6001
 
 # http service configuration.
 http:
   # set to false to disable http server.
-  enable:    true
+  enable:     true
 
   # http host to listen.
-  address:   0.0.0.0:8080
+  address:    0.0.0.0:8080
 
   # max POST request size, including file uploads in MB.
   maxRequest: 200
