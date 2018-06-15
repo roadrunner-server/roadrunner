@@ -113,6 +113,8 @@ static:
   forbid: [".php", ".htaccess"]
 ```
 
+> You can use json or any config type supported by `spf13/viper`.
+
 Where `psr-worker.php`:
 
 ```php
