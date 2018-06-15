@@ -161,6 +161,17 @@ To view status of all active workers in interactive mode.
 $ rr http:workers -i
 ```
 
+```
++---------+-----------+---------+---------+--------------------+
+|   PID   |  STATUS   |  EXECS  | MEMORY  |      CREATED       |
++---------+-----------+---------+---------+--------------------+
+|    9440 | ready     |   42320 | 31 MB   | 22 minutes ago     |
+|    9447 | ready     |   42329 | 31 MB   | 22 minutes ago     |
+|    9454 | ready     |   42306 | 31 MB   | 22 minutes ago     |
+|    9461 | ready     |   42316 | 31 MB   | 22 minutes ago     |
++---------+-----------+---------+---------+--------------------+
+```
+
 Standalone Usage:
 --------
 You can also use RoadRunner as library in order to drive your application without any additional protocol at top of it.
