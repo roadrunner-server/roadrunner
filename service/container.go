@@ -125,7 +125,6 @@ func (c *container) Serve() error {
 		numServing int
 		done       = make(chan interface{}, len(c.services))
 	)
-	defer close(done)
 
 	for _, e := range c.services {
 		if e.hasStatus(StatusConfigured) {
@@ -142,6 +141,8 @@ func (c *container) Serve() error {
 			if err := e.svc.Serve(); err != nil {
 				c.log.Errorf("[%s]: %s", e.name, err)
 				done <- errors.Wrap(err, fmt.Sprintf("[%s]", e.name))
+			} else {
+				done <- nil
 			}
 		}(e)
 	}
