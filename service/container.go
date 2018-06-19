@@ -141,8 +141,6 @@ func (c *container) Serve() error {
 			if err := e.svc.Serve(); err != nil {
 				c.log.Errorf("[%s]: %s", e.name, err)
 				done <- errors.Wrap(err, fmt.Sprintf("[%s]", e.name))
-			} else {
-				done <- nil
 			}
 		}(e)
 	}
