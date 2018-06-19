@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v1.0.2 (20.06.2018)
+v1.0.2 (19.06.2018)
 -------
 - more validations for user configs
 
