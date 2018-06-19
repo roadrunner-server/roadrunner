@@ -64,6 +64,25 @@ func Test_Config_NoWorkers(t *testing.T) {
 	assert.Error(t, cfg.Valid())
 }
 
+
+func Test_Config_NoPool(t *testing.T) {
+	cfg := &Config{
+		Enable:     true,
+		Address:    ":8080",
+		MaxRequest: 1024,
+		Uploads: &UploadsConfig{
+			Dir:    os.TempDir(),
+			Forbid: []string{".go"},
+		},
+		Workers: &roadrunner.ServerConfig{
+			Command: "php php-src/tests/client.php echo pipes",
+			Relay:   "pipes",
+		},
+	}
+
+	assert.Error(t, cfg.Valid())
+}
+
 func Test_Config_InvalidAddress(t *testing.T) {
 	cfg := &Config{
 		Enable:     true,

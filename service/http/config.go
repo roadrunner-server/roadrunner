@@ -34,6 +34,10 @@ func (cfg *Config) Valid() error {
 		return errors.New("mailformed workers config")
 	}
 
+	if cfg.Workers.Pool == nil {
+		return errors.New("mailformed workers config (pool config is missing)")
+	}
+
 	if !strings.Contains(cfg.Address, ":") {
 		return errors.New("mailformed server address")
 	}
