@@ -141,12 +141,19 @@ func (c *container) Serve() error {
 			if err := e.svc.Serve(); err != nil {
 				c.log.Errorf("[%s]: %s", e.name, err)
 				done <- errors.Wrap(err, fmt.Sprintf("[%s]", e.name))
+			} else {
+				done <- nil
 			}
 		}(e)
 	}
 
 	for i := 0; i < numServing; i++ {
 		result := <-done
+
+		if result == nil {
+			// no errors
+			continue
+		}
 
 		// found an error in one of the services, stopping the rest of running services.
 		if err := result.(error); err != nil {
