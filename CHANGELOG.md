@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+v1.0.2 (20.06.2018)
+-------
+- more validations for user configs
+
+v1.0.1 (15.06.2018)
+-------
+- Makefile added
+
 v1.0.0 (14.06.2018)
 ------
 - higher performance
