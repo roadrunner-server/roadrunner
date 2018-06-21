@@ -118,7 +118,7 @@ static:
 Where `psr-worker.php`:
 
 ```php
-$psr7 = new RoadRunner\PSR7Client(new RoadRunner\Worker($relay));
+$psr7 = new Spiral\RoadRunner\PSR7Client(new Spiral\RoadRunner\Worker($relay));
 
 while ($req = $psr7->acceptRequest()) {
     try {
