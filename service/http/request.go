@@ -132,7 +132,7 @@ func (r *Request) Payload() (p *roadrunner.Payload, err error) {
 
 // contentType returns the payload content type.
 func (r *Request) contentType() int {
-	if r.Method != "POST" && r.Method != "PUT" && r.Method != "PATCH" {
+	if r.Method != "POST" && r.Method != "PUT" && r.Method != "PATCH" && r.Method != "DELETE" {
 		return contentNone
 	}
 
