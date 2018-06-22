@@ -336,6 +336,8 @@ res, err := srv.Exec(&Payload{Body: []byte("hello")})
 use Spiral\Goridge;
 use Spiral\RoadRunner;
 
+ini_set('display_errors', 'stderr');
+
 $rr = new RoadRunner\Worker($relay);
 
 while ($body = $rr->receive($context)) {
