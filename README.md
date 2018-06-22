@@ -270,7 +270,7 @@ if r, ok := c.Get(rpc.ID); ok >= service.StatusConfigured {
 
 > RPC server must be written based on net/rpc rules: https://golang.org/pkg/net/rpc/
 
-Now, you can connect to this service from PHP:
+You can connect now to this service from PHP:
 
 ```php
 // make sure to use same port as in .rr config for RPC service
