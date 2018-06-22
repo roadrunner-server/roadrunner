@@ -227,7 +227,7 @@ type Service struct {
 	cfg  *config
 }
 
-func (s *Service) Init(cfg service.Config, reg service.Container) (enabled bool, err error) {
+func (s *Service) Init(cfg service.Config, c service.Container) (enabled bool, err error) {
 	config := &config{}
 	if err := cfg.Unmarshal(config); err != nil {
 		return false, err
