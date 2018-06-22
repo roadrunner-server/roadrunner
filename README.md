@@ -118,6 +118,8 @@ static:
 Where `psr-worker.php`:
 
 ```php
+ini_set('display_errors', 'stderr');
+
 $relay = new Spiral\Goridge\StreamRelay(STDIN, STDOUT);
 $psr7 = new Spiral\RoadRunner\PSR7Client(new Spiral\RoadRunner\Worker($relay));
 
