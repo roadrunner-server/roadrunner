@@ -257,7 +257,7 @@ Service can be added to RR bus by creating your own version of [main.go](https:/
 rr.Container.Register(service.ID, &service.Service{})
 ```
 
-Your service should work now. In addition you can create your own RPC adaptes which are available from commands and PHP using Goridge:
+Your service should work now. In addition you can create your own RPC adapters which are available via commands or from PHP using Goridge:
 
 ```golang
 // in Init() method
