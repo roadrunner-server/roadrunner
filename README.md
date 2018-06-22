@@ -220,16 +220,12 @@ Simple service might look like:
 ```golang
 package service
 
-import (
-	"github.com/spiral/roadrunner/service"
-)
+import "github.com/spiral/roadrunner/service"
 
 const ID = "service"
-
 type Service struct {
 	cfg  *config
 }
-
 
 func (s *Service) Init(cfg service.Config, reg service.Container) (enabled bool, err error) {
 	config := &config{}
