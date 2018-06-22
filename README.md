@@ -298,7 +298,7 @@ import (
 if h, ok := c.Get(rrttp.ID); ok >= service.StatusConfigured {
 		if h, ok := h.(*rrttp.Service); ok {
 			h.AddMiddleware(s.middleware)
-      h.AddListener(s.middleware)
+      			h.AddListener(s.middleware)
 		}
 	}
 ```
