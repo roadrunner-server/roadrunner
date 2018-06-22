@@ -175,7 +175,7 @@ $ rr http:workers -i
 +---------+-----------+---------+---------+--------------------+
 ```
 
-Writing services:
+Writing Services:
 --------
 RoadRunner uses service bus to organize it's internal services and their depencies, this approach is similar to PHP Container implementation. You can create your own services, event listeners, middlewares and etc.
 
