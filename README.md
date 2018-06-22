@@ -82,7 +82,7 @@ http:
   # http worker pool configuration.
   workers:
     # php worker command.
-    command:  "php psr-worker.php pipes"
+    command:  "php psr-worker.php"
 
     # connection method (pipes, tcp://:9000, unix://socket.unix).
     relay:    "pipes"
@@ -118,7 +118,8 @@ static:
 Where `psr-worker.php`:
 
 ```php
-$psr7 = new RoadRunner\PSR7Client(new RoadRunner\Worker($relay));
+$relay = new Spiral\Goridge\StreamRelay(STDIN, STDOUT);
+$psr7 = new Spiral\RoadRunner\PSR7Client(new Spiral\RoadRunner\Worker($relay));
 
 while ($req = $psr7->acceptRequest()) {
     try {
