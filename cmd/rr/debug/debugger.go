@@ -45,7 +45,6 @@ func (s *debugger) listener(event int, ctx interface{}) {
 			"<white+hb>worker.%v</reset> <yellow>killed</red>",
 			*w.Pid,
 		))
-
 	case roadrunner.EventWorkerError:
 		err := ctx.(roadrunner.WorkerError)
 		s.logger.Error(utils.Sprintf(
@@ -53,6 +52,12 @@ func (s *debugger) listener(event int, ctx interface{}) {
 			*err.Worker.Pid,
 			err.Caused,
 		))
+	}
+
+	// outputs
+	switch event {
+	case roadrunner.EventStderrOutput:
+		s.logger.Warning(string(ctx.([]byte)))
 	}
 
 	// rr server events
