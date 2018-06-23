@@ -7,6 +7,7 @@ import (
 	"github.com/spiral/roadrunner/service/rpc"
 	"net/http"
 	"sync"
+	"sync/atomic"
 )
 
 // ID contains default svc name.
@@ -20,10 +21,12 @@ type Service struct {
 	cfg  *Config
 	lsns []func(event int, ctx interface{})
 	mdws []middleware
-	mu   sync.Mutex
-	rr   *roadrunner.Server
-	srv  *Handler
-	http *http.Server
+
+	mu       sync.Mutex
+	rr       *roadrunner.Server
+	stopping int32
+	srv      *Handler
+	http     *http.Server
 }
 
 // AddMiddleware adds new net/http middleware.
@@ -120,9 +123,11 @@ func (s *Service) listener(event int, ctx interface{}) {
 	}
 
 	if event == roadrunner.EventServerFailure {
-		// attempting rr server restart
-		if err := s.rr.Start(); err != nil {
-			s.Stop()
+		if atomic.LoadInt32(&s.stopping) != 0 {
+			// attempting rr server restart
+			if err := s.rr.Start(); err != nil {
+				s.Stop()
+			}
 		}
 	}
 }
