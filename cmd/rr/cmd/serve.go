@@ -44,6 +44,7 @@ func serveHandler(cmd *cobra.Command, args []string) error {
 		Container.Serve()
 		stopSignal <- nil
 	}()
+
 	<-stopSignal
 	Container.Stop()
 

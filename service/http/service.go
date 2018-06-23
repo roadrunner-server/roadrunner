@@ -97,6 +97,11 @@ func (s *Service) Serve() error {
 
 // Stop stops the svc.
 func (s *Service) Stop() {
+	if atomic.LoadInt32(&s.stopping) != 0 {
+		// already stopping
+		return
+	}
+
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.http == nil {
