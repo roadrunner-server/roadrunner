@@ -51,7 +51,7 @@ func TestServer_Echo(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -686,7 +686,7 @@ func TestServer_Error(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -720,7 +720,7 @@ func TestServer_Error2(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -754,7 +754,7 @@ func TestServer_Error3(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -799,7 +799,7 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 	st.rr.Start()
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
