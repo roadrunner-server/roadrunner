@@ -74,7 +74,7 @@ func Test_Workers(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{
-		rpcCfg: `{"enable":true, "listen":"tcp://:5004"}`,
+		rpcCfg: `{"enable":true, "listen":"tcp://:5005"}`,
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
