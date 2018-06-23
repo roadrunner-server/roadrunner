@@ -5,6 +5,7 @@ import (
 	"net"
 	"os/exec"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -49,6 +50,10 @@ func (cfg *ServerConfig) makeFactory() (Factory, error) {
 	dsn := strings.Split(cfg.Relay, "://")
 	if len(dsn) != 2 {
 		return nil, errors.New("invalid relay DSN (pipes, tcp://:6001, unix://rr.sock)")
+	}
+
+	if dsn[0] == "unix" {
+		syscall.Unlink(dsn[1])
 	}
 
 	ln, err := net.Listen(dsn[0], dsn[1])

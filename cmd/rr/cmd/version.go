@@ -1,6 +1,8 @@
 package cmd
 
 var (
-	Version   = "1.0.0"       // Placeholder for the version
-	BuildTime = "development" // Placeholder for the build time
+	// Version - defines build version.
+	Version   = "1.0.0"
+	// BuildTime - defined build time.
+	BuildTime = "development"
 )
