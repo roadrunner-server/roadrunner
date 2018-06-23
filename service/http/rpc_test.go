@@ -110,7 +110,7 @@ func Test_RPC_Unix(t *testing.T) {
 	s2, _ := c.Get(rpc.ID)
 	rs := s2.(*rpc.Service)
 
-	go func() { assert.NoError(t, c.Serve()) }()
+	go func() { c.Serve() }()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
