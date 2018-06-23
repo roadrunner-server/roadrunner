@@ -84,11 +84,11 @@ func (p *StaticPool) Listen(l func(event int, ctx interface{})) {
 
 	p.lsn = l
 
-	p.muw.RLock()
+	p.muw.Lock()
 	for _, w := range p.workers {
 		w.err.Listen(l)
 	}
-	p.muw.RUnlock()
+	p.muw.Unlock()
 }
 
 // Config returns associated pool configuration. Immutable.
@@ -217,7 +217,7 @@ func (p *StaticPool) createWorker() (*Worker, error) {
 	if p.lsn != nil {
 		w.err.Listen(p.lsn)
 	}
-	defer p.mul.Unlock()
+	p.mul.Unlock()
 
 	p.throw(EventWorkerConstruct, w)
 
