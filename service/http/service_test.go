@@ -163,6 +163,66 @@ func Test_Service_Echo(t *testing.T) {
 	assert.Equal(t, "WORLD", string(b))
 }
 
+func Test_Service_ErrorEcho(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(ID, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
+			"enable": true,
+			"address": ":6029",
+			"maxRequest": 1024,
+			"uploads": {
+				"dir": ` + tmpDir() + `,
+				"forbid": []
+			},
+			"workers":{
+				"command": "php ../../php-src/tests/http/client.php echoerr pipes",
+				"relay": "pipes",
+				"pool": {
+					"numWorkers": 1, 
+					"allocateTimeout": 10000000,
+					"destroyTimeout": 10000000 
+				}
+			}
+	}`}))
+
+	s, st := c.Get(ID)
+	assert.NotNil(t, s)
+	assert.Equal(t, service.StatusConfigured, st)
+
+	goterr := make(chan interface{})
+	s.(*Service).AddListener(func(event int, ctx interface{}) {
+		if event == roadrunner.EventStderrOutput {
+			if string(ctx.([]byte)) == "WORLD\n" {
+				goterr <- nil
+			}
+		}
+	})
+
+	go func() { c.Serve() }()
+	time.Sleep(time.Millisecond * 100)
+	defer c.Stop()
+
+	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	<-goterr
+
+	assert.NoError(t, err)
+	assert.Equal(t, 201, r.StatusCode)
+	assert.Equal(t, "WORLD", string(b))
+}
+
 func Test_Service_Middleware(t *testing.T) {
 	logger, _ := test.NewNullLogger()
 	logger.SetLevel(logrus.DebugLevel)

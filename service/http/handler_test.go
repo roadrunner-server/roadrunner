@@ -51,13 +51,13 @@ func TestServer_Echo(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
 	time.Sleep(time.Millisecond * 10)
 
-	body, r, err := get("http://localhost:8077/?hello=world")
+	body, r, err := get("http://localhost:8177/?hello=world")
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", body)
@@ -686,13 +686,13 @@ func TestServer_Error(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
 	time.Sleep(time.Millisecond * 10)
 
-	_, r, err := get("http://localhost:8077/?hello=world")
+	_, r, err := get("http://localhost:8177/?hello=world")
 	assert.NoError(t, err)
 	assert.Equal(t, 500, r.StatusCode)
 }
@@ -720,13 +720,13 @@ func TestServer_Error2(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
 	time.Sleep(time.Millisecond * 10)
 
-	_, r, err := get("http://localhost:8077/?hello=world")
+	_, r, err := get("http://localhost:8177/?hello=world")
 	assert.NoError(t, err)
 	assert.Equal(t, 500, r.StatusCode)
 }
@@ -754,7 +754,7 @@ func TestServer_Error3(t *testing.T) {
 	assert.NoError(t, st.rr.Start())
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -799,7 +799,7 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 	st.rr.Start()
 	defer st.rr.Stop()
 
-	hs := &http.Server{Addr: ":8077", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: st}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -807,7 +807,7 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 
 	bb := "WORLD"
 	for n := 0; n < b.N; n++ {
-		r, err := http.Get("http://localhost:8077/?hello=world")
+		r, err := http.Get("http://localhost:8177/?hello=world")
 		if err != nil {
 			b.Fail()
 		}

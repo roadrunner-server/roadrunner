@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net"
 	"strings"
+	"syscall"
 )
 
 type config struct {
@@ -19,6 +20,10 @@ func (cfg *config) listener() (net.Listener, error) {
 	dsn := strings.Split(cfg.Listen, "://")
 	if len(dsn) != 2 {
 		return nil, errors.New("invalid socket DSN (tcp://:6001, unix://rpc.sock)")
+	}
+
+	if dsn[0] == "unix" {
+		syscall.Unlink(dsn[1])
 	}
 
 	return net.Listen(dsn[0], dsn[1])

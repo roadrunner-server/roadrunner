@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v1.0.2 (23.06.2018)
+-------
+- rr would provide error log from workers in realtime now
+- even better service shutdown
+- safer unix socket allocation
+- minor CS
+
 v1.0.2 (19.06.2018)
 -------
 - more validations for user configs

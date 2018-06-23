@@ -28,10 +28,10 @@ type StaticPool struct {
 	// active task executions
 	tasks sync.WaitGroup
 
-	// workers circular allocation buffer
+	// workers circular allocation buf
 	free chan *Worker
 
-	// number of workers expected to be dead in a buffer.
+	// number of workers expected to be dead in a buf.
 	numDead int64
 
 	// protects state of worker list, does not affect allocation
@@ -40,7 +40,7 @@ type StaticPool struct {
 	// all registered workers
 	workers []*Worker
 
-	// pool is being destroying
+	// pool is being destroyed
 	inDestroy int32
 
 	// lsn is optional callback to handle worker create/destruct/error events.
@@ -83,6 +83,12 @@ func (p *StaticPool) Listen(l func(event int, ctx interface{})) {
 	defer p.mul.Unlock()
 
 	p.lsn = l
+
+	p.muw.Lock()
+	for _, w := range p.workers {
+		w.err.Listen(p.lsn)
+	}
+	p.muw.Unlock()
 }
 
 // Config returns associated pool configuration. Immutable.
@@ -138,14 +144,12 @@ func (p *StaticPool) Exec(rqs *Payload) (rsp *Payload, err error) {
 // Destroy all underlying workers (but let them to complete the task).
 func (p *StaticPool) Destroy() {
 	atomic.AddInt32(&p.inDestroy, 1)
-	defer atomic.AddInt32(&p.inDestroy, -1)
 
 	p.tasks.Wait()
 
 	var wg sync.WaitGroup
 	for _, w := range p.Workers() {
 		wg.Add(1)
-		go w.Stop()
 		go func(w *Worker) {
 			defer wg.Done()
 			p.destroyWorker(w, nil)
@@ -207,6 +211,12 @@ func (p *StaticPool) createWorker() (*Worker, error) {
 		return nil, err
 	}
 
+	p.mul.Lock()
+	if p.lsn != nil {
+		w.err.Listen(p.lsn)
+	}
+	p.mul.Unlock()
+
 	p.throw(EventWorkerConstruct, w)
 
 	p.muw.Lock()
@@ -259,7 +269,7 @@ func (p *StaticPool) watchWorker(w *Worker) {
 		p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
 	}
 
-	if !p.destroying() {
+	if !p.destroyed() {
 		nw, err := p.createWorker()
 		if err == nil {
 			p.free <- nw
@@ -275,7 +285,7 @@ func (p *StaticPool) watchWorker(w *Worker) {
 	}
 }
 
-func (p *StaticPool) destroying() bool {
+func (p *StaticPool) destroyed() bool {
 	return atomic.LoadInt32(&p.inDestroy) != 0
 }
 

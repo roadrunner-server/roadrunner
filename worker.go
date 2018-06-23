@@ -1,7 +1,6 @@
 package roadrunner
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/spiral/goridge"
@@ -24,7 +23,7 @@ type Worker struct {
 	Created time.Time
 
 	// state holds information about current worker state,
-	// number of worker executions, last status change time.
+	// number of worker executions, buf status change time.
 	// publicly this object is receive-only and protected using Mutex
 	// and atomic counter.
 	state *state
@@ -60,7 +59,7 @@ func newWorker(cmd *exec.Cmd) (*Worker, error) {
 	w := &Worker{
 		Created:  time.Now(),
 		cmd:      cmd,
-		err:      &errBuffer{buffer: new(bytes.Buffer)},
+		err:      newErrBuffer(),
 		waitDone: make(chan interface{}),
 		state:    newState(StateInactive),
 	}
@@ -212,6 +211,8 @@ func (w *Worker) start() error {
 			if w.rl != nil {
 				w.rl.Close()
 			}
+
+			w.err.Close()
 		}
 	}()
 

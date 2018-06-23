@@ -60,7 +60,7 @@ func (s *Service) Serve() error {
 		for {
 			select {
 			case <-s.stop:
-				break
+				return
 			default:
 				conn, err := ln.Accept()
 				if err != nil {
