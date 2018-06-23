@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v1.0.2 (23.06.2018)
+v1.0.3 (23.06.2018)
 -------
 - rr would provide error log from workers in realtime now
 - even better service shutdown
