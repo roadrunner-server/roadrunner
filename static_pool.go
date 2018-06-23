@@ -40,7 +40,7 @@ type StaticPool struct {
 	// all registered workers
 	workers []*Worker
 
-	// pool is being destroying
+	// pool is being destroyed
 	inDestroy int32
 
 	// lsn is optional callback to handle worker create/destruct/error events.
@@ -144,7 +144,6 @@ func (p *StaticPool) Exec(rqs *Payload) (rsp *Payload, err error) {
 // Destroy all underlying workers (but let them to complete the task).
 func (p *StaticPool) Destroy() {
 	atomic.AddInt32(&p.inDestroy, 1)
-	defer atomic.AddInt32(&p.inDestroy, -1)
 
 	p.tasks.Wait()
 
@@ -270,7 +269,7 @@ func (p *StaticPool) watchWorker(w *Worker) {
 		p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
 	}
 
-	if !p.destroying() {
+	if !p.destroyed() {
 		nw, err := p.createWorker()
 		if err == nil {
 			p.free <- nw
@@ -286,7 +285,7 @@ func (p *StaticPool) watchWorker(w *Worker) {
 	}
 }
 
-func (p *StaticPool) destroying() bool {
+func (p *StaticPool) destroyed() bool {
 	return atomic.LoadInt32(&p.inDestroy) != 0
 }
 
