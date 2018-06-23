@@ -86,7 +86,7 @@ func (p *StaticPool) Listen(l func(event int, ctx interface{})) {
 
 	p.muw.Lock()
 	for _, w := range p.workers {
-		w.err.Listen(l)
+		w.err.Listen(p.lsn)
 	}
 	p.muw.Unlock()
 }

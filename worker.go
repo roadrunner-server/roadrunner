@@ -211,6 +211,8 @@ func (w *Worker) start() error {
 			if w.rl != nil {
 				w.rl.Close()
 			}
+
+			w.err.Close()
 		}
 	}()
 
