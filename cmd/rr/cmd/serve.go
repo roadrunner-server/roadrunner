@@ -36,8 +36,7 @@ func init() {
 		RunE:  serveHandler,
 	})
 
-	signal.Notify(stopSignal, syscall.SIGTERM)
-	signal.Notify(stopSignal, syscall.SIGINT)
+	signal.Notify(stopSignal, os.Interrupt, os.Kill, syscall.SIGTERM)
 }
 
 func serveHandler(cmd *cobra.Command, args []string) error {
