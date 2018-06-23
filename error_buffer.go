@@ -47,7 +47,9 @@ func (eb *errBuffer) Write(p []byte) (int, error) {
 
 	eb.buf = append(eb.buf, p...)
 	for msg := eb.fetchMsg(); msg != nil; msg = eb.fetchMsg() {
-		eb.lsn(EventStderrOutput, msg)
+		if eb.lsn != nil {
+			eb.lsn(EventStderrOutput, msg)
+		}
 	}
 
 	return len(p), nil
