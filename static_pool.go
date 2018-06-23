@@ -28,10 +28,10 @@ type StaticPool struct {
 	// active task executions
 	tasks sync.WaitGroup
 
-	// workers circular allocation buffer
+	// workers circular allocation buf
 	free chan *Worker
 
-	// number of workers expected to be dead in a buffer.
+	// number of workers expected to be dead in a buf.
 	numDead int64
 
 	// protects state of worker list, does not affect allocation
@@ -151,7 +151,6 @@ func (p *StaticPool) Destroy() {
 	var wg sync.WaitGroup
 	for _, w := range p.Workers() {
 		wg.Add(1)
-		go w.Stop()
 		go func(w *Worker) {
 			defer wg.Done()
 			p.destroyWorker(w, nil)

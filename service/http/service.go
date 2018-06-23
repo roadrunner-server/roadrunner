@@ -7,6 +7,7 @@ import (
 	"github.com/spiral/roadrunner/service/rpc"
 	"net/http"
 	"sync"
+	"sync/atomic"
 )
 
 // ID contains default svc name.
@@ -21,10 +22,11 @@ type Service struct {
 	lsns []func(event int, ctx interface{})
 	mdws []middleware
 
-	mu   sync.Mutex
-	rr   *roadrunner.Server
-	srv  *Handler
-	http *http.Server
+	mu         sync.Mutex
+	rr         *roadrunner.Server
+	inStopping int32
+	srv        *Handler
+	http       *http.Server
 }
 
 // AddMiddleware adds new net/http middleware.
@@ -95,9 +97,12 @@ func (s *Service) Serve() error {
 
 // Stop stops the svc.
 func (s *Service) Stop() {
+	atomic.AddInt32(&s.inStopping, 1)
+	defer atomic.AddInt32(&s.inStopping, -1)
+
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if s.http == nil {
+	if s.http == nil || s.stopping() {
 		return
 	}
 
@@ -115,12 +120,16 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.srv.ServeHTTP(w, r)
 }
 
+func (s *Service) stopping() bool {
+	return atomic.LoadInt32(&s.inStopping) != 0
+}
+
 func (s *Service) listener(event int, ctx interface{}) {
 	for _, l := range s.lsns {
 		l(event, ctx)
 	}
 
-	if event == roadrunner.EventServerFailure {
+	if event == roadrunner.EventServerFailure && !s.stopping() {
 		// attempting rr server restart
 		if err := s.rr.Start(); err != nil {
 			s.Stop()

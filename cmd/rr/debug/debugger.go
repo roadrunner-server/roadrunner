@@ -5,6 +5,7 @@ import (
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"github.com/spiral/roadrunner/service/http"
+	"strings"
 )
 
 // Listener creates new debug listener.
@@ -57,7 +58,7 @@ func (s *debugger) listener(event int, ctx interface{}) {
 	// outputs
 	switch event {
 	case roadrunner.EventStderrOutput:
-		s.logger.Warning(string(ctx.([]byte)))
+		s.logger.Warning(strings.Trim(string(ctx.([]byte)), "\r\n"))
 	}
 
 	// rr server events
@@ -73,6 +74,8 @@ func (s *debugger) listener(event int, ctx interface{}) {
 	case roadrunner.EventPoolError:
 		s.logger.Error(utils.Sprintf("<red>%s</reset>", ctx))
 	}
+
+	//s.logger.Warning(event, ctx)
 }
 
 func statusColor(status int) string {
