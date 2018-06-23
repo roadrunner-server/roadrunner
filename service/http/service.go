@@ -105,7 +105,6 @@ func (s *Service) Stop() {
 
 	atomic.AddInt32(&s.inStopping, 1)
 	defer atomic.AddInt32(&s.inStopping, -1)
-
 	s.http.Shutdown(context.Background())
 }
 

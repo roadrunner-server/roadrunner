@@ -64,6 +64,7 @@ func (s *Server) Start() (err error) {
 	defer s.mu.Unlock()
 
 	if s.factory, err = s.cfg.makeFactory(); err != nil {
+
 		return err
 	}
 

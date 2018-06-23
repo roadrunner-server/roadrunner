@@ -40,7 +40,10 @@ func init() {
 }
 
 func serveHandler(cmd *cobra.Command, args []string) error {
-	go Container.Serve()
+	go func() {
+		Container.Serve()
+		stopSignal <- nil
+	}()
 	<-stopSignal
 	Container.Stop()
 
