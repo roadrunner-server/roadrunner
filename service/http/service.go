@@ -97,14 +97,14 @@ func (s *Service) Serve() error {
 
 // Stop stops the svc.
 func (s *Service) Stop() {
-	atomic.AddInt32(&s.inStopping, 1)
-	defer atomic.AddInt32(&s.inStopping, -1)
-
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if s.http == nil || s.stopping() {
+	if s.http == nil {
 		return
 	}
+
+	atomic.AddInt32(&s.inStopping, 1)
+	defer atomic.AddInt32(&s.inStopping, -1)
 
 	s.http.Shutdown(context.Background())
 }
