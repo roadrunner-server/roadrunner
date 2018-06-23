@@ -6,5 +6,5 @@ var (
 	// Version - defines build version.
 	Version = "development"
 	// BuildTime - defined build time.
-	BuildTime = time.Now()
+	BuildTime = time.Now().Format(time.RFC1123)
 )
