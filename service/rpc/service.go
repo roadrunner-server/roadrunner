@@ -64,7 +64,6 @@ func (s *Service) Serve() error {
 			default:
 				conn, err := ln.Accept()
 				if err != nil {
-
 					continue
 				}
 
