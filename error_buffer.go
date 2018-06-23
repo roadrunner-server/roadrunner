@@ -5,10 +5,22 @@ import (
 	"sync"
 )
 
+// EventStderrOutput - is triggered when worker sends data into stderr. The context is output data in []bytes form.
+const EventStderrOutput = 1900
+
 // thread safe errBuffer
 type errBuffer struct {
 	mu     sync.Mutex
 	buffer *bytes.Buffer
+	lsn    func(event int, ctx interface{})
+}
+
+// Listen attaches error stream even listener.
+func (b *errBuffer) Listen(l func(event int, ctx interface{})) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	b.lsn = l
 }
 
 // Len returns the number of bytes of the unread portion of the errBuffer;
@@ -26,6 +38,10 @@ func (b *errBuffer) Len() int {
 func (b *errBuffer) Write(p []byte) (n int, err error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
+
+	if b.lsn != nil {
+		b.lsn(EventStderrOutput, p)
+	}
 
 	return b.buffer.Write(p)
 }
