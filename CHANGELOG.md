@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.0.4 (25.06.2018)
+-------
+- changes in server shutdown sequence
+
 v1.0.3 (23.06.2018)
 -------
 - rr would provide error log from workers in realtime now
