@@ -33,20 +33,17 @@ func init() {
 	CLI.AddCommand(&cobra.Command{
 		Use:   "serve",
 		Short: "Serve RoadRunner service(s)",
-		RunE:  serveHandler,
+		Run:   serveHandler,
 	})
 
 	signal.Notify(stopSignal, os.Interrupt, os.Kill, syscall.SIGTERM)
 }
 
-func serveHandler(cmd *cobra.Command, args []string) error {
+func serveHandler(cmd *cobra.Command, args []string) {
 	go func() {
-		Container.Serve()
-		stopSignal <- nil
+		<-stopSignal
+		Container.Stop()
 	}()
 
-	<-stopSignal
-	Container.Stop()
-
-	return nil
+	Container.Serve()
 }
