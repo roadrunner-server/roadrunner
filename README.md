@@ -8,7 +8,7 @@ RoadRunner
 [![Codecov](https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/roadrunner/)
 
 RoadRunner is an open source (MIT licensed), high-performance PSR-7 PHP application server, load balancer and process manager.
-It supports service model with ability to extend it's functionality on a project basis.
+It supports running as a service with the ability to extend its functionality on a per-project basis.
 
 Features:
 --------
@@ -24,7 +24,7 @@ Features:
 - control over max jobs per worker
 - protocol, worker and job level error management (including PHP errors)
 - memory leak failswitch
-- very fast (~250k rpc calls per second on Ryzen 1700X over 16 threads)
+- very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
 - works on Windows
 
 Getting Started:
@@ -52,7 +52,7 @@ $ make test
 Using RoadRunner:
 --------
 
-In order to use RoadRunner you only have to place `.rr.yaml` file in a root of your php project:
+In order to use RoadRunner you only have to place a `.rr.yaml` config file in the root of your PHP project:
 
 ```yaml
 # rpc bus allows php application and external clients to talk to rr services.
@@ -152,7 +152,7 @@ You can also run RR in debug mode to view all incoming requests.
 $ rr serve -d -v
 ```
 
-You can force RR service to reload it's http workers.
+You can force RR service to reload its http workers.
 
 ```
 $ rr http:reset
@@ -179,9 +179,9 @@ $ rr http:workers -i
 
 Writing Services:
 --------
-RoadRunner uses service bus to organize it's internal services and their depencies, this approach is similar to PHP Container implementation. You can create your own services, event listeners, middlewares and etc.
+RoadRunner uses a service bus to organize its internal services and their dependencies, this approach is similar to the PHP Container implementation. You can create your own services, event listeners, middlewares, etc.
 
-RoadRunner would not start service without a proper config section at the moment, simply add new section to .rr file.
+RoadRunner will not start as a service without a proper config section at the moment. To do this, simply add the following section section to your `.rr.yaml` file.
 
 ```yaml
 service:
@@ -200,7 +200,7 @@ type config struct {
 }
 ```
 
-To create the service implement interface:
+To create the service, implement this interface:
 
 ```golang
 // Service provides high level functionality for road runner modules.
@@ -217,7 +217,7 @@ type Service interface {
 }
 ```
 
-Simple service might look like:
+A simple service might look like this:
 
 ```golang
 package service
@@ -259,7 +259,7 @@ Service can be added to RR bus by creating your own version of [main.go](https:/
 rr.Container.Register(service.ID, &service.Service{})
 ```
 
-Your service should work now. In addition you can create your own RPC adapters which are available via commands or from PHP using Goridge:
+Your service should now work. In addition, you can create your own RPC adapters which are available via commands or from PHP using Goridge:
 
 ```golang
 // in Init() method
@@ -272,7 +272,7 @@ if r, ok := c.Get(rpc.ID); ok >= service.StatusConfigured {
 
 > RPC server must be written based on net/rpc rules: https://golang.org/pkg/net/rpc/
 
-You can connect now to this service from PHP:
+You can now connect to this service from PHP:
 
 ```php
 // make sure to use same port as in .rr config for RPC service
@@ -281,14 +281,14 @@ $rpc = new Spiral\Goridge\RPC(new Spiral\Goridge\SocketRelay('localhost', 6001))
 print_r($rpc->call('service.Method', $ars));
 ```
 
-HTTP service provides it's own methods as well:
+HTTP service provides its own methods as well:
 
 ```php
 print_r($rpc->call('http.Workers', true));
 //print_r($rpc->call('http.Reset', true));
 ```
 
-You can register http middleware or event listener using such approach:
+You can register http middleware or event listener using this approach:
 
 ```golang
 import (
@@ -307,7 +307,7 @@ if h, ok := c.Get(rrttp.ID); ok >= service.StatusConfigured {
 
 Standalone Usage:
 --------
-You can also use RoadRunner as library in order to drive your application without any additional protocol at top of it.
+You can also use RoadRunner as a library in order to drive your application without any additional protocol on top of it.
 
 ```go
 srv := NewServer(
