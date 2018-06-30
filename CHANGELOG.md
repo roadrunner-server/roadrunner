@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.0.5 (30.06.2018)
+-------
+- docker compatible logging (forcing TTY output for logrus)
+
 v1.0.4 (25.06.2018)
 -------
 - changes in server shutdown sequence

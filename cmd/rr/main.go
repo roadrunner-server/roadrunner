@@ -34,12 +34,15 @@ import (
 	"github.com/spiral/roadrunner/cmd/rr/debug"
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
 
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 var debugMode bool
 
 func main() {
+	// forcing text based logging
+	rr.Logger.Formatter = &logrus.TextFormatter{ForceColors: true}
 
 	// provides ability to make local connection to services
 	rr.Container.Register(rpc.ID, &rpc.Service{})
