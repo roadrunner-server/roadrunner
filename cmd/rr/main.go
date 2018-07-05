@@ -36,6 +36,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/fatih/color"
 )
 
 var debugMode bool
@@ -43,6 +44,7 @@ var debugMode bool
 func main() {
 	// forcing text based logging
 	rr.Logger.Formatter = &logrus.TextFormatter{ForceColors: true}
+	color.NoColor = true
 
 	// provides ability to make local connection to services
 	rr.Container.Register(rpc.ID, &rpc.Service{})
