@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"net/http"
+	"github.com/go-errors/errors"
 )
 
 const contextKey = "psr:attributes"
@@ -18,7 +19,7 @@ func InitAttributes(r *http.Request) *http.Request {
 func AllAttributes(r *http.Request) map[string]interface{} {
 	v := r.Context().Value(contextKey)
 	if v == nil {
-		return nil
+		return attrs{}
 	}
 
 	return v.(attrs)
@@ -29,7 +30,7 @@ func AllAttributes(r *http.Request) map[string]interface{} {
 func GetAttribute(r *http.Request, key string) interface{} {
 	v := r.Context().Value(contextKey)
 	if v == nil {
-		return ""
+		return nil
 	}
 
 	return v.(attrs).Get(key)
@@ -37,9 +38,14 @@ func GetAttribute(r *http.Request, key string) interface{} {
 
 // Set sets the key to value. It replaces any existing
 // values. Context specific.
-func SetAttribute(r *http.Request, key string, value interface{}) {
+func SetAttribute(r *http.Request, key string, value interface{}) error {
 	v := r.Context().Value(contextKey)
+	if v == nil {
+		return errors.New("unable to find psr:attributes context value")
+	}
+
 	v.(attrs).Set(key, value)
+	return nil
 }
 
 // Get gets the value associated with the given key.
