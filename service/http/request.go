@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"github.com/spiral/roadrunner/service/http/attributes"
 )
 
 const (
@@ -60,7 +61,7 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 		Headers:    r.Header,
 		Cookies:    make(map[string]string),
 		RawQuery:   r.URL.RawQuery,
-		Attributes: AllAttributes(r),
+		Attributes: attributes.All(r),
 	}
 
 	for _, c := range r.Cookies() {

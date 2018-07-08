@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"sync"
 	"sync/atomic"
+	"github.com/spiral/roadrunner/service/http/attributes"
 )
 
 // ID contains default svc name.
@@ -113,16 +114,17 @@ func (s *Service) Stop() {
 
 // middleware handles connection using set of mdws and rr PSR-7 server.
 func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	r = InitAttributes(r)
+	r = attributes.Init(r)
 
+	// chaining middlewares
 	f := s.srv.ServeHTTP
 	for _, m := range s.mdws {
 		f = m(f)
 	}
-
 	f(w, r)
 }
 
+// listener handles service, server and pool events.
 func (s *Service) listener(event int, ctx interface{}) {
 	for _, l := range s.lsns {
 		l(event, ctx)

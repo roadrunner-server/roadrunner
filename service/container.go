@@ -10,7 +10,7 @@ import (
 // Config provides ability to slice configuration sections and unmarshal configuration data into
 // given structure.
 type Config interface {
-	// Get nested config section (sub-map), returns nil if section not found.
+	// get nested config section (sub-map), returns nil if section not found.
 	Get(service string) Config
 
 	// Unmarshal unmarshal config data into given struct.
@@ -28,7 +28,7 @@ type Container interface {
 	// Check if svc has been registered.
 	Has(service string) bool
 
-	// Get returns svc instance by it's name or nil if svc not found. Method returns current service status
+	// get returns svc instance by it's name or nil if svc not found. Method returns current service status
 	// as second value.
 	Get(service string) (svc Service, status int)
 
@@ -81,7 +81,7 @@ func (c *container) Has(target string) bool {
 	return false
 }
 
-// Get returns svc instance by it's name or nil if svc not found.
+// get returns svc instance by it's name or nil if svc not found.
 func (c *container) Get(target string) (svc Service, status int) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
