@@ -113,6 +113,7 @@ func (s *Service) Stop() {
 
 // middleware handles connection using set of mdws and rr PSR-7 server.
 func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	r = InitAttributes(r)
 	for _, m := range s.mdws {
 		if m(w, r) {
 			return

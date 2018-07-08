@@ -44,6 +44,9 @@ type Request struct {
 	// Uploads contains list of uploaded files, their names, sized and associations with temporary files.
 	Uploads *Uploads `json:"uploads"`
 
+	// Attributes can be set by chained middleware to safely pass value from Golang to PHP. See: GetAttribute, SetAttribute functions.
+	Attributes map[string]interface{} `json:"attributes"`
+
 	// request body can be parsedData or []byte
 	body interface{}
 }
@@ -51,12 +54,13 @@ type Request struct {
 // NewRequest creates new PSR7 compatible request using net/http request.
 func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 	req = &Request{
-		Protocol: r.Proto,
-		Method:   r.Method,
-		URI:      uri(r),
-		Headers:  r.Header,
-		Cookies:  make(map[string]string),
-		RawQuery: r.URL.RawQuery,
+		Protocol:   r.Proto,
+		Method:     r.Method,
+		URI:        uri(r),
+		Headers:    r.Header,
+		Cookies:    make(map[string]string),
+		RawQuery:   r.URL.RawQuery,
+		Attributes: AllAttributes(r),
 	}
 
 	for _, c := range r.Cookies() {
