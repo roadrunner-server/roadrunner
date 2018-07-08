@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"v/github.com/sirupsen/logrus@v1.0.5/hooks/test"
+	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/sirupsen/logrus"
 )
 
