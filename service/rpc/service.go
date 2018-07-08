@@ -20,7 +20,7 @@ type Service struct {
 }
 
 // Init rpc service. Must return true if service is enabled.
-func (s *Service) Init(cfg *Config) (enabled bool, err error) {
+func (s *Service) Init(cfg *Config) (bool, error) {
 	if !cfg.Enable {
 		return false, nil
 	}

@@ -21,7 +21,7 @@ type Service struct {
 
 // Init must return configure service and return true if service hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Service) Init(cfg *Config, r *rrttp.Service) (enabled bool, err error) {
+func (s *Service) Init(cfg *Config, r *rrttp.Service) (bool, error) {
 	if !cfg.Enable || r == nil {
 		return false, nil
 	}
