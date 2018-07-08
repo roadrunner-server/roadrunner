@@ -9,7 +9,6 @@ namespace Spiral\RoadRunner;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Spiral\RoadRunner\Worker;
 use Zend\Diactoros;
 
 /**

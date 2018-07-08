@@ -13,8 +13,8 @@ import (
 // ID contains default svc name.
 const ID = "http"
 
-// must return true if request/response pair is handled within the middleware.
-type middleware func(w http.ResponseWriter, r *http.Request) bool
+// http middleware type.
+type middleware func(f http.HandlerFunc) http.HandlerFunc
 
 // Service manages rr, http servers.
 type Service struct {
@@ -114,13 +114,13 @@ func (s *Service) Stop() {
 // middleware handles connection using set of mdws and rr PSR-7 server.
 func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	r = InitAttributes(r)
+
+	f := s.srv.ServeHTTP
 	for _, m := range s.mdws {
-		if m(w, r) {
-			return
-		}
+		f = m(f)
 	}
 
-	s.srv.ServeHTTP(w, r)
+	f(w, r)
 }
 
 func (s *Service) listener(event int, ctx interface{}) {
