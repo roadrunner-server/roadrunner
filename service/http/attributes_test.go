@@ -3,7 +3,7 @@ package http
 import (
 	"testing"
 	"net/http"
-	"github.com/magiconair/properties/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAllAttributes(t *testing.T) {
