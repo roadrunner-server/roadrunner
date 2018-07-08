@@ -144,7 +144,7 @@ func TestContainer_Configure(t *testing.T) {
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
-	assert.Equal(t, StatusConfigured, st)
+	assert.Equal(t, StatusOK, st)
 }
 
 func TestContainer_ConfigureNull(t *testing.T) {
@@ -176,7 +176,7 @@ func TestContainer_ConfigureDisabled(t *testing.T) {
 	assert.Equal(t, 1, len(hook.Entries))
 
 	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 2, len(hook.Entries))
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)

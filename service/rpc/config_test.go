@@ -6,10 +6,12 @@ import (
 	"testing"
 )
 
-func TestConfig_Listener(t *testing.T) {
-	cfg := &config{Listen: "tcp://:18001"}
+// todo: test hydrate
 
-	ln, err := cfg.listener()
+func TestConfig_Listener(t *testing.T) {
+	cfg := &Config{Listen: "tcp://:18001"}
+
+	ln, err := cfg.Listener()
 	assert.NoError(t, err)
 	assert.NotNil(t, ln)
 	defer ln.Close()
@@ -23,9 +25,9 @@ func TestConfig_ListenerUnix(t *testing.T) {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
-	cfg := &config{Listen: "unix://rpc.sock"}
+	cfg := &Config{Listen: "unix://rpc.sock"}
 
-	ln, err := cfg.listener()
+	ln, err := cfg.Listener()
 	assert.NoError(t, err)
 	assert.NotNil(t, ln)
 	defer ln.Close()
@@ -39,28 +41,28 @@ func Test_Config_Error(t *testing.T) {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
-	cfg := &config{Listen: "uni:unix.sock"}
-	ln, err := cfg.listener()
+	cfg := &Config{Listen: "uni:unix.sock"}
+	ln, err := cfg.Listener()
 	assert.Nil(t, ln)
 	assert.Error(t, err)
 	assert.Equal(t, "invalid socket DSN (tcp://:6001, unix://rpc.sock)", err.Error())
 }
 
 func Test_Config_ErrorMethod(t *testing.T) {
-	cfg := &config{Listen: "xinu://unix.sock"}
+	cfg := &Config{Listen: "xinu://unix.sock"}
 
-	ln, err := cfg.listener()
+	ln, err := cfg.Listener()
 	assert.Nil(t, ln)
 	assert.Error(t, err)
 }
 
 func TestConfig_Dialer(t *testing.T) {
-	cfg := &config{Listen: "tcp://:18001"}
+	cfg := &Config{Listen: "tcp://:18001"}
 
-	ln, err := cfg.listener()
+	ln, err := cfg.Listener()
 	defer ln.Close()
 
-	conn, err := cfg.dialer()
+	conn, err := cfg.Dialer()
 	assert.NoError(t, err)
 	assert.NotNil(t, conn)
 	defer conn.Close()
@@ -74,12 +76,12 @@ func TestConfig_DialerUnix(t *testing.T) {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
-	cfg := &config{Listen: "unix://rpc.sock"}
+	cfg := &Config{Listen: "unix://rpc.sock"}
 
-	ln, err := cfg.listener()
+	ln, err := cfg.Listener()
 	defer ln.Close()
 
-	conn, err := cfg.dialer()
+	conn, err := cfg.Dialer()
 	assert.NoError(t, err)
 	assert.NotNil(t, conn)
 	defer conn.Close()
@@ -93,17 +95,17 @@ func Test_Config_DialerError(t *testing.T) {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
-	cfg := &config{Listen: "uni:unix.sock"}
-	ln, err := cfg.dialer()
+	cfg := &Config{Listen: "uni:unix.sock"}
+	ln, err := cfg.Dialer()
 	assert.Nil(t, ln)
 	assert.Error(t, err)
 	assert.Equal(t, "invalid socket DSN (tcp://:6001, unix://rpc.sock)", err.Error())
 }
 
 func Test_Config_DialerErrorMethod(t *testing.T) {
-	cfg := &config{Listen: "xinu://unix.sock"}
+	cfg := &Config{Listen: "xinu://unix.sock"}
 
-	ln, err := cfg.dialer()
+	ln, err := cfg.Dialer()
 	assert.Nil(t, ln)
 	assert.Error(t, err)
 }

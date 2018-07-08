@@ -3,7 +3,6 @@ package http
 import (
 	"context"
 	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/rpc"
 	"net/http"
 	"sync"
@@ -42,28 +41,14 @@ func (s *Service) AddListener(l func(event int, ctx interface{})) {
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Service) Init(cfg service.Config, c service.Container) (bool, error) {
-	config := &Config{}
-
-	if err := cfg.Unmarshal(config); err != nil {
-		return false, err
-	}
-
-	if !config.Enable {
+func (s *Service) Init(cfg *Config, r *rpc.Service) (bool, error) {
+	if !cfg.Enable {
 		return false, nil
 	}
 
-	if err := config.Valid(); err != nil {
-		return false, err
-	}
-
-	s.cfg = config
-
-	// registering http RPC interface
-	if r, ok := c.Get(rpc.ID); ok >= service.StatusConfigured {
-		if h, ok := r.(*rpc.Service); ok {
-			h.Register(ID, &rpcServer{s})
-		}
+	s.cfg = cfg
+	if r != nil {
+		r.Register(ID, &rpcServer{s})
 	}
 
 	return true, nil

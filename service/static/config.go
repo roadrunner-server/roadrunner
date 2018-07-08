@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"github.com/spiral/roadrunner/service"
 )
 
 // Config describes file location and controls access to them.
@@ -20,22 +21,18 @@ type Config struct {
 	Forbid []string
 }
 
-// Forbids must return true if file extension is not allowed for the upload.
-func (cfg *Config) Forbids(filename string) bool {
-	ext := strings.ToLower(path.Ext(filename))
-
-	for _, v := range cfg.Forbid {
-		if ext == v {
-			return true
-		}
+// Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
+func (c *Config) Hydrate(cfg service.Config) error {
+	if err := cfg.Unmarshal(c); err != nil {
+		return err
 	}
 
-	return false
+	return c.Valid()
 }
 
-// Valid validates existence of directory.
-func (cfg *Config) Valid() error {
-	st, err := os.Stat(cfg.Dir)
+// Valid returns nil if config is valid.
+func (c *Config) Valid() error {
+	st, err := os.Stat(c.Dir)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return errors.New("root directory does not exists")
@@ -49,4 +46,17 @@ func (cfg *Config) Valid() error {
 	}
 
 	return nil
+}
+
+// Forbids must return true if file extension is not allowed for the upload.
+func (c *Config) Forbids(filename string) bool {
+	ext := strings.ToLower(path.Ext(filename))
+
+	for _, v := range c.Forbid {
+		if ext == v {
+			return true
+		}
+	}
+
+	return false
 }

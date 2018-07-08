@@ -3,7 +3,6 @@ package rpc
 import (
 	"errors"
 	"github.com/spiral/goridge"
-	"github.com/spiral/roadrunner/service"
 	"net/rpc"
 	"sync"
 )
@@ -13,27 +12,20 @@ const ID = "rpc"
 
 // Service is RPC service.
 type Service struct {
-	cfg  *config
-	stop chan interface{}
-	rpc  *rpc.Server
-
+	cfg     *Config
+	stop    chan interface{}
+	rpc     *rpc.Server
 	mu      sync.Mutex
 	serving bool
 }
 
-// Init must return configure service and return true if service hasStatus enabled. Must return error in case of
-// misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Service) Init(cfg service.Config, reg service.Container) (enabled bool, err error) {
-	config := &config{}
-	if err := cfg.Unmarshal(config); err != nil {
-		return false, err
-	}
-
-	if !config.Enable {
+// Init rpc service. Must return true if service is enabled.
+func (s *Service) Init(cfg *Config) (enabled bool, err error) {
+	if !cfg.Enable {
 		return false, nil
 	}
 
-	s.cfg = config
+	s.cfg = cfg
 	s.rpc = rpc.NewServer()
 
 	return true, nil
@@ -50,7 +42,7 @@ func (s *Service) Serve() error {
 	s.stop = make(chan interface{})
 	s.mu.Unlock()
 
-	ln, err := s.cfg.listener()
+	ln, err := s.cfg.Listener()
 	if err != nil {
 		return err
 	}
@@ -99,12 +91,12 @@ func (s *Service) Stop() {
 //	- one return value, of type error
 // It returns an error if the receiver is not an exported type or has
 // no suitable methods. It also logs the error using package log.
-func (s *Service) Register(name string, rcvr interface{}) error {
+func (s *Service) Register(name string, svc interface{}) error {
 	if s.rpc == nil {
 		return errors.New("RPC service is not configured")
 	}
 
-	return s.rpc.RegisterName(name, rcvr)
+	return s.rpc.RegisterName(name, svc)
 }
 
 // Client creates new RPC client.
@@ -113,7 +105,7 @@ func (s *Service) Client() (*rpc.Client, error) {
 		return nil, errors.New("RPC service is not configured")
 	}
 
-	conn, err := s.cfg.dialer()
+	conn, err := s.cfg.Dialer()
 	if err != nil {
 		return nil, err
 	}

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/spiral/roadrunner"
 	"strings"
+	"github.com/spiral/roadrunner/service"
 )
 
 // Config configures RoadRunner HTTP server.
@@ -24,25 +25,34 @@ type Config struct {
 	Workers *roadrunner.ServerConfig
 }
 
-// Valid validates the configuration.
-func (cfg *Config) Valid() error {
-	if cfg.Uploads == nil {
-		return errors.New("mailformed uploads config")
-	}
-
-	if cfg.Workers == nil {
-		return errors.New("mailformed workers config")
-	}
-
-	if cfg.Workers.Pool == nil {
-		return errors.New("mailformed workers config (pool config is missing)")
-	}
-
-	if err := cfg.Workers.Pool.Valid(); err != nil {
+// Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
+func (c *Config) Hydrate(cfg service.Config) error {
+	if err := cfg.Unmarshal(c); err != nil {
 		return err
 	}
 
-	if !strings.Contains(cfg.Address, ":") {
+	return c.Valid()
+}
+
+// Valid validates the configuration.
+func (c *Config) Valid() error {
+	if c.Uploads == nil {
+		return errors.New("mailformed uploads config")
+	}
+
+	if c.Workers == nil {
+		return errors.New("mailformed workers config")
+	}
+
+	if c.Workers.Pool == nil {
+		return errors.New("mailformed workers config (pool config is missing)")
+	}
+
+	if err := c.Workers.Pool.Valid(); err != nil {
+		return err
+	}
+
+	if !strings.Contains(c.Address, ":") {
 		return errors.New("mailformed server address")
 	}
 

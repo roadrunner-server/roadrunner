@@ -74,7 +74,7 @@ func workersHandler(cmd *cobra.Command, args []string) (err error) {
 	}()
 
 	svc, st := rr.Container.Get(rrpc.ID)
-	if st < service.StatusConfigured {
+	if st < service.StatusOK {
 		return errors.New("RPC service is not configured")
 	}
 

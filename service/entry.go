@@ -1,19 +1,8 @@
 package service
 
-import "sync"
-
-// Service provides high level functionality for road runner modules.
-type Service interface {
-	// Init must return configure service and return true if service hasStatus enabled. Must return error in case of
-	// misconfiguration. Services must not be used without proper configuration pushed first.
-	Init(cfg Config, c Container) (enabled bool, err error)
-
-	// Serve serves.
-	Serve() error
-
-	// Stop stops the service.
-	Stop()
-}
+import (
+	"sync"
+)
 
 const (
 	// StatusUndefined when service bus can not find the service.
@@ -22,8 +11,8 @@ const (
 	// StatusRegistered hasStatus setStatus when service has been registered in container.
 	StatusRegistered
 
-	// StatusConfigured hasStatus setStatus when service has been properly configured.
-	StatusConfigured
+	// StatusOK hasStatus setStatus when service has been properly configured.
+	StatusOK
 
 	// StatusServing hasStatus setStatus when service hasStatus currently done.
 	StatusServing
@@ -35,7 +24,7 @@ const (
 // entry creates association between service instance and given name.
 type entry struct {
 	name   string
-	svc    Service
+	svc    interface{}
 	mu     sync.Mutex
 	status int
 }
@@ -58,4 +47,10 @@ func (e *entry) setStatus(status int) {
 // hasStatus checks if entry in specific status
 func (e *entry) hasStatus(status int) bool {
 	return e.getStatus() == status
+}
+
+// canServe returns true is service can serve.
+func (e *entry) canServe() bool {
+	_, ok := e.svc.(Service)
+	return ok
 }
