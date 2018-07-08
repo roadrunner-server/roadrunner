@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 	"net/http"
-	"github.com/go-errors/errors"
+	"errors"
 )
 
 const contextKey = "psr:attributes"
