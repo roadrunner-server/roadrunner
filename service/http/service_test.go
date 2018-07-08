@@ -253,14 +253,15 @@ func Test_Service_Middleware(t *testing.T) {
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusConfigured, st)
 
-	s.(*Service).AddMiddleware(func(w http.ResponseWriter, r *http.Request) bool {
-		if r.URL.Path == "/halt" {
-			w.WriteHeader(500)
-			w.Write([]byte("halted"))
-			return true
+	s.(*Service).AddMiddleware(func(f http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path == "/halt" {
+				w.WriteHeader(500)
+				w.Write([]byte("halted"))
+			} else {
+				f(w, r)
+			}
 		}
-
-		return false
 	})
 
 	go func() { c.Serve() }()

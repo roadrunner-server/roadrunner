@@ -64,7 +64,7 @@ class PSR7Client
             $bodyStream->write($body);
         }
 
-        return new Diactoros\ServerRequest(
+        $request = new Diactoros\ServerRequest(
             $_SERVER,
             $this->wrapUploads($ctx['uploads']),
             $ctx['uri'],
@@ -76,6 +76,14 @@ class PSR7Client
             $parsedBody,
             $ctx['protocol']
         );
+
+        if (!empty($ctx['attributes'])) {
+            foreach ($ctx['attributes'] as $key => $value) {
+                $request = $request->withAttribute($key, $value);
+            }
+        }
+
+        return $request;
     }
 
     /**

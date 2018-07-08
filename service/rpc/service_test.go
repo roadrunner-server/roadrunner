@@ -84,8 +84,8 @@ func Test_Serve_Client(t *testing.T) {
 	assert.NoError(t, s.Register("test", &testService{}))
 
 	go func() { assert.NoError(t, s.Serve()) }()
-
 	time.Sleep(time.Millisecond)
+
 	client, err := s.Client()
 	assert.NotNil(t, client)
 	assert.NoError(t, err)

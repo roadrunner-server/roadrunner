@@ -56,7 +56,16 @@ func (s *Service) Serve() error { return nil }
 func (s *Service) Stop() {}
 
 // middleware must return true if request/response pair is handled within the middleware.
-func (s *Service) middleware(w http.ResponseWriter, r *http.Request) bool {
+func (s *Service) middleware(f http.HandlerFunc) http.HandlerFunc {
+	// Define the http.HandlerFunc
+	return func(w http.ResponseWriter, r *http.Request) {
+		if !s.handleStatic(w, r) {
+			f(w, r)
+		}
+	}
+}
+
+func (s *Service) handleStatic(w http.ResponseWriter, r *http.Request) bool {
 	fPath := r.URL.Path
 
 	if !strings.HasPrefix(fPath, "/") {
