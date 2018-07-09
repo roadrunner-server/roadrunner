@@ -43,7 +43,9 @@ func newErrBuffer() *errBuffer {
 				if len(eb.buf) > eb.last {
 					if eb.lsn != nil {
 						eb.lsn(EventStderrOutput, eb.buf[eb.last:])
+						eb.buf = eb.buf[0:0]
 					}
+
 					eb.last = len(eb.buf)
 				}
 				eb.mu.Unlock()
@@ -55,6 +57,7 @@ func newErrBuffer() *errBuffer {
 					if eb.lsn != nil {
 						eb.lsn(EventStderrOutput, eb.buf[eb.last:])
 					}
+
 					eb.last = len(eb.buf)
 				}
 				eb.mu.Unlock()

@@ -58,7 +58,7 @@ func (s *debugger) listener(event int, ctx interface{}) {
 	// outputs
 	switch event {
 	case roadrunner.EventStderrOutput:
-		s.logger.Warning(strings.Trim(string(ctx.([]byte)), "\r\n"))
+		s.logger.Warning(utils.Sprintf("<yellow+h>%s</reset>", strings.Trim(string(ctx.([]byte)), "\r\n")))
 	}
 
 	// rr server events

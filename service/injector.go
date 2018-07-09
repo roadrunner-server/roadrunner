@@ -77,7 +77,7 @@ func injectValues(m reflect.Method, s interface{}, cfg Config, c *container) (va
 
 			// looking for the service candidate
 			for _, e := range c.services {
-				if v.ConvertibleTo(reflect.ValueOf(e.svc).Type()) {
+				if v.ConvertibleTo(reflect.ValueOf(e.svc).Type()) && e.hasStatus(StatusOK) {
 					found = true
 					values = append(values, reflect.ValueOf(e.svc))
 					break
