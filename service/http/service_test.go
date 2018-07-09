@@ -42,7 +42,7 @@ func Test_Service_NoConfig(t *testing.T) {
 	c := service.NewContainer(logger)
 	c.Register(ID, &Service{})
 
-	assert.NoError(t, c.Init(&testCfg{httpCfg: `{}`}))
+	assert.Error(t, c.Init(&testCfg{httpCfg: `{}`}))
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
@@ -108,7 +108,7 @@ func Test_Service_Configure_Enable(t *testing.T) {
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
-	assert.Equal(t, service.StatusConfigured, st)
+	assert.Equal(t, service.StatusOK, st)
 }
 
 func Test_Service_Echo(t *testing.T) {
@@ -139,10 +139,10 @@ func Test_Service_Echo(t *testing.T) {
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
-	assert.Equal(t, service.StatusConfigured, st)
+	assert.Equal(t, service.StatusOK, st)
 
 	// should do nothing
-	s.Stop()
+	s.(*Service).Stop()
 
 	go func() { c.Serve() }()
 	time.Sleep(time.Millisecond * 100)
@@ -191,7 +191,7 @@ func Test_Service_ErrorEcho(t *testing.T) {
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
-	assert.Equal(t, service.StatusConfigured, st)
+	assert.Equal(t, service.StatusOK, st)
 
 	goterr := make(chan interface{})
 	s.(*Service).AddListener(func(event int, ctx interface{}) {
@@ -251,7 +251,7 @@ func Test_Service_Middleware(t *testing.T) {
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
-	assert.Equal(t, service.StatusConfigured, st)
+	assert.Equal(t, service.StatusOK, st)
 
 	s.(*Service).AddMiddleware(func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
@@ -325,7 +325,7 @@ func Test_Service_Listener(t *testing.T) {
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
-	assert.Equal(t, service.StatusConfigured, st)
+	assert.Equal(t, service.StatusOK, st)
 
 	stop := make(chan interface{})
 	s.(*Service).AddListener(func(event int, ctx interface{}) {

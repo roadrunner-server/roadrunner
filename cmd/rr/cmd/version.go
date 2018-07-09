@@ -4,7 +4,8 @@ import "time"
 
 var (
 	// Version - defines build version.
-	Version = "development"
+	Version = "local"
+
 	// BuildTime - defined build time.
 	BuildTime = time.Now().Format(time.RFC1123)
 )

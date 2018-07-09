@@ -2,12 +2,14 @@ package rpc
 
 import (
 	"errors"
+	"github.com/spiral/roadrunner/service"
 	"net"
 	"strings"
 	"syscall"
 )
 
-type config struct {
+// Config defines RPC service config.
+type Config struct {
 	// Indicates if RPC connection is enabled.
 	Enable bool
 
@@ -15,9 +17,31 @@ type config struct {
 	Listen string
 }
 
-// listener creates new rpc socket listener.
-func (cfg *config) listener() (net.Listener, error) {
-	dsn := strings.Split(cfg.Listen, "://")
+// Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
+func (c *Config) Hydrate(cfg service.Config) error {
+	if err := cfg.Unmarshal(c); err != nil {
+		return err
+	}
+
+	return c.Valid()
+}
+
+// Valid returns nil if config is valid.
+func (c *Config) Valid() error {
+	if dsn := strings.Split(c.Listen, "://"); len(dsn) != 2 {
+		return errors.New("invalid socket DSN (tcp://:6001, unix://rpc.sock)")
+	}
+
+	if dsn := strings.Split(c.Listen, "://"); len(dsn) != 2 {
+		return errors.New("invalid socket DSN (tcp://:6001, unix://rpc.sock)")
+	}
+
+	return nil
+}
+
+// Listener creates new rpc socket Listener.
+func (c *Config) Listener() (net.Listener, error) {
+	dsn := strings.Split(c.Listen, "://")
 	if len(dsn) != 2 {
 		return nil, errors.New("invalid socket DSN (tcp://:6001, unix://rpc.sock)")
 	}
@@ -29,9 +53,9 @@ func (cfg *config) listener() (net.Listener, error) {
 	return net.Listen(dsn[0], dsn[1])
 }
 
-// dialer creates rpc socket dialer.
-func (cfg *config) dialer() (net.Conn, error) {
-	dsn := strings.Split(cfg.Listen, "://")
+// Dialer creates rpc socket Dialer.
+func (c *Config) Dialer() (net.Conn, error) {
+	dsn := strings.Split(c.Listen, "://")
 	if len(dsn) != 2 {
 		return nil, errors.New("invalid socket DSN (tcp://:6001, unix://rpc.sock)")
 	}

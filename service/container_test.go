@@ -66,7 +66,7 @@ func (t *testService) setChan(c chan interface{}) {
 type testCfg struct{ cfg string }
 
 func (cfg *testCfg) Get(name string) Config {
-	vars := make(map[string]string)
+	vars := make(map[string]interface{})
 	json.Unmarshal([]byte(cfg.cfg), &vars)
 
 	v, ok := vars[name]
@@ -74,7 +74,8 @@ func (cfg *testCfg) Get(name string) Config {
 		return nil
 	}
 
-	return &testCfg{cfg: v}
+	d, _ := json.Marshal(v)
+	return &testCfg{cfg: string(d)}
 }
 func (cfg *testCfg) Unmarshal(out interface{}) error { return json.Unmarshal([]byte(cfg.cfg), out) }
 
@@ -144,7 +145,7 @@ func TestContainer_Configure(t *testing.T) {
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
-	assert.Equal(t, StatusConfigured, st)
+	assert.Equal(t, StatusOK, st)
 }
 
 func TestContainer_ConfigureNull(t *testing.T) {
@@ -176,7 +177,7 @@ func TestContainer_ConfigureDisabled(t *testing.T) {
 	assert.Equal(t, 1, len(hook.Entries))
 
 	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 2, len(hook.Entries))
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
@@ -324,4 +325,107 @@ func TestContainer_ServeErrorMultiple(t *testing.T) {
 	s, st = c.Get("test2")
 	assert.IsType(t, &testService{}, s)
 	assert.Equal(t, StatusStopped, st)
+}
+
+type testInitA struct{}
+
+func (t *testInitA) Init() error {
+	return nil
+}
+
+type testInitB struct{}
+
+func (t *testInitB) Init() (int, error) {
+	return 0, nil
+}
+
+func TestContainer_InitErrorA(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testInitA{})
+
+	assert.Error(t, c.Init(&testCfg{`{"test":"something", "test2":"something-else"}`}))
+}
+
+func TestContainer_InitErrorB(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testInitB{})
+
+	assert.Error(t, c.Init(&testCfg{`{"test":"something", "test2":"something-else"}`}))
+}
+
+type testInitC struct{}
+
+func TestContainer_NoInit(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testInitC{})
+
+	assert.NoError(t, c.Init(&testCfg{`{"test":"something", "test2":"something-else"}`}))
+}
+
+type testInitD struct {
+	c *testInitC
+}
+
+type DCfg struct {
+	V string
+}
+
+// Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
+func (c *DCfg) Hydrate(cfg Config) error {
+	if err := cfg.Unmarshal(c); err != nil {
+		return err
+	}
+
+	if c.V == "fail" {
+		return errors.New("failed config")
+	}
+
+	return nil
+}
+
+func (t *testInitD) Init(r *testInitC, c Container, cfg *DCfg) (bool, error) {
+	if r == nil {
+		return false, errors.New("unable to find testInitC")
+	}
+
+	if c == nil {
+		return false, errors.New("unable to find Container")
+	}
+
+	if cfg.V != "ok" {
+		return false, errors.New("invalid config")
+	}
+
+	return false, nil
+}
+
+func TestContainer_InitDependency(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testInitC{})
+	c.Register("test2", &testInitD{})
+
+	assert.NoError(t, c.Init(&testCfg{`{"test":"something", "test2":{"v":"ok"}}`}))
+}
+
+func TestContainer_InitDependencyFail(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testInitC{})
+	c.Register("test2", &testInitD{})
+
+	assert.Error(t, c.Init(&testCfg{`{"test":"something", "test2":{"v":"fail"}}`}))
 }

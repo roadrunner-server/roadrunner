@@ -3,7 +3,9 @@ package http
 import (
 	"errors"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service"
 	"strings"
+	"time"
 )
 
 // Config configures RoadRunner HTTP server.
@@ -24,25 +26,54 @@ type Config struct {
 	Workers *roadrunner.ServerConfig
 }
 
-// Valid validates the configuration.
-func (cfg *Config) Valid() error {
-	if cfg.Uploads == nil {
-		return errors.New("mailformed uploads config")
-	}
-
-	if cfg.Workers == nil {
-		return errors.New("mailformed workers config")
-	}
-
-	if cfg.Workers.Pool == nil {
-		return errors.New("mailformed workers config (pool config is missing)")
-	}
-
-	if err := cfg.Workers.Pool.Valid(); err != nil {
+// Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
+func (c *Config) Hydrate(cfg service.Config) error {
+	if err := cfg.Unmarshal(c); err != nil {
 		return err
 	}
 
-	if !strings.Contains(cfg.Address, ":") {
+	if err := c.Valid(); err != nil {
+		return err
+	}
+
+	if c.Workers.Relay == "" {
+		c.Workers.Relay = "pipes"
+	}
+
+	if c.Workers.RelayTimeout < time.Microsecond {
+		c.Workers.RelayTimeout = time.Second * time.Duration(c.Workers.RelayTimeout.Nanoseconds())
+	}
+
+	if c.Workers.Pool.AllocateTimeout < time.Microsecond {
+		c.Workers.Pool.AllocateTimeout = time.Second * time.Duration(c.Workers.Pool.AllocateTimeout.Nanoseconds())
+	}
+
+	if c.Workers.Pool.DestroyTimeout < time.Microsecond {
+		c.Workers.Pool.DestroyTimeout = time.Second * time.Duration(c.Workers.Pool.DestroyTimeout.Nanoseconds())
+	}
+
+	return nil
+}
+
+// Valid validates the configuration.
+func (c *Config) Valid() error {
+	if c.Uploads == nil {
+		return errors.New("mailformed uploads config")
+	}
+
+	if c.Workers == nil {
+		return errors.New("mailformed workers config")
+	}
+
+	if c.Workers.Pool == nil {
+		return errors.New("mailformed workers config (pool config is missing)")
+	}
+
+	if err := c.Workers.Pool.Valid(); err != nil {
+		return err
+	}
+
+	if !strings.Contains(c.Address, ":") {
 		return errors.New("mailformed server address")
 	}
 

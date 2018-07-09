@@ -1,8 +1,6 @@
 package rpc
 
 import (
-	"encoding/json"
-	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -12,22 +10,9 @@ type testService struct{}
 
 func (ts *testService) Echo(msg string, r *string) error { *r = msg; return nil }
 
-type testCfg struct{ cfg string }
-
-func (cfg *testCfg) Get(name string) service.Config  { return nil }
-func (cfg *testCfg) Unmarshal(out interface{}) error { return json.Unmarshal([]byte(cfg.cfg), out) }
-
-func Test_ConfigError(t *testing.T) {
-	s := &Service{}
-	ok, err := s.Init(&testCfg{`{"enable":false`}, nil)
-
-	assert.Error(t, err)
-	assert.False(t, ok)
-}
-
 func Test_Disabled(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&testCfg{`{"enable":false}`}, nil)
+	ok, err := s.Init(&Config{Enable: false})
 
 	assert.NoError(t, err)
 	assert.False(t, ok)
@@ -45,7 +30,7 @@ func Test_RegisterNotConfigured(t *testing.T) {
 
 func Test_Enabled(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
+	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9008"})
 
 	assert.NoError(t, err)
 	assert.True(t, ok)
@@ -53,7 +38,7 @@ func Test_Enabled(t *testing.T) {
 
 func Test_StopNonServing(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&testCfg{`{"enable":true, "listen":"tcp://localhost:9008"}`}, nil)
+	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9008"})
 
 	assert.NoError(t, err)
 	assert.True(t, ok)
@@ -62,7 +47,7 @@ func Test_StopNonServing(t *testing.T) {
 
 func Test_Serve_Errors(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&testCfg{`{"enable":true, "listen":"mailformed"}`}, nil)
+	ok, err := s.Init(&Config{Enable: true, Listen: "mailformed"})
 	assert.NoError(t, err)
 	assert.True(t, ok)
 
@@ -75,7 +60,7 @@ func Test_Serve_Errors(t *testing.T) {
 
 func Test_Serve_Client(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&testCfg{`{"enable":true, "listen":"tcp://localhost:9018"}`}, nil)
+	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9018"})
 	assert.NoError(t, err)
 	assert.True(t, ok)
 

@@ -1,10 +1,12 @@
 package debug
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/cmd/rr/utils"
-	"github.com/spiral/roadrunner/service/http"
+	rrhttp "github.com/spiral/roadrunner/service/http"
+	"net/http"
 	"strings"
 )
 
@@ -20,21 +22,32 @@ type debugger struct{ logger *logrus.Logger }
 func (s *debugger) listener(event int, ctx interface{}) {
 	// http events
 	switch event {
-	case http.EventResponse:
-		log := ctx.(*http.Event)
-		s.logger.Info(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.URI))
-	case http.EventError:
-		log := ctx.(*http.Event)
+	case rrhttp.EventResponse:
+		e := ctx.(*rrhttp.ResponseEvent)
+		s.logger.Info(utils.Sprintf(
+			"<cyan+h>%s</reset> %s <white+hb>%s</reset> %s",
+			e.Request.RemoteAddr,
+			statusColor(e.Response.Status),
+			e.Request.Method,
+			e.Request.URI,
+		))
+	case rrhttp.EventError:
+		e := ctx.(*rrhttp.ErrorEvent)
 
-		if _, ok := log.Error.(roadrunner.JobError); ok {
-			s.logger.Info(utils.Sprintf("%s <white+hb>%s</reset> %s", statusColor(log.Status), log.Method, log.URI))
+		if _, ok := e.Error.(roadrunner.JobError); ok {
+			s.logger.Info(utils.Sprintf(
+				"%s <white+hb>%s</reset> %s",
+				statusColor(500),
+				e.Request.Method,
+				uri(e.Request),
+			))
 		} else {
 			s.logger.Info(utils.Sprintf(
 				"%s <white+hb>%s</reset> %s <red>%s</reset>",
-				statusColor(log.Status),
-				log.Method,
-				log.URI,
-				log.Error,
+				statusColor(500),
+				e.Request.Method,
+				uri(e.Request),
+				e.Error,
 			))
 		}
 	}
@@ -58,7 +71,10 @@ func (s *debugger) listener(event int, ctx interface{}) {
 	// outputs
 	switch event {
 	case roadrunner.EventStderrOutput:
-		s.logger.Warning(strings.Trim(string(ctx.([]byte)), "\r\n"))
+		s.logger.Warning(utils.Sprintf(
+			"<yellow>%s</reset>",
+			strings.Trim(string(ctx.([]byte)), "\r\n"),
+		))
 	}
 
 	// rr server events
@@ -92,4 +108,13 @@ func statusColor(status int) string {
 	}
 
 	return utils.Sprintf("<red>%v</reset>", status)
+}
+
+// uri fetches full uri from request in a form of string (including https scheme if TLS connection is enabled).
+func uri(r *http.Request) string {
+	if r.TLS != nil {
+		return fmt.Sprintf("https://%s%s", r.Host, r.URL.String())
+	}
+
+	return fmt.Sprintf("http://%s%s", r.Host, r.URL.String())
 }

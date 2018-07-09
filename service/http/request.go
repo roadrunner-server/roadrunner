@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service/http/attributes"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
@@ -20,6 +22,9 @@ const (
 
 // Request maps net/http requests to PSR7 compatible structure and managed state of temporary uploaded files.
 type Request struct {
+	// RemoteAddr contains ip address of client, make sure to check X-Real-Ip and X-Forwarded-For for real client address.
+	RemoteAddr string `json:"remoteAddr"`
+
 	// Protocol includes HTTP protocol version.
 	Protocol string `json:"protocol"`
 
@@ -60,7 +65,14 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 		Headers:    r.Header,
 		Cookies:    make(map[string]string),
 		RawQuery:   r.URL.RawQuery,
-		Attributes: AllAttributes(r),
+		Attributes: attributes.All(r),
+	}
+
+	// otherwise, return remote address as is
+	if strings.ContainsRune(r.RemoteAddr, ':') {
+		req.RemoteAddr, _, _ = net.SplitHostPort(r.RemoteAddr)
+	} else {
+		req.RemoteAddr = r.RemoteAddr
 	}
 
 	for _, c := range r.Cookies() {
