@@ -32,12 +32,12 @@ func (c *Config) Hydrate(cfg service.Config) error {
 		return err
 	}
 
-	if c.Workers.Relay == "" {
-		c.Workers.Relay = "pipes"
-	}
-
 	if err := c.Valid(); err != nil {
 		return err
+	}
+
+	if c.Workers.Relay == "" {
+		c.Workers.Relay = "pipes"
 	}
 
 	if c.Workers.RelayTimeout < time.Microsecond {

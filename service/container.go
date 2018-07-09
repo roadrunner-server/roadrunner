@@ -5,7 +5,26 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"sync"
+	"reflect"
 )
+
+var noConfig = fmt.Errorf("no config has been provided")
+
+// InitMethod contains name of the method to be automatically invoked while service initialization. Must return
+// (bool, error). Container can be requested as well. Config can be requested in a form
+// of service.Config or pointer to service specific config struct (automatically unmarshalled), config argument must
+// implement service.HydrateConfig.
+const InitMethod = "Init"
+
+// Service can serve. Service can provide Init method which must return (bool, error) signature and might accept
+// other services and/or configs as dependency.
+type Service interface {
+	// Serve serves.
+	Serve() error
+
+	// Stop stops the service.
+	Stop()
+}
 
 // Container controls all internal RR services and provides plugin based system.
 type Container interface {
@@ -26,18 +45,6 @@ type Container interface {
 	Serve() error
 
 	// Close all active services.
-	Stop()
-}
-
-// Service can serve. Service can provide Init method which must return (bool, error) signature and might accept
-// other services and/or configs as dependency. Container can be requested as well. Config can be requested in a form
-// of service.Config or pointer to service specific config struct (automatically unmarshalled), config argument must
-// implement service.HydrateConfig.
-type Service interface {
-	// Serve serves.
-	Serve() error
-
-	// Stop stops the service.
 	Stop()
 }
 
@@ -122,12 +129,11 @@ func (c *container) Init(cfg Config) error {
 			return fmt.Errorf("service [%s] has already been configured", e.name)
 		}
 
-		// inject service dependencies (todo: move to container)
-		if ok, err := initService(e.svc, cfg.Get(e.name), c); err != nil {
+		// inject service dependencies
+		if ok, err := c.initService(e.svc, cfg.Get(e.name)); err != nil {
+			// soft error (skipping)
 			if err == noConfig {
 				c.log.Warningf("[%s]: no config has been provided", e.name)
-
-				// unable to meet dependency requirements, skippingF
 				continue
 			}
 
@@ -143,7 +149,6 @@ func (c *container) Init(cfg Config) error {
 	return nil
 }
 
-//todo: refactor ????
 // Serve all configured services. Non blocking.
 func (c *container) Serve() error {
 	var (
@@ -193,6 +198,7 @@ func (c *container) Serve() error {
 // Stop sends stop command to all running services.
 func (c *container) Stop() {
 	c.log.Debugf("received stop command")
+
 	for _, e := range c.services {
 		if e.hasStatus(StatusServing) {
 			e.svc.(Service).Stop()
@@ -201,4 +207,104 @@ func (c *container) Stop() {
 			c.log.Debugf("[%s]: stopped", e.name)
 		}
 	}
+}
+
+// calls Init method with automatically resolved arguments.
+func (c *container) initService(s interface{}, segment Config) (bool, error) {
+	r := reflect.TypeOf(s)
+
+	m, ok := r.MethodByName("Init")
+	if !ok {
+		// no Init method is presented, assuming service does not need initialization.
+		return false, nil
+	}
+
+	if err := c.verifySignature(m); err != nil {
+		return false, err
+	}
+
+	// hydrating
+	values, err := c.resolveValues(s, m, segment)
+	if err != nil {
+		return false, err
+	}
+
+	// initiating service
+	out := m.Func.Call(values)
+
+	if out[1].IsNil() {
+		return out[0].Bool(), nil
+	}
+
+	return out[0].Bool(), out[1].Interface().(error)
+}
+
+// resolveValues returns slice of call arguments for service Init method.
+func (c *container) resolveValues(s interface{}, m reflect.Method, cfg Config) (values []reflect.Value, err error) {
+	for i := 0; i < m.Type.NumIn(); i++ {
+		v := m.Type.In(i)
+
+		switch {
+		case v.ConvertibleTo(reflect.ValueOf(s).Type()): // service itself
+			values = append(values, reflect.ValueOf(s))
+
+		case v.Implements(reflect.TypeOf((*Container)(nil)).Elem()): // container
+			values = append(values, reflect.ValueOf(c))
+
+		case v.Implements(reflect.TypeOf((*HydrateConfig)(nil)).Elem()): // injectable config
+			if cfg == nil {
+				return nil, noConfig
+			}
+
+			sc := reflect.New(v.Elem())
+			if err := sc.Interface().(HydrateConfig).Hydrate(cfg); err != nil {
+				return nil, err
+			}
+
+			values = append(values, sc)
+
+		case v.Implements(reflect.TypeOf((*Config)(nil)).Elem()): // generic config section
+			if cfg == nil {
+				return nil, noConfig
+			}
+
+			values = append(values, reflect.ValueOf(cfg))
+
+		default: // dependency on other service (resolution to nil if service can't be found)
+			found := false
+			for _, e := range c.services {
+				if !e.hasStatus(StatusOK) || !v.ConvertibleTo(reflect.ValueOf(e.svc).Type()) {
+					continue
+				}
+
+				found = true
+				values = append(values, reflect.ValueOf(e.svc))
+				break
+			}
+
+			if !found {
+				// placeholder (make sure to check inside the method)
+				values = append(values, reflect.New(v).Elem())
+			}
+		}
+	}
+
+	return
+}
+
+// verifySignature checks if Init method has valid signature
+func (c *container) verifySignature(m reflect.Method) error {
+	if m.Type.NumOut() != 2 {
+		return fmt.Errorf("method Init must have exact 2 return values")
+	}
+
+	if m.Type.Out(0).Kind() != reflect.Bool {
+		return fmt.Errorf("first return value of Init method must be bool type")
+	}
+
+	if !m.Type.Out(1).Implements(reflect.TypeOf((*error)(nil)).Elem()) {
+		return fmt.Errorf("second return value of Init method value must be error type")
+	}
+
+	return nil
 }

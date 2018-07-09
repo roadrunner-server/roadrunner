@@ -6,8 +6,6 @@ import (
 	"testing"
 )
 
-// todo: test hydrate
-
 func TestConfig_Listener(t *testing.T) {
 	cfg := &Config{Listen: "tcp://:18001"}
 
