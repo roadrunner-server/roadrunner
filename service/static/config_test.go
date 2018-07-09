@@ -1,10 +1,10 @@
 package static
 
 import (
+	"encoding/json"
+	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/spiral/roadrunner/service"
-	"encoding/json"
 )
 
 type mockCfg struct{ cfg string }

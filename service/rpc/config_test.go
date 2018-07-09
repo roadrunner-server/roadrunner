@@ -1,11 +1,11 @@
 package rpc
 
 import (
+	"encoding/json"
+	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
 	"runtime"
 	"testing"
-	"encoding/json"
-	"github.com/spiral/roadrunner/service"
 )
 
 type testCfg struct{ cfg string }

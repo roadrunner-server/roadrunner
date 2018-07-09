@@ -3,7 +3,14 @@ CHANGELOG
 
 v1.1.0 (80.07.2018)
 -------
--
+- bugfix: Wrong values for $_SERVER['REQUEST_TIME'] and $_SERVER['REQUEST_TIME_FLOAT']
+- rr now resolves remoteAddr (ip-address)
+- improvements in error buffer
+- support for custom configs and dependency injection for services
+- support for net/http native middlewares
+- better debugger
+- config pre-processing now allows second values for http service timeouts
+- support for non serving services
 
 v1.0.5 (30.06.2018)
 -------

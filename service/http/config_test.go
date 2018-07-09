@@ -1,13 +1,13 @@
 package http
 
 import (
+	"encoding/json"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 	"time"
-	"github.com/spiral/roadrunner/service"
-	"encoding/json"
 )
 
 type mockCfg struct{ cfg string }

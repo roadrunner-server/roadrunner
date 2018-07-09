@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"sync"
 	"reflect"
+	"sync"
 )
 
 var noConfig = fmt.Errorf("no config has been provided")
