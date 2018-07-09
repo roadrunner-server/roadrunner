@@ -158,7 +158,7 @@ func (c *container) Serve() error {
 			continue
 		}
 
-		c.log.Debugf("[%s]: started", e.name)
+		c.log.Debugf("[%s]: service started", e.name)
 		go func(e *entry) {
 			e.setStatus(StatusServing)
 			defer e.setStatus(StatusStopped)
