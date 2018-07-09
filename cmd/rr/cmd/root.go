@@ -27,12 +27,14 @@ import (
 	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"github.com/spiral/roadrunner/service"
 	"os"
+	"github.com/spiral/roadrunner/service/http"
+	"github.com/spiral/roadrunner/cmd/rr/debug"
 )
 
 // Service bus for all the commands.
 var (
-	cfgFile string
-	verbose bool
+	cfgFile            string
+	verbose, debugMode bool
 
 	// Logger - shared logger.
 	Logger = logrus.New()
@@ -83,12 +85,20 @@ func Execute() {
 }
 
 func init() {
+	Logger.Formatter = &logrus.TextFormatter{ForceColors: true}
+
 	CLI.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
+	CLI.PersistentFlags().BoolVarP(&debugMode, "debug", "d", false, "debug mode")
 	CLI.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is .rr.yaml)")
 
 	cobra.OnInitialize(func() {
 		if verbose {
 			Logger.SetLevel(logrus.DebugLevel)
+		}
+
+		if debugMode {
+			svc, _ := Container.Get(http.ID)
+			svc.(*http.Service).AddListener(debug.Listener(Logger))
 		}
 
 		if cfg := initConfig(cfgFile, []string{"."}, ".rr"); cfg != nil {
