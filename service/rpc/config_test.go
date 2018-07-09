@@ -4,7 +4,28 @@ import (
 	"github.com/stretchr/testify/assert"
 	"runtime"
 	"testing"
+	"encoding/json"
+	"github.com/spiral/roadrunner/service"
 )
+
+type testCfg struct{ cfg string }
+
+func (cfg *testCfg) Get(name string) service.Config  { return nil }
+func (cfg *testCfg) Unmarshal(out interface{}) error { return json.Unmarshal([]byte(cfg.cfg), out) }
+
+func Test_Config_Hydrate(t *testing.T) {
+	cfg := &testCfg{`{"enable": true, "listen": "tcp://:18001"}`}
+	c := &Config{}
+
+	assert.NoError(t, c.Hydrate(cfg))
+}
+
+func Test_Config_Hydrate_Error(t *testing.T) {
+	cfg := &testCfg{`{"enable": true, "listen": "invalid"}`}
+	c := &Config{}
+
+	assert.Error(t, c.Hydrate(cfg))
+}
 
 func TestConfig_Listener(t *testing.T) {
 	cfg := &Config{Listen: "tcp://:18001"}
