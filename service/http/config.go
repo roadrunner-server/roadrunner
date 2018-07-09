@@ -5,6 +5,7 @@ import (
 	"github.com/spiral/roadrunner"
 	"strings"
 	"github.com/spiral/roadrunner/service"
+	"time"
 )
 
 // Config configures RoadRunner HTTP server.
@@ -31,7 +32,23 @@ func (c *Config) Hydrate(cfg service.Config) error {
 		return err
 	}
 
-	return c.Valid()
+	if err := c.Valid(); err != nil {
+		return err
+	}
+
+	if c.Workers.RelayTimeout < time.Microsecond {
+		c.Workers.RelayTimeout = time.Second * time.Duration(c.Workers.RelayTimeout.Nanoseconds())
+	}
+
+	if c.Workers.Pool.AllocateTimeout < time.Microsecond {
+		c.Workers.Pool.AllocateTimeout = time.Second * time.Duration(c.Workers.Pool.AllocateTimeout.Nanoseconds())
+	}
+
+	if c.Workers.Pool.DestroyTimeout < time.Microsecond {
+		c.Workers.Pool.DestroyTimeout = time.Second * time.Duration(c.Workers.Pool.DestroyTimeout.Nanoseconds())
+	}
+
+	return nil
 }
 
 // Valid validates the configuration.
