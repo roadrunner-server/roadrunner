@@ -9,26 +9,29 @@ import (
 )
 
 const (
-	// EventResponse thrown after the request been processed. See Event as payload.
+	// EventResponse thrown after the request been processed. See ErrorEvent as payload.
 	EventResponse = iota + 500
 
 	// EventError thrown on any non job error provided by road runner server.
 	EventError
 )
 
-// Event represents singular http response event.
-type Event struct {
-	// Method of the request.
-	Method string
+// ErrorEvent represents singular http error event.
+type ErrorEvent struct {
+	// Request contains client request, must not be stored.
+	Request *http.Request
 
-	// URI requested by the client.
-	URI string
-
-	// Status is response status.
-	Status int
-
-	// Associated error, if any.
+	// Error - associated error, if any.
 	Error error
+}
+
+// ResponseEvent represents singular http response event.
+type ResponseEvent struct {
+	// Request contains client request, must not be stored.
+	Request *Request
+
+	// Response contains service response.
+	Response *Response
 }
 
 // Handler serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
@@ -99,7 +102,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // handleError sends error.
 func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error) {
-	h.throw(EventError, &Event{Method: r.Method, URI: uri(r), Status: 500, Error: err})
+	h.throw(EventError, &ErrorEvent{Request: r, Error: err})
 
 	w.WriteHeader(500)
 	w.Write([]byte(err.Error()))
@@ -107,7 +110,7 @@ func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error)
 
 // handleResponse triggers response event.
 func (h *Handler) handleResponse(req *Request, resp *Response) {
-	h.throw(EventResponse, &Event{Method: req.Method, URI: req.URI, Status: resp.Status})
+	h.throw(EventResponse, &ResponseEvent{Request: req, Response: resp})
 }
 
 // throw invokes event srv if any.
