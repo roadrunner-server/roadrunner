@@ -216,7 +216,7 @@ func (c *container) initService(s interface{}, segment Config) (bool, error) {
 	m, ok := r.MethodByName("Init")
 	if !ok {
 		// no Init method is presented, assuming service does not need initialization.
-		return false, nil
+		return true, nil
 	}
 
 	if err := c.verifySignature(m); err != nil {

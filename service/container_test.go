@@ -66,7 +66,7 @@ func (t *testService) setChan(c chan interface{}) {
 type testCfg struct{ cfg string }
 
 func (cfg *testCfg) Get(name string) Config {
-	vars := make(map[string]string)
+	vars := make(map[string]interface{})
 	json.Unmarshal([]byte(cfg.cfg), &vars)
 
 	v, ok := vars[name]
@@ -74,7 +74,8 @@ func (cfg *testCfg) Get(name string) Config {
 		return nil
 	}
 
-	return &testCfg{cfg: v}
+	d, _ := json.Marshal(v)
+	return &testCfg{cfg: string(d)}
 }
 func (cfg *testCfg) Unmarshal(out interface{}) error { return json.Unmarshal([]byte(cfg.cfg), out) }
 
@@ -368,4 +369,63 @@ func TestContainer_NoInit(t *testing.T) {
 	c.Register("test", &testInitC{})
 
 	assert.NoError(t, c.Init(&testCfg{`{"test":"something", "test2":"something-else"}`}))
+}
+
+type testInitD struct {
+	c *testInitC
+}
+
+type DCfg struct {
+	V string
+}
+
+// Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
+func (c *DCfg) Hydrate(cfg Config) error {
+	if err := cfg.Unmarshal(c); err != nil {
+		return err
+	}
+
+	if c.V == "fail" {
+		return errors.New("failed config")
+	}
+
+	return nil
+}
+
+func (t *testInitD) Init(r *testInitC, c Container, cfg *DCfg) (bool, error) {
+	if r == nil {
+		return false, errors.New("unable to find testInitC")
+	}
+
+	if c == nil {
+		return false, errors.New("unable to find Container")
+	}
+
+	if cfg.V != "ok" {
+		return false, errors.New("invalid config")
+	}
+
+	return false, nil
+}
+
+func TestContainer_InitDependency(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testInitC{})
+	c.Register("test2", &testInitD{})
+
+	assert.NoError(t, c.Init(&testCfg{`{"test":"something", "test2":{"v":"ok"}}`}))
+}
+
+func TestContainer_InitDependencyFail(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testInitC{})
+	c.Register("test2", &testInitD{})
+
+	assert.Error(t, c.Init(&testCfg{`{"test":"something", "test2":{"v":"fail"}}`}))
 }
