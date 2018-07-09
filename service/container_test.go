@@ -429,3 +429,13 @@ func TestContainer_InitDependencyFail(t *testing.T) {
 
 	assert.Error(t, c.Init(&testCfg{`{"test":"something", "test2":{"v":"fail"}}`}))
 }
+
+func TestContainer_InitDependencyEmpty(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test2", &testInitD{})
+
+	assert.Contains(t, c.Init(&testCfg{`{"test2":{"v":"ok"}}`}).Error(), "testInitC")
+}
