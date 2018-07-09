@@ -3,11 +3,11 @@ package http
 import (
 	"context"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service/http/attributes"
 	"github.com/spiral/roadrunner/service/rpc"
 	"net/http"
 	"sync"
 	"sync/atomic"
-	"github.com/spiral/roadrunner/service/http/attributes"
 )
 
 // ID contains default svc name.

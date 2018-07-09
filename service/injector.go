@@ -1,8 +1,8 @@
 package service
 
 import (
-	"reflect"
 	"fmt"
+	"reflect"
 )
 
 const initMethod = "Init"
@@ -42,7 +42,7 @@ func initService(s interface{}, cfg Config, c *container) (bool, error) {
 
 // injectValues returns slice of call arguments for service Init method.
 func injectValues(m reflect.Method, s interface{}, cfg Config, c *container) (values []reflect.Value, err error) {
-	for i := 0; i < m.Type.NumIn(); i ++ {
+	for i := 0; i < m.Type.NumIn(); i++ {
 		v := m.Type.In(i)
 
 		switch {

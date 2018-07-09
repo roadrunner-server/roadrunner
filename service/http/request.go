@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service/http/attributes"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
-	"github.com/spiral/roadrunner/service/http/attributes"
-	"net"
 )
 
 const (

@@ -1,10 +1,10 @@
 package service
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
-	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestContainer_Init(t *testing.T) {

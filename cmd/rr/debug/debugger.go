@@ -1,13 +1,13 @@
 package debug
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/cmd/rr/utils"
 	rrhttp "github.com/spiral/roadrunner/service/http"
-	"strings"
-	"fmt"
 	"net/http"
+	"strings"
 )
 
 // Listener creates new debug listener.

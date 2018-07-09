@@ -2,10 +2,10 @@ package rpc
 
 import (
 	"errors"
+	"github.com/spiral/roadrunner/service"
 	"net"
 	"strings"
 	"syscall"
-	"github.com/spiral/roadrunner/service"
 )
 
 // Config defines RPC service config.

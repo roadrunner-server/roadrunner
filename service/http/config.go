@@ -3,8 +3,8 @@ package http
 import (
 	"errors"
 	"github.com/spiral/roadrunner"
-	"strings"
 	"github.com/spiral/roadrunner/service"
+	"strings"
 	"time"
 )
 

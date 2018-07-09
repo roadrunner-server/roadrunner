@@ -2,10 +2,10 @@ package static
 
 import (
 	"github.com/pkg/errors"
+	"github.com/spiral/roadrunner/service"
 	"os"
 	"path"
 	"strings"
-	"github.com/spiral/roadrunner/service"
 )
 
 // Config describes file location and controls access to them.
