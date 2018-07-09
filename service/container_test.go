@@ -326,18 +326,46 @@ func TestContainer_ServeErrorMultiple(t *testing.T) {
 	assert.Equal(t, StatusStopped, st)
 }
 
-//func TestContainer_Init(t *testing.T) {
-//	logger, hook := test.NewNullLogger()
-//	logger.SetLevel(logrus.DebugLevel)
-//
-//	svc := &testService{ok: true}
-//
-//	c := NewContainer(logger)
-//	c.Register("test", svc)
-//	c.Register("test2", struct{}{})
-//
-//	assert.Equal(t, 2, len(hook.Entries))
-//
-//	assert.NoError(t, c.Serve())
-//	c.Stop()
-//}
+type testInitA struct{}
+
+func (t *testInitA) Init() error {
+	return nil
+}
+
+type testInitB struct{}
+
+func (t *testInitB) Init() (int, error) {
+	return 0, nil
+}
+
+func TestContainer_InitErrorA(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testInitA{})
+
+	assert.Error(t, c.Init(&testCfg{`{"test":"something", "test2":"something-else"}`}))
+}
+
+func TestContainer_InitErrorB(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testInitB{})
+
+	assert.Error(t, c.Init(&testCfg{`{"test":"something", "test2":"something-else"}`}))
+}
+
+type testInitC struct{}
+
+func TestContainer_NoInit(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testInitC{})
+
+	assert.NoError(t, c.Init(&testCfg{`{"test":"something", "test2":"something-else"}`}))
+}
