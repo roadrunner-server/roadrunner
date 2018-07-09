@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.1.0 (80.07.2018)
+-------
+-
+
 v1.0.5 (30.06.2018)
 -------
 - docker compatible logging (forcing TTY output for logrus)
