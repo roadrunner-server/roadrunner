@@ -64,6 +64,8 @@ class PSR7Client
             $bodyStream->write($body);
         }
 
+        $_SERVER = $this->configureServer($ctx);
+
         $request = new Diactoros\ServerRequest(
             $_SERVER,
             $this->wrapUploads($ctx['uploads']),
@@ -106,6 +108,26 @@ class PSR7Client
     }
 
     /**
+     * Returns altered copy of _SERVER variable. Sets ip-address,
+     * request-time and other values.
+     *
+     * @param array $ctx
+     * @return array
+     */
+    protected function configureServer(array $ctx): array
+    {
+        $server = $_SERVER;
+        $server['REQUEST_TIME'] = time();
+        $server['REQUEST_TIME_FLOAT'] = microtime(true);
+
+        if (!empty($ctx['remoteAddr'])) {
+            $server['REMOTE_ADDR'] = $ctx['remoteAddr'];
+        }
+
+        return $server;
+    }
+
+    /**
      * Wraps all uploaded files with UploadedFile.
      *
      * @param array $files
@@ -119,18 +141,18 @@ class PSR7Client
         }
 
         $result = [];
-        foreach ($files as $index => $file) {
-            if (!isset($file['name'])) {
-                $result[$index] = $this->wrapUploads($file);
+        foreach ($files as $index => $f) {
+            if (!isset($f['name'])) {
+                $result[$index] = $this->wrapUploads($f);
                 continue;
             }
 
             $result[$index] = new Diactoros\UploadedFile(
-                $file['tmpName'],
-                $file['size'],
-                $file['error'],
-                $file['name'],
-                $file['mime']
+                $f['tmpName'],
+                $f['size'],
+                $f['error'],
+                $f['name'],
+                $f['mime']
             );
         }
 
