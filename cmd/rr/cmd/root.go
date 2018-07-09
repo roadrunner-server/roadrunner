@@ -58,7 +58,7 @@ type ViperWrapper struct {
 	v *viper.Viper
 }
 
-// get nested config section (sub-map), returns nil if section not found.
+// Get nested config section (sub-map), returns nil if section not found.
 func (w *ViperWrapper) Get(key string) service.Config {
 	sub := w.v.Sub(key)
 	if sub == nil {
