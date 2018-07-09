@@ -30,37 +30,14 @@ import (
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/spiral/roadrunner/service/static"
 
-	// cli plugins
-	"github.com/spiral/roadrunner/cmd/rr/debug"
+	// additional command handlers
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
-
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
 )
 
-var debugMode bool
-
 func main() {
-	// forcing text based logging
-	rr.Logger.Formatter = &logrus.TextFormatter{ForceColors: true}
-
-	// provides ability to make local connection to services
 	rr.Container.Register(rpc.ID, &rpc.Service{})
-
-	// http serving
 	rr.Container.Register(http.ID, &http.Service{})
-
-	// serving static files
 	rr.Container.Register(static.ID, &static.Service{})
-
-	// debug mode
-	rr.CLI.PersistentFlags().BoolVarP(&debugMode, "debug", "d", false, "debug mode")
-	cobra.OnInitialize(func() {
-		if debugMode {
-			service, _ := rr.Container.Get(http.ID)
-			service.(*http.Service).AddListener(debug.Listener(rr.Logger))
-		}
-	})
 
 	// you can register additional commands using cmd.CLI
 	rr.Execute()

@@ -32,10 +32,6 @@ func (c *Config) Valid() error {
 		return errors.New("invalid socket DSN (tcp://:6001, unix://rpc.sock)")
 	}
 
-	if dsn := strings.Split(c.Listen, "://"); len(dsn) != 2 {
-		return errors.New("invalid socket DSN (tcp://:6001, unix://rpc.sock)")
-	}
-
 	return nil
 }
 
