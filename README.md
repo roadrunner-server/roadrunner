@@ -119,13 +119,14 @@ Where `psr-worker.php`:
 
 ```php
 ini_set('display_errors', 'stderr');
+require 'vendor/autoload.php';
 
 $relay = new Spiral\Goridge\StreamRelay(STDIN, STDOUT);
 $psr7 = new Spiral\RoadRunner\PSR7Client(new Spiral\RoadRunner\Worker($relay));
 
 while ($req = $psr7->acceptRequest()) {
     try {
-        $resp = new \Zend\Diactoros\Response()
+        $resp = new \Zend\Diactoros\Response();
         $resp->getBody()->write("hello world");
 
         $psr7->respond($resp);
@@ -134,6 +135,8 @@ while ($req = $psr7->acceptRequest()) {
     }
 }
 ```
+
+Run `composer require spiral/roadrunner` to load php library.
 
 > Check how to init relay [here](./php-src/tests/client.php).
 
