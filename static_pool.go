@@ -159,13 +159,15 @@ func (p *StaticPool) Destroy() {
 	wg.Wait()
 }
 
-// finds free worker in a given time interval or creates new if allowed.
+// finds free worker in a given time interval. Skips dead workers.
 func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 	for i := atomic.LoadInt64(&p.numDead); i >= 0; i++ {
-		// this loop is required to skip issues with dead workers still being in a ring.
+		// this loop is required to skip issues with dead workers still being in a ring
+		// (we know how many workers).
 		select {
 		case w = <-p.free:
 			if w.State().Value() != StateReady {
+				// found expected dead worker
 				atomic.AddInt64(&p.numDead, ^int64(0))
 				continue
 			}
