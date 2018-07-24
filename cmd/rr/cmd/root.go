@@ -85,8 +85,6 @@ func Execute() {
 }
 
 func init() {
-	Logger.Formatter = &logrus.TextFormatter{ForceColors: true}
-
 	CLI.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
 	CLI.PersistentFlags().BoolVarP(&debugMode, "debug", "d", false, "debug mode")
 	CLI.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is .rr.yaml)")
@@ -94,6 +92,7 @@ func init() {
 	cobra.OnInitialize(func() {
 		if verbose {
 			Logger.SetLevel(logrus.DebugLevel)
+			Logger.Formatter = &logrus.TextFormatter{ForceColors: true}
 		}
 
 		if debugMode {
