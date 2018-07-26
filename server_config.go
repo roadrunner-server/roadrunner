@@ -29,7 +29,7 @@ type ServerConfig struct {
 	// while server is running.
 	Pool *Config
 
-	// Env defines set of values to be passed to the command context.
+	// Default defines set of values to be passed to the command context.
 	env []string
 }
 
