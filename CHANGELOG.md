@@ -1,7 +1,14 @@
 CHANGELOG
 =========
 
-v1.1.0 (80.07.2018)
+v1.1.0 (26.07.2018)
+-------
+- added support for custom env variables
+- added env service
+- added env provider to provide ability to define env variables from any source
+- container can resolve values by interface now
+
+v1.1.0 (08.07.2018)
 -------
 - bugfix: Wrong values for $_SERVER['REQUEST_TIME'] and $_SERVER['REQUEST_TIME_FLOAT']
 - rr now resolves remoteAddr (IP-address)
