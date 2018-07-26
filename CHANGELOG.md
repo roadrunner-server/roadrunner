@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v1.1.0 (26.07.2018)
+v1.1.1 (26.07.2018)
 -------
 - added support for custom env variables
 - added env service
