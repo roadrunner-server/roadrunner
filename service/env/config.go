@@ -6,7 +6,7 @@ import (
 
 // Config defines set of env values for RR workers.
 type Config struct {
-	// Values to set as worker _ENV.
+	// values to set as worker _ENV.
 	Values map[string]string
 }
 
