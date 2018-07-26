@@ -13,11 +13,13 @@ import (
 	"os"
 	"testing"
 	"time"
+	"github.com/spiral/roadrunner/service/env"
 )
 
 type testCfg struct {
 	httpCfg string
 	rpcCfg  string
+	envCfg  string
 	target  string
 }
 
@@ -29,6 +31,11 @@ func (cfg *testCfg) Get(name string) service.Config {
 	if name == rpc.ID {
 		return &testCfg{target: cfg.rpcCfg}
 	}
+
+	if name == env.ID {
+		return &testCfg{target: cfg.envCfg}
+	}
+
 	return nil
 }
 func (cfg *testCfg) Unmarshal(out interface{}) error {
@@ -161,6 +168,59 @@ func Test_Service_Echo(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", string(b))
+}
+
+func Test_Service_Env(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(env.ID, env.NewService("test"))
+	c.Register(ID, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
+			"enable": true,
+			"address": ":6029",
+			"maxRequest": 1024,
+			"uploads": {
+				"dir": ` + tmpDir() + `,
+				"forbid": []
+			},
+			"workers":{
+				"command": "php ../../php-src/tests/http/client.php env pipes",
+				"relay": "pipes",
+				"pool": {
+					"numWorkers": 1, 
+					"allocateTimeout": 10000000,
+					"destroyTimeout": 10000000 
+				}
+			}
+	}`, envCfg: `{"env_key":"ENV_VALUE"}`}))
+
+	s, st := c.Get(ID)
+	assert.NotNil(t, s)
+	assert.Equal(t, service.StatusOK, st)
+
+	// should do nothing
+	s.(*Service).Stop()
+
+	go func() { c.Serve() }()
+	time.Sleep(time.Millisecond * 100)
+	defer c.Stop()
+
+	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "ENV_VALUE", string(b))
 }
 
 func Test_Service_ErrorEcho(t *testing.T) {

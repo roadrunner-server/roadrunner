@@ -39,8 +39,8 @@ import (
 func main() {
 	rr.Logger.Formatter = &logrus.TextFormatter{ForceColors: true}
 
-	rr.Container.Register(env.ID, env.NewService(rr.Version))
 	rr.Container.Register(rpc.ID, &rpc.Service{})
+	rr.Container.Register(env.ID, env.NewService(rr.Version))
 	rr.Container.Register(http.ID, &http.Service{})
 	rr.Container.Register(static.ID, &static.Service{})
 

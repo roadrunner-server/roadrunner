@@ -1,8 +1,8 @@
 package env
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func Test_NewService(t *testing.T) {
