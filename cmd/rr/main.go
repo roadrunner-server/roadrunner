@@ -23,6 +23,8 @@
 package main
 
 import (
+	"github.com/sirupsen/logrus"
+	
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 
 	// services (plugins)
@@ -40,5 +42,6 @@ func main() {
 	rr.Container.Register(static.ID, &static.Service{})
 
 	// you can register additional commands using cmd.CLI
+        rr.Logger.Formatter = &logrus.TextFormatter{ForceColors: true}
 	rr.Execute()
 }
