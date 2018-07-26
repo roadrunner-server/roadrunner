@@ -4,5 +4,5 @@ package env
 // values from external sources.
 type Provider interface {
 	// GetEnv must return list of env variables.
-	GetEnv() map[string]string
+	GetEnv() (map[string]string, error)
 }

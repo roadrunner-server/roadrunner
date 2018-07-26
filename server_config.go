@@ -49,7 +49,6 @@ func (cfg *ServerConfig) makeCommand() func() *exec.Cmd {
 	return func() *exec.Cmd {
 		cmd := exec.Command(cmd[0], cmd[1:]...)
 		cmd.Env = append(os.Environ(), cfg.env...)
-
 		return cmd
 	}
 }

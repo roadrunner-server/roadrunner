@@ -61,7 +61,12 @@ func (s *Service) Serve() error {
 	s.mu.Lock()
 
 	if s.env != nil {
-		for k, v := range s.env.GetEnv() {
+		values, err := s.env.GetEnv()
+		if err != nil {
+			return err
+		}
+
+		for k, v := range values {
 			s.cfg.Workers.SetEnv(k, v)
 		}
 	}

@@ -16,6 +16,6 @@ func (s *Service) Init(cfg *Config) (bool, error) {
 }
 
 // GetEnv must return list of env variables.
-func (s *Service) GetEnv() map[string]string {
-	return s.cfg.Values
+func (s *Service) GetEnv() (map[string]string, error) {
+	return s.cfg.Values, nil
 }
