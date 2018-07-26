@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"os/exec"
 	"strings"
 	"syscall"
 	"time"
-	"os"
 )
 
 // ServerConfig config combines factory, pool and cmd configurations.
