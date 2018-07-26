@@ -2,7 +2,9 @@ package roadrunner
 
 import (
 	"errors"
+	"fmt"
 	"net"
+	"os"
 	"os/exec"
 	"strings"
 	"syscall"
@@ -26,6 +28,9 @@ type ServerConfig struct {
 	// Pool defines worker pool configuration, number of workers, timeouts and etc. This config section might change
 	// while server is running.
 	Pool *Config
+
+	// values defines set of values to be passed to the command context.
+	env []string
 }
 
 // Differs returns true if configuration has changed but ignores pool or cmd changes.
@@ -33,11 +38,18 @@ func (cfg *ServerConfig) Differs(new *ServerConfig) bool {
 	return cfg.Relay != new.Relay || cfg.RelayTimeout != new.RelayTimeout
 }
 
+// SetEnv sets new environment variable. Value is automatically uppercase-d.
+func (cfg *ServerConfig) SetEnv(k, v string) {
+	cfg.env = append(cfg.env, fmt.Sprintf("%s=%s", strings.ToUpper(k), v))
+}
+
 // makeCommands returns new command provider based on configured options.
 func (cfg *ServerConfig) makeCommand() func() *exec.Cmd {
 	var cmd = strings.Split(cfg.Command, " ")
 	return func() *exec.Cmd {
-		return exec.Command(cmd[0], cmd[1:]...)
+		cmd := exec.Command(cmd[0], cmd[1:]...)
+		cmd.Env = append(os.Environ(), cfg.env...)
+		return cmd
 	}
 }
 

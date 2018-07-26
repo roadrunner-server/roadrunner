@@ -24,11 +24,11 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/spiral/roadrunner/cmd/rr/debug"
 	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"github.com/spiral/roadrunner/service"
-	"os"
 	"github.com/spiral/roadrunner/service/http"
-	"github.com/spiral/roadrunner/cmd/rr/debug"
+	"os"
 )
 
 // Service bus for all the commands.

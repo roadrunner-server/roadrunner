@@ -6,7 +6,9 @@ import (
 	"net/http"
 )
 
-const contextKey = "psr:attributes"
+type attrKey int
+
+const contextKey attrKey = iota
 
 type attrs map[string]interface{}
 
@@ -41,7 +43,7 @@ func All(r *http.Request) map[string]interface{} {
 	return v.(attrs)
 }
 
-// get gets the value from request context. It replaces any existing
+// Get gets the value from request context. It replaces any existing
 // values.
 func Get(r *http.Request, key string) interface{} {
 	v := r.Context().Value(contextKey)
@@ -52,7 +54,7 @@ func Get(r *http.Request, key string) interface{} {
 	return v.(attrs).get(key)
 }
 
-// set sets the key to value. It replaces any existing
+// Set sets the key to value. It replaces any existing
 // values. Context specific.
 func Set(r *http.Request, key string, value interface{}) error {
 	v := r.Context().Value(contextKey)

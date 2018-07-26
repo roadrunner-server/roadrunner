@@ -126,7 +126,7 @@ func (r *Request) Close() {
 	r.Uploads.Clear()
 }
 
-// Payload request marshaled RoadRunner payload based on PSR7 data. Default encode method is JSON. Make sure to open
+// Payload request marshaled RoadRunner payload based on PSR7 data. values encode method is JSON. Make sure to open
 // files prior to calling this method.
 func (r *Request) Payload() (p *roadrunner.Payload, err error) {
 	p = &roadrunner.Payload{}

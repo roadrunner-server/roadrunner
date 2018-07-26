@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service/env"
 	"github.com/spiral/roadrunner/service/http/attributes"
 	"github.com/spiral/roadrunner/service/rpc"
 	"net/http"
@@ -18,10 +19,10 @@ type middleware func(f http.HandlerFunc) http.HandlerFunc
 
 // Service manages rr, http servers.
 type Service struct {
-	cfg  *Config
-	lsns []func(event int, ctx interface{})
-	mdws []middleware
-
+	cfg      *Config
+	env      env.Provider
+	lsns     []func(event int, ctx interface{})
+	mdws     []middleware
 	mu       sync.Mutex
 	rr       *roadrunner.Server
 	stopping int32
@@ -41,12 +42,13 @@ func (s *Service) AddListener(l func(event int, ctx interface{})) {
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Service) Init(cfg *Config, r *rpc.Service) (bool, error) {
+func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Provider) (bool, error) {
 	if !cfg.Enable {
 		return false, nil
 	}
 
 	s.cfg = cfg
+	s.env = e
 	if r != nil {
 		r.Register(ID, &rpcServer{s})
 	}
@@ -57,6 +59,18 @@ func (s *Service) Init(cfg *Config, r *rpc.Service) (bool, error) {
 // Serve serves the svc.
 func (s *Service) Serve() error {
 	s.mu.Lock()
+
+	if s.env != nil {
+		values, err := s.env.GetEnv()
+		if err != nil {
+			return err
+		}
+
+		for k, v := range values {
+			s.cfg.Workers.SetEnv(k, v)
+		}
+	}
+
 	rr := roadrunner.NewServer(s.cfg.Workers)
 
 	s.rr = rr
@@ -116,11 +130,7 @@ func (s *Service) listener(event int, ctx interface{}) {
 	}
 
 	if event == roadrunner.EventServerFailure {
-		if atomic.LoadInt32(&s.stopping) != 0 {
-			// attempting rr server restart
-			if err := s.rr.Start(); err != nil {
-				s.Stop()
-			}
-		}
+		// underlying rr server is dead
+		s.Stop()
 	}
 }

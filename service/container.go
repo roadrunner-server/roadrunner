@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-var noConfig = fmt.Errorf("no config has been provided")
+var errNoConfig = fmt.Errorf("no config has been provided")
 
 // InitMethod contains name of the method to be automatically invoked while service initialization. Must return
 // (bool, error). Container can be requested as well. Config can be requested in a form
@@ -132,7 +132,7 @@ func (c *container) Init(cfg Config) error {
 		// inject service dependencies
 		if ok, err := c.initService(e.svc, cfg.Get(e.name)); err != nil {
 			// soft error (skipping)
-			if err == noConfig {
+			if err == errNoConfig {
 				c.log.Warningf("[%s]: no config has been provided", e.name)
 				continue
 			}
@@ -253,7 +253,7 @@ func (c *container) resolveValues(s interface{}, m reflect.Method, cfg Config) (
 
 		case v.Implements(reflect.TypeOf((*HydrateConfig)(nil)).Elem()): // injectable config
 			if cfg == nil {
-				return nil, noConfig
+				return nil, errNoConfig
 			}
 
 			sc := reflect.New(v.Elem())
@@ -265,27 +265,18 @@ func (c *container) resolveValues(s interface{}, m reflect.Method, cfg Config) (
 
 		case v.Implements(reflect.TypeOf((*Config)(nil)).Elem()): // generic config section
 			if cfg == nil {
-				return nil, noConfig
+				return nil, errNoConfig
 			}
 
 			values = append(values, reflect.ValueOf(cfg))
 
 		default: // dependency on other service (resolution to nil if service can't be found)
-			found := false
-			for _, e := range c.services {
-				if !e.hasStatus(StatusOK) || !v.ConvertibleTo(reflect.ValueOf(e.svc).Type()) {
-					continue
-				}
-
-				found = true
-				values = append(values, reflect.ValueOf(e.svc))
-				break
+			value, err := c.resolveValue(v)
+			if err != nil {
+				return nil, err
 			}
 
-			if !found {
-				// placeholder (make sure to check inside the method)
-				values = append(values, reflect.New(v).Elem())
-			}
+			values = append(values, value)
 		}
 	}
 
@@ -307,4 +298,36 @@ func (c *container) verifySignature(m reflect.Method) error {
 	}
 
 	return nil
+}
+
+func (c *container) resolveValue(v reflect.Type) (reflect.Value, error) {
+	value := reflect.Value{}
+	for _, e := range c.services {
+		if !e.hasStatus(StatusOK) {
+			continue
+		}
+
+		if v.Kind() == reflect.Interface && reflect.TypeOf(e.svc).Implements(v) {
+			if value.IsValid() {
+				return value, fmt.Errorf("disambiguous dependency `%s`", v)
+			}
+
+			value = reflect.ValueOf(e.svc)
+		}
+
+		if v.ConvertibleTo(reflect.ValueOf(e.svc).Type()) {
+			if value.IsValid() {
+				return value, fmt.Errorf("disambiguous dependency `%s`", v)
+			}
+
+			value = reflect.ValueOf(e.svc)
+		}
+	}
+
+	if !value.IsValid() {
+		// placeholder (make sure to check inside the method)
+		value = reflect.New(v).Elem()
+	}
+
+	return value, nil
 }

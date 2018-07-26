@@ -55,6 +55,10 @@ Using RoadRunner:
 In order to use RoadRunner you only have to place a `.rr.yaml` config file in the root of your PHP project:
 
 ```yaml
+# defines environment variables for all underlying php processes
+env:
+  key: value
+
 # rpc bus allows php application and external clients to talk to rr services.
 rpc:
   # enable rpc server
