@@ -92,7 +92,6 @@ func init() {
 	cobra.OnInitialize(func() {
 		if verbose {
 			Logger.SetLevel(logrus.DebugLevel)
-			Logger.Formatter = &logrus.TextFormatter{ForceColors: true}
 		}
 
 		if debugMode {
