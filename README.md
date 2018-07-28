@@ -20,8 +20,8 @@ Table of Contents
 * Using RoadRunner
   * [Environment Configuration](https://github.com/spiral/roadrunner/wiki/Enviroment-Configuration)
   * [PHP Workers](https://github.com/spiral/roadrunner/wiki/PHP-Workers)
-  * [RPC Integration](https://github.com/spiral/roadrunner/wiki/RPC-Integration)
   * [Server Commands](https://github.com/spiral/roadrunner/wiki/Server-Commands)
+  * [RPC Integration](https://github.com/spiral/roadrunner/wiki/RPC-Integration)
   * [IDE integration](https://github.com/spiral/roadrunner/wiki/IDE-Integration)
   * [Error Handling](https://github.com/spiral/roadrunner/wiki/Debug-And-Error-Handling)
   * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
