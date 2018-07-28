@@ -33,7 +33,6 @@ Table of Contents
 * Additional Notes
   * [Event Listeners](https://github.com/spiral/roadrunner/wiki/Event-Listeners)
   * [Standalone Usage](https://github.com/spiral/roadrunner/wiki/Standalone-usage)
-  * [Relays and Sockets](https://github.com/spiral/roadrunner/wiki/Relays-And-Sockets)
 
 Features:
 --------
