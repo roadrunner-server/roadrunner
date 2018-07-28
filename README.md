@@ -24,12 +24,12 @@ Table of Contents
   * [Server Commands](https://github.com/spiral/roadrunner/wiki/Server-Commands)
   * [IDE integration](https://github.com/spiral/roadrunner/wiki/IDE-Integration)
   * [Debug and Error Handling](https://github.com/spiral/roadrunner/wiki/Debug-And-Error-Handling)
+  * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
 * Server Customization
   * [Building Server](https://github.com/spiral/roadrunner/wiki/Building-Server)
   * [Managing Dependencies](https://github.com/spiral/roadrunner/wiki/Managing-Dependencies)
   * [Writing Services](https://github.com/spiral/roadrunner/wiki/Writing-Services)
 * Additional Notes
-  * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
   * [Event Listeners](https://github.com/spiral/roadrunner/wiki/Event-Listeners)
   * [Standalone Usage](https://github.com/spiral/roadrunner/wiki/Standalone-usage)
   * [Relays and Sockets](https://github.com/spiral/roadrunner/wiki/Relays-And-Sockets)
