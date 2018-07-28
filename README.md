@@ -27,7 +27,6 @@ Table of Contents
   * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
 * Server Customization
   * [Building Server](https://github.com/spiral/roadrunner/wiki/Building-Server)
-  * [Managing Dependencies](https://github.com/spiral/roadrunner/wiki/Managing-Dependencies)
   * [Writing Services](https://github.com/spiral/roadrunner/wiki/Writing-Services)
   * [HTTP Middlewares](https://github.com/spiral/roadrunner/wiki/Middlewares)
 * Additional Notes
