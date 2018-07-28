@@ -11,7 +11,7 @@ func Test_NewService(t *testing.T) {
 }
 
 func Test_Extend(t *testing.T) {
-	s := NewService(map[string]string{"version": "rr"})
+	s := NewService(map[string]string{"rr": "version"})
 
 	s.Init(&Config{Values: map[string]string{"key": "value"}})
 	assert.Len(t, s.values, 2)
