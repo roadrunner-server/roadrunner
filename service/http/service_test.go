@@ -175,7 +175,7 @@ func Test_Service_Env(t *testing.T) {
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(env.ID, env.NewService("test"))
+	c.Register(env.ID, env.NewService(map[string]string{"rr": "test"}))
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
