@@ -13,11 +13,11 @@ It supports running as a service with the ability to extend its functionality on
 RoadRunner is an open source (MIT licensed), high-performance PSR-7 PHP application server, load balancer and process manager. It supports running as a service with the ability to extend its functionality on a per-project basis.
 
 #### Introduction
-- [About RoadRunner](https://github.com/spiral/roadrunner/wiki/About-RoadRunner)
-- [Installation](https://github.com/spiral/roadrunner/wiki/Installation)
-- [Configuration](https://github.com/spiral/roadrunner/wiki/Configuration)
-- [Contributing](https://github.com/spiral/roadrunner/wiki/Contributing)
-- [License](https://github.com/spiral/roadrunner/wiki/License)
+* [About RoadRunner](https://github.com/spiral/roadrunner/wiki/About-RoadRunner)
+* [Installation](https://github.com/spiral/roadrunner/wiki/Installation)
+* [Configuration](https://github.com/spiral/roadrunner/wiki/Configuration)
+* [Contributing](https://github.com/spiral/roadrunner/wiki/Contributing)
+* [License](https://github.com/spiral/roadrunner/wiki/License)
 
 #### Using RoadRunner
 * [Environment Configuration](https://github.com/spiral/roadrunner/wiki/Enviroment-Configuration)
@@ -32,17 +32,17 @@ RoadRunner is an open source (MIT licensed), high-performance PSR-7 PHP applicat
 * [Writing Services](https://github.com/spiral/roadrunner/wiki/Writing-Services)
 
 #### Additional Notes
-- [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
-- [Event Listeners](https://github.com/spiral/roadrunner/wiki/Event-Listeners)
-- [Standalone Usage](https://github.com/spiral/roadrunner/wiki/Standalone-usage)
-- [Relays and Sockets](https://github.com/spiral/roadrunner/wiki/Relays-And-Sockets)
+* [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
+* [Event Listeners](https://github.com/spiral/roadrunner/wiki/Event-Listeners)
+* [Standalone Usage](https://github.com/spiral/roadrunner/wiki/Standalone-usage)
+* [Relays and Sockets](https://github.com/spiral/roadrunner/wiki/Relays-And-Sockets)
 
 Features:
 --------
 - production ready
 - PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middlewares, event listeners)
-- extendable service model (plus PHP compatible RPC server)
-- flexible ENV configuration
+- fully customizable server
+- flexible environment configuration
 - no external PHP dependencies, drop-in (based on [Goridge](https://github.com/spiral/goridge))
 - load balancer, process manager and task pipeline
 - frontend agnostic (queue, REST, PSR-7, async php, etc)
