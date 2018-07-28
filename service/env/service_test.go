@@ -6,12 +6,12 @@ import (
 )
 
 func Test_NewService(t *testing.T) {
-	s := NewService("version")
+	s := NewService(map[string]string{"version": "test"})
 	assert.Len(t, s.values, 1)
 }
 
 func Test_Extend(t *testing.T) {
-	s := NewService("version")
+	s := NewService(map[string]string{"version": "test"})
 
 	s.Init(&Config{Values: map[string]string{"key": "value"}})
 	assert.Len(t, s.values, 2)
