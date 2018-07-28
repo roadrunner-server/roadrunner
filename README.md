@@ -54,6 +54,27 @@ Features:
 - very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
 - works on Windows
 
+Example:
+--------
+
+```php
+ini_set('display_errors', 'stderr');
+
+$relay = new Spiral\Goridge\StreamRelay(STDIN, STDOUT);
+$psr7 = new Spiral\RoadRunner\PSR7Client(new Spiral\RoadRunner\Worker($relay));
+
+while ($req = $psr7->acceptRequest()) {
+    try {
+        $resp = new \Zend\Diactoros\Response()
+        $resp->getBody()->write("hello world");
+
+        $psr7->respond($resp);
+    } catch (\Throwable $e) {
+        $psr7->getWorker()->error((string)$e);
+    }
+}
+```
+
 License:
 --------
 The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [SpiralScout](https://spiralscout.com).
