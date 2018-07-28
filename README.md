@@ -16,7 +16,6 @@ Table of Contents
   * [About RoadRunner](https://github.com/spiral/roadrunner/wiki/About-RoadRunner)
   * [Installation](https://github.com/spiral/roadrunner/wiki/Installation)
   * [Configuration](https://github.com/spiral/roadrunner/wiki/Configuration)
-  * [Contributing](https://github.com/spiral/roadrunner/wiki/Contributing)
   * [License](https://github.com/spiral/roadrunner/wiki/License)
 * Using RoadRunner
   * [Environment Configuration](https://github.com/spiral/roadrunner/wiki/Enviroment-Configuration)
