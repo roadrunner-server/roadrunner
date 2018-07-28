@@ -10,8 +10,13 @@ type Service struct {
 }
 
 // NewService creates new env service instance for given rr version.
-func NewService(version string) *Service {
-	return &Service{values: map[string]string{"rr": version}}
+func NewService(defaults map[string]string) *Service {
+	s := &Service{values: defaults}
+	if s.values == nil {
+		s.values = make(map[string]string)
+	}
+	
+	return s
 }
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
