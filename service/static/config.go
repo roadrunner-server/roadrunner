@@ -32,6 +32,10 @@ func (c *Config) Hydrate(cfg service.Config) error {
 
 // Valid returns nil if config is valid.
 func (c *Config) Valid() error {
+	if !c.Enable {
+		return nil
+	}
+	
 	st, err := os.Stat(c.Dir)
 	if err != nil {
 		if os.IsNotExist(err) {
