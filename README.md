@@ -7,11 +7,12 @@ RoadRunner
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/spiral/roadrunner/badges/quality-score.png)](https://scrutinizer-ci.com/g/spiral/roadrunner/?branch=master)
 [![Codecov](https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/roadrunner/)
 
-RoadRunner is an open source (MIT licensed), high-performance production-ready PSR-7 PHP application server, load balancer and process manager.
+RoadRunner is an open source (MIT licensed), high-performance PSR-7 PHP application server, load balancer and process manager.
 It supports running as a service with the ability to extend its functionality on a per-project basis.
 
 Features:
 --------
+- production ready
 - PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middlewares, event listeners)
 - extendable service model (plus PHP compatible RPC server)
 - flexible ENV configuration
