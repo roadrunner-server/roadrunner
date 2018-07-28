@@ -23,6 +23,9 @@
 package main
 
 import (
+	// colorful logging
+	"github.com/sirupsen/logrus"
+	
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 
 	// services (plugins)
@@ -32,7 +35,6 @@ import (
 	"github.com/spiral/roadrunner/service/static"
 
 	// additional command handlers
-	"github.com/sirupsen/logrus"
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
 )
 
