@@ -90,9 +90,6 @@ http:
     # php worker command.
     command:  "php psr-worker.php"
 
-    # connection method (pipes, tcp://:9000, unix://socket.unix).
-    relay:    "pipes"
-
     # worker pool configuration.
     pool:
       # number of workers to be serving.
