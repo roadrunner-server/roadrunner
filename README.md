@@ -20,19 +20,16 @@ Table of Contents
   * [Configuration](https://github.com/spiral/roadrunner/wiki/Configuration)
   * [Contributing](https://github.com/spiral/roadrunner/wiki/Contributing)
   * [License](https://github.com/spiral/roadrunner/wiki/License)
-
 * Using RoadRunner
   * [Environment Configuration](https://github.com/spiral/roadrunner/wiki/Enviroment-Configuration)
   * [PHP Workers](https://github.com/spiral/roadrunner/wiki/PHP-Workers)
   * [Server Commands](https://github.com/spiral/roadrunner/wiki/Server-Commands)
   * [IDE integration](https://github.com/spiral/roadrunner/wiki/IDE-Integration)
   * [Debug and Error Handling](https://github.com/spiral/roadrunner/wiki/Debug-And-Error-Handling)
-
 * Server Customization
   * [Building Server](https://github.com/spiral/roadrunner/wiki/Building-Server)
   * [Managing Dependencies](https://github.com/spiral/roadrunner/wiki/Managing-Dependencies)
   * [Writing Services](https://github.com/spiral/roadrunner/wiki/Writing-Services)
-
 * Additional Notes
   * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
   * [Event Listeners](https://github.com/spiral/roadrunner/wiki/Event-Listeners)
