@@ -11,10 +11,10 @@ RoadRunner is an open source (MIT licensed), high-performance PSR-7 PHP applicat
 It supports running as a service with the ability to extend its functionality on a per-project basis.
 
 # Table of Content
-- [What is RoadRunner](/wiki/what-is-roadrunner)
-- [Installation](/wiki/installation)
-- [Configuration](/wiki/configuration)
-- [Standalone Usage](/wiki/standalone-usage)
+- [What is RoadRunner](https://github.com/spiral/roadrunner/wiki/what-is-roadrunner)
+- [Installation](https://github.com/spiral/roadrunner/wiki/installation)
+- [Configuration](https://github.com/spiral/roadrunner/wiki/configuration)
+- [Standalone Usage](https://github.com/spiral/roadrunner/wiki/standalone-usage)
 
 Features:
 --------
