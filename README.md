@@ -10,7 +10,11 @@ RoadRunner
 RoadRunner is an open source (MIT licensed), high-performance PSR-7 PHP application server, load balancer and process manager.
 It supports running as a service with the ability to extend its functionality on a per-project basis.
 
-#[Documentation and Wiki](wiki/)
+# Table of Content
+- [What is RoadRunner](wiki/what-is-roadrunner)
+- [Installation](wiki/installation)
+- [Configuration](wiki/configuration)
+- [Standalone Usage](wiki/standalone-usage)
 
 Features:
 --------
@@ -294,4 +298,4 @@ if h, ok := c.Get(rrttp.ID); ok >= service.StatusConfigured {
 
 License:
 --------
-The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information.
+The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [SpiralScout](https://spiralscout.com).
