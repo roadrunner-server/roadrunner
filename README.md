@@ -10,6 +10,8 @@ RoadRunner
 RoadRunner is an open source (MIT licensed), high-performance PSR-7 PHP application server, load balancer and process manager.
 It supports running as a service with the ability to extend its functionality on a per-project basis.
 
+#[Documentation and Wiki](wiki/)
+
 Features:
 --------
 - production ready
@@ -29,27 +31,6 @@ Features:
 - very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
 - works on Windows
 
-Getting Started:
---------
-
-#### Downloading RoadRunner
-The easiest way to get the latest RoadRunner version is to use one of the pre-built release binaries which are available for
-OSX, Linux, FreeBSD, and Windows. Instructions for using these binaries are on the GitHub [releases page](https://github.com/spiral/roadrunner/releases).
-
-#### Building RoadRunner
-RoadRunner can be compiled on Linux, OSX, Windows and other 64 bit environments as the only requirement is Go 1.8+ itself.
-
-To build:
-
-```
-$ make
-```
-
-To test:
-
-```
-$ make test
-```
 
 Using RoadRunner:
 --------
@@ -310,53 +291,6 @@ if h, ok := c.Get(rrttp.ID); ok >= service.StatusConfigured {
 		}
 	}
 ```
-
-Standalone Usage:
---------
-You can also use RoadRunner as a library in order to drive your application without any additional protocol on top of it.
-
-```go
-srv := NewServer(
-    &ServerConfig{
-        Command: "php client.php echo pipes",
-        Relay:   "pipes",
-        Pool: &Config{
-            NumWorkers:      int64(runtime.NumCPU()),
-            AllocateTimeout: time.Second,
-            DestroyTimeout:  time.Second,
-        },
-    })
-defer srv.Stop()
-
-srv.Start()
-
-res, err := srv.Exec(&Payload{Body: []byte("hello")})
-```
-
-```php
-<?php
-/**
- * @var Goridge\RelayInterface $relay
- */
-
-use Spiral\Goridge;
-use Spiral\RoadRunner;
-
-ini_set('display_errors', 'stderr');
-
-$rr = new RoadRunner\Worker($relay);
-
-while ($body = $rr->receive($context)) {
-    try {
-        $rr->send((string)$body, (string)$context);
-    } catch (\Throwable $e) {
-        $rr->error((string)$e);
-    }
-}
-```
-> Check how to init relay [here](./php-src/tests/client.php).
-
-You can find more examples in tests and `php-src` directory.
 
 License:
 --------
