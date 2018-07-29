@@ -54,7 +54,6 @@ Features:
 - memory leak failswitch
 - very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
 - works on Windows
-- works on AWS Lambda
 
 Example:
 --------
