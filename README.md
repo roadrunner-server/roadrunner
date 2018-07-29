@@ -27,7 +27,6 @@ Table of Contents
   * [IDE integration](https://github.com/spiral/roadrunner/wiki/IDE-Integration)
   * [Error Handling](https://github.com/spiral/roadrunner/wiki/Debug-And-Error-Handling)
   * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
-  * [AWS Lambda](https://github.com/spiral/roadrunner/wiki/AWS-Lambda)
 * Server Customization
   * [Building Server](https://github.com/spiral/roadrunner/wiki/Building-Server)
   * [Writing Services](https://github.com/spiral/roadrunner/wiki/Writing-Services)
@@ -35,6 +34,7 @@ Table of Contents
 * Additional Notes
   * [Event Listeners](https://github.com/spiral/roadrunner/wiki/Event-Listeners)
   * [Standalone Usage](https://github.com/spiral/roadrunner/wiki/Standalone-usage)
+  * [AWS Lambda](https://github.com/spiral/roadrunner/wiki/AWS-Lambda)
 
 Features:
 --------
