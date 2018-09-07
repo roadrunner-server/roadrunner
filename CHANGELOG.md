@@ -8,7 +8,10 @@ in container
 - added ability to set env values using `env.Enviroment`
 - `env.Provider` renamed to `env.Enviroment`
 - rr does not throw warning when service config is missing, instead debug level is used
-- 
+- rr server config now support default value set (shorter configs)
+- debug handlers has been moved from root command and now can be defined by each service
+- bugfix: panic when using debug mode without http service registered
+- `rr.Verbose` and `rr.Debug` are not public
 
 v1.1.1 (26.07.2018)
 -------
