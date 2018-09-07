@@ -6,11 +6,12 @@ import (
 )
 
 const (
-	// EventStderrOutput - is triggered when worker sends data into stderr. The context is error message ([]byte).
+	// EventStderrOutput - is triggered when worker sends data into stderr. The context
+	// is error message ([]byte).
 	EventStderrOutput = 1900
 
-	// WaitDuration - for how long error buffer should attempt to aggregate error messages before merging output
-	// together since lastError update (required to keep error update together).
+	// WaitDuration - for how long error buffer should attempt to aggregate error messages
+	// before merging output together since lastError update (required to keep error update together).
 	WaitDuration = 100 * time.Millisecond
 )
 
