@@ -12,6 +12,8 @@ in container
 - debug handlers has been moved from root command and now can be defined by each service
 - bugfix: panic when using debug mode without http service registered
 - `rr.Verbose` and `rr.Debug` are not public
+- rpc service now exposes it's address to underlying workers to simplify the connection
+- env service construction has been simplified in order to unify it with other services
 
 v1.1.1 (26.07.2018)
 -------
