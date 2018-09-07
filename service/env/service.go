@@ -15,7 +15,7 @@ func NewService(defaults map[string]string) *Service {
 	if s.values == nil {
 		s.values = make(map[string]string)
 	}
-	
+
 	return s
 }
 
@@ -32,4 +32,9 @@ func (s *Service) Init(cfg *Config) (bool, error) {
 // GetEnv must return list of env variables.
 func (s *Service) GetEnv() (map[string]string, error) {
 	return s.values, nil
+}
+
+// SetEnv sets or creates environment value.
+func (s *Service) SetEnv(key, value string) {
+	s.values[key] = value
 }

@@ -10,7 +10,7 @@ import (
 
 // Config configures RoadRunner HTTP server.
 type Config struct {
-	// Enable enables http svc.
+	// Enable enables http service.
 	Enable bool
 
 	// Address and port to handle as http server.
@@ -30,6 +30,10 @@ type Config struct {
 func (c *Config) Hydrate(cfg service.Config) error {
 	if err := cfg.Unmarshal(c); err != nil {
 		return err
+	}
+
+	if !c.Enable {
+		return nil
 	}
 
 	if err := c.Valid(); err != nil {
