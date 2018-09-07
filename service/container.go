@@ -152,7 +152,7 @@ func (c *container) Init(cfg Config) error {
 // Serve all configured services. Non blocking.
 func (c *container) Serve() error {
 	var (
-		numServing int
+		numServing = 0
 		done       = make(chan interface{}, len(c.services))
 	)
 
