@@ -133,7 +133,7 @@ func (c *container) Init(cfg Config) error {
 		if ok, err := c.initService(e.svc, cfg.Get(e.name)); err != nil {
 			// soft error (skipping)
 			if err == errNoConfig {
-				c.log.Warningf("[%s]: no config has been provided", e.name)
+				c.log.Debugf("[%s]: no config has been provided", e.name)
 				continue
 			}
 
