@@ -4,8 +4,8 @@ const (
 	// ID contains default service name.
 	ID = "env"
 
-	// RR_ENV contains default env key to indicate than php running in RR mode.
-	RR_ENV = "RR"
+	// RRKey contains default env key to indicate than php running in RR mode.
+	RRKey = "RR"
 )
 
 // Service provides ability to map _ENV values from config file.
@@ -25,7 +25,7 @@ func NewService(defaults map[string]string) *Service {
 func (s *Service) Init(cfg *Config) (bool, error) {
 	if s.values == nil {
 		s.values = make(map[string]string)
-		s.values[RR_ENV] = "yes"
+		s.values[RRKey] = "yes"
 	}
 
 	for k, v := range cfg.Values {

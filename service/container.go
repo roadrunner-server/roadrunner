@@ -213,7 +213,7 @@ func (c *container) Stop() {
 func (c *container) initService(s interface{}, segment Config) (bool, error) {
 	r := reflect.TypeOf(s)
 
-	m, ok := r.MethodByName("Init")
+	m, ok := r.MethodByName(InitMethod)
 	if !ok {
 		// no Init method is presented, assuming service does not need initialization.
 		return true, nil
