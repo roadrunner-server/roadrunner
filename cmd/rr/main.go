@@ -24,6 +24,7 @@ package main
 
 import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
+	"github.com/sirupsen/logrus"
 
 	// services (plugins)
 	"github.com/spiral/roadrunner/service/env"
@@ -33,7 +34,6 @@ import (
 
 	// additional command handlers
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
-	"github.com/sirupsen/logrus"
 )
 
 func main() {
