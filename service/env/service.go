@@ -1,7 +1,12 @@
 package env
 
-// ID contains default svc name.
-const ID = "env"
+const (
+	// ID contains default service name.
+	ID = "env"
+
+	// RR_ENV contains default env key to indicate than php running in RR mode.
+	RR_ENV = "RR"
+)
 
 // Service provides ability to map _ENV values from config file.
 type Service struct {
@@ -12,16 +17,17 @@ type Service struct {
 // NewService creates new env service instance for given rr version.
 func NewService(defaults map[string]string) *Service {
 	s := &Service{values: defaults}
-	if s.values == nil {
-		s.values = make(map[string]string)
-	}
-
 	return s
 }
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Service) Init(cfg *Config) (bool, error) {
+	if s.values == nil {
+		s.values = make(map[string]string)
+		s.values[RR_ENV] = "yes"
+	}
+
 	for k, v := range cfg.Values {
 		s.values[k] = v
 	}
