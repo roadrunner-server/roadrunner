@@ -44,6 +44,10 @@ func (c *Config) Hydrate(cfg service.Config) error {
 		c.Workers.Relay = "pipes"
 	}
 
+	c.Workers.MountDefaults()
+
+	// nanosecond to second conversion
+
 	if c.Workers.RelayTimeout < time.Microsecond {
 		c.Workers.RelayTimeout = time.Second * time.Duration(c.Workers.RelayTimeout.Nanoseconds())
 	}
