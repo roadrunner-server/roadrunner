@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+v1.2.0
+-------
+- added ability to request `*logrus.Logger`, `logrus.StdLogger`, `logrus.FieldLogger` dependency
+in container
+- added ability to set env values using `env.Enviroment`
+- `env.Provider` renamed to `env.Enviroment`
+- rr does not throw warning when service config is missing, instead debug level is used
+- 
+
 v1.1.1 (26.07.2018)
 -------
 - added support for custom env variables
