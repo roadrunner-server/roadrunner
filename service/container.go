@@ -251,6 +251,11 @@ func (c *container) resolveValues(s interface{}, m reflect.Method, cfg Config) (
 		case v.Implements(reflect.TypeOf((*Container)(nil)).Elem()): // container
 			values = append(values, reflect.ValueOf(c))
 
+		case v.Implements(reflect.TypeOf((*logrus.StdLogger)(nil)).Elem()),
+			v.Implements(reflect.TypeOf((*logrus.FieldLogger)(nil)).Elem()),
+			v.ConvertibleTo(reflect.ValueOf(c.log).Type()): // logger
+			values = append(values, reflect.ValueOf(c.log))
+
 		case v.Implements(reflect.TypeOf((*HydrateConfig)(nil)).Elem()): // injectable config
 			if cfg == nil {
 				return nil, errNoConfig
