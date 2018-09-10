@@ -33,6 +33,21 @@ type ServerConfig struct {
 	env []string
 }
 
+// SetDefaults sets missing values to their default values.
+func (cfg *ServerConfig) SetDefaults() {
+	if cfg.RelayTimeout == 0 {
+		cfg.RelayTimeout = time.Minute
+	}
+
+	if cfg.Pool.AllocateTimeout == 0 {
+		cfg.Pool.AllocateTimeout = time.Minute
+	}
+
+	if cfg.Pool.DestroyTimeout == 0 {
+		cfg.Pool.DestroyTimeout = time.Minute
+	}
+}
+
 // Differs returns true if configuration has changed but ignores pool or cmd changes.
 func (cfg *ServerConfig) Differs(new *ServerConfig) bool {
 	return cfg.Relay != new.Relay || cfg.RelayTimeout != new.RelayTimeout
