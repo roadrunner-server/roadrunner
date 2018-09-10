@@ -14,6 +14,7 @@ import (
 	"strings"
 	"testing"
 	"time"
+	"net/http/httptest"
 )
 
 // get request and return body
@@ -62,6 +63,63 @@ func TestServer_Echo(t *testing.T) {
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", body)
 }
+
+func Test_HandlerErrors(t *testing.T) {
+	st := &Handler{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../php-src/tests/http/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	wr := httptest.NewRecorder()
+	rq := httptest.NewRequest("POST", "/", bytes.NewBuffer([]byte("data")))
+
+	st.ServeHTTP(wr, rq)
+	assert.Equal(t, 500, wr.Code)
+}
+
+func Test_Handler_JSON_error(t *testing.T) {
+	st := &Handler{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../php-src/tests/http/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	wr := httptest.NewRecorder()
+	rq := httptest.NewRequest("POST", "/", bytes.NewBuffer([]byte("{sd")))
+	rq.Header.Add("Content-Type","application/json")
+	rq.Header.Add("Content-Size","3")
+
+	st.ServeHTTP(wr, rq)
+	assert.Equal(t, 500, wr.Code)
+}
+
 
 func TestServer_Headers(t *testing.T) {
 	st := &Handler{
