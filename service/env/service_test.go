@@ -10,6 +10,16 @@ func Test_NewService(t *testing.T) {
 	assert.Len(t, s.values, 1)
 }
 
+func Test_Init(t *testing.T) {
+	s := &Service{}
+	s.Init(&Config{})
+	assert.Len(t, s.values, 1)
+
+	values, err := s.GetEnv()
+	assert.NoError(t, err)
+	assert.Equal(t, "yes", values["rr"])
+}
+
 func Test_Extend(t *testing.T) {
 	s := NewService(map[string]string{"rr": "version"})
 
@@ -21,4 +31,21 @@ func Test_Extend(t *testing.T) {
 	assert.Len(t, values, 2)
 	assert.Equal(t, "version", values["rr"])
 	assert.Equal(t, "value", values["key"])
+}
+
+func Test_Set(t *testing.T) {
+	s := NewService(map[string]string{"rr": "version"})
+
+	s.Init(&Config{Values: map[string]string{"key": "value"}})
+	assert.Len(t, s.values, 2)
+
+	s.SetEnv("key", "value-new")
+	s.SetEnv("other", "new")
+
+	values, err := s.GetEnv()
+	assert.NoError(t, err)
+	assert.Len(t, values, 3)
+	assert.Equal(t, "version", values["rr"])
+	assert.Equal(t, "value-new", values["key"])
+	assert.Equal(t, "new", values["other"])
 }

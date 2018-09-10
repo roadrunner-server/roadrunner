@@ -12,7 +12,7 @@ func (ts *testService) Echo(msg string, r *string) error { *r = msg; return nil 
 
 func Test_Disabled(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&Config{Enable: false})
+	ok, err := s.Init(&Config{Enable: false}, nil)
 
 	assert.NoError(t, err)
 	assert.False(t, ok)
@@ -30,7 +30,7 @@ func Test_RegisterNotConfigured(t *testing.T) {
 
 func Test_Enabled(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9008"})
+	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9008"}, nil)
 
 	assert.NoError(t, err)
 	assert.True(t, ok)
@@ -38,7 +38,7 @@ func Test_Enabled(t *testing.T) {
 
 func Test_StopNonServing(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9008"})
+	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9008"}, nil)
 
 	assert.NoError(t, err)
 	assert.True(t, ok)
@@ -47,7 +47,7 @@ func Test_StopNonServing(t *testing.T) {
 
 func Test_Serve_Errors(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&Config{Enable: true, Listen: "mailformed"})
+	ok, err := s.Init(&Config{Enable: true, Listen: "mailformed"}, nil)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 
@@ -60,7 +60,7 @@ func Test_Serve_Errors(t *testing.T) {
 
 func Test_Serve_Client(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9018"})
+	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9018"}, nil)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 

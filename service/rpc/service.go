@@ -3,12 +3,19 @@ package rpc
 import (
 	"errors"
 	"github.com/spiral/goridge"
+	"github.com/spiral/roadrunner/service/env"
 	"net/rpc"
 	"sync"
 )
 
-// ID contains default service name.
-const ID = "rpc"
+const (
+	// ID contains default service name.
+	ID = "rpc"
+
+	// rrKey defines environment key to be used to store information about
+	// rpc server connection.
+	envKey = "rr_rpc"
+)
 
 // Service is RPC service.
 type Service struct {
@@ -20,13 +27,17 @@ type Service struct {
 }
 
 // Init rpc service. Must return true if service is enabled.
-func (s *Service) Init(cfg *Config) (bool, error) {
+func (s *Service) Init(cfg *Config, env env.Environment) (bool, error) {
 	if !cfg.Enable {
 		return false, nil
 	}
 
 	s.cfg = cfg
 	s.rpc = rpc.NewServer()
+
+	if env != nil {
+		env.SetEnv(envKey, cfg.Listen)
+	}
 
 	return true, nil
 }

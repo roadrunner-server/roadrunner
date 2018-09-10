@@ -1,7 +1,7 @@
 package static
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
 	"github.com/spiral/roadrunner/service"
 	"os"
 	"path"
@@ -35,18 +35,18 @@ func (c *Config) Valid() error {
 	if !c.Enable {
 		return nil
 	}
-	
+
 	st, err := os.Stat(c.Dir)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return errors.New("root directory does not exists")
+			return fmt.Errorf("root directory '%s' does not exists", c.Dir)
 		}
 
 		return err
 	}
 
 	if !st.IsDir() {
-		return errors.New("invalid root directory")
+		return fmt.Errorf("invalid root directory '%s'", c.Dir)
 	}
 
 	return nil

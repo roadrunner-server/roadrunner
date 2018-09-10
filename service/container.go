@@ -133,7 +133,7 @@ func (c *container) Init(cfg Config) error {
 		if ok, err := c.initService(e.svc, cfg.Get(e.name)); err != nil {
 			// soft error (skipping)
 			if err == errNoConfig {
-				c.log.Warningf("[%s]: no config has been provided", e.name)
+				c.log.Debugf("[%s]: no config has been provided", e.name)
 				continue
 			}
 
@@ -152,7 +152,7 @@ func (c *container) Init(cfg Config) error {
 // Serve all configured services. Non blocking.
 func (c *container) Serve() error {
 	var (
-		numServing int
+		numServing = 0
 		done       = make(chan interface{}, len(c.services))
 	)
 
@@ -213,7 +213,7 @@ func (c *container) Stop() {
 func (c *container) initService(s interface{}, segment Config) (bool, error) {
 	r := reflect.TypeOf(s)
 
-	m, ok := r.MethodByName("Init")
+	m, ok := r.MethodByName(InitMethod)
 	if !ok {
 		// no Init method is presented, assuming service does not need initialization.
 		return true, nil
@@ -250,6 +250,11 @@ func (c *container) resolveValues(s interface{}, m reflect.Method, cfg Config) (
 
 		case v.Implements(reflect.TypeOf((*Container)(nil)).Elem()): // container
 			values = append(values, reflect.ValueOf(c))
+
+		case v.Implements(reflect.TypeOf((*logrus.StdLogger)(nil)).Elem()),
+			v.Implements(reflect.TypeOf((*logrus.FieldLogger)(nil)).Elem()),
+			v.ConvertibleTo(reflect.ValueOf(c.log).Type()): // logger
+			values = append(values, reflect.ValueOf(c.log))
 
 		case v.Implements(reflect.TypeOf((*HydrateConfig)(nil)).Elem()): // injectable config
 			if cfg == nil {

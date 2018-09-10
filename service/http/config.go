@@ -5,12 +5,11 @@ import (
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
 	"strings"
-	"time"
 )
 
 // Config configures RoadRunner HTTP server.
 type Config struct {
-	// Enable enables http svc.
+	// Enable enables http service.
 	Enable bool
 
 	// Address and port to handle as http server.
@@ -32,25 +31,16 @@ func (c *Config) Hydrate(cfg service.Config) error {
 		return err
 	}
 
+	if !c.Enable {
+		return nil
+	}
+
 	if err := c.Valid(); err != nil {
 		return err
 	}
 
-	if c.Workers.Relay == "" {
-		c.Workers.Relay = "pipes"
-	}
-
-	if c.Workers.RelayTimeout < time.Microsecond {
-		c.Workers.RelayTimeout = time.Second * time.Duration(c.Workers.RelayTimeout.Nanoseconds())
-	}
-
-	if c.Workers.Pool.AllocateTimeout < time.Microsecond {
-		c.Workers.Pool.AllocateTimeout = time.Second * time.Duration(c.Workers.Pool.AllocateTimeout.Nanoseconds())
-	}
-
-	if c.Workers.Pool.DestroyTimeout < time.Microsecond {
-		c.Workers.Pool.DestroyTimeout = time.Second * time.Duration(c.Workers.Pool.DestroyTimeout.Nanoseconds())
-	}
+	c.Workers.SetDefaults()
+	c.Workers.UpscaleDurations()
 
 	return nil
 }

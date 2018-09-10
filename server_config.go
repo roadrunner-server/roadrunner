@@ -33,6 +33,44 @@ type ServerConfig struct {
 	env []string
 }
 
+// SetDefaults sets missing values to their default values.
+func (cfg *ServerConfig) SetDefaults() {
+	if cfg.Relay == "" {
+		cfg.Relay = "pipes"
+	}
+
+	if cfg.RelayTimeout == 0 {
+		cfg.RelayTimeout = time.Minute
+	}
+
+	if cfg.Pool == nil {
+		cfg.Pool = &Config{}
+	}
+
+	if cfg.Pool.AllocateTimeout == 0 {
+		cfg.Pool.AllocateTimeout = time.Minute
+	}
+
+	if cfg.Pool.DestroyTimeout == 0 {
+		cfg.Pool.DestroyTimeout = time.Minute
+	}
+}
+
+// UpscaleDurations converts duration values from nanoseconds to seconds.
+func (cfg *ServerConfig) UpscaleDurations() {
+	if cfg.RelayTimeout < time.Microsecond {
+		cfg.RelayTimeout = time.Second * time.Duration(cfg.RelayTimeout.Nanoseconds())
+	}
+
+	if cfg.Pool.AllocateTimeout < time.Microsecond {
+		cfg.Pool.AllocateTimeout = time.Second * time.Duration(cfg.Pool.AllocateTimeout.Nanoseconds())
+	}
+
+	if cfg.Pool.DestroyTimeout < time.Microsecond {
+		cfg.Pool.DestroyTimeout = time.Second * time.Duration(cfg.Pool.DestroyTimeout.Nanoseconds())
+	}
+}
+
 // Differs returns true if configuration has changed but ignores pool or cmd changes.
 func (cfg *ServerConfig) Differs(new *ServerConfig) bool {
 	return cfg.Relay != new.Relay || cfg.RelayTimeout != new.RelayTimeout

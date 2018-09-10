@@ -24,17 +24,20 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/spiral/roadrunner/cmd/rr/debug"
 	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"github.com/spiral/roadrunner/service"
-	"github.com/spiral/roadrunner/service/http"
 	"os"
 )
 
 // Service bus for all the commands.
 var (
-	cfgFile            string
-	verbose, debugMode bool
+	cfgFile string
+
+	// Verbose enables verbosity mode (container specific).
+	Verbose bool
+
+	// Debug enables debug mode (service specific).
+	Debug bool
 
 	// Logger - shared logger.
 	Logger = logrus.New()
@@ -78,6 +81,13 @@ func (w *ViperWrapper) Unmarshal(out interface{}) error {
 // Execute adds all child commands to the CLI command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the CLI.
 func Execute() {
+	if cfg := initConfig(cfgFile, []string{"."}, ".rr"); cfg != nil {
+		if err := Container.Init(cfg); err != nil {
+			utils.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
+			os.Exit(1)
+		}
+	}
+
 	if err := CLI.Execute(); err != nil {
 		utils.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
 		os.Exit(1)
@@ -85,25 +95,13 @@ func Execute() {
 }
 
 func init() {
-	CLI.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-	CLI.PersistentFlags().BoolVarP(&debugMode, "debug", "d", false, "debug mode")
+	CLI.PersistentFlags().BoolVarP(&Verbose, "Verbose", "v", false, "Verbose output")
+	CLI.PersistentFlags().BoolVarP(&Debug, "debug", "d", false, "debug mode")
 	CLI.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is .rr.yaml)")
 
 	cobra.OnInitialize(func() {
-		if verbose {
+		if Verbose {
 			Logger.SetLevel(logrus.DebugLevel)
-		}
-
-		if debugMode {
-			svc, _ := Container.Get(http.ID)
-			svc.(*http.Service).AddListener(debug.Listener(Logger))
-		}
-
-		if cfg := initConfig(cfgFile, []string{"."}, ".rr"); cfg != nil {
-			if err := Container.Init(cfg); err != nil {
-				utils.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
-				os.Exit(1)
-			}
 		}
 	})
 }

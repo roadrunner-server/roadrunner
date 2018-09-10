@@ -20,7 +20,7 @@ type middleware func(f http.HandlerFunc) http.HandlerFunc
 // Service manages rr, http servers.
 type Service struct {
 	cfg      *Config
-	env      env.Provider
+	env      env.Environment
 	lsns     []func(event int, ctx interface{})
 	mdws     []middleware
 	mu       sync.Mutex
@@ -42,7 +42,7 @@ func (s *Service) AddListener(l func(event int, ctx interface{})) {
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Provider) (bool, error) {
+func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Environment) (bool, error) {
 	if !cfg.Enable {
 		return false, nil
 	}

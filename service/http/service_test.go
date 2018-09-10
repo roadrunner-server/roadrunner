@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
+	"github.com/spiral/roadrunner/service/env"
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -13,7 +14,6 @@ import (
 	"os"
 	"testing"
 	"time"
-	"github.com/spiral/roadrunner/service/env"
 )
 
 type testCfg struct {
@@ -49,7 +49,7 @@ func Test_Service_NoConfig(t *testing.T) {
 	c := service.NewContainer(logger)
 	c.Register(ID, &Service{})
 
-	assert.Error(t, c.Init(&testCfg{httpCfg: `{}`}))
+	assert.Error(t, c.Init(&testCfg{httpCfg: `{"Enable":true}`}))
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
