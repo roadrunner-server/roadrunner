@@ -43,6 +43,10 @@ func (cfg *ServerConfig) SetDefaults() {
 		cfg.RelayTimeout = time.Minute
 	}
 
+	if cfg.Pool == nil {
+		cfg.Pool = &Config{}
+	}
+
 	if cfg.Pool.AllocateTimeout == 0 {
 		cfg.Pool.AllocateTimeout = time.Minute
 	}

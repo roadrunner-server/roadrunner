@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"runtime"
 	"testing"
+	"time"
 )
 
 func Test_ServerConfig_PipeFactory(t *testing.T) {
@@ -89,4 +90,47 @@ func Test_ServerConfig_Cmd(t *testing.T) {
 
 	cmd := cfg.makeCommand()
 	assert.NotNil(t, cmd)
+}
+
+func Test_ServerConfig_SetEnv(t *testing.T) {
+	cfg := &ServerConfig{
+		Command: "php php-src/tests/client.php pipes",
+	}
+
+	cfg.SetEnv("key", "value")
+
+	cmd := cfg.makeCommand()
+	assert.NotNil(t, cmd)
+
+	c := cmd()
+
+	assert.Contains(t, c.Env, "KEY=value")
+}
+
+func Test_ServerConfigDefaults(t *testing.T) {
+	cfg := &ServerConfig{
+		Command: "php php-src/tests/client.php pipes",
+	}
+
+	cfg.SetDefaults()
+
+	assert.Equal(t, "pipes", cfg.Relay)
+	assert.Equal(t, time.Minute, cfg.Pool.AllocateTimeout)
+	assert.Equal(t, time.Minute, cfg.Pool.DestroyTimeout)
+}
+
+func Test_Config_Upscale(t *testing.T) {
+	cfg := &ServerConfig{
+		Command:      "php php-src/tests/client.php pipes",
+		RelayTimeout: 1,
+		Pool: &Config{
+			AllocateTimeout: 1,
+			DestroyTimeout:  1,
+		},
+	}
+
+	cfg.UpscaleDurations()
+	assert.Equal(t, time.Second, cfg.RelayTimeout)
+	assert.Equal(t, time.Second, cfg.Pool.AllocateTimeout)
+	assert.Equal(t, time.Second, cfg.Pool.DestroyTimeout)
 }

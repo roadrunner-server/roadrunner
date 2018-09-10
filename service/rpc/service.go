@@ -12,9 +12,9 @@ const (
 	// ID contains default service name.
 	ID = "rpc"
 
-	// RRKey defines environment key to be used to store information about
+	// rrKey defines environment key to be used to store information about
 	// rpc server connection.
-	EnvKey = "RR_RPC"
+	envKey = "rr-rpc"
 )
 
 // Service is RPC service.
@@ -36,7 +36,7 @@ func (s *Service) Init(cfg *Config, env env.Environment) (bool, error) {
 	s.rpc = rpc.NewServer()
 
 	if env != nil {
-		env.SetEnv(EnvKey, cfg.Listen)
+		env.SetEnv(envKey, cfg.Listen)
 	}
 
 	return true, nil
