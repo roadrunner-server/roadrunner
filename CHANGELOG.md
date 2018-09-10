@@ -14,6 +14,7 @@ in container
 - `rr.Verbose` and `rr.Debug` are not public
 - rpc service now exposes it's address to underlying workers to simplify the connection
 - env service construction has been simplified in order to unify it with other services
+- more tests
 
 v1.1.1 (26.07.2018)
 -------
