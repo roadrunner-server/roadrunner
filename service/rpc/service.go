@@ -14,7 +14,7 @@ const (
 
 	// rrKey defines environment key to be used to store information about
 	// rpc server connection.
-	envKey = "rr-rpc"
+	envKey = "rr_rpc"
 )
 
 // Service is RPC service.
