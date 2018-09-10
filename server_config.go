@@ -35,8 +35,8 @@ type ServerConfig struct {
 
 // SetDefaults sets missing values to their default values.
 func (cfg *ServerConfig) SetDefaults() {
-	if c.Workers.Relay == "" {
-		c.Workers.Relay = "pipes"
+	if cfg.Relay == "" {
+		cfg.Relay = "pipes"
 	}
 
 	if cfg.RelayTimeout == 0 {
