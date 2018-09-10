@@ -35,6 +35,10 @@ type ServerConfig struct {
 
 // SetDefaults sets missing values to their default values.
 func (cfg *ServerConfig) SetDefaults() {
+	if c.Workers.Relay == "" {
+		c.Workers.Relay = "pipes"
+	}
+
 	if cfg.RelayTimeout == 0 {
 		cfg.RelayTimeout = time.Minute
 	}
@@ -45,6 +49,21 @@ func (cfg *ServerConfig) SetDefaults() {
 
 	if cfg.Pool.DestroyTimeout == 0 {
 		cfg.Pool.DestroyTimeout = time.Minute
+	}
+}
+
+// UpscaleDurations converts duration values from nanoseconds to seconds.
+func (cfg *ServerConfig) UpscaleDurations() {
+	if cfg.RelayTimeout < time.Microsecond {
+		cfg.RelayTimeout = time.Second * time.Duration(cfg.RelayTimeout.Nanoseconds())
+	}
+
+	if cfg.Pool.AllocateTimeout < time.Microsecond {
+		cfg.Pool.AllocateTimeout = time.Second * time.Duration(cfg.Pool.AllocateTimeout.Nanoseconds())
+	}
+
+	if cfg.Pool.DestroyTimeout < time.Microsecond {
+		cfg.Pool.DestroyTimeout = time.Second * time.Duration(cfg.Pool.DestroyTimeout.Nanoseconds())
 	}
 }
 

@@ -23,8 +23,8 @@
 package main
 
 import (
-	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 	"github.com/sirupsen/logrus"
+	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 
 	// services (plugins)
 	"github.com/spiral/roadrunner/service/env"

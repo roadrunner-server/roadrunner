@@ -3,9 +3,9 @@ package rpc
 import (
 	"errors"
 	"github.com/spiral/goridge"
+	"github.com/spiral/roadrunner/service/env"
 	"net/rpc"
 	"sync"
-	"github.com/spiral/roadrunner/service/env"
 )
 
 const (
@@ -16,6 +16,7 @@ const (
 	// rpc server connection.
 	EnvKey = "RR_RPC"
 )
+
 // Service is RPC service.
 type Service struct {
 	cfg     *Config

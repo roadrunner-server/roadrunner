@@ -1,11 +1,11 @@
 package static
 
 import (
+	"fmt"
 	"github.com/spiral/roadrunner/service"
 	"os"
 	"path"
 	"strings"
-	"fmt"
 )
 
 // Config describes file location and controls access to them.

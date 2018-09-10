@@ -23,15 +23,14 @@ func Test_Extend(t *testing.T) {
 	assert.Equal(t, "value", values["key"])
 }
 
-
 func Test_Set(t *testing.T) {
 	s := NewService(map[string]string{"rr": "version"})
 
 	s.Init(&Config{Values: map[string]string{"key": "value"}})
 	assert.Len(t, s.values, 2)
 
-	s.SetEnv("key","value-new")
-	s.SetEnv("other","new")
+	s.SetEnv("key", "value-new")
+	s.SetEnv("other", "new")
 
 	values, err := s.GetEnv()
 	assert.NoError(t, err)
