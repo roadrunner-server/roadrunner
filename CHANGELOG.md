@@ -3,16 +3,16 @@ CHANGELOG
 
 v1.2.0 (10.09.2018)
 -------
-- added ability to request `*logrus.Logger`, `logrus.StdLogger`, `logrus.FieldLogger` dependency
+- added an ability to request `*logrus.Logger`, `logrus.StdLogger`, `logrus.FieldLogger` dependency
 in container
-- added ability to set env values using `env.Enviroment`
-- `env.Provider` renamed to `env.Enviroment`
-- rr does not throw warning when service config is missing, instead debug level is used
+- added ability to set env values using `env.Environment`
+- `env.Provider` renamed to `env.Environment`
+- rr does not throw a warning when service config is missing, instead debug level is used
 - rr server config now support default value set (shorter configs)
-- debug handlers has been moved from root command and now can be defined by each service
+- debug handlers have been moved from root command and now can be defined for each service separately
 - bugfix: panic when using debug mode without http service registered
-- `rr.Verbose` and `rr.Debug` are not public
-- rpc service now exposes it's address to underlying workers to simplify the connection
+- `rr.Verbose` and `rr.Debug`is not public
+- rpc service now exposes it's addressed to underlying workers to simplify the connection
 - env service construction has been simplified in order to unify it with other services
 - more tests
 
