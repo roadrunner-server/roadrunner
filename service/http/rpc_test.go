@@ -177,3 +177,10 @@ func Test_Workers(t *testing.T) {
 
 	assert.Equal(t, *ss.rr.Workers()[0].Pid, r.Workers[0].Pid)
 }
+
+func Test_Errors(t *testing.T) {
+	r := &rpcServer{nil}
+
+	assert.Error(t, r.Reset(true, nil))
+	assert.Error(t, r.Workers(true, nil))
+}
