@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v1.2.0
+v1.2.0 (10.09.2018)
 -------
 - added ability to request `*logrus.Logger`, `logrus.StdLogger`, `logrus.FieldLogger` dependency
 in container
