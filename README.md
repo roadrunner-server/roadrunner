@@ -68,7 +68,7 @@ $psr7 = new Spiral\RoadRunner\PSR7Client(new Spiral\RoadRunner\Worker($relay));
 
 while ($req = $psr7->acceptRequest()) {
     try {
-        $resp = new \Zend\Diactoros\Response()
+        $resp = new \Zend\Diactoros\Response();
         $resp->getBody()->write("hello world");
 
         $psr7->respond($resp);
