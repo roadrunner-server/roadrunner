@@ -11,8 +11,13 @@ import (
 	"sync/atomic"
 )
 
-// ID contains default svc name.
-const ID = "http"
+const (
+	// ID contains default svc name.
+	ID = "http"
+
+	// httpKey indicates to php process that it's running under http service
+	httpKey = "rr_http"
+)
 
 // http middleware type.
 type middleware func(f http.HandlerFunc) http.HandlerFunc
@@ -69,6 +74,8 @@ func (s *Service) Serve() error {
 		for k, v := range values {
 			s.cfg.Workers.SetEnv(k, v)
 		}
+
+		s.cfg.Workers.SetEnv(httpKey, "true")
 	}
 
 	rr := roadrunner.NewServer(s.cfg.Workers)

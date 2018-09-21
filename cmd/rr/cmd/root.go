@@ -27,6 +27,7 @@ import (
 	"github.com/spiral/roadrunner/cmd/rr/utils"
 	"github.com/spiral/roadrunner/service"
 	"os"
+	"path/filepath"
 )
 
 // Service bus for all the commands.
@@ -81,13 +82,6 @@ func (w *ViperWrapper) Unmarshal(out interface{}) error {
 // Execute adds all child commands to the CLI command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the CLI.
 func Execute() {
-	if cfg := initConfig(cfgFile, []string{"."}, ".rr"); cfg != nil {
-		if err := Container.Init(cfg); err != nil {
-			utils.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
-			os.Exit(1)
-		}
-	}
-
 	if err := CLI.Execute(); err != nil {
 		utils.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
 		os.Exit(1)
@@ -97,11 +91,18 @@ func Execute() {
 func init() {
 	CLI.PersistentFlags().BoolVarP(&Verbose, "Verbose", "v", false, "Verbose output")
 	CLI.PersistentFlags().BoolVarP(&Debug, "debug", "d", false, "debug mode")
-	CLI.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is .rr.yaml)")
+	CLI.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is .rr.yaml)")
 
 	cobra.OnInitialize(func() {
 		if Verbose {
 			Logger.SetLevel(logrus.DebugLevel)
+		}
+
+		if cfg := initConfig(cfgFile, []string{"."}, ".rr"); cfg != nil {
+			if err := Container.Init(cfg); err != nil {
+				utils.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
+				os.Exit(1)
+			}
 		}
 	})
 }
@@ -110,8 +111,24 @@ func initConfig(cfgFile string, path []string, name string) service.Config {
 	cfg := viper.New()
 
 	if cfgFile != "" {
+		if absPath, err := filepath.Abs(cfgFile); err == nil {
+			cfgFile = absPath
+
+			// force working absPath related to config file
+			if err := os.Chdir(filepath.Dir(absPath)); err != nil {
+				Logger.Error(err)
+			}
+		}
+
 		// Use cfg file from the flag.
 		cfg.SetConfigFile(cfgFile)
+
+		if dir, err := filepath.Abs(cfgFile); err == nil {
+			// force working absPath related to config file
+			if err := os.Chdir(filepath.Dir(dir)); err != nil {
+				Logger.Error(err)
+			}
+		}
 	} else {
 		// automatic location
 		for _, p := range path {
