@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v1.2.1 (21.09.2018)
+------
+- added RR_HTTP env variable to php processes run under http service
+- bugfix: ignored `--config` option
+- added shorthand for config `-c`
+- rr now changes working dir to the config location (allows relating paths for php scripts)
+
 v1.2.0 (10.09.2018)
 -------
 - added an ability to request `*logrus.Logger`, `logrus.StdLogger`, `logrus.FieldLogger` dependency
