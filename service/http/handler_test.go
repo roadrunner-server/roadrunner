@@ -8,13 +8,13 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"os"
 	"runtime"
 	"strings"
 	"testing"
 	"time"
-	"net/http/httptest"
 )
 
 // get request and return body
@@ -113,13 +113,12 @@ func Test_Handler_JSON_error(t *testing.T) {
 
 	wr := httptest.NewRecorder()
 	rq := httptest.NewRequest("POST", "/", bytes.NewBuffer([]byte("{sd")))
-	rq.Header.Add("Content-Type","application/json")
-	rq.Header.Add("Content-Size","3")
+	rq.Header.Add("Content-Type", "application/json")
+	rq.Header.Add("Content-Size", "3")
 
 	st.ServeHTTP(wr, rq)
 	assert.Equal(t, 500, wr.Code)
 }
-
 
 func TestServer_Headers(t *testing.T) {
 	st := &Handler{
