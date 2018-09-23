@@ -78,6 +78,18 @@ while ($req = $psr7->acceptRequest()) {
 }
 ```
 
+Configuration can be located in `.rr.yaml` file:
+
+```yaml
+http:
+  address:    :8080
+  maxRequest: 200
+  workers:
+    command: "php psr-worker.php"
+    pool:
+      numWorkers: 4
+```
+
 License:
 --------
 The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [SpiralScout](https://spiralscout.com).
