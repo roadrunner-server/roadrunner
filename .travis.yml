@@ -45,6 +45,15 @@ jobs:
       - go version
       - sudo add-apt-repository -y ppa:ondrej/php
       - sudo apt-get update
+      - sudo apt-get install -y php7.0-cli
+      - sudo cp `which php7.0` `which php`
+      - php -v
+- composer self-update
+  - stage: Test
+    before_install:
+      - go version
+      - sudo add-apt-repository -y ppa:ondrej/php
+      - sudo apt-get update
       - sudo apt-get install -y php7.1-cli
       - sudo cp `which php7.1` `which php`
       - php -v
