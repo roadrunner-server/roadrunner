@@ -85,7 +85,7 @@ func Test_ServerConfig_ErrorMethod(t *testing.T) {
 
 func Test_ServerConfig_Cmd(t *testing.T) {
 	cfg := &ServerConfig{
-		Command: "php php-src/tests/client.php pipes",
+		Command: "php tests/client.php pipes",
 	}
 
 	cmd := cfg.makeCommand()
@@ -94,7 +94,7 @@ func Test_ServerConfig_Cmd(t *testing.T) {
 
 func Test_ServerConfig_SetEnv(t *testing.T) {
 	cfg := &ServerConfig{
-		Command: "php php-src/tests/client.php pipes",
+		Command: "php tests/client.php pipes",
 	}
 
 	cfg.SetEnv("key", "value")
@@ -109,10 +109,10 @@ func Test_ServerConfig_SetEnv(t *testing.T) {
 
 func Test_ServerConfigDefaults(t *testing.T) {
 	cfg := &ServerConfig{
-		Command: "php php-src/tests/client.php pipes",
+		Command: "php tests/client.php pipes",
 	}
 
-	cfg.SetDefaults()
+	cfg.InitDefaults()
 
 	assert.Equal(t, "pipes", cfg.Relay)
 	assert.Equal(t, time.Minute, cfg.Pool.AllocateTimeout)
@@ -121,7 +121,7 @@ func Test_ServerConfigDefaults(t *testing.T) {
 
 func Test_Config_Upscale(t *testing.T) {
 	cfg := &ServerConfig{
-		Command:      "php php-src/tests/client.php pipes",
+		Command:      "php tests/client.php pipes",
 		RelayTimeout: 1,
 		Pool: &Config{
 			AllocateTimeout: 1,

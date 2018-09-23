@@ -25,6 +25,10 @@ type testCfg struct {
 
 func (cfg *testCfg) Get(name string) service.Config {
 	if name == ID {
+		if cfg.httpCfg == "" {
+			return nil
+		}
+
 		return &testCfg{target: cfg.httpCfg}
 	}
 
@@ -63,24 +67,7 @@ func Test_Service_Configure_Disable(t *testing.T) {
 	c := service.NewContainer(logger)
 	c.Register(ID, &Service{})
 
-	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
-			"enable": false,
-			"address": ":8070",
-			"maxRequest": 1024,
-			"uploads": {
-				"dir": ` + tmpDir() + `,
-				"forbid": []
-			},
-			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
-				"relay": "pipes",
-				"pool": {
-					"numWorkers": 1, 
-					"allocateTimeout": 10000000,
-					"destroyTimeout": 10000000 
-				}
-			}
-	}`}))
+	assert.NoError(t, c.Init(&testCfg{}))
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
@@ -103,7 +90,7 @@ func Test_Service_Configure_Enable(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/client.php echo pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 
@@ -134,7 +121,7 @@ func Test_Service_Echo(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/client.php echo pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 
@@ -187,7 +174,7 @@ func Test_Service_Env(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php env pipes",
+				"command": "php ../../tests/http/client.php env pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 
@@ -239,7 +226,7 @@ func Test_Service_ErrorEcho(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echoerr pipes",
+				"command": "php ../../tests/http/client.php echoerr pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 
@@ -299,7 +286,7 @@ func Test_Service_Middleware(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/client.php echo pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 
@@ -373,7 +360,7 @@ func Test_Service_Listener(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/client.php echo pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 
@@ -417,7 +404,7 @@ func Test_Service_Error(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/client.php echo pipes",
 				"relay": "---",
 				"pool": {
 					"numWorkers": 1, 
@@ -446,7 +433,7 @@ func Test_Service_Error2(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php broken pipes",
+				"command": "php ../../tests/http/client.php broken pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 
@@ -475,7 +462,7 @@ func Test_Service_Error3(t *testing.T) {
 				"forbid": []
 			},
 			"workers"
-				"command": "php ../../php-src/tests/http/client.php broken pipes",
+				"command": "php ../../tests/http/client.php broken pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 
@@ -502,7 +489,7 @@ func Test_Service_Error4(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php broken pipes",
+				"command": "php ../../tests/http/client.php broken pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 

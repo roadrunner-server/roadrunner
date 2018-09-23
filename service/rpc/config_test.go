@@ -27,6 +27,13 @@ func Test_Config_Hydrate_Error(t *testing.T) {
 	assert.Error(t, c.Hydrate(cfg))
 }
 
+func Test_Config_Hydrate_Error2(t *testing.T) {
+	cfg := &testCfg{`{"enable": true, "listen": "invalid"`}
+	c := &Config{}
+
+	assert.Error(t, c.Hydrate(cfg))
+}
+
 func TestConfig_Listener(t *testing.T) {
 	cfg := &Config{Listen: "tcp://:18001"}
 
@@ -127,4 +134,11 @@ func Test_Config_DialerErrorMethod(t *testing.T) {
 	ln, err := cfg.Dialer()
 	assert.Nil(t, ln)
 	assert.Error(t, err)
+}
+
+func Test_Config_Defaults(t *testing.T) {
+	c := &Config{}
+	c.InitDefaults()
+	assert.Equal(t, true, c.Enable)
+	assert.Equal(t, "tcp://127.0.0.1:6001", c.Listen)
 }

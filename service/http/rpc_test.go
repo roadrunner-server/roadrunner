@@ -33,7 +33,7 @@ func Test_RPC(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php pid pipes",
+				"command": "php ../../tests/http/client.php pid pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 
@@ -94,7 +94,7 @@ func Test_RPC_Unix(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php pid pipes",
+				"command": "php ../../tests/http/client.php pid pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 
@@ -148,7 +148,7 @@ func Test_Workers(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php pid pipes",
+				"command": "php ../../tests/http/client.php pid pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 

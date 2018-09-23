@@ -33,27 +33,16 @@ type ServerConfig struct {
 	env []string
 }
 
-// SetDefaults sets missing values to their default values.
-func (cfg *ServerConfig) SetDefaults() {
-	if cfg.Relay == "" {
-		cfg.Relay = "pipes"
-	}
-
-	if cfg.RelayTimeout == 0 {
-		cfg.RelayTimeout = time.Minute
-	}
+// InitDefaults sets missing values to their default values.
+func (cfg *ServerConfig) InitDefaults() error {
+	cfg.Relay = "pipes"
+	cfg.RelayTimeout = time.Minute
 
 	if cfg.Pool == nil {
 		cfg.Pool = &Config{}
 	}
 
-	if cfg.Pool.AllocateTimeout == 0 {
-		cfg.Pool.AllocateTimeout = time.Minute
-	}
-
-	if cfg.Pool.DestroyTimeout == 0 {
-		cfg.Pool.DestroyTimeout = time.Minute
-	}
+	return cfg.Pool.InitDefaults()
 }
 
 // UpscaleDurations converts duration values from nanoseconds to seconds.

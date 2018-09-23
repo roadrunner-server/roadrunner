@@ -49,7 +49,7 @@ type Request struct {
 	// Uploads contains list of uploaded files, their names, sized and associations with temporary files.
 	Uploads *Uploads `json:"uploads"`
 
-	// Attributes can be set by chained middleware to safely pass value from Golang to PHP. See: GetAttribute, SetAttribute functions.
+	// Attributes can be set by chained mdwr to safely pass value from Golang to PHP. See: GetAttribute, SetAttribute functions.
 	Attributes map[string]interface{} `json:"attributes"`
 
 	// request body can be parsedData or []byte

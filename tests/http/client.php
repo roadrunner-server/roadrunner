@@ -4,7 +4,7 @@ use Spiral\Goridge;
 use Spiral\RoadRunner;
 
 ini_set('display_errors', 'stderr');
-require dirname(__DIR__) . "/../../vendor/autoload.php";
+require dirname(__DIR__) . "/../vendor/autoload.php";
 
 if (count($argv) < 3) {
     die("need 2 arguments");

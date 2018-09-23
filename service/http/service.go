@@ -27,7 +27,7 @@ type Service struct {
 	cfg      *Config
 	env      env.Environment
 	lsns     []func(event int, ctx interface{})
-	mdws     []middleware
+	mdwr     []middleware
 	mu       sync.Mutex
 	rr       *roadrunner.Server
 	stopping int32
@@ -35,9 +35,9 @@ type Service struct {
 	http     *http.Server
 }
 
-// AddMiddleware adds new net/http middleware.
+// AddMiddleware adds new net/http mdwr.
 func (s *Service) AddMiddleware(m middleware) {
-	s.mdws = append(s.mdws, m)
+	s.mdwr = append(s.mdwr, m)
 }
 
 // AddListener attaches server event watcher.
@@ -48,10 +48,6 @@ func (s *Service) AddListener(l func(event int, ctx interface{})) {
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Environment) (bool, error) {
-	if !cfg.Enable {
-		return false, nil
-	}
-
 	s.cfg = cfg
 	s.env = e
 	if r != nil {
@@ -87,17 +83,14 @@ func (s *Service) Serve() error {
 	s.rr.Listen(s.listener)
 	s.srv.Listen(s.listener)
 
-	if len(s.mdws) == 0 {
-		s.http.Handler = s.srv
-	} else {
-		s.http.Handler = s
-	}
+	s.http.Handler = s
+
 	s.mu.Unlock()
 
 	if err := rr.Start(); err != nil {
 		return err
 	}
-	defer s.rr.Stop()
+	defer rr.Stop()
 
 	return s.http.ListenAndServe()
 }
@@ -118,13 +111,13 @@ func (s *Service) Stop() {
 	s.http.Shutdown(context.Background())
 }
 
-// middleware handles connection using set of mdws and rr PSR-7 server.
+// mdwr handles connection using set of mdwr and rr PSR-7 server.
 func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	r = attributes.Init(r)
 
-	// chaining middlewares
+	// chaining mdwr
 	f := s.srv.ServeHTTP
-	for _, m := range s.mdws {
+	for _, m := range s.mdwr {
 		f = m(f)
 	}
 	f(w, r)

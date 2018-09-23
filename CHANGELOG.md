@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+v1.2.2 (23.09.2018)
+- new project directory structure
+- introduces DefaultsConfig, allows to keep config files smaller
+- better worker pool destruction while working with long running processes
+- added more php versions to travis config
+- `Spiral\RoadRunner\Exceptions\RoadRunnerException` is marked as deprecated in favor of `Spiral\RoadRunner\Exception\RoadRunnerException`
+- improved test coverage
+
 v1.2.1 (21.09.2018)
 ------
 - added RR_HTTP env variable to php processes run under http service

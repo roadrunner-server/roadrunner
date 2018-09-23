@@ -66,6 +66,11 @@ type HydrateConfig interface {
 	Hydrate(cfg Config) error
 }
 
+type DefaultsConfig interface {
+	// InitDefaults allows to init blank config with pre-defined set of default values.
+	InitDefaults() error
+}
+
 type container struct {
 	log      logrus.FieldLogger
 	mu       sync.Mutex
@@ -257,11 +262,19 @@ func (c *container) resolveValues(s interface{}, m reflect.Method, cfg Config) (
 			values = append(values, reflect.ValueOf(c.log))
 
 		case v.Implements(reflect.TypeOf((*HydrateConfig)(nil)).Elem()): // injectable config
-			if cfg == nil {
+			sc := reflect.New(v.Elem())
+
+			if dsc, ok := sc.Interface().(DefaultsConfig); ok {
+				dsc.InitDefaults()
+				if cfg == nil {
+					values = append(values, sc)
+					continue
+				}
+
+			} else if cfg == nil {
 				return nil, errNoConfig
 			}
 
-			sc := reflect.New(v.Elem())
 			if err := sc.Interface().(HydrateConfig).Hydrate(cfg); err != nil {
 				return nil, err
 			}

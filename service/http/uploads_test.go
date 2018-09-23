@@ -27,7 +27,7 @@ func TestServer_Upload_File(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php upload pipes",
+			Command: "php ../../tests/http/client.php upload pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -88,7 +88,7 @@ func TestServer_Upload_NestedFile(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php upload pipes",
+			Command: "php ../../tests/http/client.php upload pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -149,7 +149,7 @@ func TestServer_Upload_File_NoTmpDir(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php upload pipes",
+			Command: "php ../../tests/http/client.php upload pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -210,7 +210,7 @@ func TestServer_Upload_File_Forbids(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php upload pipes",
+			Command: "php ../../tests/http/client.php upload pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,

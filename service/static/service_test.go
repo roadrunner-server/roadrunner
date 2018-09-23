@@ -56,7 +56,7 @@ func Test_Files(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{
-		static: `{"enable":true, "dir":"../../php-src/tests", "forbid":[]}`,
+		static: `{"enable":true, "dir":"../../tests", "forbid":[]}`,
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
@@ -66,7 +66,7 @@ func Test_Files(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php pid pipes",
+				"command": "php ../../tests/http/client.php pid pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1, 
@@ -93,7 +93,7 @@ func Test_Files_Disable(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{
-		static: `{"enable":false, "dir":"../../php-src/tests", "forbid":[".php"]}`,
+		static: `{"enable":false, "dir":"../../tests", "forbid":[".php"]}`,
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
@@ -103,7 +103,7 @@ func Test_Files_Disable(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/client.php echo pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1,
@@ -140,7 +140,7 @@ func Test_Files_Error(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/client.php echo pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1,
@@ -170,7 +170,7 @@ func Test_Files_Error2(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/client.php echo pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1,
@@ -190,7 +190,7 @@ func Test_Files_Forbid(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{
-		static: `{"enable":true, "dir":"../../php-src/tests", "forbid":[".php"]}`,
+		static: `{"enable":true, "dir":"../../tests", "forbid":[".php"]}`,
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
@@ -200,7 +200,7 @@ func Test_Files_Forbid(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/client.php echo pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1,
@@ -227,7 +227,7 @@ func Test_Files_NotFound(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{
-		static: `{"enable":true, "dir":"../../php-src/tests", "forbid":[".php"]}`,
+		static: `{"enable":true, "dir":"../../tests", "forbid":[".php"]}`,
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
@@ -237,7 +237,7 @@ func Test_Files_NotFound(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/client.php echo pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1,
@@ -264,7 +264,7 @@ func Test_Files_Dir(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{
-		static: `{"enable":true, "dir":"../../php-src/tests", "forbid":[".php"]}`,
+		static: `{"enable":true, "dir":"../../tests", "forbid":[".php"]}`,
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
@@ -274,7 +274,7 @@ func Test_Files_Dir(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/client.php echo pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1,
@@ -301,7 +301,7 @@ func Test_Files_NotForbid(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{
-		static: `{"enable":true, "dir":"../../php-src/tests", "forbid":[]}`,
+		static: `{"enable":true, "dir":"../../tests", "forbid":[]}`,
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
@@ -311,7 +311,7 @@ func Test_Files_NotForbid(t *testing.T) {
 				"forbid": []
 			},
 			"workers":{
-				"command": "php ../../php-src/tests/http/client.php pid pipes",
+				"command": "php ../../tests/http/client.php pid pipes",
 				"relay": "pipes",
 				"pool": {
 					"numWorkers": 1,
@@ -326,7 +326,7 @@ func Test_Files_NotForbid(t *testing.T) {
 	defer c.Stop()
 
 	b, _, _ := get("http://localhost:6029/client.php")
-	assert.Equal(t, all("../../php-src/tests/client.php"), b)
+	assert.Equal(t, all("../../tests/client.php"), b)
 }
 
 func tmpDir() string {

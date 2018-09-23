@@ -14,3 +14,9 @@ type Config struct {
 func (c *Config) Hydrate(cfg service.Config) error {
 	return cfg.Unmarshal(&c.Values)
 }
+
+// InitDefaults allows to init blank config with pre-defined set of default values.
+func (c *Config) InitDefaults() error {
+	c.Values = make(map[string]string)
+	return nil
+}

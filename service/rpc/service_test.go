@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"github.com/spiral/roadrunner/service/env"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -79,4 +80,16 @@ func Test_Serve_Client(t *testing.T) {
 	var resp string
 	assert.NoError(t, client.Call("test.Echo", "hello world", &resp))
 	assert.Equal(t, "hello world", resp)
+}
+
+func TestSetEnv(t *testing.T) {
+	s := &Service{}
+	e := env.NewService(map[string]string{})
+	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9018"}, e)
+
+	assert.NoError(t, err)
+	assert.True(t, ok)
+
+	v, _ := e.GetEnv()
+	assert.Equal(t, "tcp://localhost:9018", v["rr_rpc"])
 }
