@@ -303,6 +303,49 @@ func Test_StaticPool_Stop_Worker(t *testing.T) {
 	}
 }
 
+// identical to replace but controlled on worker side
+func Test_Static_Pool_Destroy_And_Close(t *testing.T) {
+	p, err := NewPool(
+		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "delay", "pipes") },
+		NewPipeFactory(),
+		Config{
+			NumWorkers:      1,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	)
+
+	assert.NotNil(t, p)
+	assert.NoError(t, err)
+
+	p.Destroy()
+	_, err = p.Exec(&Payload{Body: []byte("100")})
+	assert.Error(t, err)
+}
+
+// identical to replace but controlled on worker side
+func Test_Static_Pool_Destroy_And_Close_While_Wait(t *testing.T) {
+	p, err := NewPool(
+		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "delay", "pipes") },
+		NewPipeFactory(),
+		Config{
+			NumWorkers:      1,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	)
+
+	assert.NotNil(t, p)
+	assert.NoError(t, err)
+
+	go p.Exec(&Payload{Body: []byte("100")})
+	time.Sleep(time.Millisecond * 10)
+
+	p.Destroy()
+	_, err = p.Exec(&Payload{Body: []byte("100")})
+	assert.Error(t, err)
+}
+
 func Benchmark_Pool_Allocate(b *testing.B) {
 	p, _ := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
