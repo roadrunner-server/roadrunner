@@ -25,6 +25,19 @@ type Config struct {
 	DestroyTimeout time.Duration
 }
 
+// InitDefaults allows to init blank config with pre-defined set of default values.
+func (cfg *Config) InitDefaults() error {
+	if cfg.AllocateTimeout == 0 {
+		cfg.AllocateTimeout = time.Minute
+	}
+
+	if cfg.DestroyTimeout == 0 {
+		cfg.DestroyTimeout = time.Minute
+	}
+
+	return nil
+}
+
 // Valid returns error if config not valid.
 func (cfg *Config) Valid() error {
 	if cfg.NumWorkers == 0 {

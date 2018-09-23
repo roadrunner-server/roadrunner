@@ -87,11 +87,8 @@ func (s *Service) Serve() error {
 	s.rr.Listen(s.listener)
 	s.srv.Listen(s.listener)
 
-	if len(s.middleware) == 0 {
-		s.http.Handler = s.srv
-	} else {
-		s.http.Handler = s
-	}
+	s.http.Handler = s
+
 	s.mu.Unlock()
 
 	if err := rr.Start(); err != nil {

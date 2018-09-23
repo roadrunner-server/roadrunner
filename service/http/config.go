@@ -36,7 +36,7 @@ func (c *Config) Hydrate(cfg service.Config) error {
 	}
 
 	if c.Workers != nil {
-		c.Workers.SetDefaults()
+		c.Workers.InitDefaults()
 	}
 
 	if err := c.Valid(); err != nil {

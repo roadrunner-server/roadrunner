@@ -112,7 +112,7 @@ func Test_ServerConfigDefaults(t *testing.T) {
 		Command: "php tests/client.php pipes",
 	}
 
-	cfg.SetDefaults()
+	cfg.InitDefaults()
 
 	assert.Equal(t, "pipes", cfg.Relay)
 	assert.Equal(t, time.Minute, cfg.Pool.AllocateTimeout)

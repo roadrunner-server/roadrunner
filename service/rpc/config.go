@@ -26,6 +26,14 @@ func (c *Config) Hydrate(cfg service.Config) error {
 	return c.Valid()
 }
 
+// InitDefaults allows to init blank config with pre-defined set of default values.
+func (c *Config) InitDefaults() error {
+	c.Enable = true
+	c.Listen = "tcp://127.0.0.1:6001"
+
+	return nil
+}
+
 // Valid returns nil if config is valid.
 func (c *Config) Valid() error {
 	if dsn := strings.Split(c.Listen, "://"); len(dsn) != 2 {
