@@ -79,6 +79,37 @@ func (cfg *testCfg) Get(name string) Config {
 }
 func (cfg *testCfg) Unmarshal(out interface{}) error { return json.Unmarshal([]byte(cfg.cfg), out) }
 
+// Config defines RPC service config.
+type dConfig struct {
+	// Indicates if RPC connection is enabled.
+	Value string
+}
+
+// Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
+func (c *dConfig) Hydrate(cfg Config) error {
+	if err := cfg.Unmarshal(c); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// InitDefaults allows to init blank config with pre-defined set of default values.
+func (c *dConfig) InitDefaults() error {
+	c.Value = "default"
+
+	return nil
+}
+
+type dService struct {
+	Cfg *dConfig
+}
+
+func (s *dService) Init(cfg *dConfig) (bool, error) {
+	s.Cfg = cfg
+	return true, nil
+}
+
 func TestContainer_Register(t *testing.T) {
 	logger, hook := test.NewNullLogger()
 	logger.SetLevel(logrus.DebugLevel)
@@ -146,6 +177,44 @@ func TestContainer_Configure(t *testing.T) {
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
 	assert.Equal(t, StatusOK, st)
+}
+
+func TestContainer_Init_Default(t *testing.T) {
+	logger, hook := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	svc := &dService{}
+
+	c := NewContainer(logger)
+	c.Register("test", svc)
+	assert.Equal(t, 1, len(hook.Entries))
+
+	assert.NoError(t, c.Init(&testCfg{`{}`}))
+
+	s, st := c.Get("test")
+	assert.IsType(t, &dService{}, s)
+	assert.Equal(t, StatusOK, st)
+
+	assert.Equal(t, "default", svc.Cfg.Value)
+}
+
+func TestContainer_Init_Default_Overwrite(t *testing.T) {
+	logger, hook := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	svc := &dService{}
+
+	c := NewContainer(logger)
+	c.Register("test", svc)
+	assert.Equal(t, 1, len(hook.Entries))
+
+	assert.NoError(t, c.Init(&testCfg{`{"test":{"value": "something"}}`}))
+
+	s, st := c.Get("test")
+	assert.IsType(t, &dService{}, s)
+	assert.Equal(t, StatusOK, st)
+
+	assert.Equal(t, "something", svc.Cfg.Value)
 }
 
 func TestContainer_ConfigureNull(t *testing.T) {
