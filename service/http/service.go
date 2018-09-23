@@ -24,20 +24,20 @@ type middleware func(f http.HandlerFunc) http.HandlerFunc
 
 // Service manages rr, http servers.
 type Service struct {
-	cfg        *Config
-	env        env.Environment
-	lsns       []func(event int, ctx interface{})
-	middleware []middleware
-	mu         sync.Mutex
-	rr         *roadrunner.Server
-	stopping   int32
-	srv        *Handler
-	http       *http.Server
+	cfg      *Config
+	env      env.Environment
+	lsns     []func(event int, ctx interface{})
+	mdwr     []middleware
+	mu       sync.Mutex
+	rr       *roadrunner.Server
+	stopping int32
+	srv      *Handler
+	http     *http.Server
 }
 
-// AddMiddleware adds new net/http middleware.
+// AddMiddleware adds new net/http mdwr.
 func (s *Service) AddMiddleware(m middleware) {
-	s.middleware = append(s.middleware, m)
+	s.mdwr = append(s.mdwr, m)
 }
 
 // AddListener attaches server event watcher.
@@ -111,13 +111,13 @@ func (s *Service) Stop() {
 	s.http.Shutdown(context.Background())
 }
 
-// middleware handles connection using set of middleware and rr PSR-7 server.
+// mdwr handles connection using set of mdwr and rr PSR-7 server.
 func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	r = attributes.Init(r)
 
-	// chaining middleware
+	// chaining mdwr
 	f := s.srv.ServeHTTP
-	for _, m := range s.middleware {
+	for _, m := range s.mdwr {
 		f = m(f)
 	}
 	f(w, r)
