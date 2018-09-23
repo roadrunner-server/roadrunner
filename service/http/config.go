@@ -35,11 +35,14 @@ func (c *Config) Hydrate(cfg service.Config) error {
 		return nil
 	}
 
+	if c.Workers != nil {
+		c.Workers.SetDefaults()
+	}
+
 	if err := c.Valid(); err != nil {
 		return err
 	}
 
-	c.Workers.SetDefaults()
 	c.Workers.UpscaleDurations()
 
 	return nil
