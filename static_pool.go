@@ -150,9 +150,9 @@ func (p *StaticPool) Exec(rqs *Payload) (rsp *Payload, err error) {
 // Destroy all underlying workers (but let them to complete the task).
 func (p *StaticPool) Destroy() {
 	atomic.AddInt32(&p.inDestroy, 1)
-	close(p.destroy)
 
 	p.tmu.Lock()
+	close(p.destroy)
 	p.tasks.Wait()
 	p.tmu.Unlock()
 
