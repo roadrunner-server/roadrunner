@@ -2,6 +2,7 @@ CHANGELOG
 =========
 
 v1.2.2 (23.09.2018)
+------
 - new project directory structure
 - introduces DefaultsConfig, allows to keep config files smaller
 - better worker pool destruction while working with long running processes
