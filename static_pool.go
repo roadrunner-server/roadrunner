@@ -42,6 +42,7 @@ type StaticPool struct {
 
 	// pool is being destroyed
 	inDestroy int32
+	destroy   chan interface{}
 
 	// lsn is optional callback to handle worker create/destruct/error events.
 	mul sync.Mutex
@@ -60,6 +61,7 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, er
 		factory: factory,
 		workers: make([]*Worker, 0, cfg.NumWorkers),
 		free:    make(chan *Worker, cfg.NumWorkers),
+		destroy: make(chan interface{}),
 	}
 
 	// constant number of workers simplify logic
@@ -144,7 +146,7 @@ func (p *StaticPool) Exec(rqs *Payload) (rsp *Payload, err error) {
 // Destroy all underlying workers (but let them to complete the task).
 func (p *StaticPool) Destroy() {
 	atomic.AddInt32(&p.inDestroy, 1)
-
+	close(p.destroy)
 	p.tasks.Wait()
 
 	var wg sync.WaitGroup
@@ -173,6 +175,8 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 			}
 
 			return w, nil
+		case <-p.destroy:
+			return nil, fmt.Errorf("pool has been stopped")
 		default:
 			// enable timeout handler
 		}
@@ -189,6 +193,8 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 				continue
 			}
 			return w, nil
+		case <-p.destroy:
+			return nil, fmt.Errorf("pool has been stopped")
 		}
 	}
 
