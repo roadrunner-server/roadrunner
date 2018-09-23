@@ -129,7 +129,7 @@ func Test_Config_Upscale(t *testing.T) {
 		},
 	}
 
-	cfg.UpscaleDurations()
+	cfg.Pool.UpscaleDurations()
 	assert.Equal(t, time.Second, cfg.RelayTimeout)
 	assert.Equal(t, time.Second, cfg.Pool.AllocateTimeout)
 	assert.Equal(t, time.Second, cfg.Pool.DestroyTimeout)

@@ -48,10 +48,6 @@ func (s *Service) AddListener(l func(event int, ctx interface{})) {
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Environment) (bool, error) {
-	if !cfg.Enable {
-		return false, nil
-	}
-
 	s.cfg = cfg
 	s.env = e
 	if r != nil {

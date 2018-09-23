@@ -9,9 +9,6 @@ import (
 
 // Config configures RoadRunner HTTP server.
 type Config struct {
-	// Enable enables http service.
-	Enable bool
-
 	// Address and port to handle as http server.
 	Address string
 
@@ -27,41 +24,32 @@ type Config struct {
 
 // Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
 func (c *Config) Hydrate(cfg service.Config) error {
+	if c.Workers == nil {
+		c.Workers = &roadrunner.ServerConfig{}
+	}
+
+	if c.Uploads == nil {
+		c.Uploads = &UploadsConfig{}
+	}
+
+	c.Uploads.InitDefaults()
+	c.Workers.InitDefaults()
+
 	if err := cfg.Unmarshal(c); err != nil {
 		return err
 	}
 
-	if !c.Enable {
-		return nil
-	}
-
-	if c.Workers != nil {
-		c.Workers.InitDefaults()
-	}
+	c.Workers.UpscaleDurations()
 
 	if err := c.Valid(); err != nil {
 		return err
 	}
-
-	c.Workers.UpscaleDurations()
 
 	return nil
 }
 
 // Valid validates the configuration.
 func (c *Config) Valid() error {
-	if c.Uploads == nil {
-		return errors.New("mailformed uploads config")
-	}
-
-	if c.Workers == nil {
-		return errors.New("mailformed workers config")
-	}
-
-	if c.Workers.Pool == nil {
-		return errors.New("mailformed workers config (pool config is missing)")
-	}
-
 	if err := c.Workers.Pool.Valid(); err != nil {
 		return err
 	}

@@ -35,13 +35,8 @@ type ServerConfig struct {
 
 // InitDefaults sets missing values to their default values.
 func (cfg *ServerConfig) InitDefaults() error {
-	if cfg.Relay == "" {
-		cfg.Relay = "pipes"
-	}
-
-	if cfg.RelayTimeout == 0 {
-		cfg.RelayTimeout = time.Minute
-	}
+	cfg.Relay = "pipes"
+	cfg.RelayTimeout = time.Minute
 
 	if cfg.Pool == nil {
 		cfg.Pool = &Config{}

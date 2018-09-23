@@ -27,13 +27,8 @@ type Config struct {
 
 // InitDefaults allows to init blank config with pre-defined set of default values.
 func (cfg *Config) InitDefaults() error {
-	if cfg.AllocateTimeout == 0 {
-		cfg.AllocateTimeout = time.Minute
-	}
-
-	if cfg.DestroyTimeout == 0 {
-		cfg.DestroyTimeout = time.Minute
-	}
+	cfg.AllocateTimeout = time.Minute
+	cfg.DestroyTimeout = time.Minute
 
 	return nil
 }

@@ -16,6 +16,12 @@ type UploadsConfig struct {
 	Forbid []string
 }
 
+// InitDefaults sets missing values to their default values.
+func (cfg *UploadsConfig) InitDefaults() error {
+	cfg.Forbid = []string{".php", ".exe", ".bat"}
+	return nil
+}
+
 // TmpDir returns temporary directory.
 func (cfg *UploadsConfig) TmpDir() string {
 	if cfg.Dir != "" {
