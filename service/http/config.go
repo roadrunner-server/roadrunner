@@ -50,6 +50,18 @@ func (c *Config) Hydrate(cfg service.Config) error {
 
 // Valid validates the configuration.
 func (c *Config) Valid() error {
+	if c.Uploads == nil {
+		return errors.New("mailformed uploads config")
+	}
+
+	if c.Workers == nil {
+		return errors.New("mailformed workers config")
+	}
+
+	if c.Workers.Pool == nil {
+		return errors.New("mailformed workers config (pool config is missing)")
+	}
+
 	if err := c.Workers.Pool.Valid(); err != nil {
 		return err
 	}

@@ -25,6 +25,10 @@ type testCfg struct {
 
 func (cfg *testCfg) Get(name string) service.Config {
 	if name == ID {
+		if cfg.httpCfg == "" {
+			return nil
+		}
+
 		return &testCfg{target: cfg.httpCfg}
 	}
 
@@ -63,24 +67,7 @@ func Test_Service_Configure_Disable(t *testing.T) {
 	c := service.NewContainer(logger)
 	c.Register(ID, &Service{})
 
-	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
-			"enable": false,
-			"address": ":8070",
-			"maxRequest": 1024,
-			"uploads": {
-				"dir": ` + tmpDir() + `,
-				"forbid": []
-			},
-			"workers":{
-				"command": "php ../../tests/http/client.php echo pipes",
-				"relay": "pipes",
-				"pool": {
-					"numWorkers": 1, 
-					"allocateTimeout": 10000000,
-					"destroyTimeout": 10000000 
-				}
-			}
-	}`}))
+	assert.NoError(t, c.Init(&testCfg{}))
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
