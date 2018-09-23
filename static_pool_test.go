@@ -346,6 +346,30 @@ func Test_Static_Pool_Destroy_And_Close_While_Wait(t *testing.T) {
 	assert.Error(t, err)
 }
 
+// identical to replace but controlled on worker side
+func Test_Static_Pool_Handle_Dead(t *testing.T) {
+	p, err := NewPool(
+		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
+		NewPipeFactory(),
+		Config{
+			NumWorkers:      5,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	)
+	defer p.Destroy()
+
+	assert.NotNil(t, p)
+	assert.NoError(t, err)
+
+	for _, w := range p.workers {
+		w.state.value = StateErrored
+	}
+
+	_, err = p.Exec(&Payload{Body: []byte("hello")})
+	assert.Error(t, err)
+}
+
 func Benchmark_Pool_Allocate(b *testing.B) {
 	p, _ := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
