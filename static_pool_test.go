@@ -371,7 +371,7 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 }
 
 // identical to replace but controlled on worker side
-func Test_Static_Pool_Slow_Destory(t *testing.T) {
+func Test_Static_Pool_Slow_Destroy(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/slow-destroy.php", "echo", "pipes") },
 		NewPipeFactory(),

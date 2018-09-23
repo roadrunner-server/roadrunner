@@ -26,6 +26,7 @@ type StaticPool struct {
 	factory Factory
 
 	// active task executions
+	tmu   sync.Mutex
 	tasks sync.WaitGroup
 
 	// workers circular allocation buf
@@ -112,7 +113,10 @@ func (p *StaticPool) Workers() (workers []*Worker) {
 
 // Exec one task with given payload and context, returns result or error.
 func (p *StaticPool) Exec(rqs *Payload) (rsp *Payload, err error) {
+	p.tmu.Lock()
 	p.tasks.Add(1)
+	p.tmu.Unlock()
+
 	defer p.tasks.Done()
 
 	w, err := p.allocateWorker()
@@ -147,7 +151,10 @@ func (p *StaticPool) Exec(rqs *Payload) (rsp *Payload, err error) {
 func (p *StaticPool) Destroy() {
 	atomic.AddInt32(&p.inDestroy, 1)
 	close(p.destroy)
+
+	p.tmu.Lock()
 	p.tasks.Wait()
+	p.tmu.Unlock()
 
 	var wg sync.WaitGroup
 	for _, w := range p.Workers() {
