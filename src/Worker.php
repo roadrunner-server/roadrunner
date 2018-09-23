@@ -9,7 +9,7 @@ namespace Spiral\RoadRunner;
 
 use Spiral\Goridge\Exceptions\GoridgeException;
 use Spiral\Goridge\RelayInterface as Relay;
-use Spiral\RoadRunner\Exceptions\RoadRunnerException;
+use Spiral\RoadRunner\Exception\RoadRunnerException;
 
 /**
  * Accepts connection from RoadRunner server over given Goridge relay.

@@ -39,7 +39,7 @@ func TestServer_Echo(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php echo pipes",
+			Command: "php ../../tests/http/client.php echo pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -74,7 +74,7 @@ func Test_HandlerErrors(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php echo pipes",
+			Command: "php ../../tests/http/client.php echo pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -101,7 +101,7 @@ func Test_Handler_JSON_error(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php echo pipes",
+			Command: "php ../../tests/http/client.php echo pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -130,7 +130,7 @@ func TestServer_Headers(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php header pipes",
+			Command: "php ../../tests/http/client.php header pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -177,7 +177,7 @@ func TestServer_Cookies(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php cookie pipes",
+			Command: "php ../../tests/http/client.php cookie pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -228,7 +228,7 @@ func TestServer_JsonPayload_POST(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php payload pipes",
+			Command: "php ../../tests/http/client.php payload pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -278,7 +278,7 @@ func TestServer_JsonPayload_PUT(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php payload pipes",
+			Command: "php ../../tests/http/client.php payload pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -324,7 +324,7 @@ func TestServer_JsonPayload_PATCH(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php payload pipes",
+			Command: "php ../../tests/http/client.php payload pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -370,7 +370,7 @@ func TestServer_FormData_POST(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php data pipes",
+			Command: "php ../../tests/http/client.php data pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -428,7 +428,7 @@ func TestServer_FormData_PUT(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php data pipes",
+			Command: "php ../../tests/http/client.php data pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -486,7 +486,7 @@ func TestServer_FormData_PATCH(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php data pipes",
+			Command: "php ../../tests/http/client.php data pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -544,7 +544,7 @@ func TestServer_Multipart_POST(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php data pipes",
+			Command: "php ../../tests/http/client.php data pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -606,7 +606,7 @@ func TestServer_Multipart_PUT(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php data pipes",
+			Command: "php ../../tests/http/client.php data pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -668,7 +668,7 @@ func TestServer_Multipart_PATCH(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php data pipes",
+			Command: "php ../../tests/http/client.php data pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -730,7 +730,7 @@ func TestServer_Error(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php error pipes",
+			Command: "php ../../tests/http/client.php error pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -764,7 +764,7 @@ func TestServer_Error2(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php error2 pipes",
+			Command: "php ../../tests/http/client.php error2 pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -798,7 +798,7 @@ func TestServer_Error3(t *testing.T) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php pid pipes",
+			Command: "php ../../tests/http/client.php pid pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -843,7 +843,7 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 			},
 		},
 		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
-			Command: "php ../../php-src/tests/http/client.php echo pipes",
+			Command: "php ../../tests/http/client.php echo pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      int64(runtime.NumCPU()),

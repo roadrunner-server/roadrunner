@@ -39,7 +39,7 @@ func Test_Config_Valid(t *testing.T) {
 			Forbid: []string{".go"},
 		},
 		Workers: &roadrunner.ServerConfig{
-			Command: "php php-src/tests/client.php echo pipes",
+			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -58,7 +58,7 @@ func Test_Config_NoUploads(t *testing.T) {
 		Address:    ":8080",
 		MaxRequest: 1024,
 		Workers: &roadrunner.ServerConfig{
-			Command: "php php-src/tests/client.php echo pipes",
+			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
@@ -95,7 +95,7 @@ func Test_Config_NoPool(t *testing.T) {
 			Forbid: []string{".go"},
 		},
 		Workers: &roadrunner.ServerConfig{
-			Command: "php php-src/tests/client.php echo pipes",
+			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      0,
@@ -118,7 +118,7 @@ func Test_Config_DeadPool(t *testing.T) {
 			Forbid: []string{".go"},
 		},
 		Workers: &roadrunner.ServerConfig{
-			Command: "php php-src/tests/client.php echo pipes",
+			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
 		},
 	}
@@ -136,7 +136,7 @@ func Test_Config_InvalidAddress(t *testing.T) {
 			Forbid: []string{".go"},
 		},
 		Workers: &roadrunner.ServerConfig{
-			Command: "php php-src/tests/client.php echo pipes",
+			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
 			Pool: &roadrunner.Config{
 				NumWorkers:      1,
