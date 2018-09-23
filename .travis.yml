@@ -41,6 +41,7 @@ after_success:
 jobs:
   include:
   - stage: Test
+    env: "PHP=7.0"
     before_install:
       - go version
       - sudo add-apt-repository -y ppa:ondrej/php
@@ -48,8 +49,9 @@ jobs:
       - sudo apt-get install -y php7.0-cli
       - sudo cp `which php7.0` `which php`
       - php -v
-- composer self-update
+      - composer self-update
   - stage: Test
+    env: "PHP=7.1"
     before_install:
       - go version
       - sudo add-apt-repository -y ppa:ondrej/php
@@ -59,6 +61,7 @@ jobs:
       - php -v
       - composer self-update
   - stage: Test
+    env: "PHP=7.2"
     before_install:
       - go version
       - sudo add-apt-repository -y ppa:ondrej/php
