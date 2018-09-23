@@ -128,3 +128,10 @@ func Test_Config_DialerErrorMethod(t *testing.T) {
 	assert.Nil(t, ln)
 	assert.Error(t, err)
 }
+
+func Test_Config_Defaults(t *testing.T) {
+	c := &Config{}
+	c.InitDefaults()
+	assert.Equal(t, true, c.Enable)
+	assert.Equal(t, "tcp://127.0.0.1:6001", c.Listen)
+}

@@ -27,3 +27,9 @@ func Test_Config_Hydrate_Empty(t *testing.T) {
 	assert.NoError(t, c.Hydrate(cfg))
 	assert.Len(t, c.Values, 0)
 }
+
+func Test_Config_Defaults(t *testing.T) {
+	c := &Config{}
+	c.InitDefaults()
+	assert.Len(t, c.Values, 0)
+}
