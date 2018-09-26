@@ -29,7 +29,7 @@ import (
 func init() {
 	rr.CLI.AddCommand(&cobra.Command{
 		Use:   "http:reset",
-		Short: "Reload RoadRunner worker pools for the HTTP service",
+		Short: "Reload RoadRunner worker pool for the HTTP service",
 		RunE:  reloadHandler,
 	})
 }
