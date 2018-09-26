@@ -21,14 +21,11 @@
 package http
 
 import (
-	"errors"
 	tm "github.com/buger/goterm"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/cmd/rr/util"
-	"github.com/spiral/roadrunner/service"
+	"github.com/spiral/roadrunner/cmd/util"
 	"github.com/spiral/roadrunner/service/http"
-	rrpc "github.com/spiral/roadrunner/service/rpc"
 	"net/rpc"
 	"os"
 	"os/signal"
@@ -69,12 +66,7 @@ func workersHandler(cmd *cobra.Command, args []string) (err error) {
 		}
 	}()
 
-	svc, st := rr.Container.Get(rrpc.ID)
-	if st < service.StatusOK {
-		return errors.New("RPC service is not configured")
-	}
-
-	client, err := svc.(*rrpc.Service).Client()
+	client, err := util.RPCClient(rr.Container)
 	if err != nil {
 		return err
 	}

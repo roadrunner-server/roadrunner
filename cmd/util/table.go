@@ -1,11 +1,11 @@
 package util
 
 import (
-	rrutil "github.com/spiral/roadrunner/util"
+	"github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
+	rrutil "github.com/spiral/roadrunner/util"
 	"os"
 	"strconv"
-	"github.com/dustin/go-humanize"
 	"time"
 )
 

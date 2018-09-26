@@ -21,12 +21,9 @@
 package http
 
 import (
-	"errors"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/cmd/rr/util"
-	"github.com/spiral/roadrunner/service"
-	"github.com/spiral/roadrunner/service/rpc"
+	"github.com/spiral/roadrunner/cmd/util"
 )
 
 func init() {
@@ -38,12 +35,7 @@ func init() {
 }
 
 func reloadHandler(cmd *cobra.Command, args []string) error {
-	svc, st := rr.Container.Get(rpc.ID)
-	if st < service.StatusOK {
-		return errors.New("RPC service is not configured")
-	}
-
-	client, err := svc.(*rpc.Service).Client()
+	client, err := util.RPCClient(rr.Container)
 	if err != nil {
 		return err
 	}
