@@ -24,7 +24,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/spiral/roadrunner/cmd/rr/utils"
+	"github.com/spiral/roadrunner/cmd/rr/util"
 	"github.com/spiral/roadrunner/service"
 	"os"
 	"path/filepath"
@@ -51,7 +51,7 @@ var (
 		Use:           "rr",
 		SilenceErrors: true,
 		SilenceUsage:  true,
-		Short: utils.Sprintf(
+		Short: util.Sprintf(
 			"<green>RoadRunner, PHP Application Server:</reset>\nVersion: <yellow+hb>%s</reset>, %s",
 			Version,
 			BuildTime,
@@ -83,7 +83,7 @@ func (w *ViperWrapper) Unmarshal(out interface{}) error {
 // This is called by main.main(). It only needs to happen once to the CLI.
 func Execute() {
 	if err := CLI.Execute(); err != nil {
-		utils.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
+		util.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
 		os.Exit(1)
 	}
 }
@@ -100,7 +100,7 @@ func init() {
 
 		if cfg := initConfig(cfgFile, []string{"."}, ".rr"); cfg != nil {
 			if err := Container.Init(cfg); err != nil {
-				utils.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
+				util.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
 				os.Exit(1)
 			}
 		}
