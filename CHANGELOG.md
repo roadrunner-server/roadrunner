@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.2.3 (29.09.2018)
+------
+- reduced verbosity
+- worker list has been extracted from http service and now available for other rr based services
+
 v1.2.2 (23.09.2018)
 ------
 - new project directory structure

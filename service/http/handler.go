@@ -72,10 +72,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = req.Open(); err != nil {
-		h.handleError(w, r, err)
-		return
-	}
+	req.Open()
 	defer req.Close()
 
 	p, err := req.Payload()
