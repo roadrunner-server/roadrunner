@@ -139,7 +139,6 @@ func TestContainer_Get(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", &testService{})
-
 	assert.Equal(t, 1, len(hook.Entries))
 
 	s, st := c.Get("test")
