@@ -109,12 +109,12 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 }
 
 // Open moves all uploaded files to temporary directory so it can be given to php later.
-func (r *Request) Open() error {
+func (r *Request) Open() {
 	if r.Uploads == nil {
-		return nil
+		return
 	}
 
-	return r.Uploads.Open()
+	r.Uploads.Open()
 }
 
 // Close clears all temp file uploads

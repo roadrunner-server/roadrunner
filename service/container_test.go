@@ -117,7 +117,7 @@ func TestContainer_Register(t *testing.T) {
 	c := NewContainer(logger)
 	c.Register("test", &testService{})
 
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 }
 
 func TestContainer_Has(t *testing.T) {
@@ -127,7 +127,7 @@ func TestContainer_Has(t *testing.T) {
 	c := NewContainer(logger)
 	c.Register("test", &testService{})
 
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 
 	assert.True(t, c.Has("test"))
 	assert.False(t, c.Has("another"))
@@ -139,8 +139,7 @@ func TestContainer_Get(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", &testService{})
-
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
@@ -157,7 +156,7 @@ func TestContainer_Stop_NotStarted(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", &testService{})
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 
 	c.Stop()
 }
@@ -170,7 +169,7 @@ func TestContainer_Configure(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", svc)
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 
 	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
 
@@ -187,7 +186,7 @@ func TestContainer_Init_Default(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", svc)
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 
 	assert.NoError(t, c.Init(&testCfg{`{}`}))
 
@@ -206,7 +205,7 @@ func TestContainer_Init_Default_Overwrite(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", svc)
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 
 	assert.NoError(t, c.Init(&testCfg{`{"test":{"value": "something"}}`}))
 
@@ -225,10 +224,10 @@ func TestContainer_ConfigureNull(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", svc)
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 
 	assert.NoError(t, c.Init(&testCfg{`{"another":"something"}`}))
-	assert.Equal(t, 2, len(hook.Entries))
+	assert.Equal(t, 1, len(hook.Entries))
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
@@ -243,10 +242,10 @@ func TestContainer_ConfigureDisabled(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", svc)
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 
 	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
-	assert.Equal(t, 2, len(hook.Entries))
+	assert.Equal(t, 1, len(hook.Entries))
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
@@ -264,7 +263,7 @@ func TestContainer_ConfigureError(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", svc)
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 
 	err := c.Init(&testCfg{`{"test":"something"}`})
 	assert.Error(t, err)
@@ -284,7 +283,7 @@ func TestContainer_ConfigureTwice(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", svc)
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 
 	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
 	assert.Error(t, c.Init(&testCfg{`{"test":"something"}`}))
@@ -298,7 +297,7 @@ func TestContainer_ServeEmptyContainer(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", svc)
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 
 	assert.NoError(t, c.Serve())
 	c.Stop()
@@ -315,7 +314,7 @@ func TestContainer_Serve(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", svc)
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
 
 	go func() {
@@ -347,7 +346,7 @@ func TestContainer_ServeError(t *testing.T) {
 
 	c := NewContainer(logger)
 	c.Register("test", svc)
-	assert.Equal(t, 1, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 	assert.NoError(t, c.Init(&testCfg{`{"test":"something"}`}))
 
 	err := c.Serve()
@@ -379,7 +378,7 @@ func TestContainer_ServeErrorMultiple(t *testing.T) {
 	c := NewContainer(logger)
 	c.Register("test2", svc2)
 	c.Register("test", svc)
-	assert.Equal(t, 2, len(hook.Entries))
+	assert.Equal(t, 0, len(hook.Entries))
 	assert.NoError(t, c.Init(&testCfg{`{"test":"something", "test2":"something-else"}`}))
 
 	err := c.Serve()

@@ -45,7 +45,7 @@ func (u *Uploads) MarshalJSON() ([]byte, error) {
 
 // Open moves all uploaded files to temp directory, return error in case of issue with temp directory. File errors
 // will be handled individually.
-func (u *Uploads) Open() error {
+func (u *Uploads) Open() {
 	var wg sync.WaitGroup
 	for _, f := range u.list {
 		wg.Add(1)
@@ -56,7 +56,6 @@ func (u *Uploads) Open() error {
 	}
 
 	wg.Wait()
-	return nil
 }
 
 // Clear deletes all temporary files.
