@@ -21,41 +21,33 @@
 package http
 
 import (
-	"errors"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/cmd/rr/utils"
-	"github.com/spiral/roadrunner/service"
-	"github.com/spiral/roadrunner/service/rpc"
+	"github.com/spiral/roadrunner/cmd/util"
 )
 
 func init() {
 	rr.CLI.AddCommand(&cobra.Command{
 		Use:   "http:reset",
-		Short: "Reload RoadRunner worker pools for the HTTP service",
+		Short: "Reload RoadRunner worker pool for the HTTP service",
 		RunE:  reloadHandler,
 	})
 }
 
 func reloadHandler(cmd *cobra.Command, args []string) error {
-	svc, st := rr.Container.Get(rpc.ID)
-	if st < service.StatusOK {
-		return errors.New("RPC service is not configured")
-	}
-
-	client, err := svc.(*rpc.Service).Client()
+	client, err := util.RPCClient(rr.Container)
 	if err != nil {
 		return err
 	}
 	defer client.Close()
 
-	utils.Printf("<green>restarting http worker pool</reset>: ")
+	util.Printf("<green>restarting http worker pool</reset>: ")
 
 	var r string
 	if err := client.Call("http.Reset", true, &r); err != nil {
 		return err
 	}
 
-	utils.Printf("<green+hb>done</reset>\n")
+	util.Printf("<green+hb>done</reset>\n")
 	return nil
 }

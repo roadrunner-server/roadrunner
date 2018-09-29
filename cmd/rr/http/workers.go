@@ -21,21 +21,14 @@
 package http
 
 import (
-	"errors"
 	tm "github.com/buger/goterm"
-	"github.com/dustin/go-humanize"
-	"github.com/olekukonko/tablewriter"
-	"github.com/shirou/gopsutil/process"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/cmd/rr/utils"
-	"github.com/spiral/roadrunner/service"
+	"github.com/spiral/roadrunner/cmd/util"
 	"github.com/spiral/roadrunner/service/http"
-	rrpc "github.com/spiral/roadrunner/service/rpc"
 	"net/rpc"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 	"time"
 )
@@ -73,12 +66,7 @@ func workersHandler(cmd *cobra.Command, args []string) (err error) {
 		}
 	}()
 
-	svc, st := rr.Container.Get(rrpc.ID)
-	if st < service.StatusOK {
-		return errors.New("RPC service is not configured")
-	}
-
-	client, err := svc.(*rrpc.Service).Client()
+	client, err := util.RPCClient(rr.Container)
 	if err != nil {
 		return err
 	}
@@ -108,58 +96,5 @@ func showWorkers(client *rpc.Client) {
 		panic(err)
 	}
 
-	tw := tablewriter.NewWriter(os.Stdout)
-	tw.SetHeader([]string{"PID", "Status", "Execs", "Memory", "Created"})
-	tw.SetColMinWidth(0, 7)
-	tw.SetColMinWidth(1, 9)
-	tw.SetColMinWidth(2, 7)
-	tw.SetColMinWidth(3, 7)
-	tw.SetColMinWidth(4, 18)
-
-	for _, w := range r.Workers {
-		tw.Append([]string{
-			strconv.Itoa(w.Pid),
-			renderStatus(w.Status),
-			renderJobs(w.NumJobs),
-			renderMemory(w.Pid),
-			renderAlive(time.Unix(0, w.Created)),
-		})
-	}
-
-	tw.Render()
-}
-
-func renderStatus(status string) string {
-	switch status {
-	case "inactive":
-		return utils.Sprintf("<yellow>inactive</reset>")
-	case "ready":
-		return utils.Sprintf("<cyan>ready</reset>")
-	case "working":
-		return utils.Sprintf("<green>working</reset>")
-	case "stopped":
-		return utils.Sprintf("<red>stopped</reset>")
-	case "errored":
-		return utils.Sprintf("<red>errored</reset>")
-	}
-
-	return status
-}
-
-func renderJobs(number int64) string {
-	return humanize.Comma(int64(number))
-}
-
-func renderAlive(t time.Time) string {
-	return humanize.RelTime(t, time.Now(), "ago", "")
-}
-
-func renderMemory(pid int) string {
-	p, _ := process.NewProcess(int32(pid))
-	i, err := p.MemoryInfo()
-	if err != nil {
-		return err.Error()
-	}
-
-	return humanize.Bytes(i.RSS)
+	util.WorkerTable(r.Workers).Render()
 }
