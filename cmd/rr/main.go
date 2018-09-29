@@ -32,7 +32,7 @@ import (
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/spiral/roadrunner/service/static"
 
-	// additional command and debug handlers
+	// additional commands and debug handlers
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
 )
 

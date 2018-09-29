@@ -95,8 +95,6 @@ func (c *container) Register(name string, service interface{}) {
 		svc:    service,
 		status: StatusRegistered,
 	})
-
-	c.log.Debugf("[%s]: registered", name)
 }
 
 // Check hasStatus svc has been registered.
@@ -138,14 +136,13 @@ func (c *container) Init(cfg Config) error {
 		if ok, err := c.initService(e.svc, cfg.Get(e.name)); err != nil {
 			// soft error (skipping)
 			if err == errNoConfig {
-				c.log.Debugf("[%s]: no config has been provided", e.name)
+				c.log.Debugf("[%s]: disabled", e.name)
 				continue
 			}
 
 			return errors.Wrap(err, fmt.Sprintf("[%s]", e.name))
 		} else if ok {
 			e.setStatus(StatusOK)
-			c.log.Debugf("[%s]: initiated", e.name)
 		} else {
 			c.log.Debugf("[%s]: disabled", e.name)
 		}
@@ -168,7 +165,7 @@ func (c *container) Serve() error {
 			continue
 		}
 
-		c.log.Debugf("[%s]: service started", e.name)
+		c.log.Debugf("[%s]: started", e.name)
 		go func(e *entry) {
 			e.setStatus(StatusServing)
 			defer e.setStatus(StatusStopped)
@@ -202,8 +199,6 @@ func (c *container) Serve() error {
 
 // Stop sends stop command to all running services.
 func (c *container) Stop() {
-	c.log.Debugf("received stop command")
-
 	for _, e := range c.services {
 		if e.hasStatus(StatusServing) {
 			e.svc.(Service).Stop()
