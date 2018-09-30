@@ -33,6 +33,14 @@ func NewResponse(p *roadrunner.Payload) (*Response, error) {
 func (r *Response) Write(w http.ResponseWriter) error {
 	for n, h := range r.Headers {
 		for _, v := range h {
+			if n == "http2-push" {
+				if pusher, ok := w.(http.Pusher); ok {
+					pusher.Push(v, nil)
+				}
+
+				continue
+			}
+
 			w.Header().Add(n, v)
 		}
 	}
