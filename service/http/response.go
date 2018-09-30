@@ -31,9 +31,9 @@ func NewResponse(p *roadrunner.Payload) (*Response, error) {
 
 // Write writes response headers, status and body into ResponseWriter.
 func (r *Response) Write(w http.ResponseWriter) error {
-	for k, v := range r.Headers {
-		for _, h := range v {
-			w.Header().Add(k, h)
+	for n, h := range r.Headers {
+		for _, v := range h {
+			w.Header().Add(n, v)
 		}
 	}
 

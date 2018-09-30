@@ -1,12 +1,7 @@
 package env
 
-const (
-	// ID contains default service name.
-	ID = "env"
-
-	// rrKey contains default env key to indicate than php running in RR mode.
-	rrKey = "rr"
-)
+// ID contains default service name.
+const ID = "env"
 
 // Service provides ability to map _ENV values from config file.
 type Service struct {
@@ -25,7 +20,7 @@ func NewService(defaults map[string]string) *Service {
 func (s *Service) Init(cfg *Config) (bool, error) {
 	if s.values == nil {
 		s.values = make(map[string]string)
-		s.values[rrKey] = "yes"
+		s.values["RR"] = "true"
 	}
 
 	for k, v := range cfg.Values {

@@ -110,7 +110,7 @@ func (h *Handler) handleResponse(req *Request, resp *Response) {
 	h.throw(EventResponse, &ResponseEvent{Request: req, Response: resp})
 }
 
-// throw invokes event srv if any.
+// throw invokes event handler if any.
 func (h *Handler) throw(event int, ctx interface{}) {
 	h.mul.Lock()
 	defer h.mul.Unlock()
