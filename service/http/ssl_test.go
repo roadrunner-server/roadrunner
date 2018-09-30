@@ -1,15 +1,15 @@
 package http
 
 import (
-	"testing"
-	"github.com/sirupsen/logrus/hooks/test"
+	"crypto/tls"
 	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
-	"time"
-	"net/http"
 	"io/ioutil"
-	"crypto/tls"
+	"net/http"
+	"testing"
+	"time"
 )
 
 var sslClient = &http.Client{

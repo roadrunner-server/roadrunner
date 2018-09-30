@@ -2,17 +2,17 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service/env"
 	"github.com/spiral/roadrunner/service/http/attributes"
 	"github.com/spiral/roadrunner/service/rpc"
+	"golang.org/x/net/http2"
 	"net/http"
+	"net/url"
+	"strings"
 	"sync"
 	"sync/atomic"
-	"golang.org/x/net/http2"
-	"strings"
-	"fmt"
-	"net/url"
 )
 
 const (
