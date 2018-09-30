@@ -84,7 +84,7 @@ Configuration can be located in `.rr.yaml` file:
 
 ```yaml
 http:
-  address:    0.0.0.0:8080
+  address: 0.0.0.0:8080
   workers:
     command: "php psr-worker.php"
     pool:
