@@ -95,6 +95,7 @@ func Test_ServerConfig_Cmd(t *testing.T) {
 func Test_ServerConfig_SetEnv(t *testing.T) {
 	cfg := &ServerConfig{
 		Command: "php tests/client.php pipes",
+		Relay:   "pipes",
 	}
 
 	cfg.SetEnv("key", "value")
@@ -105,6 +106,25 @@ func Test_ServerConfig_SetEnv(t *testing.T) {
 	c := cmd()
 
 	assert.Contains(t, c.Env, "KEY=value")
+	assert.Contains(t, c.Env, "RR_RELAY=pipes")
+}
+
+
+func Test_ServerConfig_SetEnv_Relay(t *testing.T) {
+	cfg := &ServerConfig{
+		Command: "php tests/client.php pipes",
+		Relay:   "unix://rr.sock",
+	}
+
+	cfg.SetEnv("key", "value")
+
+	cmd := cfg.makeCommand()
+	assert.NotNil(t, cmd)
+
+	c := cmd()
+
+	assert.Contains(t, c.Env, "KEY=value")
+	assert.Contains(t, c.Env, "RR_RELAY=unix://rr.sock")
 }
 
 func Test_ServerConfigDefaults(t *testing.T) {

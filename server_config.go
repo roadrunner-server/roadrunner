@@ -76,7 +76,7 @@ func (cfg *ServerConfig) makeCommand() func() *exec.Cmd {
 	return func() *exec.Cmd {
 		cmd := exec.Command(cmd[0], cmd[1:]...)
 		cmd.Env = append(os.Environ(), fmt.Sprintf("RR_RELAY=%s", cfg.Relay))
-		cmd.Env = append(os.Environ(), cfg.env...)
+		cmd.Env = append(cmd.Env, cfg.env...)
 		return cmd
 	}
 }
