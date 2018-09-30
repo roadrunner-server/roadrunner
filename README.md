@@ -21,6 +21,7 @@ Table of Contents
   * [License](https://github.com/spiral/roadrunner/wiki/License)
 * Using RoadRunner
   * [Environment Configuration](https://github.com/spiral/roadrunner/wiki/Enviroment-Configuration)
+  * [HTTPS and HTTP/2](https://github.com/spiral/roadrunner/wiki/HTTPS-and-HTTP2)
   * [PHP Workers](https://github.com/spiral/roadrunner/wiki/PHP-Workers)
   * [Server Commands](https://github.com/spiral/roadrunner/wiki/Server-Commands)
   * [RPC Integration](https://github.com/spiral/roadrunner/wiki/RPC-Integration)
@@ -40,6 +41,7 @@ Features:
 --------
 - production ready
 - PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middlewares, event listeners)
+- HTTPS and HTTP/2 support (including HTTP/2 Push)
 - fully customizable server
 - flexible environment configuration
 - no external PHP dependencies, drop-in (based on [Goridge](https://github.com/spiral/goridge))
