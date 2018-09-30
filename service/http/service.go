@@ -2,11 +2,15 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service/env"
 	"github.com/spiral/roadrunner/service/http/attributes"
 	"github.com/spiral/roadrunner/service/rpc"
+	"golang.org/x/net/http2"
 	"net/http"
+	"net/url"
+	"strings"
 	"sync"
 	"sync/atomic"
 )
@@ -15,8 +19,8 @@ const (
 	// ID contains default svc name.
 	ID = "http"
 
-	// httpKey indicates to php process that it's running under http service
-	httpKey = "rr_http"
+	// EventInitSSL thrown at moment of https initialization. SSL server passed as context.
+	EventInitSSL = 750
 )
 
 // http middleware type.
@@ -31,8 +35,9 @@ type Service struct {
 	mu       sync.Mutex
 	rr       *roadrunner.Server
 	stopping int32
-	srv      *Handler
+	handler  *Handler
 	http     *http.Server
+	https    *http.Server
 }
 
 // AddMiddleware adds new net/http mdwr.
@@ -71,28 +76,35 @@ func (s *Service) Serve() error {
 			s.cfg.Workers.SetEnv(k, v)
 		}
 
-		s.cfg.Workers.SetEnv(httpKey, "true")
+		s.cfg.Workers.SetEnv("RR_HTTP", "true")
 	}
 
-	rr := roadrunner.NewServer(s.cfg.Workers)
+	s.rr = roadrunner.NewServer(s.cfg.Workers)
+	s.rr.Listen(s.throw)
 
-	s.rr = rr
-	s.srv = &Handler{cfg: s.cfg, rr: s.rr}
-	s.http = &http.Server{Addr: s.cfg.Address}
+	s.handler = &Handler{cfg: s.cfg, rr: s.rr}
+	s.handler.Listen(s.throw)
 
-	s.rr.Listen(s.listener)
-	s.srv.Listen(s.listener)
+	s.http = &http.Server{Addr: s.cfg.Address, Handler: s}
 
-	s.http.Handler = s
+	if s.cfg.EnableTLS() {
+		s.https = s.initSSL()
+	}
 
 	s.mu.Unlock()
 
-	if err := rr.Start(); err != nil {
+	if err := s.rr.Start(); err != nil {
 		return err
 	}
-	defer rr.Stop()
+	defer s.rr.Stop()
 
-	return s.http.ListenAndServe()
+	err := make(chan error, 2)
+	go func() { err <- s.http.ListenAndServe() }()
+	if s.https != nil {
+		go func() { err <- s.https.ListenAndServeTLS(s.cfg.SSL.Cert, s.cfg.SSL.Key) }()
+	}
+
+	return <-err
 }
 
 // Stop stops the svc.
@@ -108,23 +120,50 @@ func (s *Service) Stop() {
 		return
 	}
 
-	s.http.Shutdown(context.Background())
+	if s.https != nil {
+		go s.https.Shutdown(context.Background())
+	}
+
+	go s.http.Shutdown(context.Background())
 }
 
-// mdwr handles connection using set of mdwr and rr PSR-7 server.
+// ServeHTTP handles connection using set of middleware and rr PSR-7 server.
 func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if s.https != nil && r.TLS == nil && s.cfg.SSL.Redirect {
+		target := &url.URL{
+			Scheme:   "https",
+			Host:     s.tlsAddr(r.Host, false),
+			Path:     r.URL.Path,
+			RawQuery: r.URL.RawQuery,
+		}
+
+		http.Redirect(w, r, target.String(), http.StatusTemporaryRedirect)
+		return
+	}
+
 	r = attributes.Init(r)
 
-	// chaining mdwr
-	f := s.srv.ServeHTTP
+	// chaining middleware
+	f := s.handler.ServeHTTP
 	for _, m := range s.mdwr {
 		f = m(f)
 	}
 	f(w, r)
 }
 
-// listener handles service, server and pool events.
-func (s *Service) listener(event int, ctx interface{}) {
+// Init https server.
+func (s *Service) initSSL() *http.Server {
+	server := &http.Server{Addr: s.tlsAddr(s.cfg.Address, true), Handler: s}
+	s.throw(EventInitSSL, server)
+
+	// Enable HTTP/2 support by default
+	http2.ConfigureServer(server, &http2.Server{})
+
+	return server
+}
+
+// throw handles service, server and pool events.
+func (s *Service) throw(event int, ctx interface{}) {
 	for _, l := range s.lsns {
 		l(event, ctx)
 	}
@@ -133,4 +172,16 @@ func (s *Service) listener(event int, ctx interface{}) {
 		// underlying rr server is dead
 		s.Stop()
 	}
+}
+
+// tlsAddr replaces listen or host port with port configured by SSL config.
+func (s *Service) tlsAddr(host string, forcePort bool) string {
+	// remove current forcePort first
+	host = strings.Split(host, ":")[0]
+
+	if forcePort || s.cfg.SSL.Port != 443 {
+		host = fmt.Sprintf("%s:%v", host, s.cfg.SSL.Port)
+	}
+
+	return host
 }

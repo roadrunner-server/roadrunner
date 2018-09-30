@@ -91,5 +91,5 @@ func TestSetEnv(t *testing.T) {
 	assert.True(t, ok)
 
 	v, _ := e.GetEnv()
-	assert.Equal(t, "tcp://localhost:9018", v["rr_rpc"])
+	assert.Equal(t, "tcp://localhost:9018", v["RR_RPC"])
 }

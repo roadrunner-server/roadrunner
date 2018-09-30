@@ -84,6 +84,22 @@ func Test_Files(t *testing.T) {
 	assert.Equal(t, "sample", b)
 }
 
+func Test_Disabled(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(ID, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{
+		static: `{"enable":true, "dir":"../../tests", "forbid":[]}`,
+	}))
+
+	s, st := c.Get(ID)
+	assert.NotNil(t, s)
+	assert.Equal(t, service.StatusRegistered, st)
+}
+
 func Test_Files_Disable(t *testing.T) {
 	logger, _ := test.NewNullLogger()
 	logger.SetLevel(logrus.DebugLevel)

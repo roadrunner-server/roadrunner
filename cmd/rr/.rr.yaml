@@ -12,11 +12,21 @@ rpc:
 
 # http service configuration.
 http:
-  # set to false to disable http server.
-  enable:    true
-
   # http host to listen.
   address:   0.0.0.0:8080
+
+  ssl:
+    # custom https port (default 443)
+    port:     443
+
+    # force redirect to https connection
+    redirect: true
+
+    # ssl cert
+    cert:     server.crt
+
+    # ssl private key
+    key:      server.key
 
   # max POST request size, including file uploads in MB.
   maxRequest: 200
@@ -31,7 +41,7 @@ http:
     # php worker command.
     command:  "php psr-worker.php pipes"
 
-    # connection method (pipes, tcp://:9000, unix://socket.unix).
+    # connection method (pipes, tcp://:9000, unix://socket.unix). default "pipes"
     relay:    "pipes"
 
     # worker pool configuration.
@@ -48,11 +58,8 @@ http:
       # amount of time given to worker to gracefully destruct itself.
       destroyTimeout:  60
 
-# static file serving.
+# static file serving. remove this section to disable static file serving.
 static:
-  # serve http static files
-  enable:  true
-
   # root directory for static file (http would not serve .php and .htaccess files).
   dir:   "public"
 

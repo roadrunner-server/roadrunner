@@ -21,6 +21,7 @@ install:
   - go get -u "github.com/pkg/errors"
   - go get -u "github.com/stretchr/testify/assert"
   - go get -u "github.com/shirou/gopsutil/process"
+  - go get -u "golang.org/x/net/http2"
   - composer install --no-interaction --prefer-source --ignore-platform-reqs
 
 script:

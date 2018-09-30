@@ -51,6 +51,86 @@ func Test_Config_Valid(t *testing.T) {
 	assert.NoError(t, cfg.Valid())
 }
 
+func Test_Config_Valid_SSL(t *testing.T) {
+	cfg := &Config{
+		Address: ":8080",
+		SSL: SSLConfig{
+			Cert: "fixtures/server.crt",
+			Key:  "fixtures/server.key",
+		},
+		MaxRequest: 1024,
+		Uploads: &UploadsConfig{
+			Dir:    os.TempDir(),
+			Forbid: []string{".go"},
+		},
+		Workers: &roadrunner.ServerConfig{
+			Command: "php tests/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		},
+	}
+
+	assert.Error(t, cfg.Hydrate(&testCfg{httpCfg: "{}"}))
+
+	assert.NoError(t, cfg.Valid())
+	assert.True(t, cfg.EnableTLS())
+	assert.Equal(t, 443, cfg.SSL.Port)
+}
+
+func Test_Config_SSL_No_key(t *testing.T) {
+	cfg := &Config{
+		Address: ":8080",
+		SSL: SSLConfig{
+			Cert: "fixtures/server.crt",
+		},
+		MaxRequest: 1024,
+		Uploads: &UploadsConfig{
+			Dir:    os.TempDir(),
+			Forbid: []string{".go"},
+		},
+		Workers: &roadrunner.ServerConfig{
+			Command: "php tests/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		},
+	}
+
+	assert.Error(t, cfg.Valid())
+}
+
+func Test_Config_SSL_No_Cert(t *testing.T) {
+	cfg := &Config{
+		Address: ":8080",
+		SSL: SSLConfig{
+			Key: "fixtures/server.key",
+		},
+		MaxRequest: 1024,
+		Uploads: &UploadsConfig{
+			Dir:    os.TempDir(),
+			Forbid: []string{".go"},
+		},
+		Workers: &roadrunner.ServerConfig{
+			Command: "php tests/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		},
+	}
+
+	assert.Error(t, cfg.Valid())
+}
+
 func Test_Config_NoUploads(t *testing.T) {
 	cfg := &Config{
 		Address:    ":8080",

@@ -36,8 +36,7 @@ func TestConfig_Forbids(t *testing.T) {
 }
 
 func TestConfig_Valid(t *testing.T) {
-	assert.NoError(t, (&Config{Enable: true, Dir: "./"}).Valid())
-	assert.Error(t, (&Config{Enable: true, Dir: "./config.go"}).Valid())
-	assert.NoError(t, (&Config{Dir: "./dir/"}).Valid())
-	assert.Error(t, (&Config{Enable: true, Dir: "./dir/"}).Valid())
+	assert.NoError(t, (&Config{Dir: "./"}).Valid())
+	assert.Error(t, (&Config{Dir: "./config.go"}).Valid())
+	assert.Error(t, (&Config{Dir: "./dir/"}).Valid())
 }
