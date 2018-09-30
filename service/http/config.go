@@ -15,19 +15,7 @@ type Config struct {
 	Address string
 
 	// SSL defines https server options.
-	SSL struct {
-		// Port to listen as HTTPS server, defaults to 443.
-		Port int
-
-		// Redirect when enabled forces all http connections to switch to https.
-		Redirect bool
-
-		// Key defined private server key.
-		Key string
-
-		// Cert is https certificate.
-		Cert string
-	}
+	SSL SSLConfig
 
 	// MaxRequest specified max size for payload body in megabytes, set 0 to unlimited.
 	MaxRequest int64
@@ -37,6 +25,21 @@ type Config struct {
 
 	// Workers configures roadrunner server and worker pool.
 	Workers *roadrunner.ServerConfig
+}
+
+// SSLConfig defines https server configuration.
+type SSLConfig struct {
+	// Port to listen as HTTPS server, defaults to 443.
+	Port int
+
+	// Redirect when enabled forces all http connections to switch to https.
+	Redirect bool
+
+	// Key defined private server key.
+	Key string
+
+	// Cert is https certificate.
+	Cert string
 }
 
 // EnableTLS returns true if rr must listen TLS connections.
@@ -107,7 +110,7 @@ func (c *Config) Valid() error {
 
 		if _, err := os.Stat(c.SSL.Cert); err != nil {
 			if os.IsNotExist(err) {
-				return fmt.Errorf("cert file '%s' does not exists", c.SSL.Key)
+				return fmt.Errorf("cert file '%s' does not exists", c.SSL.Cert)
 			}
 
 			return err

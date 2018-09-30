@@ -4,7 +4,6 @@ import (
 	rrttp "github.com/spiral/roadrunner/service/http"
 	"net/http"
 	"path"
-	"strings"
 )
 
 // ID contains default service name.
@@ -44,12 +43,7 @@ func (s *Service) middleware(f http.HandlerFunc) http.HandlerFunc {
 }
 
 func (s *Service) handleStatic(w http.ResponseWriter, r *http.Request) bool {
-	fPath := r.URL.Path
-
-	if !strings.HasPrefix(fPath, "/") {
-		fPath = "/" + fPath
-	}
-	fPath = path.Clean(fPath)
+	fPath := path.Clean(r.URL.Path)
 
 	if s.cfg.Forbids(fPath) {
 		return false
