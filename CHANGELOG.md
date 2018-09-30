@@ -4,7 +4,7 @@ CHANGELOG
 v1.2.4 (30.09.2018)
 ------
 - minor performance improvements (reduced number of syscalls)
-- worker factory connection is not exposed to server using RR_RELAY env
+- worker factory connection is now exposed to PHP using RR_RELAY env
 - HTTPS support
 - HTTP/2 and HTTP/2 Support
 - Removed `disable` flag of static service
