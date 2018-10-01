@@ -66,6 +66,7 @@ type HydrateConfig interface {
 	Hydrate(cfg Config) error
 }
 
+// DefaultsConfig delcares ability to be initated without config data provided.
 type DefaultsConfig interface {
 	// InitDefaults allows to init blank config with pre-defined set of default values.
 	InitDefaults() error
