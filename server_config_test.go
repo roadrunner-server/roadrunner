@@ -109,7 +109,6 @@ func Test_ServerConfig_SetEnv(t *testing.T) {
 	assert.Contains(t, c.Env, "RR_RELAY=pipes")
 }
 
-
 func Test_ServerConfig_SetEnv_Relay(t *testing.T) {
 	cfg := &ServerConfig{
 		Command: "php tests/client.php pipes",
