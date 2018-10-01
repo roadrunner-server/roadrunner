@@ -87,11 +87,7 @@ type dConfig struct {
 
 // Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
 func (c *dConfig) Hydrate(cfg Config) error {
-	if err := cfg.Unmarshal(c); err != nil {
-		return err
-	}
-
-	return nil
+	return cfg.Unmarshal(c)
 }
 
 // InitDefaults allows to init blank config with pre-defined set of default values.
