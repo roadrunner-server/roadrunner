@@ -28,12 +28,12 @@ Table of Contents
   * [IDE integration](https://github.com/spiral/roadrunner/wiki/IDE-Integration)
   * [Error Handling](https://github.com/spiral/roadrunner/wiki/Debug-And-Error-Handling)
   * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
+* Integrations
+   * [Symfony Framework](https://github.com/spiral/roadrunner/wiki/Symfony-Framework)
 * Server Customization
   * [Building Server](https://github.com/spiral/roadrunner/wiki/Building-Server)
   * [Writing Services](https://github.com/spiral/roadrunner/wiki/Writing-Services)
   * [HTTP Middlewares](https://github.com/spiral/roadrunner/wiki/Middlewares)
-* Integrations
-   * [Symfony Framework](https://github.com/spiral/roadrunner/wiki/Symfony-Framework)
 * Additional Notes
   * [Event Listeners](https://github.com/spiral/roadrunner/wiki/Event-Listeners)
   * [Standalone Usage](https://github.com/spiral/roadrunner/wiki/Standalone-usage)
