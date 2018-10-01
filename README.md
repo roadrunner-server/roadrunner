@@ -32,6 +32,8 @@ Table of Contents
   * [Building Server](https://github.com/spiral/roadrunner/wiki/Building-Server)
   * [Writing Services](https://github.com/spiral/roadrunner/wiki/Writing-Services)
   * [HTTP Middlewares](https://github.com/spiral/roadrunner/wiki/Middlewares)
+* Integration with Frameworks
+   * [Symfony Framework](https://github.com/spiral/roadrunner/wiki/Symfony-Framework)
 * Additional Notes
   * [Event Listeners](https://github.com/spiral/roadrunner/wiki/Event-Listeners)
   * [Standalone Usage](https://github.com/spiral/roadrunner/wiki/Standalone-usage)
