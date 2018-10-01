@@ -132,7 +132,7 @@ func Test_Echo_Slow(t *testing.T) {
 func Test_Broken(t *testing.T) {
 	cmd := exec.Command("php", "tests/client.php", "broken", "pipes")
 
-	w, err := NewPipeFactory().SpawnWorker(cmd)
+	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
 		err := w.Wait()
 		assert.Error(t, err)
