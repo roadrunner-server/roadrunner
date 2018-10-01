@@ -140,7 +140,7 @@ func Test_Tcp_Broken(t *testing.T) {
 
 	cmd := exec.Command("php", "tests/client.php", "broken", "tcp")
 
-	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	w, _ := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
 	go func() {
 		err := w.Wait()
 
@@ -167,7 +167,7 @@ func Test_Tcp_Echo(t *testing.T) {
 
 	cmd := exec.Command("php", "tests/client.php", "echo", "tcp")
 
-	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	w, _ := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
@@ -281,7 +281,7 @@ func Test_Unix_Broken(t *testing.T) {
 
 	cmd := exec.Command("php", "tests/client.php", "broken", "unix")
 
-	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	w, _ := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
 	go func() {
 		err := w.Wait()
 
@@ -310,7 +310,7 @@ func Test_Unix_Echo(t *testing.T) {
 
 	cmd := exec.Command("php", "tests/client.php", "echo", "unix")
 
-	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	w, _ := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()

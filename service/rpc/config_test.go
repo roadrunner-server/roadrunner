@@ -85,7 +85,7 @@ func Test_Config_ErrorMethod(t *testing.T) {
 func TestConfig_Dialer(t *testing.T) {
 	cfg := &Config{Listen: "tcp://:18001"}
 
-	ln, err := cfg.Listener()
+	ln, _ := cfg.Listener()
 	defer ln.Close()
 
 	conn, err := cfg.Dialer()
@@ -104,7 +104,7 @@ func TestConfig_DialerUnix(t *testing.T) {
 
 	cfg := &Config{Listen: "unix://rpc.sock"}
 
-	ln, err := cfg.Listener()
+	ln, _ := cfg.Listener()
 	defer ln.Close()
 
 	conn, err := cfg.Dialer()

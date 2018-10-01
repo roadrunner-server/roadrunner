@@ -252,7 +252,7 @@ func Test_StaticPool_Replace_Worker(t *testing.T) {
 	var lastPID string
 	lastPID = strconv.Itoa(*p.Workers()[0].Pid)
 
-	res, err := p.Exec(&Payload{Body: []byte("hello")})
+	res, _ := p.Exec(&Payload{Body: []byte("hello")})
 	assert.Equal(t, lastPID, string(res.Body))
 
 	for i := 0; i < 10; i++ {
@@ -287,7 +287,7 @@ func Test_StaticPool_Stop_Worker(t *testing.T) {
 	var lastPID string
 	lastPID = strconv.Itoa(*p.Workers()[0].Pid)
 
-	res, err := p.Exec(&Payload{Body: []byte("hello")})
+	res, _ := p.Exec(&Payload{Body: []byte("hello")})
 	assert.Equal(t, lastPID, string(res.Body))
 
 	for i := 0; i < 10; i++ {
