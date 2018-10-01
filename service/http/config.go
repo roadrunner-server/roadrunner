@@ -70,11 +70,7 @@ func (c *Config) Hydrate(cfg service.Config) error {
 
 	c.Workers.UpscaleDurations()
 
-	if err := c.Valid(); err != nil {
-		return err
-	}
-
-	return nil
+	return c.Valid()
 }
 
 // Valid validates the configuration.
