@@ -93,7 +93,6 @@ class PSR7Client
 
         $request = $request
             ->withCookieParams($ctx['cookies'])
-            ->withProtocolVersion($ctx['protocol'])
             ->withQueryParams($query)
             ->withUploadedFiles($this->wrapUploads($ctx['uploads']));
 
@@ -105,15 +104,13 @@ class PSR7Client
             $request = $request->withHeader($name, $value);
         }
 
-        if ($body !== null) {
+        if ($ctx['parsed']) {
+            $request = $request->withParsedBody(json_decode($body, true));
+        } else if ($body !== null) {
             $bodyStream = $this->streamFactory->createStream($body);
             $bodyStream->write($body);
 
             $request = $request->withBody($bodyStream);
-        }
-
-        if ($ctx['parsed']) {
-            $request = $request->withParsedBody(json_decode($body, true));
         }
 
         return $request;
@@ -175,8 +172,12 @@ class PSR7Client
                 continue;
             }
 
+            $stream = UPLOAD_ERR_OK === $f['error'] ?
+                $this->streamFactory->createStreamFromFile($f['tmpName']) :
+                $this->streamFactory->createStream();
+
             $result[$index] = $this->uploadsFactory->createUploadedFile(
-                $this->streamFactory->createStreamFromFile($f['tmpName']),
+                $stream,
                 $f['size'],
                 $f['error'],
                 $f['name'],
