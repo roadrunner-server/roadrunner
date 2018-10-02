@@ -107,10 +107,7 @@ class PSR7Client
         if ($ctx['parsed']) {
             $request = $request->withParsedBody(json_decode($body, true));
         } else if ($body !== null) {
-            $bodyStream = $this->streamFactory->createStream($body);
-            $bodyStream->write($body);
-
-            $request = $request->withBody($bodyStream);
+            $request = $request->withBody($this->streamFactory->createStream($body));
         }
 
         return $request;
@@ -172,9 +169,11 @@ class PSR7Client
                 continue;
             }
 
-            $stream = UPLOAD_ERR_OK === $f['error'] ?
-                $this->streamFactory->createStreamFromFile($f['tmpName']) :
-                $this->streamFactory->createStream();
+            if (UPLOAD_ERR_OK === $f['error']) {
+                $stream = $this->streamFactory->createStreamFromFile($f['tmpName']);
+            } else {
+                $stream = $this->streamFactory->createStream();
+            }
 
             $result[$index] = $this->uploadsFactory->createUploadedFile(
                 $stream,
