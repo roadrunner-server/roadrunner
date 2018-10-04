@@ -42,8 +42,8 @@ class Worker
      * return Error to wrap error message from server.
      *
      * @param mixed $header
-     *
      * @return \Error|null|string
+     *
      * @throws GoridgeException
      */
     public function receive(&$header)
@@ -128,8 +128,7 @@ class Worker
      * @param string $body
      * @param mixed  $header Exported context (if any).
      * @param int    $flags
-     *
-     * @returns bool True when continue processing.
+     * @return bool True when continue processing.
      *
      * @throws RoadRunnerException
      */

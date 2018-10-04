@@ -19,24 +19,16 @@ use Psr\Http\Message\UploadedFileFactoryInterface;
  */
 class PSR7Client
 {
-    /**
-     * @var Worker
-     */
+    /** @var Worker */
     private $worker;
 
-    /**
-     * @var ServerRequestFactoryInterface
-     */
+    /** @var ServerRequestFactoryInterface */
     private $requestFactory;
 
-    /**
-     * @var StreamFactoryInterface
-     */
+    /** @var StreamFactoryInterface */
     private $streamFactory;
 
-    /**
-     * @var UploadedFileFactoryInterface
-     */
+    /*** @var UploadedFileFactoryInterface */
     private $uploadsFactory;
 
     /**
@@ -106,8 +98,10 @@ class PSR7Client
 
         if ($ctx['parsed']) {
             $request = $request->withParsedBody(json_decode($body, true));
-        } else if ($body !== null) {
-            $request = $request->withBody($this->streamFactory->createStream($body));
+        } else {
+            if ($body !== null) {
+                $request = $request->withBody($this->streamFactory->createStream($body));
+            }
         }
 
         return $request;
@@ -132,7 +126,7 @@ class PSR7Client
         ]));
     }
 
-   /**
+    /**
      * Returns altered copy of _SERVER variable. Sets ip-address,
      * request-time and other values.
      *
