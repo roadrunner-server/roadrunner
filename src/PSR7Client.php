@@ -7,9 +7,12 @@
 
 namespace Spiral\RoadRunner;
 
+use Http\Factory\Diactoros;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UploadedFileFactoryInterface;
 
 /**
  * Manages PSR-7 request and response.
@@ -17,16 +20,41 @@ use Zend\Diactoros;
 class PSR7Client
 {
     /**
-     * @varWorker
+     * @var Worker
      */
     private $worker;
 
     /**
-     * @param Worker $worker
+     * @var ServerRequestFactoryInterface
      */
-    public function __construct(Worker $worker)
-    {
+    private $requestFactory;
+
+    /**
+     * @var StreamFactoryInterface
+     */
+    private $streamFactory;
+
+    /**
+     * @var UploadedFileFactoryInterface
+     */
+    private $uploadsFactory;
+
+    /**
+     * @param Worker                             $worker
+     * @param ServerRequestFactoryInterface|null $requestFactory
+     * @param StreamFactoryInterface|null        $streamFactory
+     * @param UploadedFileFactoryInterface|null  $uploadsFactory
+     */
+    public function __construct(
+        Worker $worker,
+        ServerRequestFactoryInterface $requestFactory = null,
+        StreamFactoryInterface $streamFactory = null,
+        UploadedFileFactoryInterface $uploadsFactory = null
+    ) {
         $this->worker = $worker;
+        $this->requestFactory = $requestFactory ?? new Diactoros\ServerRequestFactory();
+        $this->streamFactory = $streamFactory ?? new Diactoros\StreamFactory();
+        $this->uploadsFactory = $uploadsFactory ?? new Diactoros\UploadedFileFactory();
     }
 
     /**
@@ -53,36 +81,33 @@ class PSR7Client
             return null;
         }
 
-        parse_str($ctx['rawQuery'], $query);
-
-        $bodyStream = 'php://input';
-        $parsedBody = null;
-        if ($ctx['parsed']) {
-            $parsedBody = json_decode($body, true);
-        } elseif ($body != null) {
-            $bodyStream = new Diactoros\Stream("php://memory", "rwb");
-            $bodyStream->write($body);
-        }
-
         $_SERVER = $this->configureServer($ctx);
 
-        $request = new Diactoros\ServerRequest(
-            $_SERVER,
-            $this->wrapUploads($ctx['uploads']),
-            $ctx['uri'],
+        $request = $this->requestFactory->createServerRequest(
             $ctx['method'],
-            $bodyStream,
-            $ctx['headers'],
-            $ctx['cookies'],
-            $query,
-            $parsedBody,
-            $ctx['protocol']
+            $ctx['uri'],
+            $_SERVER
         );
 
-        if (!empty($ctx['attributes'])) {
-            foreach ($ctx['attributes'] as $key => $value) {
-                $request = $request->withAttribute($key, $value);
-            }
+        parse_str($ctx['rawQuery'], $query);
+
+        $request = $request
+            ->withCookieParams($ctx['cookies'])
+            ->withQueryParams($query)
+            ->withUploadedFiles($this->wrapUploads($ctx['uploads']));
+
+        foreach ($ctx['attributes'] as $name => $value) {
+            $request = $request->withAttribute($name, $value);
+        }
+
+        foreach ($ctx['headers'] as $name => $value) {
+            $request = $request->withHeader($name, $value);
+        }
+
+        if ($ctx['parsed']) {
+            $request = $request->withParsedBody(json_decode($body, true));
+        } else if ($body !== null) {
+            $request = $request->withBody($this->streamFactory->createStream($body));
         }
 
         return $request;
@@ -144,8 +169,14 @@ class PSR7Client
                 continue;
             }
 
-            $result[$index] = new Diactoros\UploadedFile(
-                $f['tmpName'],
+            if (UPLOAD_ERR_OK === $f['error']) {
+                $stream = $this->streamFactory->createStreamFromFile($f['tmpName']);
+            } else {
+                $stream = $this->streamFactory->createStream();
+            }
+
+            $result[$index] = $this->uploadsFactory->createUploadedFile(
+                $stream,
                 $f['size'],
                 $f['error'],
                 $f['name'],
