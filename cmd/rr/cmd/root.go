@@ -89,7 +89,7 @@ func Execute() {
 }
 
 func init() {
-	CLI.PersistentFlags().BoolVarP(&Verbose, "Verbose", "v", false, "Verbose output")
+	CLI.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Verbose output")
 	CLI.PersistentFlags().BoolVarP(&Debug, "debug", "d", false, "debug mode")
 	CLI.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is .rr.yaml)")
 
