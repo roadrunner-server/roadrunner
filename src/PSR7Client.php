@@ -84,6 +84,7 @@ class PSR7Client
         parse_str($ctx['rawQuery'], $query);
 
         $request = $request
+            ->withProtocolVersion(substr($ctx['protocol'], 5))
             ->withCookieParams($ctx['cookies'])
             ->withQueryParams($query)
             ->withUploadedFiles($this->wrapUploads($ctx['uploads']));
