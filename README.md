@@ -6,7 +6,6 @@ RoadRunner
 [![Go Report Card](https://goreportcard.com/badge/github.com/spiral/roadrunner)](https://goreportcard.com/report/github.com/spiral/roadrunner)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/spiral/roadrunner/badges/quality-score.png)](https://scrutinizer-ci.com/g/spiral/roadrunner/?branch=master)
 [![Codecov](https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/roadrunner/)
-[![Gitter](https://badges.gitter.im/spiral/roadrunner.svg)](https://gitter.im/spiral/roadrunner)
 
 RoadRunner is an open source (MIT licensed), high-performance PHP application server, load balancer and process manager.
 It supports running as a service with the ability to extend its functionality on a per-project basis. 
