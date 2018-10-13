@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.2.5 (13.10.2018)
+------
+- decoupled from Zend Diactoros via PSR-17 factory (by @1ma)
+- `Verbose` flag for cli renamed to `verbose` (by @ruudk)
+
 v1.2.4 (30.09.2018)
 ------
 - minor performance improvements (reduced number of syscalls)
