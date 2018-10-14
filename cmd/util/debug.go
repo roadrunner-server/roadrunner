@@ -34,7 +34,7 @@ func LogEvent(logger *logrus.Logger, event int, ctx interface{}) bool {
 				continue
 			}
 
-			logger.Warning(Sprintf("<yellow>%s</reset>", strings.Trim(line, "\r\n")))
+			logger.Warning(strings.Trim(line, "\r\n"))
 		}
 
 		return true
