@@ -29,10 +29,17 @@ func LogEvent(logger *logrus.Logger, event int, ctx interface{}) bool {
 	// outputs
 	switch event {
 	case roadrunner.EventStderrOutput:
-		logger.Warning(Sprintf(
-			"<yellow>%s</reset>",
-			strings.Trim(string(ctx.([]byte)), "\r\n"),
-		))
+		for _, line := range strings.Split(string(ctx.([]byte)), "\n") {
+			if line == "" {
+				continue
+			}
+
+			logger.Warning(Sprintf(
+				"<yellow>%s</reset>",
+				strings.Trim(line, "\r\n"),
+			))
+		}
+
 		return true
 	}
 
