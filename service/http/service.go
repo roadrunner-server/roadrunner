@@ -12,7 +12,6 @@ import (
 	"net/url"
 	"strings"
 	"sync"
-	"sync/atomic"
 )
 
 const (
@@ -28,16 +27,15 @@ type middleware func(f http.HandlerFunc) http.HandlerFunc
 
 // Service manages rr, http servers.
 type Service struct {
-	cfg      *Config
-	env      env.Environment
-	lsns     []func(event int, ctx interface{})
-	mdwr     []middleware
-	mu       sync.Mutex
-	rr       *roadrunner.Server
-	stopping int32
-	handler  *Handler
-	http     *http.Server
-	https    *http.Server
+	cfg     *Config
+	env     env.Environment
+	lsns    []func(event int, ctx interface{})
+	mdwr    []middleware
+	mu      sync.Mutex
+	rr      *roadrunner.Server
+	handler *Handler
+	http    *http.Server
+	https   *http.Server
 }
 
 // AddMiddleware adds new net/http mdwr.
@@ -109,13 +107,6 @@ func (s *Service) Serve() error {
 
 // Stop stops the svc.
 func (s *Service) Stop() {
-	if atomic.LoadInt32(&s.stopping) != 0 {
-		// already stopping
-		return
-	}
-
-	atomic.StoreInt32(&s.stopping, 1)
-
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.http == nil {
