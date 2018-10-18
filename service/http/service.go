@@ -114,6 +114,8 @@ func (s *Service) Stop() {
 		return
 	}
 
+	atomic.StoreInt32(&s.stopping, 1)
+
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.http == nil {
