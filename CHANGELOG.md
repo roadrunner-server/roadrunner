@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.2.6 (18.10.2018)
+-------------------
+- bugfix: ignored `stopping` value during http server shutdown
+- debug log now split message into individual lines
+
 v1.2.5 (13.10.2018)
 ------
 - decoupled from Zend Diactoros via PSR-17 factory (by @1ma)
