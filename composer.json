@@ -1,6 +1,6 @@
 {
   "name": "spiral/roadrunner",
-  "type": "library",
+  "type": "server",
   "description": "High-performance PHP load balancer and process manager library for Golang",
   "license": "MIT",
   "authors": [
