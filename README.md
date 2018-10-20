@@ -49,7 +49,7 @@ Features:
 - flexible environment configuration
 - no external PHP dependencies, drop-in (based on [Goridge](https://github.com/spiral/goridge))
 - load balancer, process manager and task pipeline
-- frontend agnostic (queue, REST, PSR-7, async php, etc)
+- frontend agnostic (Queue, PSR-7, [GRPC](https://github.com/spiral/php-grpc), etc)
 - works over TCP, unix sockets and standard pipes
 - automatic worker replacement and safe PHP process destruction
 - worker lifecycle management (create/allocate/destroy timeouts)
