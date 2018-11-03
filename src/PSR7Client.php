@@ -73,6 +73,7 @@ class PSR7Client
             return null;
         }
 
+        $_SERVER = [];
         $_SERVER = $this->configureServer($ctx);
 
         $request = $this->requestFactory->createServerRequest(
