@@ -95,6 +95,8 @@ http:
       numWorkers: 4
 ```
 
+> Read more in [Wiki](https://github.com/spiral/roadrunner/wiki/PHP-Workers).
+
 License:
 --------
 The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [SpiralScout](https://spiralscout.com).
