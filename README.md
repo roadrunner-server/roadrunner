@@ -40,6 +40,8 @@ Table of Contents
   * [Event Listeners](https://github.com/spiral/roadrunner/wiki/Event-Listeners)
   * [Standalone Usage](https://github.com/spiral/roadrunner/wiki/Standalone-usage)
   * [AWS Lambda](https://github.com/spiral/roadrunner/wiki/AWS-Lambda)
+* Custom Builds
+  * [GRPC Server](https://github.com/spiral/php-grpc)
 
 Features:
 --------
