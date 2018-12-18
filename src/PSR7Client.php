@@ -7,7 +7,6 @@
 
 namespace Spiral\RoadRunner;
 
-use Http\Factory\Diactoros;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,14 +38,14 @@ class PSR7Client
      */
     public function __construct(
         Worker $worker,
-        ServerRequestFactoryInterface $requestFactory = null,
-        StreamFactoryInterface $streamFactory = null,
-        UploadedFileFactoryInterface $uploadsFactory = null
+        ServerRequestFactoryInterface $requestFactory,
+        StreamFactoryInterface $streamFactory,
+        UploadedFileFactoryInterface $uploadsFactory
     ) {
         $this->worker = $worker;
-        $this->requestFactory = $requestFactory ?? new Diactoros\ServerRequestFactory();
-        $this->streamFactory = $streamFactory ?? new Diactoros\StreamFactory();
-        $this->uploadsFactory = $uploadsFactory ?? new Diactoros\UploadedFileFactory();
+        $this->requestFactory = $requestFactory;
+        $this->streamFactory = $streamFactory;
+        $this->uploadsFactory = $uploadsFactory;
     }
 
     /**

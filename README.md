@@ -72,12 +72,18 @@ Example:
 ini_set('display_errors', 'stderr');
 include "vendor/autoload.php";
 
+// any vendor psr-7 factory
+$serverRequestFactory = \Zend\Diactoros\ServerRequestFactory;
+$streamFactory = \Zend\Diactoros\StreamFactory;
+$uploadedFileFactory = \Zend\Diactoros\UploadedFileFactory;
+
 $relay = new Spiral\Goridge\StreamRelay(STDIN, STDOUT);
-$psr7 = new Spiral\RoadRunner\PSR7Client(new Spiral\RoadRunner\Worker($relay));
+$worker = new Spiral\RoadRunner\Worker($relay)
+$psr7 = new Spiral\RoadRunner\PSR7Client($worker, $serverRequestFactory, $streamFactory, $uploadedFileFactory);
 
 while ($req = $psr7->acceptRequest()) {
     try {
-        $resp = new \Zend\Diactoros\Response();
+        $resp = new \Zend\Diactoros\Response(); // any vendor PSR-7 response
         $resp->getBody()->write("hello world");
 
         $psr7->respond($resp);
