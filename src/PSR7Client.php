@@ -144,7 +144,11 @@ class PSR7Client
         $server['REQUEST_TIME_FLOAT'] = microtime(true);
         $server['REMOTE_ADDR'] = $ctx['attributes']['ipAddress'] ?? $ctx['remoteAddr'] ?? '127.0.0.1';
         $server['REMOTE_ADDR'] = $ctx['attributes']['ipAddress'] ?? $ctx['remoteAddr'] ?? '127.0.0.1';
-        $server['HTTP_USER_AGENT'] = $ctx['headers']['User-Agent'][0] ?? '';
+
+        $server['HTTP_USER_AGENT'] = '';
+        if (isset($ctx['headers']['User-Agent'][0])) {
+            $server['HTTP_USER_AGENT'] = $ctx['headers']['User-Agent'][0];
+        }
 
         return $server;
     }

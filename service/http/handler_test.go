@@ -167,6 +167,99 @@ func TestServer_Headers(t *testing.T) {
 	assert.Equal(t, "SAMPLE", string(b))
 }
 
+func TestServer_Empty_User_Agent(t *testing.T) {
+	st := &Handler{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../tests/http/client.php user-agent pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	assert.NoError(t, st.rr.Start())
+	defer st.rr.Stop()
+
+	hs := &http.Server{Addr: ":8088", Handler: st}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	req, err := http.NewRequest("GET", "http://localhost:8088?hello=world", nil)
+	assert.NoError(t, err)
+
+	req.Header.Add("user-agent", "")
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "", string(b))
+}
+
+
+func TestServer_User_Agent(t *testing.T) {
+	st := &Handler{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../tests/http/client.php user-agent pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	assert.NoError(t, st.rr.Start())
+	defer st.rr.Stop()
+
+	hs := &http.Server{Addr: ":8088", Handler: st}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	req, err := http.NewRequest("GET", "http://localhost:8088?hello=world", nil)
+	assert.NoError(t, err)
+
+	req.Header.Add("User-Agent", "go-agent")
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "go-agent", string(b))
+}
+
 func TestServer_Cookies(t *testing.T) {
 	st := &Handler{
 		cfg: &Config{
