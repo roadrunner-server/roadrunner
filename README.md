@@ -1,13 +1,13 @@
 <p align="center">
 <img src="https://user-images.githubusercontent.com/796136/50285552-99cff580-046d-11e9-9982-5894ba767c3b.png" alt="RoadRunner"/>
+ 
+<a href="https://packagist.org/packages/spiral/roadrunner"><img src="https://poser.pugx.org/spiral/roadrunner/version"></a>
+<a href="https://godoc.org/github.com/spiral/roadrunner"><img src="https://godoc.org/github.com/spiral/roadrunner?status.svg"></a>
+<a href="https://travis-ci.org/spiral/roadrunner"><img src="https://travis-ci.org/spiral/roadrunner.svg?branch=master"></a>
+<a href="https://goreportcard.com/report/github.com/spiral/roadrunner"><img src="https://goreportcard.com/badge/github.com/spiral/roadrunner"></a>
+<a href="(https://scrutinizer-ci.com/g/spiral/roadrunner/?branch=master"><img src="https://scrutinizer-ci.com/g/spiral/roadrunner/badges/quality-score.png"></a>
+<a href="https://codecov.io/gh/spiral/roadrunner/"><img src="https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg"></a>
 </p>
-
-[![Latest Stable Version](https://poser.pugx.org/spiral/roadrunner/version)](https://packagist.org/packages/spiral/roadrunner)
-[![GoDoc](https://godoc.org/github.com/spiral/roadrunner?status.svg)](https://godoc.org/github.com/spiral/roadrunner)
-[![Build Status](https://travis-ci.org/spiral/roadrunner.svg?branch=master)](https://travis-ci.org/spiral/roadrunner)
-[![Go Report Card](https://goreportcard.com/badge/github.com/spiral/roadrunner)](https://goreportcard.com/report/github.com/spiral/roadrunner)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/spiral/roadrunner/badges/quality-score.png)](https://scrutinizer-ci.com/g/spiral/roadrunner/?branch=master)
-[![Codecov](https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/roadrunner/)
 
 RoadRunner is an open source (MIT licensed) high-performance PHP application server, load balancer and process manager.
 It supports running as a service with the ability to extend its functionality on a per-project basis. 
