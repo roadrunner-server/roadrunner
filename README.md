@@ -1,5 +1,7 @@
-RoadRunner
-==========
+<p align="center">
+<img src="https://user-images.githubusercontent.com/796136/50285552-99cff580-046d-11e9-9982-5894ba767c3b.png" alt="RoadRunner"/>
+</p>
+
 [![Latest Stable Version](https://poser.pugx.org/spiral/roadrunner/version)](https://packagist.org/packages/spiral/roadrunner)
 [![GoDoc](https://godoc.org/github.com/spiral/roadrunner?status.svg)](https://godoc.org/github.com/spiral/roadrunner)
 [![Build Status](https://travis-ci.org/spiral/roadrunner.svg?branch=master)](https://travis-ci.org/spiral/roadrunner)
