@@ -31,6 +31,13 @@ class PSR7Client
     /*** @var UploadedFileFactoryInterface */
     private $uploadsFactory;
 
+    /** @var array Valid values for HTTP protocol version */
+    public static $allowedProtocolVersions = [
+        '1.0',
+        '1.1',
+        '2',
+    ];
+
     /**
      * @param Worker                             $worker
      * @param ServerRequestFactoryInterface|null $requestFactory
@@ -84,7 +91,7 @@ class PSR7Client
         parse_str($ctx['rawQuery'], $query);
 
         $request = $request
-            ->withProtocolVersion(substr($ctx['protocol'], 5))
+            ->withProtocolVersion(static::normalizeHttpProtocolVersion($ctx['protocol']))
             ->withCookieParams($ctx['cookies'])
             ->withQueryParams($query)
             ->withUploadedFiles($this->wrapUploads($ctx['uploads']));
@@ -180,5 +187,26 @@ class PSR7Client
         }
 
         return $result;
+    }
+
+    /**
+     * Normalize HTTP protocol version to valid values
+     * @param string $version
+     * @return string
+     */
+    public static function normalizeHttpProtocolVersion(string $version): string
+    {
+        $v = substr($version, 5);
+
+        if ($v === '2.0') {
+            $v = '2';
+        }
+
+        // Fallback for values outside of valid protocol versions
+        if (!in_array($v, static::$allowedProtocolVersions, true)) {
+            return '1.1';
+        }
+
+        return $v;
     }
 }
