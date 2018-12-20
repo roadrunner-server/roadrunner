@@ -32,11 +32,7 @@ class PSR7Client
     private $uploadsFactory;
 
     /** @var array Valid values for HTTP protocol version */
-    public static $allowedProtocolVersions = [
-        '1.0',
-        '1.1',
-        '2',
-    ];
+    private static $allowedVersions = ['1.0', '1.1', '2',];
 
     /**
      * @param Worker                             $worker
@@ -91,7 +87,7 @@ class PSR7Client
         parse_str($ctx['rawQuery'], $query);
 
         $request = $request
-            ->withProtocolVersion(static::normalizeHttpProtocolVersion($ctx['protocol']))
+            ->withProtocolVersion(static::fetchProtocolVersion($ctx['protocol']))
             ->withCookieParams($ctx['cookies'])
             ->withQueryParams($query)
             ->withUploadedFiles($this->wrapUploads($ctx['uploads']));
@@ -147,6 +143,8 @@ class PSR7Client
         $server['REQUEST_TIME'] = time();
         $server['REQUEST_TIME_FLOAT'] = microtime(true);
         $server['REMOTE_ADDR'] = $ctx['attributes']['ipAddress'] ?? $ctx['remoteAddr'] ?? '127.0.0.1';
+        $server['REMOTE_ADDR'] = $ctx['attributes']['ipAddress'] ?? $ctx['remoteAddr'] ?? '127.0.0.1';
+        $server['HTTP_USER_AGENT'] = $ctx['headers']['User-Agent'][0] ?? '';
 
         return $server;
     }
@@ -191,19 +189,20 @@ class PSR7Client
 
     /**
      * Normalize HTTP protocol version to valid values
+     *
      * @param string $version
      * @return string
      */
-    public static function normalizeHttpProtocolVersion(string $version): string
+    private static function fetchProtocolVersion(string $version): string
     {
         $v = substr($version, 5);
 
         if ($v === '2.0') {
-            $v = '2';
+            return '2';
         }
 
         // Fallback for values outside of valid protocol versions
-        if (!in_array($v, static::$allowedProtocolVersions, true)) {
+        if (!in_array($v, static::$allowedVersions, true)) {
             return '1.1';
         }
 

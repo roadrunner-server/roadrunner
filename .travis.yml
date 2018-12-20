@@ -63,3 +63,12 @@ jobs:
       - sudo cp `which php7.2` `which php`
       - php -v
       - composer self-update
+  - stage: Test
+    env: "PHP=7.3"
+    before_install:
+      - sudo add-apt-repository -y ppa:ondrej/php
+      - sudo apt-get update
+      - sudo apt-get install -y php7.3-cli
+      - sudo cp `which php7.3` `which php`
+      - php -v
+      - composer self-update
