@@ -39,21 +39,32 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class RoadRunnerCLIHelper
 {
+    /**
+     * Returns version of RoadRunner based on build.sh file
+     *
+     * @return string Version of RoadRunner
+     * @throws Exception
+     */
     public static function getVersion()
     {
         $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'build.sh';
-        $fh = fopen($file, 'r') or die(1);
-        while (!feof($fh)) {
-            $line = fgets($fh, 4096);
+        $fileResource = fopen($file, 'r') or die(1);
+        while (!feof($fileResource)) {
+            $line = fgets($fileResource, 4096);
             $matches = [];
             if (preg_match("/^RR_VERSION=(.*)/", $line, $matches)) {
                 return $matches[1];
             }
         }
-        fclose($fh);
+        fclose($fileResource);
         throw new Exception("Can't find version of RoadRunner");
     }
 
+    /**
+     * Returns OS Type for filename
+     *
+     * @return string OS Type
+     */
     public static function getOsType()
     {
         switch (PHP_OS) {
@@ -72,6 +83,12 @@ class RoadRunnerCLIHelper
         }
     }
 
+    /**
+     * Returns generated URL to zip file on GitHub with binary file
+     *
+     * @return string URL
+     * @throws Exception
+     */
     public static function getBinaryDownloadUrl()
     {
         return 'https://github.com/spiral/roadrunner/releases/download/v' . static::getVersion() . '/roadrunner-' . static::getVersion() . '-' . static::getOsType() . '-amd64.zip';
@@ -106,13 +123,13 @@ class RoadRunnerCLIHelper
 
         $zipFileName = tempnam('.', "rr_zip");
         $zipFile = fopen($zipFileName, "w+");
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, RoadRunnerCLIHelper::getBinaryDownloadUrl());
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_FILE, $zipFile);
-        curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function ($resource, $download_size, $downloaded, $upload_size, $uploaded) use ($progressBar) {
+        $curlResource = curl_init();
+        curl_setopt($curlResource, CURLOPT_URL, RoadRunnerCLIHelper::getBinaryDownloadUrl());
+        curl_setopt($curlResource, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlResource, CURLOPT_BINARYTRANSFER, true);
+        curl_setopt($curlResource, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curlResource, CURLOPT_FILE, $zipFile);
+        curl_setopt($curlResource, CURLOPT_PROGRESSFUNCTION, function ($resource, $download_size, $downloaded, $upload_size, $uploaded) use ($progressBar) {
             if ($download_size == 0) {
                 return;
             }
@@ -120,10 +137,10 @@ class RoadRunnerCLIHelper
             $progressBar->setMaxSteps($download_size);
             $progressBar->setProgress($downloaded);
         });
-        curl_setopt($ch, CURLOPT_NOPROGRESS, false); // needed to make progress function work
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_exec($ch);
-        curl_close($ch);
+        curl_setopt($curlResource, CURLOPT_NOPROGRESS, false); // needed to make progress function work
+        curl_setopt($curlResource, CURLOPT_HEADER, 0);
+        curl_exec($curlResource);
+        curl_close($curlResource);
         fclose($zipFile);
 
         $progressBar->finish();
@@ -131,23 +148,23 @@ class RoadRunnerCLIHelper
 
         $output->writeln('<info>Unpacking ' . basename(RoadRunnerCLIHelper::getBinaryDownloadUrl()) . '</info>');
 
-        $za = new ZipArchive();
-        $za->open($zipFileName);
-        $fp = $za->getStream('roadrunner-' . RoadRunnerCLIHelper::getVersion() . '-' . RoadRunnerCLIHelper::getOsType() . '-amd64/rr');
-        $ofp = fopen($finalFile, 'w');
+        $zipArchive = new ZipArchive();
+        $zipArchive->open($zipFileName);
+        $fileStreamFromZip = $zipArchive->getStream('roadrunner-' . RoadRunnerCLIHelper::getVersion() . '-' . RoadRunnerCLIHelper::getOsType() . '-amd64/rr');
+        $finalFileResource = fopen($finalFile, 'w');
 
-        if (!$fp) {
+        if (!$fileStreamFromZip) {
             throw new Exception('Unable to extract the file.');
         }
 
-        while (!feof($fp)) {
-            fwrite($ofp, fread($fp, 8192));
+        while (!feof($fileStreamFromZip)) {
+            fwrite($finalFileResource, fread($fileStreamFromZip, 8192));
         }
 
-        fclose($fp);
-        fclose($ofp);
-        $za->extractTo('.', []);
-        $za->close();
+        fclose($fileStreamFromZip);
+        fclose($finalFileResource);
+        $zipArchive->extractTo('.', []);
+        $zipArchive->close();
         unlink($zipFileName);
 
         chmod($finalFile, 0755);
