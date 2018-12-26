@@ -131,7 +131,7 @@ func (s *Server) Reconfigure(cfg *ServerConfig) error {
 		return err
 	}
 
-	s.pool.Listen(s.poolListener)
+	pool.Listen(s.poolListener)
 
 	s.mu.Lock()
 	s.cfg.Pool, s.pool = cfg.Pool, pool
