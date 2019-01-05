@@ -40,10 +40,10 @@ type Request struct {
 	// Cookies contains list of request cookies.
 	Cookies map[string]string `json:"cookies"`
 
-	// RawQuery contains non parsed query string (to be parsed on php elapsed).
+	// RawQuery contains non parsed query string (to be parsed on php end).
 	RawQuery string `json:"rawQuery"`
 
-	// Parsed indicates that request body has been parsed on RR elapsed.
+	// Parsed indicates that request body has been parsed on RR end.
 	Parsed bool `json:"parsed"`
 
 	// Uploads contains list of uploaded files, their names, sized and associations with temporary files.
