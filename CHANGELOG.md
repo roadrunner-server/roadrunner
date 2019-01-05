@@ -4,6 +4,7 @@ CHANGELOG
 v1.3.0 (05.01.2019)
 -------------------
 - added support for zend/diactros 1.0 and 2.0
+- removed `http-interop/http-factory-diactoros`
 - added `strict_types=1`
 - added elapsed time into debug log
 - ability to redefine config via flags (example: `rr serve -v -d -o http.workers.pool.numWorkers=1`)
