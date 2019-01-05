@@ -1,6 +1,33 @@
 CHANGELOG
 =========
 
+v1.3.0 (05.01.2019)
+-------------------
+- added support for zend/diactros 1.0 and 2.0
+- added `strict_types=1`
+- added elapsed time into debug log
+- ability to redefine config via flags (example: `rr serve -v -d -o http.workers.pool.numWorkers=1`)
+- fixed bug causing child processes die before parent rr (annoying error on windows "worker exit status ....")
+- improved stop sequence and graceful exit
+- `env.Environment` has been spitted into `env.Setter` and `env.Getter`
+- added `env.Copy` method
+- config management has been moved out from root command into `utils`
+- spf13/viper dependency has been bumped up to 1.3.1
+- more tests
+- new travis configuration
+
+v1.2.8 (26.12.2018)
+-------------------
+- bugfix #76 error_log redirect has been disabled after `http:reset` command
+
+v1.2.7 (20.12.2018)
+-------------------
+- #67 bugfix, invalid protocol version while using HTTP/2 with new http-interop by @bognerf
+- #66 added HTTP_USER_AGENT value and tests for it
+- typo fix in static service by @Alex-Bond
+- added PHP 7.3 to travis
+- less ambiguous error when invalid data found in a pipe(`invalid prefix (checksum)` => `invalid data found in the buffer (possible echo)`)
+
 v1.2.6 (18.10.2018)
 -------------------
 - bugfix: ignored `stopping` value during http server shutdown
