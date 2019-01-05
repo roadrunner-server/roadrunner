@@ -3,6 +3,7 @@ package roadrunner
 import (
 	"errors"
 	"fmt"
+	"github.com/spiral/roadrunner/osutil"
 	"net"
 	"os"
 	"os/exec"
@@ -75,8 +76,7 @@ func (cfg *ServerConfig) makeCommand() func() *exec.Cmd {
 	var cmd = strings.Split(cfg.Command, " ")
 	return func() *exec.Cmd {
 		cmd := exec.Command(cmd[0], cmd[1:]...)
-
-		cmd.SysProcAttr = &syscall.SysProcAttr{CreationFlags: syscall.CREATE_NEW_PROCESS_GROUP}
+		osutil.IsolateProcess(cmd)
 
 		cmd.Env = append(os.Environ(), fmt.Sprintf("RR_RELAY=%s", cfg.Relay))
 		cmd.Env = append(cmd.Env, cfg.env...)

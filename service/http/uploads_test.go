@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/util"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
@@ -17,8 +18,9 @@ import (
 	"time"
 )
 
-func TestServer_Upload_File(t *testing.T) {
-	st := &Handler{
+func TestHandler_Upload_File(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -36,11 +38,12 @@ func TestServer_Upload_File(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8021", Handler: st}
+	hs := &http.Server{Addr: ":8021", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -78,8 +81,9 @@ func TestServer_Upload_File(t *testing.T) {
 	assert.Equal(t, `{"upload":`+fs+`}`, string(b))
 }
 
-func TestServer_Upload_NestedFile(t *testing.T) {
-	st := &Handler{
+func TestHandler_Upload_NestedFile(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -97,11 +101,12 @@ func TestServer_Upload_NestedFile(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8021", Handler: st}
+	hs := &http.Server{Addr: ":8021", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -139,8 +144,9 @@ func TestServer_Upload_NestedFile(t *testing.T) {
 	assert.Equal(t, `{"upload":{"x":{"y":{"z":[`+fs+`]}}}}`, string(b))
 }
 
-func TestServer_Upload_File_NoTmpDir(t *testing.T) {
-	st := &Handler{
+func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -158,11 +164,12 @@ func TestServer_Upload_File_NoTmpDir(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8021", Handler: st}
+	hs := &http.Server{Addr: ":8021", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -200,8 +207,9 @@ func TestServer_Upload_File_NoTmpDir(t *testing.T) {
 	assert.Equal(t, `{"upload":`+fs+`}`, string(b))
 }
 
-func TestServer_Upload_File_Forbids(t *testing.T) {
-	st := &Handler{
+func TestHandler_Upload_File_Forbids(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -219,11 +227,12 @@ func TestServer_Upload_File_Forbids(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8021", Handler: st}
+	hs := &http.Server{Addr: ":8021", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()

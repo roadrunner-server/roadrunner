@@ -3,9 +3,11 @@ package http
 import (
 	"github.com/pkg/errors"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/util"
 	"net/http"
 	"strconv"
 	"sync"
+	"time"
 )
 
 const (
@@ -23,6 +25,14 @@ type ErrorEvent struct {
 
 	// Error - associated error, if any.
 	Error error
+
+	// event timings
+	start, end int64
+}
+
+// Elapsed returns duration of the invocation.
+func (e *ErrorEvent) Elapsed() time.Duration {
+	return time.Duration(e.end - e.start)
 }
 
 // ResponseEvent represents singular http response event.
@@ -32,11 +42,20 @@ type ResponseEvent struct {
 
 	// Response contains service response.
 	Response *Response
+
+	// event timings
+	start, end int64
+}
+
+// Elapsed returns duration of the invocation.
+func (e *ResponseEvent) Elapsed() time.Duration {
+	return time.Duration(e.end - e.start)
 }
 
 // Handler serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Handler struct {
+	ft  *util.FastTime
 	cfg *Config
 	rr  *roadrunner.Server
 	mul sync.Mutex
@@ -53,14 +72,16 @@ func (h *Handler) Listen(l func(event int, ctx interface{})) {
 
 // mdwr serve using PSR-7 requests passed to underlying application. Attempts to serve static files first if enabled.
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	start := h.ft.UnixNano()
+
 	// validating request size
 	if h.cfg.MaxRequest != 0 {
 		if length := r.Header.Get("content-length"); length != "" {
 			if size, err := strconv.ParseInt(length, 10, 64); err != nil {
-				h.handleError(w, r, err)
+				h.handleError(w, r, err, start)
 				return
 			} else if size > h.cfg.MaxRequest*1024*1024 {
-				h.handleError(w, r, errors.New("request body max size is exceeded"))
+				h.handleError(w, r, errors.New("request body max size is exceeded"), start)
 				return
 			}
 		}
@@ -68,7 +89,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	req, err := NewRequest(r, h.cfg.Uploads)
 	if err != nil {
-		h.handleError(w, r, err)
+		h.handleError(w, r, err, start)
 		return
 	}
 
@@ -77,37 +98,37 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	p, err := req.Payload()
 	if err != nil {
-		h.handleError(w, r, err)
+		h.handleError(w, r, err, start)
 		return
 	}
 
 	rsp, err := h.rr.Exec(p)
 	if err != nil {
-		h.handleError(w, r, err)
+		h.handleError(w, r, err, start)
 		return
 	}
 
 	resp, err := NewResponse(rsp)
 	if err != nil {
-		h.handleError(w, r, err)
+		h.handleError(w, r, err, start)
 		return
 	}
 
-	h.handleResponse(req, resp)
+	h.handleResponse(req, resp, start)
 	resp.Write(w)
 }
 
 // handleError sends error.
-func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error) {
-	h.throw(EventError, &ErrorEvent{Request: r, Error: err})
+func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error, start int64) {
+	h.throw(EventError, &ErrorEvent{Request: r, Error: err, start: start, end: h.ft.UnixNano()})
 
 	w.WriteHeader(500)
 	w.Write([]byte(err.Error()))
 }
 
 // handleResponse triggers response event.
-func (h *Handler) handleResponse(req *Request, resp *Response) {
-	h.throw(EventResponse, &ResponseEvent{Request: req, Response: resp})
+func (h *Handler) handleResponse(req *Request, resp *Response, start int64) {
+	h.throw(EventResponse, &ResponseEvent{Request: req, Response: resp, start: start, end: h.ft.UnixNano()})
 }
 
 // throw invokes event handler if any.

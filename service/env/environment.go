@@ -16,7 +16,7 @@ type Setter interface {
 	SetEnv(key, value string)
 }
 
-// Setter provides ability to set environment value.
+// Getter provides ability to set environment value.
 type Getter interface {
 	// GetEnv must return list of env variables.
 	GetEnv() (map[string]string, error)

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/util"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"mime/multipart"
@@ -29,8 +30,9 @@ func get(url string) (string, *http.Response, error) {
 	return string(b), r, err
 }
 
-func TestServer_Echo(t *testing.T) {
-	st := &Handler{
+func TestHandler_Echo(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -48,11 +50,12 @@ func TestServer_Echo(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8177", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -65,7 +68,8 @@ func TestServer_Echo(t *testing.T) {
 }
 
 func Test_HandlerErrors(t *testing.T) {
-	st := &Handler{
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -83,16 +87,18 @@ func Test_HandlerErrors(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
 	wr := httptest.NewRecorder()
 	rq := httptest.NewRequest("POST", "/", bytes.NewBuffer([]byte("data")))
 
-	st.ServeHTTP(wr, rq)
+	h.ServeHTTP(wr, rq)
 	assert.Equal(t, 500, wr.Code)
 }
 
 func Test_Handler_JSON_error(t *testing.T) {
-	st := &Handler{
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -110,18 +116,20 @@ func Test_Handler_JSON_error(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
 	wr := httptest.NewRecorder()
 	rq := httptest.NewRequest("POST", "/", bytes.NewBuffer([]byte("{sd")))
 	rq.Header.Add("Content-Type", "application/json")
 	rq.Header.Add("Content-Size", "3")
 
-	st.ServeHTTP(wr, rq)
+	h.ServeHTTP(wr, rq)
 	assert.Equal(t, 500, wr.Code)
 }
 
-func TestServer_Headers(t *testing.T) {
-	st := &Handler{
+func TestHandler_Headers(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -139,11 +147,12 @@ func TestServer_Headers(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8078", Handler: st}
+	hs := &http.Server{Addr: ":8078", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -167,8 +176,9 @@ func TestServer_Headers(t *testing.T) {
 	assert.Equal(t, "SAMPLE", string(b))
 }
 
-func TestServer_Empty_User_Agent(t *testing.T) {
-	st := &Handler{
+func TestHandler_Empty_User_Agent(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -186,11 +196,12 @@ func TestServer_Empty_User_Agent(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8088", Handler: st}
+	hs := &http.Server{Addr: ":8088", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -213,9 +224,9 @@ func TestServer_Empty_User_Agent(t *testing.T) {
 	assert.Equal(t, "", string(b))
 }
 
-
-func TestServer_User_Agent(t *testing.T) {
-	st := &Handler{
+func TestHandler_User_Agent(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -233,11 +244,12 @@ func TestServer_User_Agent(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8088", Handler: st}
+	hs := &http.Server{Addr: ":8088", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -260,8 +272,9 @@ func TestServer_User_Agent(t *testing.T) {
 	assert.Equal(t, "go-agent", string(b))
 }
 
-func TestServer_Cookies(t *testing.T) {
-	st := &Handler{
+func TestHandler_Cookies(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -279,11 +292,12 @@ func TestServer_Cookies(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8079", Handler: st}
+	hs := &http.Server{Addr: ":8079", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -311,8 +325,9 @@ func TestServer_Cookies(t *testing.T) {
 	}
 }
 
-func TestServer_JsonPayload_POST(t *testing.T) {
-	st := &Handler{
+func TestHandler_JsonPayload_POST(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -330,11 +345,12 @@ func TestServer_JsonPayload_POST(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8090", Handler: st}
+	hs := &http.Server{Addr: ":8090", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -361,8 +377,9 @@ func TestServer_JsonPayload_POST(t *testing.T) {
 	assert.Equal(t, `{"value":"key"}`, string(b))
 }
 
-func TestServer_JsonPayload_PUT(t *testing.T) {
-	st := &Handler{
+func TestHandler_JsonPayload_PUT(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -380,11 +397,12 @@ func TestServer_JsonPayload_PUT(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8081", Handler: st}
+	hs := &http.Server{Addr: ":8081", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -407,8 +425,9 @@ func TestServer_JsonPayload_PUT(t *testing.T) {
 	assert.Equal(t, `{"value":"key"}`, string(b))
 }
 
-func TestServer_JsonPayload_PATCH(t *testing.T) {
-	st := &Handler{
+func TestHandler_JsonPayload_PATCH(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -426,11 +445,12 @@ func TestServer_JsonPayload_PATCH(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8082", Handler: st}
+	hs := &http.Server{Addr: ":8082", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -453,8 +473,9 @@ func TestServer_JsonPayload_PATCH(t *testing.T) {
 	assert.Equal(t, `{"value":"key"}`, string(b))
 }
 
-func TestServer_FormData_POST(t *testing.T) {
-	st := &Handler{
+func TestHandler_FormData_POST(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -472,11 +493,12 @@ func TestServer_FormData_POST(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8083", Handler: st}
+	hs := &http.Server{Addr: ":8083", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -511,8 +533,9 @@ func TestServer_FormData_POST(t *testing.T) {
 	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
 }
 
-func TestServer_FormData_PUT(t *testing.T) {
-	st := &Handler{
+func TestHandler_FormData_PUT(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -530,11 +553,12 @@ func TestServer_FormData_PUT(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8084", Handler: st}
+	hs := &http.Server{Addr: ":8084", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -569,8 +593,9 @@ func TestServer_FormData_PUT(t *testing.T) {
 	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
 }
 
-func TestServer_FormData_PATCH(t *testing.T) {
-	st := &Handler{
+func TestHandler_FormData_PATCH(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -588,11 +613,12 @@ func TestServer_FormData_PATCH(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8085", Handler: st}
+	hs := &http.Server{Addr: ":8085", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -627,8 +653,9 @@ func TestServer_FormData_PATCH(t *testing.T) {
 	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
 }
 
-func TestServer_Multipart_POST(t *testing.T) {
-	st := &Handler{
+func TestHandler_Multipart_POST(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -646,11 +673,12 @@ func TestServer_Multipart_POST(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8019", Handler: st}
+	hs := &http.Server{Addr: ":8019", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -689,8 +717,9 @@ func TestServer_Multipart_POST(t *testing.T) {
 	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
 }
 
-func TestServer_Multipart_PUT(t *testing.T) {
-	st := &Handler{
+func TestHandler_Multipart_PUT(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -708,11 +737,12 @@ func TestServer_Multipart_PUT(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8020", Handler: st}
+	hs := &http.Server{Addr: ":8020", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -751,8 +781,9 @@ func TestServer_Multipart_PUT(t *testing.T) {
 	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
 }
 
-func TestServer_Multipart_PATCH(t *testing.T) {
-	st := &Handler{
+func TestHandler_Multipart_PATCH(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -770,11 +801,12 @@ func TestServer_Multipart_PATCH(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8021", Handler: st}
+	hs := &http.Server{Addr: ":8021", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -813,8 +845,9 @@ func TestServer_Multipart_PATCH(t *testing.T) {
 	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
 }
 
-func TestServer_Error(t *testing.T) {
-	st := &Handler{
+func TestHandler_Error(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -832,11 +865,12 @@ func TestServer_Error(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8177", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -847,8 +881,9 @@ func TestServer_Error(t *testing.T) {
 	assert.Equal(t, 500, r.StatusCode)
 }
 
-func TestServer_Error2(t *testing.T) {
-	st := &Handler{
+func TestHandler_Error2(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -866,11 +901,12 @@ func TestServer_Error2(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8177", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -881,8 +917,9 @@ func TestServer_Error2(t *testing.T) {
 	assert.Equal(t, 500, r.StatusCode)
 }
 
-func TestServer_Error3(t *testing.T) {
-	st := &Handler{
+func TestHandler_Error3(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1,
 			Uploads: &UploadsConfig{
@@ -900,11 +937,12 @@ func TestServer_Error3(t *testing.T) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	assert.NoError(t, st.rr.Start())
-	defer st.rr.Stop()
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8177", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()
@@ -926,8 +964,161 @@ func TestServer_Error3(t *testing.T) {
 	assert.Equal(t, 500, r.StatusCode)
 }
 
+func TestHandler_ResponseDuration(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../tests/http/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+	defer h.ft.Stop()
+
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
+
+	hs := &http.Server{Addr: ":8177", Handler: h}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	gotresp := make(chan interface{})
+	h.Listen(func(event int, ctx interface{}) {
+		if event == EventResponse {
+			c := ctx.(*ResponseEvent)
+
+			if c.Elapsed() > 0 {
+				close(gotresp)
+			}
+		}
+	})
+
+	body, r, err := get("http://localhost:8177/?hello=world")
+	assert.NoError(t, err)
+
+	<-gotresp
+
+	assert.Equal(t, 201, r.StatusCode)
+	assert.Equal(t, "WORLD", body)
+}
+
+func TestHandler_ResponseDurationDelayed(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../tests/http/client.php echoDelay pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+	defer h.ft.Stop()
+
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
+
+	hs := &http.Server{Addr: ":8177", Handler: h}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	gotresp := make(chan interface{})
+	h.Listen(func(event int, ctx interface{}) {
+		if event == EventResponse {
+			c := ctx.(*ResponseEvent)
+
+			if c.Elapsed() > time.Second {
+				close(gotresp)
+			}
+		}
+	})
+
+	body, r, err := get("http://localhost:8177/?hello=world")
+	assert.NoError(t, err)
+
+	<-gotresp
+
+	assert.Equal(t, 201, r.StatusCode)
+	assert.Equal(t, "WORLD", body)
+}
+
+func TestHandler_ErrorDuration(t *testing.T) {
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../tests/http/client.php error pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+	defer h.ft.Stop()
+
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
+
+	hs := &http.Server{Addr: ":8177", Handler: h}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	goterr := make(chan interface{})
+	h.Listen(func(event int, ctx interface{}) {
+		if event == EventError {
+			c := ctx.(*ErrorEvent)
+
+			if c.Elapsed() > 0 {
+				close(goterr)
+			}
+		}
+	})
+
+	_, r, err := get("http://localhost:8177/?hello=world")
+	assert.NoError(t, err)
+
+	<-goterr
+
+	assert.Equal(t, 500, r.StatusCode)
+}
+
 func BenchmarkHandler_Listen_Echo(b *testing.B) {
-	st := &Handler{
+	h := &Handler{
+		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -945,11 +1136,12 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 			},
 		}),
 	}
+	defer h.ft.Stop()
 
-	st.rr.Start()
-	defer st.rr.Stop()
+	h.rr.Start()
+	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8177", Handler: st}
+	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer hs.Shutdown(context.Background())
 
 	go func() { hs.ListenAndServe() }()

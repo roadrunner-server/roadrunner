@@ -176,7 +176,7 @@ func (s *Server) Pool() Pool {
 	return s.pool
 }
 
-// AddListener pool events.
+// Listen pool events.
 func (s *Server) poolListener(event int, ctx interface{}) {
 	if event == EventPoolError {
 		// pool failure, rebuilding
