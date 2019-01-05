@@ -29,3 +29,8 @@ func TestServerState(t *testing.T) {
 
 	assert.Len(t, state, runtime.NumCPU())
 }
+
+func TestServerState_Err(t *testing.T) {
+	_, err := ServerState(nil)
+	assert.Error(t, err)
+}
