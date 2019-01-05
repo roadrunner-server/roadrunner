@@ -20,6 +20,7 @@ install:
 
 script:
   - go test -race -v -coverprofile=lib.txt -covermode=atomic
+  - go test ./util -race -v -coverprofile=util.txt -covermode=atomic
   - go test ./service -race -v -coverprofile=service.txt -covermode=atomic
   - go test ./service/env -race -v -coverprofile=env.txt -covermode=atomic
   - go test ./service/rpc -race -v -coverprofile=rpc.txt -covermode=atomic
@@ -28,6 +29,7 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -f lib.txt
+  - bash <(curl -s https://codecov.io/bash) -f util.txt
   - bash <(curl -s https://codecov.io/bash) -f service.txt
   - bash <(curl -s https://codecov.io/bash) -f env.txt
   - bash <(curl -s https://codecov.io/bash) -f rpc.txt
