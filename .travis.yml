@@ -8,6 +8,9 @@ go:
 install:
   - export GO111MODULE=on
   - go mod download
+  - php -v
+  - wget https://raw.githubusercontent.com/composer/getcomposer.org/1b137f8bf6db3e79a38a5bc45324414a6b1f9df2/web/installer -O - -q | php -- --quiet
+  - php composer.phar install --no-interaction --prefer-source
 
 script:
   - go test -race -v -coverprofile=lib.txt -covermode=atomic
@@ -36,9 +39,6 @@ jobs:
       - sudo apt-get update
       - sudo apt-get install -y php7.0-cli
       - sudo cp `which php7.0` `which php`
-      - php -v
-      - composer self-update
-      - composer install --no-interaction --prefer-source
   - stage: Test
     env: "PHP=7.1"
     before_install:
@@ -46,9 +46,6 @@ jobs:
       - sudo apt-get update
       - sudo apt-get install -y php7.1-cli
       - sudo cp `which php7.1` `which php`
-      - php -v
-      - composer self-update
-      - composer install --no-interaction --prefer-source
   - stage: Test
     env: "PHP=7.2"
     before_install:
@@ -56,9 +53,6 @@ jobs:
       - sudo apt-get update
       - sudo apt-get install -y php7.2-cli
       - sudo cp `which php7.2` `which php`
-      - php -v
-      - composer self-update
-      - composer install --no-interaction --prefer-source
   - stage: Test
     env: "PHP=7.3"
     before_install:
@@ -66,6 +60,3 @@ jobs:
       - sudo apt-get update
       - sudo apt-get install -y php7.3-cli
       - sudo cp `which php7.3` `which php`
-      - php -v
-      - composer self-update
-      - composer install --no-interaction --prefer-source
