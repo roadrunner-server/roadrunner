@@ -7,7 +7,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/util"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
@@ -20,7 +19,6 @@ import (
 
 func TestHandler_Upload_File(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -38,7 +36,6 @@ func TestHandler_Upload_File(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -83,7 +80,6 @@ func TestHandler_Upload_File(t *testing.T) {
 
 func TestHandler_Upload_NestedFile(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -101,7 +97,6 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -146,7 +141,6 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 
 func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -164,7 +158,6 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -209,7 +202,6 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 
 func TestHandler_Upload_File_Forbids(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -227,7 +219,6 @@ func TestHandler_Upload_File_Forbids(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()

@@ -7,13 +7,11 @@ import (
 	"github.com/spiral/roadrunner/service/env"
 	"github.com/spiral/roadrunner/service/http/attributes"
 	"github.com/spiral/roadrunner/service/rpc"
-	"github.com/spiral/roadrunner/util"
 	"golang.org/x/net/http2"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
-	"time"
 )
 
 const (
@@ -79,9 +77,8 @@ func (s *Service) Serve() error {
 	s.rr = roadrunner.NewServer(s.cfg.Workers)
 	s.rr.Listen(s.throw)
 
-	s.handler = &Handler{ft: util.NewFastTime(time.Microsecond), cfg: s.cfg, rr: s.rr}
+	s.handler = &Handler{cfg: s.cfg, rr: s.rr}
 	s.handler.Listen(s.throw)
-	defer s.handler.ft.Stop()
 
 	s.http = &http.Server{Addr: s.cfg.Address, Handler: s}
 

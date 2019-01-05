@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/util"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"mime/multipart"
@@ -32,7 +31,6 @@ func get(url string) (string, *http.Response, error) {
 
 func TestHandler_Echo(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -50,7 +48,6 @@ func TestHandler_Echo(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -69,7 +66,6 @@ func TestHandler_Echo(t *testing.T) {
 
 func Test_HandlerErrors(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -87,7 +83,6 @@ func Test_HandlerErrors(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	wr := httptest.NewRecorder()
 	rq := httptest.NewRequest("POST", "/", bytes.NewBuffer([]byte("data")))
@@ -98,7 +93,6 @@ func Test_HandlerErrors(t *testing.T) {
 
 func Test_Handler_JSON_error(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -116,7 +110,6 @@ func Test_Handler_JSON_error(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	wr := httptest.NewRecorder()
 	rq := httptest.NewRequest("POST", "/", bytes.NewBuffer([]byte("{sd")))
@@ -129,7 +122,6 @@ func Test_Handler_JSON_error(t *testing.T) {
 
 func TestHandler_Headers(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -147,7 +139,6 @@ func TestHandler_Headers(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -178,7 +169,6 @@ func TestHandler_Headers(t *testing.T) {
 
 func TestHandler_Empty_User_Agent(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -196,7 +186,6 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -226,7 +215,6 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 
 func TestHandler_User_Agent(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -244,7 +232,6 @@ func TestHandler_User_Agent(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -274,7 +261,6 @@ func TestHandler_User_Agent(t *testing.T) {
 
 func TestHandler_Cookies(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -292,7 +278,6 @@ func TestHandler_Cookies(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -327,7 +312,6 @@ func TestHandler_Cookies(t *testing.T) {
 
 func TestHandler_JsonPayload_POST(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -345,7 +329,6 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -379,7 +362,6 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 
 func TestHandler_JsonPayload_PUT(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -397,7 +379,6 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -427,7 +408,6 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 
 func TestHandler_JsonPayload_PATCH(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -445,7 +425,6 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -475,7 +454,6 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 
 func TestHandler_FormData_POST(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -493,7 +471,6 @@ func TestHandler_FormData_POST(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -535,7 +512,6 @@ func TestHandler_FormData_POST(t *testing.T) {
 
 func TestHandler_FormData_PUT(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -553,7 +529,6 @@ func TestHandler_FormData_PUT(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -595,7 +570,6 @@ func TestHandler_FormData_PUT(t *testing.T) {
 
 func TestHandler_FormData_PATCH(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -613,7 +587,6 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -655,7 +628,6 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 
 func TestHandler_Multipart_POST(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -673,7 +645,6 @@ func TestHandler_Multipart_POST(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -719,7 +690,6 @@ func TestHandler_Multipart_POST(t *testing.T) {
 
 func TestHandler_Multipart_PUT(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -737,7 +707,6 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -783,7 +752,6 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 
 func TestHandler_Multipart_PATCH(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -801,7 +769,6 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -847,7 +814,6 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 
 func TestHandler_Error(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -865,7 +831,6 @@ func TestHandler_Error(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -883,7 +848,6 @@ func TestHandler_Error(t *testing.T) {
 
 func TestHandler_Error2(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -901,7 +865,6 @@ func TestHandler_Error2(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -919,7 +882,6 @@ func TestHandler_Error2(t *testing.T) {
 
 func TestHandler_Error3(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1,
 			Uploads: &UploadsConfig{
@@ -937,7 +899,6 @@ func TestHandler_Error3(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -966,7 +927,6 @@ func TestHandler_Error3(t *testing.T) {
 
 func TestHandler_ResponseDuration(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -984,7 +944,6 @@ func TestHandler_ResponseDuration(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -1017,7 +976,6 @@ func TestHandler_ResponseDuration(t *testing.T) {
 
 func TestHandler_ResponseDurationDelayed(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -1035,7 +993,6 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -1068,7 +1025,6 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 
 func TestHandler_ErrorDuration(t *testing.T) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -1086,7 +1042,6 @@ func TestHandler_ErrorDuration(t *testing.T) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
@@ -1118,7 +1073,6 @@ func TestHandler_ErrorDuration(t *testing.T) {
 
 func BenchmarkHandler_Listen_Echo(b *testing.B) {
 	h := &Handler{
-		ft: util.NewFastTime(time.Microsecond),
 		cfg: &Config{
 			MaxRequest: 1024,
 			Uploads: &UploadsConfig{
@@ -1136,7 +1090,6 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 			},
 		}),
 	}
-	defer h.ft.Stop()
 
 	h.rr.Start()
 	defer h.rr.Stop()

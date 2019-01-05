@@ -3,7 +3,6 @@ package http
 import (
 	"github.com/pkg/errors"
 	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/util"
 	"net/http"
 	"strconv"
 	"sync"
@@ -27,12 +26,13 @@ type ErrorEvent struct {
 	Error error
 
 	// event timings
-	start, end int64
+	start   time.Time
+	elapsed time.Duration
 }
 
 // Elapsed returns duration of the invocation.
 func (e *ErrorEvent) Elapsed() time.Duration {
-	return time.Duration(e.end - e.start)
+	return e.elapsed
 }
 
 // ResponseEvent represents singular http response event.
@@ -44,18 +44,18 @@ type ResponseEvent struct {
 	Response *Response
 
 	// event timings
-	start, end int64
+	start   time.Time
+	elapsed time.Duration
 }
 
 // Elapsed returns duration of the invocation.
 func (e *ResponseEvent) Elapsed() time.Duration {
-	return time.Duration(e.end - e.start)
+	return e.elapsed
 }
 
 // Handler serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Handler struct {
-	ft  *util.FastTime
 	cfg *Config
 	rr  *roadrunner.Server
 	mul sync.Mutex
@@ -72,7 +72,7 @@ func (h *Handler) Listen(l func(event int, ctx interface{})) {
 
 // mdwr serve using PSR-7 requests passed to underlying application. Attempts to serve static files first if enabled.
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	start := h.ft.UnixNano()
+	start := time.Now()
 
 	// validating request size
 	if h.cfg.MaxRequest != 0 {
@@ -119,16 +119,16 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleError sends error.
-func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error, start int64) {
-	h.throw(EventError, &ErrorEvent{Request: r, Error: err, start: start, end: h.ft.UnixNano()})
+func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error, start time.Time) {
+	h.throw(EventError, &ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
 
 	w.WriteHeader(500)
 	w.Write([]byte(err.Error()))
 }
 
 // handleResponse triggers response event.
-func (h *Handler) handleResponse(req *Request, resp *Response, start int64) {
-	h.throw(EventResponse, &ResponseEvent{Request: req, Response: resp, start: start, end: h.ft.UnixNano()})
+func (h *Handler) handleResponse(req *Request, resp *Response, start time.Time) {
+	h.throw(EventResponse, &ResponseEvent{Request: req, Response: resp, start: start, elapsed: time.Since(start)})
 }
 
 // throw invokes event handler if any.
