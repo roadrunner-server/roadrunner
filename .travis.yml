@@ -12,7 +12,7 @@ before_install:
   - sudo cp `which php7.0` `which php`
   - php -v
   - composer self-update
-  - composer install --no-interaction --prefer-source --ignore-platform-reqs
+  - composer install --no-interaction --prefer-source
 
 install:
   - export GO111MODULE=on
@@ -47,7 +47,7 @@ jobs:
       - sudo cp `which php7.0` `which php`
       - php -v
       - composer self-update
-      - composer install --no-interaction --prefer-source --ignore-platform-reqs
+      - composer install --no-interaction --prefer-source
   - stage: Test
     env: "PHP=7.1"
     before_install:
@@ -57,7 +57,7 @@ jobs:
       - sudo cp `which php7.1` `which php`
       - php -v
       - composer self-update
-      - composer install --no-interaction --prefer-source --ignore-platform-reqs
+      - composer install --no-interaction --prefer-source
   - stage: Test
     env: "PHP=7.2"
     before_install:
@@ -67,7 +67,7 @@ jobs:
       - sudo cp `which php7.2` `which php`
       - php -v
       - composer self-update
-      - composer install --no-interaction --prefer-source --ignore-platform-reqs
+      - composer install --no-interaction --prefer-source
   - stage: Test
     env: "PHP=7.3"
     before_install:
@@ -77,7 +77,7 @@ jobs:
       - sudo cp `which php7.3` `which php`
       - php -v
       - composer self-update
-      - composer install --no-interaction --prefer-source --ignore-platform-reqs
+      - composer install --no-interaction --prefer-source
   - stage: Test
     env: "PHP=7.1 ZEND_DIACTOROS=1.x"
     before_install:
@@ -87,7 +87,7 @@ jobs:
       - sudo cp `which php7.1` `which php`
       - php -v
       - composer self-update
-      - composer install --no-interaction --prefer-source --ignore-platform-reqs
+      - composer install --no-interaction --prefer-source
       - composer require zendframework/zend-diactoros:~1.0
   - stage: Test
     env: "PHP=7.1 ZEND_DIACTOROS=2.x"
@@ -98,5 +98,5 @@ jobs:
       - sudo cp `which php7.1` `which php`
       - php -v
       - composer self-update
-      - composer install --no-interaction --prefer-source --ignore-platform-reqs
+      - composer install --no-interaction --prefer-source
       - composer require zendframework/zend-diactoros:~2.0
