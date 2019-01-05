@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * High-performance PHP process supervisor and load balancer written in Go
  *
@@ -7,7 +9,6 @@
 
 namespace Spiral\RoadRunner;
 
-use Http\Factory\Diactoros;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -124,10 +125,10 @@ class PSR7Client
             $headers = new \stdClass();
         }
 
-        $this->worker->send($response->getBody(), json_encode([
-            'status'  => $response->getStatusCode(),
-            'headers' => $headers
-        ]));
+        $this->worker->send(
+            $response->getBody()->__toString(),
+            json_encode(['status' => $response->getStatusCode(), 'headers' => $headers])
+        );
     }
 
     /**
