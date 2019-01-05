@@ -34,7 +34,7 @@ Table of Contents
   * [Error Handling](https://github.com/spiral/roadrunner/wiki/Debug-And-Error-Handling)
   * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
 * Integrations
-   * [Laravel Framework](https://github.com/spiral/roadrunner/wiki/Laravel-Framework)
+   * [Laravel Framework](https://github.com/spiral/roadrunner/wiki/Laravel-Framework) (alpha)
    * [Symfony Framework](https://github.com/spiral/roadrunner/wiki/Symfony-Framework)
 * Server Customization
   * [Building Server](https://github.com/spiral/roadrunner/wiki/Building-Server)
