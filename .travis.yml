@@ -16,6 +16,7 @@ before_install:
 install:
   - export GO111MODULE=on
   - go mod download
+  - php -v
   - composer install --no-interaction --prefer-source --ignore-platform-reqs
 
 script:
