@@ -9,7 +9,8 @@ install:
   - export GO111MODULE=on
   - go mod download
   - php -v
-  - wget https://raw.githubusercontent.com/composer/getcomposer.org/1b137f8bf6db3e79a38a5bc45324414a6b1f9df2/web/installer -O - -q | php -- --quiet
+  - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  - php composer-setup.php
   - php composer.phar install --no-interaction --prefer-source
 
 script:
