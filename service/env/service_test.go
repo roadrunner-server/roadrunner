@@ -49,3 +49,20 @@ func Test_Set(t *testing.T) {
 	assert.Equal(t, "value-new", values["key"])
 	assert.Equal(t, "new", values["other"])
 }
+
+func Test_Copy(t *testing.T) {
+	s1 := NewService(map[string]string{"RR": "version"})
+	s2 := NewService(map[string]string{})
+
+	s1.SetEnv("key", "value-new")
+	s1.SetEnv("other", "new")
+
+	assert.NoError(t, s1.Copy(s2))
+
+	values, err := s2.GetEnv()
+	assert.NoError(t, err)
+	assert.Len(t, values, 3)
+	assert.Equal(t, "version", values["RR"])
+	assert.Equal(t, "value-new", values["key"])
+	assert.Equal(t, "new", values["other"])
+}

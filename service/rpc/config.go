@@ -13,7 +13,7 @@ type Config struct {
 	// Indicates if RPC connection is enabled.
 	Enable bool
 
-	// AddListener string
+	// Listen string
 	Listen string
 }
 

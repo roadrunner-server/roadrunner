@@ -5,7 +5,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 function handleRequest(ServerRequestInterface $req, ResponseInterface $resp): ResponseInterface
 {
-    $resp->getBody()->write(getmypid());
+    $resp->getBody()->write((string)getmypid());
 
     return $resp;
 }

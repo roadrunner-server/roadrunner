@@ -39,3 +39,17 @@ func (s *Service) GetEnv() (map[string]string, error) {
 func (s *Service) SetEnv(key, value string) {
 	s.values[key] = value
 }
+
+// Copy all environment values.
+func (s *Service) Copy(setter Setter) error {
+	values, err := s.GetEnv()
+	if err != nil {
+		return err
+	}
+
+	for k, v := range values {
+		setter.SetEnv(k, v)
+	}
+
+	return nil
+}

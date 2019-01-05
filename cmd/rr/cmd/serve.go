@@ -36,14 +36,21 @@ func init() {
 		Run:   serveHandler,
 	})
 
-	signal.Notify(stopSignal, os.Interrupt, os.Kill, syscall.SIGTERM)
+	signal.Notify(stopSignal, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGINT)
 }
 
 func serveHandler(cmd *cobra.Command, args []string) {
+	stopped := make(chan interface{})
+
 	go func() {
 		<-stopSignal
 		Container.Stop()
+		close(stopped)
 	}()
 
-	Container.Serve()
+	if err := Container.Serve(); err != nil {
+		return
+	}
+
+	<-stopped
 }

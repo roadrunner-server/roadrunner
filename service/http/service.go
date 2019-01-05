@@ -54,7 +54,9 @@ func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Environment) (bool, er
 	s.cfg = cfg
 	s.env = e
 	if r != nil {
-		r.Register(ID, &rpcServer{s})
+		if err := r.Register(ID, &rpcServer{s}); err != nil {
+			return false, err
+		}
 	}
 
 	return true, nil
@@ -65,17 +67,12 @@ func (s *Service) Serve() error {
 	s.mu.Lock()
 
 	if s.env != nil {
-		values, err := s.env.GetEnv()
-		if err != nil {
-			return err
+		if err := s.env.Copy(s.cfg.Workers); err != nil {
+			return nil
 		}
-
-		for k, v := range values {
-			s.cfg.Workers.SetEnv(k, v)
-		}
-
-		s.cfg.Workers.SetEnv("RR_HTTP", "true")
 	}
+
+	s.cfg.Workers.SetEnv("RR_HTTP", "true")
 
 	s.rr = roadrunner.NewServer(s.cfg.Workers)
 	s.rr.Listen(s.throw)
