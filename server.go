@@ -38,6 +38,7 @@ type Server struct {
 	factory Factory
 
 	// currently active pool instance
+	mup  sync.Mutex
 	pool Pool
 
 	// observes pool events (can be attached to multiple pools at the same time)
@@ -110,6 +111,9 @@ func (s *Server) Exec(rqs *Payload) (rsp *Payload, err error) {
 // Reconfigure re-configures underlying pool and destroys it's previous version if any. Reconfigure will ignore factory
 // and relay settings.
 func (s *Server) Reconfigure(cfg *ServerConfig) error {
+	s.mup.Lock()
+	defer s.mup.Unlock()
+
 	s.mu.Lock()
 	if !s.started {
 		s.cfg = cfg

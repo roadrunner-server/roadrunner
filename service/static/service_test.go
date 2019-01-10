@@ -234,6 +234,43 @@ func Test_Files_Forbid(t *testing.T) {
 	assert.Equal(t, "WORLD", b)
 }
 
+func Test_Files_Always(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(rrhttp.ID, &rrhttp.Service{})
+	c.Register(ID, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{
+		static: `{"enable":true, "dir":"../../tests", "forbid":[".php"], "always":[".ico"]}`,
+		httpCfg: `{
+			"enable": true,
+			"address": ":6029",
+			"maxRequest": 1024,
+			"uploads": {
+				"dir": ` + tmpDir() + `,
+				"forbid": []
+			},
+			"workers":{
+				"command": "php ../../tests/http/client.php echo pipes",
+				"relay": "pipes",
+				"pool": {
+					"numWorkers": 1,
+					"allocateTimeout": 10000000,
+					"destroyTimeout": 10000000
+				}
+			}
+	}`}))
+
+	go func() { c.Serve() }()
+	time.Sleep(time.Millisecond * 100)
+	defer c.Stop()
+
+	_, r, _ := get("http://localhost:6029/favicon.ico")
+	assert.Equal(t, 404, r.StatusCode)
+}
+
 func Test_Files_NotFound(t *testing.T) {
 	logger, _ := test.NewNullLogger()
 	logger.SetLevel(logrus.DebugLevel)
