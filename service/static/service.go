@@ -45,12 +45,17 @@ func (s *Service) middleware(f http.HandlerFunc) http.HandlerFunc {
 func (s *Service) handleStatic(w http.ResponseWriter, r *http.Request) bool {
 	fPath := path.Clean(r.URL.Path)
 
-	if s.cfg.Forbids(fPath) {
+	if s.cfg.AlwaysForbid(fPath) {
 		return false
 	}
 
 	f, err := s.root.Open(fPath)
 	if err != nil {
+		if s.cfg.AlwaysServe(fPath) {
+			w.WriteHeader(404)
+			return true
+		}
+
 		return false
 	}
 	defer f.Close()
