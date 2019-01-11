@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v1.3.1 (11.01.2019)
+-------------------
+- fixed bug causing static_pool crash when multiple reset requests received at the same time
+- added `always` directive to static service config to always service files of specific extension
+- added `vendor/bin/rr-build` command to easier compile custom RoadRunner builds 
+
 v1.3.0 (05.01.2019)
 -------------------
 - added support for zend/diactros 1.0 and 2.0
