@@ -9,7 +9,7 @@ use Spiral\RoadRunner\QuickBuild\Builder;
 require_once "src/Builder.php";
 
 // load build config
-$version = $argv[1] ?? "quickbuild";
+$version = $argv[1] ?? "local";
 
 // load build config
 $config = $argv[2] ?? __DIR__ . "/.build.json";
