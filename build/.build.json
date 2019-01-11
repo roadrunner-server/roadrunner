@@ -1,0 +1,17 @@
+{
+  "packages": [
+    "github.com/spiral/roadrunner/service/env",
+    "github.com/spiral/roadrunner/service/http",
+    "github.com/spiral/roadrunner/service/rpc",
+    "github.com/spiral/roadrunner/service/static"
+  ],
+  "commands": [
+    "github.com/spiral/roadrunner/cmd/rr/http"
+  ],
+  "register": [
+    "rr.Container.Register(env.ID, &env.Service{})",
+    "rr.Container.Register(rpc.ID, &rpc.Service{})",
+    "rr.Container.Register(http.ID, &http.Service{})",
+    "rr.Container.Register(static.ID, &static.Service{})"
+  ]
+}

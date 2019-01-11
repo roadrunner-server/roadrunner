@@ -17,7 +17,7 @@ type Config struct {
 	// Example: .php, .exe, .bat, .htaccess and etc.
 	Forbid []string
 
-	// Serve specifies list of exceptions which must always be served by static
+	// Always specifies list of extensions which must always be served by static
 	// service, even if file not found.
 	Always []string
 }
