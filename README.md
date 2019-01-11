@@ -20,7 +20,7 @@ Table of Contents
 * Introduction
   * [About RoadRunner](https://github.com/spiral/roadrunner/wiki/About-RoadRunner)
   * [Installation](https://github.com/spiral/roadrunner/wiki/Installation)
-  * [Quick Build](https://github.com/spiral/roadrunner/wiki/Quick-Builds)
+  * [Quick Builds](https://github.com/spiral/roadrunner/wiki/Quick-Builds)
   * [Configuration](https://github.com/spiral/roadrunner/wiki/Configuration)
   * [License](https://github.com/spiral/roadrunner/wiki/License)
 * Using RoadRunner
