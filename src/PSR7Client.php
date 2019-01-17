@@ -146,6 +146,7 @@ class PSR7Client
         $server['REMOTE_ADDR'] = $ctx['attributes']['ipAddress'] ?? $ctx['remoteAddr'] ?? '127.0.0.1';
         $server['REMOTE_ADDR'] = $ctx['attributes']['ipAddress'] ?? $ctx['remoteAddr'] ?? '127.0.0.1';
 
+        $server['HTTP_USER_AGENT'] = '';
         foreach ($ctx['headers'] as $key => $value) {
             $key = strtoupper(str_replace('-', '_', $key));
             if (\in_array($key, array('CONTENT_TYPE', 'CONTENT_LENGTH'))) {
