@@ -132,8 +132,6 @@ class PSR7Client
             $response->getBody()->__toString(),
             json_encode(['status' => $response->getStatusCode(), 'headers' => $headers])
         );
-
-        $_SERVER = $this->originalServer;
     }
 
     /**
