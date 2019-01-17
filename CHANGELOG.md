@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.3.2 (11.01.2019)
+-------------------
+- `_SERVER` now exposes headers with HTTP_ prefix (fixing Lravel integration) by @Alex-Bond
+- fixed bug causing body payload not being received for custom HTTP methods by @Alex-Bond 
+
 v1.3.1 (11.01.2019)
 -------------------
 - fixed bug causing static_pool crash when multiple reset requests received at the same time
