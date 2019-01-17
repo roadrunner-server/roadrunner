@@ -32,6 +32,8 @@ class PSR7Client
     /*** @var UploadedFileFactoryInterface */
     private $uploadsFactory;
 
+    private $originalServer = [];
+
     /** @var array Valid values for HTTP protocol version */
     private static $allowedVersions = ['1.0', '1.1', '2',];
 
@@ -51,6 +53,7 @@ class PSR7Client
         $this->requestFactory = $requestFactory ?? new Diactoros\ServerRequestFactory();
         $this->streamFactory = $streamFactory ?? new Diactoros\StreamFactory();
         $this->uploadsFactory = $uploadsFactory ?? new Diactoros\UploadedFileFactory();
+        $this->originalServer = $_SERVER;
     }
 
     /**
@@ -129,6 +132,8 @@ class PSR7Client
             $response->getBody()->__toString(),
             json_encode(['status' => $response->getStatusCode(), 'headers' => $headers])
         );
+
+        $_SERVER = $this->originalServer;
     }
 
     /**
@@ -140,15 +145,20 @@ class PSR7Client
      */
     protected function configureServer(array $ctx): array
     {
-        $server = $_SERVER;
+        $server = $this->originalServer;
         $server['REQUEST_TIME'] = time();
         $server['REQUEST_TIME_FLOAT'] = microtime(true);
         $server['REMOTE_ADDR'] = $ctx['attributes']['ipAddress'] ?? $ctx['remoteAddr'] ?? '127.0.0.1';
         $server['REMOTE_ADDR'] = $ctx['attributes']['ipAddress'] ?? $ctx['remoteAddr'] ?? '127.0.0.1';
 
         $server['HTTP_USER_AGENT'] = '';
-        if (isset($ctx['headers']['User-Agent'][0])) {
-            $server['HTTP_USER_AGENT'] = $ctx['headers']['User-Agent'][0];
+        foreach ($ctx['headers'] as $key => $value) {
+            $key = strtoupper(str_replace('-', '_', $key));
+            if (\in_array($key, array('CONTENT_TYPE', 'CONTENT_LENGTH'))) {
+                $server[$key] = implode(', ', $value);
+            } else {
+                $server['HTTP_' . $key] = implode(', ', $value);
+            }
         }
 
         return $server;
