@@ -149,9 +149,9 @@ class PSR7Client
         foreach ($ctx['headers'] as $key => $value) {
             $key = strtoupper(str_replace('-', '_', $key));
             if (\in_array($key, array('CONTENT_TYPE', 'CONTENT_LENGTH'))) {
-                $_SERVER[$key] = implode(', ', $value);
+                $server[$key] = implode(', ', $value);
             } else {
-                $_SERVER['HTTP_' . $key] = implode(', ', $value);
+                $server['HTTP_' . $key] = implode(', ', $value);
             }
         }
 
