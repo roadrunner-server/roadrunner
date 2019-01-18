@@ -36,7 +36,9 @@ Table of Contents
   * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
 * Integrations
    * [Laravel Framework](https://github.com/spiral/roadrunner/wiki/Laravel-Framework) (alpha)
+   * [Slim Framework](https://github.com/spiral/roadrunner/issues/62) (pending verification)
    * [Symfony Framework](https://github.com/spiral/roadrunner/wiki/Symfony-Framework)
+   * [Yii2/3 Framework](https://github.com/spiral/roadrunner/issues/78) (in progress)
 * Server Customization
   * [Building Server](https://github.com/spiral/roadrunner/wiki/Building-Server)
   * [Writing Services](https://github.com/spiral/roadrunner/wiki/Writing-Services)
