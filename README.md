@@ -38,7 +38,7 @@ Table of Contents
 * Integrations
    * [Laravel Framework](https://github.com/spiral/roadrunner/wiki/Laravel-Framework) (pending verification)
    * [Slim Framework](https://github.com/spiral/roadrunner/issues/62) (pending verification)
-   * [Symfony Framework](https://github.com/spiral/roadrunner/wiki/Symfony-Framework)
+   * [Symfony Framework](https://github.com/spiral/roadrunner/wiki/Symfony-Framework) (sessions support [is not stable](https://github.com/spiral/roadrunner/issues/18))
    * [Yii2/3 Framework](https://github.com/spiral/roadrunner/issues/78) (in progress)
 * Server Customization
   * [Building Server](https://github.com/spiral/roadrunner/wiki/Building-Server)
