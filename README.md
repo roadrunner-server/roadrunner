@@ -36,7 +36,7 @@ Table of Contents
   * [Error Handling](https://github.com/spiral/roadrunner/wiki/Debug-And-Error-Handling)
   * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
 * Integrations
-   * [Laravel Framework](https://github.com/spiral/roadrunner/wiki/Laravel-Framework) (alpha)
+   * [Laravel Framework](https://github.com/spiral/roadrunner/wiki/Laravel-Framework) (pending verification)
    * [Slim Framework](https://github.com/spiral/roadrunner/issues/62) (pending verification)
    * [Symfony Framework](https://github.com/spiral/roadrunner/wiki/Symfony-Framework)
    * [Yii2/3 Framework](https://github.com/spiral/roadrunner/issues/78) (in progress)
