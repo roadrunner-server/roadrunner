@@ -20,8 +20,8 @@ use Psr\Http\Message\UploadedFileFactoryInterface;
  */
 class PSR7Client
 {
-    /** @var Worker */
-    private $worker;
+    /** @var HttpClient */
+    private $httpClient;
 
     /** @var ServerRequestFactoryInterface */
     private $requestFactory;
@@ -38,18 +38,19 @@ class PSR7Client
     private static $allowedVersions = ['1.0', '1.1', '2',];
 
     /**
-     * @param Worker                             $worker
+     * @param Worker $worker
      * @param ServerRequestFactoryInterface|null $requestFactory
-     * @param StreamFactoryInterface|null        $streamFactory
-     * @param UploadedFileFactoryInterface|null  $uploadsFactory
+     * @param StreamFactoryInterface|null $streamFactory
+     * @param UploadedFileFactoryInterface|null $uploadsFactory
      */
     public function __construct(
         Worker $worker,
         ServerRequestFactoryInterface $requestFactory = null,
         StreamFactoryInterface $streamFactory = null,
         UploadedFileFactoryInterface $uploadsFactory = null
-    ) {
-        $this->worker = $worker;
+    )
+    {
+        $this->httpClient = new HttpClient($worker);
         $this->requestFactory = $requestFactory ?? new Diactoros\ServerRequestFactory();
         $this->streamFactory = $streamFactory ?? new Diactoros\StreamFactory();
         $this->uploadsFactory = $uploadsFactory ?? new Diactoros\UploadedFileFactory();
@@ -57,28 +58,15 @@ class PSR7Client
     }
 
     /**
-     * @return Worker
-     */
-    public function getWorker(): Worker
-    {
-        return $this->worker;
-    }
-
-    /**
      * @return ServerRequestInterface|null
      */
     public function acceptRequest()
     {
-        $body = $this->worker->receive($ctx);
-        if (empty($body) && empty($ctx)) {
-            // termination request
+        $rawRequest = $this->httpClient->acceptRequest();
+        if ($rawRequest === null)
             return null;
-        }
 
-        if (empty($ctx = json_decode($ctx, true))) {
-            // invalid context
-            return null;
-        }
+        list($ctx, $body) = $rawRequest;
 
         $_SERVER = $this->configureServer($ctx);
 
@@ -122,16 +110,7 @@ class PSR7Client
      */
     public function respond(ResponseInterface $response)
     {
-        $headers = $response->getHeaders();
-        if (empty($headers)) {
-            // this is required to represent empty header set as map and not as array
-            $headers = new \stdClass();
-        }
-
-        $this->worker->send(
-            $response->getBody()->__toString(),
-            json_encode(['status' => $response->getStatusCode(), 'headers' => $headers])
-        );
+        $this->httpClient->respond($response->getBody()->__toString(), $response->getStatusCode(), $response->getHeaders());
     }
 
     /**
