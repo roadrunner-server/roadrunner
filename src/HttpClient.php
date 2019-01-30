@@ -52,7 +52,7 @@ class HttpClient
      *     key MUST be a header name, and each value MUST be an array of strings
      *     for that header.
      */
-    public function respond($status, $body, $headers = [])
+    public function respond(int $status, string $body, $headers = [])
     {
         if (empty($headers)) {
             // this is required to represent empty header set as map and not as array
