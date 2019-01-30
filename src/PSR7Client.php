@@ -58,6 +58,14 @@ class PSR7Client
     }
 
     /**
+     * @return Worker
+     */
+    public function getWorker(): Worker
+    {
+        return $this->httpClient->getWorker();
+    }
+
+    /**
      * @return ServerRequestInterface|null
      */
     public function acceptRequest()
@@ -66,37 +74,35 @@ class PSR7Client
         if ($rawRequest === null)
             return null;
 
-        list($ctx, $body) = $rawRequest;
-
-        $_SERVER = $this->configureServer($ctx);
+        $_SERVER = $this->configureServer($rawRequest['ctx']);
 
         $request = $this->requestFactory->createServerRequest(
-            $ctx['method'],
-            $ctx['uri'],
+            $rawRequest['ctx']['method'],
+            $rawRequest['ctx']['uri'],
             $_SERVER
         );
 
-        parse_str($ctx['rawQuery'], $query);
+        parse_str($rawRequest['ctx']['rawQuery'], $query);
 
         $request = $request
-            ->withProtocolVersion(static::fetchProtocolVersion($ctx['protocol']))
-            ->withCookieParams($ctx['cookies'])
+            ->withProtocolVersion(static::fetchProtocolVersion($rawRequest['ctx']['protocol']))
+            ->withCookieParams($rawRequest['ctx']['cookies'])
             ->withQueryParams($query)
-            ->withUploadedFiles($this->wrapUploads($ctx['uploads']));
+            ->withUploadedFiles($this->wrapUploads($rawRequest['ctx']['uploads']));
 
-        foreach ($ctx['attributes'] as $name => $value) {
+        foreach ($rawRequest['ctx']['attributes'] as $name => $value) {
             $request = $request->withAttribute($name, $value);
         }
 
-        foreach ($ctx['headers'] as $name => $value) {
+        foreach ($rawRequest['ctx']['headers'] as $name => $value) {
             $request = $request->withHeader($name, $value);
         }
 
-        if ($ctx['parsed']) {
-            $request = $request->withParsedBody(json_decode($body, true));
+        if ($rawRequest['ctx']['parsed']) {
+            $request = $request->withParsedBody(json_decode($rawRequest['body'], true));
         } else {
-            if ($body !== null) {
-                $request = $request->withBody($this->streamFactory->createStream($body));
+            if ($rawRequest['body'] !== null) {
+                $request = $request->withBody($this->streamFactory->createStream($rawRequest['body']));
             }
         }
 
@@ -110,7 +116,7 @@ class PSR7Client
      */
     public function respond(ResponseInterface $response)
     {
-        $this->httpClient->respond($response->getBody()->__toString(), $response->getStatusCode(), $response->getHeaders());
+        $this->httpClient->respond($response->getStatusCode(), $response->getBody()->__toString(), $response->getHeaders());
     }
 
     /**
