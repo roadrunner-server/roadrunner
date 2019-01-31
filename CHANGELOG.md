@@ -3,7 +3,7 @@ CHANGELOG
 
 v1.3.3 (31.01.2019)
 -------------------
-- added HttpClient for faster integrations with non PSR-7 frameworks
+- added HttpClient for faster integrations with non PSR-7 frameworks by @Alex-Bond
 
 v1.3.2 (11.01.2019)
 -------------------
