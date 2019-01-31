@@ -38,18 +38,17 @@ class PSR7Client
     private static $allowedVersions = ['1.0', '1.1', '2',];
 
     /**
-     * @param Worker $worker
+     * @param Worker                             $worker
      * @param ServerRequestFactoryInterface|null $requestFactory
-     * @param StreamFactoryInterface|null $streamFactory
-     * @param UploadedFileFactoryInterface|null $uploadsFactory
+     * @param StreamFactoryInterface|null        $streamFactory
+     * @param UploadedFileFactoryInterface|null  $uploadsFactory
      */
     public function __construct(
         Worker $worker,
         ServerRequestFactoryInterface $requestFactory = null,
         StreamFactoryInterface $streamFactory = null,
         UploadedFileFactoryInterface $uploadsFactory = null
-    )
-    {
+    ) {
         $this->httpClient = new HttpClient($worker);
         $this->requestFactory = $requestFactory ?? new Diactoros\ServerRequestFactory();
         $this->streamFactory = $streamFactory ?? new Diactoros\StreamFactory();
@@ -71,8 +70,9 @@ class PSR7Client
     public function acceptRequest()
     {
         $rawRequest = $this->httpClient->acceptRequest();
-        if ($rawRequest === null)
+        if ($rawRequest === null) {
             return null;
+        }
 
         $_SERVER = $this->configureServer($rawRequest['ctx']);
 
@@ -116,7 +116,11 @@ class PSR7Client
      */
     public function respond(ResponseInterface $response)
     {
-        $this->httpClient->respond($response->getStatusCode(), $response->getBody()->__toString(), $response->getHeaders());
+        $this->httpClient->respond(
+            $response->getStatusCode(),
+            $response->getBody()->__toString(),
+            $response->getHeaders()
+        );
     }
 
     /**
@@ -137,7 +141,7 @@ class PSR7Client
         $server['HTTP_USER_AGENT'] = '';
         foreach ($ctx['headers'] as $key => $value) {
             $key = strtoupper(str_replace('-', '_', $key));
-            if (\in_array($key, array('CONTENT_TYPE', 'CONTENT_LENGTH'))) {
+            if (\in_array($key, ['CONTENT_TYPE', 'CONTENT_LENGTH'])) {
                 $server[$key] = implode(', ', $value);
             } else {
                 $server['HTTP_' . $key] = implode(', ', $value);
