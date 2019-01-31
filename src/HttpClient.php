@@ -41,7 +41,8 @@ class HttpClient
             return null;
         }
 
-        if (empty($ctx = json_decode($ctx, true))) {
+        $ctx = json_decode($ctx, true);
+        if (is_null($ctx)) {
             // invalid context
             return null;
         }
