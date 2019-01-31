@@ -9,10 +9,15 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunner;
 
+use ReflectionFunction;
+
 class HttpClient
 {
     /** @var Worker */
     private $worker;
+
+    /** @var []callable Array of termination event listeners */
+    private $terminationListeners = [];
 
     /**
      * @param Worker $worker
@@ -38,6 +43,11 @@ class HttpClient
         $body = $this->getWorker()->receive($ctx);
         if (empty($body) && empty($ctx)) {
             // termination request
+
+            foreach ($this->terminationListeners as $listener) {
+                call_user_func($listener);
+            }
+
             return null;
         }
 
@@ -70,5 +80,28 @@ class HttpClient
             $body,
             json_encode(['status' => $status, 'headers' => $headers])
         );
+    }
+
+    /**
+     * Adds function to termination event listeners
+     *
+     * @param callable $func Function to call on termination request
+     * @throws \ReflectionException
+     */
+    public function addTerminationListener(callable $func)
+    {
+        $f = new ReflectionFunction($func);
+        if ($f->getNumberOfParameters() > 0) {
+            throw new \InvalidArgumentException('Termination event callback can\'t have parameters.');
+        }
+        $this->terminationListeners[] = $func;
+    }
+
+    /**
+     * Clears all termination event listeners
+     */
+    public function clearTerminationListeners()
+    {
+        $this->terminationListeners = [];
     }
 }
