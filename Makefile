@@ -9,6 +9,7 @@ install: all
 uninstall: 
 	rm -f /usr/local/bin/rr
 test:
+	composer update
 	go test -v -race -cover
 	go test -v -race -cover ./util
 	go test -v -race -cover ./service
