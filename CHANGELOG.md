@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.3.4 (31.01.2019)
+-------------------
+- bugfix: invalid content type detection for urlencoded form requests with custom encoding by @Alex-Bond
+
 v1.3.3 (31.01.2019)
 -------------------
 - added HttpClient for faster integrations with non PSR-7 frameworks by @Alex-Bond
