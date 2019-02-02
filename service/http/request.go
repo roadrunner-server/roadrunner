@@ -153,7 +153,7 @@ func (r *Request) contentType() int {
 	}
 
 	ct := r.Headers.Get("content-type")
-	if ct == "application/x-www-form-urlencoded" {
+	if strings.Contains(ct, "application/x-www-form-urlencoded") {
 		return contentFormData
 	}
 
