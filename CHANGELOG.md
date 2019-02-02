@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v1.3.4 (31.01.2019)
+v1.3.4 (02.02.2019)
 -------------------
 - bugfix: invalid content type detection for urlencoded form requests with custom encoding by @Alex-Bond
 
