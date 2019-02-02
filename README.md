@@ -37,7 +37,7 @@ Table of Contents
   * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
 * Integrations
    * [Laravel Framework](https://github.com/spiral/roadrunner/wiki/Laravel-Framework)
-   * [Slim Framework](https://github.com/spiral/roadrunner/issues/62) (pending verification)
+   * [Slim Framework](https://github.com/spiral/roadrunner/issues/62)
    * [Symfony Framework](https://github.com/spiral/roadrunner/wiki/Symfony-Framework) (native sessions support [is not stable](https://github.com/spiral/roadrunner/issues/18))
    * [Yii2/3 Framework](https://github.com/spiral/roadrunner/issues/78) (in progress)
    - [Other Examples](https://github.com/spiral/roadrunner/wiki/Other-Examples) 
