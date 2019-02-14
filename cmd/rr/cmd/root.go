@@ -112,7 +112,7 @@ func init() {
 func configureLogger(format string) {
 	switch format {
 	case "color", "default":
-		util.EnableColors = true
+		util.Colorize = true
 		Logger.Formatter = &logrus.TextFormatter{ForceColors: true}
 	case "plain":
 		Logger.Formatter = &logrus.TextFormatter{DisableColors: true}
