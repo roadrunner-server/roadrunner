@@ -30,8 +30,8 @@ import (
 
 // Service bus for all the commands.
 var (
-	cfgFile  string
-	override []string
+	cfgFile, workDir, logFormat string
+	override                    []string
 
 	// Verbose enables verbosity mode (container specific).
 	Verbose bool
@@ -68,9 +68,12 @@ func Execute() {
 }
 
 func init() {
-	CLI.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Verbose output")
+	CLI.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
 	CLI.PersistentFlags().BoolVarP(&Debug, "debug", "d", false, "debug mode")
+	CLI.PersistentFlags().StringVarP(&logFormat, "logFormat", "l", "color", "select log formatter (color, json, plain)")
 	CLI.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is .rr.yaml)")
+	CLI.PersistentFlags().StringVarP(&workDir, "workDir", "w", "", "work directory")
+
 	CLI.PersistentFlags().StringArrayVarP(
 		&override,
 		"override",
@@ -84,10 +87,19 @@ func init() {
 			Logger.SetLevel(logrus.DebugLevel)
 		}
 
+		configureLogger(logFormat)
+
 		cfg, err := util.LoadConfig(cfgFile, []string{"."}, ".rr", override)
 		if err != nil {
 			Logger.Warnf("config: %s", err)
 			return
+		}
+
+		if workDir != "" {
+			if err := os.Chdir(workDir); err != nil {
+				util.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
+				os.Exit(1)
+			}
 		}
 
 		if err := Container.Init(cfg); err != nil {
@@ -95,4 +107,16 @@ func init() {
 			os.Exit(1)
 		}
 	})
+}
+
+func configureLogger(format string) {
+	switch format {
+	case "color", "default":
+		util.EnableColors = true
+		Logger.Formatter = &logrus.TextFormatter{ForceColors: true}
+	case "plain":
+		Logger.Formatter = &logrus.TextFormatter{DisableColors: true}
+	case "json":
+		Logger.Formatter = &logrus.JSONFormatter{}
+	}
 }

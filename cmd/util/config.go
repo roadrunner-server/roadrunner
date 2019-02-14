@@ -66,7 +66,9 @@ func LoadConfig(cfgFile string, path []string, name string, flags []string) (*co
 
 	// If a cfg file is found, read it in.
 	if err := cfg.ReadInConfig(); err != nil {
-		return nil, err
+		if len(flags) == 0 {
+			return nil, err
+		}
 	}
 
 	if len(flags) != 0 {
