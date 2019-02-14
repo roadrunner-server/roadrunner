@@ -17,6 +17,17 @@ func Test_NumWorkers(t *testing.T) {
 	assert.Equal(t, "pool.NumWorkers must be set", err.Error())
 }
 
+func Test_NumWorkers_Default(t *testing.T) {
+	cfg := Config{
+		AllocateTimeout: time.Second,
+		DestroyTimeout:  time.Second * 10,
+	}
+
+	assert.NoError(t, cfg.InitDefaults())
+	err := cfg.Valid()
+	assert.Nil(t, err)
+}
+
 func Test_AllocateTimeout(t *testing.T) {
 	cfg := Config{
 		NumWorkers:     10,

@@ -2,6 +2,7 @@ package roadrunner
 
 import (
 	"fmt"
+	"runtime"
 	"time"
 )
 
@@ -29,6 +30,7 @@ type Config struct {
 func (cfg *Config) InitDefaults() error {
 	cfg.AllocateTimeout = time.Minute
 	cfg.DestroyTimeout = time.Minute
+	cfg.NumWorkers = int64(runtime.NumCPU())
 
 	return nil
 }
