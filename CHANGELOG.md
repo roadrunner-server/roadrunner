@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+v1.3.5 (14.02.2019)
+-------------------
+- new console flag `l` to define log formatting
+ * **color|default** - colorized output
+ * **plain**         - disable all colorization
+ * **json**          - output as json
+- new console flag `w` to specify work dir
+- added ability to work without config file when at least one `overwrite` option has been specified
+
 v1.3.4 (02.02.2019)
 -------------------
 - bugfix: invalid content type detection for urlencoded form requests with custom encoding by @Alex-Bond

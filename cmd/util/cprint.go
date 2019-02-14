@@ -7,7 +7,10 @@ import (
 	"strings"
 )
 
-var reg *regexp.Regexp
+var (
+	reg          *regexp.Regexp
+	EnableColors bool
+)
 
 func init() {
 	reg, _ = regexp.Compile(`<([^>]+)>`)
@@ -21,6 +24,10 @@ func Printf(format string, args ...interface{}) {
 // Sprintf works identically to fmt.Sprintf but adds `<white+hb>color formatting support for CLI</reset>`.
 func Sprintf(format string, args ...interface{}) string {
 	format = reg.ReplaceAllStringFunc(format, func(s string) string {
+		if !EnableColors {
+			return ""
+		}
+
 		return ansi.ColorCode(strings.Trim(s, "<>/"))
 	})
 
