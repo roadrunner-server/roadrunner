@@ -4,9 +4,9 @@ CHANGELOG
 v1.3.5 (14.02.2019)
 -------------------
 - new console flag `l` to define log formatting
- * **color|default** - colorized output
- * **plain**         - disable all colorization
- * **json**          - output as json
+    * **color|default** - colorized output
+    * **plain**         - disable all colorization
+    * **json**          - output as json
 - new console flag `w` to specify work dir
 - added ability to work without config file when at least one `overwrite` option has been specified
 - pool config now sets `numWorkers` equal to number of cores by default (this section can be omitted now)
