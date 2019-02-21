@@ -137,12 +137,12 @@ final class Builder
     {
         $os = strtolower(PHP_OS);
 
-        if (strpos($os, 'win') !== false) {
-            return 'windows';
-        }
-
         if (strpos($os, 'darwin') !== false) {
             return 'darwin';
+        }
+
+        if (strpos($os, 'win') !== false) {
+            return 'windows';
         }
 
         return "linux";
