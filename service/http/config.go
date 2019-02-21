@@ -17,8 +17,11 @@ type Config struct {
 	// SSL defines https server options.
 	SSL SSLConfig
 
+	// MaxRequest specified max size for payload body in megabytes, set 0 to unlimited.
+	// Deprecated: use `maxRequestSize` instead
+	MaxRequest int64
+
 	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
-	MaxRequest     int64
 	MaxRequestSize int64
 
 	// Uploads configures uploads configuration.
@@ -118,6 +121,7 @@ func (c *Config) Valid() error {
 	return nil
 }
 
+// Perform merge operations for deprecated params to provide backward compatibility
 func (c *Config) mergeBackwardCompatibility() {
 	if c.MaxRequestSize == 0 && c.MaxRequest != 0 {
 		c.MaxRequestSize = c.MaxRequest
