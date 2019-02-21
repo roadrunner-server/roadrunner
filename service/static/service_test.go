@@ -60,7 +60,7 @@ func Test_Files(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -113,7 +113,7 @@ func Test_Files_Disable(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -150,7 +150,7 @@ func Test_Files_Error(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -180,7 +180,7 @@ func Test_Files_Error2(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -210,7 +210,7 @@ func Test_Files_Forbid(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -247,7 +247,7 @@ func Test_Files_Always(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -284,7 +284,7 @@ func Test_Files_NotFound(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -321,7 +321,7 @@ func Test_Files_Dir(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -358,7 +358,7 @@ func Test_Files_NotForbid(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []

@@ -84,7 +84,7 @@ func Test_Service_Configure_Enable(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":8070",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -115,7 +115,7 @@ func Test_Service_Echo(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -168,7 +168,7 @@ func Test_Service_Env(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -220,7 +220,7 @@ func Test_Service_ErrorEcho(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -280,7 +280,7 @@ func Test_Service_Middleware(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -354,7 +354,7 @@ func Test_Service_Listener(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -398,7 +398,7 @@ func Test_Service_Error(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -427,7 +427,7 @@ func Test_Service_Error2(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -456,7 +456,7 @@ func Test_Service_Error3(t *testing.T) {
 	assert.Error(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -483,7 +483,7 @@ func Test_Service_Error4(t *testing.T) {
 	assert.Error(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
 			"address": "----",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
