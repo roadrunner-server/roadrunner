@@ -28,6 +28,7 @@ Table of Contents
   * [Environment Configuration](https://github.com/spiral/roadrunner/wiki/Enviroment-Configuration)
   * [HTTPS and HTTP/2](https://github.com/spiral/roadrunner/wiki/HTTPS-and-HTTP2)
   * [**PHP Workers**](https://github.com/spiral/roadrunner/wiki/PHP-Workers)
+  * [Caveats](https://github.com/spiral/roadrunner/wiki/Caveats)
   * [Debugging](https://github.com/spiral/roadrunner/wiki/Debugging)
   * [Server Commands](https://github.com/spiral/roadrunner/wiki/Server-Commands)
   * [RPC Integration](https://github.com/spiral/roadrunner/wiki/RPC-Integration)
