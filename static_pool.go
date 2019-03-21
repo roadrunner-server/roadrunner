@@ -152,8 +152,8 @@ func (p *StaticPool) Destroy() {
 	atomic.AddInt32(&p.inDestroy, 1)
 
 	p.tmu.Lock()
-	close(p.destroy)
 	p.tasks.Wait()
+	close(p.destroy)
 	p.tmu.Unlock()
 
 	var wg sync.WaitGroup
