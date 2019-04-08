@@ -16,7 +16,10 @@ It supports running as a service with the ability to extend its functionality on
 
 RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP/2 server and can be used to replace classic Nginx+FPM setup with much greater performance and flexibility.
 
-[**Documentation**](https://roadrunner.dev/docs)
+<p align="center">
+	<a href="https://roadrunner.dev/"><b>Official Website</b></a> | 
+	<a href="https://roadrunner.dev/docs"><b>Documentation</b></a>
+</p>
 
 Features:
 --------
