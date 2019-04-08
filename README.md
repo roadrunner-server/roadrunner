@@ -16,43 +16,7 @@ It supports running as a service with the ability to extend its functionality on
 
 RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP/2 server and can be used to replace classic Nginx+FPM setup with much greater performance and flexibility.
 
-Table of Contents 
------------------
-* Introduction
-  * [About RoadRunner](https://github.com/spiral/roadrunner/wiki/About-RoadRunner)
-  * [Installation](https://github.com/spiral/roadrunner/wiki/Installation)
-  * [Quick Builds](https://github.com/spiral/roadrunner/wiki/Quick-Builds)
-  * [Configuration](https://github.com/spiral/roadrunner/wiki/Configuration)
-  * [License](https://github.com/spiral/roadrunner/wiki/License)
-* Using RoadRunner
-  * [Environment Configuration](https://github.com/spiral/roadrunner/wiki/Enviroment-Configuration)
-  * [HTTPS and HTTP/2](https://github.com/spiral/roadrunner/wiki/HTTPS-and-HTTP2)
-  * [**PHP Workers**](https://github.com/spiral/roadrunner/wiki/PHP-Workers)
-  * [Caveats](https://github.com/spiral/roadrunner/wiki/Caveats)
-  * [Debugging](https://github.com/spiral/roadrunner/wiki/Debugging)
-  * [Server Commands](https://github.com/spiral/roadrunner/wiki/Server-Commands)
-  * [RPC Integration](https://github.com/spiral/roadrunner/wiki/RPC-Integration)
-  * [Restarting Workers](https://github.com/spiral/roadrunner/wiki/Restarting-Workers)
-  * [IDE integration](https://github.com/spiral/roadrunner/wiki/IDE-Integration)
-  * [Error Handling](https://github.com/spiral/roadrunner/wiki/Debug-And-Error-Handling)
-  * [Production Usage](https://github.com/spiral/roadrunner/wiki/Production-Usage)
-* Integrations
-   * [Laravel Framework](https://github.com/spiral/roadrunner/wiki/Laravel-Framework)
-   * [Slim Framework](https://github.com/spiral/roadrunner/issues/62)
-   * [Symfony Framework](https://github.com/spiral/roadrunner/wiki/Symfony-Framework) ([linked issue](https://github.com/spiral/roadrunner/issues/18))
-   * [Yii2/3 Framework](https://github.com/spiral/roadrunner/issues/78) (in progress)
-   * [CakePHP](https://github.com/CakeDC/cakephp-roadrunner)
-   * [Other Examples](https://github.com/spiral/roadrunner/wiki/Other-Examples) 
-* Server Customization
-  * [Building Server](https://github.com/spiral/roadrunner/wiki/Building-Server)
-  * [Writing Services](https://github.com/spiral/roadrunner/wiki/Writing-Services)
-  * [HTTP Middlewares](https://github.com/spiral/roadrunner/wiki/Middlewares)
-* Additional Notes
-  * [Event Listeners](https://github.com/spiral/roadrunner/wiki/Event-Listeners)
-  * [Standalone Usage](https://github.com/spiral/roadrunner/wiki/Standalone-usage)
-  * [AWS Lambda](https://github.com/spiral/roadrunner/wiki/AWS-Lambda)
-* Custom Builds
-  * [GRPC Server](https://github.com/spiral/php-grpc)
+[**Documentation**](https://roadrunner.dev/docs)
 
 Features:
 --------
