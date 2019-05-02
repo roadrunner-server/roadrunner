@@ -18,33 +18,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package http
+package cmd
 
 import (
 	"github.com/spf13/cobra"
-	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 	"github.com/spiral/roadrunner/cmd/util"
 )
 
 func init() {
-	rr.CLI.AddCommand(&cobra.Command{
-		Use:   "http:reset",
-		Short: "Reload RoadRunner worker pool for the HTTP service",
-		RunE:  reloadHandler,
+	CLI.AddCommand(&cobra.Command{
+		Use:   "stop",
+		Short: "Stop RoadRunner server",
+		RunE:  stopHandler,
 	})
 }
 
-func reloadHandler(cmd *cobra.Command, args []string) error {
-	client, err := util.RPCClient(rr.Container)
+func stopHandler(cmd *cobra.Command, args []string) error {
+	client, err := util.RPCClient(Container)
 	if err != nil {
 		return err
 	}
 	defer client.Close()
 
-	util.Printf("<green>Restarting http worker pool</reset>: ")
+	util.Printf("<green>Stopping RoadRunner</reset>: ")
 
 	var r string
-	if err := client.Call("http.Reset", true, &r); err != nil {
+	if err := client.Call("system.Stop", true, &r); err != nil {
 		return err
 	}
 
