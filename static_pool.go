@@ -195,6 +195,8 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 
 			if remove, err := p.removeWorker(w); remove {
 				i++
+				atomic.AddInt64(&p.numDead, 1)
+
 				w.markDestroying()
 				go p.destroyWorker(w, err)
 			}
@@ -220,6 +222,8 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 
 			if remove, err := p.removeWorker(w); remove {
 				i++
+				atomic.AddInt64(&p.numDead, 1)
+
 				w.markDestroying()
 				go p.destroyWorker(w, err)
 			}
