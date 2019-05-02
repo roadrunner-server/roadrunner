@@ -20,7 +20,7 @@ import (
 func TestHandler_Upload_File(t *testing.T) {
 	h := &Handler{
 		cfg: &Config{
-			MaxRequest: 1024,
+			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{
 				Dir:    os.TempDir(),
 				Forbid: []string{},
@@ -81,7 +81,7 @@ func TestHandler_Upload_File(t *testing.T) {
 func TestHandler_Upload_NestedFile(t *testing.T) {
 	h := &Handler{
 		cfg: &Config{
-			MaxRequest: 1024,
+			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{
 				Dir:    os.TempDir(),
 				Forbid: []string{},
@@ -142,7 +142,7 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 	h := &Handler{
 		cfg: &Config{
-			MaxRequest: 1024,
+			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{
 				Dir:    "-----",
 				Forbid: []string{},
@@ -203,7 +203,7 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 func TestHandler_Upload_File_Forbids(t *testing.T) {
 	h := &Handler{
 		cfg: &Config{
-			MaxRequest: 1024,
+			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{
 				Dir:    os.TempDir(),
 				Forbid: []string{".go"},

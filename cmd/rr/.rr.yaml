@@ -28,8 +28,9 @@ http:
     # ssl private key
     key:      server.key
 
-  # max POST request size, including file uploads in MB.
+  # max POST request size, including file uploads in MB. Deprecated: use `maxRequestSize` instead
   maxRequest: 200
+  maxRequestSize: 200
 
   # file upload configuration.
   uploads:

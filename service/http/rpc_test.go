@@ -27,7 +27,7 @@ func Test_RPC(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -88,7 +88,7 @@ func Test_RPC_Unix(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []
@@ -142,7 +142,7 @@ func Test_Workers(t *testing.T) {
 		httpCfg: `{
 			"enable": true,
 			"address": ":6029",
-			"maxRequest": 1024,
+			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
 				"forbid": []

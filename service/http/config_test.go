@@ -31,8 +31,8 @@ func Test_Config_Hydrate_Error2(t *testing.T) {
 
 func Test_Config_Valid(t *testing.T) {
 	cfg := &Config{
-		Address:    ":8080",
-		MaxRequest: 1024,
+		Address:        ":8080",
+		MaxRequestSize: 1024,
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
@@ -58,7 +58,7 @@ func Test_Config_Valid_SSL(t *testing.T) {
 			Cert: "fixtures/server.crt",
 			Key:  "fixtures/server.key",
 		},
-		MaxRequest: 1024,
+		MaxRequestSize: 1024,
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
@@ -87,7 +87,7 @@ func Test_Config_SSL_No_key(t *testing.T) {
 		SSL: SSLConfig{
 			Cert: "fixtures/server.crt",
 		},
-		MaxRequest: 1024,
+		MaxRequestSize: 1024,
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
@@ -112,7 +112,7 @@ func Test_Config_SSL_No_Cert(t *testing.T) {
 		SSL: SSLConfig{
 			Key: "fixtures/server.key",
 		},
-		MaxRequest: 1024,
+		MaxRequestSize: 1024,
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
@@ -133,8 +133,8 @@ func Test_Config_SSL_No_Cert(t *testing.T) {
 
 func Test_Config_NoUploads(t *testing.T) {
 	cfg := &Config{
-		Address:    ":8080",
-		MaxRequest: 1024,
+		Address:        ":8080",
+		MaxRequestSize: 1024,
 		Workers: &roadrunner.ServerConfig{
 			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
@@ -151,8 +151,8 @@ func Test_Config_NoUploads(t *testing.T) {
 
 func Test_Config_NoWorkers(t *testing.T) {
 	cfg := &Config{
-		Address:    ":8080",
-		MaxRequest: 1024,
+		Address:        ":8080",
+		MaxRequestSize: 1024,
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
@@ -164,8 +164,8 @@ func Test_Config_NoWorkers(t *testing.T) {
 
 func Test_Config_NoPool(t *testing.T) {
 	cfg := &Config{
-		Address:    ":8080",
-		MaxRequest: 1024,
+		Address:        ":8080",
+		MaxRequestSize: 1024,
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
@@ -186,8 +186,8 @@ func Test_Config_NoPool(t *testing.T) {
 
 func Test_Config_DeadPool(t *testing.T) {
 	cfg := &Config{
-		Address:    ":8080",
-		MaxRequest: 1024,
+		Address:        ":8080",
+		MaxRequestSize: 1024,
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
@@ -203,8 +203,8 @@ func Test_Config_DeadPool(t *testing.T) {
 
 func Test_Config_InvalidAddress(t *testing.T) {
 	cfg := &Config{
-		Address:    "",
-		MaxRequest: 1024,
+		Address:        "",
+		MaxRequestSize: 1024,
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
@@ -221,4 +221,55 @@ func Test_Config_InvalidAddress(t *testing.T) {
 	}
 
 	assert.Error(t, cfg.Valid())
+}
+
+func Test_Config_MergeBackwardCompatibility_MaxRequestSize(t *testing.T) {
+	c := newTestBackwardCompatibilityConfig()
+	cfg := mockCfg{cfg: `{"maxRequestSize":512}`}
+	assert.NoError(t, c.Valid())
+	assert.NoError(t, c.Hydrate(&cfg))
+	assert.Equal(t, int64(512), int64(c.MaxRequestSize))
+
+	c = newTestBackwardCompatibilityConfig()
+	cfg = mockCfg{cfg: `{"maxRequestSize":256,"maxRequest":1024}`}
+	assert.NoError(t, c.Valid())
+	assert.NoError(t, c.Hydrate(&cfg))
+	assert.Equal(t, int64(256), int64(c.MaxRequestSize))
+
+	c = newTestBackwardCompatibilityConfig()
+	cfg = mockCfg{cfg: `{"maxRequestSize":256,"maxRequest":0}`}
+	assert.NoError(t, c.Valid())
+	assert.NoError(t, c.Hydrate(&cfg))
+	assert.Equal(t, int64(256), int64(c.MaxRequestSize))
+
+	c = newTestBackwardCompatibilityConfig()
+	cfg = mockCfg{cfg: `{"maxRequest":1024}`}
+	assert.NoError(t, c.Valid())
+	assert.NoError(t, c.Hydrate(&cfg))
+	assert.Equal(t, int64(1024), int64(c.MaxRequestSize))
+
+	c = newTestBackwardCompatibilityConfig()
+	cfg = mockCfg{cfg: `{"maxRequestSize":0,"maxRequest":1024}`}
+	assert.NoError(t, c.Valid())
+	assert.NoError(t, c.Hydrate(&cfg))
+	assert.Equal(t, int64(1024), int64(c.MaxRequestSize))
+}
+
+func newTestBackwardCompatibilityConfig() *Config {
+	return &Config{
+		Address: ":8080",
+		Uploads: &UploadsConfig{
+			Dir:    os.TempDir(),
+			Forbid: []string{".go"},
+		},
+		Workers: &roadrunner.ServerConfig{
+			Command: "php tests/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		},
+	}
 }
