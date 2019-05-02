@@ -1,0 +1,193 @@
+#!/usr/bin/env php
+<?php
+/*
+ * RoadRunner
+ * High-performance PHP process supervisor and load balancer written in Go
+ *
+ * This file responsive for cli commands
+ */
+
+foreach ([__DIR__ . '/../../../../autoload.php', __DIR__ . '/../../vendor/autoload.php', __DIR__ . '/vendor/autoload.php'] as $file) {
+    if (file_exists($file)) {
+        define('RR_COMPOSER_INSTALL', $file);
+
+        break;
+    }
+}
+
+unset($file);
+
+if (!defined('RR_COMPOSER_INSTALL')) {
+    fwrite(
+        STDERR,
+        'You need to set up the project dependencies using Composer:' . PHP_EOL . PHP_EOL .
+        '    composer install' . PHP_EOL . PHP_EOL .
+        'You can learn all about Composer on https://getcomposer.org/.' . PHP_EOL
+    );
+
+    die(1);
+}
+
+require RR_COMPOSER_INSTALL;
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+
+class RoadRunnerCLIHelper
+{
+    /**
+     * Returns version of RoadRunner based on build.sh file
+     *
+     * @return string Version of RoadRunner
+     * @throws Exception
+     */
+    public static function getVersion()
+    {
+        $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'build.sh';
+        $fileResource = fopen($file, 'r') or die(1);
+        while (!feof($fileResource)) {
+            $line = fgets($fileResource, 4096);
+            $matches = [];
+            if (preg_match("/^RR_VERSION=(.*)/", $line, $matches)) {
+                return $matches[1];
+            }
+        }
+        fclose($fileResource);
+        throw new Exception("Can't find version of RoadRunner");
+    }
+
+    /**
+     * Returns OS Type for filename
+     *
+     * @return string OS Type
+     */
+    public static function getOsType()
+    {
+        switch (PHP_OS) {
+            case 'Darwin':
+                return 'darwin';
+            case 'Linux':
+                return 'linux';
+            case 'FreeBSD':
+                return 'freebsd';
+            case 'WIN32':
+            case 'WINNT':
+            case 'Windows':
+                return 'windows';
+            default:
+                return 'linux';
+        }
+    }
+
+    /**
+     * Returns generated URL to zip file on GitHub with binary file
+     *
+     * @return string URL
+     * @throws Exception
+     */
+    public static function getBinaryDownloadUrl()
+    {
+        return 'https://github.com/spiral/roadrunner/releases/download/v' . static::getVersion() . '/roadrunner-' . static::getVersion() . '-' . static::getOsType() . '-amd64.zip';
+    }
+}
+
+
+(new Application('RoadRunner', RoadRunnerCLIHelper::getVersion()))
+    ->register('update-binaries')
+    ->setDescription("Install or update RoadRunner binaries in specified folder (current folder by default)")
+    ->addOption('location', 'l', InputArgument::OPTIONAL, 'destination folder', '.')
+    ->setCode(function (InputInterface $input, OutputInterface $output) {
+        $output->writeln('<info>Updating binary file of RoadRunner</info>');
+
+        $finalFile = $input->getOption('location') . DIRECTORY_SEPARATOR . 'rr';
+
+        if (is_file($finalFile)) {
+            $output->writeln('<error>RoadRunner binary file already exists!</error>');
+            $helper = $this->getHelper('question');
+            $question = new ConfirmationQuestion('Do you want overwrite it? [Y/n]');
+
+            if (!$helper->ask($input, $output, $question)) {
+                return;
+            }
+        }
+
+        $output->writeln('<info>Downloading RoadRunner archive for ' . RoadRunnerCLIHelper::getOsType() . '</info>');
+
+        $progressBar = new ProgressBar($output);
+        $progressBar->setFormat('verbose');
+        $progressBar->start();
+
+        $zipFileName = tempnam('.', "rr_zip");
+        $zipFile = fopen($zipFileName, "w+");
+        $curlResource = curl_init();
+        curl_setopt($curlResource, CURLOPT_URL, RoadRunnerCLIHelper::getBinaryDownloadUrl());
+        curl_setopt($curlResource, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlResource, CURLOPT_BINARYTRANSFER, true);
+        curl_setopt($curlResource, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curlResource, CURLOPT_FILE, $zipFile);
+        curl_setopt($curlResource, CURLOPT_PROGRESSFUNCTION, function ($resource, $download_size, $downloaded, $upload_size, $uploaded) use ($progressBar) {
+            if ($download_size == 0) {
+                return;
+            }
+            $progressBar->setFormat('[%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% ' . intval($download_size / 1024) . 'KB');
+            $progressBar->setMaxSteps($download_size);
+            $progressBar->setProgress($downloaded);
+        });
+        curl_setopt($curlResource, CURLOPT_NOPROGRESS, false); // needed to make progress function work
+        curl_setopt($curlResource, CURLOPT_HEADER, 0);
+        curl_exec($curlResource);
+        curl_close($curlResource);
+        fclose($zipFile);
+
+        $progressBar->finish();
+        $output->writeln("");
+
+        $output->writeln('<info>Unpacking ' . basename(RoadRunnerCLIHelper::getBinaryDownloadUrl()) . '</info>');
+
+        $zipArchive = new ZipArchive();
+        $zipArchive->open($zipFileName);
+        $fileStreamFromZip = $zipArchive->getStream('roadrunner-' . RoadRunnerCLIHelper::getVersion() . '-' . RoadRunnerCLIHelper::getOsType() . '-amd64/rr');
+        $finalFileResource = fopen($finalFile, 'w');
+
+        if (!$fileStreamFromZip) {
+            throw new Exception('Unable to extract the file.');
+        }
+
+        while (!feof($fileStreamFromZip)) {
+            fwrite($finalFileResource, fread($fileStreamFromZip, 8192));
+        }
+
+        fclose($fileStreamFromZip);
+        fclose($finalFileResource);
+        $zipArchive->extractTo('.', []);
+        $zipArchive->close();
+        unlink($zipFileName);
+
+        chmod($finalFile, 0755);
+        $output->writeln('<info>Binary file updated!</info>');
+    })
+    ->getApplication()
+    ->register("init-config")
+    ->setDescription("Inits default .rr.yaml config in specified folder (current folder by default)")
+    ->addOption('location', 'l', InputArgument::OPTIONAL, 'destination folder', '.')
+    ->setCode(function (InputInterface $input, OutputInterface $output) {
+        if (is_file($input->getOption('location') . DIRECTORY_SEPARATOR . '.rr.yaml')) {
+            $output->writeln('<error>Config file already exists!</error>');
+            $helper = $this->getHelper('question');
+            $question = new ConfirmationQuestion('Do you want overwrite it? [Y/n]');
+
+            if (!$helper->ask($input, $output, $question)) {
+                return;
+            }
+        }
+        copy(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '.rr.yaml', $input->getOption('location') . DIRECTORY_SEPARATOR . '.rr.yaml');
+        $output->writeln('<info>Config file created!</info>');
+    })
+    ->getApplication()
+    ->run();
+
+
