@@ -1,4 +1,4 @@
-package watchdog
+package watcher
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 )
 
 // disconnect??
-type Watcher struct {
+type Service struct {
 	// defines how often
 	interval time.Duration
 	pool     Pool
@@ -15,8 +15,8 @@ type Watcher struct {
 }
 
 // NewWatcher creates new pool watcher.
-func NewWatcher(p Pool, i time.Duration) *Watcher {
-	w := &Watcher{
+func NewWatcher(p Pool, i time.Duration) *Service {
+	w := &Service{
 		interval: i,
 		pool:     p,
 		stop:     make(chan interface{}),
@@ -38,11 +38,11 @@ func NewWatcher(p Pool, i time.Duration) *Watcher {
 	return w
 }
 
-func (w *Watcher) Stop() {
+func (w *Service) Stop() {
 	close(w.stop)
 }
 
-func (w *Watcher) update() {
+func (w *Service) update() {
 	for _, w := range w.pool.Workers() {
 		log.Println(w)
 
