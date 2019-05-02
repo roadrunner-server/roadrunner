@@ -87,8 +87,8 @@ func (eb *errBuffer) Len() int {
 	return len(eb.buf)
 }
 
-// Write appends the contents of p to the errBuffer, growing the errBuffer as
-// needed. The return value n is the length of p; err is always nil.
+// Write appends the contents of pool to the errBuffer, growing the errBuffer as
+// needed. The return value n is the length of pool; err is always nil.
 func (eb *errBuffer) Write(p []byte) (int, error) {
 	eb.mu.Lock()
 	eb.buf = append(eb.buf, p...)

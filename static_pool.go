@@ -116,7 +116,20 @@ func (p *StaticPool) Workers() (workers []*Worker) {
 
 // Remove forces pool to destroy specific worker.
 func (p *StaticPool) Remove(w *Worker, err error) {
+	if w.State().Value() != StateReady && w.State().Value() != StateWorking {
+		// unable to remove inactive worker
+		return
+	}
+
 	p.remove.Store(w, err)
+
+	// cleanup workers which were scheduled for deletion after stop has been started
+	p.remove.Range(func(key, value interface{}) bool {
+		if key.(*Worker).State().Value() == StateStopped || key.(*Worker).State().Value() == StateErrored {
+			p.remove.Delete(key)
+		}
+		return true
+	})
 }
 
 // Exec one task with given payload and context, returns result or error.
