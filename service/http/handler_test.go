@@ -513,7 +513,7 @@ func TestHandler_FormData_POST(t *testing.T) {
 func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 	h := &Handler{
 		cfg: &Config{
-			MaxRequest: 1024,
+			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{
 				Dir:    os.TempDir(),
 				Forbid: []string{},
