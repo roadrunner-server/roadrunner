@@ -39,8 +39,8 @@ func (d dataTree) push(k string, v []string) {
 // mount mounts data tree recursively.
 func (d dataTree) mount(i []string, v []string) {
 	if len(i) == 1 {
-		// single value context
-		d[i[0]] = v[0]
+		// single value context (last element)
+		d[i[0]] = v[len(v)-1]
 		return
 	}
 

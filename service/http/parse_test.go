@@ -50,5 +50,3 @@ func same(in, out []string) bool {
 
 	return true
 }
-
-// bench

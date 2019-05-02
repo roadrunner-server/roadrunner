@@ -510,6 +510,58 @@ func TestHandler_FormData_POST(t *testing.T) {
 	assert.Equal(t, `{"arr":{"c":{"p":"l","z":""},"x":{"y":{"e":"f","z":"y"}}},"key":"value","name":["name1","name2","name3"]}`, string(b))
 }
 
+func TestHandler_FormData_POST_Overwrite(t *testing.T) {
+	h := &Handler{
+		cfg: &Config{
+			MaxRequest: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../tests/http/client.php data pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
+
+	hs := &http.Server{Addr: ":8083", Handler: h}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	form := url.Values{}
+
+	form.Add("key", "value1")
+	form.Add("key", "value2")
+
+	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, strings.NewReader(form.Encode()))
+	assert.NoError(t, err)
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+
+	assert.Equal(t, `{"key":"value2","arr":{"x":{"y":null}}}`, string(b))
+}
+
 func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 	h := &Handler{
 		cfg: &Config{
