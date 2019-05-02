@@ -29,7 +29,7 @@ func (r *relayMock) Close() error {
 }
 
 func Test_Protocol_Errors(t *testing.T) {
-	err := sendPayload(&relayMock{}, make(chan int))
+	err := sendControl(&relayMock{}, make(chan int))
 	assert.Error(t, err)
 }
 

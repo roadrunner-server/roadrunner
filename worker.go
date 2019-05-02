@@ -137,7 +137,7 @@ func (w *Worker) Stop() error {
 		defer w.mu.Unlock()
 
 		w.state.set(StateStopping)
-		err := sendPayload(w.rl, &stopCommand{Stop: true})
+		err := sendControl(w.rl, &stopCommand{Stop: true})
 
 		<-w.waitDone
 		return err
@@ -221,7 +221,8 @@ func (w *Worker) start() error {
 }
 
 func (w *Worker) execPayload(rqs *Payload) (rsp *Payload, err error) {
-	if err := sendPayload(w.rl, rqs.Context); err != nil {
+	// two things
+	if err := sendControl(w.rl, rqs.Context); err != nil {
 		return nil, errors.Wrap(err, "header error")
 	}
 
