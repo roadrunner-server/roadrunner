@@ -15,13 +15,11 @@
   ],
   "require": {
     "php": "^7.0",
-    "ext-curl": "*",
-    "ext-zip": "*",
     "spiral/goridge": "^2.0",
     "psr/http-factory": "^1.0",
     "psr/http-message": "^1.0",
-    "http-interop/http-factory-diactoros": "^1.0",
-    "symfony/console": "^2.5.0 || ^3.0.0 || ^4.0.0"
+    "symfony/console": "^2.5.0 || ^3.0.0 || ^4.0.0",
+    "http-interop/http-factory-diactoros": "^1.0"
   },
   "autoload": {
     "psr-4": {
