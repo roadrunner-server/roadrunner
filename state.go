@@ -26,9 +26,6 @@ const (
 	// StateWorking - working on given payload.
 	StateWorking
 
-	// StateDestroying - worker has been marked as being destroyed.
-	StateDestroying
-
 	// StateStreaming - indicates that worker is streaming the data at the moment.
 	StateStreaming
 

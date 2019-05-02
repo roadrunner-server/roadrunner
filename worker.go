@@ -164,36 +164,33 @@ func (w *Worker) Kill() error {
 // errors. Method might return JobError indicating issue with payload.
 func (w *Worker) Exec(rqs *Payload) (rsp *Payload, err error) {
 	w.mu.Lock()
-	defer w.mu.Unlock()
 
 	if rqs == nil {
+		w.mu.Unlock()
 		return nil, fmt.Errorf("payload can not be empty")
 	}
 
 	if w.state.Value() != StateReady {
+		w.mu.Unlock()
 		return nil, fmt.Errorf("worker is not ready (%s)", w.state.String())
 	}
 
 	w.state.set(StateWorking)
-	defer w.state.registerExec()
 
 	rsp, err = w.execPayload(rqs)
 	if err != nil {
 		if _, ok := err.(JobError); !ok {
 			w.state.set(StateErrored)
+			w.state.registerExec()
+			w.mu.Unlock()
 			return nil, err
 		}
 	}
 
-	// todo: attach when payload is complete
-	// todo: new status
-
 	w.state.set(StateReady)
+	w.state.registerExec()
+	w.mu.Unlock()
 	return rsp, err
-}
-
-func (w *Worker) markDestroying() {
-	w.state.set(StateDestroying)
 }
 
 func (w *Worker) start() error {

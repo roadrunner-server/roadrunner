@@ -203,9 +203,8 @@ func (s *Server) poolListener(event int, ctx interface{}) {
 // throw invokes event handler if any.
 func (s *Server) throw(event int, ctx interface{}) {
 	s.mul.Lock()
-	defer s.mul.Unlock()
-
 	if s.lsn != nil {
 		s.lsn(event, ctx)
 	}
+	s.mul.Unlock()
 }
