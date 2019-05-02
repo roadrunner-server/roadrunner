@@ -22,10 +22,6 @@ const (
 
 // Pool managed set of inner worker processes.
 type Pool interface {
-	// Watch enables worker watching (to destroy expired workers or workers which experience
-	// memory leaks).
-	Watch(w Watcher)
-
 	// Listen all caused events to attached watcher.
 	Listen(l func(event int, ctx interface{}))
 
@@ -34,6 +30,9 @@ type Pool interface {
 
 	// Workers returns worker list associated with the pool.
 	Workers() (workers []*Worker)
+
+	// Remove forces pool to destroy specific worker.
+	Remove(w *Worker, err error)
 
 	// Destroy all underlying workers (but let them to complete the task).
 	Destroy()
