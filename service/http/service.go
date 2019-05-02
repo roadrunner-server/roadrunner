@@ -53,6 +53,7 @@ func (s *Service) AddListener(l func(event int, ctx interface{})) {
 func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Environment) (bool, error) {
 	s.cfg = cfg
 	s.env = e
+
 	if r != nil {
 		if err := r.Register(ID, &rpcServer{s}); err != nil {
 			return false, err
