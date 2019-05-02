@@ -425,7 +425,11 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 	p, _ := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
-		cfg,
+		Config{
+			NumWorkers:      int64(runtime.NumCPU()),
+			AllocateTimeout: time.Second * 100,
+			DestroyTimeout:  time.Second,
+		},
 	)
 	defer p.Destroy()
 

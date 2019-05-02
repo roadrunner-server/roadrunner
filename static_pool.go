@@ -3,6 +3,7 @@ package roadrunner
 import (
 	"fmt"
 	"github.com/pkg/errors"
+	"log"
 	"os/exec"
 	"sync"
 	"sync/atomic"
@@ -203,6 +204,7 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 			}
 
 			if err, remove := p.remove.Load(w); remove {
+				log.Println("remove")
 				go p.destroyWorker(w, err)
 
 				// get next worker
@@ -239,6 +241,8 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 
 			return w, nil
 		case <-p.destroy:
+			timeout.Stop()
+
 			return nil, fmt.Errorf("pool has been stopped")
 		}
 	}
