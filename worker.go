@@ -192,6 +192,10 @@ func (w *Worker) Exec(rqs *Payload) (rsp *Payload, err error) {
 	return rsp, err
 }
 
+func (w *Worker) markDestroying() {
+	w.state.set(StateDestroying)
+}
+
 func (w *Worker) start() error {
 	if err := w.cmd.Start(); err != nil {
 		close(w.waitDone)

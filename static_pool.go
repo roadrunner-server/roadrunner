@@ -46,8 +46,9 @@ type StaticPool struct {
 	destroy   chan interface{}
 
 	// lsn is optional callback to handle worker create/destruct/error events.
-	mul sync.Mutex
-	lsn func(event int, ctx interface{})
+	mul     sync.Mutex
+	watcher Watcher
+	lsn     func(event int, ctx interface{})
 }
 
 // NewPool creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
@@ -78,6 +79,14 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, er
 	}
 
 	return p, nil
+}
+
+// WatchWorkers enables worker watching.
+func (p *StaticPool) WatchWorkers(w Watcher) {
+	p.mul.Lock()
+	defer p.mul.Unlock()
+
+	p.watcher = w
 }
 
 // Listen attaches pool event watcher.
@@ -181,6 +190,14 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 				continue
 			}
 
+			if p.watcher != nil {
+				if keep, err := p.watcher.Keep(p, w); !keep {
+					i++
+					w.markDestroying()
+					go p.destroyWorker(w, err)
+				}
+			}
+
 			return w, nil
 		case <-p.destroy:
 			return nil, fmt.Errorf("pool has been stopped")
@@ -199,6 +216,15 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 				atomic.AddInt64(&p.numDead, ^int64(0))
 				continue
 			}
+
+			if p.watcher != nil {
+				if keep, err := p.watcher.Keep(p, w); !keep {
+					i++
+					w.markDestroying()
+					go p.destroyWorker(w, err)
+				}
+			}
+
 			return w, nil
 		case <-p.destroy:
 			return nil, fmt.Errorf("pool has been stopped")
