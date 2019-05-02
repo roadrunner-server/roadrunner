@@ -81,8 +81,9 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, er
 	return p, nil
 }
 
-// WatchWorkers enables worker watching.
-func (p *StaticPool) WatchWorkers(w Watcher) {
+// Watch enables worker watching (to destroy expired workers or workers which experience
+// memory leaks).
+func (p *StaticPool) Watch(w Watcher) {
 	p.mul.Lock()
 	defer p.mul.Unlock()
 
