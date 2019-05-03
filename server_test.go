@@ -33,6 +33,25 @@ func TestServer_PipesEcho(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
+func TestServer_NoPool(t *testing.T) {
+	rr := NewServer(
+		&ServerConfig{
+			Command: "php tests/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &Config{
+				NumWorkers:      int64(runtime.NumCPU()),
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		})
+	defer rr.Stop()
+
+	res, err := rr.Exec(&Payload{Body: []byte("hello")})
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+}
+
 func TestServer_SocketEcho(t *testing.T) {
 	rr := NewServer(
 		&ServerConfig{
