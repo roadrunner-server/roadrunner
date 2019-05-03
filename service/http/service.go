@@ -33,9 +33,15 @@ type Service struct {
 	mdwr    []middleware
 	mu      sync.Mutex
 	rr      *roadrunner.Server
+	watcher roadrunner.Watcher
 	handler *Handler
 	http    *http.Server
 	https   *http.Server
+}
+
+// Watch attaches watcher.
+func (s *Service) AttachWatcher(w roadrunner.Watcher) {
+	s.watcher = w
 }
 
 // AddMiddleware adds new net/http mdwr.
@@ -77,6 +83,10 @@ func (s *Service) Serve() error {
 
 	s.rr = roadrunner.NewServer(s.cfg.Workers)
 	s.rr.Listen(s.throw)
+
+	if s.watcher != nil {
+		s.rr.Watch(s.watcher)
+	}
 
 	s.handler = &Handler{cfg: s.cfg, rr: s.rr}
 	s.handler.Listen(s.throw)
