@@ -109,11 +109,13 @@ func init() {
 		}
 
 		// global watcher config
-		wcv, _ := Container.Get(watcher.ID)
-		if wcv, ok := wcv.(*watcher.Service); ok {
-			wcv.AddListener(func(event int, ctx interface{}) {
-				util.LogEvent(Logger, event, ctx)
-			})
+		if Verbose {
+			wcv, _ := Container.Get(watcher.ID)
+			if wcv, ok := wcv.(*watcher.Service); ok {
+				wcv.AddListener(func(event int, ctx interface{}) {
+					util.LogEvent(Logger, event, ctx)
+				})
+			}
 		}
 	})
 }

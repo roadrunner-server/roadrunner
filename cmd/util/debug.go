@@ -71,7 +71,7 @@ func LogEvent(logger *logrus.Logger, event int, ctx interface{}) bool {
 
 	case watcher.EventMaxMemory:
 		w := ctx.(roadrunner.WorkerError)
-		logger.Warning(Sprintf(
+		logger.Error(Sprintf(
 			"<white+hb>worker.%v</reset> <red>%s</reset>",
 			*w.Worker.Pid,
 			w.Caused,
