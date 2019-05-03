@@ -52,7 +52,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class RoadRunnerCLIHelper
+class RRHelper
 {
     /**
      * Returns version of RoadRunner based on build.sh file
@@ -68,7 +68,7 @@ class RoadRunnerCLIHelper
             $line = fgets($fileResource, 4096);
             $matches = [];
             if (preg_match("/^RR_VERSION=(.*)/", $line, $matches)) {
-                return $matches[1];
+                return trim($matches[1]);
             }
         }
         fclose($fileResource);
@@ -99,18 +99,93 @@ class RoadRunnerCLIHelper
     }
 
     /**
+     * @return string
+     * @throws Exception
+     */
+    public static function getSignature(): string
+    {
+        return 'roadrunner-' . self::getVersion() . '-' . self::getOSType() . '-amd64';
+    }
+
+    /**
      * Returns generated URL to zip file on GitHub with binary file
      *
      * @return string URL
      * @throws Exception
      */
-    public static function getBinaryDownloadUrl()
+    public static function getBinaryDownloadUrl(): string
     {
-        return 'https://github.com/spiral/roadrunner/releases/download/v' . static::getVersion() . '/roadrunner-' . static::getVersion() . '-' . static::getOSType() . '-amd64.zip';
+        $ext = '.zip';
+        if (self::getOSType() == 'linux') {
+            $ext = '.tar.gz';
+        }
+
+        // todo: support linux
+        return 'https://github.com/spiral/roadrunner/releases/download/v'
+            . static::getVersion() . '/' . self::getSignature()
+            . $ext;
+    }
+
+    /**
+     * Extracts the roadrunner RR binary into given location.
+     *
+     * @param string $archive
+     * @param string $target
+     * @throws Exception
+     */
+    public static function extractBinary(string $archive, string $target)
+    {
+        if (self::getOSType() !== 'linux') {
+            self::extractZIP($archive, $target);
+        } else {
+            self::extractTAR($archive, $target);
+        }
+    }
+
+    /**
+     * @param string $archive
+     * @param string $target
+     * @throws Exception
+     */
+    protected function extractZIP(string $archive, string $target)
+    {
+        $zip = new ZipArchive();
+        $zip->open($archive);
+
+        $name = self::getSignature() . '/rr';
+        if (self::getOSType() == 'windows') {
+            $name .= '.exe';
+        }
+
+        $stream = $zip->getStream($name);
+        if (!is_resource($stream)) {
+            return;
+        }
+
+        $to = fopen($target, 'w');
+        stream_copy_to_stream($stream, $to);
+        fclose($to);
+
+        $zip->close();
+    }
+
+    /**
+     * @param string $archive
+     * @param string $target
+     * @throws Exception
+     */
+    protected function extractTAR(string $archive, string $target)
+    {
+        $arch = new PharData($archive);
+        $arch->extractTo('./', self::getSignature() . '/rr');
+
+        copy('./' . self::getSignature() . '/rr', $target);
+        unlink('./' . self::getSignature() . '/rr');
+        rmdir('./' . self::getSignature());
     }
 }
 
-(new Application('RoadRunner', RoadRunnerCLIHelper::getVersion()))
+(new Application('RoadRunner', RRHelper::getVersion()))
     ->register('get')
     ->setDescription("Install or update RoadRunner binaries in specified folder (current folder by default)")
     ->addOption('location', 'l', InputArgument::OPTIONAL, 'destination folder', '.')
@@ -118,6 +193,9 @@ class RoadRunnerCLIHelper
         $output->writeln('<info>Updating binary file of RoadRunner</info>');
 
         $finalFile = $input->getOption('location') . DIRECTORY_SEPARATOR . 'rr';
+        if (RRHelper::getOSType() == 'windows') {
+            $finalFile .= '.exe';
+        }
 
         if (is_file($finalFile)) {
             $output->writeln('<error>RoadRunner binary file already exists!</error>');
@@ -129,18 +207,19 @@ class RoadRunnerCLIHelper
             }
         }
 
-        $output->writeln('<info>Downloading RoadRunner archive for ' . RoadRunnerCLIHelper::getOSType() . '</info>');
+        $output->writeln('<info>Downloading RoadRunner archive for <fg=cyan>' . ucfirst(RRHelper::getOSType()) . '</fg=cyan></info>');
 
         $progressBar = new ProgressBar($output);
         $progressBar->setFormat('verbose');
-        $progressBar->start();
 
         $zipFileName = tempnam('.', "rr_zip");
         $zipFile = fopen($zipFileName, "w+");
         $curlResource = curl_init();
-        curl_setopt($curlResource, CURLOPT_URL, RoadRunnerCLIHelper::getBinaryDownloadUrl());
+
+        curl_setopt($curlResource, CURLOPT_URL, RRHelper::getBinaryDownloadUrl());
         curl_setopt($curlResource, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curlResource, CURLOPT_BINARYTRANSFER, true);
+        curl_setopt($curlResource, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curlResource, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curlResource, CURLOPT_FILE, $zipFile);
         curl_setopt($curlResource, CURLOPT_PROGRESSFUNCTION,
@@ -148,6 +227,11 @@ class RoadRunnerCLIHelper
                 if ($download_size == 0) {
                     return;
                 }
+
+                if ($progressBar->getStartTime() === 0) {
+                    $progressBar->start();
+                }
+
                 $progressBar->setFormat('[%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% ' . intval($download_size / 1024) . 'KB');
                 $progressBar->setMaxSteps($download_size);
                 $progressBar->setProgress($downloaded);
@@ -161,28 +245,14 @@ class RoadRunnerCLIHelper
         $progressBar->finish();
         $output->writeln("");
 
-        $output->writeln('<info>Unpacking ' . basename(RoadRunnerCLIHelper::getBinaryDownloadUrl()) . '</info>');
+        $output->writeln('<info>Unpacking <comment>' . basename(RRHelper::getBinaryDownloadUrl()) . '</comment></info>');
 
-        $zipArchive = new ZipArchive();
-        $zipArchive->open($zipFileName);
-        $fileStreamFromZip = $zipArchive->getStream(
-            'roadrunner-' . RoadRunnerCLIHelper::getVersion() . '-' . RoadRunnerCLIHelper::getOSType() . '-amd64/rr'
-        );
-        $finalFileResource = fopen($finalFile, 'w');
+        RRHelper::extractBinary($zipFileName, $finalFile);
+        unlink($zipFileName);
 
-        if (!$fileStreamFromZip) {
+        if (!file_exists($finalFile) || filesize($finalFile) === 0) {
             throw new Exception('Unable to extract the file.');
         }
-
-        while (!feof($fileStreamFromZip)) {
-            fwrite($finalFileResource, fread($fileStreamFromZip, 8192));
-        }
-
-        fclose($fileStreamFromZip);
-        fclose($finalFileResource);
-        $zipArchive->extractTo('.', []);
-        $zipArchive->close();
-        unlink($zipFileName);
 
         chmod($finalFile, 0755);
         $output->writeln('<info>Binary file updated!</info>');
