@@ -122,14 +122,6 @@ func (p *StaticPool) Remove(w *Worker, err error) {
 	}
 
 	p.remove.Store(w, err)
-
-	// cleanup workers which were scheduled for deletion after stop has been started
-	p.remove.Range(func(key, value interface{}) bool {
-		if key.(*Worker).State().Value() == StateStopped || key.(*Worker).State().Value() == StateErrored {
-			p.remove.Delete(key)
-		}
-		return true
-	})
 }
 
 // Exec one task with given payload and context, returns result or error.

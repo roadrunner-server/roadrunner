@@ -168,6 +168,9 @@ func Test_RemoveWorkerOnAllocation(t *testing.T) {
 	assert.NotEqual(t, lastPid, res.String())
 
 	assert.NotEqual(t, StateReady, wr.state.Value())
+
+	_, ok := rr.pool.(*StaticPool).remove.Load(wr)
+	assert.False(t, ok)
 }
 
 func Test_RemoveWorkerAfterTask(t *testing.T) {
@@ -207,4 +210,7 @@ func Test_RemoveWorkerAfterTask(t *testing.T) {
 
 	// must be replaced
 	assert.NotEqual(t, lastPid, fmt.Sprintf("%v", rr.Workers()[0]))
+
+	// must not be registered withing pool
+	rr.pWatcher.(*eWatcher).remove(wr, nil)
 }
