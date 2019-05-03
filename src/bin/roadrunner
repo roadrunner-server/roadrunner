@@ -1,13 +1,18 @@
 #!/usr/bin/env php
 <?php
-/*
+/**
  * RoadRunner
  * High-performance PHP process supervisor and load balancer written in Go
  *
  * This file responsive for cli commands
  */
+declare(strict_types=1);
 
-foreach ([__DIR__ . '/../../../../autoload.php', __DIR__ . '/../../vendor/autoload.php', __DIR__ . '/vendor/autoload.php'] as $file) {
+foreach ([
+             __DIR__ . '/../../../../autoload.php',
+             __DIR__ . '/../../vendor/autoload.php',
+             __DIR__ . '/vendor/autoload.php'
+         ] as $file) {
     if (file_exists($file)) {
         define('RR_COMPOSER_INSTALL', $file);
 
@@ -28,6 +33,16 @@ if (!defined('RR_COMPOSER_INSTALL')) {
     die(1);
 }
 
+if (!class_exists('ZipArchive')) {
+    fwrite(STDERR, 'Extension `php-zip` is required.' . PHP_EOL);
+    die(1);
+}
+
+if (!function_exists('curl_init')) {
+    fwrite(STDERR, 'Extension `php-curl` is required.' . PHP_EOL);
+    die(1);
+}
+
 require RR_COMPOSER_INSTALL;
 
 use Symfony\Component\Console\Application;
@@ -45,7 +60,7 @@ class RoadRunnerCLIHelper
      * @return string Version of RoadRunner
      * @throws Exception
      */
-    public static function getVersion()
+    public static function getVersion(): string
     {
         $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'build.sh';
         $fileResource = fopen($file, 'r') or die(1);
@@ -65,7 +80,7 @@ class RoadRunnerCLIHelper
      *
      * @return string OS Type
      */
-    public static function getOsType()
+    public static function getOSType(): string
     {
         switch (PHP_OS) {
             case 'Darwin':
@@ -91,10 +106,9 @@ class RoadRunnerCLIHelper
      */
     public static function getBinaryDownloadUrl()
     {
-        return 'https://github.com/spiral/roadrunner/releases/download/v' . static::getVersion() . '/roadrunner-' . static::getVersion() . '-' . static::getOsType() . '-amd64.zip';
+        return 'https://github.com/spiral/roadrunner/releases/download/v' . static::getVersion() . '/roadrunner-' . static::getVersion() . '-' . static::getOSType() . '-amd64.zip';
     }
 }
-
 
 (new Application('RoadRunner', RoadRunnerCLIHelper::getVersion()))
     ->register('update-binaries')
@@ -115,7 +129,7 @@ class RoadRunnerCLIHelper
             }
         }
 
-        $output->writeln('<info>Downloading RoadRunner archive for ' . RoadRunnerCLIHelper::getOsType() . '</info>');
+        $output->writeln('<info>Downloading RoadRunner archive for ' . RoadRunnerCLIHelper::getOSType() . '</info>');
 
         $progressBar = new ProgressBar($output);
         $progressBar->setFormat('verbose');
@@ -129,14 +143,15 @@ class RoadRunnerCLIHelper
         curl_setopt($curlResource, CURLOPT_BINARYTRANSFER, true);
         curl_setopt($curlResource, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curlResource, CURLOPT_FILE, $zipFile);
-        curl_setopt($curlResource, CURLOPT_PROGRESSFUNCTION, function ($resource, $download_size, $downloaded, $upload_size, $uploaded) use ($progressBar) {
-            if ($download_size == 0) {
-                return;
-            }
-            $progressBar->setFormat('[%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% ' . intval($download_size / 1024) . 'KB');
-            $progressBar->setMaxSteps($download_size);
-            $progressBar->setProgress($downloaded);
-        });
+        curl_setopt($curlResource, CURLOPT_PROGRESSFUNCTION,
+            function ($resource, $download_size, $downloaded, $upload_size, $uploaded) use ($progressBar) {
+                if ($download_size == 0) {
+                    return;
+                }
+                $progressBar->setFormat('[%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% ' . intval($download_size / 1024) . 'KB');
+                $progressBar->setMaxSteps($download_size);
+                $progressBar->setProgress($downloaded);
+            });
         curl_setopt($curlResource, CURLOPT_NOPROGRESS, false); // needed to make progress function work
         curl_setopt($curlResource, CURLOPT_HEADER, 0);
         curl_exec($curlResource);
@@ -150,7 +165,7 @@ class RoadRunnerCLIHelper
 
         $zipArchive = new ZipArchive();
         $zipArchive->open($zipFileName);
-        $fileStreamFromZip = $zipArchive->getStream('roadrunner-' . RoadRunnerCLIHelper::getVersion() . '-' . RoadRunnerCLIHelper::getOsType() . '-amd64/rr');
+        $fileStreamFromZip = $zipArchive->getStream('roadrunner-' . RoadRunnerCLIHelper::getVersion() . '-' . RoadRunnerCLIHelper::getOSType() . '-amd64/rr');
         $finalFileResource = fopen($finalFile, 'w');
 
         if (!$fileStreamFromZip) {
@@ -184,10 +199,9 @@ class RoadRunnerCLIHelper
                 return;
             }
         }
-        copy(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '.rr.yaml', $input->getOption('location') . DIRECTORY_SEPARATOR . '.rr.yaml');
+        copy(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '.rr.yaml',
+            $input->getOption('location') . DIRECTORY_SEPARATOR . '.rr.yaml');
         $output->writeln('<info>Config file created!</info>');
     })
     ->getApplication()
     ->run();
-
-
