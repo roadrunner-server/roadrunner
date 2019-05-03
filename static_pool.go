@@ -173,7 +173,7 @@ func (p *StaticPool) Destroy() {
 	var wg sync.WaitGroup
 	for _, w := range p.Workers() {
 		wg.Add(1)
-		w.markDisabled()
+		w.markInvalid()
 		go func(w *Worker) {
 			defer wg.Done()
 			p.destroyWorker(w, nil)
@@ -283,7 +283,7 @@ func (p *StaticPool) createWorker() (*Worker, error) {
 
 // gentry remove worker
 func (p *StaticPool) discardWorker(w *Worker, caused interface{}) {
-	w.markDisabled()
+	w.markInvalid()
 	go p.destroyWorker(w, caused)
 }
 

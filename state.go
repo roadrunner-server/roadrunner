@@ -26,8 +26,8 @@ const (
 	// StateWorking - working on given payload.
 	StateWorking
 
-	// StateDisabled - indicates that worker is being disabled and will be removed.
-	StateDisabled
+	// StateInvalid - indicates that worker is being disabled and will be removed.
+	StateInvalid
 
 	// StateStopping - process is being softly stopped.
 	StateStopping
@@ -57,8 +57,8 @@ func (s *state) String() string {
 		return "ready"
 	case StateWorking:
 		return "working"
-	case StateDisabled:
-		return "disabled"
+	case StateInvalid:
+		return "invalid"
 	case StateStopped:
 		return "stopped"
 	case StateErrored:
