@@ -13,7 +13,7 @@ v1.4.0
    - maxMemory (RSS)
 - stop command
 - `maxRequest` option has been deprecated in favor of `maxRequestSize`
-- download rr command (symfony/console based)
+- download rr command (symfony/console based) by @Alex-Bond
 - PSR-12
 - strict_types=1 added to all php files
 
