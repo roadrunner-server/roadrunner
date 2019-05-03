@@ -42,6 +42,7 @@ type StaticPool struct {
 	workers []*Worker
 
 	// invalid declares set of workers to be removed from the pool.
+	mur    sync.Mutex
 	remove sync.Map
 
 	// pool is being destroyed
@@ -146,13 +147,13 @@ func (p *StaticPool) Exec(rqs *Payload) (rsp *Payload, err error) {
 			return nil, err
 		}
 
-		go p.destroyWorker(w, err)
+		p.discardWorker(w, err)
 		return nil, err
 	}
 
 	// worker want's to be terminated
 	if rsp.Body == nil && rsp.Context != nil && string(rsp.Context) == StopRequest {
-		go p.destroyWorker(w, err)
+		p.discardWorker(w, err)
 		return p.Exec(rqs)
 	}
 
@@ -172,6 +173,7 @@ func (p *StaticPool) Destroy() {
 	var wg sync.WaitGroup
 	for _, w := range p.Workers() {
 		wg.Add(1)
+		w.markDisabled()
 		go func(w *Worker) {
 			defer wg.Done()
 			p.destroyWorker(w, nil)
@@ -195,7 +197,7 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 			}
 
 			if err, remove := p.remove.Load(w); remove {
-				go p.destroyWorker(w, err)
+				p.discardWorker(w, err)
 
 				// get next worker
 				i++
@@ -222,7 +224,7 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 			}
 
 			if err, remove := p.remove.Load(w); remove {
-				go p.destroyWorker(w, err)
+				p.discardWorker(w, err)
 
 				// get next worker
 				i++
@@ -243,12 +245,12 @@ func (p *StaticPool) allocateWorker() (w *Worker, err error) {
 // release releases or replaces the worker.
 func (p *StaticPool) release(w *Worker) {
 	if p.cfg.MaxJobs != 0 && w.State().NumExecs() >= p.cfg.MaxJobs {
-		go p.destroyWorker(w, p.cfg.MaxJobs)
+		p.discardWorker(w, p.cfg.MaxJobs)
 		return
 	}
 
 	if err, remove := p.remove.Load(w); remove {
-		go p.destroyWorker(w, err)
+		p.discardWorker(w, err)
 		return
 	}
 
@@ -277,6 +279,12 @@ func (p *StaticPool) createWorker() (*Worker, error) {
 
 	go p.watchWorker(w)
 	return w, nil
+}
+
+// gentry remove worker
+func (p *StaticPool) discardWorker(w *Worker, caused interface{}) {
+	w.markDisabled()
+	go p.destroyWorker(w, caused)
 }
 
 // destroyWorker destroys workers and removes it from the pool.

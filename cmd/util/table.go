@@ -40,6 +40,8 @@ func renderStatus(status string) string {
 		return Sprintf("<cyan>ready</reset>")
 	case "working":
 		return Sprintf("<green>working</reset>")
+	case "disabled":
+		return Sprintf("<yellow>disabled</reset>")
 	case "stopped":
 		return Sprintf("<red>stopped</reset>")
 	case "errored":
