@@ -17,8 +17,8 @@ type Config struct {
 	// SSL defines https server options.
 	SSL SSLConfig
 
-	// MaxRequest specified max size for payload body in megabytes, set 0 to unlimited.
-	MaxRequest int64
+	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
+	MaxRequestSize int64
 
 	// Uploads configures uploads configuration.
 	Uploads *UploadsConfig

@@ -9,7 +9,7 @@ import (
 )
 
 func TestServer_PipesEcho(t *testing.T) {
-	srv := NewServer(
+	rr := NewServer(
 		&ServerConfig{
 			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
@@ -19,11 +19,11 @@ func TestServer_PipesEcho(t *testing.T) {
 				DestroyTimeout:  time.Second,
 			},
 		})
-	defer srv.Stop()
+	defer rr.Stop()
 
-	assert.NoError(t, srv.Start())
+	assert.NoError(t, rr.Start())
 
-	res, err := srv.Exec(&Payload{Body: []byte("hello")})
+	res, err := rr.Exec(&Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -33,8 +33,27 @@ func TestServer_PipesEcho(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
+func TestServer_NoPool(t *testing.T) {
+	rr := NewServer(
+		&ServerConfig{
+			Command: "php tests/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &Config{
+				NumWorkers:      int64(runtime.NumCPU()),
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		})
+	defer rr.Stop()
+
+	res, err := rr.Exec(&Payload{Body: []byte("hello")})
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+}
+
 func TestServer_SocketEcho(t *testing.T) {
-	srv := NewServer(
+	rr := NewServer(
 		&ServerConfig{
 			Command:      "php tests/client.php echo tcp",
 			Relay:        "tcp://:9007",
@@ -45,11 +64,11 @@ func TestServer_SocketEcho(t *testing.T) {
 				DestroyTimeout:  time.Second,
 			},
 		})
-	defer srv.Stop()
+	defer rr.Stop()
 
-	assert.NoError(t, srv.Start())
+	assert.NoError(t, rr.Start())
 
-	res, err := srv.Exec(&Payload{Body: []byte("hello")})
+	res, err := rr.Exec(&Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -60,7 +79,7 @@ func TestServer_SocketEcho(t *testing.T) {
 }
 
 func TestServer_Configure_BeforeStart(t *testing.T) {
-	srv := NewServer(
+	rr := NewServer(
 		&ServerConfig{
 			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
@@ -70,9 +89,9 @@ func TestServer_Configure_BeforeStart(t *testing.T) {
 				DestroyTimeout:  time.Second,
 			},
 		})
-	defer srv.Stop()
+	defer rr.Stop()
 
-	err := srv.Reconfigure(&ServerConfig{
+	err := rr.Reconfigure(&ServerConfig{
 		Command: "php tests/client.php echo pipes",
 		Relay:   "pipes",
 		Pool: &Config{
@@ -83,9 +102,9 @@ func TestServer_Configure_BeforeStart(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
-	assert.NoError(t, srv.Start())
+	assert.NoError(t, rr.Start())
 
-	res, err := srv.Exec(&Payload{Body: []byte("hello")})
+	res, err := rr.Exec(&Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -93,11 +112,11 @@ func TestServer_Configure_BeforeStart(t *testing.T) {
 	assert.Nil(t, res.Context)
 
 	assert.Equal(t, "hello", res.String())
-	assert.Len(t, srv.Workers(), 2)
+	assert.Len(t, rr.Workers(), 2)
 }
 
 func TestServer_Stop_NotStarted(t *testing.T) {
-	srv := NewServer(
+	rr := NewServer(
 		&ServerConfig{
 			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
@@ -108,12 +127,12 @@ func TestServer_Stop_NotStarted(t *testing.T) {
 			},
 		})
 
-	srv.Stop()
-	assert.Nil(t, srv.Workers())
+	rr.Stop()
+	assert.Nil(t, rr.Workers())
 }
 
 func TestServer_Reconfigure(t *testing.T) {
-	srv := NewServer(
+	rr := NewServer(
 		&ServerConfig{
 			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
@@ -123,12 +142,12 @@ func TestServer_Reconfigure(t *testing.T) {
 				DestroyTimeout:  time.Second,
 			},
 		})
-	defer srv.Stop()
+	defer rr.Stop()
 
-	assert.NoError(t, srv.Start())
-	assert.Len(t, srv.Workers(), 1)
+	assert.NoError(t, rr.Start())
+	assert.Len(t, rr.Workers(), 1)
 
-	err := srv.Reconfigure(&ServerConfig{
+	err := rr.Reconfigure(&ServerConfig{
 		Command: "php tests/client.php echo pipes",
 		Relay:   "pipes",
 		Pool: &Config{
@@ -139,11 +158,11 @@ func TestServer_Reconfigure(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
-	assert.Len(t, srv.Workers(), 2)
+	assert.Len(t, rr.Workers(), 2)
 }
 
 func TestServer_Reset(t *testing.T) {
-	srv := NewServer(
+	rr := NewServer(
 		&ServerConfig{
 			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
@@ -153,19 +172,19 @@ func TestServer_Reset(t *testing.T) {
 				DestroyTimeout:  time.Second,
 			},
 		})
-	defer srv.Stop()
+	defer rr.Stop()
 
-	assert.NoError(t, srv.Start())
-	assert.Len(t, srv.Workers(), 1)
+	assert.NoError(t, rr.Start())
+	assert.Len(t, rr.Workers(), 1)
 
-	pid := *srv.Workers()[0].Pid
-	assert.NoError(t, srv.Reset())
-	assert.Len(t, srv.Workers(), 1)
-	assert.NotEqual(t, pid, srv.Workers()[0].Pid)
+	pid := *rr.Workers()[0].Pid
+	assert.NoError(t, rr.Reset())
+	assert.Len(t, rr.Workers(), 1)
+	assert.NotEqual(t, pid, rr.Workers()[0].Pid)
 }
 
 func TestServer_ReplacePool(t *testing.T) {
-	srv := NewServer(
+	rr := NewServer(
 		&ServerConfig{
 			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
@@ -175,27 +194,27 @@ func TestServer_ReplacePool(t *testing.T) {
 				DestroyTimeout:  time.Second,
 			},
 		})
-	defer srv.Stop()
+	defer rr.Stop()
 
-	assert.NoError(t, srv.Start())
+	assert.NoError(t, rr.Start())
 
 	constructed := make(chan interface{})
-	srv.Listen(func(e int, ctx interface{}) {
+	rr.Listen(func(e int, ctx interface{}) {
 		if e == EventPoolConstruct {
 			close(constructed)
 		}
 	})
 
-	srv.Reset()
+	rr.Reset()
 	<-constructed
 
-	for _, w := range srv.Workers() {
+	for _, w := range rr.Workers() {
 		assert.Equal(t, StateReady, w.state.Value())
 	}
 }
 
 func TestServer_ServerFailure(t *testing.T) {
-	srv := NewServer(&ServerConfig{
+	rr := NewServer(&ServerConfig{
 		Command: "php tests/client.php echo pipes",
 		Relay:   "pipes",
 		Pool: &Config{
@@ -204,25 +223,25 @@ func TestServer_ServerFailure(t *testing.T) {
 			DestroyTimeout:  time.Second,
 		},
 	})
-	defer srv.Stop()
+	defer rr.Stop()
 
-	assert.NoError(t, srv.Start())
+	assert.NoError(t, rr.Start())
 
 	failure := make(chan interface{})
-	srv.Listen(func(e int, ctx interface{}) {
+	rr.Listen(func(e int, ctx interface{}) {
 		if e == EventServerFailure {
 			failure <- nil
 		}
 	})
 
 	// emulating potential server failure
-	srv.cfg.Command = "php tests/client.php echo broken-connection"
-	srv.pool.(*StaticPool).cmd = func() *exec.Cmd {
+	rr.cfg.Command = "php tests/client.php echo broken-connection"
+	rr.pool.(*StaticPool).cmd = func() *exec.Cmd {
 		return exec.Command("php", "tests/client.php", "echo", "broken-connection")
 	}
 
 	// killing random worker and expecting pool to replace it
-	srv.Workers()[0].cmd.Process.Kill()
+	rr.Workers()[0].cmd.Process.Kill()
 
 	<-failure
 	assert.True(t, true)

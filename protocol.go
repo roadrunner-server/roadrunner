@@ -15,7 +15,7 @@ type pidCommand struct {
 	Pid int `json:"pid"`
 }
 
-func sendPayload(rl goridge.Relay, v interface{}) error {
+func sendControl(rl goridge.Relay, v interface{}) error {
 	if data, ok := v.([]byte); ok {
 		return rl.Send(data, goridge.PayloadControl|goridge.PayloadRaw)
 	}
@@ -29,7 +29,7 @@ func sendPayload(rl goridge.Relay, v interface{}) error {
 }
 
 func fetchPID(rl goridge.Relay) (pid int, err error) {
-	if err := sendPayload(rl, pidCommand{Pid: os.Getpid()}); err != nil {
+	if err := sendControl(rl, pidCommand{Pid: os.Getpid()}); err != nil {
 		return 0, err
 	}
 

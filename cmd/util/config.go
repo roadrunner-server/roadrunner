@@ -63,6 +63,8 @@ func LoadConfig(cfgFile string, path []string, name string, flags []string) (*co
 
 	// read in environment variables that match
 	cfg.AutomaticEnv()
+	cfg.SetEnvPrefix("rr")
+	cfg.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	// If a cfg file is found, read it in.
 	if err := cfg.ReadInConfig(); err != nil {
@@ -71,6 +73,13 @@ func LoadConfig(cfgFile string, path []string, name string, flags []string) (*co
 		}
 	}
 
+	// automatically inject ENV variables using ${ENV} pattern
+	for _, key := range cfg.AllKeys() {
+		val := cfg.Get(key)
+		cfg.Set(key, parseEnv(val))
+	}
+
+	// merge with console flags
 	if len(flags) != 0 {
 		for _, f := range flags {
 			k, v, err := parseFlag(f)
@@ -113,4 +122,19 @@ func parseValue(value string) string {
 	}
 
 	return value
+}
+
+func parseEnv(value interface{}) interface{} {
+	str, ok := value.(string)
+	if !ok || len(str) <= 3 {
+		return value
+	}
+
+	if str[0:2] == "${" && str[len(str)-1:] == "}" {
+		if v, ok := os.LookupEnv(str[2 : len(str)-1]); ok {
+			return v
+		}
+	}
+
+	return str
 }

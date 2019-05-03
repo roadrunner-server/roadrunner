@@ -25,10 +25,11 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spiral/roadrunner/cmd/util"
 	"github.com/spiral/roadrunner/service"
+	"github.com/spiral/roadrunner/service/watcher"
 	"os"
 )
 
-// Service bus for all the commands.
+// Services bus for all the commands.
 var (
 	cfgFile, workDir, logFormat string
 	override                    []string
@@ -105,6 +106,16 @@ func init() {
 		if err := Container.Init(cfg); err != nil {
 			util.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
 			os.Exit(1)
+		}
+
+		// global watcher config
+		if Verbose {
+			wcv, _ := Container.Get(watcher.ID)
+			if wcv, ok := wcv.(*watcher.Service); ok {
+				wcv.AddListener(func(event int, ctx interface{}) {
+					util.LogEvent(Logger, event, ctx)
+				})
+			}
 		}
 	})
 }

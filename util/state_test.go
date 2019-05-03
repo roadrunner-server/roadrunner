@@ -30,6 +30,16 @@ func TestServerState(t *testing.T) {
 	assert.Len(t, state, runtime.NumCPU())
 }
 
+func TestDeadWorker(t *testing.T) {
+	w := &roadrunner.Worker{}
+	i := 0
+
+	w.Pid = &i
+
+	_, err := WorkerState(w)
+	assert.Error(t, err)
+}
+
 func TestServerState_Err(t *testing.T) {
 	_, err := ServerState(nil)
 	assert.Error(t, err)

@@ -7,22 +7,26 @@
     {
       "name": "Anton Titov / Wolfy-J",
       "email": "wolfy.jd@gmail.com"
+    },
+    {
+      "name": "RoadRunner Community",
+      "homepage": "https://github.com/spiral/roadrunner/graphs/contributors"
     }
   ],
   "require": {
     "php": "^7.0",
-    "ext-json": "*",
     "spiral/goridge": "^2.0",
     "psr/http-factory": "^1.0",
     "psr/http-message": "^1.0",
-    "zendframework/zend-diactoros": "^1.3|^2.0"
+    "symfony/console": "^2.5.0 || ^3.0.0 || ^4.0.0",
+    "http-interop/http-factory-diactoros": "^1.0"
   },
-  "bin": [
-    "qbuild/rr-build"
-  ],
   "autoload": {
     "psr-4": {
       "Spiral\\RoadRunner\\": "src/"
     }
-  }
+  },
+  "bin": [
+    "src/bin/roadrunner"
+  ]
 }

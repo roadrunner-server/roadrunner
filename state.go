@@ -26,8 +26,8 @@ const (
 	// StateWorking - working on given payload.
 	StateWorking
 
-	// StateStreaming - indicates that worker is streaming the data at the moment.
-	StateStreaming
+	// StateInvalid - indicates that worker is being disabled and will be removed.
+	StateInvalid
 
 	// StateStopping - process is being softly stopped.
 	StateStopping
@@ -57,8 +57,8 @@ func (s *state) String() string {
 		return "ready"
 	case StateWorking:
 		return "working"
-	case StateStreaming:
-		return "streaming"
+	case StateInvalid:
+		return "invalid"
 	case StateStopped:
 		return "stopped"
 	case StateErrored:

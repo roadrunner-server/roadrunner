@@ -25,7 +25,7 @@ const (
 // http middleware type.
 type middleware func(f http.HandlerFunc) http.HandlerFunc
 
-// Service manages rr, http servers.
+// Services manages rr, http servers.
 type Service struct {
 	cfg     *Config
 	env     env.Environment
@@ -33,9 +33,15 @@ type Service struct {
 	mdwr    []middleware
 	mu      sync.Mutex
 	rr      *roadrunner.Server
+	watcher roadrunner.Watcher
 	handler *Handler
 	http    *http.Server
 	https   *http.Server
+}
+
+// Watch attaches watcher.
+func (s *Service) Watch(w roadrunner.Watcher) {
+	s.watcher = w
 }
 
 // AddMiddleware adds new net/http mdwr.
@@ -53,6 +59,7 @@ func (s *Service) AddListener(l func(event int, ctx interface{})) {
 func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Environment) (bool, error) {
 	s.cfg = cfg
 	s.env = e
+
 	if r != nil {
 		if err := r.Register(ID, &rpcServer{s}); err != nil {
 			return false, err
@@ -76,6 +83,10 @@ func (s *Service) Serve() error {
 
 	s.rr = roadrunner.NewServer(s.cfg.Workers)
 	s.rr.Listen(s.throw)
+
+	if s.watcher != nil {
+		s.rr.Watch(s.watcher)
+	}
 
 	s.handler = &Handler{cfg: s.cfg, rr: s.rr}
 	s.handler.Listen(s.throw)
@@ -102,7 +113,7 @@ func (s *Service) Serve() error {
 	return <-err
 }
 
-// Stop stops the svc.
+// Detach stops the svc.
 func (s *Service) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -115,6 +126,14 @@ func (s *Service) Stop() {
 	}
 
 	go s.http.Shutdown(context.Background())
+}
+
+// Server returns associated roadrunner server (if any).
+func (s *Service) Server() *roadrunner.Server {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.rr
 }
 
 // ServeHTTP handles connection using set of middleware and rr PSR-7 server.

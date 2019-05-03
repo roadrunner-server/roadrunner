@@ -381,10 +381,11 @@ func Test_Static_Pool_Slow_Destroy(t *testing.T) {
 			DestroyTimeout:  time.Second,
 		},
 	)
-	p.Destroy()
 
-	assert.NotNil(t, p)
 	assert.NoError(t, err)
+	assert.NotNil(t, p)
+
+	p.Destroy()
 }
 
 func Benchmark_Pool_Allocate(b *testing.B) {
@@ -425,7 +426,11 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 	p, _ := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
-		cfg,
+		Config{
+			NumWorkers:      int64(runtime.NumCPU()),
+			AllocateTimeout: time.Second * 100,
+			DestroyTimeout:  time.Second,
+		},
 	)
 	defer p.Destroy()
 

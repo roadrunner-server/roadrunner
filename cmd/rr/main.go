@@ -24,6 +24,7 @@ package main
 
 import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
+	"github.com/spiral/roadrunner/service/watcher"
 
 	// services (plugins)
 	"github.com/spiral/roadrunner/service/env"
@@ -40,6 +41,7 @@ func main() {
 	rr.Container.Register(rpc.ID, &rpc.Service{})
 	rr.Container.Register(http.ID, &http.Service{})
 	rr.Container.Register(static.ID, &static.Service{})
+	rr.Container.Register(watcher.ID, &watcher.Service{})
 
 	// you can register additional commands using cmd.CLI
 	rr.Execute()

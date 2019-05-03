@@ -3,6 +3,7 @@ package rpc
 import (
 	"errors"
 	"github.com/spiral/goridge"
+	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/env"
 	"net/rpc"
 	"sync"
@@ -11,7 +12,7 @@ import (
 // ID contains default service name.
 const ID = "rpc"
 
-// Service is RPC service.
+// Services is RPC service.
 type Service struct {
 	cfg     *Config
 	stop    chan interface{}
@@ -21,7 +22,7 @@ type Service struct {
 }
 
 // Init rpc service. Must return true if service is enabled.
-func (s *Service) Init(cfg *Config, env env.Environment) (bool, error) {
+func (s *Service) Init(cfg *Config, c service.Container, env env.Environment) (bool, error) {
 	if !cfg.Enable {
 		return false, nil
 	}
@@ -31,6 +32,10 @@ func (s *Service) Init(cfg *Config, env env.Environment) (bool, error) {
 
 	if env != nil {
 		env.SetEnv("RR_RPC", cfg.Listen)
+	}
+
+	if err := s.Register("system", &systemService{c}); err != nil {
+		return false, err
 	}
 
 	return true, nil
@@ -78,7 +83,7 @@ func (s *Service) Serve() error {
 	return nil
 }
 
-// Stop stops the service.
+// Detach stops the service.
 func (s *Service) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
