@@ -58,6 +58,27 @@ http:
       # amount of time given to worker to gracefully destruct itself.
       destroyTimeout:  60
 
+# monitors roadrunner server(s)
+watch:
+  # check worker state each second
+  interval: 1
+
+  # custom watch configuration for each service
+  services:
+    # monitor http workers
+    http:
+      # maximum allowed memory consumption
+      maxMemory: 100
+
+      # maximum time to live for the worker
+      maxTTL: 0
+
+      # maximum allowed amount of time worker can spend in idle before being removed (for weak db connections)
+      maxIdleTTL: 0
+
+      # max_execution_time, worker will be killed if that amount of time spend for task execution
+      maxExecTTL: 60
+
 # static file serving. remove this section to disable static file serving.
 static:
   # root directory for static file (http would not serve .php and .htaccess files).
