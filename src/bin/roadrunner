@@ -122,7 +122,7 @@ class RoadRunnerCLIHelper
         if (is_file($finalFile)) {
             $output->writeln('<error>RoadRunner binary file already exists!</error>');
             $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion('Do you want overwrite it? [Y/n]');
+            $question = new ConfirmationQuestion('Do you want overwrite it? [Y/n] ');
 
             if (!$helper->ask($input, $output, $question)) {
                 return;
@@ -165,7 +165,9 @@ class RoadRunnerCLIHelper
 
         $zipArchive = new ZipArchive();
         $zipArchive->open($zipFileName);
-        $fileStreamFromZip = $zipArchive->getStream('roadrunner-' . RoadRunnerCLIHelper::getVersion() . '-' . RoadRunnerCLIHelper::getOSType() . '-amd64/rr');
+        $fileStreamFromZip = $zipArchive->getStream(
+            'roadrunner-' . RoadRunnerCLIHelper::getVersion() . '-' . RoadRunnerCLIHelper::getOSType() . '-amd64/rr'
+        );
         $finalFileResource = fopen($finalFile, 'w');
 
         if (!$fileStreamFromZip) {
@@ -193,14 +195,17 @@ class RoadRunnerCLIHelper
         if (is_file($input->getOption('location') . DIRECTORY_SEPARATOR . '.rr.yaml')) {
             $output->writeln('<error>Config file already exists!</error>');
             $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion('Do you want overwrite it? [Y/n]');
+            $question = new ConfirmationQuestion('Do you want overwrite it? [Y/n] ');
 
             if (!$helper->ask($input, $output, $question)) {
                 return;
             }
         }
-        copy(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '.rr.yaml',
-            $input->getOption('location') . DIRECTORY_SEPARATOR . '.rr.yaml');
+
+        copy(
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '.rr.yaml',
+            $input->getOption('location') . DIRECTORY_SEPARATOR . '.rr.yaml'
+        );
         $output->writeln('<info>Config file created!</info>');
     })
     ->getApplication()
