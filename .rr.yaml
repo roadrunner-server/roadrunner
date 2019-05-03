@@ -67,16 +67,16 @@ watch:
   services:
     # monitor http workers
     http:
-      # maximum allowed memory consumption
+      # maximum allowed memory consumption (soft)
       maxMemory: 100
 
-      # maximum time to live for the worker
+      # maximum time to live for the worker (soft)
       maxTTL: 0
 
-      # maximum allowed amount of time worker can spend in idle before being removed (for weak db connections)
+      # maximum allowed amount of time worker can spend in idle before being removed (for weak db connections, soft)
       maxIdleTTL: 0
 
-      # max_execution_time, worker will be killed if that amount of time spend for task execution
+      # max_execution_time (brutal)
       maxExecTTL: 60
 
 # static file serving. remove this section to disable static file serving.
