@@ -42,10 +42,11 @@ func TestDeadWorker(t *testing.T) {
 				DestroyTimeout:  time.Second,
 			},
 		})
+	defer rr.Stop()
 
 	assert.NoError(t, rr.Start())
 	w := rr.Workers()[0]
-	rr.Stop()
+
 	*w.Pid = 0
 
 	_, err := WorkerState(w)
