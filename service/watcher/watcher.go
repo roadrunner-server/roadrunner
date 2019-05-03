@@ -42,6 +42,9 @@ type watcher struct {
 	interval time.Duration
 	cfg      *watcherConfig
 	stop     chan interface{}
+
+	// list of workers which are currently working
+	//working map[*roadrunner.Worker]time.Time
 }
 
 // watch the pool state
