@@ -1,6 +1,26 @@
 CHANGELOG
 =========
 
+v1.4.0
+-------------------
+- ENV variables in configs (automatic RR_ mapping and manual definition using "${ENV_NAME}" value)
+- add the ability to remove the worker from the pool in runtime
+- minor performance improvements
+- watchers
+   - maxTTL
+   - maxExecTTL (max_execution_time)
+   - maxIdleTTL
+   - maxMemory (RSS)
+- stop command
+- `maxRequest` option has been deprecated in favor of `maxRequestSize`
+- download rr command (symfony/console based)
+- PSR-12
+- strict_types=1 added to all php files
+
+v1.3.6 (21.03.2019)
+-------------------
+- bugfix: pool did not wait for slow workers to complete while running concurrent load with http:reset command being invoked
+
 v1.3.5 (14.02.2019)
 -------------------
 - new console flag `l` to define log formatting
