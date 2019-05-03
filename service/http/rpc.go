@@ -20,7 +20,7 @@ func (rpc *rpcServer) Reset(reset bool, r *string) error {
 	}
 
 	*r = "OK"
-	return rpc.svc.rr.Reset()
+	return rpc.svc.Server().Reset()
 }
 
 // Workers returns list of active workers and their stats.
@@ -29,6 +29,6 @@ func (rpc *rpcServer) Workers(list bool, r *WorkerList) (err error) {
 		return errors.New("http server is not running")
 	}
 
-	r.Workers, err = util.ServerState(rpc.svc.rr)
+	r.Workers, err = util.ServerState(rpc.svc.Server())
 	return err
 }

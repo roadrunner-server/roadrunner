@@ -118,6 +118,14 @@ func (s *Service) Stop() {
 	go s.http.Shutdown(context.Background())
 }
 
+// Server returns associated roadrunner server (if any).
+func (s *Service) Server() *roadrunner.Server {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.rr
+}
+
 // ServeHTTP handles connection using set of middleware and rr PSR-7 server.
 func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if s.https != nil && r.TLS == nil && s.cfg.SSL.Redirect {

@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/env"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -31,7 +32,7 @@ func Test_RegisterNotConfigured(t *testing.T) {
 
 func Test_Enabled(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9008"}, nil)
+	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9008"}, service.NewContainer(nil), nil)
 
 	assert.NoError(t, err)
 	assert.True(t, ok)
@@ -39,7 +40,7 @@ func Test_Enabled(t *testing.T) {
 
 func Test_StopNonServing(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9008"}, nil)
+	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9008"}, service.NewContainer(nil), nil)
 
 	assert.NoError(t, err)
 	assert.True(t, ok)
@@ -48,7 +49,7 @@ func Test_StopNonServing(t *testing.T) {
 
 func Test_Serve_Errors(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&Config{Enable: true, Listen: "mailformed"}, nil)
+	ok, err := s.Init(&Config{Enable: true, Listen: "mailformed"}, service.NewContainer(nil), nil)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 
@@ -61,7 +62,7 @@ func Test_Serve_Errors(t *testing.T) {
 
 func Test_Serve_Client(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9018"}, nil)
+	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9018"}, service.NewContainer(nil), nil)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 
@@ -85,7 +86,7 @@ func Test_Serve_Client(t *testing.T) {
 func TestSetEnv(t *testing.T) {
 	s := &Service{}
 	e := env.NewService(map[string]string{})
-	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9018"}, e)
+	ok, err := s.Init(&Config{Enable: true, Listen: "tcp://localhost:9018"}, service.NewContainer(nil), e)
 
 	assert.NoError(t, err)
 	assert.True(t, ok)
