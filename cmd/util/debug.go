@@ -69,7 +69,25 @@ func LogEvent(logger *logrus.Logger, event int, ctx interface{}) bool {
 		))
 		return true
 
+	case watcher.EventMaxIdleTTL:
+		w := ctx.(roadrunner.WorkerError)
+		logger.Debug(Sprintf(
+			"<white+hb>worker.%v</reset> <yellow>%s</reset>",
+			*w.Worker.Pid,
+			w.Caused,
+		))
+		return true
+
 	case watcher.EventMaxMemory:
+		w := ctx.(roadrunner.WorkerError)
+		logger.Error(Sprintf(
+			"<white+hb>worker.%v</reset> <red>%s</reset>",
+			*w.Worker.Pid,
+			w.Caused,
+		))
+		return true
+
+	case watcher.EventMaxExecTTL:
 		w := ctx.(roadrunner.WorkerError)
 		logger.Error(Sprintf(
 			"<white+hb>worker.%v</reset> <red>%s</reset>",

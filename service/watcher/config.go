@@ -1,7 +1,6 @@
 package watcher
 
 import (
-	"fmt"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
 	"time"
@@ -27,12 +26,6 @@ func (c *Config) Hydrate(cfg service.Config) error {
 		c.Interval = time.Second * time.Duration(c.Interval.Nanoseconds())
 	}
 
-	for name, cfg := range c.Services {
-		if err := cfg.Normalize(); err != nil {
-			return fmt.Errorf("invalid watcher `%s`: %s", name, err.Error())
-		}
-	}
-
 	return nil
 }
 
@@ -48,7 +41,7 @@ func (c *Config) Watchers(l listener) (watchers map[string]roadrunner.Watcher) {
 	watchers = make(map[string]roadrunner.Watcher)
 
 	for name, cfg := range c.Services {
-		watchers[name] = &watcher{lsn: l, interval: c.Interval, cfg: cfg}
+		watchers[name] = &watcher{lsn: l, tick: c.Interval, cfg: cfg}
 	}
 
 	return watchers
