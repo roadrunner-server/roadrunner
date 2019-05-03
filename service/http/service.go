@@ -25,7 +25,7 @@ const (
 // http middleware type.
 type middleware func(f http.HandlerFunc) http.HandlerFunc
 
-// Service manages rr, http servers.
+// Services manages rr, http servers.
 type Service struct {
 	cfg     *Config
 	env     env.Environment
@@ -40,7 +40,7 @@ type Service struct {
 }
 
 // Watch attaches watcher.
-func (s *Service) AttachWatcher(w roadrunner.Watcher) {
+func (s *Service) Watch(w roadrunner.Watcher) {
 	s.watcher = w
 }
 

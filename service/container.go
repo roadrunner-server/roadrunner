@@ -16,7 +16,7 @@ var errNoConfig = fmt.Errorf("no config has been provided")
 // implement service.HydrateConfig.
 const InitMethod = "Init"
 
-// Service can serve. Service can provide Init method which must return (bool, error) signature and might accept
+// Services can serve. Services can provide Init method which must return (bool, error) signature and might accept
 // other services and/or configs as dependency.
 type Service interface {
 	// Serve serves.

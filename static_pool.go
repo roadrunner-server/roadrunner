@@ -116,13 +116,18 @@ func (p *StaticPool) Workers() (workers []*Worker) {
 }
 
 // Remove forces pool to remove specific worker.
-func (p *StaticPool) Remove(w *Worker, err error) {
+func (p *StaticPool) Remove(w *Worker, err error) bool {
 	if w.State().Value() != StateReady && w.State().Value() != StateWorking {
 		// unable to remove inactive worker
-		return
+		return false
+	}
+
+	if _, ok := p.remove.Load(w); ok {
+		return false
 	}
 
 	p.remove.Store(w, err)
+	return true
 }
 
 // Exec one task with given payload and context, returns result or error.

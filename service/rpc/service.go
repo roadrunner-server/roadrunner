@@ -12,7 +12,7 @@ import (
 // ID contains default service name.
 const ID = "rpc"
 
-// Service is RPC service.
+// Services is RPC service.
 type Service struct {
 	cfg     *Config
 	stop    chan interface{}

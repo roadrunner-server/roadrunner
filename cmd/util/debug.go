@@ -3,6 +3,7 @@ package util
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service/watcher"
 	"strings"
 )
 
@@ -12,7 +13,7 @@ func LogEvent(logger *logrus.Logger, event int, ctx interface{}) bool {
 	case roadrunner.EventWorkerKill:
 		w := ctx.(*roadrunner.Worker)
 		logger.Warning(Sprintf(
-			"<white+hb>worker.%v</reset> <yellow>killed</red>",
+			"<white+hb>worker.%v</reset> <yellow>killed</reset>",
 			*w.Pid,
 		))
 		return true
@@ -54,6 +55,27 @@ func LogEvent(logger *logrus.Logger, event int, ctx interface{}) bool {
 		return true
 	case roadrunner.EventPoolError:
 		logger.Error(Sprintf("<red>%s</reset>", ctx))
+		return true
+	}
+
+	// watchers
+	switch event {
+	case watcher.EventMaxTTL:
+		w := ctx.(roadrunner.WorkerError)
+		logger.Debug(Sprintf(
+			"<white+hb>worker.%v</reset> <yellow>%s</reset>",
+			*w.Worker.Pid,
+			w.Caused,
+		))
+		return true
+
+	case watcher.EventMaxMemory:
+		w := ctx.(roadrunner.WorkerError)
+		logger.Warning(Sprintf(
+			"<white+hb>worker.%v</reset> <red>%s</reset>",
+			*w.Worker.Pid,
+			w.Caused,
+		))
 		return true
 	}
 
