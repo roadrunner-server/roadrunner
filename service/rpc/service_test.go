@@ -14,7 +14,7 @@ func (ts *testService) Echo(msg string, r *string) error { *r = msg; return nil 
 
 func Test_Disabled(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&Config{Enable: false}, nil)
+	ok, err := s.Init(&Config{Enable: false}, service.NewContainer(nil), nil)
 
 	assert.NoError(t, err)
 	assert.False(t, ok)
