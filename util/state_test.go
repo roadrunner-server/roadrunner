@@ -31,23 +31,10 @@ func TestServerState(t *testing.T) {
 }
 
 func TestDeadWorker(t *testing.T) {
-	rr := roadrunner.NewServer(
-		&roadrunner.ServerConfig{
-			Command:      "php ../tests/client.php echo tcp",
-			Relay:        "tcp://:9007",
-			RelayTimeout: 10 * time.Second,
-			Pool: &roadrunner.Config{
-				NumWorkers:      1,
-				AllocateTimeout: time.Second,
-				DestroyTimeout:  time.Second,
-			},
-		})
-	defer rr.Stop()
+	w := &roadrunner.Worker{}
+	i := 0
 
-	assert.NoError(t, rr.Start())
-	w := rr.Workers()[0]
-
-	*w.Pid = 0
+	w.Pid = &i
 
 	_, err := WorkerState(w)
 	assert.Error(t, err)
