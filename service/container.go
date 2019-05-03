@@ -22,7 +22,7 @@ type Service interface {
 	// Serve serves.
 	Serve() error
 
-	// Stop stops the service.
+	// Detach stops the service.
 	Stop()
 }
 
@@ -198,7 +198,7 @@ func (c *container) Serve() error {
 	return nil
 }
 
-// Stop sends stop command to all running services.
+// Detach sends stop command to all running services.
 func (c *container) Stop() {
 	for _, e := range c.services {
 		if e.hasStatus(StatusServing) {

@@ -103,7 +103,7 @@ func (s *Service) Serve() error {
 	return <-err
 }
 
-// Stop stops the svc.
+// Detach stops the svc.
 func (s *Service) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()

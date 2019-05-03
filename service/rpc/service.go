@@ -83,7 +83,7 @@ func (s *Service) Serve() error {
 	return nil
 }
 
-// Stop stops the service.
+// Detach stops the service.
 func (s *Service) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()

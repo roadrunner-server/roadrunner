@@ -7,7 +7,7 @@ type systemService struct {
 	c service.Container
 }
 
-// Stop the underlying c.
+// Detach the underlying c.
 func (s *systemService) Stop(stop bool, r *string) error {
 	if stop {
 		s.c.Stop()
