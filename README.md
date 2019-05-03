@@ -34,6 +34,7 @@ Features:
 - works over TCP, unix sockets and standard pipes
 - automatic worker replacement and safe PHP process destruction
 - worker lifecycle management (create/allocate/destroy timeouts)
+- max ttl, max idle ttl, max execution time, max memory usage (soft)
 - payload context and body
 - control over max jobs per worker
 - protocol, worker and job level error management (including PHP errors)
