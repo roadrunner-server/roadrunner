@@ -1,6 +1,7 @@
 package roadrunner
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"runtime"
 	"testing"
@@ -27,6 +28,10 @@ func (w *eWatcher) Detach() {
 	if w.onDetach != nil {
 		w.onDetach(w.p)
 	}
+}
+
+func (w *eWatcher) remove(wr *Worker, err error) {
+	w.p.Remove(wr, err)
 }
 
 func Test_WatcherWatch(t *testing.T) {
@@ -131,4 +136,75 @@ func Test_WatcherAttachDetachSequence(t *testing.T) {
 	assert.Nil(t, res.Context)
 
 	assert.Equal(t, "hello", res.String())
+}
+
+func Test_RemoveWorkerOnAllocation(t *testing.T) {
+	rr := NewServer(
+		&ServerConfig{
+			Command: "php tests/client.php pid pipes",
+			Relay:   "pipes",
+			Pool: &Config{
+				NumWorkers:      1,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		})
+	defer rr.Stop()
+
+	rr.Watch(&eWatcher{})
+	assert.NoError(t, rr.Start())
+
+	wr := rr.Workers()[0]
+
+	res, err := rr.Exec(&Payload{Body: []byte("hello")})
+	assert.NoError(t, err)
+	assert.Equal(t, fmt.Sprintf("%v", *wr.Pid), res.String())
+	lastPid := res.String()
+
+	rr.pWatcher.(*eWatcher).remove(wr, nil)
+
+	res, err = rr.Exec(&Payload{Body: []byte("hello")})
+	assert.NoError(t, err)
+	assert.NotEqual(t, lastPid, res.String())
+
+	assert.NotEqual(t, StateReady, wr.state.Value())
+}
+
+func Test_RemoveWorkerAfterTask(t *testing.T) {
+	rr := NewServer(
+		&ServerConfig{
+			Command: "php tests/client.php slow-pid pipes",
+			Relay:   "pipes",
+			Pool: &Config{
+				NumWorkers:      1,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		})
+	defer rr.Stop()
+
+	rr.Watch(&eWatcher{})
+	assert.NoError(t, rr.Start())
+
+	wr := rr.Workers()[0]
+	lastPid := ""
+
+	wait := make(chan interface{})
+	go func() {
+		res, err := rr.Exec(&Payload{Body: []byte("hello")})
+		assert.NoError(t, err)
+		assert.Equal(t, fmt.Sprintf("%v", *wr.Pid), res.String())
+		lastPid = res.String()
+
+		close(wait)
+	}()
+
+	// wait for worker execution to be in progress
+	time.Sleep(time.Millisecond * 250)
+	rr.pWatcher.(*eWatcher).remove(wr, nil)
+
+	<-wait
+
+	// must be replaced
+	assert.NotEqual(t, lastPid, fmt.Sprintf("%v", rr.Workers()[0]))
 }

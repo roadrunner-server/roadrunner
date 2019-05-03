@@ -31,7 +31,7 @@ type Pool interface {
 	// Workers returns worker list associated with the pool.
 	Workers() (workers []*Worker)
 
-	// Remove forces pool to destroy specific worker.
+	// Remove forces pool to remove specific worker.
 	Remove(w *Worker, err error)
 
 	// Destroy all underlying workers (but let them to complete the task).

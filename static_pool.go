@@ -114,7 +114,7 @@ func (p *StaticPool) Workers() (workers []*Worker) {
 	return workers
 }
 
-// Remove forces pool to destroy specific worker.
+// Remove forces pool to remove specific worker.
 func (p *StaticPool) Remove(w *Worker, err error) {
 	if w.State().Value() != StateReady && w.State().Value() != StateWorking {
 		// unable to remove inactive worker

@@ -381,10 +381,11 @@ func Test_Static_Pool_Slow_Destroy(t *testing.T) {
 			DestroyTimeout:  time.Second,
 		},
 	)
-	p.Destroy()
 
-	assert.NotNil(t, p)
 	assert.NoError(t, err)
+	assert.NotNil(t, p)
+
+	p.Destroy()
 }
 
 func Benchmark_Pool_Allocate(b *testing.B) {
