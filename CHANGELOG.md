@@ -17,6 +17,10 @@ v1.4.0
 - PSR-12
 - strict_types=1 added to all php files
 
+v1.3.7 (21.03.2019)
+-------------------
+- bugfix: Request field ordering with same names #136 
+
 v1.3.6 (21.03.2019)
 -------------------
 - bugfix: pool did not wait for slow workers to complete while running concurrent load with http:reset command being invoked
