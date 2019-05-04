@@ -1,5 +1,5 @@
+dist: xenial
 language: go
-
 sudo: required
 
 go:
