@@ -1,4 +1,4 @@
-package watcher
+package limit
 
 import (
 	"github.com/spiral/roadrunner"

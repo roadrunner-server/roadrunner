@@ -63,7 +63,7 @@ type Handler struct {
 	lsn func(event int, ctx interface{})
 }
 
-// Listen attaches handler event watcher.
+// Listen attaches handler event controller.
 func (h *Handler) Listen(l func(event int, ctx interface{})) {
 	h.mul.Lock()
 	defer h.mul.Unlock()

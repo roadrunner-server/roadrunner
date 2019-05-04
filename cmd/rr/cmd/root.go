@@ -25,7 +25,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spiral/roadrunner/cmd/util"
 	"github.com/spiral/roadrunner/service"
-	"github.com/spiral/roadrunner/service/watcher"
+	"github.com/spiral/roadrunner/service/limit"
 	"os"
 )
 
@@ -110,8 +110,8 @@ func init() {
 
 		// global watcher config
 		if Verbose {
-			wcv, _ := Container.Get(watcher.ID)
-			if wcv, ok := wcv.(*watcher.Service); ok {
+			wcv, _ := Container.Get(limit.ID)
+			if wcv, ok := wcv.(*limit.Service); ok {
 				wcv.AddListener(func(event int, ctx interface{}) {
 					util.LogEvent(Logger, event, ctx)
 				})

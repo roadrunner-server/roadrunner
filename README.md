@@ -35,7 +35,7 @@ Features:
 - automatic worker replacement and safe PHP process destruction
 - worker create/allocate/destroy timeouts
 - max jobs per worker
-- worker lifecycle management 
+- worker lifecycle management (controller) 
     - maxMemory (graceful stop)
     - maxTTL (graceful stop)
     - maxIdleTTL (graceful stop)

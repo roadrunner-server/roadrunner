@@ -17,4 +17,4 @@ test:
 	go test -v -race -cover ./service/rpc
 	go test -v -race -cover ./service/http
 	go test -v -race -cover ./service/static
-	go test -v -race -cover ./service/watcher
+	go test -v -race -cover ./service/limit

@@ -27,21 +27,21 @@ type middleware func(f http.HandlerFunc) http.HandlerFunc
 
 // Services manages rr, http servers.
 type Service struct {
-	cfg     *Config
-	env     env.Environment
-	lsns    []func(event int, ctx interface{})
-	mdwr    []middleware
-	mu      sync.Mutex
-	rr      *roadrunner.Server
-	watcher roadrunner.Controller
-	handler *Handler
-	http    *http.Server
-	https   *http.Server
+	cfg        *Config
+	env        env.Environment
+	lsns       []func(event int, ctx interface{})
+	mdwr       []middleware
+	mu         sync.Mutex
+	rr         *roadrunner.Server
+	controller roadrunner.Controller
+	handler    *Handler
+	http       *http.Server
+	https      *http.Server
 }
 
-// Watch attaches watcher.
-func (s *Service) Watch(w roadrunner.Controller) {
-	s.watcher = w
+// AddController attaches controller. Currently only one controller is supported.
+func (s *Service) AddController(w roadrunner.Controller) {
+	s.controller = w
 }
 
 // AddMiddleware adds new net/http mdwr.
@@ -49,7 +49,7 @@ func (s *Service) AddMiddleware(m middleware) {
 	s.mdwr = append(s.mdwr, m)
 }
 
-// AddListener attaches server event watcher.
+// AddListener attaches server event controller.
 func (s *Service) AddListener(l func(event int, ctx interface{})) {
 	s.lsns = append(s.lsns, l)
 }
@@ -84,8 +84,8 @@ func (s *Service) Serve() error {
 	s.rr = roadrunner.NewServer(s.cfg.Workers)
 	s.rr.Listen(s.throw)
 
-	if s.watcher != nil {
-		s.rr.Watch(s.watcher)
+	if s.controller != nil {
+		s.rr.Watch(s.controller)
 	}
 
 	s.handler = &Handler{cfg: s.cfg, rr: s.rr}

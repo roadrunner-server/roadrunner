@@ -62,7 +62,7 @@ http:
       destroyTimeout:  60
 
 # monitors rr server(s)
-watch:
+limit:
   # check worker state each second
   interval: 1
 

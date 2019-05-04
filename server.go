@@ -63,7 +63,7 @@ func (s *Server) Listen(l func(event int, ctx interface{})) {
 	s.lsn = l
 }
 
-// Watch attaches worker controller.
+// AddController attaches worker controller.
 func (s *Server) Watch(c Controller) {
 	s.mu.Lock()
 	defer s.mu.Unlock()

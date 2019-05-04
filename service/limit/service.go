@@ -1,4 +1,4 @@
-package watcher
+package limit
 
 import (
 	"github.com/spiral/roadrunner"
@@ -6,12 +6,12 @@ import (
 )
 
 // ID defines controller service name.
-const ID = "control"
+const ID = "constrain"
 
-// Watchable defines the ability to attach rr controller.
-type Watchable interface {
-	// Watch attaches controller to the service.
-	Watch(w roadrunner.Controller)
+// Controllable defines the ability to attach rr controller.
+type Controllable interface {
+	// AddController attaches controller to the service.
+	AddController(c roadrunner.Controller)
 }
 
 // Services to control the state of rr service inside other services.
@@ -25,8 +25,8 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 	// mount Services to designated services
 	for id, watcher := range cfg.Controllers(s.throw) {
 		svc, _ := c.Get(id)
-		if watchable, ok := svc.(Watchable); ok {
-			watchable.Watch(watcher)
+		if ctrl, ok := svc.(Controllable); ok {
+			ctrl.AddController(watcher)
 		}
 	}
 
