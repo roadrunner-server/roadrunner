@@ -33,10 +33,14 @@ Features:
 - frontend agnostic ([Queue](https://github.com/spiral/jobs), PSR-7, [GRPC](https://github.com/spiral/php-grpc), etc)
 - works over TCP, unix sockets and standard pipes
 - automatic worker replacement and safe PHP process destruction
-- worker lifecycle management (create/allocate/destroy timeouts)
-- max ttl, max idle ttl, max execution time, max memory usage (soft)
+- worker lifecycle management 
+    - create/allocate/destroy timeouts
+    - max jobs per worker
+    - maxMemory (graceful stop)
+    - maxTTL (graceful stop)
+    - maxIdleTTL (graceful stop)
+    - maxExecTTL (brute, max_execution_time)   
 - payload context and body
-- control over max jobs per worker
 - protocol, worker and job level error management (including PHP errors)
 - memory leak failswitch
 - very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
