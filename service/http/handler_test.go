@@ -29,6 +29,27 @@ func get(url string) (string, *http.Response, error) {
 	return string(b), r, err
 }
 
+// get request and return body
+func getHeader(url string, h map[string]string) (string, *http.Response, error) {
+	req, err := http.NewRequest("GET", url, bytes.NewBuffer(nil))
+	if err != nil {
+		return "", nil, err
+	}
+
+	for k, v := range h {
+		req.Header.Set(k, v)
+	}
+
+	r, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", nil, err
+	}
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	return string(b), r, err
+}
+
 func TestHandler_Echo(t *testing.T) {
 	h := &Handler{
 		cfg: &Config{
@@ -1179,6 +1200,152 @@ func TestHandler_ErrorDuration(t *testing.T) {
 	<-goterr
 
 	assert.Equal(t, 500, r.StatusCode)
+}
+
+func TestHandler_IP(t *testing.T) {
+	h := &Handler{
+		cfg: &Config{
+			MaxRequestSize: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+			TrustedSubnets: []string{
+				"10.0.0.0/8",
+				"127.0.0.0/8",
+				"172.16.0.0/12",
+				"192.168.0.0/16",
+				"::1/128",
+				"fc00::/7",
+				"fe80::/10",
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../tests/http/client.php ip pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	h.cfg.parseCIDRs()
+
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
+
+	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	body, r, err := get("http://127.0.0.1:8177/")
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "127.0.0.1", body)
+}
+
+func TestHandler_XRealIP(t *testing.T) {
+	h := &Handler{
+		cfg: &Config{
+			MaxRequestSize: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+			TrustedSubnets: []string{
+				"10.0.0.0/8",
+				"127.0.0.0/8",
+				"172.16.0.0/12",
+				"192.168.0.0/16",
+				"::1/128",
+				"fc00::/7",
+				"fe80::/10",
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../tests/http/client.php ip pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	h.cfg.parseCIDRs()
+
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
+
+	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	body, r, err := getHeader("http://127.0.0.1:8177/", map[string]string{
+		"X-Real-Ip": "200.0.0.1",
+	})
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "200.0.0.1", body)
+}
+
+func TestHandler_XForwardedFor(t *testing.T) {
+	h := &Handler{
+		cfg: &Config{
+			MaxRequestSize: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+			TrustedSubnets: []string{
+				"10.0.0.0/8",
+				"127.0.0.0/8",
+				"172.16.0.0/12",
+				"192.168.0.0/16",
+				"100.0.0.0/16",
+				"200.0.0.0/16",
+				"::1/128",
+				"fc00::/7",
+				"fe80::/10",
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../tests/http/client.php ip pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	h.cfg.parseCIDRs()
+
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
+
+	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	body, r, err := getHeader("http://127.0.0.1:8177/", map[string]string{
+		"X-Forwarded-For": "100.0.0.1, 200.0.0.1, invalid, 101.0.0.1",
+	})
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "200.0.0.1", body)
 }
 
 func BenchmarkHandler_Listen_Echo(b *testing.B) {
