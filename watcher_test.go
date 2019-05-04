@@ -211,6 +211,6 @@ func Test_RemoveWorkerAfterTask(t *testing.T) {
 	// must be replaced
 	assert.NotEqual(t, lastPid, fmt.Sprintf("%v", rr.Workers()[0]))
 
-	// must not be registered withing pool
+	// must not be registered within the pool
 	rr.pWatcher.(*eWatcher).remove(wr, nil)
 }

@@ -52,6 +52,41 @@ type watcher struct {
 
 // watch the pool state
 func (wch *watcher) watch(p roadrunner.Pool) {
+	wch.loadWorkers(p)
+
+	now := time.Now()
+
+	if wch.cfg.MaxExecTTL != 0 {
+		for _, w := range wch.sw.find(
+			roadrunner.StateWorking,
+			now.Add(-time.Second*time.Duration(wch.cfg.MaxExecTTL)),
+		) {
+			eID := w.State().NumExecs()
+			err := fmt.Errorf("max exec time reached (%vs)", wch.cfg.MaxExecTTL)
+
+			// make sure worker still on initial request
+			if p.Remove(w, err) && w.State().NumExecs() == eID {
+				go w.Kill()
+				wch.report(EventMaxExecTTL, w, err)
+			}
+		}
+	}
+
+	// locale workers which are in idle mode for too long
+	if wch.cfg.MaxIdleTTL != 0 {
+		for _, w := range wch.sw.find(
+			roadrunner.StateReady,
+			now.Add(-time.Second*time.Duration(wch.cfg.MaxIdleTTL)),
+		) {
+			err := fmt.Errorf("max idle time reached (%vs)", wch.cfg.MaxIdleTTL)
+			if p.Remove(w, err) {
+				wch.report(EventMaxIdleTTL, w, err)
+			}
+		}
+	}
+}
+
+func (wch *watcher) loadWorkers(p roadrunner.Pool) {
 	now := time.Now()
 
 	for _, w := range p.Workers() {
@@ -86,37 +121,6 @@ func (wch *watcher) watch(p roadrunner.Pool) {
 	}
 
 	wch.sw.sync(now)
-
-	if wch.cfg.MaxExecTTL != 0 {
-		for _, w := range wch.sw.find(
-			roadrunner.StateWorking,
-			now.Add(-time.Second*time.Duration(wch.cfg.MaxExecTTL)),
-		) {
-			eID := w.State().NumExecs()
-			err := fmt.Errorf("max exec time reached (%vs)", wch.cfg.MaxExecTTL)
-
-			if p.Remove(w, err) {
-				// make sure worker still on initial request
-				if w.State().NumExecs() == eID {
-					go w.Kill()
-					wch.report(EventMaxExecTTL, w, err)
-				}
-			}
-		}
-	}
-
-	// locale workers which are in idle mode for too long
-	if wch.cfg.MaxIdleTTL != 0 {
-		for _, w := range wch.sw.find(
-			roadrunner.StateReady,
-			now.Add(-time.Second*time.Duration(wch.cfg.MaxIdleTTL)),
-		) {
-			err := fmt.Errorf("max idle time reached (%vs)", wch.cfg.MaxIdleTTL)
-			if p.Remove(w, err) {
-				wch.report(EventMaxIdleTTL, w, err)
-			}
-		}
-	}
 }
 
 // throw watcher event
