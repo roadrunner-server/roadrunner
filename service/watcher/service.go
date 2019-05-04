@@ -8,13 +8,13 @@ import (
 // ID defines watcher service name.
 const ID = "watch"
 
-// Watchable defines the ability to attach roadrunner watcher.
+// Watchable defines the ability to attach rr watcher.
 type Watchable interface {
 	// Watch attaches watcher to the service.
 	Watch(w roadrunner.Watcher)
 }
 
-// Services to watch the state of roadrunner service inside other services.
+// Services to watch the state of rr service inside other services.
 type Service struct {
 	cfg  *Config
 	lsns []func(event int, ctx interface{})

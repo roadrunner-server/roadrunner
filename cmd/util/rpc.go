@@ -7,7 +7,7 @@ import (
 	"net/rpc"
 )
 
-// RPCClient returns RPC client associated with given roadrunner service container.
+// RPCClient returns RPC client associated with given rr service container.
 func RPCClient(container service.Container) (*rpc.Client, error) {
 	svc, st := container.Get(rrpc.ID)
 	if st < service.StatusOK {

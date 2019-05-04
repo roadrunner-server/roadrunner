@@ -128,7 +128,7 @@ func (s *Service) Stop() {
 	go s.http.Shutdown(context.Background())
 }
 
-// Server returns associated roadrunner server (if any).
+// Server returns associated rr server (if any).
 func (s *Service) Server() *roadrunner.Server {
 	s.mu.Lock()
 	defer s.mu.Unlock()

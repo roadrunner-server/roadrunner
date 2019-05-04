@@ -11,7 +11,7 @@ const (
 	// EventMaxMemory caused when worker consumes more memory than allowed.
 	EventMaxMemory = iota + 8000
 
-	// EventMaxTTL thrown when worker is removed due TTL being reached. Context is roadrunner.WorkerError
+	// EventMaxTTL thrown when worker is removed due TTL being reached. Context is rr.WorkerError
 	EventMaxTTL
 
 	// EventMaxIdleTTL triggered when worker spends too much time at rest.

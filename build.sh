@@ -6,8 +6,8 @@ OD="$(pwd)"
 RR_VERSION=1.3.7
 
 # Hardcode some values to the core package
-LDFLAGS="$LDFLAGS -X github.com/spiral/roadrunner/cmd/rr/cmd.Version=${RR_VERSION}"
-LDFLAGS="$LDFLAGS -X github.com/spiral/roadrunner/cmd/rr/cmd.BuildTime=$(date +%FT%T%z)"
+LDFLAGS="$LDFLAGS -X github.com/spiral/rr/cmd/rr/cmd.Version=${RR_VERSION}"
+LDFLAGS="$LDFLAGS -X github.com/spiral/rr/cmd/rr/cmd.BuildTime=$(date +%FT%T%z)"
 
 build(){
 	echo Packaging $1 Build

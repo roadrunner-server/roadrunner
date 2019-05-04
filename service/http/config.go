@@ -28,7 +28,7 @@ type Config struct {
 	// Uploads configures uploads configuration.
 	Uploads *UploadsConfig
 
-	// Workers configures roadrunner server and worker pool.
+	// Workers configures rr server and worker pool.
 	Workers *roadrunner.ServerConfig
 }
 

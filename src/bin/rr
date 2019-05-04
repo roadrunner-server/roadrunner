@@ -186,7 +186,7 @@ class RRHelper
 }
 
 (new Application('RoadRunner', RRHelper::getVersion()))
-    ->register('get')
+    ->register('get-binary')
     ->setDescription("Install or update RoadRunner binaries in specified folder (current folder by default)")
     ->addOption('location', 'l', InputArgument::OPTIONAL, 'destination folder', '.')
     ->setCode(function (InputInterface $input, OutputInterface $output) {

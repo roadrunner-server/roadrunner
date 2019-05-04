@@ -36,6 +36,9 @@ http:
     # list of file extensions which are forbidden for uploading.
     forbid: [".php", ".exe", ".bat"]
 
+  # cidr blocks which can set ip using X-Real-Ip or X-Forwarded-For
+  trustedSubnets: ["10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10"]
+
   # http worker pool configuration.
   workers:
     # php worker command.
@@ -58,7 +61,7 @@ http:
       # amount of time given to worker to gracefully destruct itself.
       destroyTimeout:  60
 
-# monitors roadrunner server(s)
+# monitors rr server(s)
 watch:
   # check worker state each second
   interval: 1
