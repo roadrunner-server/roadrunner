@@ -31,7 +31,7 @@ func (cfg *UploadsConfig) TmpDir() string {
 	return os.TempDir()
 }
 
-// AlwaysForbid must return true if file extension is not allowed for the upload.
+// Forbids must return true if file extension is not allowed for the upload.
 func (cfg *UploadsConfig) Forbids(filename string) bool {
 	ext := strings.ToLower(path.Ext(filename))
 

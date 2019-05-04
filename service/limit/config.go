@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// Configures set of Services.
+// Config of Limit service.
 type Config struct {
 	// Interval defines the update duration for underlying controllers, default 1s.
 	Interval time.Duration

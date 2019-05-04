@@ -17,7 +17,7 @@ const (
 	// EventMaxIdleTTL triggered when worker spends too much time at rest.
 	EventMaxIdleTTL
 
-	// EventMaxIdleTTL triggered when worker spends too much time doing the task (max_execution_time).
+	// EventMaxExecTTL triggered when worker spends too much time doing the task (max_execution_time).
 	EventMaxExecTTL
 )
 

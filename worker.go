@@ -127,7 +127,7 @@ func (w *Worker) Wait() error {
 	return &exec.ExitError{ProcessState: w.endState}
 }
 
-// Detach sends soft termination command to the worker and waits for process completion.
+// Stop sends soft termination command to the worker and waits for process completion.
 func (w *Worker) Stop() error {
 	select {
 	case <-w.waitDone:

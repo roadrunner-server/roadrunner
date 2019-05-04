@@ -12,7 +12,7 @@ import (
 // ID contains default service name.
 const ID = "rpc"
 
-// Services is RPC service.
+// Service is RPC service.
 type Service struct {
 	cfg     *Config
 	stop    chan interface{}
@@ -83,7 +83,7 @@ func (s *Service) Serve() error {
 	return nil
 }
 
-// Detach stops the service.
+// Stop stops the service.
 func (s *Service) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()

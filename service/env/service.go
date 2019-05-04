@@ -3,7 +3,7 @@ package env
 // ID contains default service name.
 const ID = "env"
 
-// Services provides ability to map _ENV values from config file.
+// Service provides ability to map _ENV values from config file.
 type Service struct {
 	// values is default set of values.
 	values map[string]string

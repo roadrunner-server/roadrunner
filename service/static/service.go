@@ -9,7 +9,7 @@ import (
 // ID contains default service name.
 const ID = "static"
 
-// Services serves static files. Potentially convert into middleware?
+// Service serves static files. Potentially convert into middleware?
 type Service struct {
 	// server configuration (location, forbidden files and etc)
 	cfg *Config

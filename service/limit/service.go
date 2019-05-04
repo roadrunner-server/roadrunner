@@ -8,13 +8,13 @@ import (
 // ID defines controller service name.
 const ID = "constrain"
 
-// Controllable defines the ability to attach rr controller.
-type Controllable interface {
-	// AddController attaches controller to the service.
-	AddController(c roadrunner.Controller)
+// controllable defines the ability to attach rr controller.
+type controllable interface {
+	// Attach attaches controller to the service.
+	Attach(c roadrunner.Controller)
 }
 
-// Services to control the state of rr service inside other services.
+// Service to control the state of rr service inside other services.
 type Service struct {
 	cfg  *Config
 	lsns []func(event int, ctx interface{})
@@ -25,8 +25,8 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 	// mount Services to designated services
 	for id, watcher := range cfg.Controllers(s.throw) {
 		svc, _ := c.Get(id)
-		if ctrl, ok := svc.(Controllable); ok {
-			ctrl.AddController(watcher)
+		if ctrl, ok := svc.(controllable); ok {
+			ctrl.Attach(watcher)
 		}
 	}
 

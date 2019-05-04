@@ -25,7 +25,7 @@ const (
 // http middleware type.
 type middleware func(f http.HandlerFunc) http.HandlerFunc
 
-// Services manages rr, http servers.
+// Service manages rr, http servers.
 type Service struct {
 	cfg        *Config
 	env        env.Environment
@@ -39,8 +39,8 @@ type Service struct {
 	https      *http.Server
 }
 
-// AddController attaches controller. Currently only one controller is supported.
-func (s *Service) AddController(w roadrunner.Controller) {
+// Attach attaches controller. Currently only one controller is supported.
+func (s *Service) Attach(w roadrunner.Controller) {
 	s.controller = w
 }
 
@@ -85,7 +85,7 @@ func (s *Service) Serve() error {
 	s.rr.Listen(s.throw)
 
 	if s.controller != nil {
-		s.rr.Watch(s.controller)
+		s.rr.Attach(s.controller)
 	}
 
 	s.handler = &Handler{cfg: s.cfg, rr: s.rr}
@@ -113,7 +113,7 @@ func (s *Service) Serve() error {
 	return <-err
 }
 
-// Detach stops the svc.
+// Stop stops the http.
 func (s *Service) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()

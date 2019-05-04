@@ -47,7 +47,7 @@ func Test_WatcherWatch(t *testing.T) {
 		})
 	defer rr.Stop()
 
-	rr.Watch(&eWatcher{})
+	rr.Attach(&eWatcher{})
 	assert.NoError(t, rr.Start())
 
 	assert.NotNil(t, rr.pController)
@@ -76,7 +76,7 @@ func Test_WatcherReattach(t *testing.T) {
 		})
 	defer rr.Stop()
 
-	rr.Watch(&eWatcher{})
+	rr.Attach(&eWatcher{})
 	assert.NoError(t, rr.Start())
 
 	assert.NotNil(t, rr.pController)
@@ -115,7 +115,7 @@ func Test_WatcherAttachDetachSequence(t *testing.T) {
 
 	var attachedPool Pool
 
-	rr.Watch(&eWatcher{
+	rr.Attach(&eWatcher{
 		onAttach: func(p Pool) {
 			attachedPool = p
 		},
@@ -151,7 +151,7 @@ func Test_RemoveWorkerOnAllocation(t *testing.T) {
 		})
 	defer rr.Stop()
 
-	rr.Watch(&eWatcher{})
+	rr.Attach(&eWatcher{})
 	assert.NoError(t, rr.Start())
 
 	wr := rr.Workers()[0]
@@ -186,7 +186,7 @@ func Test_RemoveWorkerAfterTask(t *testing.T) {
 		})
 	defer rr.Stop()
 
-	rr.Watch(&eWatcher{})
+	rr.Attach(&eWatcher{})
 	assert.NoError(t, rr.Start())
 
 	wr := rr.Workers()[0]

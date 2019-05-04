@@ -63,8 +63,8 @@ func (s *Server) Listen(l func(event int, ctx interface{})) {
 	s.lsn = l
 }
 
-// AddController attaches worker controller.
-func (s *Server) Watch(c Controller) {
+// Attach attaches worker controller.
+func (s *Server) Attach(c Controller) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -102,7 +102,7 @@ func (s *Server) Start() (err error) {
 	return nil
 }
 
-// Detach underlying worker pool and close the factory.
+// Stop underlying worker pool and close the factory.
 func (s *Server) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
