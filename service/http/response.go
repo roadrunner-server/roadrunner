@@ -12,7 +12,7 @@ type Response struct {
 	// Status contains response status.
 	Status int `json:"status"`
 
-	// Headers contains list of response headers.
+	// Header contains list of response headers.
 	Headers map[string][]string `json:"headers"`
 
 	// associated body payload.

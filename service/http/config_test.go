@@ -51,6 +51,55 @@ func Test_Config_Valid(t *testing.T) {
 	assert.NoError(t, cfg.Valid())
 }
 
+func Test_Trusted_Subnets(t *testing.T) {
+	cfg := &Config{
+		Address:        ":8080",
+		MaxRequestSize: 1024,
+		Uploads: &UploadsConfig{
+			Dir:    os.TempDir(),
+			Forbid: []string{".go"},
+		},
+		TrustedSubnets: []string{"200.1.0.0/16"},
+		Workers: &roadrunner.ServerConfig{
+			Command: "php tests/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		},
+	}
+
+	assert.NoError(t, cfg.parseCIDRs())
+
+	assert.True(t, cfg.IsTrusted("200.1.0.10"))
+	assert.False(t, cfg.IsTrusted("127.0.0.0.1"))
+}
+
+func Test_Trusted_Subnets_Err(t *testing.T) {
+	cfg := &Config{
+		Address:        ":8080",
+		MaxRequestSize: 1024,
+		Uploads: &UploadsConfig{
+			Dir:    os.TempDir(),
+			Forbid: []string{".go"},
+		},
+		TrustedSubnets: []string{"200.1.0.0"},
+		Workers: &roadrunner.ServerConfig{
+			Command: "php tests/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		},
+	}
+
+	assert.Error(t, cfg.parseCIDRs())
+}
+
 func Test_Config_Valid_SSL(t *testing.T) {
 	cfg := &Config{
 		Address: ":8080",

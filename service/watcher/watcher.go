@@ -92,11 +92,15 @@ func (wch *watcher) watch(p roadrunner.Pool) {
 			roadrunner.StateWorking,
 			now.Add(-time.Second*time.Duration(wch.cfg.MaxExecTTL)),
 		) {
+			eID := w.State().NumExecs()
 			err := fmt.Errorf("max exec time reached (%vs)", wch.cfg.MaxExecTTL)
+
 			if p.Remove(w, err) {
-				// brutally
-				go w.Kill()
-				wch.report(EventMaxExecTTL, w, err)
+				// make sure worker still on initial request
+				if w.State().NumExecs() == eID {
+					go w.Kill()
+					wch.report(EventMaxExecTTL, w, err)
+				}
 			}
 		}
 	}

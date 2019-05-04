@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
+	"net"
 	"os"
 	"strings"
 )
@@ -19,6 +20,10 @@ type Config struct {
 
 	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
 	MaxRequestSize int64
+
+	// TrustedSubnets declare IP subnets which are allowed to set ip using X-Real-Ip and X-Forwarded-For
+	TrustedSubnets []string
+	cidrs          []*net.IPNet
 
 	// Uploads configures uploads configuration.
 	Uploads *UploadsConfig
@@ -70,7 +75,57 @@ func (c *Config) Hydrate(cfg service.Config) error {
 
 	c.Workers.UpscaleDurations()
 
+	if c.TrustedSubnets == nil {
+		// @see https://en.wikipedia.org/wiki/Reserved_IP_addresses
+		c.TrustedSubnets = []string{
+			"10.0.0.0/8",
+			"127.0.0.0/8",
+			"172.16.0.0/12",
+			"192.168.0.0/16",
+			"::1/128",
+			"fc00::/7",
+			"fe80::/10",
+		}
+	}
+
+	if err := c.parseCIDRs(); err != nil {
+		return err
+	}
+
 	return c.Valid()
+}
+
+func (c *Config) parseCIDRs() error {
+	for _, cidr := range c.TrustedSubnets {
+		_, cr, err := net.ParseCIDR(cidr)
+		if err != nil {
+			return err
+		}
+
+		c.cidrs = append(c.cidrs, cr)
+	}
+
+	return nil
+}
+
+// IsTrusted if api can be trusted to use X-Real-Ip, X-Forwarded-For
+func (c *Config) IsTrusted(ip string) bool {
+	if c.cidrs == nil {
+		return false
+	}
+
+	i := net.ParseIP(ip)
+	if i == nil {
+		return false
+	}
+
+	for _, cird := range c.cidrs {
+		if cird.Contains(i) {
+			return true
+		}
+	}
+
+	return false
 }
 
 // Valid validates the configuration.

@@ -6,11 +6,12 @@ v1.4.0
 - ENV variables in configs (automatic RR_ mapping and manual definition using "${ENV_NAME}" value)
 - add the ability to remove the worker from the pool in runtime
 - minor performance improvements
+- real ip resolution using X-Real-Ip and X-Forwarded-For (+cidr verification) 
 - watchers
-   - maxTTL
-   - maxExecTTL (max_execution_time)
-   - maxIdleTTL
-   - maxMemory (RSS)
+   - maxTTL (graceful)
+   - maxExecTTL (brute, max_execution_time)
+   - maxIdleTTL (graceful)
+   - maxMemory (graceful)
 - stop command
 - `maxRequest` option has been deprecated in favor of `maxRequestSize`
 - download rr command (symfony/console based) by @Alex-Bond

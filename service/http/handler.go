@@ -5,6 +5,7 @@ import (
 	"github.com/spiral/roadrunner"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -93,6 +94,9 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// proxy IP resolution
+	h.resolveIP(req)
+
 	req.Open()
 	defer req.Close()
 
@@ -138,5 +142,26 @@ func (h *Handler) throw(event int, ctx interface{}) {
 
 	if h.lsn != nil {
 		h.lsn(event, ctx)
+	}
+}
+
+// get real ip passing multiple proxy
+func (h *Handler) resolveIP(r *Request) {
+	if !h.cfg.IsTrusted(r.RemoteAddr) {
+		return
+	}
+
+	if r.Header.Get("X-Forwarded-For") != "" {
+		for _, addr := range strings.Split(r.Header.Get("X-Forwarded-For"), ",") {
+			addr = strings.TrimSpace(addr)
+			if h.cfg.IsTrusted(addr) {
+				r.RemoteAddr = addr
+			}
+		}
+		return
+	}
+
+	if r.Header.Get("X-Real-Ip") != "" {
+		r.RemoteAddr = fetchIP(r.Header.Get("X-Real-Ip"))
 	}
 }

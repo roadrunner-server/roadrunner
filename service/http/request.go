@@ -34,8 +34,8 @@ type Request struct {
 	// URI contains full request URI with scheme and query.
 	URI string `json:"uri"`
 
-	// Headers contains list of request headers.
-	Headers http.Header `json:"headers"`
+	// Header contains list of request headers.
+	Header http.Header `json:"headers"`
 
 	// Cookies contains list of request cookies.
 	Cookies map[string]string `json:"cookies"`
@@ -56,23 +56,26 @@ type Request struct {
 	body interface{}
 }
 
+func fetchIP(pair string) string {
+	if !strings.ContainsRune(pair, ':') {
+		return pair
+	}
+
+	addr, _, _ := net.SplitHostPort(pair)
+	return addr
+}
+
 // NewRequest creates new PSR7 compatible request using net/http request.
 func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 	req = &Request{
+		RemoteAddr: fetchIP(r.RemoteAddr),
 		Protocol:   r.Proto,
 		Method:     r.Method,
 		URI:        uri(r),
-		Headers:    r.Header,
+		Header:     r.Header,
 		Cookies:    make(map[string]string),
 		RawQuery:   r.URL.RawQuery,
 		Attributes: attributes.All(r),
-	}
-
-	// otherwise, return remote address as is
-	if strings.ContainsRune(r.RemoteAddr, ':') {
-		req.RemoteAddr, _, _ = net.SplitHostPort(r.RemoteAddr)
-	} else {
-		req.RemoteAddr = r.RemoteAddr
 	}
 
 	for _, c := range r.Cookies() {
@@ -152,7 +155,7 @@ func (r *Request) contentType() int {
 		return contentNone
 	}
 
-	ct := r.Headers.Get("content-type")
+	ct := r.Header.Get("content-type")
 	if strings.Contains(ct, "application/x-www-form-urlencoded") {
 		return contentFormData
 	}

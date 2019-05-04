@@ -22,6 +22,7 @@ require (
 	github.com/spf13/viper v1.3.1
 	github.com/spiral/goridge v2.1.3+incompatible
 	github.com/stretchr/testify v1.2.2
+	github.com/tomasen/realip v0.0.0-20180522021738-f0c99a92ddce // indirect
 	golang.org/x/net v0.0.0-20181017193950-04a2e542c03f
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
