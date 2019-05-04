@@ -8,11 +8,11 @@ import (
 
 // Configures set of Services.
 type Config struct {
-	// Interval defines the update duration for underlying watchers, default 1s.
+	// Interval defines the update duration for underlying controllers, default 1s.
 	Interval time.Duration
 
 	// Services declares list of services to be watched.
-	Services map[string]*watcherConfig
+	Services map[string]*controllerConfig
 }
 
 // Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
@@ -36,13 +36,13 @@ func (c *Config) InitDefaults() error {
 	return nil
 }
 
-// Watchers returns list of defined Services
-func (c *Config) Watchers(l listener) (watchers map[string]roadrunner.Watcher) {
-	watchers = make(map[string]roadrunner.Watcher)
+// Controllers returns list of defined Services
+func (c *Config) Controllers(l listener) (controllers map[string]roadrunner.Controller) {
+	controllers = make(map[string]roadrunner.Controller)
 
 	for name, cfg := range c.Services {
-		watchers[name] = &watcher{lsn: l, tick: c.Interval, cfg: cfg}
+		controllers[name] = &controller{lsn: l, tick: c.Interval, cfg: cfg}
 	}
 
-	return watchers
+	return controllers
 }

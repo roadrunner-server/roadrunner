@@ -33,14 +33,14 @@ type Service struct {
 	mdwr    []middleware
 	mu      sync.Mutex
 	rr      *roadrunner.Server
-	watcher roadrunner.Watcher
+	watcher roadrunner.Controller
 	handler *Handler
 	http    *http.Server
 	https   *http.Server
 }
 
 // Watch attaches watcher.
-func (s *Service) Watch(w roadrunner.Watcher) {
+func (s *Service) Watch(w roadrunner.Controller) {
 	s.watcher = w
 }
 

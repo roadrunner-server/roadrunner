@@ -7,7 +7,7 @@ v1.4.0
 - the ability to safely remove the worker from the pool in runtime
 - minor performance improvements
 - `real ip` resolution using X-Real-Ip and X-Forwarded-For (+cidr verification) 
-- automatic worker lifecycle manager (watcher)
+- automatic worker lifecycle manager (controller)
    - maxMemory (graceful stop)
    - maxTTL (graceful stop)
    - maxIdleTTL (graceful stop)

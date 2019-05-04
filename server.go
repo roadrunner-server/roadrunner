@@ -37,13 +37,13 @@ type Server struct {
 	// creates and connects to workers
 	factory Factory
 
-	// associated pool watcher
-	watcher Watcher
+	// associated pool controller
+	controller Controller
 
 	// currently active pool instance
-	mup      sync.Mutex
-	pool     Pool
-	pWatcher Watcher
+	mup         sync.Mutex
+	pool        Pool
+	pController Controller
 
 	// observes pool events (can be attached to multiple pools at the same time)
 	mul sync.Mutex
@@ -55,7 +55,7 @@ func NewServer(cfg *ServerConfig) *Server {
 	return &Server{cfg: cfg}
 }
 
-// Listen attaches server event watcher.
+// Listen attaches server event controller.
 func (s *Server) Listen(l func(event int, ctx interface{})) {
 	s.mul.Lock()
 	defer s.mul.Unlock()
@@ -63,17 +63,17 @@ func (s *Server) Listen(l func(event int, ctx interface{})) {
 	s.lsn = l
 }
 
-// Listen attaches server event watcher.
-func (s *Server) Watch(w Watcher) {
+// Watch attaches worker controller.
+func (s *Server) Watch(c Controller) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	s.watcher = w
+	s.controller = c
 
 	s.mul.Lock()
-	if s.pWatcher != nil && s.pool != nil {
-		s.pWatcher.Detach()
-		s.pWatcher = s.watcher.Attach(s.pool)
+	if s.pController != nil && s.pool != nil {
+		s.pController.Detach()
+		s.pController = s.controller.Attach(s.pool)
 	}
 	s.mul.Unlock()
 }
@@ -91,8 +91,8 @@ func (s *Server) Start() (err error) {
 		return err
 	}
 
-	if s.watcher != nil {
-		s.pWatcher = s.watcher.Attach(s.pool)
+	if s.controller != nil {
+		s.pController = s.controller.Attach(s.pool)
 	}
 
 	s.pool.Listen(s.poolListener)
@@ -113,9 +113,9 @@ func (s *Server) Stop() {
 
 	s.throw(EventPoolDestruct, s.pool)
 
-	if s.pWatcher != nil {
-		s.pWatcher.Detach()
-		s.pWatcher = nil
+	if s.pController != nil {
+		s.pController.Detach()
+		s.pController = nil
 	}
 
 	s.pool.Destroy()
@@ -157,7 +157,7 @@ func (s *Server) Reconfigure(cfg *ServerConfig) error {
 
 	s.mu.Lock()
 	previous := s.pool
-	pWatcher := s.pWatcher
+	pWatcher := s.pController
 	s.mu.Unlock()
 
 	pool, err := NewPool(cfg.makeCommand(), s.factory, *cfg.Pool)
@@ -170,8 +170,8 @@ func (s *Server) Reconfigure(cfg *ServerConfig) error {
 	s.mu.Lock()
 	s.cfg.Pool, s.pool = cfg.Pool, pool
 
-	if s.watcher != nil {
-		s.pWatcher = s.watcher.Attach(pool)
+	if s.controller != nil {
+		s.pController = s.controller.Attach(pool)
 	}
 
 	s.mu.Unlock()
@@ -179,7 +179,7 @@ func (s *Server) Reconfigure(cfg *ServerConfig) error {
 	s.throw(EventPoolConstruct, pool)
 
 	if previous != nil {
-		go func(previous Pool, pWatcher Watcher) {
+		go func(previous Pool, pWatcher Controller) {
 			s.throw(EventPoolDestruct, previous)
 			if pWatcher != nil {
 				pWatcher.Detach()

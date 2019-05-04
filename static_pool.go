@@ -84,7 +84,7 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, er
 	return p, nil
 }
 
-// Listen attaches pool event watcher.
+// Listen attaches pool event controller.
 func (p *StaticPool) Listen(l func(event int, ctx interface{})) {
 	p.mul.Lock()
 	defer p.mul.Unlock()

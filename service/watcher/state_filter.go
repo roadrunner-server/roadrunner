@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type stateWatcher struct {
+type stateFilter struct {
 	prev map[*roadrunner.Worker]state
 	next map[*roadrunner.Worker]state
 }
@@ -16,20 +16,20 @@ type state struct {
 	since    time.Time
 }
 
-func newStateWatcher() *stateWatcher {
-	return &stateWatcher{
+func newStateFilter() *stateFilter {
+	return &stateFilter{
 		prev: make(map[*roadrunner.Worker]state),
 		next: make(map[*roadrunner.Worker]state),
 	}
 }
 
 // add new worker to be watched
-func (sw *stateWatcher) push(w *roadrunner.Worker) {
+func (sw *stateFilter) push(w *roadrunner.Worker) {
 	sw.next[w] = state{state: w.State().Value(), numExecs: w.State().NumExecs()}
 }
 
 // update worker states.
-func (sw *stateWatcher) sync(t time.Time) {
+func (sw *stateFilter) sync(t time.Time) {
 	for w := range sw.prev {
 		if _, ok := sw.next[w]; !ok {
 			delete(sw.prev, w)
@@ -47,7 +47,7 @@ func (sw *stateWatcher) sync(t time.Time) {
 }
 
 // find all workers which spend given amount of time in a specific state.
-func (sw *stateWatcher) find(state int64, since time.Time) (workers []*roadrunner.Worker) {
+func (sw *stateFilter) find(state int64, since time.Time) (workers []*roadrunner.Worker) {
 	for w, s := range sw.prev {
 		if s.state == state && s.since.Before(since) {
 			workers = append(workers, w)

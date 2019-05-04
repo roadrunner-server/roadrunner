@@ -8,7 +8,9 @@ import (
 )
 
 var (
-	reg      *regexp.Regexp
+	reg *regexp.Regexp
+
+	// Colorize enables colors support.
 	Colorize bool
 )
 

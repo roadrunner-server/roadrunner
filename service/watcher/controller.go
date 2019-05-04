@@ -21,11 +21,11 @@ const (
 	EventMaxExecTTL
 )
 
-// handles watcher events
+// handles controller events
 type listener func(event int, ctx interface{})
 
-// defines the watcher behaviour
-type watcherConfig struct {
+// defines the controller behaviour
+type controllerConfig struct {
 	// MaxMemory defines maximum amount of memory allowed for worker. In megabytes.
 	MaxMemory uint64
 
@@ -39,54 +39,54 @@ type watcherConfig struct {
 	MaxExecTTL int64
 }
 
-type watcher struct {
+type controller struct {
 	lsn  listener
 	tick time.Duration
-	cfg  *watcherConfig
+	cfg  *controllerConfig
 
 	// list of workers which are currently working
-	sw *stateWatcher
+	sw *stateFilter
 
 	stop chan interface{}
 }
 
-// watch the pool state
-func (wch *watcher) watch(p roadrunner.Pool) {
-	wch.loadWorkers(p)
+// control the pool state
+func (c *controller) control(p roadrunner.Pool) {
+	c.loadWorkers(p)
 
 	now := time.Now()
 
-	if wch.cfg.MaxExecTTL != 0 {
-		for _, w := range wch.sw.find(
+	if c.cfg.MaxExecTTL != 0 {
+		for _, w := range c.sw.find(
 			roadrunner.StateWorking,
-			now.Add(-time.Second*time.Duration(wch.cfg.MaxExecTTL)),
+			now.Add(-time.Second*time.Duration(c.cfg.MaxExecTTL)),
 		) {
 			eID := w.State().NumExecs()
-			err := fmt.Errorf("max exec time reached (%vs)", wch.cfg.MaxExecTTL)
+			err := fmt.Errorf("max exec time reached (%vs)", c.cfg.MaxExecTTL)
 
 			// make sure worker still on initial request
 			if p.Remove(w, err) && w.State().NumExecs() == eID {
 				go w.Kill()
-				wch.report(EventMaxExecTTL, w, err)
+				c.report(EventMaxExecTTL, w, err)
 			}
 		}
 	}
 
 	// locale workers which are in idle mode for too long
-	if wch.cfg.MaxIdleTTL != 0 {
-		for _, w := range wch.sw.find(
+	if c.cfg.MaxIdleTTL != 0 {
+		for _, w := range c.sw.find(
 			roadrunner.StateReady,
-			now.Add(-time.Second*time.Duration(wch.cfg.MaxIdleTTL)),
+			now.Add(-time.Second*time.Duration(c.cfg.MaxIdleTTL)),
 		) {
-			err := fmt.Errorf("max idle time reached (%vs)", wch.cfg.MaxIdleTTL)
+			err := fmt.Errorf("max idle time reached (%vs)", c.cfg.MaxIdleTTL)
 			if p.Remove(w, err) {
-				wch.report(EventMaxIdleTTL, w, err)
+				c.report(EventMaxIdleTTL, w, err)
 			}
 		}
 	}
 }
 
-func (wch *watcher) loadWorkers(p roadrunner.Pool) {
+func (c *controller) loadWorkers(p roadrunner.Pool) {
 	now := time.Now()
 
 	for _, w := range p.Workers() {
@@ -100,52 +100,52 @@ func (wch *watcher) loadWorkers(p roadrunner.Pool) {
 			continue
 		}
 
-		if wch.cfg.TTL != 0 && now.Sub(w.Created).Seconds() >= float64(wch.cfg.TTL) {
-			err := fmt.Errorf("max TTL reached (%vs)", wch.cfg.TTL)
+		if c.cfg.TTL != 0 && now.Sub(w.Created).Seconds() >= float64(c.cfg.TTL) {
+			err := fmt.Errorf("max TTL reached (%vs)", c.cfg.TTL)
 			if p.Remove(w, err) {
-				wch.report(EventMaxTTL, w, err)
+				c.report(EventMaxTTL, w, err)
 			}
 			continue
 		}
 
-		if wch.cfg.MaxMemory != 0 && s.MemoryUsage >= wch.cfg.MaxMemory*1024*1024 {
-			err := fmt.Errorf("max allowed memory reached (%vMB)", wch.cfg.MaxMemory)
+		if c.cfg.MaxMemory != 0 && s.MemoryUsage >= c.cfg.MaxMemory*1024*1024 {
+			err := fmt.Errorf("max allowed memory reached (%vMB)", c.cfg.MaxMemory)
 			if p.Remove(w, err) {
-				wch.report(EventMaxMemory, w, err)
+				c.report(EventMaxMemory, w, err)
 			}
 			continue
 		}
 
-		// watch the worker state changes
-		wch.sw.push(w)
+		// control the worker state changes
+		c.sw.push(w)
 	}
 
-	wch.sw.sync(now)
+	c.sw.sync(now)
 }
 
-// throw watcher event
-func (wch *watcher) report(event int, worker *roadrunner.Worker, caused error) {
-	if wch.lsn != nil {
-		wch.lsn(event, roadrunner.WorkerError{Worker: worker, Caused: caused})
+// throw controller event
+func (c *controller) report(event int, worker *roadrunner.Worker, caused error) {
+	if c.lsn != nil {
+		c.lsn(event, roadrunner.WorkerError{Worker: worker, Caused: caused})
 	}
 }
 
-// Attach watcher to the pool
-func (wch *watcher) Attach(pool roadrunner.Pool) roadrunner.Watcher {
-	wp := &watcher{
-		tick: wch.tick,
-		lsn:  wch.lsn,
-		cfg:  wch.cfg,
-		sw:   newStateWatcher(),
+// Attach controller to the pool
+func (c *controller) Attach(pool roadrunner.Pool) roadrunner.Controller {
+	wp := &controller{
+		tick: c.tick,
+		lsn:  c.lsn,
+		cfg:  c.cfg,
+		sw:   newStateFilter(),
 		stop: make(chan interface{}),
 	}
 
-	go func(wp *watcher, pool roadrunner.Pool) {
+	go func(wp *controller, pool roadrunner.Pool) {
 		ticker := time.NewTicker(wp.tick)
 		for {
 			select {
 			case <-ticker.C:
-				wp.watch(pool)
+				wp.control(pool)
 			case <-wp.stop:
 				return
 			}
@@ -155,7 +155,7 @@ func (wch *watcher) Attach(pool roadrunner.Pool) roadrunner.Watcher {
 	return wp
 }
 
-// Detach watcher from the pool.
-func (wch *watcher) Detach() {
-	close(wch.stop)
+// Detach controller from the pool.
+func (c *controller) Detach() {
+	close(c.stop)
 }

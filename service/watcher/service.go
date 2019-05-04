@@ -5,25 +5,25 @@ import (
 	"github.com/spiral/roadrunner/service"
 )
 
-// ID defines watcher service name.
-const ID = "watch"
+// ID defines controller service name.
+const ID = "control"
 
-// Watchable defines the ability to attach rr watcher.
+// Watchable defines the ability to attach rr controller.
 type Watchable interface {
-	// Watch attaches watcher to the service.
-	Watch(w roadrunner.Watcher)
+	// Watch attaches controller to the service.
+	Watch(w roadrunner.Controller)
 }
 
-// Services to watch the state of rr service inside other services.
+// Services to control the state of rr service inside other services.
 type Service struct {
 	cfg  *Config
 	lsns []func(event int, ctx interface{})
 }
 
-// Init watcher service
+// Init controller service
 func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 	// mount Services to designated services
-	for id, watcher := range cfg.Watchers(s.throw) {
+	for id, watcher := range cfg.Controllers(s.throw) {
 		svc, _ := c.Get(id)
 		if watchable, ok := svc.(Watchable); ok {
 			watchable.Watch(watcher)
@@ -33,7 +33,7 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 	return true, nil
 }
 
-// AddListener attaches server event watcher.
+// AddListener attaches server event controller.
 func (s *Service) AddListener(l func(event int, ctx interface{})) {
 	s.lsns = append(s.lsns, l)
 }

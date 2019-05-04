@@ -14,7 +14,7 @@ type eWatcher struct {
 	onDetach func(p Pool)
 }
 
-func (w *eWatcher) Attach(p Pool) Watcher {
+func (w *eWatcher) Attach(p Pool) Controller {
 	wp := &eWatcher{p: p, onAttach: w.onAttach, onDetach: w.onDetach}
 
 	if wp.onAttach != nil {
@@ -50,8 +50,8 @@ func Test_WatcherWatch(t *testing.T) {
 	rr.Watch(&eWatcher{})
 	assert.NoError(t, rr.Start())
 
-	assert.NotNil(t, rr.pWatcher)
-	assert.Equal(t, rr.pWatcher.(*eWatcher).p, rr.pool)
+	assert.NotNil(t, rr.pController)
+	assert.Equal(t, rr.pController.(*eWatcher).p, rr.pool)
 
 	res, err := rr.Exec(&Payload{Body: []byte("hello")})
 
@@ -79,16 +79,16 @@ func Test_WatcherReattach(t *testing.T) {
 	rr.Watch(&eWatcher{})
 	assert.NoError(t, rr.Start())
 
-	assert.NotNil(t, rr.pWatcher)
-	assert.Equal(t, rr.pWatcher.(*eWatcher).p, rr.pool)
+	assert.NotNil(t, rr.pController)
+	assert.Equal(t, rr.pController.(*eWatcher).p, rr.pool)
 
-	oldWatcher := rr.pWatcher
+	oldWatcher := rr.pController
 
 	assert.NoError(t, rr.Reset())
 
-	assert.NotNil(t, rr.pWatcher)
-	assert.Equal(t, rr.pWatcher.(*eWatcher).p, rr.pool)
-	assert.NotEqual(t, oldWatcher, rr.pWatcher)
+	assert.NotNil(t, rr.pController)
+	assert.Equal(t, rr.pController.(*eWatcher).p, rr.pool)
+	assert.NotEqual(t, oldWatcher, rr.pController)
 
 	res, err := rr.Exec(&Payload{Body: []byte("hello")})
 
@@ -125,8 +125,8 @@ func Test_WatcherAttachDetachSequence(t *testing.T) {
 	})
 	assert.NoError(t, rr.Start())
 
-	assert.NotNil(t, rr.pWatcher)
-	assert.Equal(t, rr.pWatcher.(*eWatcher).p, rr.pool)
+	assert.NotNil(t, rr.pController)
+	assert.Equal(t, rr.pController.(*eWatcher).p, rr.pool)
 
 	res, err := rr.Exec(&Payload{Body: []byte("hello")})
 
@@ -161,7 +161,7 @@ func Test_RemoveWorkerOnAllocation(t *testing.T) {
 	assert.Equal(t, fmt.Sprintf("%v", *wr.Pid), res.String())
 	lastPid := res.String()
 
-	rr.pWatcher.(*eWatcher).remove(wr, nil)
+	rr.pController.(*eWatcher).remove(wr, nil)
 
 	res, err = rr.Exec(&Payload{Body: []byte("hello")})
 	assert.NoError(t, err)
@@ -204,7 +204,7 @@ func Test_RemoveWorkerAfterTask(t *testing.T) {
 
 	// wait for worker execution to be in progress
 	time.Sleep(time.Millisecond * 250)
-	rr.pWatcher.(*eWatcher).remove(wr, nil)
+	rr.pController.(*eWatcher).remove(wr, nil)
 
 	<-wait
 
@@ -212,5 +212,5 @@ func Test_RemoveWorkerAfterTask(t *testing.T) {
 	assert.NotEqual(t, lastPid, fmt.Sprintf("%v", rr.Workers()[0]))
 
 	// must not be registered within the pool
-	rr.pWatcher.(*eWatcher).remove(wr, nil)
+	rr.pController.(*eWatcher).remove(wr, nil)
 }
