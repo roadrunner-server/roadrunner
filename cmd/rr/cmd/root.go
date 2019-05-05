@@ -52,7 +52,7 @@ var (
 		SilenceErrors: true,
 		SilenceUsage:  true,
 		Short: util.Sprintf(
-			"<green>RoadRunner, PHP Application Server:</reset>\nVersion: <yellow+hb>%s</reset>, %s",
+			"<green>RoadRunner</reset>, PHP Application Server\nVersion: <yellow+hb>%s</reset>, %s",
 			Version,
 			BuildTime,
 		),
@@ -121,6 +121,7 @@ func init() {
 }
 
 func configureLogger(format string) {
+	util.Colorize = false
 	switch format {
 	case "color", "default":
 		util.Colorize = true

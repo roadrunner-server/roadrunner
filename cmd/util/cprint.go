@@ -11,7 +11,7 @@ var (
 	reg *regexp.Regexp
 
 	// Colorize enables colors support.
-	Colorize bool
+	Colorize = true
 )
 
 func init() {
