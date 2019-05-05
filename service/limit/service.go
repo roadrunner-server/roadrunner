@@ -16,7 +16,6 @@ type controllable interface {
 
 // Service to control the state of rr service inside other services.
 type Service struct {
-	cfg  *Config
 	lsns []func(event int, ctx interface{})
 }
 

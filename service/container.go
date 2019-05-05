@@ -94,7 +94,7 @@ func (c *container) Register(name string, service interface{}) {
 	c.services = append(c.services, &entry{
 		name:   name,
 		svc:    service,
-		status: StatusRegistered,
+		status: StatusInactive,
 	})
 }
 

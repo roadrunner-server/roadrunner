@@ -37,9 +37,9 @@ Features:
 - max jobs per worker
 - worker lifecycle management (controller) 
     - maxMemory (graceful stop)
-    - maxTTL (graceful stop)
-    - maxIdleTTL (graceful stop)
-    - maxExecTTL (brute, max_execution_time)   
+    - TTL (graceful stop)
+    - idleTTL (graceful stop)
+    - execTTL (brute, max_execution_time)   
 - payload context and body
 - protocol, worker and job level error management (including PHP errors)
 - memory leak failswitch

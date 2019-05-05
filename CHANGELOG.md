@@ -9,9 +9,9 @@ v1.4.0
 - `real ip` resolution using X-Real-Ip and X-Forwarded-For (+cidr verification) 
 - automatic worker lifecycle manager (controller)
    - maxMemory (graceful stop)
-   - maxTTL (graceful stop)
-   - maxIdleTTL (graceful stop)
-   - maxExecTTL (brute, max_execution_time)   
+   - ttl (graceful stop)
+   - idleTTL (graceful stop)
+   - execTTL (brute, max_execution_time)   
 - the ability to stop rr using `rr stop`
 - `maxRequest` option has been deprecated in favor of `maxRequestSize`
 - `/vendor/bin/rr get` to download rr server binary (symfony/console) by @Alex-Bond

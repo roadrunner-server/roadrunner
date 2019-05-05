@@ -97,7 +97,7 @@ func Test_Disabled(t *testing.T) {
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
-	assert.Equal(t, service.StatusRegistered, st)
+	assert.Equal(t, service.StatusInactive, st)
 }
 
 func Test_Files_Disable(t *testing.T) {

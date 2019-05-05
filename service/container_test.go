@@ -139,7 +139,7 @@ func TestContainer_Get(t *testing.T) {
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
-	assert.Equal(t, StatusRegistered, st)
+	assert.Equal(t, StatusInactive, st)
 
 	s, st = c.Get("another")
 	assert.Nil(t, s)
@@ -227,7 +227,7 @@ func TestContainer_ConfigureNull(t *testing.T) {
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
-	assert.Equal(t, StatusRegistered, st)
+	assert.Equal(t, StatusInactive, st)
 }
 
 func TestContainer_ConfigureDisabled(t *testing.T) {
@@ -245,7 +245,7 @@ func TestContainer_ConfigureDisabled(t *testing.T) {
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
-	assert.Equal(t, StatusRegistered, st)
+	assert.Equal(t, StatusInactive, st)
 }
 
 func TestContainer_ConfigureError(t *testing.T) {
@@ -268,7 +268,7 @@ func TestContainer_ConfigureError(t *testing.T) {
 
 	s, st := c.Get("test")
 	assert.IsType(t, &testService{}, s)
-	assert.Equal(t, StatusRegistered, st)
+	assert.Equal(t, StatusInactive, st)
 }
 
 func TestContainer_ConfigureTwice(t *testing.T) {

@@ -32,11 +32,11 @@ type controllerConfig struct {
 	// TTL defines maximum time worker is allowed to live.
 	TTL int64
 
-	// MaxIdleTTL defines maximum duration worker can spend in idle mode.
-	MaxIdleTTL int64
+	// IdleTTL defines maximum duration worker can spend in idle mode.
+	IdleTTL int64
 
-	// MaxExecTTL defines maximum lifetime per job.
-	MaxExecTTL int64
+	// ExecTTL defines maximum lifetime per job.
+	ExecTTL int64
 }
 
 type controller struct {
@@ -56,13 +56,13 @@ func (c *controller) control(p roadrunner.Pool) {
 
 	now := time.Now()
 
-	if c.cfg.MaxExecTTL != 0 {
+	if c.cfg.ExecTTL != 0 {
 		for _, w := range c.sw.find(
 			roadrunner.StateWorking,
-			now.Add(-time.Second*time.Duration(c.cfg.MaxExecTTL)),
+			now.Add(-time.Second*time.Duration(c.cfg.ExecTTL)),
 		) {
 			eID := w.State().NumExecs()
-			err := fmt.Errorf("max exec time reached (%vs)", c.cfg.MaxExecTTL)
+			err := fmt.Errorf("max exec time reached (%vs)", c.cfg.ExecTTL)
 
 			// make sure worker still on initial request
 			if p.Remove(w, err) && w.State().NumExecs() == eID {
@@ -73,12 +73,12 @@ func (c *controller) control(p roadrunner.Pool) {
 	}
 
 	// locale workers which are in idle mode for too long
-	if c.cfg.MaxIdleTTL != 0 {
+	if c.cfg.IdleTTL != 0 {
 		for _, w := range c.sw.find(
 			roadrunner.StateReady,
-			now.Add(-time.Second*time.Duration(c.cfg.MaxIdleTTL)),
+			now.Add(-time.Second*time.Duration(c.cfg.IdleTTL)),
 		) {
-			err := fmt.Errorf("max idle time reached (%vs)", c.cfg.MaxIdleTTL)
+			err := fmt.Errorf("max idle time reached (%vs)", c.cfg.IdleTTL)
 			if p.Remove(w, err) {
 				c.report(EventMaxIdleTTL, w, err)
 			}

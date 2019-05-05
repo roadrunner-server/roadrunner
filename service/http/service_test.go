@@ -57,7 +57,7 @@ func Test_Service_NoConfig(t *testing.T) {
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
-	assert.Equal(t, service.StatusRegistered, st)
+	assert.Equal(t, service.StatusInactive, st)
 }
 
 func Test_Service_Configure_Disable(t *testing.T) {
@@ -71,7 +71,7 @@ func Test_Service_Configure_Disable(t *testing.T) {
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
-	assert.Equal(t, service.StatusRegistered, st)
+	assert.Equal(t, service.StatusInactive, st)
 }
 
 func Test_Service_Configure_Enable(t *testing.T) {
