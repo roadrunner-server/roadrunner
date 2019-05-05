@@ -70,7 +70,7 @@ limit:
   services:
     # monitor http workers
     http:
-      # maximum allowed memory consumption (soft)
+      # maximum allowed memory consumption per worker (soft)
       maxMemory: 100
 
       # maximum time to live for the worker (soft)
