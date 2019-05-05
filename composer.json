@@ -27,6 +27,6 @@
     }
   },
   "bin": [
-    "src/bin/roadrunner"
+    "src/bin/rr"
   ]
 }
