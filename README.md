@@ -42,7 +42,6 @@ Features:
     - execTTL (brute, max_execution_time)   
 - payload context and body
 - protocol, worker and job level error management (including PHP errors)
-- memory leak failswitch
 - very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
 - works on Windows
 
@@ -69,7 +68,7 @@ while ($req = $psr7->acceptRequest()) {
 }
 ```
 
-Configuration can be located in `.rr.yaml` file:
+Configuration can be located in `.rr.yaml` file ([full sample](https://github.com/spiral/roadrunner/blob/master/.rr.yaml)):
 
 ```yaml
 http:
