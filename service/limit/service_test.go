@@ -275,6 +275,64 @@ func Test_Service_Listener_MaxExecTTL(t *testing.T) {
 	<-captured
 }
 
+func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(rrhttp.ID, &rrhttp.Service{})
+	c.Register(ID, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{
+		httpCfg: `{
+			"address": ":6029",
+			"workers":{
+				"command": "php ../../tests/http/client.php memleak pipes",
+				"pool": {"numWorkers": 1}
+			}
+	}`,
+		limitCfg: `{
+			"services": {
+				"http": {
+					"maxMemory": 10
+				}
+			}
+		}`,
+	}))
+
+	s, _ := c.Get(rrhttp.ID)
+	assert.NotNil(t, s)
+
+	l, _ := c.Get(ID)
+	captured := make(chan interface{})
+	once := false
+	l.(*Service).AddListener(func(event int, ctx interface{}) {
+		if event == EventMaxMemory && !once {
+			close(captured)
+			once = true
+		}
+	})
+
+	go func() { c.Serve() }()
+	time.Sleep(time.Millisecond * 100)
+	defer c.Stop()
+
+	lastPID := getPID(s)
+
+	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
+	assert.NoError(t, err)
+
+	for {
+		select {
+		case <-captured:
+			http.DefaultClient.Do(req)
+			assert.NotEqual(t, lastPID, getPID(s))
+			return
+		default:
+			http.DefaultClient.Do(req)
+		}
+	}
+}
 func getPID(s interface{}) string {
 	w := s.(*rrhttp.Service).Server().Workers()[0]
 	return fmt.Sprintf("%v", *w.Pid)
