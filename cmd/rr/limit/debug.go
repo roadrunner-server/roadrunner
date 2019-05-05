@@ -32,7 +32,7 @@ func (s *debugger) listener(event int, ctx interface{}) {
 
 	// watchers
 	switch event {
-	case limit.EventMaxTTL:
+	case limit.EventTTL:
 		w := ctx.(roadrunner.WorkerError)
 		s.logger.Debug(util.Sprintf(
 			"<white+hb>worker.%v</reset> <yellow>%s</reset>",
@@ -41,7 +41,7 @@ func (s *debugger) listener(event int, ctx interface{}) {
 		))
 		return
 
-	case limit.EventMaxIdleTTL:
+	case limit.EventIdleTTL:
 		w := ctx.(roadrunner.WorkerError)
 		s.logger.Debug(util.Sprintf(
 			"<white+hb>worker.%v</reset> <yellow>%s</reset>",
@@ -59,7 +59,7 @@ func (s *debugger) listener(event int, ctx interface{}) {
 		))
 		return
 
-	case limit.EventMaxExecTTL:
+	case limit.EventExecTTL:
 		w := ctx.(roadrunner.WorkerError)
 		s.logger.Error(util.Sprintf(
 			"<white+hb>worker.%v</reset> <red>%s</reset>",

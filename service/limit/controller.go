@@ -11,14 +11,14 @@ const (
 	// EventMaxMemory caused when worker consumes more memory than allowed.
 	EventMaxMemory = iota + 8000
 
-	// EventMaxTTL thrown when worker is removed due TTL being reached. Context is rr.WorkerError
-	EventMaxTTL
+	// EventTTL thrown when worker is removed due TTL being reached. Context is rr.WorkerError
+	EventTTL
 
-	// EventMaxIdleTTL triggered when worker spends too much time at rest.
-	EventMaxIdleTTL
+	// EventIdleTTL triggered when worker spends too much time at rest.
+	EventIdleTTL
 
-	// EventMaxExecTTL triggered when worker spends too much time doing the task (max_execution_time).
-	EventMaxExecTTL
+	// EventExecTTL triggered when worker spends too much time doing the task (max_execution_time).
+	EventExecTTL
 )
 
 // handles controller events
@@ -67,7 +67,7 @@ func (c *controller) control(p roadrunner.Pool) {
 			// make sure worker still on initial request
 			if p.Remove(w, err) && w.State().NumExecs() == eID {
 				go w.Kill()
-				c.report(EventMaxExecTTL, w, err)
+				c.report(EventExecTTL, w, err)
 			}
 		}
 	}
@@ -80,7 +80,7 @@ func (c *controller) control(p roadrunner.Pool) {
 		) {
 			err := fmt.Errorf("max idle time reached (%vs)", c.cfg.IdleTTL)
 			if p.Remove(w, err) {
-				c.report(EventMaxIdleTTL, w, err)
+				c.report(EventIdleTTL, w, err)
 			}
 		}
 	}
@@ -103,7 +103,7 @@ func (c *controller) loadWorkers(p roadrunner.Pool) {
 		if c.cfg.TTL != 0 && now.Sub(w.Created).Seconds() >= float64(c.cfg.TTL) {
 			err := fmt.Errorf("max TTL reached (%vs)", c.cfg.TTL)
 			if p.Remove(w, err) {
-				c.report(EventMaxTTL, w, err)
+				c.report(EventTTL, w, err)
 			}
 			continue
 		}
