@@ -43,6 +43,7 @@ Features:
 - payload context and body
 - protocol, worker and job level error management (including PHP errors)
 - very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
+- integrations with Symfony, Laravel, Slim, CakePHP, Zend Expressive, Spiral
 - works on Windows
 
 Example:
