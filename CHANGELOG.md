@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v1.4.0
+v1.4.0 (05.05.2019)
 -------------------
 - ENV variables in configs (automatic RR_ mapping and manual definition using "${ENV_NAME}" value)
 - the ability to safely remove the worker from the pool in runtime
