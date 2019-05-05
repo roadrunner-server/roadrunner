@@ -28,7 +28,7 @@ import (
 func init() {
 	CLI.AddCommand(&cobra.Command{
 		Use:   "stop",
-		Short: "Detach RoadRunner server",
+		Short: "Stop RoadRunner server",
 		RunE:  stopHandler,
 	})
 }
