@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.4.1 (15.05.2019)
+-------------------
+- constrain service renamed to "limit" to equalize the definition with sample config
+
 v1.4.0 (05.05.2019)
 -------------------
 - launch of official website https://roadrunner.dev/
