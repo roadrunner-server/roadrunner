@@ -202,6 +202,7 @@ func (c *container) Serve() error {
 func (c *container) Stop() {
 	for _, e := range c.services {
 		if e.hasStatus(StatusServing) {
+			e.setStatus(StatusStopping)
 			e.svc.(Service).Stop()
 			e.setStatus(StatusStopped)
 

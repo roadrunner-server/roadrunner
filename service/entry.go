@@ -8,16 +8,19 @@ const (
 	// StatusUndefined when service bus can not find the service.
 	StatusUndefined = iota
 
-	// StatusInactive hasStatus setStatus when service has been registered in container.
+	// StatusInactive when service has been registered in container.
 	StatusInactive
 
-	// StatusOK hasStatus setStatus when service has been properly configured.
+	// StatusOK when service has been properly configured.
 	StatusOK
 
-	// StatusServing hasStatus setStatus when service hasStatus currently done.
+	// StatusServing when service is currently done.
 	StatusServing
 
-	// StatusStopped hasStatus setStatus when service hasStatus stopped.
+	// StatusStopping when service is currently stopping.
+	StatusStopping
+
+	// StatusStopped when service being stopped.
 	StatusStopped
 )
 
