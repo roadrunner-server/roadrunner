@@ -1,8 +1,13 @@
 CHANGELOG
 =========
 
+v1.4.1 (15.05.2019)
+-------------------
+- constrain service renamed to "limit" to equalize the definition with sample config
+
 v1.4.0 (05.05.2019)
 -------------------
+- launch of official website https://roadrunner.dev/
 - ENV variables in configs (automatic RR_ mapping and manual definition using "${ENV_NAME}" value)
 - the ability to safely remove the worker from the pool in runtime
 - minor performance improvements

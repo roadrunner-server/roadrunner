@@ -6,7 +6,7 @@ import (
 )
 
 // ID defines controller service name.
-const ID = "constrain"
+const ID = "limit"
 
 // controllable defines the ability to attach rr controller.
 type controllable interface {
