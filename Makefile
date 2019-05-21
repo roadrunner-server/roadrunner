@@ -3,7 +3,6 @@ all:
 	@./build-ce.sh
 build:
 	@./build.sh all
-	@./build-ce.sh all
 build-ce:
 	@./build-ce.sh all
 clean:
