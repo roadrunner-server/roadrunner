@@ -10,15 +10,15 @@ LDFLAGS="$LDFLAGS -X github.com/spiral/roadrunner/cmd/rr/cmd.Version=${RR_VERSIO
 LDFLAGS="$LDFLAGS -X github.com/spiral/roadrunner/cmd/rr/cmd.BuildTime=$(date +%FT%T%z)"
 
 build(){
-	echo Packaging $1 Build
-	bdir=roadrunner-${RR_VERSION}-$2-$3
+	echo Packaging $1 CE Build
+	bdir=roadrunner-ce-${RR_VERSION}-$2-$3
 	rm -rf builds/$bdir && mkdir -p builds/$bdir
-	GOOS=$2 GOARCH=$3 ./build.sh
+	GOOS=$2 GOARCH=$3 ./build-ce.sh
 
 	if [ "$2" == "windows" ]; then
-		mv rr builds/$bdir/rr.exe
+		mv rr-ce builds/$bdir/rr-ce.exe
 	else
-		mv rr builds/$bdir
+		mv rr-ce builds/$bdir
 	fi
 
 	cp README.md builds/$bdir
@@ -37,7 +37,7 @@ build(){
 }
 
 if [ "$1" == "all" ]; then
-	rm -rf builds/
+	rm -rf builds/*ce*
 	build "Windows" "windows" "amd64"
 	build "Mac" "darwin" "amd64"
 	build "Linux" "linux" "amd64"
@@ -45,4 +45,4 @@ if [ "$1" == "all" ]; then
 	exit
 fi
 
-CGO_ENABLED=0 go build -ldflags "$LDFLAGS -extldflags '-static'" -o "$OD/rr" cmd/rr/main.go
+CGO_ENABLED=0 go build -ldflags "$LDFLAGS -extldflags '-static'" -o "$OD/rr-ce" cmd/rr-ce/main.go

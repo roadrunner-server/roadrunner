@@ -1,13 +1,20 @@
 all:
 	@./build.sh
+	@./build-ce.sh
 build:
 	@./build.sh all
+	@./build-ce.sh all
+build-ce:
+	@./build-ce.sh all
 clean:
 	rm -rf rr
+	rm -rf rr-ce
 install: all
 	cp rr /usr/local/bin/rr
+	cp rr-ce /usr/local/bin/rr-ce
 uninstall: 
 	rm -f /usr/local/bin/rr
+	rm -f /usr/local/bin/rr-ce
 test:
 	composer update
 	go test -v -race -cover
