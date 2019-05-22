@@ -43,7 +43,7 @@ func stopHandler(cmd *cobra.Command, args []string) error {
 	util.Printf("<green>Stopping RoadRunner</reset>: ")
 
 	var r string
-	if err := client.Call("system.Detach", true, &r); err != nil {
+	if err := client.Call("system.Stop", true, &r); err != nil {
 		return err
 	}
 
