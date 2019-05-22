@@ -120,7 +120,6 @@ class RRHelper
             $ext = '.tar.gz';
         }
 
-        // todo: support linux
         return 'https://github.com/spiral/roadrunner/releases/download/v'
             . static::getVersion() . '/' . self::getSignature()
             . $ext;
@@ -213,6 +212,10 @@ class RRHelper
         $progressBar->setFormat('verbose');
 
         $zipFileName = tempnam('.', "rr_zip");
+        if (RRHelper::getOSType() == 'linux') {
+            $zipFileName .= '.tar.gz';
+        }
+
         $zipFile = fopen($zipFileName, "w+");
         $curlResource = curl_init();
 
