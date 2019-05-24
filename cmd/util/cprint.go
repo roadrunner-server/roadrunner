@@ -5,6 +5,7 @@ import (
 	"github.com/mgutz/ansi"
 	"regexp"
 	"strings"
+	"os"
 )
 
 var (
@@ -34,4 +35,9 @@ func Sprintf(format string, args ...interface{}) string {
 	})
 
 	return fmt.Sprintf(format, args...)
+}
+
+// Panicf prints `<white+hb>color formatted message to STDERR</reset>`.
+func Panicf(format string, args ...interface{}) {
+	fmt.Fprint(os.Stderr, Sprintf(format, args...))
 }
