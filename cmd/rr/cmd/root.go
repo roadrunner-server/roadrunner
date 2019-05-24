@@ -63,8 +63,7 @@ var (
 // This is called by main.main(). It only needs to happen once to the CLI.
 func Execute() {
 	if err := CLI.Execute(); err != nil {
-		util.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
-		os.Exit(1)
+		util.ExitWithError(err)
 	}
 }
 
@@ -98,14 +97,12 @@ func init() {
 
 		if workDir != "" {
 			if err := os.Chdir(workDir); err != nil {
-				util.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
-				os.Exit(1)
+				util.ExitWithError(err)
 			}
 		}
 
 		if err := Container.Init(cfg); err != nil {
-			util.Printf("<red+hb>Error:</reset> <red>%s</reset>\n", err)
-			os.Exit(1)
+			util.ExitWithError(err)
 		}
 
 		// global watcher config
