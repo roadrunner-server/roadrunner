@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+v1.4.3 (03.06.2019)
+-------------------
+- fixed dependency with Zend Diactoros by @dkuhnert 
+- minor refactoring of error reporting by @lda
+
+v1.4.2 (22.05.2019)
+-------------------
+- bugfix: incorrect RPC method for stop command
+- bugfix: incorrect archive extension in /vendor/bin/rr get on linux machines
+
 v1.4.1 (15.05.2019)
 -------------------
 - constrain service renamed to "limit" to equalize the definition with sample config
