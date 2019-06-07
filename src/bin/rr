@@ -33,7 +33,7 @@ if (!defined('RR_COMPOSER_INSTALL')) {
     die(1);
 }
 
-if (!class_exists('ZipArchive')) {
+if (RRHelper::getOSType() !== 'linux' && !class_exists('ZipArchive')) {
     fwrite(STDERR, 'Extension `php-zip` is required.' . PHP_EOL);
     die(1);
 }
