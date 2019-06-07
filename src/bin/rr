@@ -146,7 +146,7 @@ class RRHelper
      * @param string $target
      * @throws Exception
      */
-    protected function extractZIP(string $archive, string $target)
+    protected static function extractZIP(string $archive, string $target)
     {
         $zip = new ZipArchive();
         $zip->open($archive);
@@ -173,7 +173,7 @@ class RRHelper
      * @param string $target
      * @throws Exception
      */
-    protected function extractTAR(string $archive, string $target)
+    protected static function extractTAR(string $archive, string $target)
     {
         $arch = new PharData($archive);
         $arch->extractTo('./', self::getSignature() . '/rr');
