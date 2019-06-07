@@ -12,6 +12,8 @@ install:
   - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
   - php composer-setup.php
   - php composer.phar install --no-interaction --prefer-source
+  - find src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
+  - chmod +x src/bin/rr && src/bin/rr get-binary
 
 script:
   - go test -race -v -coverprofile=lib.txt -covermode=atomic
@@ -40,26 +42,26 @@ jobs:
     before_install:
       - sudo add-apt-repository -y ppa:ondrej/php
       - sudo apt-get update
-      - sudo apt-get install -y php7.0-cli
+      - sudo apt-get install -y php7.0-cli php7.0-zip php7.0-curl
       - sudo cp `which php7.0` `which php`
   - stage: Test
     env: "PHP=7.1"
     before_install:
       - sudo add-apt-repository -y ppa:ondrej/php
       - sudo apt-get update
-      - sudo apt-get install -y php7.1-cli
+      - sudo apt-get install -y php7.1-cli php7.1-zip php7.1-curl
       - sudo cp `which php7.1` `which php`
   - stage: Test
     env: "PHP=7.2"
     before_install:
       - sudo add-apt-repository -y ppa:ondrej/php
       - sudo apt-get update
-      - sudo apt-get install -y php7.2-cli
+      - sudo apt-get install -y php7.2-cli php7.2-zip php7.2-curl
       - sudo cp `which php7.2` `which php`
   - stage: Test
     env: "PHP=7.3"
     before_install:
       - sudo add-apt-repository -y ppa:ondrej/php
       - sudo apt-get update
-      - sudo apt-get install -y php7.3-cli
+      - sudo apt-get install -y php7.3-cli php7.3-zip php7.3-curl
       - sudo cp `which php7.3` `which php`
