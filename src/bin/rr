@@ -226,7 +226,7 @@ class RRHelper
         curl_setopt($curlResource, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curlResource, CURLOPT_FILE, $zipFile);
         curl_setopt($curlResource, CURLOPT_PROGRESSFUNCTION,
-            function ($resource, $download_size, $downloaded, $upload_size, $uploaded) use ($progressBar) {
+            function ($resource, $download_size, $downloaded, $upload_size, $uploaded) use (&$progressBar, $output) {
                 if ($download_size == 0) {
                     return;
                 }
@@ -235,8 +235,15 @@ class RRHelper
                     $progressBar->start();
                 }
 
+                if ($progressBar->getMaxSteps() != $download_size) {
+                    /**
+                     * Workaround for symfony < 4.1.x, for example PHP 7.0 will use 3.x
+                     * feature #26449 Make ProgressBar::setMaxSteps public (ostrolucky)
+                     */
+                    $progressBar = new ProgressBar($output, $download_size);
+                }
+
                 $progressBar->setFormat('[%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% ' . intval($download_size / 1024) . 'KB');
-                $progressBar->setMaxSteps($download_size);
                 $progressBar->setProgress($downloaded);
             });
         curl_setopt($curlResource, CURLOPT_NOPROGRESS, false); // needed to make progress function work
