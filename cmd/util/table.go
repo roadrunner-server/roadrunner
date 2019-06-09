@@ -41,8 +41,18 @@ func StatsTable(stats *rrhttp.ServiceStats) *tablewriter.Table {
 	tw.SetColMinWidth(1, 20)
 
 	tw.Append([]string{
-		"accepted",
+		"Accepted",
 		strconv.FormatUint(stats.Accepted, 10),
+	});
+
+	tw.Append([]string{
+		"Success",
+		strconv.FormatUint(stats.Success, 10),
+	});
+
+	tw.Append([]string{
+		"Error",
+		strconv.FormatUint(stats.Error, 10),
 	});
 
 	return tw

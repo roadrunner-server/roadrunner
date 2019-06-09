@@ -27,6 +27,8 @@ type middleware func(f http.HandlerFunc) http.HandlerFunc
 
 type ServiceStats struct {
 	Accepted uint64
+	Success  uint64
+	Error    uint64
 }
 
 // Service manages rr, http servers.
