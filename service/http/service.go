@@ -25,10 +25,15 @@ const (
 // http middleware type.
 type middleware func(f http.HandlerFunc) http.HandlerFunc
 
+type ServiceStats struct {
+	Accepted uint64
+}
+
 // Service manages rr, http servers.
 type Service struct {
 	cfg        *Config
 	env        env.Environment
+	stats 	   *ServiceStats
 	lsns       []func(event int, ctx interface{})
 	mdwr       []middleware
 	mu         sync.Mutex
@@ -78,6 +83,9 @@ func (s *Service) Serve() error {
 			return nil
 		}
 	}
+
+	s.stats = &ServiceStats{};
+	s.AddListener((&statsListener{stats: s.stats}).listener);
 
 	s.cfg.Workers.SetEnv("RR_HTTP", "true")
 
