@@ -3,6 +3,7 @@ package util
 import (
 	"github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
+	rrhttp "github.com/spiral/roadrunner/service/http"
 	rrutil "github.com/spiral/roadrunner/util"
 	"os"
 	"strconv"
@@ -28,6 +29,21 @@ func WorkerTable(workers []*rrutil.State) *tablewriter.Table {
 			renderAlive(time.Unix(0, w.Created)),
 		})
 	}
+
+	return tw
+}
+
+// WorkerTable renders table with information about rr server workers.
+func StatsTable(stats *rrhttp.ServiceStats) *tablewriter.Table {
+	tw := tablewriter.NewWriter(os.Stdout)
+	tw.SetHeader([]string{"Key", "Value"})
+	tw.SetColMinWidth(0, 20)
+	tw.SetColMinWidth(1, 20)
+
+	tw.Append([]string{
+		"accepted",
+		strconv.FormatUint(stats.Accepted, 10),
+	});
 
 	return tw
 }
