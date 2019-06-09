@@ -155,6 +155,10 @@ func Test_Service_Echo(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", string(b))
+
+	assert.Equal(t, uint64(1), s.(*Service).stats.Accepted);
+	assert.Equal(t, uint64(1), s.(*Service).stats.Success);
+	assert.Equal(t, uint64(0), s.(*Service).stats.Error);
 }
 
 func Test_Service_Env(t *testing.T) {
