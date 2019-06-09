@@ -91,7 +91,8 @@ func workersHandler(cmd *cobra.Command, args []string) (err error) {
 }
 
 func showWorkers(client *rpc.Client) {
-	var r http.WorkerList
+	var r http.WorkersResponse
+
 	if err := client.Call("http.Workers", true, &r); err != nil {
 		panic(err)
 	}
