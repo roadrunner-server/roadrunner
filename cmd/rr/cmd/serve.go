@@ -33,13 +33,13 @@ func init() {
 	CLI.AddCommand(&cobra.Command{
 		Use:   "serve",
 		Short: "Serve RoadRunner service(s)",
-		Run:   serveHandler,
+		RunE:   serveHandler,
 	})
 
 	signal.Notify(stopSignal, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGINT)
 }
 
-func serveHandler(cmd *cobra.Command, args []string) {
+func serveHandler(cmd *cobra.Command, args []string) error {
 	stopped := make(chan interface{})
 
 	go func() {
@@ -49,8 +49,9 @@ func serveHandler(cmd *cobra.Command, args []string) {
 	}()
 
 	if err := Container.Serve(); err != nil {
-		return
+		return err
 	}
 
 	<-stopped
+	return nil
 }
