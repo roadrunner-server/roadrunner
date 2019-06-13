@@ -51,7 +51,7 @@ func TestConfig_ListenerUnix(t *testing.T) {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
-	cfg := &Config{Listen: "unix://rpc.sock"}
+	cfg := &Config{Listen: "unix://file.sock"}
 
 	ln, err := cfg.Listener()
 	assert.NoError(t, err)
@@ -59,7 +59,7 @@ func TestConfig_ListenerUnix(t *testing.T) {
 	defer ln.Close()
 
 	assert.Equal(t, "unix", ln.Addr().Network())
-	assert.Equal(t, "rpc.sock", ln.Addr().String())
+	assert.Equal(t, "file.sock", ln.Addr().String())
 }
 
 func Test_Config_Error(t *testing.T) {
@@ -71,7 +71,7 @@ func Test_Config_Error(t *testing.T) {
 	ln, err := cfg.Listener()
 	assert.Nil(t, ln)
 	assert.Error(t, err)
-	assert.Equal(t, "invalid socket DSN (tcp://:6001, unix://rpc.sock)", err.Error())
+	assert.Equal(t, "invalid socket DSN (tcp://:6001, unix://file.sock)", err.Error())
 }
 
 func Test_Config_ErrorMethod(t *testing.T) {
@@ -102,7 +102,7 @@ func TestConfig_DialerUnix(t *testing.T) {
 		t.Skip("not supported on " + runtime.GOOS)
 	}
 
-	cfg := &Config{Listen: "unix://rpc.sock"}
+	cfg := &Config{Listen: "unix://file.sock"}
 
 	ln, _ := cfg.Listener()
 	defer ln.Close()
@@ -113,7 +113,7 @@ func TestConfig_DialerUnix(t *testing.T) {
 	defer conn.Close()
 
 	assert.Equal(t, "unix", conn.RemoteAddr().Network())
-	assert.Equal(t, "rpc.sock", conn.RemoteAddr().String())
+	assert.Equal(t, "file.sock", conn.RemoteAddr().String())
 }
 
 func Test_Config_DialerError(t *testing.T) {
@@ -125,7 +125,7 @@ func Test_Config_DialerError(t *testing.T) {
 	ln, err := cfg.Dialer()
 	assert.Nil(t, ln)
 	assert.Error(t, err)
-	assert.Equal(t, "invalid socket DSN (tcp://:6001, unix://rpc.sock)", err.Error())
+	assert.Equal(t, "invalid socket DSN (tcp://:6001, unix://file.sock)", err.Error())
 }
 
 func Test_Config_DialerErrorMethod(t *testing.T) {
