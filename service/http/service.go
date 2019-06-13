@@ -101,7 +101,7 @@ func (s *Service) Serve() error {
 	}
 
 	if s.cfg.EnableFCGI() {
-		s.fcgi = &http.Server{Addr: s.cfg.Address, Handler: s}
+		s.fcgi = &http.Server{Handler: s}
 	}
 
 	s.mu.Unlock()
@@ -165,7 +165,7 @@ func (s *Service) ListenAndServeFCGI() error {
 		return err
 	}
 
-	err = fcgi.Serve(l, s.http.Handler)
+	err = fcgi.Serve(l, s.fcgi.Handler)
 	if err != nil {
 		return err
 	}
