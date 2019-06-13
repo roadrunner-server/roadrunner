@@ -54,6 +54,10 @@ type SSLConfig struct {
 	Cert string
 }
 
+func (c *Config) EnableHTTP() bool {
+	return c.Address != ""
+}
+
 // EnableTLS returns true if rr must listen TLS connections.
 func (c *Config) EnableTLS() bool {
 	return c.SSL.Key != "" || c.SSL.Cert != ""
@@ -157,7 +161,7 @@ func (c *Config) Valid() error {
 		return err
 	}
 
-	if !strings.Contains(c.Address, ":") {
+	if c.Address != "" && !strings.Contains(c.Address, ":") {
 		return errors.New("mailformed http server address")
 	}
 

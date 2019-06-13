@@ -20,7 +20,6 @@ func Test_FCGI_Service_Echo(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
-			"address": ":6029",
 			"fcgi": {
 				"address": "tcp://0.0.0.0:6082"
 			},

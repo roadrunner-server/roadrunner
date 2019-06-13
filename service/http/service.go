@@ -69,6 +69,10 @@ func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Environment) (bool, er
 		}
 	}
 
+	if !cfg.EnableHTTP() && !cfg.EnableTLS() && !cfg.EnableFCGI() {
+		return false, nil
+	}
+
 	return true, nil
 }
 
@@ -94,7 +98,9 @@ func (s *Service) Serve() error {
 	s.handler = &Handler{cfg: s.cfg, rr: s.rr}
 	s.handler.Listen(s.throw)
 
-	s.http = &http.Server{Addr: s.cfg.Address, Handler: s}
+	if s.cfg.EnableHTTP() {
+		s.http = &http.Server{Addr: s.cfg.Address, Handler: s}
+	}
 
 	if s.cfg.EnableTLS() {
 		s.https = s.initSSL()
@@ -113,9 +119,11 @@ func (s *Service) Serve() error {
 
 	err := make(chan error, 3)
 
-	go func() {
-		err <- s.http.ListenAndServe()
-	}()
+	if s.http != nil {
+		go func() {
+			err <- s.http.ListenAndServe()
+		}()
+	}
 
 	if s.https != nil {
 		go func() {
@@ -136,9 +144,6 @@ func (s *Service) Serve() error {
 func (s *Service) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if s.http == nil {
-		return
-	}
 
 	if s.fcgi != nil {
 		go s.fcgi.Shutdown(context.Background())
@@ -148,7 +153,9 @@ func (s *Service) Stop() {
 		go s.https.Shutdown(context.Background())
 	}
 
-	go s.http.Shutdown(context.Background())
+	if s.http != nil {
+		go s.http.Shutdown(context.Background())
+	}
 }
 
 // Server returns associated rr server (if any).
