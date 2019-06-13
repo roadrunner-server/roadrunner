@@ -7,8 +7,10 @@ import (
 	"github.com/spiral/roadrunner/service/env"
 	"github.com/spiral/roadrunner/service/http/attributes"
 	"github.com/spiral/roadrunner/service/rpc"
+	"github.com/spiral/roadrunner/util"
 	"golang.org/x/net/http2"
 	"net/http"
+	"net/http/fcgi"
 	"net/url"
 	"strings"
 	"sync"
@@ -37,6 +39,7 @@ type Service struct {
 	handler    *Handler
 	http       *http.Server
 	https      *http.Server
+	fcgi      *http.Server
 }
 
 // Attach attaches controller. Currently only one controller is supported.
@@ -97,6 +100,10 @@ func (s *Service) Serve() error {
 		s.https = s.initSSL()
 	}
 
+	if s.cfg.EnableFCGI() {
+		s.fcgi = &http.Server{Addr: s.cfg.Address, Handler: s}
+	}
+
 	s.mu.Unlock()
 
 	if err := s.rr.Start(); err != nil {
@@ -104,10 +111,22 @@ func (s *Service) Serve() error {
 	}
 	defer s.rr.Stop()
 
-	err := make(chan error, 2)
-	go func() { err <- s.http.ListenAndServe() }()
+	err := make(chan error, 3)
+
+	go func() {
+		err <- s.http.ListenAndServe()
+	}()
+
 	if s.https != nil {
-		go func() { err <- s.https.ListenAndServeTLS(s.cfg.SSL.Cert, s.cfg.SSL.Key) }()
+		go func() {
+			err <- s.https.ListenAndServeTLS(s.cfg.SSL.Cert, s.cfg.SSL.Key)
+		}()
+	}
+
+	if s.fcgi != nil {
+		go func() {
+			err <- s.ListenAndServeFCGI()
+		}()
 	}
 
 	return <-err
@@ -119,6 +138,10 @@ func (s *Service) Stop() {
 	defer s.mu.Unlock()
 	if s.http == nil {
 		return
+	}
+
+	if s.fcgi != nil {
+		go s.fcgi.Shutdown(context.Background())
 	}
 
 	if s.https != nil {
@@ -134,6 +157,20 @@ func (s *Service) Server() *roadrunner.Server {
 	defer s.mu.Unlock()
 
 	return s.rr
+}
+
+func (s *Service) ListenAndServeFCGI() error {
+	l, err := util.CreateListener(s.cfg.FCGI.Address);
+	if err != nil {
+		return err
+	}
+
+	err = fcgi.Serve(l, s.http.Handler)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // ServeHTTP handles connection using set of middleware and rr PSR-7 server.
