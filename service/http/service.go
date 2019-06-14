@@ -209,10 +209,11 @@ func (s *Service) initSSL() *http.Server {
 	server := &http.Server{Addr: s.tlsAddr(s.cfg.Address, true), Handler: s}
 	s.throw(EventInitSSL, server)
 
-	// Enable HTTP/2 support by default
-	http2.ConfigureServer(server, &http2.Server{
-		MaxConcurrentStreams: s.cfg.HTTP2.MaxConcurrentStreams,
-	})
+	if s.cfg.HTTP2.Enabled {
+		http2.ConfigureServer(server, &http2.Server{
+			MaxConcurrentStreams: s.cfg.HTTP2.MaxConcurrentStreams,
+		})
+	}
 
 	return server
 }

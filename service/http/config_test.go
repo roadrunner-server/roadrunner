@@ -33,6 +33,9 @@ func Test_Config_Valid(t *testing.T) {
 	cfg := &Config{
 		Address:        ":8080",
 		MaxRequestSize: 1024,
+		HTTP2: &HTTP2Config{
+			Enabled: true,
+		},
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
@@ -58,6 +61,9 @@ func Test_Trusted_Subnets(t *testing.T) {
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
+		},
+		HTTP2: &HTTP2Config{
+			Enabled: true,
 		},
 		TrustedSubnets: []string{"200.1.0.0/16"},
 		Workers: &roadrunner.ServerConfig{
@@ -85,6 +91,9 @@ func Test_Trusted_Subnets_Err(t *testing.T) {
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
 		},
+		HTTP2: &HTTP2Config{
+			Enabled: true,
+		},
 		TrustedSubnets: []string{"200.1.0.0"},
 		Workers: &roadrunner.ServerConfig{
 			Command: "php tests/client.php echo pipes",
@@ -111,6 +120,9 @@ func Test_Config_Valid_SSL(t *testing.T) {
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
+		},
+		HTTP2: &HTTP2Config{
+			Enabled: true,
 		},
 		Workers: &roadrunner.ServerConfig{
 			Command: "php tests/client.php echo pipes",
@@ -141,6 +153,9 @@ func Test_Config_SSL_No_key(t *testing.T) {
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
 		},
+		HTTP2: &HTTP2Config{
+			Enabled: true,
+		},
 		Workers: &roadrunner.ServerConfig{
 			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
@@ -166,6 +181,9 @@ func Test_Config_SSL_No_Cert(t *testing.T) {
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
 		},
+		HTTP2: &HTTP2Config{
+			Enabled: true,
+		},
 		Workers: &roadrunner.ServerConfig{
 			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
@@ -184,6 +202,9 @@ func Test_Config_NoUploads(t *testing.T) {
 	cfg := &Config{
 		Address:        ":8080",
 		MaxRequestSize: 1024,
+		HTTP2: &HTTP2Config{
+			Enabled: true,
+		},
 		Workers: &roadrunner.ServerConfig{
 			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
@@ -198,10 +219,35 @@ func Test_Config_NoUploads(t *testing.T) {
 	assert.Error(t, cfg.Valid())
 }
 
+func Test_Config_NoHTTP2(t *testing.T) {
+	cfg := &Config{
+		Address:        ":8080",
+		MaxRequestSize: 1024,
+		Uploads: &UploadsConfig{
+			Dir:    os.TempDir(),
+			Forbid: []string{".go"},
+		},
+		Workers: &roadrunner.ServerConfig{
+			Command: "php tests/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      0,
+				AllocateTimeout: time.Second,
+				DestroyTimeout:  time.Second,
+			},
+		},
+	}
+
+	assert.Error(t, cfg.Valid())
+}
+
 func Test_Config_NoWorkers(t *testing.T) {
 	cfg := &Config{
 		Address:        ":8080",
 		MaxRequestSize: 1024,
+		HTTP2: &HTTP2Config{
+			Enabled: true,
+		},
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
@@ -218,6 +264,9 @@ func Test_Config_NoPool(t *testing.T) {
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
+		},
+		HTTP2: &HTTP2Config{
+			Enabled: true,
 		},
 		Workers: &roadrunner.ServerConfig{
 			Command: "php tests/client.php echo pipes",
@@ -241,6 +290,9 @@ func Test_Config_DeadPool(t *testing.T) {
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
 		},
+		HTTP2: &HTTP2Config{
+			Enabled: true,
+		},
 		Workers: &roadrunner.ServerConfig{
 			Command: "php tests/client.php echo pipes",
 			Relay:   "pipes",
@@ -257,6 +309,9 @@ func Test_Config_InvalidAddress(t *testing.T) {
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
 			Forbid: []string{".go"},
+		},
+		HTTP2: &HTTP2Config{
+			Enabled: true,
 		},
 		Workers: &roadrunner.ServerConfig{
 			Command: "php tests/client.php echo pipes",

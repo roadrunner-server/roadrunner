@@ -18,8 +18,6 @@ type Config struct {
 	// SSL defines https server options.
 	SSL SSLConfig
 
-	HTTP2 *HTTP2Config
-
 	FCGI FCGIConfig
 
 	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
@@ -32,6 +30,9 @@ type Config struct {
 	// Uploads configures uploads configuration.
 	Uploads *UploadsConfig
 
+	// HTTP2 configuration
+	HTTP2 *HTTP2Config
+
 	// Workers configures rr server and worker pool.
 	Workers *roadrunner.ServerConfig
 }
@@ -42,7 +43,15 @@ type FCGIConfig struct {
 }
 
 type HTTP2Config struct {
+	Enabled bool
 	MaxConcurrentStreams uint32
+}
+
+func (cfg *HTTP2Config) InitDefaults() error {
+	cfg.Enabled = true
+	cfg.MaxConcurrentStreams = 128
+
+	return nil
 }
 
 // SSLConfig defines https server configuration.
@@ -79,6 +88,10 @@ func (c *Config) Hydrate(cfg service.Config) error {
 		c.Workers = &roadrunner.ServerConfig{}
 	}
 
+	if c.HTTP2 == nil {
+		c.HTTP2 = &HTTP2Config{}
+	}
+
 	if c.Uploads == nil {
 		c.Uploads = &UploadsConfig{}
 	}
@@ -87,12 +100,7 @@ func (c *Config) Hydrate(cfg service.Config) error {
 		c.SSL.Port = 443
 	}
 
-	if c.HTTP2 == nil {
-		c.HTTP2 = &HTTP2Config{
-			MaxConcurrentStreams: 128,
-		}
-	}
-
+	c.HTTP2.InitDefaults()
 	c.Uploads.InitDefaults()
 	c.Workers.InitDefaults()
 
@@ -159,6 +167,10 @@ func (c *Config) IsTrusted(ip string) bool {
 func (c *Config) Valid() error {
 	if c.Uploads == nil {
 		return errors.New("mailformed uploads config")
+	}
+
+	if c.HTTP2 == nil {
+		return errors.New("mailformed http2 config")
 	}
 
 	if c.Workers == nil {

@@ -35,6 +35,7 @@ http:
 
   # HTTP service provides HTTP2 transport
   http2:
+    enabled: true
     maxConcurrentStreams: 128
 
   # max POST request size, including file uploads in MB.
