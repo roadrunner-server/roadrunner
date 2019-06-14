@@ -33,6 +33,10 @@ http:
     # FastCGI connection DSN. Supported TCP and Unix sockets.
     address: tcp://0.0.0.0:6920
 
+  # HTTP service provides HTTP2 transport
+  http2:
+    maxConcurrentStreams: 128
+
   # max POST request size, including file uploads in MB.
   maxRequestSize: 200
 

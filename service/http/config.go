@@ -18,6 +18,8 @@ type Config struct {
 	// SSL defines https server options.
 	SSL SSLConfig
 
+	HTTP2 *HTTP2Config
+
 	FCGI FCGIConfig
 
 	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
@@ -37,6 +39,10 @@ type Config struct {
 type FCGIConfig struct {
 	// Port and port to handle as http server.
 	Address string
+}
+
+type HTTP2Config struct {
+	MaxConcurrentStreams uint32
 }
 
 // SSLConfig defines https server configuration.
@@ -79,6 +85,12 @@ func (c *Config) Hydrate(cfg service.Config) error {
 
 	if c.SSL.Port == 0 {
 		c.SSL.Port = 443
+	}
+
+	if c.HTTP2 == nil {
+		c.HTTP2 = &HTTP2Config{
+			MaxConcurrentStreams: 128,
+		}
 	}
 
 	c.Uploads.InitDefaults()
