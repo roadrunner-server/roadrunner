@@ -78,6 +78,10 @@ func (c *Config) EnableTLS() bool {
 	return c.SSL.Key != "" || c.SSL.Cert != ""
 }
 
+func (c *Config) EnableHTTP2() bool {
+	return c.HTTP2.Enabled
+}
+
 func (c *Config) EnableFCGI() bool {
 	return c.FCGI.Address != ""
 }
