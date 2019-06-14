@@ -28,6 +28,11 @@ http:
     # ssl private key
     key:      server.key
 
+  # HTTP service provides FastCGI as frontend
+  fcgi:
+    # FastCGI connection DSN. Supported TCP and Unix sockets.
+    address: tcp://0.0.0.0:6920
+
   # max POST request size, including file uploads in MB.
   maxRequestSize: 200
 

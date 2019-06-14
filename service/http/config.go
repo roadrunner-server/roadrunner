@@ -18,6 +18,8 @@ type Config struct {
 	// SSL defines https server options.
 	SSL SSLConfig
 
+	FCGI FCGIConfig
+
 	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
 	MaxRequestSize int64
 
@@ -30,6 +32,11 @@ type Config struct {
 
 	// Workers configures rr server and worker pool.
 	Workers *roadrunner.ServerConfig
+}
+
+type FCGIConfig struct {
+	// Port and port to handle as http server.
+	Address string
 }
 
 // SSLConfig defines https server configuration.
@@ -47,9 +54,17 @@ type SSLConfig struct {
 	Cert string
 }
 
+func (c *Config) EnableHTTP() bool {
+	return c.Address != ""
+}
+
 // EnableTLS returns true if rr must listen TLS connections.
 func (c *Config) EnableTLS() bool {
 	return c.SSL.Key != "" || c.SSL.Cert != ""
+}
+
+func (c *Config) EnableFCGI() bool {
+	return c.FCGI.Address != ""
 }
 
 // Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
@@ -146,7 +161,7 @@ func (c *Config) Valid() error {
 		return err
 	}
 
-	if !strings.Contains(c.Address, ":") {
+	if c.Address != "" && !strings.Contains(c.Address, ":") {
 		return errors.New("mailformed http server address")
 	}
 

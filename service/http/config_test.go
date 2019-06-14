@@ -19,7 +19,7 @@ func Test_Config_Hydrate_Error1(t *testing.T) {
 	cfg := &mockCfg{`{"enable": true}`}
 	c := &Config{}
 
-	assert.Error(t, c.Hydrate(cfg))
+	assert.NoError(t, c.Hydrate(cfg))
 }
 
 func Test_Config_Hydrate_Error2(t *testing.T) {
@@ -252,7 +252,7 @@ func Test_Config_DeadPool(t *testing.T) {
 
 func Test_Config_InvalidAddress(t *testing.T) {
 	cfg := &Config{
-		Address:        "",
+		Address:        "unexpected_address",
 		MaxRequestSize: 1024,
 		Uploads: &UploadsConfig{
 			Dir:    os.TempDir(),
