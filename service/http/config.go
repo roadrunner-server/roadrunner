@@ -30,6 +30,9 @@ type Config struct {
 	// Uploads configures uploads configuration.
 	Uploads *UploadsConfig
 
+	// HTTP2 configuration
+	HTTP2 *HTTP2Config
+
 	// Workers configures rr server and worker pool.
 	Workers *roadrunner.ServerConfig
 }
@@ -37,6 +40,18 @@ type Config struct {
 type FCGIConfig struct {
 	// Port and port to handle as http server.
 	Address string
+}
+
+type HTTP2Config struct {
+	Enabled bool
+	MaxConcurrentStreams uint32
+}
+
+func (cfg *HTTP2Config) InitDefaults() error {
+	cfg.Enabled = true
+	cfg.MaxConcurrentStreams = 128
+
+	return nil
 }
 
 // SSLConfig defines https server configuration.
@@ -63,6 +78,10 @@ func (c *Config) EnableTLS() bool {
 	return c.SSL.Key != "" || c.SSL.Cert != ""
 }
 
+func (c *Config) EnableHTTP2() bool {
+	return c.HTTP2.Enabled
+}
+
 func (c *Config) EnableFCGI() bool {
 	return c.FCGI.Address != ""
 }
@@ -73,6 +92,10 @@ func (c *Config) Hydrate(cfg service.Config) error {
 		c.Workers = &roadrunner.ServerConfig{}
 	}
 
+	if c.HTTP2 == nil {
+		c.HTTP2 = &HTTP2Config{}
+	}
+
 	if c.Uploads == nil {
 		c.Uploads = &UploadsConfig{}
 	}
@@ -81,6 +104,7 @@ func (c *Config) Hydrate(cfg service.Config) error {
 		c.SSL.Port = 443
 	}
 
+	c.HTTP2.InitDefaults()
 	c.Uploads.InitDefaults()
 	c.Workers.InitDefaults()
 
@@ -147,6 +171,10 @@ func (c *Config) IsTrusted(ip string) bool {
 func (c *Config) Valid() error {
 	if c.Uploads == nil {
 		return errors.New("mailformed uploads config")
+	}
+
+	if c.HTTP2 == nil {
+		return errors.New("mailformed http2 config")
 	}
 
 	if c.Workers == nil {

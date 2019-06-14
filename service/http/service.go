@@ -104,6 +104,12 @@ func (s *Service) Serve() error {
 
 	if s.cfg.EnableTLS() {
 		s.https = s.initSSL()
+
+		if s.cfg.EnableHTTP2() {
+			if err := s.InitHTTP2(); err != nil {
+				return err
+			}
+		}
 	}
 
 	if s.cfg.EnableFCGI() {
@@ -209,10 +215,13 @@ func (s *Service) initSSL() *http.Server {
 	server := &http.Server{Addr: s.tlsAddr(s.cfg.Address, true), Handler: s}
 	s.throw(EventInitSSL, server)
 
-	// Enable HTTP/2 support by default
-	http2.ConfigureServer(server, &http2.Server{})
-
 	return server
+}
+
+func (s *Service) InitHTTP2() error {
+	return http2.ConfigureServer(s.https, &http2.Server{
+		MaxConcurrentStreams: s.cfg.HTTP2.MaxConcurrentStreams,
+	})
 }
 
 // throw handles service, server and pool events.
