@@ -33,8 +33,24 @@ type Config struct {
 	// HTTP2 configuration
 	HTTP2 *HTTP2Config
 
+	// Middlewares
+	Middlewares *MiddlewaresConfig
+
 	// Workers configures rr server and worker pool.
 	Workers *roadrunner.ServerConfig
+}
+
+type MiddlewaresConfig struct {
+	Headers *HeaderMiddlewareConfig
+}
+
+type HeaderMiddlewareConfig struct {
+	CustomRequestHeaders map[string]string
+	CustomResponseHeaders map[string]string
+}
+
+func (c *MiddlewaresConfig) EnableHeaders() bool {
+	return c.Headers.CustomRequestHeaders != nil || c.Headers.CustomResponseHeaders != nil
 }
 
 type FCGIConfig struct {
@@ -71,6 +87,10 @@ type SSLConfig struct {
 
 func (c *Config) EnableHTTP() bool {
 	return c.Address != ""
+}
+
+func (c *Config) EnableMiddlewares() bool {
+	return c.Middlewares != nil
 }
 
 // EnableTLS returns true if rr must listen TLS connections.

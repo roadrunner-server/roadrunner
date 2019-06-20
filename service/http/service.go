@@ -95,6 +95,10 @@ func (s *Service) Serve() error {
 		s.rr.Attach(s.controller)
 	}
 
+	if s.cfg.EnableMiddlewares() {
+		s.initMiddlewares()
+	}
+
 	s.handler = &Handler{cfg: s.cfg, rr: s.rr}
 	s.handler.Listen(s.throw)
 
@@ -246,4 +250,31 @@ func (s *Service) tlsAddr(host string, forcePort bool) string {
 	}
 
 	return host
+}
+
+func (s *Service) headersMiddleware(f http.HandlerFunc) http.HandlerFunc {
+	// Define the http.HandlerFunc
+	return func(w http.ResponseWriter, r *http.Request) {
+		if s.cfg.Middlewares.Headers.CustomRequestHeaders != nil {
+			for k, v := range s.cfg.Middlewares.Headers.CustomRequestHeaders {
+				r.Header.Add(k, v)
+			}
+		}
+
+		if s.cfg.Middlewares.Headers.CustomResponseHeaders != nil {
+			for k, v := range s.cfg.Middlewares.Headers.CustomResponseHeaders {
+				w.Header().Set(k, v)
+			}
+		}
+
+		f(w, r)
+	}
+}
+
+func (s *Service) initMiddlewares() error {
+	if s.cfg.Middlewares.EnableHeaders() {
+		s.AddMiddleware(s.headersMiddleware)
+	}
+
+	return nil
 }
