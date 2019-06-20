@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/http/fcgi"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -271,9 +272,53 @@ func (s *Service) headersMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+func handlePreflight(w http.ResponseWriter, r *http.Request, options *CORSMiddlewareConfig)  {
+	headers := w.Header()
+
+	headers.Add("Vary", "Origin")
+	headers.Add("Vary", "Access-Control-Request-Method")
+	headers.Add("Vary", "Access-Control-Request-Headers")
+
+	if options.AllowedOrigin != "" {
+		headers.Set("Access-Control-Allow-Origin", options.AllowedOrigin)
+	}
+
+	if options.AllowedHeaders != "" {
+		headers.Set("Access-Control-Allow-Headers", options.AllowedHeaders)
+	}
+
+	if options.AllowedMethods != "" {
+		headers.Set("Access-Control-Allow-Methods", options.AllowedMethods)
+	}
+
+	if options.AllowCredentials != nil {
+		headers.Set("Access-Control-Allow-Credentials", strconv.FormatBool(*options.AllowCredentials))
+	}
+
+	if options.MaxAge > 0 {
+		headers.Set("Access-Control-Max-Age", strconv.Itoa(options.MaxAge))
+	}
+}
+
+func (s *Service) corsMiddleware(f http.HandlerFunc) http.HandlerFunc {
+	// Define the http.HandlerFunc
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			handlePreflight(w, r, s.cfg.Middlewares.CORS)
+			w.WriteHeader(http.StatusOK);
+		} else {
+			f(w, r)
+		}
+	}
+}
+
 func (s *Service) initMiddlewares() error {
 	if s.cfg.Middlewares.EnableHeaders() {
 		s.AddMiddleware(s.headersMiddleware)
+	}
+
+	if s.cfg.Middlewares.EnableCORS() {
+		s.AddMiddleware(s.corsMiddleware)
 	}
 
 	return nil

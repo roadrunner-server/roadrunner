@@ -30,13 +30,18 @@ http:
 
   # HTTP service provides built-in middlewares
   middlewares:
+    # Middleware to handle CORS requests
+    cors:
+      AllowedOrigin: "*"
+      allowedHeaders: "*"
+      allowedMethods: "GET,POST,PUT,DELETE"
+      allowCredentials: true
+      maxAge: 600
     # Middleware that adding Headers to the Request / Response
     headers:
       customRequestHeaders:
         "Example-Request-Header": "Value"
       customResponseHeaders:
-        "Access-Control-Allow-Origin": "*"
-        "Access-Control-Allow-Headers": "GET,POST,PUT,DELETE"
         "X-Powered-By": "RoadRunner"
 
   # HTTP service provides FastCGI as frontend

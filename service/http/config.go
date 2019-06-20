@@ -42,11 +42,24 @@ type Config struct {
 
 type MiddlewaresConfig struct {
 	Headers *HeaderMiddlewareConfig
+	CORS *CORSMiddlewareConfig
+}
+
+type CORSMiddlewareConfig struct {
+	AllowedOrigin string
+	AllowedMethods string
+	AllowedHeaders string
+	AllowCredentials *bool
+	MaxAge int
 }
 
 type HeaderMiddlewareConfig struct {
 	CustomRequestHeaders map[string]string
 	CustomResponseHeaders map[string]string
+}
+
+func (c *MiddlewaresConfig) EnableCORS() bool {
+	return c.CORS != nil
 }
 
 func (c *MiddlewaresConfig) EnableHeaders() bool {
