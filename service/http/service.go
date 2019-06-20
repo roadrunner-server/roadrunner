@@ -272,7 +272,7 @@ func (s *Service) headersMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func handlePreflight(w http.ResponseWriter, r *http.Request, options *CORSMiddlewareConfig)  {
+func handlePreflightRequest(w http.ResponseWriter, r *http.Request, options *CORSMiddlewareConfig)  {
 	headers := w.Header()
 
 	headers.Add("Vary", "Origin")
@@ -298,15 +298,35 @@ func handlePreflight(w http.ResponseWriter, r *http.Request, options *CORSMiddle
 	if options.MaxAge > 0 {
 		headers.Set("Access-Control-Max-Age", strconv.Itoa(options.MaxAge))
 	}
+
+	w.WriteHeader(http.StatusOK);
+}
+
+func addCORSHeaders(w http.ResponseWriter, r *http.Request, options *CORSMiddlewareConfig)  {
+	headers := w.Header()
+
+	headers.Add("Vary", "Origin")
+
+	if options.AllowedOrigin != "" {
+		headers.Set("Access-Control-Allow-Origin", options.AllowedOrigin)
+	}
+
+	if options.AllowedHeaders != "" {
+		headers.Set("Access-Control-Allow-Headers", options.AllowedHeaders)
+	}
+
+	if options.AllowCredentials != nil {
+		headers.Set("Access-Control-Allow-Credentials", strconv.FormatBool(*options.AllowCredentials))
+	}
 }
 
 func (s *Service) corsMiddleware(f http.HandlerFunc) http.HandlerFunc {
 	// Define the http.HandlerFunc
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodOptions {
-			handlePreflight(w, r, s.cfg.Middlewares.CORS)
-			w.WriteHeader(http.StatusOK);
+			handlePreflightRequest(w, r, s.cfg.Middlewares.CORS)
 		} else {
+			addCORSHeaders(w, r, s.cfg.Middlewares.CORS)
 			f(w, r)
 		}
 	}
