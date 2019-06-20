@@ -315,6 +315,10 @@ func addCORSHeaders(w http.ResponseWriter, r *http.Request, options *CORSMiddlew
 		headers.Set("Access-Control-Allow-Headers", options.AllowedHeaders)
 	}
 
+	if options.ExposedHeaders != "" {
+		headers.Set("Access-Control-Expose-Headers", options.ExposedHeaders)
+	}
+
 	if options.AllowCredentials != nil {
 		headers.Set("Access-Control-Allow-Credentials", strconv.FormatBool(*options.AllowCredentials))
 	}

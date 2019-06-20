@@ -50,6 +50,7 @@ type CORSMiddlewareConfig struct {
 	AllowedMethods string
 	AllowedHeaders string
 	AllowCredentials *bool
+	ExposedHeaders string
 	MaxAge int
 }
 
