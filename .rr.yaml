@@ -28,6 +28,17 @@ http:
     # ssl private key
     key:      server.key
 
+  # HTTP service provides built-in middlewares
+  middlewares:
+    # Middleware that adding Headers to the Request / Response
+    headers:
+      customRequestHeaders:
+        "Example-Request-Header": "Value"
+      customResponseHeaders:
+        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Headers": "GET,POST,PUT,DELETE"
+        "X-Powered-By": "RoadRunner"
+
   # HTTP service provides FastCGI as frontend
   fcgi:
     # FastCGI connection DSN. Supported TCP and Unix sockets.
