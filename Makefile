@@ -18,3 +18,4 @@ test:
 	go test -v -race -cover ./service/http
 	go test -v -race -cover ./service/static
 	go test -v -race -cover ./service/limit
+	go test -v -race -cover ./service/headers
