@@ -14,7 +14,7 @@ type Config struct {
 	Response map[string]string
 }
 
-// CORS headers configuration.
+// CORSConfig headers configuration.
 type CORSConfig struct {
 	// AllowedOrigin: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
 	AllowedOrigin string

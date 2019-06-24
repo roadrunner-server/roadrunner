@@ -53,6 +53,7 @@ type HTTP2Config struct {
 	MaxConcurrentStreams uint32
 }
 
+// InitDefaults sets default values for HTTP/2 configuration.
 func (cfg *HTTP2Config) InitDefaults() error {
 	cfg.Enabled = true
 	cfg.MaxConcurrentStreams = 128

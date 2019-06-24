@@ -139,7 +139,7 @@ func (s *Service) Serve() error {
 
 	if s.fcgi != nil {
 		go func() {
-			err <- s.ListenAndServeFCGI()
+			err <- s.ServeFCGI()
 		}()
 	}
 
@@ -172,7 +172,8 @@ func (s *Service) Server() *roadrunner.Server {
 	return s.rr
 }
 
-func (s *Service) ListenAndServeFCGI() error {
+// ServeFCGI starts FastCGI server.
+func (s *Service) ServeFCGI() error {
 	l, err := util.CreateListener(s.cfg.FCGI.Address)
 	if err != nil {
 		return err

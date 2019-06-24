@@ -7,6 +7,7 @@ import (
 	"syscall"
 )
 
+// CreateListener crates socket listener based on DSN definition.
 func CreateListener(address string) (net.Listener, error) {
 	dsn := strings.Split(address, "://")
 	if len(dsn) != 2 {
