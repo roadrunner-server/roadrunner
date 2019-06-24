@@ -24,6 +24,7 @@ package main
 
 import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
+	"github.com/spiral/roadrunner/service/headers"
 
 	// services (plugins)
 	"github.com/spiral/roadrunner/service/env"
@@ -41,6 +42,7 @@ func main() {
 	rr.Container.Register(env.ID, &env.Service{})
 	rr.Container.Register(rpc.ID, &rpc.Service{})
 	rr.Container.Register(http.ID, &http.Service{})
+	rr.Container.Register(headers.ID, &headers.Service{})
 	rr.Container.Register(static.ID, &static.Service{})
 	rr.Container.Register(limit.ID, &limit.Service{})
 

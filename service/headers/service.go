@@ -6,10 +6,8 @@ import (
 	"strconv"
 )
 
-const (
-	// ID contains default service name.
-	ID = "headers"
-)
+// ID contains default service name.
+const ID = "headers"
 
 // Service serves static files. Potentially convert into middleware?
 type Service struct {
