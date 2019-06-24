@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/http/fcgi"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -93,6 +94,10 @@ func (s *Service) Serve() error {
 
 	if s.controller != nil {
 		s.rr.Attach(s.controller)
+	}
+
+	if s.cfg.EnableMiddlewares() {
+		s.initMiddlewares()
 	}
 
 	s.handler = &Handler{cfg: s.cfg, rr: s.rr}
@@ -246,4 +251,99 @@ func (s *Service) tlsAddr(host string, forcePort bool) string {
 	}
 
 	return host
+}
+
+func (s *Service) headersMiddleware(f http.HandlerFunc) http.HandlerFunc {
+	// Define the http.HandlerFunc
+	return func(w http.ResponseWriter, r *http.Request) {
+		if s.cfg.Middlewares.Headers.CustomRequestHeaders != nil {
+			for k, v := range s.cfg.Middlewares.Headers.CustomRequestHeaders {
+				r.Header.Add(k, v)
+			}
+		}
+
+		if s.cfg.Middlewares.Headers.CustomResponseHeaders != nil {
+			for k, v := range s.cfg.Middlewares.Headers.CustomResponseHeaders {
+				w.Header().Set(k, v)
+			}
+		}
+
+		f(w, r)
+	}
+}
+
+func handlePreflightRequest(w http.ResponseWriter, r *http.Request, options *CORSMiddlewareConfig)  {
+	headers := w.Header()
+
+	headers.Add("Vary", "Origin")
+	headers.Add("Vary", "Access-Control-Request-Method")
+	headers.Add("Vary", "Access-Control-Request-Headers")
+
+	if options.AllowedOrigin != "" {
+		headers.Set("Access-Control-Allow-Origin", options.AllowedOrigin)
+	}
+
+	if options.AllowedHeaders != "" {
+		headers.Set("Access-Control-Allow-Headers", options.AllowedHeaders)
+	}
+
+	if options.AllowedMethods != "" {
+		headers.Set("Access-Control-Allow-Methods", options.AllowedMethods)
+	}
+
+	if options.AllowCredentials != nil {
+		headers.Set("Access-Control-Allow-Credentials", strconv.FormatBool(*options.AllowCredentials))
+	}
+
+	if options.MaxAge > 0 {
+		headers.Set("Access-Control-Max-Age", strconv.Itoa(options.MaxAge))
+	}
+
+	w.WriteHeader(http.StatusOK);
+}
+
+func addCORSHeaders(w http.ResponseWriter, r *http.Request, options *CORSMiddlewareConfig)  {
+	headers := w.Header()
+
+	headers.Add("Vary", "Origin")
+
+	if options.AllowedOrigin != "" {
+		headers.Set("Access-Control-Allow-Origin", options.AllowedOrigin)
+	}
+
+	if options.AllowedHeaders != "" {
+		headers.Set("Access-Control-Allow-Headers", options.AllowedHeaders)
+	}
+
+	if options.ExposedHeaders != "" {
+		headers.Set("Access-Control-Expose-Headers", options.ExposedHeaders)
+	}
+
+	if options.AllowCredentials != nil {
+		headers.Set("Access-Control-Allow-Credentials", strconv.FormatBool(*options.AllowCredentials))
+	}
+}
+
+func (s *Service) corsMiddleware(f http.HandlerFunc) http.HandlerFunc {
+	// Define the http.HandlerFunc
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			handlePreflightRequest(w, r, s.cfg.Middlewares.CORS)
+		} else {
+			addCORSHeaders(w, r, s.cfg.Middlewares.CORS)
+			f(w, r)
+		}
+	}
+}
+
+func (s *Service) initMiddlewares() error {
+	if s.cfg.Middlewares.EnableHeaders() {
+		s.AddMiddleware(s.headersMiddleware)
+	}
+
+	if s.cfg.Middlewares.EnableCORS() {
+		s.AddMiddleware(s.corsMiddleware)
+	}
+
+	return nil
 }
