@@ -33,7 +33,7 @@ func init() {
 	CLI.AddCommand(&cobra.Command{
 		Use:   "serve",
 		Short: "Serve RoadRunner service(s)",
-		RunE:   serveHandler,
+		RunE:  serveHandler,
 	})
 
 	signal.Notify(stopSignal, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGINT)

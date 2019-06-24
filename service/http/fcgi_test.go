@@ -5,11 +5,11 @@ import (
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
+	"github.com/yookoala/gofast"
 	"io/ioutil"
 	"net/http/httptest"
 	"testing"
 	"time"
-	"github.com/yookoala/gofast"
 )
 
 func Test_FCGI_Service_Echo(t *testing.T) {
@@ -51,7 +51,7 @@ func Test_FCGI_Service_Echo(t *testing.T) {
 	req := httptest.NewRequest("GET", "http://site.local/?hello=world", nil)
 	fcgiHandler.ServeHTTP(w, req)
 
-	body, err := ioutil.ReadAll(w.Result().Body);
+	body, err := ioutil.ReadAll(w.Result().Body)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 201, w.Result().StatusCode)

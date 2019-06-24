@@ -6,9 +6,9 @@ import (
 )
 
 func TestCreateListener(t *testing.T) {
-	_, err := CreateListener("unexpected dsn");
+	_, err := CreateListener("unexpected dsn")
 	assert.Error(t, err, "Invalid DSN (tcp://:6001, unix://file.sock)")
 
-	_, err = CreateListener("aaa://192.168.0.1");
+	_, err = CreateListener("aaa://192.168.0.1")
 	assert.Error(t, err, "Invalid Protocol (tcp://:6001, unix://file.sock)")
 }

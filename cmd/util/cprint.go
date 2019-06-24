@@ -3,9 +3,9 @@ package util
 import (
 	"fmt"
 	"github.com/mgutz/ansi"
+	"os"
 	"regexp"
 	"strings"
-	"os"
 )
 
 var (
