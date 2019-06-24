@@ -28,28 +28,6 @@ http:
     # ssl private key
     key:      server.key
 
-  # HTTP service provides built-in middlewares
-  middlewares:
-    # Middleware to handle CORS requests, https://www.w3.org/TR/cors/
-    cors:
-      # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
-      AllowedOrigin: "*"
-      # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
-      allowedHeaders: "*"
-      # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods
-      allowedMethods: "GET,POST,PUT,DELETE"
-      # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
-      allowCredentials: true
-      # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
-      exposedHeaders: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
-      maxAge: 600
-    # Middleware that adding Headers to the Request / Response
-    headers:
-      customRequestHeaders:
-        "Example-Request-Header": "Value"
-      customResponseHeaders:
-        "X-Powered-By": "RoadRunner"
-
   # HTTP service provides FastCGI as frontend
   fcgi:
     # FastCGI connection DSN. Supported TCP and Unix sockets.
@@ -92,6 +70,36 @@ http:
 
       # amount of time given to worker to gracefully destruct itself.
       destroyTimeout:  60
+
+# Additional HTTP headers and CORS control.
+headers:
+  # Middleware to handle CORS requests, https://www.w3.org/TR/cors/
+  cors:
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
+    allowedOrigin: "*"
+
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
+    allowedHeaders: "*"
+
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods
+    allowedMethods: "GET,POST,PUT,DELETE"
+
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
+    allowCredentials: true
+
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
+    exposedHeaders: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
+
+    # Max allowed age in seconds
+    maxAge: 600
+
+  # Automatically add headers to every request passed to PHP.
+  request:
+    "Example-Request-Header": "Value"
+
+  # Automatically add headers to every response.
+  response:
+    "X-Powered-By": "RoadRunner"
 
 # monitors rr server(s)
 limit:

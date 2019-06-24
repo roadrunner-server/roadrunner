@@ -18,7 +18,11 @@ type Config struct {
 	// SSL defines https server options.
 	SSL SSLConfig
 
-	FCGI FCGIConfig
+	// FCGI configuration. You can use FastCGI without HTTP server.
+	FCGI *FCGIConfig
+
+	// HTTP2 configuration
+	HTTP2 *HTTP2Config
 
 	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
 	MaxRequestSize int64
@@ -30,50 +34,22 @@ type Config struct {
 	// Uploads configures uploads configuration.
 	Uploads *UploadsConfig
 
-	// HTTP2 configuration
-	HTTP2 *HTTP2Config
-
-	// Middlewares
-	Middlewares *MiddlewaresConfig
-
 	// Workers configures rr server and worker pool.
 	Workers *roadrunner.ServerConfig
 }
 
-type MiddlewaresConfig struct {
-	Headers *HeaderMiddlewareConfig
-	CORS *CORSMiddlewareConfig
-}
-
-type CORSMiddlewareConfig struct {
-	AllowedOrigin string
-	AllowedMethods string
-	AllowedHeaders string
-	AllowCredentials *bool
-	ExposedHeaders string
-	MaxAge int
-}
-
-type HeaderMiddlewareConfig struct {
-	CustomRequestHeaders map[string]string
-	CustomResponseHeaders map[string]string
-}
-
-func (c *MiddlewaresConfig) EnableCORS() bool {
-	return c.CORS != nil
-}
-
-func (c *MiddlewaresConfig) EnableHeaders() bool {
-	return c.Headers.CustomRequestHeaders != nil || c.Headers.CustomResponseHeaders != nil
-}
-
+// FCGIConfig for FastCGI server.
 type FCGIConfig struct {
-	// Port and port to handle as http server.
+	// Address and port to handle as http server.
 	Address string
 }
 
+// HTTP2Config HTTP/2 server customizations.
 type HTTP2Config struct {
+	// Enable or disable HTTP/2 extension, default enable.
 	Enabled bool
+
+	// MaxConcurrentStreams defaults to 128.
 	MaxConcurrentStreams uint32
 }
 
@@ -99,12 +75,9 @@ type SSLConfig struct {
 	Cert string
 }
 
+// EnableHTTP is true when http server must run.
 func (c *Config) EnableHTTP() bool {
 	return c.Address != ""
-}
-
-func (c *Config) EnableMiddlewares() bool {
-	return c.Middlewares != nil
 }
 
 // EnableTLS returns true if rr must listen TLS connections.
@@ -112,10 +85,12 @@ func (c *Config) EnableTLS() bool {
 	return c.SSL.Key != "" || c.SSL.Cert != ""
 }
 
+// EnableHTTP2 when HTTP/2 extension must be enabled (only with TSL).
 func (c *Config) EnableHTTP2() bool {
 	return c.HTTP2.Enabled
 }
 
+// EnableFCGI is true when FastCGI server must be enabled.
 func (c *Config) EnableFCGI() bool {
 	return c.FCGI.Address != ""
 }
@@ -128,6 +103,10 @@ func (c *Config) Hydrate(cfg service.Config) error {
 
 	if c.HTTP2 == nil {
 		c.HTTP2 = &HTTP2Config{}
+	}
+
+	if c.FCGI == nil {
+		c.FCGI = &FCGIConfig{}
 	}
 
 	if c.Uploads == nil {
@@ -221,6 +200,10 @@ func (c *Config) Valid() error {
 
 	if err := c.Workers.Pool.Valid(); err != nil {
 		return err
+	}
+
+	if !c.EnableHTTP() && !c.EnableTLS() && !c.EnableFCGI() {
+		return errors.New("unable to run http service, no method has been specified (http, https, http/2 or FastCGI)")
 	}
 
 	if c.Address != "" && !strings.Contains(c.Address, ":") {

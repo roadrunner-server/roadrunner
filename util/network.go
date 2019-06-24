@@ -1,10 +1,10 @@
 package util
 
 import (
+	"errors"
 	"net"
 	"strings"
 	"syscall"
-	"errors"
 )
 
 func CreateListener(address string) (net.Listener, error) {
