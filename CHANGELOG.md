@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v1.4.4 (03.06.2019)
+v1.4.4 (24.06.2019)
 -------------------
 - added "headers" service with the ability to specify request, response and CORS headers by @ovr
 - added FastCGI support for HTTP service by @ovr
