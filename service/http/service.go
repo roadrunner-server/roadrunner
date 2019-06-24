@@ -106,7 +106,7 @@ func (s *Service) Serve() error {
 		s.https = s.initSSL()
 
 		if s.cfg.EnableHTTP2() {
-			if err := s.InitHTTP2(); err != nil {
+			if err := s.initHTTP2(); err != nil {
 				return err
 			}
 		}
@@ -139,7 +139,7 @@ func (s *Service) Serve() error {
 
 	if s.fcgi != nil {
 		go func() {
-			err <- s.ServeFCGI()
+			err <- s.serveFCGI()
 		}()
 	}
 
@@ -170,21 +170,6 @@ func (s *Service) Server() *roadrunner.Server {
 	defer s.mu.Unlock()
 
 	return s.rr
-}
-
-// ServeFCGI starts FastCGI server.
-func (s *Service) ServeFCGI() error {
-	l, err := util.CreateListener(s.cfg.FCGI.Address)
-	if err != nil {
-		return err
-	}
-
-	err = fcgi.Serve(l, s.fcgi.Handler)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 // ServeHTTP handles connection using set of middleware and rr PSR-7 server.
@@ -219,10 +204,26 @@ func (s *Service) initSSL() *http.Server {
 	return server
 }
 
-func (s *Service) InitHTTP2() error {
+// init http/2 server
+func (s *Service) initHTTP2() error {
 	return http2.ConfigureServer(s.https, &http2.Server{
 		MaxConcurrentStreams: s.cfg.HTTP2.MaxConcurrentStreams,
 	})
+}
+
+// serveFCGI starts FastCGI server.
+func (s *Service) serveFCGI() error {
+	l, err := util.CreateListener(s.cfg.FCGI.Address)
+	if err != nil {
+		return err
+	}
+
+	err = fcgi.Serve(l, s.fcgi.Handler)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // throw handles service, server and pool events.
