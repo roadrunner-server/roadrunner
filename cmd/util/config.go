@@ -73,6 +73,32 @@ func LoadConfig(cfgFile string, path []string, name string, flags []string) (*co
 		}
 	}
 
+	// merge included configs
+	if include, ok := cfg.Get("include").([]interface{}); ok {
+
+		for _, file := range include {
+			filename, ok := file.(string)
+			if !ok {
+				continue
+			}
+
+			partial := viper.New()
+			partial.AutomaticEnv()
+			partial.SetEnvPrefix("rr")
+			partial.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+			partial.SetConfigFile(filename)
+
+			if err := partial.ReadInConfig(); err != nil {
+				return nil, err
+			}
+
+			// merging
+			if err := cfg.MergeConfigMap(partial.AllSettings()); err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	// automatically inject ENV variables using ${ENV} pattern
 	for _, key := range cfg.AllKeys() {
 		val := cfg.Get(key)
@@ -89,18 +115,16 @@ func LoadConfig(cfgFile string, path []string, name string, flags []string) (*co
 
 			cfg.Set(k, v)
 		}
-
-		merged := viper.New()
-
-		// we have to copy all the merged values into new config in order normalize it (viper bug?)
-		if err := merged.MergeConfigMap(cfg.AllSettings()); err != nil {
-			return nil, err
-		}
-
-		return &configWrapper{merged}, nil
 	}
 
-	return &configWrapper{cfg}, nil
+	merged := viper.New()
+
+	// we have to copy all the merged values into new config in order normalize it (viper bug?)
+	if err := merged.MergeConfigMap(cfg.AllSettings()); err != nil {
+		return nil, err
+	}
+
+	return &configWrapper{merged}, nil
 }
 
 func parseFlag(flag string) (string, string, error) {
