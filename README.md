@@ -73,11 +73,8 @@ Configuration can be located in `.rr.yaml` file ([full sample](https://github.co
 
 ```yaml
 http:
-  address: 0.0.0.0:8080
-  workers:
-    command: "php psr-worker.php"
-    pool:
-      numWorkers: 4
+  address:         0.0.0.0:8080
+  workers.command: "php psr-worker.php"
 ```
 
 > Read more in [Wiki](https://github.com/spiral/roadrunner/wiki/PHP-Workers).
