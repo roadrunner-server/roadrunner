@@ -35,7 +35,10 @@ http:
 
   # HTTP service provides HTTP2 transport
   http2:
+    # enable HTTP/2, only with TSL
     enabled: true
+    
+    # max transfer channels
     maxConcurrentStreams: 128
 
   # max POST request size, including file uploads in MB.
