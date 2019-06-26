@@ -6,7 +6,9 @@ import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 	rrhttp "github.com/spiral/roadrunner/service/http"
 	"github.com/spiral/roadrunner/service/metrics"
+	"github.com/spiral/roadrunner/util"
 	"strconv"
+	"time"
 )
 
 func init() {
@@ -24,9 +26,13 @@ func init() {
 			// register metrics
 			mtr.MustRegister(collector.requestCounter)
 			mtr.MustRegister(collector.requestDuration)
+			mtr.MustRegister(collector.workersMemory)
 
 			// collect events
 			ht.AddListener(collector.listener)
+
+			// update memory usage every 10 seconds
+			go collector.collectMemory(ht, time.Second*10)
 		}
 	})
 }
@@ -35,24 +41,30 @@ func init() {
 type metricCollector struct {
 	requestCounter  *prometheus.CounterVec
 	requestDuration *prometheus.HistogramVec
+	workersMemory   prometheus.Gauge
 }
 
 func newCollector() *metricCollector {
 	return &metricCollector{
 		requestCounter: prometheus.NewCounterVec(
 			prometheus.CounterOpts{
-				Name: "rr_http_total",
+				Name: "rr_http_request_total",
 				Help: "Total number of handled http requests after server restart.",
 			},
 			[]string{"status"},
 		),
 		requestDuration: prometheus.NewHistogramVec(
 			prometheus.HistogramOpts{
-				Name:    "rr_http_request_duration",
-				Help:    "HTTP request duration.",
-				Buckets: []float64{0.25, 0.5, 1, 10, 20, 60},
+				Name: "rr_http_request_seconds",
+				Help: "HTTP request duration.",
 			},
 			[]string{"status"},
+		),
+		workersMemory: prometheus.NewGauge(
+			prometheus.GaugeOpts{
+				Name: "rr_http_workers_memory_bytes",
+				Help: "Memory usage by HTTP workers.",
+			},
 		),
 	}
 }
@@ -82,5 +94,30 @@ func (c *metricCollector) listener(event int, ctx interface{}) {
 		c.requestDuration.With(prometheus.Labels{
 			"status": "500",
 		}).Observe(e.Elapsed().Seconds())
+	}
+}
+
+// collect memory usage by server workers
+func (c *metricCollector) collectMemory(service *rrhttp.Service, tick time.Duration) {
+	started := false
+	for {
+		server := service.Server()
+		if server == nil && started {
+			// stopped
+			return
+		}
+
+		started = true
+
+		if workers, err := util.ServerState(server); err == nil {
+			sum := 0.0
+			for _, w := range workers {
+				sum = sum + float64(w.MemoryUsage)
+			}
+
+			c.workersMemory.Set(sum)
+		}
+
+		time.Sleep(tick)
 	}
 }
