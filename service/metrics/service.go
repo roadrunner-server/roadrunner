@@ -49,5 +49,5 @@ func (s *Service) Serve() error {
 // Stop prometheus metrics service.
 func (s *Service) Stop() {
 	// gracefully stop server
-	s.http.Shutdown(context.Background())
+	go s.http.Shutdown(context.Background())
 }
