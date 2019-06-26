@@ -11,11 +11,11 @@ type Config struct {
 	Address string
 
 	// Collect define application specific metrics.
-	Collect map[string]Metric
+	Collect map[string]Collector
 }
 
-// Metric describes single application specific metric.
-type Metric struct {
+// Collector describes single application specific metric.
+type Collector struct {
 	// Namespace of the metric.
 	Namespace string
 
@@ -41,10 +41,12 @@ func (c *Config) Hydrate(cfg service.Config) error {
 }
 
 // register application specific metrics.
-func (c *Config) registerMetrics() error {
+func (c *Config) initCollectors() (map[string]prometheus.Collector, error) {
 	if c.Collect == nil {
-		return nil
+		return nil, nil
 	}
+
+	collectors := make(map[string]prometheus.Collector)
 
 	for name, m := range c.Collect {
 		var collector prometheus.Collector
@@ -103,13 +105,15 @@ func (c *Config) registerMetrics() error {
 				collector = prometheus.NewSummary(opts)
 			}
 		default:
-			return fmt.Errorf("invalid metric type %s", m.Type)
+			return nil, fmt.Errorf("invalid metric type `%s` for `%s`", m.Type, name)
 		}
 
 		if err := prometheus.Register(collector); err != nil {
-			return err
+			return nil, err
 		}
+
+		collectors[name] = collector
 	}
 
-	return nil
+	return collectors, nil
 }
