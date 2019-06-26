@@ -19,3 +19,4 @@ test:
 	go test -v -race -cover ./service/static
 	go test -v -race -cover ./service/limit
 	go test -v -race -cover ./service/headers
+	go test -v -race -cover ./service/metrics
