@@ -15,12 +15,18 @@ type Metric struct {
 	// Collector value.
 	Value float64
 
-	// Labels associated with metric. Only for vector metrics.
+	// Labels associated with metric. Only for vector metrics. Must be provided in a form of label values.
 	Labels []string
 }
 
 // Add new metric to the designated collector.
-func (rpc *rpcServer) Add(m *Metric, ok *bool) error {
+func (rpc *rpcServer) Add(m *Metric, ok *bool) (err error) {
+	defer func() {
+		if r, fail := recover().(error); fail {
+			err = r
+		}
+	}()
+
 	c := rpc.svc.Collector(m.Name)
 	if c == nil {
 		return fmt.Errorf("undefined collector `%s`", m.Name)
@@ -73,7 +79,13 @@ func (rpc *rpcServer) Add(m *Metric, ok *bool) error {
 }
 
 // Sub subtract the value from the specific metric (gauge only).
-func (rpc *rpcServer) Sub(m *Metric, ok *bool) error {
+func (rpc *rpcServer) Sub(m *Metric, ok *bool) (err error) {
+	defer func() {
+		if r, fail := recover().(error); fail {
+			err = r
+		}
+	}()
+
 	c := rpc.svc.Collector(m.Name)
 	if c == nil {
 		return fmt.Errorf("undefined collector `%s`", m.Name)
@@ -98,7 +110,13 @@ func (rpc *rpcServer) Sub(m *Metric, ok *bool) error {
 }
 
 // Observe the value (histogram and summary only).
-func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
+func (rpc *rpcServer) Observe(m *Metric, ok *bool) (err error) {
+	defer func() {
+		if r, fail := recover().(error); fail {
+			err = r
+		}
+	}()
+
 	c := rpc.svc.Collector(m.Name)
 	if c == nil {
 		return fmt.Errorf("undefined collector `%s`", m.Name)
@@ -130,7 +148,13 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
 }
 
 // Set the metric value (only for gaude).
-func (rpc *rpcServer) Set(m *Metric, ok *bool) error {
+func (rpc *rpcServer) Set(m *Metric, ok *bool) (err error) {
+	defer func() {
+		if r, fail := recover().(error); fail {
+			err = r
+		}
+	}()
+
 	c := rpc.svc.Collector(m.Name)
 	if c == nil {
 		return fmt.Errorf("undefined collector `%s`", m.Name)
