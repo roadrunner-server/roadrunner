@@ -153,6 +153,8 @@ func Test_ConfiguredMetric(t *testing.T) {
 	s, _ := c.Get(ID)
 	assert.NotNil(t, s)
 
+	assert.True(t, s.(*Service).Enabled())
+
 	go func() { c.Serve() }()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
