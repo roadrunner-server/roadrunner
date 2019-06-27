@@ -17,7 +17,7 @@ metrics:
     app_metric:
       type:    histogram
       help:    "Custom application metric"
-      labels:  ["a", "b", "c"]
+      labels:  ["type"]
       buckets: [0.1, 0.2, 0.3, 1.0]
 
 # http service configuration.
