@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunner;
 
-class HttpClient
+final class HttpClient
 {
     /** @var Worker */
     private $worker;
