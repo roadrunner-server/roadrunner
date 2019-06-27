@@ -159,8 +159,30 @@ func Test_ConfiguredMetric(t *testing.T) {
 
 	s.(*Service).Collector("user_gauge").(prometheus.Gauge).Set(100)
 
+	assert.Nil(t, s.(*Service).Collector("invalid"))
+
 	out, _, err := get("http://localhost:2112/metrics")
 	assert.NoError(t, err)
 
 	assert.Contains(t, out, "user_gauge 100")
+}
+
+func Test_ConfiguredInvalidMetric(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(ID, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{metricsCfg: `{
+		"address": "localhost:2112",
+		"collect":{
+			"user_gauge":{
+				"type": "invalid"
+			}
+		}
+
+	}`}))
+
+	assert.Error(t, c.Serve())
 }
