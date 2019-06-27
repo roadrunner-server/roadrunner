@@ -13,7 +13,7 @@ install:
   - php composer-setup.php
   - php composer.phar install --no-interaction --prefer-source
   - find src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
-  - chmod +x src/bin/rr && src/bin/rr get-binary
+  - chmod +x bin/rr && bin/rr get-binary
 
 script:
   - go test -race -v -coverprofile=lib.txt -covermode=atomic

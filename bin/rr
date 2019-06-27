@@ -9,8 +9,8 @@
 declare(strict_types=1);
 
 foreach ([
-             __DIR__ . '/../../../../autoload.php',
-             __DIR__ . '/../../vendor/autoload.php',
+             __DIR__ . '/../../../autoload.php',
+             __DIR__ . '/../vendor/autoload.php',
              __DIR__ . '/vendor/autoload.php'
          ] as $file) {
     if (file_exists($file)) {
@@ -62,7 +62,7 @@ class RRHelper
      */
     public static function getVersion(): string
     {
-        $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'build.sh';
+        $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'build.sh';
         $fileResource = fopen($file, 'r') or die(1);
         while (!feof($fileResource)) {
             $line = fgets($fileResource, 4096);
