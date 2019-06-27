@@ -56,7 +56,7 @@ func (s *Service) MustRegister(c prometheus.Collector) {
 // Serve prometheus metrics service.
 func (s *Service) Serve() error {
 	// register application specific metrics
-	collectors, err := s.cfg.initCollectors()
+	collectors, err := s.cfg.getCollectors()
 	if err != nil {
 		return err
 	}

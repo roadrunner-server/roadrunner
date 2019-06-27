@@ -41,7 +41,7 @@ func (c *Config) Hydrate(cfg service.Config) error {
 }
 
 // register application specific metrics.
-func (c *Config) initCollectors() (map[string]prometheus.Collector, error) {
+func (c *Config) getCollectors() (map[string]prometheus.Collector, error) {
 	if c.Collect == nil {
 		return nil, nil
 	}
