@@ -10,10 +10,20 @@ rpc:
   # rpc connection DSN. Supported TCP and Unix sockets.
   listen:     tcp://127.0.0.1:6001
 
+metrics:
+  # prometheus client address (path /metrics added automatically)
+  address: localhost:2112
+  collect:
+    app_metric:
+      type:    histogram
+      help:    "Custom application metric"
+      labels:  ["a", "b", "c"]
+      buckets: [0.1, 0.2, 0.3, 1.0]
+
 # http service configuration.
 http:
   # http host to listen.
-  address:   0.0.0.0:8080
+  address: 0.0.0.0:8080
 
   ssl:
     # custom https port (default 443)
