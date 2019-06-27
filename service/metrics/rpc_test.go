@@ -142,6 +142,23 @@ func Test_Set_RPC_MetricError_2(t *testing.T) {
 	}, &ok))
 }
 
+func Test_Set_RPC_MetricError_3(t *testing.T) {
+	client, c := setup(
+		t,
+		`"user_gauge":{
+				"type": "histogram",
+				"labels": ["type", "section"]
+			}`,
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.Error(t, client.Call("metrics.Set", Metric{
+		Name:  "user_gauge",
+		Value: 100.0,
+	}, &ok))
+}
+
 // -- observe
 
 func Test_Observe_RPC(t *testing.T) {
@@ -262,6 +279,40 @@ func Test_Observe2_RPC(t *testing.T) {
 	out, _, err := get("http://localhost:2112/metrics")
 	assert.NoError(t, err)
 	assert.Contains(t, out, `user_histogram`)
+}
+
+func Test_Observe2_RPC_Invalid(t *testing.T) {
+	client, c := setup(
+		t,
+		`"user_histogram":{
+				"type": "summary"
+			}`,
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.Error(t, client.Call("metrics.Observe", Metric{
+		Name:   "user_histogram_2",
+		Value:  100.0,
+		Labels: []string{"missing"},
+	}, &ok))
+}
+
+func Test_Observe2_RPC_Invalid_2(t *testing.T) {
+	client, c := setup(
+		t,
+		`"user_histogram":{
+				"type": "gauge"
+			}`,
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.Error(t, client.Call("metrics.Observe", Metric{
+		Name:   "user_histogram_2",
+		Value:  100.0,
+		Labels: []string{"missing"},
+	}, &ok))
 }
 
 func Test_Observe2_RPC_Vector(t *testing.T) {
