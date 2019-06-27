@@ -18,11 +18,21 @@ type Service struct {
 	mu         sync.Mutex
 	http       *http.Server
 	collectors sync.Map
+	registry   *prometheus.Registry
 }
 
 // Init service.
 func (s *Service) Init(cfg *Config, r *rpc.Service) (bool, error) {
 	s.cfg = cfg
+	s.registry = prometheus.NewRegistry()
+
+	if err := s.registry.Register(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{})); err != nil {
+		return false, err
+	}
+
+	if err := s.registry.Register(prometheus.NewGoCollector()); err != nil {
+		return false, err
+	}
 
 	if r != nil {
 		if err := r.Register(ID, &rpcServer{s}); err != nil {
@@ -40,12 +50,12 @@ func (s *Service) Enabled() bool {
 
 // Register new prometheus collector.
 func (s *Service) Register(c prometheus.Collector) error {
-	return prometheus.Register(c)
+	return s.registry.Register(c)
 }
 
 // MustRegister registers new collector or fails with panic.
 func (s *Service) MustRegister(c prometheus.Collector) {
-	if err := prometheus.Register(c); err != nil {
+	if err := s.registry.Register(c); err != nil {
 		panic(err)
 	}
 }
@@ -59,11 +69,18 @@ func (s *Service) Serve() error {
 	}
 
 	for name, collector := range collectors {
+		if err := s.registry.Register(collector); err != nil {
+			return err
+		}
+
 		s.collectors.Store(name, collector)
 	}
 
 	s.mu.Lock()
-	s.http = &http.Server{Addr: s.cfg.Address, Handler: promhttp.Handler()}
+	s.http = &http.Server{Addr: s.cfg.Address, Handler: promhttp.HandlerFor(
+		s.registry,
+		promhttp.HandlerOpts{},
+	)}
 	s.mu.Unlock()
 
 	return s.http.ListenAndServe()

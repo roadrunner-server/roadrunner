@@ -108,10 +108,6 @@ func (c *Config) initCollectors() (map[string]prometheus.Collector, error) {
 			return nil, fmt.Errorf("invalid metric type `%s` for `%s`", m.Type, name)
 		}
 
-		if err := prometheus.Register(collector); err != nil {
-			return nil, err
-		}
-
 		collectors[name] = collector
 	}
 

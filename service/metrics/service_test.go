@@ -153,7 +153,6 @@ func Test_ConfiguredMetric(t *testing.T) {
 				"type": "gauge"
 			}
 		}
-
 	}`}))
 
 	s, _ := c.Get(ID)
