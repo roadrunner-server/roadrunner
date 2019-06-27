@@ -159,6 +159,135 @@ func Test_Set_RPC_MetricError_3(t *testing.T) {
 	}, &ok))
 }
 
+// sub
+
+func Test_Sub_RPC(t *testing.T) {
+	client, c := setup(
+		t,
+		`"user_gauge":{
+				"type": "gauge"
+		}`,
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.NoError(t, client.Call("metrics.Add", Metric{
+		Name:  "user_gauge",
+		Value: 100.0,
+	}, &ok))
+	assert.True(t, ok)
+
+	assert.NoError(t, client.Call("metrics.Sub", Metric{
+		Name:  "user_gauge",
+		Value: 10.0,
+	}, &ok))
+	assert.True(t, ok)
+
+	out, _, err := get("http://localhost:2112/metrics")
+	assert.NoError(t, err)
+	assert.Contains(t, out, `user_gauge 90`)
+}
+
+func Test_Sub_RPC_Vector(t *testing.T) {
+	client, c := setup(
+		t,
+		`"user_gauge":{
+				"type": "gauge",
+				"labels": ["type", "section"]
+			}`,
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.NoError(t, client.Call("metrics.Add", Metric{
+		Name:   "user_gauge",
+		Value:  100.0,
+		Labels: []string{"core", "first"},
+	}, &ok))
+	assert.True(t, ok)
+
+	assert.NoError(t, client.Call("metrics.Sub", Metric{
+		Name:   "user_gauge",
+		Value:  10.0,
+		Labels: []string{"core", "first"},
+	}, &ok))
+	assert.True(t, ok)
+
+	out, _, err := get("http://localhost:2112/metrics")
+	assert.NoError(t, err)
+	assert.Contains(t, out, `user_gauge{section="first",type="core"} 90`)
+}
+
+func Test_Sub_RPC_CollectorError(t *testing.T) {
+	client, c := setup(
+		t,
+		`"user_gauge":{
+			    "type": "gauge",
+				"labels": ["type", "section"]
+			}`,
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.Error(t, client.Call("metrics.Sub", Metric{
+		Name:   "user_gauge_2",
+		Value:  100.0,
+		Labels: []string{"missing"},
+	}, &ok))
+}
+
+func Test_Sub_RPC_MetricError(t *testing.T) {
+	client, c := setup(
+		t,
+		`"user_gauge":{
+				"type": "gauge",
+				"labels": ["type", "section"]
+			}`,
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.Error(t, client.Call("metrics.Sub", Metric{
+		Name:   "user_gauge",
+		Value:  100.0,
+		Labels: []string{"missing"},
+	}, &ok))
+}
+
+func Test_Sub_RPC_MetricError_2(t *testing.T) {
+	client, c := setup(
+		t,
+		`"user_gauge":{
+				"type": "gauge",
+				"labels": ["type", "section"]
+			}`,
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.Error(t, client.Call("metrics.Sub", Metric{
+		Name:  "user_gauge",
+		Value: 100.0,
+	}, &ok))
+}
+
+func Test_Sub_RPC_MetricError_3(t *testing.T) {
+	client, c := setup(
+		t,
+		`"user_gauge":{
+				"type": "histogram",
+				"labels": ["type", "section"]
+			}`,
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.Error(t, client.Call("metrics.Sub", Metric{
+		Name:  "user_gauge",
+		Value: 100.0,
+	}, &ok))
+}
+
 // -- observe
 
 func Test_Observe_RPC(t *testing.T) {
@@ -309,9 +438,8 @@ func Test_Observe2_RPC_Invalid_2(t *testing.T) {
 
 	var ok bool
 	assert.Error(t, client.Call("metrics.Observe", Metric{
-		Name:   "user_histogram_2",
-		Value:  100.0,
-		Labels: []string{"missing"},
+		Name:  "user_histogram_2",
+		Value: 100.0,
 	}, &ok))
 }
 
