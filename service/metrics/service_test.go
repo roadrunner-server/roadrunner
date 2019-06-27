@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner/service"
+	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http"
@@ -14,6 +15,7 @@ import (
 )
 
 type testCfg struct {
+	rpcCfg     string
 	metricsCfg string
 	target     string
 }
@@ -21,6 +23,10 @@ type testCfg struct {
 func (cfg *testCfg) Get(name string) service.Config {
 	if name == ID {
 		return &testCfg{target: cfg.metricsCfg}
+	}
+
+	if name == rpc.ID {
+		return &testCfg{target: cfg.rpcCfg}
 	}
 
 	return nil
