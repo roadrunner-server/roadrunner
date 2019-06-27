@@ -174,6 +174,30 @@ func Test_ConfiguredMetric(t *testing.T) {
 	assert.Contains(t, out, "user_gauge 100")
 }
 
+func Test_ConfiguredDuplicateMetric(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(ID, &Service{})
+
+	assert.NoError(t, c.Init(&testCfg{metricsCfg: `{
+		"address": "localhost:2112",
+		"collect":{
+			"go_gc_duration_seconds":{
+				"type": "gauge"
+			}
+		}
+	}`}))
+
+	s, _ := c.Get(ID)
+	assert.NotNil(t, s)
+
+	assert.True(t, s.(*Service).Enabled())
+
+	assert.Error(t, c.Serve())
+}
+
 func Test_ConfiguredInvalidMetric(t *testing.T) {
 	logger, _ := test.NewNullLogger()
 	logger.SetLevel(logrus.DebugLevel)

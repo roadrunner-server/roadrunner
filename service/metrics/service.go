@@ -26,13 +26,8 @@ func (s *Service) Init(cfg *Config, r *rpc.Service) (bool, error) {
 	s.cfg = cfg
 	s.registry = prometheus.NewRegistry()
 
-	if err := s.registry.Register(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{})); err != nil {
-		return false, err
-	}
-
-	if err := s.registry.Register(prometheus.NewGoCollector()); err != nil {
-		return false, err
-	}
+	s.registry.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
+	s.registry.MustRegister(prometheus.NewGoCollector())
 
 	if r != nil {
 		if err := r.Register(ID, &rpcServer{s}); err != nil {
@@ -55,9 +50,7 @@ func (s *Service) Register(c prometheus.Collector) error {
 
 // MustRegister registers new collector or fails with panic.
 func (s *Service) MustRegister(c prometheus.Collector) {
-	if err := s.registry.Register(c); err != nil {
-		panic(err)
-	}
+	s.registry.MustRegister(c)
 }
 
 // Serve prometheus metrics service.
