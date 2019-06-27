@@ -17,7 +17,7 @@ type Service struct {
 	cfg        *Config
 	mu         sync.Mutex
 	http       *http.Server
-	collectors map[string]prometheus.Collector
+	collectors sync.Map
 }
 
 // Init service.
@@ -51,10 +51,15 @@ func (s *Service) MustRegister(c prometheus.Collector) {
 }
 
 // Serve prometheus metrics service.
-func (s *Service) Serve() (err error) {
+func (s *Service) Serve() error {
 	// register application specific metrics
-	if s.collectors, err = s.cfg.initCollectors(); err != nil {
+	collectors, err := s.cfg.initCollectors()
+	if err != nil {
 		return err
+	}
+
+	for name, collector := range collectors {
+		s.collectors.Store(name, collector)
 	}
 
 	s.mu.Lock()
@@ -77,10 +82,10 @@ func (s *Service) Stop() {
 
 // Collector returns application specific collector by name or nil if collector not found.
 func (s *Service) Collector(name string) prometheus.Collector {
-	collector, ok := s.collectors[name]
+	collector, ok := s.collectors.Load(name)
 	if !ok {
 		return nil
 	}
 
-	return collector
+	return collector.(prometheus.Collector)
 }
