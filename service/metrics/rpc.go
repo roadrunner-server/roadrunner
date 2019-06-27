@@ -7,6 +7,7 @@ import (
 
 type rpcServer struct{ svc *Service }
 
+// Metric represent single metric produced by the application.
 type Metric struct {
 	// Collector name.
 	Name string
@@ -71,6 +72,63 @@ func (rpc *rpcServer) Add(m *Metric, ok *bool) error {
 	return nil
 }
 
+// Sub subtract the value from the specific metric (gauge only).
+func (rpc *rpcServer) Sub(m *Metric, ok *bool) error {
+	c := rpc.svc.Collector(m.Name)
+	if c == nil {
+		return fmt.Errorf("undefined collector `%s`", m.Name)
+	}
+
+	switch c.(type) {
+	case prometheus.Gauge:
+		c.(prometheus.Gauge).Sub(m.Value)
+
+	case *prometheus.GaugeVec:
+		if len(m.Labels) == 0 {
+			return fmt.Errorf("required labels for collector `%s`", m.Name)
+		}
+
+		c.(*prometheus.GaugeVec).WithLabelValues(m.Labels...).Sub(m.Value)
+	default:
+		return fmt.Errorf("collector `%s` does not support method `Sub`", m.Name)
+	}
+
+	*ok = true
+	return nil
+}
+
+// Observe the value (histogram and summary only).
+func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
+	c := rpc.svc.Collector(m.Name)
+	if c == nil {
+		return fmt.Errorf("undefined collector `%s`", m.Name)
+	}
+
+	switch c.(type) {
+	case *prometheus.SummaryVec:
+		if len(m.Labels) == 0 {
+			return fmt.Errorf("required labels for collector `%s`", m.Name)
+		}
+
+		c.(*prometheus.SummaryVec).WithLabelValues(m.Labels...).Observe(m.Value)
+
+	case prometheus.Histogram:
+		c.(prometheus.Histogram).Observe(m.Value)
+
+	case *prometheus.HistogramVec:
+		if len(m.Labels) == 0 {
+			return fmt.Errorf("required labels for collector `%s`", m.Name)
+		}
+
+		c.(*prometheus.HistogramVec).WithLabelValues(m.Labels...).Observe(m.Value)
+	default:
+		return fmt.Errorf("collector `%s` does not support method `Observe`", m.Name)
+	}
+
+	*ok = true
+	return nil
+}
+
 // Set the metric value (only for gaude).
 func (rpc *rpcServer) Set(m *Metric, ok *bool) error {
 	c := rpc.svc.Collector(m.Name)
@@ -90,7 +148,7 @@ func (rpc *rpcServer) Set(m *Metric, ok *bool) error {
 		c.(*prometheus.GaugeVec).WithLabelValues(m.Labels...).Set(m.Value)
 
 	default:
-		return fmt.Errorf("collector `%s` is not `gauge` type", m.Name)
+		return fmt.Errorf("collector `%s` does not support method `Set`", m.Name)
 	}
 
 	*ok = true

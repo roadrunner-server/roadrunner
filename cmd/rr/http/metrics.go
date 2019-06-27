@@ -55,7 +55,7 @@ func newCollector() *metricCollector {
 		),
 		requestDuration: prometheus.NewHistogramVec(
 			prometheus.HistogramOpts{
-				Name: "rr_http_request_seconds",
+				Name: "rr_http_request_duration_seconds",
 				Help: "HTTP request duration.",
 			},
 			[]string{"status"},
