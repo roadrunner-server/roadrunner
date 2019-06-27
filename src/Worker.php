@@ -22,7 +22,7 @@ use Spiral\RoadRunner\Exception\RoadRunnerException;
  *      $worker->send("DONE", json_encode($context));
  * }
  */
-class Worker
+final class Worker
 {
     // Send as response context to request worker termination
     const STOP = '{"stop":true}';

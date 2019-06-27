@@ -27,6 +27,6 @@
     }
   },
   "bin": [
-    "src/bin/rr"
+    "bin/rr"
   ]
 }
