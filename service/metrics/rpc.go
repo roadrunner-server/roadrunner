@@ -53,25 +53,8 @@ func (rpc *rpcServer) Add(m *Metric, ok *bool) (err error) {
 
 		c.(*prometheus.CounterVec).WithLabelValues(m.Labels...).Add(m.Value)
 
-	case prometheus.Summary:
-		c.(prometheus.Counter).Add(m.Value)
-
-	case *prometheus.SummaryVec:
-		if len(m.Labels) == 0 {
-			return fmt.Errorf("required labels for collector `%s`", m.Name)
-		}
-
-		c.(*prometheus.SummaryVec).WithLabelValues(m.Labels...).Observe(m.Value)
-
-	case prometheus.Histogram:
-		c.(prometheus.Histogram).Observe(m.Value)
-
-	case *prometheus.HistogramVec:
-		if len(m.Labels) == 0 {
-			return fmt.Errorf("required labels for collector `%s`", m.Name)
-		}
-
-		c.(*prometheus.HistogramVec).WithLabelValues(m.Labels...).Observe(m.Value)
+	default:
+		return fmt.Errorf("collector `%s` does not support method `Add`", m.Name)
 	}
 
 	*ok = true

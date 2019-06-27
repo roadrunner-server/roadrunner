@@ -616,3 +616,20 @@ func Test_Add_RPC_MetricError_2(t *testing.T) {
 		Value: 100.0,
 	}, &ok))
 }
+
+func Test_Add_RPC_MetricError_3(t *testing.T) {
+	client, c := setup(
+		t,
+		`"user_gauge":{
+				"type": "histogram",
+				"labels": ["type", "section"]
+			}`,
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.Error(t, client.Call("metrics.Add", Metric{
+		Name:  "user_gauge",
+		Value: 100.0,
+	}, &ok))
+}
