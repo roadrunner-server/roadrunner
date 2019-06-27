@@ -31,6 +31,7 @@ Features:
 - no external PHP dependencies, drop-in (based on [Goridge](https://github.com/spiral/goridge))
 - load balancer, process manager and task pipeline
 - frontend agnostic ([Queue](https://github.com/spiral/jobs), PSR-7, [GRPC](https://github.com/spiral/php-grpc), etc)
+- integrated metrics (Prometheus)
 - works over TCP, unix sockets and standard pipes
 - automatic worker replacement and safe PHP process destruction
 - worker create/allocate/destroy timeouts

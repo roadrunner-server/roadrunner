@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+v1.4.5 (27.06.2019)
+-------------------
+- added metrics server with Prometheus backend
+- ability to push metrics from the application
+- expose http service metrics
+- expose limit service metrics
+- expose generic golang metrics
+- HttpClient and Worker marked final
+
 v1.4.4 (25.06.2019)
 -------------------
 - added "headers" service with the ability to specify request, response and CORS headers by @ovr
