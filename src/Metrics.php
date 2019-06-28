@@ -16,7 +16,7 @@ use Spiral\RoadRunner\Exception\MetricException;
 /**
  * Application metrics.
  */
-final class Metrics
+final class Metrics implements MetricsInterface
 {
     /** @var RPC */
     private $rpc;
