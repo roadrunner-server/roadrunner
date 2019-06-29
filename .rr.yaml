@@ -13,11 +13,21 @@ rpc:
 metrics:
   # prometheus client address (path /metrics added automatically)
   address: localhost:2112
+  
+  # list of metrics to collect from application
   collect:
+    # metric name
     app_metric:
+      # type [gauge, counter, histogram, symnmary]
       type:    histogram
+      
+      # short description
       help:    "Custom application metric"
+      
+      # metric groups/tags
       labels:  ["type"]
+      
+      # for histogram only
       buckets: [0.1, 0.2, 0.3, 1.0]
 
 # http service configuration.
