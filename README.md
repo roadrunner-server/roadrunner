@@ -47,6 +47,15 @@ Features:
 - integrations with Symfony, Laravel, Slim, CakePHP, Zend Expressive, Spiral
 - works on Windows
 
+Installation:
+--------
+To install:
+
+```
+$ composer require spiral/roadrunner
+$ ./vendor/bin/rr get-binary
+```
+
 Example:
 --------
 
@@ -79,6 +88,14 @@ http:
 ```
 
 > Read more in [Wiki](https://github.com/spiral/roadrunner/wiki/PHP-Workers).
+
+Run:
+----
+To run application server:
+
+```
+$ ./rr serve -v -d
+```
 
 License:
 --------
