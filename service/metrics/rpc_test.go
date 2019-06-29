@@ -7,9 +7,12 @@ import (
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/stretchr/testify/assert"
 	rpc2 "net/rpc"
+	"strconv"
 	"testing"
 	"time"
 )
+
+var port = 5004
 
 func setup(t *testing.T, metric string) (*rpc2.Client, service.Container) {
 	logger, _ := test.NewNullLogger()
@@ -20,13 +23,16 @@ func setup(t *testing.T, metric string) (*rpc2.Client, service.Container) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{
-		rpcCfg: `{"enable":true, "listen":"tcp://:5004"}`,
+		rpcCfg: `{"enable":true, "listen":"tcp://:` + strconv.Itoa(port) + `"}`,
 		metricsCfg: `{
 		"address": "localhost:2112",
 		"collect":{
 			` + metric + `
 		}
 	}`}))
+
+	// rotate ports for travis
+	port++
 
 	s, _ := c.Get(ID)
 	assert.NotNil(t, s)
