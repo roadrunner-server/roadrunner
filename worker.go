@@ -230,7 +230,9 @@ func (w *Worker) execPayload(rqs *Payload) (rsp *Payload, err error) {
 		return nil, errors.Wrap(err, "header error")
 	}
 
-	w.rl.Send(rqs.Body, 0)
+	if err = w.rl.Send(rqs.Body, 0); err != nil {
+		return nil, errors.Wrap(err, "sender error")
+	}
 
 	var pr goridge.Prefix
 	rsp = new(Payload)
