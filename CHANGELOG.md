@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.4.6 (01.07.2019)
+-------------------
+- Worker is not final (to allow mocking)
+- MatricsInterface added
+
 v1.4.5 (27.06.2019)
 -------------------
 - added metrics server with Prometheus backend
