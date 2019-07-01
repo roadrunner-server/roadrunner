@@ -47,11 +47,21 @@ Features:
 - integrations with Symfony, Laravel, Slim, CakePHP, Zend Expressive, Spiral
 - works on Windows
 
+Installation:
+--------
+To install:
+
+```
+$ composer require spiral/roadrunner
+$ ./vendor/bin/rr get-binary
+```
+
 Example:
 --------
 
 ```php
 <?php
+// worker.php
 ini_set('display_errors', 'stderr');
 include "vendor/autoload.php";
 
@@ -75,11 +85,19 @@ Configuration can be located in `.rr.yaml` file ([full sample](https://github.co
 ```yaml
 http:
   address:         0.0.0.0:8080
-  workers.command: "php psr-worker.php"
+  workers.command: "php worker.php"
 ```
 
 > Read more in [Wiki](https://github.com/spiral/roadrunner/wiki/PHP-Workers).
 
+Run:
+----
+To run application server:
+
+```
+$ ./rr serve -v -d
+```
+
 License:
 --------
-The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [SpiralScout](https://spiralscout.com).
+The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [Spiral Scout](https://spiralscout.com).
