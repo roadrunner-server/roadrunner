@@ -28,7 +28,7 @@ Features:
 - HTTPS and HTTP/2 support (including HTTP/2 Push)
 - fully customizable server
 - flexible environment configuration
-- no external PHP dependencies, drop-in (based on [Goridge](https://github.com/spiral/goridge))
+- no external PHP dependencies (64bit version required), drop-in (based on [Goridge](https://github.com/spiral/goridge))
 - load balancer, process manager and task pipeline
 - frontend agnostic ([Queue](https://github.com/spiral/jobs), PSR-7, [GRPC](https://github.com/spiral/php-grpc), etc)
 - integrated metrics (Prometheus)
