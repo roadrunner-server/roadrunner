@@ -9,6 +9,7 @@ import (
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/spiral/roadrunner/util"
 	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 	"net/http"
 	"net/http/fcgi"
 	"net/url"
@@ -99,7 +100,13 @@ func (s *Service) Serve() error {
 	s.handler.Listen(s.throw)
 
 	if s.cfg.EnableHTTP() {
-		s.http = &http.Server{Addr: s.cfg.Address, Handler: s}
+		var h2s *http2.Server
+		if s.cfg.EnableHTTP2() && !s.cfg.EnableTLS() {
+			h2s = &http2.Server{}
+			s.http = &http.Server{Addr: s.cfg.Address, Handler: h2c.NewHandler(s, h2s)}
+		} else {
+			s.http = &http.Server{Addr: s.cfg.Address, Handler: s}
+		}
 	}
 
 	if s.cfg.EnableTLS() {
