@@ -25,7 +25,7 @@ Features:
 --------
 - production ready
 - PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middlewares, event listeners)
-- HTTPS and HTTP/2 support (including HTTP/2 Push)
+- HTTPS and HTTP/2 support (including HTTP/2 Push, H2C)
 - fully customizable server
 - flexible environment configuration
 - no external PHP dependencies (64bit version required), drop-in (based on [Goridge](https://github.com/spiral/goridge))
