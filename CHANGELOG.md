@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.4.7 (29.07.2019)
+-------------------
+- added support for H2C over TCP by @Alex-Bond
+
 v1.4.6 (01.07.2019)
 -------------------
 - Worker is not final (to allow mocking)
