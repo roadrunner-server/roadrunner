@@ -100,10 +100,8 @@ func (s *Service) Serve() error {
 	s.handler.Listen(s.throw)
 
 	if s.cfg.EnableHTTP() {
-		var h2s *http2.Server
-		if s.cfg.EnableHTTP2() && !s.cfg.EnableTLS() {
-			h2s = &http2.Server{}
-			s.http = &http.Server{Addr: s.cfg.Address, Handler: h2c.NewHandler(s, h2s)}
+		if s.cfg.EnableH2C() {
+			s.http = &http.Server{Addr: s.cfg.Address, Handler: h2c.NewHandler(s, &http2.Server{})}
 		} else {
 			s.http = &http.Server{Addr: s.cfg.Address, Handler: s}
 		}
