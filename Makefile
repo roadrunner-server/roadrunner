@@ -1,6 +1,6 @@
-all:
-	@./build.sh
 build:
+	@./build.sh
+all:
 	@./build.sh all
 clean:
 	rm -rf rr
