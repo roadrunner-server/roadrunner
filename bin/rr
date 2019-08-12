@@ -197,12 +197,25 @@ class RRHelper
         }
 
         if (is_file($finalFile)) {
+            $version = RRHelper::getVersion();
+            $previousVersion =
+                preg_match('#Version:.+(\d+\.\d+\.\d+)#', (string)shell_exec($finalFile), $mathes) ?
+                    $mathes[1] : "";
             $output->writeln('<error>RoadRunner binary file already exists!</error>');
             $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion('Do you want overwrite it? [Y/n] ');
-
-            if (!$helper->ask($input, $output, $question)) {
-                return;
+            if (version_compare($previousVersion, $version) === 0) {
+                $output->writeln(sprintf('<info>Current version: %s</info>', $previousVersion));
+                $question = new ConfirmationQuestion(
+                        sprintf('Skip update to the same version: %s ? [Y/n]', $version)
+                );
+                if ($helper->ask($input, $output, $question)) {
+                    return;
+                }
+            } else {
+                $question = new ConfirmationQuestion('Do you want overwrite it? [Y/n]');
+                if (!$helper->ask($input, $output, $question)) {
+                    return;
+                }
             }
         }
 
