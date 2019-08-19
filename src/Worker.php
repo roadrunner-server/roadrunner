@@ -65,7 +65,8 @@ class Worker
         }
 
         if ($flags & Relay::PAYLOAD_ERROR) {
-            return new \Error($body);
+            //return new \Error($body);
+            throw new GoridgeException($body);
         }
 
         return $body;
