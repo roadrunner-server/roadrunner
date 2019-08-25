@@ -38,10 +38,10 @@ final class Metrics implements MetricsInterface
      *
      * @throws MetricException
      */
-    public function add(string $collector, float $value, array $labels = [])
+    public function add(string $name, float $value, array $labels = [])
     {
         try {
-            $this->rpc->call('metrics.Add', compact('collector', 'value', 'labels'));
+            $this->rpc->call('metrics.Add', compact('name', 'value', 'labels'));
         } catch (RPCException $e) {
             throw new MetricException($e->getMessage(), $e->getCode(), $e);
         }
@@ -56,10 +56,10 @@ final class Metrics implements MetricsInterface
      *
      * @throws MetricException
      */
-    public function sub(string $collector, float $value, array $labels = [])
+    public function sub(string $name, float $value, array $labels = [])
     {
         try {
-            $this->rpc->call('metrics.Sub', compact('collector', 'value', 'labels'));
+            $this->rpc->call('metrics.Sub', compact('name', 'value', 'labels'));
         } catch (RPCException $e) {
             throw new MetricException($e->getMessage(), $e->getCode(), $e);
         }
@@ -74,10 +74,10 @@ final class Metrics implements MetricsInterface
      *
      * @throws MetricException
      */
-    public function observe(string $collector, float $value, array $labels = [])
+    public function observe(string $name, float $value, array $labels = [])
     {
         try {
-            $this->rpc->call('metrics.Observe', compact('collector', 'value', 'labels'));
+            $this->rpc->call('metrics.Observe', compact('name', 'value', 'labels'));
         } catch (RPCException $e) {
             throw new MetricException($e->getMessage(), $e->getCode(), $e);
         }
@@ -92,10 +92,10 @@ final class Metrics implements MetricsInterface
      *
      * @throws MetricException
      */
-    public function set(string $collector, float $value, array $labels = [])
+    public function set(string $name, float $value, array $labels = [])
     {
         try {
-            $this->rpc->call('metrics.Set', compact('collector', 'value', 'labels'));
+            $this->rpc->call('metrics.Set', compact('name', 'value', 'labels'));
         } catch (RPCException $e) {
             throw new MetricException($e->getMessage(), $e->getCode(), $e);
         }
