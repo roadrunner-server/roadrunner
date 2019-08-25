@@ -32,7 +32,7 @@ final class Metrics implements MetricsInterface
     /**
      * Add collector value. Fallback to appropriate method of related collector.
      *
-     * @param string $collector
+     * @param string $name
      * @param float  $value
      * @param array  $labels
      *
@@ -50,7 +50,7 @@ final class Metrics implements MetricsInterface
     /**
      * Subtract the collector value, only for gauge collector.
      *
-     * @param string $collector
+     * @param string $name
      * @param float  $value
      * @param array  $labels
      *
@@ -68,7 +68,7 @@ final class Metrics implements MetricsInterface
     /**
      * Observe collector value, only for histogram and summary collectors.
      *
-     * @param string $collector
+     * @param string $name
      * @param float  $value
      * @param array  $labels
      *
@@ -86,7 +86,7 @@ final class Metrics implements MetricsInterface
     /**
      * Set collector value, only for gauge collector.
      *
-     * @param string $collector
+     * @param string $name
      * @param float  $value
      * @param array  $labels
      *
