@@ -224,7 +224,7 @@ class RRHelper
         $progressBar = new ProgressBar($output);
         $progressBar->setFormat('verbose');
 
-        $zipFileName = tempnam('.', "rr_zip");
+        $zipFileName = 'rr_zip_'.random_int(0, 10000);
         if (RRHelper::getOSType() == 'linux') {
             $zipFileName .= '.tar.gz';
         }
@@ -296,7 +296,7 @@ class RRHelper
         }
 
         copy(
-            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '.rr.yaml',
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '.rr.yaml',
             $input->getOption('location') . DIRECTORY_SEPARATOR . '.rr.yaml'
         );
         $output->writeln('<info>Config file created!</info>');
