@@ -1345,7 +1345,7 @@ func TestHandler_XForwardedFor(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, 200, r.StatusCode)
-	assert.Equal(t, "200.0.0.1", body)
+	assert.Equal(t, "101.0.0.1", body)
 }
 
 func BenchmarkHandler_Listen_Echo(b *testing.B) {

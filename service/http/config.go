@@ -189,6 +189,14 @@ func (c *Config) IsTrusted(ip string) bool {
 	return false
 }
 
+func (c *Config) IsValid(ip string) bool {
+	i := net.ParseIP(ip)
+	if i == nil {
+		return false
+	}
+	return true
+}
+
 // Valid validates the configuration.
 func (c *Config) Valid() error {
 	if c.Uploads == nil {
