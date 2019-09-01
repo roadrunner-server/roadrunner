@@ -1346,6 +1346,14 @@ func TestHandler_XForwardedFor(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 200, r.StatusCode)
 	assert.Equal(t, "101.0.0.1", body)
+
+	body, r, err = getHeader("http://127.0.0.1:8177/", map[string]string{
+		"X-Forwarded-For": "100.0.0.1, 200.0.0.1, 101.0.0.1, invalid",
+	})
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "101.0.0.1", body)
 }
 
 func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
