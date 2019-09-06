@@ -198,11 +198,16 @@ class RRHelper
 
         if (is_file($finalFile)) {
             $version = RRHelper::getVersion();
-            $previousVersion =
-                preg_match('#Version:.+(\d+\.\d+\.\d+)#', (string)shell_exec($finalFile), $mathes) ?
-                    $mathes[1] : "";
+
+            $previousVersion = preg_match(
+                '#Version:.+(\d+\.\d+\.\d+)#',
+                (string)shell_exec($finalFile),
+                $matches
+            ) ? $matches[1] : "";
+
             $output->writeln('<error>RoadRunner binary file already exists!</error>');
             $helper = $this->getHelper('question');
+
             if (version_compare($previousVersion, $version) === 0) {
                 $output->writeln(sprintf('<info>Current version: %s</info>', $previousVersion));
                 $question = new ConfirmationQuestion(
