@@ -152,12 +152,17 @@ func (h *Handler) resolveIP(r *Request) {
 	}
 
 	if r.Header.Get("X-Forwarded-For") != "" {
-		for _, addr := range strings.Split(r.Header.Get("X-Forwarded-For"), ",") {
-			addr = strings.TrimSpace(addr)
-			if h.cfg.IsTrusted(addr) {
+		ips := strings.Split(r.Header.Get("X-Forwarded-For"), ",")
+		ipCount := len(ips)
+
+		for i := ipCount - 1; i >= 0; i-- {
+			addr := strings.TrimSpace(ips[i])
+			if h.cfg.IsValid(addr) {
 				r.RemoteAddr = addr
+				return
 			}
 		}
+
 		return
 	}
 

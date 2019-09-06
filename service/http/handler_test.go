@@ -1345,7 +1345,58 @@ func TestHandler_XForwardedFor(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, 200, r.StatusCode)
-	assert.Equal(t, "200.0.0.1", body)
+	assert.Equal(t, "101.0.0.1", body)
+
+	body, r, err = getHeader("http://127.0.0.1:8177/", map[string]string{
+		"X-Forwarded-For": "100.0.0.1, 200.0.0.1, 101.0.0.1, invalid",
+	})
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "101.0.0.1", body)
+}
+
+func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
+	h := &Handler{
+		cfg: &Config{
+			MaxRequestSize: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+			TrustedSubnets: []string{
+				"10.0.0.0/8",
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../tests/http/client.php ip pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	h.cfg.parseCIDRs()
+
+	assert.NoError(t, h.rr.Start())
+	defer h.rr.Stop()
+
+	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
+	defer hs.Shutdown(context.Background())
+
+	go func() { hs.ListenAndServe() }()
+	time.Sleep(time.Millisecond * 10)
+
+	body, r, err := getHeader("http://127.0.0.1:8177/", map[string]string{
+		"X-Forwarded-For": "100.0.0.1, 200.0.0.1, invalid, 101.0.0.1",
+	})
+
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "127.0.0.1", body)
 }
 
 func BenchmarkHandler_Listen_Echo(b *testing.B) {
