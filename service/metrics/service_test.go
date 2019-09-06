@@ -57,7 +57,7 @@ func TestService_Serve(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{metricsCfg: `{
-		"address": "localhost:2112"
+		"address": "localhost:2116"
 	}`}))
 
 	s, _ := c.Get(ID)
@@ -67,7 +67,7 @@ func TestService_Serve(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2116/metrics")
 	assert.NoError(t, err)
 
 	assert.Contains(t, out, "go_gc_duration_seconds")
@@ -81,7 +81,7 @@ func Test_ServiceCustomMetric(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{metricsCfg: `{
-		"address": "localhost:2112"
+		"address": "localhost:2115"
 	}`}))
 
 	s, _ := c.Get(ID)
@@ -100,7 +100,7 @@ func Test_ServiceCustomMetric(t *testing.T) {
 
 	collector.Set(100)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2115/metrics")
 	assert.NoError(t, err)
 
 	assert.Contains(t, out, "my_gauge 100")
@@ -114,7 +114,7 @@ func Test_ServiceCustomMetricMust(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{metricsCfg: `{
-		"address": "localhost:2112"
+		"address": "localhost:2114"
 	}`}))
 
 	s, _ := c.Get(ID)
@@ -133,7 +133,7 @@ func Test_ServiceCustomMetricMust(t *testing.T) {
 
 	collector.Set(100)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2114/metrics")
 	assert.NoError(t, err)
 
 	assert.Contains(t, out, "my_gauge_2 100")
@@ -147,7 +147,7 @@ func Test_ConfiguredMetric(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{metricsCfg: `{
-		"address": "localhost:2112",
+		"address": "localhost:2113",
 		"collect":{
 			"user_gauge":{
 				"type": "gauge"
@@ -168,7 +168,7 @@ func Test_ConfiguredMetric(t *testing.T) {
 
 	assert.Nil(t, s.(*Service).Collector("invalid"))
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2113/metrics")
 	assert.NoError(t, err)
 
 	assert.Contains(t, out, "user_gauge 100")

@@ -133,7 +133,7 @@ class PSR7Client
     {
         $server = $this->originalServer;
 
-        $server['REQUEST_URI'] = $rawRequest['ctx']['uri'];
+        $server['REQUEST_URI'] = $ctx['uri'];
         $server['REQUEST_TIME'] = time();
         $server['REQUEST_TIME_FLOAT'] = microtime(true);
         $server['REMOTE_ADDR'] = $ctx['attributes']['ipAddress'] ?? $ctx['remoteAddr'] ?? '127.0.0.1';

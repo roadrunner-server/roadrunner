@@ -14,7 +14,7 @@ import (
 
 var port = 5004
 
-func setup(t *testing.T, metric string) (*rpc2.Client, service.Container) {
+func setup(t *testing.T, metric string, portNum string) (*rpc2.Client, service.Container) {
 	logger, _ := test.NewNullLogger()
 	logger.SetLevel(logrus.DebugLevel)
 
@@ -25,7 +25,7 @@ func setup(t *testing.T, metric string) (*rpc2.Client, service.Container) {
 	assert.NoError(t, c.Init(&testCfg{
 		rpcCfg: `{"enable":true, "listen":"tcp://:` + strconv.Itoa(port) + `"}`,
 		metricsCfg: `{
-		"address": "localhost:2112",
+		"address": "localhost:` + portNum + `",
 		"collect":{
 			` + metric + `
 		}
@@ -57,6 +57,7 @@ func Test_Set_RPC(t *testing.T) {
 		`"user_gauge":{
 				"type": "gauge"
 		}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -79,6 +80,7 @@ func Test_Set_RPC_Vector(t *testing.T) {
 				"type": "gauge",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -102,6 +104,7 @@ func Test_Set_RPC_CollectorError(t *testing.T) {
 					"type": "gauge",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -120,6 +123,7 @@ func Test_Set_RPC_MetricError(t *testing.T) {
 				"type": "gauge",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -138,6 +142,7 @@ func Test_Set_RPC_MetricError_2(t *testing.T) {
 				"type": "gauge",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -155,6 +160,7 @@ func Test_Set_RPC_MetricError_3(t *testing.T) {
 				"type": "histogram",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -173,6 +179,7 @@ func Test_Sub_RPC(t *testing.T) {
 		`"user_gauge":{
 				"type": "gauge"
 		}`,
+		"2113",
 	)
 	defer c.Stop()
 
@@ -189,7 +196,7 @@ func Test_Sub_RPC(t *testing.T) {
 	}, &ok))
 	assert.True(t, ok)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2113/metrics")
 	assert.NoError(t, err)
 	assert.Contains(t, out, `user_gauge 90`)
 }
@@ -201,6 +208,7 @@ func Test_Sub_RPC_Vector(t *testing.T) {
 				"type": "gauge",
 				"labels": ["type", "section"]
 			}`,
+		"2114",
 	)
 	defer c.Stop()
 
@@ -219,7 +227,7 @@ func Test_Sub_RPC_Vector(t *testing.T) {
 	}, &ok))
 	assert.True(t, ok)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2114/metrics")
 	assert.NoError(t, err)
 	assert.Contains(t, out, `user_gauge{section="first",type="core"} 90`)
 }
@@ -231,6 +239,7 @@ func Test_Sub_RPC_CollectorError(t *testing.T) {
 			    "type": "gauge",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -249,6 +258,7 @@ func Test_Sub_RPC_MetricError(t *testing.T) {
 				"type": "gauge",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -267,6 +277,7 @@ func Test_Sub_RPC_MetricError_2(t *testing.T) {
 				"type": "gauge",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -284,6 +295,7 @@ func Test_Sub_RPC_MetricError_3(t *testing.T) {
 				"type": "histogram",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -302,6 +314,7 @@ func Test_Observe_RPC(t *testing.T) {
 		`"user_histogram":{
 				"type": "histogram"
 			}`,
+		"2116",
 	)
 	defer c.Stop()
 
@@ -312,7 +325,7 @@ func Test_Observe_RPC(t *testing.T) {
 	}, &ok))
 	assert.True(t, ok)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2116/metrics")
 	assert.NoError(t, err)
 	assert.Contains(t, out, `user_histogram`)
 }
@@ -324,6 +337,7 @@ func Test_Observe_RPC_Vector(t *testing.T) {
 				"type": "histogram",
 				"labels": ["type", "section"]
 			}`,
+		"2117",
 	)
 	defer c.Stop()
 
@@ -335,7 +349,7 @@ func Test_Observe_RPC_Vector(t *testing.T) {
 	}, &ok))
 	assert.True(t, ok)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2117/metrics")
 	assert.NoError(t, err)
 	assert.Contains(t, out, `user_histogram`)
 }
@@ -347,6 +361,7 @@ func Test_Observe_RPC_CollectorError(t *testing.T) {
 				"type": "histogram",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -365,6 +380,7 @@ func Test_Observe_RPC_MetricError(t *testing.T) {
 				"type": "histogram",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -383,6 +399,7 @@ func Test_Observe_RPC_MetricError_2(t *testing.T) {
 				"type": "histogram",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -401,6 +418,7 @@ func Test_Observe2_RPC(t *testing.T) {
 		`"user_histogram":{
 				"type": "summary"
 			}`,
+		"2118",
 	)
 	defer c.Stop()
 
@@ -411,7 +429,7 @@ func Test_Observe2_RPC(t *testing.T) {
 	}, &ok))
 	assert.True(t, ok)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2118/metrics")
 	assert.NoError(t, err)
 	assert.Contains(t, out, `user_histogram`)
 }
@@ -422,6 +440,7 @@ func Test_Observe2_RPC_Invalid(t *testing.T) {
 		`"user_histogram":{
 				"type": "summary"
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -439,6 +458,7 @@ func Test_Observe2_RPC_Invalid_2(t *testing.T) {
 		`"user_histogram":{
 				"type": "gauge"
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -456,6 +476,7 @@ func Test_Observe2_RPC_Vector(t *testing.T) {
 				"type": "summary",
 				"labels": ["type", "section"]
 			}`,
+		"2119",
 	)
 	defer c.Stop()
 
@@ -467,7 +488,7 @@ func Test_Observe2_RPC_Vector(t *testing.T) {
 	}, &ok))
 	assert.True(t, ok)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2119/metrics")
 	assert.NoError(t, err)
 	assert.Contains(t, out, `user_histogram`)
 }
@@ -479,6 +500,7 @@ func Test_Observe2_RPC_CollectorError(t *testing.T) {
 				"type": "summary",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -497,6 +519,7 @@ func Test_Observe2_RPC_MetricError(t *testing.T) {
 				"type": "summary",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -515,6 +538,7 @@ func Test_Observe2_RPC_MetricError_2(t *testing.T) {
 				"type": "summary",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -532,6 +556,7 @@ func Test_Add_RPC(t *testing.T) {
 		`"user_gauge":{
 				"type": "counter"
 		}`,
+		"2120",
 	)
 	defer c.Stop()
 
@@ -542,7 +567,7 @@ func Test_Add_RPC(t *testing.T) {
 	}, &ok))
 	assert.True(t, ok)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2120/metrics")
 	assert.NoError(t, err)
 	assert.Contains(t, out, `user_gauge 100`)
 }
@@ -554,6 +579,7 @@ func Test_Add_RPC_Vector(t *testing.T) {
 				"type": "counter",
 				"labels": ["type", "section"]
 			}`,
+		"2121",
 	)
 	defer c.Stop()
 
@@ -565,7 +591,7 @@ func Test_Add_RPC_Vector(t *testing.T) {
 	}, &ok))
 	assert.True(t, ok)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, _, err := get("http://localhost:2121/metrics")
 	assert.NoError(t, err)
 	assert.Contains(t, out, `user_gauge{section="first",type="core"} 100`)
 }
@@ -577,6 +603,7 @@ func Test_Add_RPC_CollectorError(t *testing.T) {
 					"type": "counter",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -595,6 +622,7 @@ func Test_Add_RPC_MetricError(t *testing.T) {
 				"type": "counter",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -613,6 +641,7 @@ func Test_Add_RPC_MetricError_2(t *testing.T) {
 				"type": "counter",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
@@ -630,6 +659,7 @@ func Test_Add_RPC_MetricError_3(t *testing.T) {
 				"type": "histogram",
 				"labels": ["type", "section"]
 			}`,
+		"2112",
 	)
 	defer c.Stop()
 
