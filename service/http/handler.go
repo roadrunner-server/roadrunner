@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/pkg/errors"
 	"github.com/spiral/roadrunner"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -157,7 +158,7 @@ func (h *Handler) resolveIP(r *Request) {
 
 		for i := ipCount - 1; i >= 0; i-- {
 			addr := strings.TrimSpace(ips[i])
-			if h.cfg.IsValid(addr) {
+			if net.ParseIP(addr) != nil {
 				r.RemoteAddr = addr
 				return
 			}

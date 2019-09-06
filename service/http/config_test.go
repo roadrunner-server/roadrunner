@@ -83,43 +83,6 @@ func Test_Trusted_Subnets(t *testing.T) {
 	assert.False(t, cfg.IsTrusted("127.0.0.0.1"))
 }
 
-func TestConfig_IsValid(t *testing.T) {
-
-	cfg := &Config{
-		Address:        ":8080",
-		MaxRequestSize: 1024,
-		Uploads: &UploadsConfig{
-			Dir:    os.TempDir(),
-			Forbid: []string{".go"},
-		},
-		HTTP2: &HTTP2Config{
-			Enabled: true,
-		},
-		TrustedSubnets: []string{"200.1.0.0/16"},
-		Workers: &roadrunner.ServerConfig{
-			Command: "php tests/client.php echo pipes",
-			Relay:   "pipes",
-			Pool: &roadrunner.Config{
-				NumWorkers:      1,
-				AllocateTimeout: time.Second,
-				DestroyTimeout:  time.Second,
-			},
-		},
-	}
-
-	ip6 := "FE80::0202:B3FF:FE1E:8329"
-	ip4 := "127.0.0.1"
-
-	assert.True(t, cfg.IsValid(ip4))
-	assert.True(t, cfg.IsValid(ip6))
-
-	ip4Invalid := "127.0.0.0.1"
-	ip6Invalid := "FE80::0202::B3FF:FE1E:8329" // Can only use :: once in an address
-
-	assert.False(t, cfg.IsValid(ip4Invalid))
-	assert.False(t, cfg.IsValid(ip6Invalid))
-}
-
 func Test_Trusted_Subnets_Err(t *testing.T) {
 	cfg := &Config{
 		Address:        ":8080",

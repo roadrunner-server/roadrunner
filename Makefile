@@ -20,3 +20,6 @@ test:
 	go test -v -race -cover ./service/limit
 	go test -v -race -cover ./service/headers
 	go test -v -race -cover ./service/metrics
+lint:
+	go fmt ./...
+	golint ./...
