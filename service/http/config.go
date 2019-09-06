@@ -94,7 +94,7 @@ func (c *Config) EnableHTTP2() bool {
 	return c.HTTP2.Enabled
 }
 
-// EnableH2С when HTTP/2 extension must be enabled on TCP.
+// EnableH2C when HTTP/2 extension must be enabled on TCP.
 func (c *Config) EnableH2C() bool {
 	return c.HTTP2.H2C
 }

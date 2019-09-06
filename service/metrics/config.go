@@ -6,6 +6,7 @@ import (
 	"github.com/spiral/roadrunner/service"
 )
 
+// Config configures metrics service.
 type Config struct {
 	// Address to listen
 	Address string

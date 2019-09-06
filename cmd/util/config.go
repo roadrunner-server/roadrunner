@@ -9,28 +9,28 @@ import (
 	"strings"
 )
 
-// configWrapper provides interface bridge between v configs and service.Config.
-type configWrapper struct {
+// ConfigWrapper provides interface bridge between v configs and service.Config.
+type ConfigWrapper struct {
 	v *viper.Viper
 }
 
 // Get nested config section (sub-map), returns nil if section not found.
-func (w *configWrapper) Get(key string) service.Config {
+func (w *ConfigWrapper) Get(key string) service.Config {
 	sub := w.v.Sub(key)
 	if sub == nil {
 		return nil
 	}
 
-	return &configWrapper{sub}
+	return &ConfigWrapper{sub}
 }
 
 // Unmarshal unmarshal config data into given struct.
-func (w *configWrapper) Unmarshal(out interface{}) error {
+func (w *ConfigWrapper) Unmarshal(out interface{}) error {
 	return w.v.Unmarshal(out)
 }
 
 // LoadConfig config and merge it's values with set of flags.
-func LoadConfig(cfgFile string, path []string, name string, flags []string) (*configWrapper, error) {
+func LoadConfig(cfgFile string, path []string, name string, flags []string) (*ConfigWrapper, error) {
 	cfg := viper.New()
 
 	if cfgFile != "" {
@@ -124,7 +124,7 @@ func LoadConfig(cfgFile string, path []string, name string, flags []string) (*co
 		return nil, err
 	}
 
-	return &configWrapper{merged}, nil
+	return &ConfigWrapper{merged}, nil
 }
 
 func parseFlag(flag string) (string, string, error) {
