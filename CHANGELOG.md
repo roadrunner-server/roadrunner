@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+v1.4.8 (06.09.2019)
+-------------------
+- bugfix in proxy IP resolution by @spudro228 
+- `rr get` can now skip binary download if version did not change by
+  @drefixs
+- bugfix in `rr init-config` and with linux binary download by
+  @Hunternnm
+- `$_SERVER['REQUEST_URI']` is now being set
+
 v1.4.7 (29.07.2019)
 -------------------
 - added support for H2C over TCP by @Alex-Bond
