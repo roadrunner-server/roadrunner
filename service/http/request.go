@@ -151,7 +151,7 @@ func (r *Request) Payload() (p *roadrunner.Payload, err error) {
 
 // contentType returns the payload content type.
 func (r *Request) contentType() int {
-	if r.Method == "GET" || r.Method == "HEAD" || r.Method == "OPTIONS" {
+	if r.Method == "HEAD" || r.Method == "OPTIONS" {
 		return contentNone
 	}
 
