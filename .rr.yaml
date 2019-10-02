@@ -18,7 +18,7 @@ metrics:
   collect:
     # metric name
     app_metric:
-      # type [gauge, counter, histogram, symnmary]
+      # type [gauge, counter, histogram, summary]
       type:    histogram
       
       # short description
