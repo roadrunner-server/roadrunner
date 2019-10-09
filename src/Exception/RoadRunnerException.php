@@ -10,5 +10,4 @@ namespace Spiral\RoadRunner\Exception;
 
 class RoadRunnerException extends \Spiral\RoadRunner\Exceptions\RoadRunnerException
 {
-
 }

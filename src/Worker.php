@@ -149,7 +149,8 @@ class Worker
         // PID negotiation (socket connections only)
         if (!empty($p['pid'])) {
             $this->relay->send(
-                sprintf('{"pid":%s}', getmypid()), Relay::PAYLOAD_CONTROL
+                sprintf('{"pid":%s}', getmypid()),
+                Relay::PAYLOAD_CONTROL
             );
         }
 

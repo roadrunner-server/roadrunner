@@ -5,7 +5,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 function handleRequest(ServerRequestInterface $req, ResponseInterface $resp): ResponseInterface
 {
-
     $data = $req->getParsedBody();
 
     ksort($data);
