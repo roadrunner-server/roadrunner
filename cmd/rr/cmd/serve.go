@@ -21,13 +21,19 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
+	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
+
+	"github.com/radovskyb/watcher"
+	"github.com/spf13/cobra"
 )
 
 var stopSignal = make(chan os.Signal, 1)
+var source string
 
 func init() {
 	CLI.AddCommand(&cobra.Command{
@@ -35,11 +41,43 @@ func init() {
 		Short: "Serve RoadRunner service(s)",
 		RunE:  serveHandler,
 	})
+	CLI.PersistentFlags().StringVarP(&source, "source", "s", "", "Source directory")
 
 	signal.Notify(stopSignal, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGINT)
 }
 
 func serveHandler(cmd *cobra.Command, args []string) error {
+	if Debug && source != "" {
+		log.Printf("Watch files")
+
+		w := watcher.New()
+		w.FilterOps(watcher.Rename, watcher.Create, watcher.Move, watcher.Write)
+
+		go func() {
+			for {
+				select {
+				case event := <-w.Event:
+					log.Println(event)
+					serveHandler(cmd, args)
+				case err := <-w.Error:
+					log.Fatalln(err)
+				case <-w.Closed:
+					return
+				}
+			}
+		}()
+
+		if err := w.AddRecursive(source); err != nil {
+			log.Fatalln(err)
+		}
+
+		for path, f := range w.WatchedFiles() {
+			fmt.Printf("%s: %s\n", path, f.Name())
+		}
+
+		go w.Start(100 * time.Millisecond)
+	}
+
 	stopped := make(chan interface{})
 
 	go func() {
