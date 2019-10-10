@@ -14,5 +14,4 @@ namespace Spiral\RoadRunner\Exceptions;
  */
 class RoadRunnerException extends \RuntimeException
 {
-
 }
