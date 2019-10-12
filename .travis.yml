@@ -26,6 +26,7 @@ script:
   - go test ./service/limit -race -v -coverprofile=limit.txt -covermode=atomic
   - go test ./service/headers -race -v -coverprofile=headers.txt -covermode=atomic
   - go test ./service/metrics -race -v -coverprofile=metrics.txt -covermode=atomic
+  - go test ./service/health -race -v -coverprofile=health.txt -covermode=atomic
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -f lib.txt
@@ -38,6 +39,7 @@ after_success:
   - bash <(curl -s https://codecov.io/bash) -f limit.txt
   - bash <(curl -s https://codecov.io/bash) -f headers.txt
   - bash <(curl -s https://codecov.io/bash) -f metrics.txt
+  - bash <(curl -s https://codecov.io/bash) -f health.txt
 
 jobs:
   include:

@@ -14,6 +14,9 @@ type State interface {
 
 	// NumJobs shows how many times worker was invoked
 	NumExecs() int64
+
+	// IsActive returns true if worker not Inactive or Stopped
+	IsActive() bool
 }
 
 const (
