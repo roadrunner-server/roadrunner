@@ -6,7 +6,7 @@ v1.5.0 (12.10.2019)
 - initial code style fixes by @ScullWM
 - added health service for better integration with Kubernetes by @awprice
 - added support for payloads in GET methods by @moeinpaki
-- dropped support for 7.0 version
+- dropped support for 7.0 version (you can still use new binary server)
 
 v1.4.8 (06.09.2019)
 -------------------
