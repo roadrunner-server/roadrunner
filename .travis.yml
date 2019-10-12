@@ -44,13 +44,6 @@ after_success:
 jobs:
   include:
     - stage: Test
-      env: "PHP=7.0"
-      before_install:
-        - sudo add-apt-repository -y ppa:ondrej/php
-        - sudo apt-get update
-        - sudo apt-get install -y php7.0-cli php7.0-curl
-        - sudo cp `which php7.0` `which php`
-    - stage: Test
       env: "PHP=7.1"
       before_install:
         - sudo add-apt-repository -y ppa:ondrej/php
