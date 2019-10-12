@@ -134,7 +134,7 @@ func TestService_Serve_DeadWorkerStillHealthy(t *testing.T) {
 			"address": "localhost:2115",
 			"workers":{
 				"command": "php ../../tests/http/client.php echo pipes",
-				"pool": {"numWorkers": 3}
+				"pool": {"numWorkers": 2}
 			}
 		}`,
 	}))
