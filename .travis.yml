@@ -64,3 +64,10 @@ jobs:
         - sudo apt-get update
         - sudo apt-get install -y php7.3-cli php7.3-curl
         - sudo cp `which php7.3` `which php`
+    - stage: Test
+      env: "PHP=7.4"
+      before_install:
+        - sudo add-apt-repository -y ppa:ondrej/php
+        - sudo apt-get update
+        - sudo apt-get install -y php7.4-cli php7.4-curl
+        - sudo cp `which php7.4` `which php`
