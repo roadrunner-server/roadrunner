@@ -73,7 +73,6 @@ func TestService_Serve(t *testing.T) {
 	_, res, err := get("http://localhost:2116/")
 	assert.NoError(t, err)
 	assert.Equal(t, http.StatusOK, res.StatusCode)
-
 }
 
 func TestService_Serve_DeadWorker(t *testing.T) {
@@ -91,7 +90,7 @@ func TestService_Serve_DeadWorker(t *testing.T) {
 		httpCfg: `{
 			"address": "localhost:2115",
 			"workers":{
-				"command": "php ../../tests/http/client.php echo pipes",
+				"command": "php ../../tests/http/slow-client.php echo pipes 1000",
 				"pool": {"numWorkers": 1}
 			}
 		}`,
