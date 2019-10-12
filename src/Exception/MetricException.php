@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *

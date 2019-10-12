@@ -1,4 +1,5 @@
 <?php
+
 /**
  * High-performance PHP process supervisor and load balancer written in Go
  *
@@ -113,7 +114,7 @@ class PSR7Client
      *
      * @param ResponseInterface $response
      */
-    public function respond(ResponseInterface $response)
+    public function respond(ResponseInterface $response): void
     {
         $this->httpClient->respond(
             $response->getStatusCode(),

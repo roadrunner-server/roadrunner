@@ -1,4 +1,5 @@
 <?php
+
 /**
  * High-performance PHP process supervisor and load balancer written in Go
  *
@@ -30,7 +31,8 @@ final class HttpClient
     }
 
     /**
-     * @return array|null Request information as ['ctx'=>[], 'body'=>string] or null if termination request or invalid context.
+     * @return array|null Request information as ['ctx'=>[], 'body'=>string]
+     *                    or null if termination request or invalid context.
      */
     public function acceptRequest()
     {
@@ -58,7 +60,7 @@ final class HttpClient
      *                            key MUST be a header name, and each value MUST be an array of strings
      *                            for that header.
      */
-    public function respond(int $status, string $body, array $headers = [])
+    public function respond(int $status, string $body, array $headers = []): void
     {
         if (empty($headers)) {
             // this is required to represent empty header set as map and not as array

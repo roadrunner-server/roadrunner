@@ -1,4 +1,5 @@
 <?php
+
 /**
  * High-performance PHP process supervisor and load balancer written in Go
  *
@@ -25,7 +26,7 @@ use Spiral\RoadRunner\Exception\RoadRunnerException;
 class Worker
 {
     // Send as response context to request worker termination
-    const STOP = '{"stop":true}';
+    public const STOP = '{"stop":true}';
 
     /** @var Relay */
     private $relay;
@@ -80,7 +81,7 @@ class Worker
      * @param string|null $payload
      * @param string|null $header
      */
-    public function send(string $payload = null, string $header = null)
+    public function send(string $payload = null, string $header = null): void
     {
         if (is_null($header)) {
             $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
@@ -101,7 +102,7 @@ class Worker
      *
      * @param string $message
      */
-    public function error(string $message)
+    public function error(string $message): void
     {
         $this->relay->send(
             $message,
@@ -118,7 +119,7 @@ class Worker
      *
      * @throws GoridgeException
      */
-    public function stop()
+    public function stop(): void
     {
         $this->send(null, self::STOP);
     }
@@ -143,7 +144,7 @@ class Worker
 
         $p = json_decode($body, true);
         if ($p === false) {
-            throw new RoadRunnerException("invalid task context, JSON payload is expected");
+            throw new RoadRunnerException('invalid task context, JSON payload is expected');
         }
 
         // PID negotiation (socket connections only)

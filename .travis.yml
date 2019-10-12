@@ -27,6 +27,7 @@ script:
   - go test ./service/headers -race -v -coverprofile=headers.txt -covermode=atomic
   - go test ./service/metrics -race -v -coverprofile=metrics.txt -covermode=atomic
   - go test ./service/health -race -v -coverprofile=health.txt -covermode=atomic
+  - vendor/bin/spiral-cs check src
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -f lib.txt

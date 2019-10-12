@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Spiral Framework.
  *
@@ -38,7 +39,7 @@ final class Metrics implements MetricsInterface
      *
      * @throws MetricException
      */
-    public function add(string $name, float $value, array $labels = [])
+    public function add(string $name, float $value, array $labels = []): void
     {
         try {
             $this->rpc->call('metrics.Add', compact('name', 'value', 'labels'));
@@ -56,7 +57,7 @@ final class Metrics implements MetricsInterface
      *
      * @throws MetricException
      */
-    public function sub(string $name, float $value, array $labels = [])
+    public function sub(string $name, float $value, array $labels = []): void
     {
         try {
             $this->rpc->call('metrics.Sub', compact('name', 'value', 'labels'));
@@ -74,7 +75,7 @@ final class Metrics implements MetricsInterface
      *
      * @throws MetricException
      */
-    public function observe(string $name, float $value, array $labels = [])
+    public function observe(string $name, float $value, array $labels = []): void
     {
         try {
             $this->rpc->call('metrics.Observe', compact('name', 'value', 'labels'));
@@ -92,7 +93,7 @@ final class Metrics implements MetricsInterface
      *
      * @throws MetricException
      */
-    public function set(string $name, float $value, array $labels = [])
+    public function set(string $name, float $value, array $labels = []): void
     {
         try {
             $this->rpc->call('metrics.Set', compact('name', 'value', 'labels'));
