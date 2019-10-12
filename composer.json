@@ -28,8 +28,5 @@
   },
   "bin": [
     "bin/rr"
-  ],
-  "require-dev": {
-    "spiral/code-style": "^1.0"
-  }
+  ]
 }

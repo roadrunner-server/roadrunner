@@ -6,7 +6,6 @@ v1.5.0 (12.10.2019)
 - initial code style fixes by @ScullWM
 - added health service for better integration with Kubernetes by @awprice
 - added support for payloads in GET methods by @moeinpaki
-- added automatic CS fixer (spiral/code-style)
 
 v1.4.8 (06.09.2019)
 -------------------
