@@ -26,3 +26,5 @@ require (
 	golang.org/x/tools v0.0.0-20180828015842-6cd1fcedba52 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
+
+go 1.13
