@@ -180,6 +180,7 @@ func (c *container) Serve() error {
 		}(e)
 	}
 
+	var serveErr error
 	for i := 0; i < numServing; i++ {
 		result := <-done
 
@@ -191,11 +192,11 @@ func (c *container) Serve() error {
 		// found an error in one of the services, stopping the rest of running services.
 		if err := result.(error); err != nil {
 			c.Stop()
-			return err
+			serveErr = err
 		}
 	}
 
-	return nil
+	return serveErr
 }
 
 // Detach sends stop command to all running services.
