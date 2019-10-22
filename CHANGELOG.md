@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.5.1 (22.10.2019)
+-------------------
+- bugfix: do not halt stop sequence in case of service error
+
 v1.5.0 (12.10.2019)
 -------------------
 - initial code style fixes by @ScullWM
