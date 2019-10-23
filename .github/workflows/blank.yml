@@ -41,16 +41,16 @@ jobs:
         composer install --no-interaction --prefer-source
         find src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
         chmod +x bin/rr && bin/rr get-binary
-    - name: Run golanf tests
-      run:
-        - go test -race -v -coverprofile=lib.txt -covermode=atomic
-        - go test ./util -race -v -coverprofile=util.txt -covermode=atomic
-        - go test ./service -race -v -coverprofile=service.txt -covermode=atomic
-        - go test ./service/env -race -v -coverprofile=env.txt -covermode=atomic
-        - go test ./service/rpc -race -v -coverprofile=rpc.txt -covermode=atomic
-        - go test ./service/http -race -v -coverprofile=http.txt -covermode=atomic
-        - go test ./service/static -race -v -coverprofile=static.txt -covermode=atomic
-        - go test ./service/limit -race -v -coverprofile=limit.txt -covermode=atomic
-        - go test ./service/headers -race -v -coverprofile=headers.txt -covermode=atomic
-        - go test ./service/metrics -race -v -coverprofile=metrics.txt -covermode=atomic
-        - go test ./service/health -race -v -coverprofile=health.txt -covermode=atomic
+    - name: Run golang tests
+      run: |
+        go test -race -v -coverprofile=lib.txt -covermode=atomic
+        go test ./util -race -v -coverprofile=util.txt -covermode=atomic
+        go test ./service -race -v -coverprofile=service.txt -covermode=atomic
+        go test ./service/env -race -v -coverprofile=env.txt -covermode=atomic
+        go test ./service/rpc -race -v -coverprofile=rpc.txt -covermode=atomic
+        go test ./service/http -race -v -coverprofile=http.txt -covermode=atomic
+        go test ./service/static -race -v -coverprofile=static.txt -covermode=atomic
+        go test ./service/limit -race -v -coverprofile=limit.txt -covermode=atomic
+        go test ./service/headers -race -v -coverprofile=headers.txt -covermode=atomic
+        go test ./service/metrics -race -v -coverprofile=metrics.txt -covermode=atomic
+        go test ./service/health -race -v -coverprofile=health.txt -covermode=atomic
