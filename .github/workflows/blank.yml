@@ -28,9 +28,9 @@ jobs:
     - name: Install dependencies and download binary roadrunner
       run: |
         export GO111MODULE=on
-        php ${{ matrix.php }} -v
+        php${{ matrix.php }} -v
         composer -V
         go mod download
         composer install --no-interaction --prefer-source
-        find src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
+        find src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php${{ matrix.php }} -l
         chmod +x bin/rr && bin/rr get-binary
