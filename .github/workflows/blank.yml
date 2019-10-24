@@ -32,6 +32,16 @@ jobs:
         extension-csv: dom
         coverage: xdebug
 
+    - name: Debug if needed
+      run: |
+        export DEBUG=${DEBUG:-false}
+        if [[ "$DEBUG" == "true" ]]; then
+          env
+          go env
+        fi
+      env:
+        DEBUG: ${{secrets.DEBUG}}
+
     - name: Install dependencies and download binary roadrunner
       run: |
         export GO111MODULE=on
