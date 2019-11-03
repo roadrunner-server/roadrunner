@@ -1,5 +1,7 @@
 package metrics
 
+// todo: declare metric at runtime
+
 import (
 	"context"
 	"github.com/prometheus/client_golang/prometheus"

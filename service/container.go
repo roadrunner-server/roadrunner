@@ -46,6 +46,9 @@ type Container interface {
 
 	// Close all active services.
 	Stop()
+
+	// List service names.
+	List() []string
 }
 
 // Config provides ability to slice configuration sections and unmarshal configuration data into
@@ -210,6 +213,16 @@ func (c *container) Stop() {
 			c.log.Debugf("[%s]: stopped", e.name)
 		}
 	}
+}
+
+// List all service names.
+func (c *container) List() []string {
+	names := make([]string, 0)
+	for _, e := range c.services {
+		names = append(names, e.name)
+	}
+
+	return names
 }
 
 // calls Init method with automatically resolved arguments.
