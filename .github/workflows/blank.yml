@@ -42,16 +42,20 @@ jobs:
       env:
         DEBUG: ${{secrets.DEBUG}}
 
-    - name: Install dependencies and download binary roadrunner
+    - name: Show versions
       run: |
         export GO111MODULE=on
         php -v
         composer -V
         go version
+        
+    - name: Install dependencies and download binary roadrunner
+      run: |
         go mod download
         composer install --no-interaction --prefer-source
         find src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
         chmod +x bin/rr && bin/rr get-binary
+
     - name: Run golang tests
       run: |
         go test -race -v -coverprofile=lib.txt -covermode=atomic
