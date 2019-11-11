@@ -58,7 +58,6 @@ jobs:
 
     - name: Run golang tests
       run: |
-        go env
         go test -race -v -coverprofile=lib.txt -covermode=atomic
         go test ./util -race -v -coverprofile=util.txt -covermode=atomic
         go test ./service -race -v -coverprofile=service.txt -covermode=atomic
