@@ -66,7 +66,7 @@ jobs:
         go test ./service/http -race -v -coverprofile=http.txt -covermode=atomic
         go test ./service/static -race -v -coverprofile=static.txt -covermode=atomic
         go test ./service/limit -race -v -coverprofile=limit.txt -covermode=atomic
-        go test ./service/headers -race -v -coverprofilevers=headers.txt -covermode=atomic
+        go test ./service/headers -race -v -coverprofile=headers.txt -covermode=atomic
         go test ./service/metrics -race -v -coverprofile=metrics.txt -covermode=atomic
         go test ./service/health -race -v -coverprofile=health.txt -covermode=atomic
     - name: Run code coverage
