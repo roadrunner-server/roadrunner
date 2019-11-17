@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -51,7 +52,11 @@ func (u *Uploads) Open() {
 		wg.Add(1)
 		go func(f *FileUpload) {
 			defer wg.Done()
-			f.Open(u.cfg)
+			err := f.Open(u.cfg)
+			if err != nil {
+				// TODO handle error mechanism in goroutines
+				fmt.Println(fmt.Errorf("error opening the file: error %v", err))
+			}
 		}(f)
 	}
 
@@ -62,7 +67,11 @@ func (u *Uploads) Open() {
 func (u *Uploads) Clear() {
 	for _, f := range u.list {
 		if f.TempFilename != "" && exists(f.TempFilename) {
-			os.Remove(f.TempFilename)
+			err := os.Remove(f.TempFilename)
+			if err != nil {
+				// TODO error handling mechanism
+				fmt.Println(fmt.Errorf("error removing the file: error %v", err))
+			}
 		}
 	}
 }
@@ -99,7 +108,13 @@ func NewUpload(f *multipart.FileHeader) *FileUpload {
 }
 
 // Open moves file content into temporary file available for PHP.
-func (f *FileUpload) Open(cfg *UploadsConfig) error {
+// NOTE:
+// There is 2 deferred functions, and in case of getting 2 errors from both functions
+// error from close of temp file would be overwritten by error from the main file
+// STACK
+// DEFER FILE CLOSE (2)
+// DEFER TMP CLOSE  (1)
+func (f *FileUpload) Open(cfg *UploadsConfig) (err error) {
 	if cfg.Forbids(f.Name) {
 		f.Error = UploadErrorExtension
 		return nil
@@ -110,7 +125,12 @@ func (f *FileUpload) Open(cfg *UploadsConfig) error {
 		f.Error = UploadErrorNoFile
 		return err
 	}
-	defer file.Close()
+
+	defer func() {
+		// close the main file
+		err = file.Close()
+	}()
+
 
 	tmp, err := ioutil.TempFile(cfg.TmpDir(), "upload")
 	if err != nil {
@@ -120,7 +140,10 @@ func (f *FileUpload) Open(cfg *UploadsConfig) error {
 	}
 
 	f.TempFilename = tmp.Name()
-	defer tmp.Close()
+	defer func() {
+		// close the temp file
+		err = tmp.Close()
+	}()
 
 	if f.Size, err = io.Copy(tmp, file); err != nil {
 		f.Error = UploadErrorCantWrite
@@ -131,10 +154,8 @@ func (f *FileUpload) Open(cfg *UploadsConfig) error {
 
 // exists if file exists.
 func exists(path string) bool {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false
 	}
-
-	return false
+	return true
 }

@@ -157,15 +157,36 @@ func (s *Service) Stop() {
 	defer s.mu.Unlock()
 
 	if s.fcgi != nil {
-		go s.fcgi.Shutdown(context.Background())
+		go func() {
+			err := s.fcgi.Shutdown(context.Background())
+			if err != nil {
+				// TODO think about returning error from this Stop function
+				// Stop() error
+				// push error from goroutines to the channel and block unil error or success shutdown or timeout
+				fmt.Println(fmt.Errorf("error shutting down the server, error: %v", err))
+				return
+			}
+		}()
 	}
 
 	if s.https != nil {
-		go s.https.Shutdown(context.Background())
+		go func() {
+			err := s.fcgi.Shutdown(context.Background())
+			if err != nil {
+				fmt.Println(fmt.Errorf("error shutting down the server, error: %v", err))
+				return
+			}
+		}()
 	}
 
 	if s.http != nil {
-		go s.http.Shutdown(context.Background())
+		go func() {
+			err := s.fcgi.Shutdown(context.Background())
+			if err != nil {
+				fmt.Println(fmt.Errorf("error shutting down the server, error: %v", err))
+				return
+			}
+		}()
 	}
 }
 

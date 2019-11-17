@@ -49,7 +49,12 @@ func Test_RPC(t *testing.T) {
 	s2, _ := c.Get(rpc.ID)
 	rs := s2.(*rpc.Service)
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -110,7 +115,12 @@ func Test_RPC_Unix(t *testing.T) {
 	s2, _ := c.Get(rpc.ID)
 	rs := s2.(*rpc.Service)
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -164,7 +174,12 @@ func Test_Workers(t *testing.T) {
 	s2, _ := c.Get(rpc.ID)
 	rs := s2.(*rpc.Service)
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 

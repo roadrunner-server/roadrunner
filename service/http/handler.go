@@ -120,7 +120,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.handleResponse(req, resp, start)
-	resp.Write(w)
+	err = resp.Write(w)
+	if err != nil {
+		h.handleError(w, r, err, start)
+	}
 }
 
 // handleError sends error.
@@ -128,7 +131,10 @@ func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error,
 	h.throw(EventError, &ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
 
 	w.WriteHeader(500)
-	w.Write([]byte(err.Error()))
+	_, err = w.Write([]byte(err.Error()))
+	if err != nil {
+		h.throw(EventError, &ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
+	}
 }
 
 // handleResponse triggers response event.

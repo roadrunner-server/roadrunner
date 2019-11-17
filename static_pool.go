@@ -107,9 +107,7 @@ func (p *StaticPool) Workers() (workers []*Worker) {
 	p.muw.RLock()
 	defer p.muw.RUnlock()
 
-	for _, w := range p.workers {
-		workers = append(workers, w)
-	}
+	workers = append(workers, p.workers...)
 
 	return workers
 }

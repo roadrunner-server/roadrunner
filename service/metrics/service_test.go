@@ -43,9 +43,16 @@ func get(url string) (string, *http.Response, error) {
 	if err != nil {
 		return "", nil, err
 	}
-	defer r.Body.Close()
 
 	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return "", nil, err
+	}
+
+	err = r.Body.Close()
+	if err != nil {
+		return "", nil, err
+	}
 	return string(b), r, err
 }
 
@@ -63,7 +70,12 @@ func TestService_Serve(t *testing.T) {
 	s, _ := c.Get(ID)
 	assert.NotNil(t, s)
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -94,7 +106,12 @@ func Test_ServiceCustomMetric(t *testing.T) {
 
 	assert.NoError(t, s.(*Service).Register(collector))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -127,7 +144,12 @@ func Test_ServiceCustomMetricMust(t *testing.T) {
 
 	s.(*Service).MustRegister(collector)
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -160,7 +182,12 @@ func Test_ConfiguredMetric(t *testing.T) {
 
 	assert.True(t, s.(*Service).Enabled())
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 

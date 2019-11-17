@@ -2,6 +2,7 @@ package health
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"sync"
 
@@ -47,7 +48,13 @@ func (s *Service) Stop() {
 
 	if s.http != nil {
 		// gracefully stop the server
-		go s.http.Shutdown(context.Background())
+		go func() {
+			err := s.http.Shutdown(context.Background())
+			if err != nil {
+				// TODO how to log error here?
+				fmt.Println(fmt.Errorf("error shutting down the server: error %v", err))
+			}
+		}()
 	}
 }
 

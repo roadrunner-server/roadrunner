@@ -53,7 +53,10 @@ func Test_Service_NoConfig(t *testing.T) {
 	c := service.NewContainer(logger)
 	c.Register(ID, &Service{})
 
-	c.Init(&testCfg{httpCfg: `{"Enable":true}`})
+	err := c.Init(&testCfg{httpCfg: `{"Enable":true}`})
+	if err != nil {
+		t.Errorf("error during the Init: error %v", err)
+	}
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)
@@ -138,7 +141,12 @@ func Test_Service_Echo(t *testing.T) {
 	// should do nothing
 	s.(*Service).Stop()
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -147,7 +155,12 @@ func Test_Service_Echo(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error closing the Body: error %v", err)
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -191,7 +204,12 @@ func Test_Service_Env(t *testing.T) {
 	// should do nothing
 	s.(*Service).Stop()
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -200,7 +218,12 @@ func Test_Service_Env(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error closing the Body: error %v", err)
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -249,7 +272,12 @@ func Test_Service_ErrorEcho(t *testing.T) {
 		}
 	})
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -258,7 +286,12 @@ func Test_Service_ErrorEcho(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error closing the Body: error %v", err)
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -304,14 +337,22 @@ func Test_Service_Middleware(t *testing.T) {
 		return func(w http.ResponseWriter, r *http.Request) {
 			if r.URL.Path == "/halt" {
 				w.WriteHeader(500)
-				w.Write([]byte("halted"))
+				_, err := w.Write([]byte("halted"))
+				if err != nil {
+					t.Errorf("error writing the data to the http reply: error %v", err)
+				}
 			} else {
 				f(w, r)
 			}
 		}
 	})
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -320,7 +361,6 @@ func Test_Service_Middleware(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -329,19 +369,27 @@ func Test_Service_Middleware(t *testing.T) {
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", string(b))
 
+	err = r.Body.Close()
+	if err != nil {
+		t.Errorf("error closing the Body: error %v", err)
+	}
+
 	req, err = http.NewRequest("GET", "http://localhost:6029/halt", nil)
 	assert.NoError(t, err)
 
 	r, err = http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
-
 	b, err = ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 500, r.StatusCode)
 	assert.Equal(t, "halted", string(b))
+
+	err = r.Body.Close()
+	if err != nil {
+		t.Errorf("error closing the Body: error %v", err)
+	}
 }
 
 func Test_Service_Listener(t *testing.T) {
@@ -381,7 +429,12 @@ func Test_Service_Listener(t *testing.T) {
 		}
 	})
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 
 	c.Stop()

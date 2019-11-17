@@ -345,7 +345,13 @@ func Test_Static_Pool_Destroy_And_Close_While_Wait(t *testing.T) {
 	assert.NotNil(t, p)
 	assert.NoError(t, err)
 
-	go p.Exec(&Payload{Body: []byte("100")})
+	go func() {
+		_, err := p.Exec(&Payload{Body: []byte("100")})
+		if err != nil {
+			t.Errorf("error executing payload: error %v", err)
+		}
+
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	p.Destroy()

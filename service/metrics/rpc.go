@@ -32,26 +32,26 @@ func (rpc *rpcServer) Add(m *Metric, ok *bool) (err error) {
 		return fmt.Errorf("undefined collector `%s`", m.Name)
 	}
 
-	switch c.(type) {
+	switch c := c.(type) {
 	case prometheus.Gauge:
-		c.(prometheus.Gauge).Add(m.Value)
+		c.Add(m.Value)
 
 	case *prometheus.GaugeVec:
 		if len(m.Labels) == 0 {
 			return fmt.Errorf("required labels for collector `%s`", m.Name)
 		}
 
-		c.(*prometheus.GaugeVec).WithLabelValues(m.Labels...).Add(m.Value)
+		c.WithLabelValues(m.Labels...).Add(m.Value)
 
 	case prometheus.Counter:
-		c.(prometheus.Counter).Add(m.Value)
+		c.Add(m.Value)
 
 	case *prometheus.CounterVec:
 		if len(m.Labels) == 0 {
 			return fmt.Errorf("required labels for collector `%s`", m.Name)
 		}
 
-		c.(*prometheus.CounterVec).WithLabelValues(m.Labels...).Add(m.Value)
+		c.WithLabelValues(m.Labels...).Add(m.Value)
 
 	default:
 		return fmt.Errorf("collector `%s` does not support method `Add`", m.Name)
@@ -74,16 +74,16 @@ func (rpc *rpcServer) Sub(m *Metric, ok *bool) (err error) {
 		return fmt.Errorf("undefined collector `%s`", m.Name)
 	}
 
-	switch c.(type) {
+	switch c := c.(type) {
 	case prometheus.Gauge:
-		c.(prometheus.Gauge).Sub(m.Value)
+		c.Sub(m.Value)
 
 	case *prometheus.GaugeVec:
 		if len(m.Labels) == 0 {
 			return fmt.Errorf("required labels for collector `%s`", m.Name)
 		}
 
-		c.(*prometheus.GaugeVec).WithLabelValues(m.Labels...).Sub(m.Value)
+		c.WithLabelValues(m.Labels...).Sub(m.Value)
 	default:
 		return fmt.Errorf("collector `%s` does not support method `Sub`", m.Name)
 	}
@@ -105,23 +105,23 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) (err error) {
 		return fmt.Errorf("undefined collector `%s`", m.Name)
 	}
 
-	switch c.(type) {
+	switch c := c.(type) {
 	case *prometheus.SummaryVec:
 		if len(m.Labels) == 0 {
 			return fmt.Errorf("required labels for collector `%s`", m.Name)
 		}
 
-		c.(*prometheus.SummaryVec).WithLabelValues(m.Labels...).Observe(m.Value)
+		c.WithLabelValues(m.Labels...).Observe(m.Value)
 
 	case prometheus.Histogram:
-		c.(prometheus.Histogram).Observe(m.Value)
+		c.Observe(m.Value)
 
 	case *prometheus.HistogramVec:
 		if len(m.Labels) == 0 {
 			return fmt.Errorf("required labels for collector `%s`", m.Name)
 		}
 
-		c.(*prometheus.HistogramVec).WithLabelValues(m.Labels...).Observe(m.Value)
+		c.WithLabelValues(m.Labels...).Observe(m.Value)
 	default:
 		return fmt.Errorf("collector `%s` does not support method `Observe`", m.Name)
 	}
@@ -143,16 +143,16 @@ func (rpc *rpcServer) Set(m *Metric, ok *bool) (err error) {
 		return fmt.Errorf("undefined collector `%s`", m.Name)
 	}
 
-	switch c.(type) {
+	switch c := c.(type) {
 	case prometheus.Gauge:
-		c.(prometheus.Gauge).Set(m.Value)
+		c.Set(m.Value)
 
 	case *prometheus.GaugeVec:
 		if len(m.Labels) == 0 {
 			return fmt.Errorf("required labels for collector `%s`", m.Name)
 		}
 
-		c.(*prometheus.GaugeVec).WithLabelValues(m.Labels...).Set(m.Value)
+		c.WithLabelValues(m.Labels...).Set(m.Value)
 
 	default:
 		return fmt.Errorf("collector `%s` does not support method `Set`", m.Name)

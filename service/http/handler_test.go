@@ -24,6 +24,9 @@ func get(url string) (string, *http.Response, error) {
 		return "", nil, err
 	}
 	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return "", nil, err
+	}
 
 	err = r.Body.Close()
 	if err != nil {
@@ -49,6 +52,9 @@ func getHeader(url string, h map[string]string) (string, *http.Response, error) 
 	}
 
 	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return "", nil, err
+	}
 
 	err = r.Body.Close()
 	if err != nil {

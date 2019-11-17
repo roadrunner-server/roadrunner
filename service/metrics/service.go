@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"context"
+	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spiral/roadrunner/service/rpc"
@@ -86,7 +87,14 @@ func (s *Service) Stop() {
 
 	if s.http != nil {
 		// gracefully stop server
-		go s.http.Shutdown(context.Background())
+		go func() {
+			err := s.http.Shutdown(context.Background())
+			if err != nil {
+				// TODO how to show error message?
+				// Function should be Stop() error
+				fmt.Println(fmt.Errorf("error shutting down the server: error %v", err))
+			}
+		}()
 	}
 }
 

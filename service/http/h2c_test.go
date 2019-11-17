@@ -36,7 +36,12 @@ func Test_Service_H2C(t *testing.T) {
 	// should do nothing
 	s.(*Service).Stop()
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error serving: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -49,7 +54,12 @@ func Test_Service_H2C(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("fail to close the Body: error %v", err)
+		}
+	}()
 
 	assert.Equal(t, "101 Switching Protocols", r.Status)
 

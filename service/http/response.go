@@ -35,7 +35,10 @@ func (r *Response) Write(w http.ResponseWriter) error {
 		for _, v := range h {
 			if n == "http2-push" {
 				if pusher, ok := w.(http.Pusher); ok {
-					pusher.Push(v, nil)
+					err := pusher.Push(v, nil)
+					if err != nil {
+						return err
+					}
 				}
 
 				continue
@@ -48,7 +51,10 @@ func (r *Response) Write(w http.ResponseWriter) error {
 	w.WriteHeader(r.Status)
 
 	if data, ok := r.body.([]byte); ok {
-		w.Write(data)
+		_, err := w.Write(data)
+		if err != nil {
+			return err
+		}
 	}
 
 	if rc, ok := r.body.(io.Reader); ok {

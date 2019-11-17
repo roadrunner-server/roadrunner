@@ -19,7 +19,10 @@ func Test_GetState(t *testing.T) {
 	assert.NotNil(t, w)
 
 	assert.Equal(t, StateReady, w.State().Value())
-	w.Stop()
+	err = w.Stop()
+	if err != nil {
+		t.Errorf("error stopping the worker: error %v", err)
+	}
 }
 
 func Test_Kill(t *testing.T) {
@@ -35,7 +38,12 @@ func Test_Kill(t *testing.T) {
 	assert.NotNil(t, w)
 
 	assert.Equal(t, StateReady, w.State().Value())
-	w.Kill()
+	defer func() {
+		err := w.Kill()
+		if err != nil {
+			t.Errorf("error killing the worker: error %v", err)
+		}
+	}()
 }
 
 func Test_Echo(t *testing.T) {
@@ -45,7 +53,12 @@ func Test_Echo(t *testing.T) {
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
-	defer w.Stop()
+	defer func() {
+		err := w.Stop()
+		if err != nil {
+			t.Errorf("error stopping the worker: error %v", err)
+		}
+	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
 
@@ -64,7 +77,12 @@ func Test_BadPayload(t *testing.T) {
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
-	defer w.Stop()
+	defer func() {
+		err := w.Stop()
+		if err != nil {
+			t.Errorf("error stopping the worker: error %v", err)
+		}
+	}()
 
 	res, err := w.Exec(nil)
 
@@ -103,7 +121,12 @@ func Test_String(t *testing.T) {
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
-	defer w.Stop()
+	defer func() {
+		err := w.Stop()
+		if err != nil {
+			t.Errorf("error stopping the worker: error %v", err)
+		}
+	}()
 
 	assert.Contains(t, w.String(), "php tests/client.php echo pipes")
 	assert.Contains(t, w.String(), "ready")
@@ -117,7 +140,12 @@ func Test_Echo_Slow(t *testing.T) {
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
-	defer w.Stop()
+	defer func() {
+		err := w.Stop()
+		if err != nil {
+			t.Errorf("error stopping the worker: error %v", err)
+		}
+	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
 
@@ -138,7 +166,12 @@ func Test_Broken(t *testing.T) {
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "undefined_function()")
 	}()
-	defer w.Stop()
+	defer func() {
+		err := w.Stop()
+		if err != nil {
+			t.Errorf("error stopping the worker: error %v", err)
+		}
+	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
 	assert.Nil(t, res)
@@ -163,7 +196,12 @@ func Test_Error(t *testing.T) {
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
-	defer w.Stop()
+	defer func() {
+		err := w.Stop()
+		if err != nil {
+			t.Errorf("error stopping the worker: error %v", err)
+		}
+	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
 	assert.Nil(t, res)
@@ -180,14 +218,28 @@ func Test_NumExecs(t *testing.T) {
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
-	defer w.Stop()
+	defer func() {
+		err := w.Stop()
+		if err != nil {
+			t.Errorf("error stopping the worker: error %v", err)
+		}
+	}()
 
-	w.Exec(&Payload{Body: []byte("hello")})
+	_, err := w.Exec(&Payload{Body: []byte("hello")})
+	if err != nil {
+		t.Errorf("fail to execute payload: error %v", err)
+	}
 	assert.Equal(t, int64(1), w.State().NumExecs())
 
-	w.Exec(&Payload{Body: []byte("hello")})
+	_, err = w.Exec(&Payload{Body: []byte("hello")})
+	if err != nil {
+		t.Errorf("fail to execute payload: error %v", err)
+	}
 	assert.Equal(t, int64(2), w.State().NumExecs())
 
-	w.Exec(&Payload{Body: []byte("hello")})
+	_, err = w.Exec(&Payload{Body: []byte("hello")})
+	if err != nil {
+		t.Errorf("fail to execute payload: error %v", err)
+	}
 	assert.Equal(t, int64(3), w.State().NumExecs())
 }
