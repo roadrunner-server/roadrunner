@@ -11,8 +11,12 @@ func Test_NewService(t *testing.T) {
 }
 
 func Test_Init(t *testing.T) {
+	var err error
 	s := &Service{}
-	s.Init(&Config{})
+	_, err = s.Init(&Config{})
+	if err != nil {
+		t.Errorf("error during the s.Init: error %v", err)
+	}
 	assert.Len(t, s.values, 1)
 
 	values, err := s.GetEnv()
@@ -21,9 +25,13 @@ func Test_Init(t *testing.T) {
 }
 
 func Test_Extend(t *testing.T) {
+	var err error
 	s := NewService(map[string]string{"RR": "version"})
 
-	s.Init(&Config{Values: map[string]string{"key": "value"}})
+	_, err = s.Init(&Config{Values: map[string]string{"key": "value"}})
+	if err != nil {
+		t.Errorf("error during the s.Init: error %v", err)
+	}
 	assert.Len(t, s.values, 2)
 
 	values, err := s.GetEnv()
@@ -34,9 +42,13 @@ func Test_Extend(t *testing.T) {
 }
 
 func Test_Set(t *testing.T) {
+	var err error
 	s := NewService(map[string]string{"RR": "version"})
 
-	s.Init(&Config{Values: map[string]string{"key": "value"}})
+	_, err = s.Init(&Config{Values: map[string]string{"key": "value"}})
+	if err != nil {
+		t.Errorf("error during the s.Init: error %v", err)
+	}
 	assert.Len(t, s.values, 2)
 
 	s.SetEnv("key", "value-new")

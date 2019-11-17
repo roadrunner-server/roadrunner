@@ -30,6 +30,9 @@ func Test_Config_Hydrate_Empty(t *testing.T) {
 
 func Test_Config_Defaults(t *testing.T) {
 	c := &Config{}
-	c.InitDefaults()
+	err := c.InitDefaults()
+	if err != nil {
+		t.Errorf("Test_Config_Defaults failed: error %v", err)
+	}
 	assert.Len(t, c.Values, 0)
 }

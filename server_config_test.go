@@ -18,7 +18,12 @@ func Test_ServerConfig_PipeFactory(t *testing.T) {
 	f, err = cfg.makeFactory()
 	assert.NoError(t, err)
 	assert.NotNil(t, f)
-	defer f.Close()
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			t.Errorf("error closing factory or underlying connections: error %v", err)
+		}
+	}()
 
 	assert.NoError(t, err)
 	assert.IsType(t, &PipeFactory{}, f)
@@ -29,7 +34,12 @@ func Test_ServerConfig_SocketFactory(t *testing.T) {
 	f, err := cfg.makeFactory()
 	assert.NoError(t, err)
 	assert.NotNil(t, f)
-	defer f.Close()
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			t.Errorf("error closing factory or underlying connections: error %v", err)
+		}
+	}()
 
 	assert.NoError(t, err)
 	assert.IsType(t, &SocketFactory{}, f)
@@ -40,7 +50,12 @@ func Test_ServerConfig_SocketFactory(t *testing.T) {
 	f, err = cfg.makeFactory()
 	assert.NoError(t, err)
 	assert.NotNil(t, f)
-	defer f.Close()
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			t.Errorf("error closing factory or underlying connections: error %v", err)
+		}
+	}()
 
 	assert.NoError(t, err)
 	assert.IsType(t, &SocketFactory{}, f)
@@ -55,7 +70,12 @@ func Test_ServerConfig_UnixSocketFactory(t *testing.T) {
 
 	cfg := &ServerConfig{Relay: "unix://unix.sock"}
 	f, err := cfg.makeFactory()
-	defer f.Close()
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			t.Errorf("error closing factory or underlying connections: error %v", err)
+		}
+	}()
 
 	assert.NoError(t, err)
 	assert.IsType(t, &SocketFactory{}, f)
@@ -131,7 +151,10 @@ func Test_ServerConfigDefaults(t *testing.T) {
 		Command: "php tests/client.php pipes",
 	}
 
-	cfg.InitDefaults()
+	err := cfg.InitDefaults()
+	if err != nil {
+		t.Errorf("error during the InitDefaults: error %v", err)
+	}
 
 	assert.Equal(t, "pipes", cfg.Relay)
 	assert.Equal(t, time.Minute, cfg.Pool.AllocateTimeout)

@@ -23,12 +23,13 @@ func Test_NewPool(t *testing.T) {
 		NewPipeFactory(),
 		cfg,
 	)
+	assert.NoError(t, err)
+
 	assert.Equal(t, cfg, p.Config())
 
 	defer p.Destroy()
 
 	assert.NotNil(t, p)
-	assert.NoError(t, err)
 }
 
 func Test_StaticPool_Invalid(t *testing.T) {
@@ -62,10 +63,11 @@ func Test_StaticPool_Echo(t *testing.T) {
 		NewPipeFactory(),
 		cfg,
 	)
+	assert.NoError(t, err)
+
 	defer p.Destroy()
 
 	assert.NotNil(t, p)
-	assert.NoError(t, err)
 
 	res, err := p.Exec(&Payload{Body: []byte("hello")})
 
@@ -83,10 +85,11 @@ func Test_StaticPool_Echo_NilContext(t *testing.T) {
 		NewPipeFactory(),
 		cfg,
 	)
+	assert.NoError(t, err)
+
 	defer p.Destroy()
 
 	assert.NotNil(t, p)
-	assert.NoError(t, err)
 
 	res, err := p.Exec(&Payload{Body: []byte("hello"), Context: nil})
 
@@ -104,10 +107,11 @@ func Test_StaticPool_Echo_Context(t *testing.T) {
 		NewPipeFactory(),
 		cfg,
 	)
+	assert.NoError(t, err)
+
 	defer p.Destroy()
 
 	assert.NotNil(t, p)
-	assert.NoError(t, err)
 
 	res, err := p.Exec(&Payload{Body: []byte("hello"), Context: []byte("world")})
 
@@ -125,10 +129,10 @@ func Test_StaticPool_JobError(t *testing.T) {
 		NewPipeFactory(),
 		cfg,
 	)
+	assert.NoError(t, err)
 	defer p.Destroy()
 
 	assert.NotNil(t, p)
-	assert.NoError(t, err)
 
 	res, err := p.Exec(&Payload{Body: []byte("hello")})
 
@@ -145,10 +149,10 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 		NewPipeFactory(),
 		cfg,
 	)
+	assert.NoError(t, err)
 	defer p.Destroy()
 
 	assert.NotNil(t, p)
-	assert.NoError(t, err)
 
 	p.Listen(func(e int, ctx interface{}) {
 		if err, ok := ctx.(error); ok {
@@ -168,10 +172,10 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 		NewPipeFactory(),
 		cfg,
 	)
+	assert.NoError(t, err)
 	defer p.Destroy()
 
 	assert.NotNil(t, p)
-	assert.NoError(t, err)
 
 	res, err := p.Exec(&Payload{Body: []byte("hello")})
 
@@ -192,7 +196,10 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 
 	// killing random worker and expecting pool to replace it
 	p.muw.Lock()
-	p.workers[0].cmd.Process.Kill()
+	err = p.Workers()[0].cmd.Process.Kill()
+	if err != nil {
+		t.Errorf("error killing the process: error %v", err)
+	}
 	p.muw.Unlock()
 	<-destructed
 
@@ -244,10 +251,10 @@ func Test_StaticPool_Replace_Worker(t *testing.T) {
 			DestroyTimeout:  time.Second,
 		},
 	)
+	assert.NoError(t, err)
 	defer p.Destroy()
 
 	assert.NotNil(t, p)
-	assert.NoError(t, err)
 
 	var lastPID string
 	lastPID = strconv.Itoa(*p.Workers()[0].Pid)
@@ -279,10 +286,10 @@ func Test_StaticPool_Stop_Worker(t *testing.T) {
 			DestroyTimeout:  time.Second,
 		},
 	)
+	assert.NoError(t, err)
 	defer p.Destroy()
 
 	assert.NotNil(t, p)
-	assert.NoError(t, err)
 
 	var lastPID string
 	lastPID = strconv.Itoa(*p.Workers()[0].Pid)
@@ -357,10 +364,10 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 			DestroyTimeout:  time.Second,
 		},
 	)
+	assert.NoError(t, err)
 	defer p.Destroy()
 
 	assert.NotNil(t, p)
-	assert.NoError(t, err)
 
 	for _, w := range p.workers {
 		w.state.value = StateErrored

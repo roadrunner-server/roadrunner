@@ -41,9 +41,17 @@ func get(url string) (string, *http.Response, error) {
 	if err != nil {
 		return "", nil, err
 	}
-	defer r.Body.Close()
 
 	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return "", nil, err
+	}
+
+	err = r.Body.Close()
+	if err != nil {
+		return "", nil, err
+	}
+
 	return string(b), r, err
 }
 
@@ -76,7 +84,12 @@ func Test_Files(t *testing.T) {
 			}
 	}`}))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -129,7 +142,12 @@ func Test_Files_Disable(t *testing.T) {
 			}
 	}`}))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -226,7 +244,12 @@ func Test_Files_Forbid(t *testing.T) {
 			}
 	}`}))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -263,7 +286,12 @@ func Test_Files_Always(t *testing.T) {
 			}
 	}`}))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -300,7 +328,12 @@ func Test_Files_NotFound(t *testing.T) {
 			}
 	}`}))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -337,7 +370,12 @@ func Test_Files_Dir(t *testing.T) {
 			}
 	}`}))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -374,7 +412,12 @@ func Test_Files_NotForbid(t *testing.T) {
 			}
 	}`}))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("serve error: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -391,10 +434,17 @@ func tmpDir() string {
 
 func all(fn string) string {
 	f, _ := os.Open(fn)
-	defer f.Close()
 
 	b := &bytes.Buffer{}
-	io.Copy(b, f)
+	_, err := io.Copy(b, f)
+	if err != nil {
+		return ""
+	}
+
+	err = f.Close()
+	if err != nil {
+		return ""
+	}
 
 	return b.String()
 }

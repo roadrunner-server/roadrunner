@@ -105,7 +105,10 @@ func (w *Worker) Wait() error {
 	if runtime.GOOS != "windows" {
 		// windows handles processes and close pipes differently,
 		// we can ignore wait here as process.Wait() already being handled above
-		w.cmd.Wait()
+		err := w.cmd.Wait()
+		if err != nil {
+			return err
+		}
 	}
 
 	if w.endState.Success() {
@@ -214,10 +217,16 @@ func (w *Worker) start() error {
 			defer w.mu.Unlock()
 
 			if w.rl != nil {
-				w.rl.Close()
+				err := w.rl.Close()
+				if err != nil {
+					w.err.lsn(EventWorkerError, WorkerError{Worker: w, Caused: err})
+				}
 			}
 
-			w.err.Close()
+			err := w.err.Close()
+			if err != nil {
+				w.err.lsn(EventWorkerError, WorkerError{Worker: w, Caused: err})
+			}
 		}
 	}()
 

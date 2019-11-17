@@ -205,7 +205,10 @@ func TestServer_ReplacePool(t *testing.T) {
 		}
 	})
 
-	rr.Reset()
+	err := rr.Reset()
+	if err != nil {
+		t.Errorf("error resetting the pool: error %v", err)
+	}
 	<-constructed
 
 	for _, w := range rr.Workers() {
@@ -239,9 +242,11 @@ func TestServer_ServerFailure(t *testing.T) {
 	rr.pool.(*StaticPool).cmd = func() *exec.Cmd {
 		return exec.Command("php", "tests/client.php", "echo", "broken-connection")
 	}
-
 	// killing random worker and expecting pool to replace it
-	rr.Workers()[0].cmd.Process.Kill()
+	err := rr.Workers()[0].cmd.Process.Kill()
+	if err != nil {
+		t.Errorf("error killing the process: error %v", err)
+	}
 
 	<-failure
 	assert.True(t, true)

@@ -67,7 +67,10 @@ type testCfg struct{ cfg string }
 
 func (cfg *testCfg) Get(name string) Config {
 	vars := make(map[string]interface{})
-	json.Unmarshal([]byte(cfg.cfg), &vars)
+	err := json.Unmarshal([]byte(cfg.cfg), &vars)
+	if err != nil {
+		panic("error unmarshalling the cfg.cfg value")
+	}
 
 	v, ok := vars[name]
 	if !ok {
@@ -435,9 +438,7 @@ func TestContainer_NoInit(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{`{"test":"something", "test2":"something-else"}`}))
 }
 
-type testInitD struct {
-	c *testInitC
-}
+type testInitD struct {}
 
 type DCfg struct {
 	V string
