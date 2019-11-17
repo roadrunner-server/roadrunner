@@ -17,10 +17,7 @@ func Test_Pipe_Start(t *testing.T) {
 		assert.NoError(t, w.Wait())
 	}()
 
-	err = w.Stop()
-	if err != nil {
-		t.Errorf("error stopping the worker: error %v", err)
-	}
+	assert.NoError(t, w.Stop())
 }
 
 func Test_Pipe_StartError(t *testing.T) {
