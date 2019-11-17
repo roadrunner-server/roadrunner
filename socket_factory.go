@@ -54,7 +54,7 @@ func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 		go func(w *Worker) {
 			err := w.Kill()
 			if err != nil {
-				fmt.Println(fmt.Errorf("error killing the worker %w", err))
+				fmt.Println(fmt.Errorf("error killing the worker %v", err))
 			}
 		}(w)
 
