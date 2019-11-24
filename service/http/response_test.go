@@ -132,3 +132,20 @@ func TestWrite_HandlesTrailers(t *testing.T) {
 	assert.Equal(t, "test", w.h.Get("Trailer:foo"))
 	assert.Equal(t, "demo", w.h.Get("Trailer:bar"))
 }
+
+func TestWrite_HandlesHandlesWhitespacesInTrailer(t *testing.T) {
+	r, err := NewResponse(&roadrunner.Payload{
+		Context: []byte(
+			`{"headers":{"trailer":["foo\t,bar  ,    baz"],"foo":["a"],"bar":["b"],"baz":["c"]},"status": 200}`),
+	})
+
+	assert.NoError(t, err)
+	assert.NotNil(t, r)
+
+	w := &testWriter{h: http.Header(make(map[string][]string))}
+	assert.NoError(t, r.Write(w))
+
+	assert.Equal(t, "a", w.h.Get("Trailer:foo"))
+	assert.Equal(t, "b", w.h.Get("Trailer:bar"))
+	assert.Equal(t, "c", w.h.Get("Trailer:baz"))
+}

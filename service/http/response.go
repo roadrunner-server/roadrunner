@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"regexp"
+	"strings"
 
 	"github.com/spiral/roadrunner"
 )
@@ -84,9 +84,9 @@ func handleTrailers(h map[string][]string) map[string][]string {
 		return h
 	}
 
-	zp := regexp.MustCompile(` *, *`)
 	for _, tr := range trailers {
-		for _, n := range zp.Split(tr, -1) {
+		for _, n := range strings.Split(tr, ",") {
+			n = strings.Trim(n, "\t ")
 			if v, ok := h[n]; ok {
 				h["Trailer:"+n] = v
 
