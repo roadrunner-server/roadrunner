@@ -2,9 +2,11 @@ package http
 
 import (
 	"encoding/json"
-	"github.com/spiral/roadrunner"
 	"io"
 	"net/http"
+	"strings"
+
+	"github.com/spiral/roadrunner"
 )
 
 // Response handles PSR7 response logic.
@@ -31,19 +33,19 @@ func NewResponse(p *roadrunner.Payload) (*Response, error) {
 
 // Write writes response headers, status and body into ResponseWriter.
 func (r *Response) Write(w http.ResponseWriter) error {
+	p, h := handlePushHeaders(r.Headers)
+	if pusher, ok := w.(http.Pusher); ok {
+		for _, v := range p {
+			err := pusher.Push(v, nil)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	h = handleTrailers(h)
 	for n, h := range r.Headers {
 		for _, v := range h {
-			if n == "http2-push" {
-				if pusher, ok := w.(http.Pusher); ok {
-					err := pusher.Push(v, nil)
-					if err != nil {
-						return err
-					}
-				}
-
-				continue
-			}
-
 			w.Header().Add(n, v)
 		}
 	}
@@ -64,4 +66,42 @@ func (r *Response) Write(w http.ResponseWriter) error {
 	}
 
 	return nil
+}
+
+func handlePushHeaders(h map[string][]string) ([]string, map[string][]string) {
+	var p []string
+	pushHeader, ok := h["http2-push"]
+	if !ok {
+		return p, h
+	}
+
+	for _, v := range pushHeader {
+		p = append(p, v)
+	}
+
+	delete(h, "http2-push")
+
+	return p, h
+}
+
+func handleTrailers(h map[string][]string) map[string][]string {
+	trailers, ok := h["trailer"]
+	if !ok {
+		return h
+	}
+
+	for _, tr := range trailers {
+		for _, n := range strings.Split(tr, ",") {
+			n = strings.Trim(n, "\t ")
+			if v, ok := h[n]; ok {
+				h["Trailer:"+n] = v
+
+				delete(h, n)
+			}
+		}
+	}
+
+	delete(h, "trailer")
+
+	return h
 }
