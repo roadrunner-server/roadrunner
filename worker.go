@@ -111,9 +111,9 @@ func (w *Worker) Wait() error {
 		if err != nil {
 			if ws.Exited() {
 				return nil
+			} else {
+				return err
 			}
-		} else {
-			return err
 		}
 	}
 
