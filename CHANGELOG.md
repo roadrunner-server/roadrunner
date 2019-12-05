@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.5.2 (05.12.2019)
+-------------------
+- added support for symfony/console 5.0 by @coxa
+- added support for HTTP2 trailers by @filakhtov
+
 v1.5.1 (22.10.2019)
 -------------------
 - bugfix: do not halt stop sequence in case of service error
