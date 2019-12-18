@@ -3,7 +3,7 @@ CHANGELOG
 
 UNRELEASED
 ----------
-- added `Dockerfile` for building RR binary file
+- added `Dockerfile` for building RR binary file by [@tarampampam](https://github.com/tarampampam) (closes [issue #218](https://github.com/spiral/roadrunner/issues/218))
 
 v1.5.2 (05.12.2019)
 -------------------
