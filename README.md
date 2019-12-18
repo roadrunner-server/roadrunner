@@ -56,6 +56,8 @@ $ composer require spiral/roadrunner
 $ ./vendor/bin/rr get-binary
 ```
 
+> For getting roadrunner binary file you can use our docker image: `spiral/roadrunner:latest` (more info can be found [here](https://hub.docker.com/r/spiral/roadrunner/))
+
 Example:
 --------
 

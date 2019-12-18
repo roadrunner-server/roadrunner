@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+UNRELEASED
+----------
+- added `Dockerfile` for building RR binary file
+
 v1.5.2 (05.12.2019)
 -------------------
 - added support for symfony/console 5.0 by @coxa

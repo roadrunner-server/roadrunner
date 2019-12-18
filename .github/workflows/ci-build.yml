@@ -89,3 +89,18 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       if:
+
+  image:
+    name: Build docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Build image
+        run: docker build -t roadrunner -f Dockerfile .
+
+      - name: Try to execute
+        run: docker run --rm roadrunner -v
