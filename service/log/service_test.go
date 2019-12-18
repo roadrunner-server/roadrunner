@@ -9,7 +9,6 @@ import (
 	rrHttp "github.com/spiral/roadrunner/service/http"
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"net/http"
 	"testing"
 	"time"
@@ -31,11 +30,7 @@ func TestService(t *testing.T) {
 		}`,
 	})
 
-	go func() {
-		err := c.Serve()
-
-		require.NoError(t, err)
-	}()
+	go c.Serve()
 	defer c.Stop()
 
 	time.Sleep(300 * time.Millisecond)
