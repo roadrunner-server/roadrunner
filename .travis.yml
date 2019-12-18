@@ -27,6 +27,7 @@ script:
   - go test ./service/limit -race -v -coverprofile=limit.txt -covermode=atomic
   - go test ./service/headers -race -v -coverprofile=headers.txt -covermode=atomic
   - go test ./service/metrics -race -v -coverprofile=metrics.txt -covermode=atomic
+  - go test ./service/log -race -v -coverprofile=log.txt -covermode=atomic
   - go test ./service/health -race -v -coverprofile=health.txt -covermode=atomic
 
 after_success:
@@ -42,6 +43,7 @@ after_success:
   - ./codecov-bash -f limit.txt
   - ./codecov-bash -f headers.txt
   - ./codecov-bash -f metrics.txt
+  - ./codecov-bash -f log.txt
   - ./codecov-bash -f health.txt
 
 jobs:
