@@ -6,7 +6,6 @@ import (
 	"github.com/spiral/goridge"
 	"os"
 	"os/exec"
-	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -101,14 +100,6 @@ func (w *Worker) Wait() error {
 	// ensure that all receive/send operations are complete
 	w.mu.Lock()
 	defer w.mu.Unlock()
-
-	if runtime.GOOS != "windows" {
-		// windows handles processes and close pipes differently,
-		// we can ignore wait here as process.Wait() already being handled above
-		if err := w.cmd.Wait(); err != nil {
-			return err
-		}
-	}
 
 	if w.endState.Success() {
 		w.state.set(StateStopped)

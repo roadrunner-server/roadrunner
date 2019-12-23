@@ -90,10 +90,10 @@ func TestService_Serve_DeadWorker(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{
 		healthCfg: `{
-			"address": "localhost:2116"
+			"address": "localhost:2117"
 		}`,
 		httpCfg: `{
-			"address": "localhost:2115",
+			"address": "localhost:2118",
 			"workers":{
 				"command": "php ../../tests/http/slow-client.php echo pipes 1000",
 				"pool": {"numWorkers": 1}
@@ -126,7 +126,7 @@ func TestService_Serve_DeadWorker(t *testing.T) {
 	}
 
 	// Check health check
-	_, res, err := get("http://localhost:2116/")
+	_, res, err := get("http://localhost:2117/")
 	assert.NoError(t, err)
 	assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
 }
@@ -141,10 +141,10 @@ func TestService_Serve_DeadWorkerStillHealthy(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{
 		healthCfg: `{
-			"address": "localhost:2116"
+			"address": "localhost:2119"
 		}`,
 		httpCfg: `{
-			"address": "localhost:2115",
+			"address": "localhost:2120",
 			"workers":{
 				"command": "php ../../tests/http/client.php echo pipes",
 				"pool": {"numWorkers": 2}
@@ -177,7 +177,7 @@ func TestService_Serve_DeadWorkerStillHealthy(t *testing.T) {
 	}
 
 	// Check health check
-	_, res, err := get("http://localhost:2116/")
+	_, res, err := get("http://localhost:2119/")
 	assert.NoError(t, err)
 	assert.Equal(t, http.StatusOK, res.StatusCode)
 }
@@ -191,7 +191,7 @@ func TestService_Serve_NoHTTPService(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{
 		healthCfg: `{
-			"address": "localhost:2116"
+			"address": "localhost:2121"
 		}`,
 	}))
 
@@ -212,10 +212,10 @@ func TestService_Serve_NoServer(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{
 		healthCfg: `{
-			"address": "localhost:2116"
+			"address": "localhost:2122"
 		}`,
 		httpCfg: `{
-			"address": "localhost:2115",
+			"address": "localhost:2123",
 			"workers":{
 				"command": "php ../../tests/http/client.php echo pipes",
 				"pool": {"numWorkers": 1}
@@ -243,7 +243,7 @@ func TestService_Serve_NoServer(t *testing.T) {
 	// Set the httpService to nil
 	healthSvc.httpService = nil
 
-	_, res, err := get("http://localhost:2116/")
+	_, res, err := get("http://localhost:2122/")
 	assert.NoError(t, err)
 	assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
 }
@@ -260,10 +260,10 @@ func TestService_Serve_NoPool(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{
 		healthCfg: `{
-			"address": "localhost:2116"
+			"address": "localhost:2124"
 		}`,
 		httpCfg: `{
-			"address": "localhost:2115",
+			"address": "localhost:2125",
 			"workers":{
 				"command": "php ../../tests/http/client.php echo pipes",
 				"pool": {"numWorkers": 1}
@@ -291,7 +291,7 @@ func TestService_Serve_NoPool(t *testing.T) {
 	// Stop the pool
 	httpSvc.Server().Stop()
 
-	_, res, err := get("http://localhost:2116/")
+	_, res, err := get("http://localhost:2124/")
 	assert.NoError(t, err)
 	assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
 }

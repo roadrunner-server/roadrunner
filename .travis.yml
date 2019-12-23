@@ -29,17 +29,19 @@ script:
   - go test ./service/health -race -v -coverprofile=health.txt -covermode=atomic
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -f lib.txt
-  - bash <(curl -s https://codecov.io/bash) -f util.txt
-  - bash <(curl -s https://codecov.io/bash) -f service.txt
-  - bash <(curl -s https://codecov.io/bash) -f env.txt
-  - bash <(curl -s https://codecov.io/bash) -f rpc.txt
-  - bash <(curl -s https://codecov.io/bash) -f http.txt
-  - bash <(curl -s https://codecov.io/bash) -f static.txt
-  - bash <(curl -s https://codecov.io/bash) -f limit.txt
-  - bash <(curl -s https://codecov.io/bash) -f headers.txt
-  - bash <(curl -s https://codecov.io/bash) -f metrics.txt
-  - bash <(curl -s https://codecov.io/bash) -f health.txt
+  - curl https://codecov.io/bash -o codecov-bash
+  - chmod +x codecov-bash
+  - ./codecov-bash -f lib.txt
+  - ./codecov-bash -f util.txt
+  - ./codecov-bash -f service.txt
+  - ./codecov-bash -f env.txt
+  - ./codecov-bash -f rpc.txt
+  - ./codecov-bash -f http.txt
+  - ./codecov-bash -f static.txt
+  - ./codecov-bash -f limit.txt
+  - ./codecov-bash -f headers.txt
+  - ./codecov-bash -f metrics.txt
+  - ./codecov-bash -f health.txt
 
 jobs:
   include:

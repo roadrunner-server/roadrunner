@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"strings"
 	"syscall"
 )
@@ -19,7 +20,7 @@ func CreateListener(address string) (net.Listener, error) {
 		return nil, errors.New("invalid Protocol (tcp://:6001, unix://file.sock)")
 	}
 
-	if dsn[0] == "unix" {
+	if dsn[0] == "unix" && fileExists(dsn[1]) {
 		err := syscall.Unlink(dsn[1])
 		if err != nil {
 			return nil, fmt.Errorf("error during the unlink syscall: error %v", err)
@@ -27,4 +28,14 @@ func CreateListener(address string) (net.Listener, error) {
 	}
 
 	return net.Listen(dsn[0], dsn[1])
+}
+
+// fileExists checks if a file exists and is not a directory before we
+// try using it to prevent further errors.
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }

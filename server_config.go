@@ -127,7 +127,7 @@ func (cfg *ServerConfig) makeFactory() (Factory, error) {
 		return nil, errors.New("invalid relay DSN (pipes, tcp://:6001, unix://rr.sock)")
 	}
 
-	if dsn[0] == "unix" {
+	if dsn[0] == "unix" && fileExists(dsn[1]) {
 		err := syscall.Unlink(dsn[1])
 		if err != nil {
 			return nil, err
@@ -140,4 +140,14 @@ func (cfg *ServerConfig) makeFactory() (Factory, error) {
 	}
 
 	return NewSocketFactory(ln, cfg.RelayTimeout), nil
+}
+
+// fileExists checks if a file exists and is not a directory before we
+// try using it to prevent further errors.
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
