@@ -51,7 +51,12 @@ func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 
 	rl, err := f.findRelay(w, f.tout)
 	if err != nil {
-		go func(w *Worker) { w.Kill() }(w)
+		go func(w *Worker) {
+			err := w.Kill()
+			if err != nil {
+				fmt.Println(fmt.Errorf("error killing the worker %v", err))
+			}
+		}(w)
 
 		if wErr := w.Wait(); wErr != nil {
 			if _, ok := wErr.(*exec.ExitError); ok {

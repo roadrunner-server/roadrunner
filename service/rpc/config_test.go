@@ -40,7 +40,12 @@ func TestConfig_Listener(t *testing.T) {
 	ln, err := cfg.Listener()
 	assert.NoError(t, err)
 	assert.NotNil(t, ln)
-	defer ln.Close()
+	defer func() {
+		err := ln.Close()
+		if err != nil {
+			t.Errorf("error closing the listener: error %v", err)
+		}
+	}()
 
 	assert.Equal(t, "tcp", ln.Addr().Network())
 	assert.Equal(t, "[::]:18001", ln.Addr().String())
@@ -56,7 +61,12 @@ func TestConfig_ListenerUnix(t *testing.T) {
 	ln, err := cfg.Listener()
 	assert.NoError(t, err)
 	assert.NotNil(t, ln)
-	defer ln.Close()
+	defer func() {
+		err := ln.Close()
+		if err != nil {
+			t.Errorf("error closing the listener: error %v", err)
+		}
+	}()
 
 	assert.Equal(t, "unix", ln.Addr().Network())
 	assert.Equal(t, "file.sock", ln.Addr().String())
@@ -86,12 +96,22 @@ func TestConfig_Dialer(t *testing.T) {
 	cfg := &Config{Listen: "tcp://:18001"}
 
 	ln, _ := cfg.Listener()
-	defer ln.Close()
+	defer func() {
+		err := ln.Close()
+		if err != nil {
+			t.Errorf("error closing the listener: error %v", err)
+		}
+	}()
 
 	conn, err := cfg.Dialer()
 	assert.NoError(t, err)
 	assert.NotNil(t, conn)
-	defer conn.Close()
+	defer func() {
+		err := conn.Close()
+		if err != nil {
+			t.Errorf("error closing the connection: error %v", err)
+		}
+	}()
 
 	assert.Equal(t, "tcp", conn.RemoteAddr().Network())
 	assert.Equal(t, "127.0.0.1:18001", conn.RemoteAddr().String())
@@ -105,12 +125,22 @@ func TestConfig_DialerUnix(t *testing.T) {
 	cfg := &Config{Listen: "unix://file.sock"}
 
 	ln, _ := cfg.Listener()
-	defer ln.Close()
+	defer func() {
+		err := ln.Close()
+		if err != nil {
+			t.Errorf("error closing the listener: error %v", err)
+		}
+	}()
 
 	conn, err := cfg.Dialer()
 	assert.NoError(t, err)
 	assert.NotNil(t, conn)
-	defer conn.Close()
+	defer func() {
+		err := conn.Close()
+		if err != nil {
+			t.Errorf("error closing the connection: error %v", err)
+		}
+	}()
 
 	assert.Equal(t, "unix", conn.RemoteAddr().Network())
 	assert.Equal(t, "file.sock", conn.RemoteAddr().String())
@@ -138,7 +168,10 @@ func Test_Config_DialerErrorMethod(t *testing.T) {
 
 func Test_Config_Defaults(t *testing.T) {
 	c := &Config{}
-	c.InitDefaults()
+	err := c.InitDefaults()
+	if err != nil {
+		t.Errorf("error during the InitDefaults: error %v", err)
+	}
 	assert.Equal(t, true, c.Enable)
 	assert.Equal(t, "tcp://127.0.0.1:6001", c.Listen)
 }

@@ -66,7 +66,12 @@ func (c *controller) control(p roadrunner.Pool) {
 
 			// make sure worker still on initial request
 			if p.Remove(w, err) && w.State().NumExecs() == eID {
-				go w.Kill()
+				go func() {
+					err := w.Kill()
+					if err != nil {
+						fmt.Printf("error killing worker with PID number: %d, created: %s", w.Pid, w.Created)
+					}
+				}()
 				c.report(EventExecTTL, w, err)
 			}
 		}

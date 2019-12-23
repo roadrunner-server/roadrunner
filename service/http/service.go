@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service/env"
 	"github.com/spiral/roadrunner/service/http/attributes"
@@ -31,6 +32,7 @@ type middleware func(f http.HandlerFunc) http.HandlerFunc
 // Service manages rr, http servers.
 type Service struct {
 	cfg        *Config
+	log        *logrus.Logger
 	cprod      roadrunner.CommandProducer
 	env        env.Environment
 	lsns       []func(event int, ctx interface{})
@@ -66,8 +68,9 @@ func (s *Service) AddListener(l func(event int, ctx interface{})) {
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Environment) (bool, error) {
+func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Environment, log *logrus.Logger) (bool, error) {
 	s.cfg = cfg
+	s.log = log
 	s.env = e
 
 	if r != nil {
@@ -139,19 +142,34 @@ func (s *Service) Serve() error {
 
 	if s.http != nil {
 		go func() {
-			err <- s.http.ListenAndServe()
+			httpErr := s.http.ListenAndServe()
+			if httpErr != nil && httpErr != http.ErrServerClosed {
+				err <- httpErr
+			} else {
+				err <- nil
+			}
 		}()
 	}
 
 	if s.https != nil {
 		go func() {
-			err <- s.https.ListenAndServeTLS(s.cfg.SSL.Cert, s.cfg.SSL.Key)
+			httpErr := s.https.ListenAndServeTLS(s.cfg.SSL.Cert, s.cfg.SSL.Key)
+			if httpErr != nil && httpErr != http.ErrServerClosed {
+				err <- httpErr
+			} else {
+				err <- nil
+			}
 		}()
 	}
 
 	if s.fcgi != nil {
 		go func() {
-			err <- s.serveFCGI()
+			httpErr := s.serveFCGI()
+			if httpErr != nil && httpErr != http.ErrServerClosed {
+				err <- httpErr
+			} else {
+				err <- nil
+			}
 		}()
 	}
 
@@ -164,15 +182,35 @@ func (s *Service) Stop() {
 	defer s.mu.Unlock()
 
 	if s.fcgi != nil {
-		go s.fcgi.Shutdown(context.Background())
+		go func() {
+			err := s.fcgi.Shutdown(context.Background())
+			if err != nil && err != http.ErrServerClosed {
+				// Stop() error
+				// push error from goroutines to the channel and block unil error or success shutdown or timeout
+				s.log.Error(fmt.Errorf("error shutting down the fcgi server, error: %v", err))
+				return
+			}
+		}()
 	}
 
 	if s.https != nil {
-		go s.https.Shutdown(context.Background())
+		go func() {
+			err := s.https.Shutdown(context.Background())
+			if err != nil && err != http.ErrServerClosed {
+				s.log.Error(fmt.Errorf("error shutting down the https server, error: %v", err))
+				return
+			}
+		}()
 	}
 
 	if s.http != nil {
-		go s.http.Shutdown(context.Background())
+		go func() {
+			err := s.http.Shutdown(context.Background())
+			if err != nil && err != http.ErrServerClosed {
+				s.log.Error(fmt.Errorf("error shutting down the http server, error: %v", err))
+				return
+			}
+		}()
 	}
 }
 

@@ -47,7 +47,12 @@ func Test_SSL_Service_Echo(t *testing.T) {
 	// should do nothing
 	s.(*Service).Stop()
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -56,7 +61,12 @@ func Test_SSL_Service_Echo(t *testing.T) {
 
 	r, err := sslClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("fail to close the Body: error %v", err)
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -93,7 +103,12 @@ func Test_SSL_Service_NoRedirect(t *testing.T) {
 	// should do nothing
 	s.(*Service).Stop()
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -102,7 +117,12 @@ func Test_SSL_Service_NoRedirect(t *testing.T) {
 
 	r, err := sslClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("fail to close the Body: error %v", err)
+		}
+	}()
 
 	assert.Nil(t, r.TLS)
 
@@ -142,7 +162,12 @@ func Test_SSL_Service_Redirect(t *testing.T) {
 	// should do nothing
 	s.(*Service).Stop()
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -151,7 +176,12 @@ func Test_SSL_Service_Redirect(t *testing.T) {
 
 	r, err := sslClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("fail to close the Body: error %v", err)
+		}
+	}()
 
 	assert.NotNil(t, r.TLS)
 
@@ -191,7 +221,12 @@ func Test_SSL_Service_Push(t *testing.T) {
 	// should do nothing
 	s.(*Service).Stop()
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -200,7 +235,12 @@ func Test_SSL_Service_Push(t *testing.T) {
 
 	r, err := sslClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("fail to close the Body: error %v", err)
+		}
+	}()
 
 	assert.NotNil(t, r.TLS)
 

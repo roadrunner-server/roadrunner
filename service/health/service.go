@@ -2,6 +2,8 @@ package health
 
 import (
 	"context"
+	"fmt"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"sync"
 
@@ -14,19 +16,21 @@ const ID = "health"
 // Service to serve an endpoint for checking the health of the worker pool
 type Service struct {
 	cfg         *Config
+	log         *logrus.Logger
 	mu          sync.Mutex
 	http        *http.Server
 	httpService *rrhttp.Service
 }
 
 // Init health service
-func (s *Service) Init(cfg *Config, r *rrhttp.Service) (bool, error) {
+func (s *Service) Init(cfg *Config, r *rrhttp.Service, log *logrus.Logger) (bool, error) {
 	// Ensure the httpService is set
 	if r == nil {
 		return false, nil
 	}
 
 	s.cfg = cfg
+	s.log = log
 	s.httpService = r
 	return true, nil
 }
@@ -37,7 +41,13 @@ func (s *Service) Serve() error {
 	s.mu.Lock()
 	s.http = &http.Server{Addr: s.cfg.Address, Handler: s}
 	s.mu.Unlock()
-	return s.http.ListenAndServe()
+
+	err := s.http.ListenAndServe()
+	if err == nil || err == http.ErrServerClosed {
+		return nil
+	}
+
+	return err
 }
 
 // Stop the health endpoint
@@ -47,7 +57,12 @@ func (s *Service) Stop() {
 
 	if s.http != nil {
 		// gracefully stop the server
-		go s.http.Shutdown(context.Background())
+		go func() {
+			err := s.http.Shutdown(context.Background())
+			if err != nil && err != http.ErrServerClosed {
+				s.log.Error(fmt.Errorf("error shutting down the metrics server: error %v", err))
+			}
+		}()
 	}
 }
 

@@ -31,7 +31,10 @@ func Test_Controller_Default(t *testing.T) {
 }
 `}
 	c := &Config{}
-	c.InitDefaults()
+	err := c.InitDefaults()
+	if err != nil {
+		t.Errorf("failed to InitDefaults: error %v", err)
+	}
 
 	assert.NoError(t, c.Hydrate(cfg))
 	assert.Equal(t, time.Second, c.Interval)

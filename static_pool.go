@@ -42,7 +42,6 @@ type StaticPool struct {
 	workers []*Worker
 
 	// invalid declares set of workers to be removed from the pool.
-	mur    sync.Mutex
 	remove sync.Map
 
 	// pool is being destroyed
@@ -108,9 +107,7 @@ func (p *StaticPool) Workers() (workers []*Worker) {
 	p.muw.RLock()
 	defer p.muw.RUnlock()
 
-	for _, w := range p.workers {
-		workers = append(workers, w)
-	}
+	workers = append(workers, p.workers...)
 
 	return workers
 }
@@ -294,7 +291,12 @@ func (p *StaticPool) discardWorker(w *Worker, caused interface{}) {
 
 // destroyWorker destroys workers and removes it from the pool.
 func (p *StaticPool) destroyWorker(w *Worker, caused interface{}) {
-	go w.Stop()
+	go func() {
+		err := w.Stop()
+		if err != nil {
+			p.throw(EventWorkerError, WorkerError{Worker: w, Caused: err})
+		}
+	}()
 
 	select {
 	case <-w.waitDone:
