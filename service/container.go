@@ -217,7 +217,7 @@ func (c *container) Stop() {
 
 // List all service names.
 func (c *container) List() []string {
-	names := make([]string, 0)
+	names := make([]string, 0, len(c.services))
 	for _, e := range c.services {
 		names = append(names, e.name)
 	}
