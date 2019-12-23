@@ -8,6 +8,8 @@ v1.5.3
 - "Server closed" error has been supressed
 - added the ability to specificy any config value via json flag `-j`
 - minor improvements in travis pipeline
+- bump the minimum TLS version to TLS 1.2
+- added `Strict-Transport-Security` header for TLS requests
 
 v1.5.2 (05.12.2019)
 -------------------

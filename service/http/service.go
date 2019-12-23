@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
@@ -153,7 +154,11 @@ func (s *Service) Serve() error {
 
 	if s.https != nil {
 		go func() {
-			httpErr := s.https.ListenAndServeTLS(s.cfg.SSL.Cert, s.cfg.SSL.Key)
+			httpErr := s.https.ListenAndServeTLS(
+				s.cfg.SSL.Cert,
+				s.cfg.SSL.Key,
+			)
+
 			if httpErr != nil && httpErr != http.ErrServerClosed {
 				err <- httpErr
 			} else {
@@ -236,6 +241,10 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if s.https != nil && r.TLS != nil {
+		w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains")
+	}
+
 	r = attributes.Init(r)
 
 	// chaining middleware
@@ -248,7 +257,13 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Init https server.
 func (s *Service) initSSL() *http.Server {
-	server := &http.Server{Addr: s.tlsAddr(s.cfg.Address, true), Handler: s}
+	server := &http.Server{
+		Addr:    s.tlsAddr(s.cfg.Address, true),
+		Handler: s,
+		TLSConfig: &tls.Config{
+			MinVersion: tls.VersionTLS12,
+		},
+	}
 	s.throw(EventInitSSL, server)
 
 	return server
