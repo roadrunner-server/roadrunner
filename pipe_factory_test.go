@@ -17,12 +17,15 @@ func Test_Pipe_Start(t *testing.T) {
 		assert.NoError(t, w.Wait())
 	}()
 
-	w.Stop()
+	assert.NoError(t, w.Stop())
 }
 
 func Test_Pipe_StartError(t *testing.T) {
 	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
-	cmd.Start()
+	err := cmd.Start()
+	if err != nil {
+		t.Errorf("error running the command: error %v", err)
+	}
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 	assert.Error(t, err)
@@ -31,7 +34,10 @@ func Test_Pipe_StartError(t *testing.T) {
 
 func Test_Pipe_PipeError(t *testing.T) {
 	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
-	cmd.StdinPipe()
+	_, err := cmd.StdinPipe()
+	if err != nil {
+		t.Errorf("error creating the STDIN pipe: error %v", err)
+	}
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 	assert.Error(t, err)
@@ -40,7 +46,10 @@ func Test_Pipe_PipeError(t *testing.T) {
 
 func Test_Pipe_PipeError2(t *testing.T) {
 	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
-	cmd.StdoutPipe()
+	_, err := cmd.StdinPipe()
+	if err != nil {
+		t.Errorf("error creating the STDIN pipe: error %v", err)
+	}
 
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 	assert.Error(t, err)
@@ -71,7 +80,12 @@ func Test_Pipe_Echo(t *testing.T) {
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
-	defer w.Stop()
+	defer func() {
+		err := w.Stop()
+		if err != nil {
+			t.Errorf("error stopping the worker: error %v", err)
+		}
+	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
 
@@ -93,7 +107,10 @@ func Test_Pipe_Broken(t *testing.T) {
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "undefined_function()")
 	}()
-	defer w.Stop()
+	defer func() {
+		err := w.Stop()
+		assert.Error(t, err)
+	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
 
@@ -112,7 +129,10 @@ func Benchmark_Pipe_SpawnWorker_Stop(b *testing.B) {
 			}
 		}()
 
-		w.Stop()
+		err := w.Stop()
+		if err != nil {
+			b.Errorf("error stopping the worker: error %v", err)
+		}
 	}
 }
 
@@ -121,9 +141,17 @@ func Benchmark_Pipe_Worker_ExecEcho(b *testing.B) {
 
 	w, _ := NewPipeFactory().SpawnWorker(cmd)
 	go func() {
-		w.Wait()
+		err := w.Wait()
+		if err != nil {
+			b.Errorf("error waiting the worker: error %v", err)
+		}
 	}()
-	defer w.Stop()
+	defer func() {
+		err := w.Stop()
+		if err != nil {
+			b.Errorf("error stopping the worker: error %v", err)
+		}
+	}()
 
 	for n := 0; n < b.N; n++ {
 		if _, err := w.Exec(&Payload{Body: []byte("hello")}); err != nil {

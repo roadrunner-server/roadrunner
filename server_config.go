@@ -128,7 +128,10 @@ func (cfg *ServerConfig) makeFactory() (Factory, error) {
 	}
 
 	if dsn[0] == "unix" {
-		syscall.Unlink(dsn[1])
+		err := syscall.Unlink(dsn[1])
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	ln, err := net.Listen(dsn[0], dsn[1])

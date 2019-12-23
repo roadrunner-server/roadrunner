@@ -126,9 +126,18 @@ func (c *Config) Hydrate(cfg service.Config) error {
 		c.SSL.Port = 443
 	}
 
-	c.HTTP2.InitDefaults()
-	c.Uploads.InitDefaults()
-	c.Workers.InitDefaults()
+	err := c.HTTP2.InitDefaults()
+	if err != nil {
+		return err
+	}
+	err = c.Uploads.InitDefaults()
+	if err != nil {
+		return err
+	}
+	err = c.Workers.InitDefaults()
+	if err != nil {
+		return err
+	}
 
 	if err := cfg.Unmarshal(c); err != nil {
 		return err

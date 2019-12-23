@@ -10,7 +10,10 @@ func TestAllAttributes(t *testing.T) {
 	r := &http.Request{}
 	r = Init(r)
 
-	Set(r, "key", "value")
+	err := Set(r, "key", "value")
+	if err != nil {
+		t.Errorf("error during the Set: error %v", err)
+	}
 
 	assert.Equal(t, All(r), map[string]interface{}{
 		"key": "value",
@@ -34,7 +37,10 @@ func TestGetAttribute(t *testing.T) {
 	r := &http.Request{}
 	r = Init(r)
 
-	Set(r, "key", "value")
+	err := Set(r, "key", "value")
+	if err != nil {
+		t.Errorf("error during the Set: error %v", err)
+	}
 	assert.Equal(t, Get(r, "key"), "value")
 }
 
@@ -55,13 +61,19 @@ func TestSetAttribute(t *testing.T) {
 	r := &http.Request{}
 	r = Init(r)
 
-	Set(r, "key", "value")
+	err := Set(r, "key", "value")
+	if err != nil {
+		t.Errorf("error during the Set: error %v", err)
+	}
 	assert.Equal(t, Get(r, "key"), "value")
 }
 
 func TestSetAttributeNone(t *testing.T) {
 	r := &http.Request{}
 
-	Set(r, "key", "value")
+	err := Set(r, "key", "value")
+	if err != nil {
+		t.Errorf("error during the Set: error %v", err)
+	}
 	assert.Equal(t, Get(r, "key"), nil)
 }

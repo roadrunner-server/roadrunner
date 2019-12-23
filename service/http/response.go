@@ -36,7 +36,10 @@ func (r *Response) Write(w http.ResponseWriter) error {
 	p, h := handlePushHeaders(r.Headers)
 	if pusher, ok := w.(http.Pusher); ok {
 		for _, v := range p {
-			pusher.Push(v, nil)
+			err := pusher.Push(v, nil)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -50,7 +53,10 @@ func (r *Response) Write(w http.ResponseWriter) error {
 	w.WriteHeader(r.Status)
 
 	if data, ok := r.body.([]byte); ok {
-		w.Write(data)
+		_, err := w.Write(data)
+		if err != nil {
+			return err
+		}
 	}
 
 	if rc, ok := r.body.(io.Reader); ok {

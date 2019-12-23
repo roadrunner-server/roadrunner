@@ -276,7 +276,10 @@ func (c *container) resolveValues(s interface{}, m reflect.Method, cfg Config) (
 			sc := reflect.New(v.Elem())
 
 			if dsc, ok := sc.Interface().(DefaultsConfig); ok {
-				dsc.InitDefaults()
+				err := dsc.InitDefaults()
+				if err != nil {
+					return nil, err
+				}
 				if cfg == nil {
 					values = append(values, sc)
 					continue

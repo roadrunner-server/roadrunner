@@ -59,7 +59,12 @@ func Test_RequestHeaders(t *testing.T) {
 			}
 	}`}))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -68,7 +73,12 @@ func Test_RequestHeaders(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the body closing: error %v", err)
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -103,7 +113,12 @@ func Test_ResponseHeaders(t *testing.T) {
 			}
 	}`}))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -112,7 +127,12 @@ func Test_ResponseHeaders(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the body closing: error %v", err)
+		}
+	}()
 
 	assert.Equal(t, "output-header", r.Header.Get("output"))
 
@@ -157,7 +177,12 @@ func TestCORS_OPTIONS(t *testing.T) {
 			}
 	}`}))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -166,7 +191,12 @@ func TestCORS_OPTIONS(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the body closing: error %v", err)
+		}
+	}()
 
 	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
 	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
@@ -215,7 +245,12 @@ func TestCORS_Pass(t *testing.T) {
 			}
 	}`}))
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error during the Serve: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
@@ -224,7 +259,12 @@ func TestCORS_Pass(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the body closing: error %v", err)
+		}
+	}()
 
 	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
 	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
