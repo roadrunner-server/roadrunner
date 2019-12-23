@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+v1.5.3
+-------------------
+- metric and rpc ports are rotated in tests to avoid false positive
+- massive test and source cleanup (more error handlers) by @ValeryPiashchynski
+- "Server closed" error has been supressed
+- added the ability to specificy any config value via json flag `-j`
+- minor improvements in travis pipeline
+
 v1.5.2 (05.12.2019)
 -------------------
 - added support for symfony/console 5.0 by @coxa
