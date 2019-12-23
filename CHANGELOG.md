@@ -3,11 +3,11 @@ CHANGELOG
 
 v1.5.3 (23.12.2019)
 -------------------
-- metric and rpc ports are rotated in tests to avoid false positive
+- metric and RPC ports are rotated in tests to avoid false positive
 - massive test and source cleanup (more error handlers) by @ValeryPiashchynski
-- "Server closed" error has been supressed
-- added the ability to specificy any config value via json flag `-j`
-- minor improvements in travis pipeline
+- "Server closed" error has been suppressed
+- added the ability to specify any config value via JSON flag `-j`
+- minor improvements in Travis pipeline
 - bump the minimum TLS version to TLS 1.2
 - added `Strict-Transport-Security` header for TLS requests
 
