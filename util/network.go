@@ -1,5 +1,3 @@
-// +build !windows
-
 package util
 
 import (
@@ -29,15 +27,7 @@ func CreateListener(address string) (net.Listener, error) {
 		}
 	}
 
-	ls := net.ListenConfig{
-		Control: func(network, address string, c syscall.RawConn) error {
-			return c.Control(func(descriptor uintptr) {
-				syscall.SetsockoptInt(int(descriptor), syscall.SOL_SOCKET, syscall.SO_REUSEPORT, 1)
-			})
-		},
-	}
-
-	return ls.Listen(dsn[0], dsn[1])
+	return net.Listen(dsn[0], dsn[1])
 }
 
 // fileExists checks if a file exists and is not a directory before we
