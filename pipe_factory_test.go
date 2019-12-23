@@ -109,9 +109,7 @@ func Test_Pipe_Broken(t *testing.T) {
 	}()
 	defer func() {
 		err := w.Stop()
-		if err != nil {
-			t.Errorf("error stopping the worker: error %v", err)
-		}
+		assert.Error(t, err)
 	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})

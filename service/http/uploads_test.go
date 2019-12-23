@@ -51,7 +51,7 @@ func TestHandler_Upload_File(t *testing.T) {
 
 	go func() {
 		err := hs.ListenAndServe()
-		if err != nil {
+		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
 	}()
@@ -138,7 +138,7 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 
 	go func() {
 		err := hs.ListenAndServe()
-		if err != nil {
+		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
 	}()
@@ -225,7 +225,7 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 
 	go func() {
 		err := hs.ListenAndServe()
-		if err != nil {
+		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
 	}()
@@ -312,7 +312,7 @@ func TestHandler_Upload_File_Forbids(t *testing.T) {
 
 	go func() {
 		err := hs.ListenAndServe()
-		if err != nil {
+		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
 	}()

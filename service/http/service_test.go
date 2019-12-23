@@ -54,9 +54,7 @@ func Test_Service_NoConfig(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	err := c.Init(&testCfg{httpCfg: `{"Enable":true}`})
-	if err != nil {
-		t.Errorf("error during the Init: error %v", err)
-	}
+	assert.Error(t, err)
 
 	s, st := c.Get(ID)
 	assert.NotNil(t, s)

@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -46,16 +47,15 @@ func (u *Uploads) MarshalJSON() ([]byte, error) {
 
 // Open moves all uploaded files to temp directory, return error in case of issue with temp directory. File errors
 // will be handled individually.
-func (u *Uploads) Open() {
+func (u *Uploads) Open(log *logrus.Logger) {
 	var wg sync.WaitGroup
 	for _, f := range u.list {
 		wg.Add(1)
 		go func(f *FileUpload) {
 			defer wg.Done()
 			err := f.Open(u.cfg)
-			if err != nil {
-				// TODO handle error mechanism in goroutines
-				fmt.Println(fmt.Errorf("error opening the file: error %v", err))
+			if err != nil && log != nil {
+				log.Error(fmt.Errorf("error opening the file: error %v", err))
 			}
 		}(f)
 	}
@@ -64,13 +64,12 @@ func (u *Uploads) Open() {
 }
 
 // Clear deletes all temporary files.
-func (u *Uploads) Clear() {
+func (u *Uploads) Clear(log *logrus.Logger) {
 	for _, f := range u.list {
 		if f.TempFilename != "" && exists(f.TempFilename) {
 			err := os.Remove(f.TempFilename)
-			if err != nil {
-				// TODO error handling mechanism
-				fmt.Println(fmt.Errorf("error removing the file: error %v", err))
+			if err != nil && log != nil {
+				log.Error(fmt.Errorf("error removing the file: error %v", err))
 			}
 		}
 	}
@@ -130,7 +129,6 @@ func (f *FileUpload) Open(cfg *UploadsConfig) (err error) {
 		// close the main file
 		err = file.Close()
 	}()
-
 
 	tmp, err := ioutil.TempFile(cfg.TmpDir(), "upload")
 	if err != nil {

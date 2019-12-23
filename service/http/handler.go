@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
 	"net"
 	"net/http"
@@ -59,6 +60,7 @@ func (e *ResponseEvent) Elapsed() time.Duration {
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Handler struct {
 	cfg *Config
+	log *logrus.Logger
 	rr  *roadrunner.Server
 	mul sync.Mutex
 	lsn func(event int, ctx interface{})
@@ -98,8 +100,8 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// proxy IP resolution
 	h.resolveIP(req)
 
-	req.Open()
-	defer req.Close()
+	req.Open(h.log)
+	defer req.Close(h.log)
 
 	p, err := req.Payload()
 	if err != nil {

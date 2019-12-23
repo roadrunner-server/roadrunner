@@ -166,11 +166,10 @@ func Test_Broken(t *testing.T) {
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "undefined_function()")
 	}()
+
 	defer func() {
 		err := w.Stop()
-		if err != nil {
-			t.Errorf("error stopping the worker: error %v", err)
-		}
+		assert.Error(t, err)
 	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
@@ -196,6 +195,7 @@ func Test_Error(t *testing.T) {
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
+
 	defer func() {
 		err := w.Stop()
 		if err != nil {

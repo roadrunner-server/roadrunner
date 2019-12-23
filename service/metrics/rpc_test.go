@@ -48,10 +48,13 @@ func setup(t *testing.T, metric string, portNum string) (*rpc2.Client, service.C
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Millisecond * 200)
 
 	client, err := rs.Client()
 	assert.NoError(t, err)
+	if err != nil {
+		panic(err)
+	}
 
 	return client, c
 }

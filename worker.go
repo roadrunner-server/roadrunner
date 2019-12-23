@@ -106,14 +106,8 @@ func (w *Worker) Wait() error {
 	if runtime.GOOS != "windows" {
 		// windows handles processes and close pipes differently,
 		// we can ignore wait here as process.Wait() already being handled above
-		var ws syscall.WaitStatus
-		_, err := syscall.Wait4(w.cmd.Process.Pid, &ws, syscall.WALL, nil)
-		if err != nil {
-			if ws.Exited() {
-				return nil
-			} else {
-				return err
-			}
+		if err := w.cmd.Wait(); err != nil {
+			return err
 		}
 	}
 

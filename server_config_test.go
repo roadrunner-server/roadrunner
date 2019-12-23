@@ -31,23 +31,24 @@ func Test_ServerConfig_PipeFactory(t *testing.T) {
 
 func Test_ServerConfig_SocketFactory(t *testing.T) {
 	cfg := &ServerConfig{Relay: "tcp://:9111"}
-	f, err := cfg.makeFactory()
+	f1, err := cfg.makeFactory()
 	assert.NoError(t, err)
-	assert.NotNil(t, f)
+	assert.NotNil(t, f1)
 	defer func() {
-		err := f.Close()
+		err := f1.Close()
+
 		if err != nil {
 			t.Errorf("error closing factory or underlying connections: error %v", err)
 		}
 	}()
 
 	assert.NoError(t, err)
-	assert.IsType(t, &SocketFactory{}, f)
-	assert.Equal(t, "tcp", f.(*SocketFactory).ls.Addr().Network())
-	assert.Equal(t, "[::]:9111", f.(*SocketFactory).ls.Addr().String())
+	assert.IsType(t, &SocketFactory{}, f1)
+	assert.Equal(t, "tcp", f1.(*SocketFactory).ls.Addr().Network())
+	assert.Equal(t, "[::]:9111", f1.(*SocketFactory).ls.Addr().String())
 
 	cfg = &ServerConfig{Relay: "tcp://localhost:9112"}
-	f, err = cfg.makeFactory()
+	f, err := cfg.makeFactory()
 	assert.NoError(t, err)
 	assert.NotNil(t, f)
 	defer func() {

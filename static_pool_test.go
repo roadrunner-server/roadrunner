@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strconv"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -154,9 +155,12 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 
 	assert.NotNil(t, p)
 
+	done := make(chan interface{})
 	p.Listen(func(e int, ctx interface{}) {
 		if err, ok := ctx.(error); ok {
-			assert.Contains(t, err.Error(), "undefined_function()")
+			if strings.Contains(err.Error(), "undefined_function()") {
+				close(done)
+			}
 		}
 	})
 
@@ -164,6 +168,8 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 
 	assert.Error(t, err)
 	assert.Nil(t, res)
+
+	<-done
 }
 
 func Test_StaticPool_Broken_FromOutside(t *testing.T) {
@@ -195,12 +201,10 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	})
 
 	// killing random worker and expecting pool to replace it
-	p.muw.Lock()
 	err = p.Workers()[0].cmd.Process.Kill()
 	if err != nil {
 		t.Errorf("error killing the process: error %v", err)
 	}
-	p.muw.Unlock()
 	<-destructed
 
 	for _, w := range p.Workers() {
