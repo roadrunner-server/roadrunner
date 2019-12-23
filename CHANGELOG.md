@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v1.5.3
+v1.5.3 (23.12.2019)
 -------------------
 - metric and rpc ports are rotated in tests to avoid false positive
 - massive test and source cleanup (more error handlers) by @ValeryPiashchynski
