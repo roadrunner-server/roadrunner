@@ -129,6 +129,20 @@ func TestContainer_Has(t *testing.T) {
 	assert.False(t, c.Has("another"))
 }
 
+func TestContainer_List(t *testing.T) {
+	logger, hook := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testService{})
+
+	assert.Equal(t, 0, len(hook.Entries))
+	assert.Equal(t, 1, len(c.List()))
+
+	assert.True(t, c.Has("test"))
+	assert.False(t, c.Has("another"))
+}
+
 func TestContainer_Get(t *testing.T) {
 	logger, hook := test.NewNullLogger()
 	logger.SetLevel(logrus.DebugLevel)

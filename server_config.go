@@ -8,14 +8,21 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 )
+
+// CommandProducer can produce commands.
+type CommandProducer func(cfg *ServerConfig) func() *exec.Cmd
 
 // ServerConfig config combines factory, pool and cmd configurations.
 type ServerConfig struct {
 	// Command includes command strings with all the parameters, example: "php worker.php pipes".
 	Command string
+
+	// CommandProducer overwrites
+	CommandProducer CommandProducer
 
 	// Relay defines connection method and factory to be used to connect to workers:
 	// "pipes", "tcp://:6001", "unix://rr.sock"
@@ -31,7 +38,8 @@ type ServerConfig struct {
 	Pool *Config
 
 	// values defines set of values to be passed to the command context.
-	env []string
+	mu  sync.Mutex
+	env map[string]string
 }
 
 // InitDefaults sets missing values to their default values.
@@ -68,18 +76,42 @@ func (cfg *ServerConfig) Differs(new *ServerConfig) bool {
 
 // SetEnv sets new environment variable. Value is automatically uppercase-d.
 func (cfg *ServerConfig) SetEnv(k, v string) {
-	cfg.env = append(cfg.env, fmt.Sprintf("%s=%s", strings.ToUpper(k), v))
+	cfg.mu.Lock()
+	defer cfg.mu.Unlock()
+
+	if cfg.env == nil {
+		cfg.env = make(map[string]string)
+	}
+
+	cfg.env[k] = v
+}
+
+// GetEnv must return list of env variables.
+func (cfg *ServerConfig) GetEnv() (env []string) {
+	env = append(os.Environ(), fmt.Sprintf("RR_RELAY=%s", cfg.Relay))
+	for k, v := range cfg.env {
+		env = append(env, fmt.Sprintf("%s=%s", strings.ToUpper(k), v))
+	}
+
+	return
 }
 
 // makeCommands returns new command provider based on configured options.
 func (cfg *ServerConfig) makeCommand() func() *exec.Cmd {
+	cfg.mu.Lock()
+	defer cfg.mu.Unlock()
+
+	if cfg.CommandProducer != nil {
+		return cfg.CommandProducer(cfg)
+	}
+
 	var cmd = strings.Split(cfg.Command, " ")
 	return func() *exec.Cmd {
 		cmd := exec.Command(cmd[0], cmd[1:]...)
 		osutil.IsolateProcess(cmd)
 
-		cmd.Env = append(os.Environ(), fmt.Sprintf("RR_RELAY=%s", cfg.Relay))
-		cmd.Env = append(cmd.Env, cfg.env...)
+		cmd.Env = cfg.GetEnv()
+
 		return cmd
 	}
 }

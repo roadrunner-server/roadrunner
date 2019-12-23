@@ -31,6 +31,7 @@ type middleware func(f http.HandlerFunc) http.HandlerFunc
 // Service manages rr, http servers.
 type Service struct {
 	cfg        *Config
+	cprod      roadrunner.CommandProducer
 	env        env.Environment
 	lsns       []func(event int, ctx interface{})
 	mdwr       []middleware
@@ -46,6 +47,11 @@ type Service struct {
 // Attach attaches controller. Currently only one controller is supported.
 func (s *Service) Attach(w roadrunner.Controller) {
 	s.controller = w
+}
+
+// ProduceCommands changes the default command generator method
+func (s *Service) ProduceCommands(producer roadrunner.CommandProducer) {
+	s.cprod = producer
 }
 
 // AddMiddleware adds new net/http mdwr.
@@ -87,6 +93,7 @@ func (s *Service) Serve() error {
 		}
 	}
 
+	s.cfg.Workers.CommandProducer = s.cprod
 	s.cfg.Workers.SetEnv("RR_HTTP", "true")
 
 	s.rr = roadrunner.NewServer(s.cfg.Workers)
