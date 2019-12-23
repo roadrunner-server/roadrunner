@@ -14,7 +14,6 @@ func Test_Pipe_Start(t *testing.T) {
 	assert.NotNil(t, w)
 
 	go func() {
-
 		assert.NoError(t, w.Wait())
 	}()
 

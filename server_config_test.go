@@ -71,6 +71,10 @@ func Test_ServerConfig_UnixSocketFactory(t *testing.T) {
 
 	cfg := &ServerConfig{Relay: "unix://unix.sock"}
 	f, err := cfg.makeFactory()
+	if err != nil {
+		t.Error(err)
+	}
+
 	defer func() {
 		err := f.Close()
 		if err != nil {
