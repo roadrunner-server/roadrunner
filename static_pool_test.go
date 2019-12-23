@@ -205,7 +205,6 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	if err != nil {
 		t.Errorf("error killing the process: error %v", err)
 	}
-
 	<-destructed
 
 	for _, w := range p.Workers() {

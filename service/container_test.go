@@ -456,9 +456,7 @@ func TestContainer_NoInit(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{`{"test":"something", "test2":"something-else"}`}))
 }
 
-type testInitD struct {
-	c *testInitC
-}
+type testInitD struct {}
 
 type DCfg struct {
 	V string

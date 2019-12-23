@@ -1043,6 +1043,7 @@ func TestHandler_Multipart_POST(t *testing.T) {
 	}
 
 	err = w.WriteField("arr[x][y][e]", "f")
+
 	if err != nil {
 		t.Errorf("error writing the field: error %v", err)
 	}
@@ -1138,6 +1139,7 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 	}
 
 	err = w.WriteField("name[]", "name1")
+
 	if err != nil {
 		t.Errorf("error writing the field: error %v", err)
 	}
@@ -1234,6 +1236,7 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 
 	go func() {
 		err := hs.ListenAndServe()
+
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1258,11 +1261,13 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 	}
 
 	err = w.WriteField("name[]", "name2")
+
 	if err != nil {
 		t.Errorf("error writing the field: error %v", err)
 	}
 
 	err = w.WriteField("name[]", "name3")
+
 	if err != nil {
 		t.Errorf("error writing the field: error %v", err)
 	}

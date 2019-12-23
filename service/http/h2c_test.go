@@ -36,7 +36,12 @@ func Test_Service_H2C(t *testing.T) {
 	// should do nothing
 	s.(*Service).Stop()
 
-	go func() { c.Serve() }()
+	go func() {
+		err := c.Serve()
+		if err != nil {
+			t.Errorf("error serving: %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
