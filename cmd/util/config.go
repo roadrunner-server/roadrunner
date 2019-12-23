@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/spf13/viper"
 	"github.com/spiral/roadrunner/service"
@@ -30,7 +31,7 @@ func (w *ConfigWrapper) Unmarshal(out interface{}) error {
 }
 
 // LoadConfig config and merge it's values with set of flags.
-func LoadConfig(cfgFile string, path []string, name string, flags []string) (*ConfigWrapper, error) {
+func LoadConfig(cfgFile string, path []string, name string, flags []string, jsonConfig string) (*ConfigWrapper, error) {
 	cfg := viper.New()
 
 	if cfgFile != "" {
@@ -68,14 +69,13 @@ func LoadConfig(cfgFile string, path []string, name string, flags []string) (*Co
 
 	// If a cfg file is found, read it in.
 	if err := cfg.ReadInConfig(); err != nil {
-		if len(flags) == 0 {
+		if len(flags) == 0 && jsonConfig == "" {
 			return nil, err
 		}
 	}
 
 	// merge included configs
 	if include, ok := cfg.Get("include").([]interface{}); ok {
-
 		for _, file := range include {
 			filename, ok := file.(string)
 			if !ok {
@@ -114,6 +114,23 @@ func LoadConfig(cfgFile string, path []string, name string, flags []string) (*Co
 			}
 
 			cfg.Set(k, v)
+		}
+	}
+
+	if jsonConfig != "" {
+		jConfig := viper.New()
+		jConfig.AutomaticEnv()
+		jConfig.SetEnvPrefix("rr")
+		jConfig.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+		jConfig.SetConfigType("json")
+		if err := jConfig.ReadConfig(bytes.NewBufferString(jsonConfig)); err != nil {
+			return nil, err
+		}
+
+		// merging
+		if err := cfg.MergeConfigMap(jConfig.AllSettings()); err != nil {
+			return nil, err
 		}
 	}
 
