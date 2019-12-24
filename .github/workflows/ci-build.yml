@@ -95,12 +95,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           fetch-depth: 1
 
       - name: Build image
-        run: docker build -t roadrunner -f Dockerfile .
+        run: docker build -t rr:local -f Dockerfile .
 
       - name: Try to execute
-        run: docker run --rm roadrunner -v
+        run: docker run --rm rr:local -v
