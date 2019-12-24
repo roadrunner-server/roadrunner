@@ -5,6 +5,16 @@ UNRELEASED
 ----------
 - added `Dockerfile` for building RR binary file by [@tarampampam](https://github.com/tarampampam) (closes [issue #218](https://github.com/spiral/roadrunner/issues/218))
 
+v1.5.3 (23.12.2019)
+-------------------
+- metric and RPC ports are rotated in tests to avoid false positive
+- massive test and source cleanup (more error handlers) by @ValeryPiashchynski
+- "Server closed" error has been suppressed
+- added the ability to specify any config value via JSON flag `-j`
+- minor improvements in Travis pipeline
+- bump the minimum TLS version to TLS 1.2
+- added `Strict-Transport-Security` header for TLS requests
+
 v1.5.2 (05.12.2019)
 -------------------
 - added support for symfony/console 5.0 by @coxa

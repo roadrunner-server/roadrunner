@@ -1,9 +1,13 @@
 package metrics
 
+// todo: declare metric at runtime
+
 import (
 	"context"
+	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner/service/rpc"
 	"net/http"
 	"sync"
@@ -15,6 +19,7 @@ const ID = "metrics"
 // Service to manage application metrics using Prometheus.
 type Service struct {
 	cfg        *Config
+	log        *logrus.Logger
 	mu         sync.Mutex
 	http       *http.Server
 	collectors sync.Map
@@ -22,8 +27,9 @@ type Service struct {
 }
 
 // Init service.
-func (s *Service) Init(cfg *Config, r *rpc.Service) (bool, error) {
+func (s *Service) Init(cfg *Config, r *rpc.Service, log *logrus.Logger) (bool, error) {
 	s.cfg = cfg
+	s.log = log
 	s.registry = prometheus.NewRegistry()
 
 	s.registry.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
@@ -76,7 +82,12 @@ func (s *Service) Serve() error {
 	)}
 	s.mu.Unlock()
 
-	return s.http.ListenAndServe()
+	err = s.http.ListenAndServe()
+	if err == nil || err == http.ErrServerClosed {
+		return nil
+	}
+
+	return err
 }
 
 // Stop prometheus metrics service.
@@ -86,7 +97,13 @@ func (s *Service) Stop() {
 
 	if s.http != nil {
 		// gracefully stop server
-		go s.http.Shutdown(context.Background())
+		go func() {
+			err := s.http.Shutdown(context.Background())
+			if err != nil {
+				// Function should be Stop() error
+				s.log.Error(fmt.Errorf("error shutting down the metrics server: error %v", err))
+			}
+		}()
 	}
 }
 

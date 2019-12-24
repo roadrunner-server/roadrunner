@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service/http/attributes"
 	"io/ioutil"
@@ -112,21 +113,21 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 }
 
 // Open moves all uploaded files to temporary directory so it can be given to php later.
-func (r *Request) Open() {
+func (r *Request) Open(log *logrus.Logger) {
 	if r.Uploads == nil {
 		return
 	}
 
-	r.Uploads.Open()
+	r.Uploads.Open(log)
 }
 
 // Close clears all temp file uploads
-func (r *Request) Close() {
+func (r *Request) Close(log *logrus.Logger) {
 	if r.Uploads == nil {
 		return
 	}
 
-	r.Uploads.Clear()
+	r.Uploads.Clear(log)
 }
 
 // Payload request marshaled RoadRunner payload based on PSR7 data. values encode method is JSON. Make sure to open

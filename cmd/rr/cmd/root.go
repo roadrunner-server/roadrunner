@@ -33,6 +33,7 @@ import (
 var (
 	cfgFile, workDir, logFormat string
 	override                    []string
+	mergeJson                   string
 
 	// Verbose enables verbosity mode (container specific).
 	Verbose bool
@@ -73,6 +74,7 @@ func init() {
 	CLI.PersistentFlags().StringVarP(&logFormat, "logFormat", "l", "color", "select log formatter (color, json, plain)")
 	CLI.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is .rr.yaml)")
 	CLI.PersistentFlags().StringVarP(&workDir, "workDir", "w", "", "work directory")
+	CLI.PersistentFlags().StringVarP(&mergeJson, "jsonConfig", "j", "", "merge json configuration")
 
 	CLI.PersistentFlags().StringArrayVarP(
 		&override,
@@ -89,7 +91,7 @@ func init() {
 
 		configureLogger(logFormat)
 
-		cfg, err := util.LoadConfig(cfgFile, []string{"."}, ".rr", override)
+		cfg, err := util.LoadConfig(cfgFile, []string{"."}, ".rr", override, mergeJson)
 		if err != nil {
 			Logger.Warnf("config: %s", err)
 			return

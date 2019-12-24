@@ -46,6 +46,9 @@ type Container interface {
 
 	// Close all active services.
 	Stop()
+
+	// List service names.
+	List() []string
 }
 
 // Config provides ability to slice configuration sections and unmarshal configuration data into
@@ -212,6 +215,16 @@ func (c *container) Stop() {
 	}
 }
 
+// List all service names.
+func (c *container) List() []string {
+	names := make([]string, 0, len(c.services))
+	for _, e := range c.services {
+		names = append(names, e.name)
+	}
+
+	return names
+}
+
 // calls Init method with automatically resolved arguments.
 func (c *container) initService(s interface{}, segment Config) (bool, error) {
 	r := reflect.TypeOf(s)
@@ -263,7 +276,10 @@ func (c *container) resolveValues(s interface{}, m reflect.Method, cfg Config) (
 			sc := reflect.New(v.Elem())
 
 			if dsc, ok := sc.Interface().(DefaultsConfig); ok {
-				dsc.InitDefaults()
+				err := dsc.InitDefaults()
+				if err != nil {
+					return nil, err
+				}
 				if cfg == nil {
 					values = append(values, sc)
 					continue

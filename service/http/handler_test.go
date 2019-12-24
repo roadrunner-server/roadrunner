@@ -23,9 +23,15 @@ func get(url string) (string, *http.Response, error) {
 	if err != nil {
 		return "", nil, err
 	}
-	defer r.Body.Close()
-
 	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return "", nil, err
+	}
+
+	err = r.Body.Close()
+	if err != nil {
+		return "", nil, err
+	}
 	return string(b), r, err
 }
 
@@ -44,9 +50,16 @@ func getHeader(url string, h map[string]string) (string, *http.Response, error) 
 	if err != nil {
 		return "", nil, err
 	}
-	defer r.Body.Close()
 
 	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return "", nil, err
+	}
+
+	err = r.Body.Close()
+	if err != nil {
+		return "", nil, err
+	}
 	return string(b), r, err
 }
 
@@ -74,9 +87,19 @@ func TestHandler_Echo(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	body, r, err := get("http://localhost:8177/?hello=world")
@@ -165,10 +188,20 @@ func TestHandler_Headers(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8078", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
-	time.Sleep(time.Millisecond * 10)
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
+	time.Sleep(time.Millisecond * 100)
 
 	req, err := http.NewRequest("GET", "http://localhost:8078?hello=world", nil)
 	assert.NoError(t, err)
@@ -177,7 +210,13 @@ func TestHandler_Headers(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -212,9 +251,19 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8088", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	req, err := http.NewRequest("GET", "http://localhost:8088?hello=world", nil)
@@ -224,7 +273,13 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -258,9 +313,19 @@ func TestHandler_User_Agent(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8088", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	req, err := http.NewRequest("GET", "http://localhost:8088?hello=world", nil)
@@ -270,7 +335,13 @@ func TestHandler_User_Agent(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -304,9 +375,19 @@ func TestHandler_Cookies(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8079", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	req, err := http.NewRequest("GET", "http://localhost:8079", nil)
@@ -316,7 +397,13 @@ func TestHandler_Cookies(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -355,9 +442,19 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8090", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	req, err := http.NewRequest(
@@ -371,7 +468,13 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -405,9 +508,19 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8081", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	req, err := http.NewRequest("PUT", "http://localhost"+hs.Addr, bytes.NewBufferString(`{"key":"value"}`))
@@ -417,7 +530,12 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -451,9 +569,19 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8082", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	req, err := http.NewRequest("PATCH", "http://localhost"+hs.Addr, bytes.NewBufferString(`{"key":"value"}`))
@@ -463,7 +591,13 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -497,9 +631,19 @@ func TestHandler_FormData_POST(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8083", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	form := url.Values{}
@@ -520,7 +664,13 @@ func TestHandler_FormData_POST(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -555,9 +705,19 @@ func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8083", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	form := url.Values{}
@@ -572,7 +732,13 @@ func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -607,9 +773,19 @@ func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8083", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	form := url.Values{}
@@ -630,7 +806,13 @@ func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -665,9 +847,19 @@ func TestHandler_FormData_PUT(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8084", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	form := url.Values{}
@@ -688,7 +880,13 @@ func TestHandler_FormData_PUT(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -723,9 +921,19 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8085", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	form := url.Values{}
@@ -746,7 +954,13 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -781,25 +995,73 @@ func TestHandler_Multipart_POST(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8019", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	var mb bytes.Buffer
 	w := multipart.NewWriter(&mb)
-	w.WriteField("key", "value")
+	err := w.WriteField("key", "value")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
 
-	w.WriteField("key", "value")
-	w.WriteField("name[]", "name1")
-	w.WriteField("name[]", "name2")
-	w.WriteField("name[]", "name3")
-	w.WriteField("arr[x][y][z]", "y")
-	w.WriteField("arr[x][y][e]", "f")
-	w.WriteField("arr[c]p", "l")
-	w.WriteField("arr[c]z", "")
+	err = w.WriteField("key", "value")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
 
-	w.Close()
+	err = w.WriteField("name[]", "name1")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("name[]", "name2")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("name[]", "name3")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[x][y][z]", "y")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[x][y][e]", "f")
+
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[c]p", "l")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[c]z", "")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.Close()
+	if err != nil {
+		t.Errorf("error closing the writer: error %v", err)
+	}
 
 	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, &mb)
 	assert.NoError(t, err)
@@ -808,7 +1070,13 @@ func TestHandler_Multipart_POST(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -843,25 +1111,73 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8020", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	var mb bytes.Buffer
 	w := multipart.NewWriter(&mb)
-	w.WriteField("key", "value")
+	err := w.WriteField("key", "value")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
 
-	w.WriteField("key", "value")
-	w.WriteField("name[]", "name1")
-	w.WriteField("name[]", "name2")
-	w.WriteField("name[]", "name3")
-	w.WriteField("arr[x][y][z]", "y")
-	w.WriteField("arr[x][y][e]", "f")
-	w.WriteField("arr[c]p", "l")
-	w.WriteField("arr[c]z", "")
+	err = w.WriteField("key", "value")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
 
-	w.Close()
+	err = w.WriteField("name[]", "name1")
+
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("name[]", "name2")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("name[]", "name3")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[x][y][z]", "y")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[x][y][e]", "f")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[c]p", "l")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[c]z", "")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.Close()
+	if err != nil {
+		t.Errorf("error closing the writer: error %v", err)
+	}
 
 	req, err := http.NewRequest("PUT", "http://localhost"+hs.Addr, &mb)
 	assert.NoError(t, err)
@@ -870,7 +1186,13 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -905,25 +1227,75 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8021", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	var mb bytes.Buffer
 	w := multipart.NewWriter(&mb)
-	w.WriteField("key", "value")
+	err := w.WriteField("key", "value")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
 
-	w.WriteField("key", "value")
-	w.WriteField("name[]", "name1")
-	w.WriteField("name[]", "name2")
-	w.WriteField("name[]", "name3")
-	w.WriteField("arr[x][y][z]", "y")
-	w.WriteField("arr[x][y][e]", "f")
-	w.WriteField("arr[c]p", "l")
-	w.WriteField("arr[c]z", "")
+	err = w.WriteField("key", "value")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
 
-	w.Close()
+	err = w.WriteField("name[]", "name1")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("name[]", "name2")
+
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("name[]", "name3")
+
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[x][y][z]", "y")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[x][y][e]", "f")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[c]p", "l")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.WriteField("arr[c]z", "")
+	if err != nil {
+		t.Errorf("error writing the field: error %v", err)
+	}
+
+	err = w.Close()
+	if err != nil {
+		t.Errorf("error closing the writer: error %v", err)
+	}
 
 	req, err := http.NewRequest("PATCH", "http://localhost"+hs.Addr, &mb)
 	assert.NoError(t, err)
@@ -932,7 +1304,13 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -967,9 +1345,19 @@ func TestHandler_Error(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	_, r, err := get("http://localhost:8177/?hello=world")
@@ -1001,9 +1389,19 @@ func TestHandler_Error2(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	_, r, err := get("http://localhost:8177/?hello=world")
@@ -1035,9 +1433,19 @@ func TestHandler_Error3(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	b2 := &bytes.Buffer{}
@@ -1050,7 +1458,13 @@ func TestHandler_Error3(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer r.Body.Close()
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			t.Errorf("error during the closing Body: error %v", err)
+
+		}
+	}()
 
 	assert.NoError(t, err)
 	assert.Equal(t, 500, r.StatusCode)
@@ -1080,9 +1494,19 @@ func TestHandler_ResponseDuration(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	gotresp := make(chan interface{})
@@ -1129,9 +1553,19 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	gotresp := make(chan interface{})
@@ -1178,9 +1612,19 @@ func TestHandler_ErrorDuration(t *testing.T) {
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	goterr := make(chan interface{})
@@ -1231,15 +1675,28 @@ func TestHandler_IP(t *testing.T) {
 		}),
 	}
 
-	h.cfg.parseCIDRs()
+	err := h.cfg.parseCIDRs()
+	if err != nil {
+		t.Errorf("error parsing CIDRs: error %v", err)
+	}
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	body, r, err := get("http://127.0.0.1:8177/")
@@ -1277,15 +1734,28 @@ func TestHandler_XRealIP(t *testing.T) {
 		}),
 	}
 
-	h.cfg.parseCIDRs()
+	err := h.cfg.parseCIDRs()
+	if err != nil {
+		t.Errorf("error parsing CIDRs: error %v", err)
+	}
 
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	body, r, err := getHeader("http://127.0.0.1:8177/", map[string]string{
@@ -1328,15 +1798,27 @@ func TestHandler_XForwardedFor(t *testing.T) {
 		}),
 	}
 
-	h.cfg.parseCIDRs()
-
+	err := h.cfg.parseCIDRs()
+	if err != nil {
+		t.Errorf("error parsing CIDRs: error %v", err)
+	}
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	body, r, err := getHeader("http://127.0.0.1:8177/", map[string]string{
@@ -1379,15 +1861,27 @@ func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
 		}),
 	}
 
-	h.cfg.parseCIDRs()
-
+	err := h.cfg.parseCIDRs()
+	if err != nil {
+		t.Errorf("error parsing CIDRs: error %v", err)
+	}
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			t.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	body, r, err := getHeader("http://127.0.0.1:8177/", map[string]string{
@@ -1419,13 +1913,26 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 		}),
 	}
 
-	h.rr.Start()
+	err := h.rr.Start()
+	if err != nil {
+		b.Errorf("error starting the worker pool: error %v", err)
+	}
 	defer h.rr.Stop()
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
-	defer hs.Shutdown(context.Background())
+	defer func() {
+		err := hs.Shutdown(context.Background())
+		if err != nil {
+			b.Errorf("error during the shutdown: error %v", err)
+		}
+	}()
 
-	go func() { hs.ListenAndServe() }()
+	go func() {
+		err := hs.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			b.Errorf("error listening the interface: error %v", err)
+		}
+	}()
 	time.Sleep(time.Millisecond * 10)
 
 	bb := "WORLD"
@@ -1434,11 +1941,21 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 		if err != nil {
 			b.Fail()
 		}
-		defer r.Body.Close()
-
-		br, _ := ioutil.ReadAll(r.Body)
-		if string(br) != bb {
-			b.Fail()
+		// Response might be nil here
+		if r != nil {
+			br, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				b.Errorf("error reading Body: error %v", err)
+			}
+			if string(br) != bb {
+				b.Fail()
+			}
+			err = r.Body.Close()
+			if err != nil {
+				b.Errorf("error closing the Body: error %v", err)
+			}
+		} else {
+			b.Errorf("got nil response")
 		}
 	}
 }

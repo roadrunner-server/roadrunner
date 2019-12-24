@@ -34,6 +34,9 @@ func fetchPID(rl goridge.Relay) (pid int, err error) {
 	}
 
 	body, p, err := rl.Receive()
+	if err != nil {
+		return 0, err
+	}
 	if !p.HasFlag(goridge.PayloadControl) {
 		return 0, fmt.Errorf("unexpected response, header is missing")
 	}

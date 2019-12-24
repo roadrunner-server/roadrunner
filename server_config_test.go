@@ -18,7 +18,12 @@ func Test_ServerConfig_PipeFactory(t *testing.T) {
 	f, err = cfg.makeFactory()
 	assert.NoError(t, err)
 	assert.NotNil(t, f)
-	defer f.Close()
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			t.Errorf("error closing factory or underlying connections: error %v", err)
+		}
+	}()
 
 	assert.NoError(t, err)
 	assert.IsType(t, &PipeFactory{}, f)
@@ -26,21 +31,32 @@ func Test_ServerConfig_PipeFactory(t *testing.T) {
 
 func Test_ServerConfig_SocketFactory(t *testing.T) {
 	cfg := &ServerConfig{Relay: "tcp://:9111"}
+	f1, err := cfg.makeFactory()
+	assert.NoError(t, err)
+	assert.NotNil(t, f1)
+	defer func() {
+		err := f1.Close()
+
+		if err != nil {
+			t.Errorf("error closing factory or underlying connections: error %v", err)
+		}
+	}()
+
+	assert.NoError(t, err)
+	assert.IsType(t, &SocketFactory{}, f1)
+	assert.Equal(t, "tcp", f1.(*SocketFactory).ls.Addr().Network())
+	assert.Equal(t, "[::]:9111", f1.(*SocketFactory).ls.Addr().String())
+
+	cfg = &ServerConfig{Relay: "tcp://localhost:9112"}
 	f, err := cfg.makeFactory()
 	assert.NoError(t, err)
 	assert.NotNil(t, f)
-	defer f.Close()
-
-	assert.NoError(t, err)
-	assert.IsType(t, &SocketFactory{}, f)
-	assert.Equal(t, "tcp", f.(*SocketFactory).ls.Addr().Network())
-	assert.Equal(t, "[::]:9111", f.(*SocketFactory).ls.Addr().String())
-
-	cfg = &ServerConfig{Relay: "tcp://localhost:9112"}
-	f, err = cfg.makeFactory()
-	assert.NoError(t, err)
-	assert.NotNil(t, f)
-	defer f.Close()
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			t.Errorf("error closing factory or underlying connections: error %v", err)
+		}
+	}()
 
 	assert.NoError(t, err)
 	assert.IsType(t, &SocketFactory{}, f)
@@ -55,7 +71,16 @@ func Test_ServerConfig_UnixSocketFactory(t *testing.T) {
 
 	cfg := &ServerConfig{Relay: "unix://unix.sock"}
 	f, err := cfg.makeFactory()
-	defer f.Close()
+	if err != nil {
+		t.Error(err)
+	}
+
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			t.Errorf("error closing factory or underlying connections: error %v", err)
+		}
+	}()
 
 	assert.NoError(t, err)
 	assert.IsType(t, &SocketFactory{}, f)
@@ -131,7 +156,10 @@ func Test_ServerConfigDefaults(t *testing.T) {
 		Command: "php tests/client.php pipes",
 	}
 
-	cfg.InitDefaults()
+	err := cfg.InitDefaults()
+	if err != nil {
+		t.Errorf("error during the InitDefaults: error %v", err)
+	}
 
 	assert.Equal(t, "pipes", cfg.Relay)
 	assert.Equal(t, time.Minute, cfg.Pool.AllocateTimeout)

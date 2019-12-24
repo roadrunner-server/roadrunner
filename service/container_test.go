@@ -67,7 +67,10 @@ type testCfg struct{ cfg string }
 
 func (cfg *testCfg) Get(name string) Config {
 	vars := make(map[string]interface{})
-	json.Unmarshal([]byte(cfg.cfg), &vars)
+	err := json.Unmarshal([]byte(cfg.cfg), &vars)
+	if err != nil {
+		panic("error unmarshalling the cfg.cfg value")
+	}
 
 	v, ok := vars[name]
 	if !ok {
@@ -124,6 +127,20 @@ func TestContainer_Has(t *testing.T) {
 	c.Register("test", &testService{})
 
 	assert.Equal(t, 0, len(hook.Entries))
+
+	assert.True(t, c.Has("test"))
+	assert.False(t, c.Has("another"))
+}
+
+func TestContainer_List(t *testing.T) {
+	logger, hook := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := NewContainer(logger)
+	c.Register("test", &testService{})
+
+	assert.Equal(t, 0, len(hook.Entries))
+	assert.Equal(t, 1, len(c.List()))
 
 	assert.True(t, c.Has("test"))
 	assert.False(t, c.Has("another"))
@@ -425,6 +442,10 @@ func TestContainer_InitErrorB(t *testing.T) {
 
 type testInitC struct{}
 
+func (r *testInitC) Test() bool {
+	return true
+}
+
 func TestContainer_NoInit(t *testing.T) {
 	logger, _ := test.NewNullLogger()
 	logger.SetLevel(logrus.DebugLevel)
@@ -448,7 +469,6 @@ func (c *DCfg) Hydrate(cfg Config) error {
 	if err := cfg.Unmarshal(c); err != nil {
 		return err
 	}
-
 	if c.V == "fail" {
 		return errors.New("failed config")
 	}
