@@ -31,6 +31,8 @@ jobs:
 
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
 
     - name: Show versions
       run: php -v && composer -V && go version
