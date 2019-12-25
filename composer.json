@@ -25,7 +25,7 @@
     "phpstan/phpstan": "~0.12"
   },
   "scripts": {
-    "analyze": "@php ./vendor/bin/phpstan analyze --level max --no-progress --ansi ./src"
+    "analyze": "@php ./vendor/bin/phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi"
   },
   "autoload": {
     "psr-4": {

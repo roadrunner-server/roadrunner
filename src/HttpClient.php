@@ -31,8 +31,8 @@ final class HttpClient
     }
 
     /**
-     * @return array|null Request information as ['ctx'=>[], 'body'=>string]
-     *                    or null if termination request or invalid context.
+     * @return mixed[]|null Request information as ['ctx'=>[], 'body'=>string]
+     *                      or null if termination request or invalid context.
      */
     public function acceptRequest()
     {
@@ -43,7 +43,7 @@ final class HttpClient
         }
 
         $ctx = json_decode($ctx, true);
-        if (is_null($ctx)) {
+        if ($ctx === null) {
             // invalid context
             return null;
         }
@@ -69,7 +69,7 @@ final class HttpClient
 
         $this->getWorker()->send(
             $body,
-            json_encode(['status' => $status, 'headers' => $headers])
+            (string) json_encode(['status' => $status, 'headers' => $headers])
         );
     }
 }
