@@ -18,7 +18,7 @@ jobs:
       GO111MODULE: on
     steps:
     - name: Set up PHP ${{ matrix.php }}
-      uses: shivammathur/setup-php@master
+      uses: shivammathur/setup-php@v1
       with:
         php-version: ${{ matrix.php }}
         extensions: dom
