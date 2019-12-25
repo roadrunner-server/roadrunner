@@ -38,8 +38,9 @@ jobs:
       run: php -v && composer -V && go version
 
     - name: Debug if needed
-      if: ${{ secrets.DEBUG }} == 'true' || ${{ env.DEVUG }} == 'true'
-      run: env && go env
+      env:
+        DEBUG: ${{ secrets.DEBUG }}
+      run: if [[ "$DEBUG" == "true" ]]; then env && go env; fi
 
     - name: Syntax check only (lint)
       run: find ./src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
