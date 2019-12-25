@@ -45,6 +45,10 @@ jobs:
     - name: Syntax check only (lint)
       run: find ./src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
 
+    - name: Get Composer Cache Directory # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
+      id: composer-cache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
     - name: Cache dependencies # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
       uses: actions/cache@v1
       with:
