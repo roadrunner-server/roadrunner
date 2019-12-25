@@ -38,7 +38,7 @@ jobs:
       run: php -v && composer -V && go version
 
     - name: Debug if needed
-      if: secrets.DEBUG == 'true' || env.DEVUG == 'true'
+      if: ${{ secrets.DEBUG }} == 'true' || ${{ env.DEVUG }} == 'true'
       run: env && go env
 
     - name: Syntax check only (lint)
@@ -50,9 +50,6 @@ jobs:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
         restore-keys: ${{ runner.os }}-composer-
-
-    - name: Install Composer 'hirak/prestissimo' package
-      run: composer global require hirak/prestissimo --update-no-dev
 
     - name: Install Composer dependencies
       run: composer install --prefer-dist --no-interaction --no-suggest # --prefer-source
