@@ -23,29 +23,29 @@ RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP/2 server and can be us
 
 Features:
 --------
-- production-ready
+- Production-ready
 - PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middlewares, event listeners)
 - HTTPS and HTTP/2 support (including HTTP/2 Push, H2C)
-- fully customizable server
-- flexible environment configuration
-- no external PHP dependencies (64bit version required), drop-in (based on [Goridge](https://github.com/spiral/goridge))
-- load balancer, process manager and task pipeline
-- frontend agnostic ([Queue](https://github.com/spiral/jobs), PSR-7, [GRPC](https://github.com/spiral/php-grpc), etc)
-- integrated metrics (Prometheus)
-- works over TCP, UNIX sockets and standard pipes
-- automatic worker replacement and safe PHP process destruction
-- worker create/allocate/destroy timeouts
-- max jobs per worker
-- worker lifecycle management (controller) 
+- Fully customizable server
+- Flexible environment configuration
+- No external PHP dependencies (64bit version required), drop-in (based on [Goridge](https://github.com/spiral/goridge))
+- Load balancer, process manager and task pipeline
+- Frontend agnostic ([Queue](https://github.com/spiral/jobs), PSR-7, [GRPC](https://github.com/spiral/php-grpc), etc)
+- Integrated metrics (Prometheus)
+- Works over TCP, UNIX sockets and standard pipes
+- Automatic worker replacement and safe PHP process destruction
+- Worker create/allocate/destroy timeouts
+- Max jobs per worker
+- Worker lifecycle management (controller) 
     - maxMemory (graceful stop)
     - TTL (graceful stop)
     - idleTTL (graceful stop)
     - execTTL (brute, max_execution_time)   
-- payload context and body
-- protocol, worker and job level error management (including PHP errors)
-- very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
-- integrations with Symfony, Laravel, Slim, CakePHP, Zend Expressive, Spiral
-- works on Windows
+- Payload context and body
+- Protocol, worker and job level error management (including PHP errors)
+- Very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
+- Integrations with Symfony, Laravel, Slim, CakePHP, Zend Expressive, Spiral
+- Works on Windows
 
 Installation:
 --------
