@@ -21,7 +21,7 @@ jobs:
       uses: shivammathur/setup-php@master
       with:
         php-version: ${{ matrix.php }}
-        extension-csv: dom
+        extensions: dom
         coverage: xdebug
 
     - name: Set up Go ${{ matrix.go }}
