@@ -46,6 +46,9 @@ jobs:
     - name: Syntax check only (lint)
       run: find ./src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
 
+    - name: Check PHP sources using phpstan
+      run: composer require phpstan/phpstan '~0.12' && php ./vendor/bin/phpstan analyze --level max --no-progress --ansi ./src
+
     - name: Get Composer Cache Directory # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
       id: composer-cache
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
