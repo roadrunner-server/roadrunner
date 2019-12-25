@@ -17,17 +17,17 @@ jobs:
     env:
       GO111MODULE: on
     steps:
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+
     - name: Set up PHP ${{ matrix.php }}
       uses: shivammathur/setup-php@v1
       with:
         php-version: ${{ matrix.php }}
         extensions: dom
         coverage: xdebug
-
-    - name: Set up Go ${{ matrix.go }}
-      uses: actions/setup-go@v1
-      with:
-        go-version: ${{ matrix.go }}
 
     - name: Check out code
       uses: actions/checkout@v2
