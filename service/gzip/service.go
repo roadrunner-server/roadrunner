@@ -1,8 +1,8 @@
 package gzip
 
 import (
-	rrhttp "github.com/spiral/roadrunner/service/http"
 	"github.com/NYTimes/gziphandler"
+	rrhttp "github.com/spiral/roadrunner/service/http"
 	"net/http"
 )
 

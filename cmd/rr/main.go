@@ -27,6 +27,7 @@ import (
 
 	// services (plugins)
 	"github.com/spiral/roadrunner/service/env"
+	"github.com/spiral/roadrunner/service/gzip"
 	"github.com/spiral/roadrunner/service/headers"
 	"github.com/spiral/roadrunner/service/health"
 	"github.com/spiral/roadrunner/service/http"
@@ -34,7 +35,6 @@ import (
 	"github.com/spiral/roadrunner/service/metrics"
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/spiral/roadrunner/service/static"
-	"github.com/spiral/roadrunner/service/gzip"
 
 	// additional commands and debug handlers
 	_ "github.com/spiral/roadrunner/cmd/rr/http"

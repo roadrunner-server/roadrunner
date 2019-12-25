@@ -15,7 +15,7 @@ import (
 )
 
 type testCfg struct {
-	gzip string
+	gzip    string
 	httpCfg string
 	static  string
 	target  string
@@ -69,6 +69,7 @@ func Test_Disabled(t *testing.T) {
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusInactive, st)
 }
+
 // func Test_Files(t *testing.T) {
 // 	logger, _ := test.NewNullLogger()
 // 	logger.SetLevel(logrus.DebugLevel)
