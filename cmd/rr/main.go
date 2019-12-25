@@ -34,6 +34,7 @@ import (
 	"github.com/spiral/roadrunner/service/metrics"
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/spiral/roadrunner/service/static"
+	"github.com/spiral/roadrunner/service/gzip"
 
 	// additional commands and debug handlers
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
@@ -49,6 +50,7 @@ func main() {
 	rr.Container.Register(static.ID, &static.Service{})
 	rr.Container.Register(limit.ID, &limit.Service{})
 	rr.Container.Register(health.ID, &health.Service{})
+	rr.Container.Register(gzip.ID, &gzip.Service{})
 
 	// you can register additional commands using cmd.CLI
 	rr.Execute()

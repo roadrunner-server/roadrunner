@@ -2,6 +2,7 @@ module github.com/spiral/roadrunner
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/NYTimes/gziphandler v1.1.1
 	github.com/StackExchange/wmi v0.0.0-20181212234831-e0a55b97c705 // indirect
 	github.com/buger/goterm v0.0.0-20181115115552-c206103e1f37
 	github.com/dustin/go-humanize v1.0.0

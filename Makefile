@@ -21,6 +21,7 @@ test:
 	go test -v -race -cover ./service/headers
 	go test -v -race -cover ./service/metrics
 	go test -v -race -cover ./service/health
+	go test -v -race -cover ./service/gzip
 lint:
 	go fmt ./...
 	golint ./...
