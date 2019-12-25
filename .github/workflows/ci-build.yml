@@ -2,59 +2,64 @@ name: CI
 
 on:
   push:
-    branches:
-    tags:
+    branches: '**'
+    tags: '**'
   pull_request:
 
 jobs:
-
   build:
-    name: Build
+    name: Execute tests (using PHP ${{ matrix.php }} and Go ${{ matrix.go }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
         php: [7.1, 7.2, 7.3, 7.4]
+        go: [1.12]
+    env:
+      GO111MODULE: on
     steps:
-
-    - name: Set up Go 1.12
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.12
-      id: go
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
-
-    - name: Install PHP
+    - name: Set up PHP ${{ matrix.php }}
       uses: shivammathur/setup-php@master
       with:
-        php-version: ${{ matrix.php  }}
+        php-version: ${{ matrix.php }}
         extension-csv: dom
         coverage: xdebug
 
-    - name: Debug if needed
-      run: |
-        export DEBUG=${DEBUG:-false}
-        if [[ "$DEBUG" == "true" ]]; then
-          env
-          go env
-        fi
-      env:
-        DEBUG: ${{ secrets.DEBUG }}
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go }}
+
+    - name: Check out code
+      uses: actions/checkout@v2
 
     - name: Show versions
-      run: |
-        php -v
-        composer -V
-        go version
+      run: php -v && composer -V && go version
 
-    - name: Install dependencies and download binary roadrunner
-      run: |
-        export GO111MODULE=on
-        go mod download
-        composer install --no-interaction --prefer-source
-        find src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
-        chmod +x bin/rr && bin/rr get-binary
+    - name: Debug if needed
+      if: secrets.DEBUG == 'true' || env.DEVUG == 'true'
+      run: env && go env
+
+    - name: Syntax check only (lint)
+      run: find ./src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
+
+    - name: Cache dependencies # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
+      uses: actions/cache@v1
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Install Composer 'hirak/prestissimo' package
+      run: composer global require hirak/prestissimo --update-no-dev
+
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-interaction --no-suggest # --prefer-source
+
+    - name: Install Go dependencies
+      run: go mod download
+
+    - name: Download binary roadrunner
+      run: php ./bin/rr get-binary
 
     - name: Run golang tests
       run: |
@@ -69,26 +74,25 @@ jobs:
         go test ./service/headers -race -v -coverprofile=headers.txt -covermode=atomic
         go test ./service/metrics -race -v -coverprofile=metrics.txt -covermode=atomic
         go test ./service/health -race -v -coverprofile=health.txt -covermode=atomic
+
     - name: Run code coverage
-      run: |
-        if [[ "$CODECOV_TOKEN" != "" ]]; then
-          curl https://codecov.io/bash -o codecov-bash
-          chmod +x codecov-bash
-          ./codecov-bash -f lib.txt
-          ./codecov-bash -f util.txt
-          ./codecov-bash -f service.txt
-          ./codecov-bash -f env.txt
-          ./codecov-bash -f rpc.txt
-          ./codecov-bash -f http.txt
-          ./codecov-bash -f static.txt
-          ./codecov-bash -f limit.txt
-          ./codecov-bash -f headers.txt
-          ./codecov-bash -f metrics.txt
-          ./codecov-bash -f health.txt
-        fi
+      if: secrets.CODECOV_TOKEN != ''
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      if:
+      run: |
+        curl https://codecov.io/bash -o codecov-bash
+        chmod +x codecov-bash
+        ./codecov-bash -f lib.txt
+        ./codecov-bash -f util.txt
+        ./codecov-bash -f service.txt
+        ./codecov-bash -f env.txt
+        ./codecov-bash -f rpc.txt
+        ./codecov-bash -f http.txt
+        ./codecov-bash -f static.txt
+        ./codecov-bash -f limit.txt
+        ./codecov-bash -f headers.txt
+        ./codecov-bash -f metrics.txt
+        ./codecov-bash -f health.txt
 
   image:
     name: Build docker image
