@@ -1,0 +1,9 @@
+.dockerignore
+.git
+.gitignore
+.editorconfig
+.github
+/src
+/tests
+/bin
+composer.json
