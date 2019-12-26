@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Spiral\RoadRunner;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -29,12 +30,13 @@ class PSR7Client
     /** @var StreamFactoryInterface */
     private $streamFactory;
 
-    /*** @var UploadedFileFactoryInterface */
+    /** @var UploadedFileFactoryInterface */
     private $uploadsFactory;
 
+    /** @var mixed[] */
     private $originalServer = [];
 
-    /** @var array Valid values for HTTP protocol version */
+    /** @var string[] Valid values for HTTP protocol version */
     private static $allowedVersions = ['1.0', '1.1', '2',];
 
     /**
@@ -127,8 +129,8 @@ class PSR7Client
      * Returns altered copy of _SERVER variable. Sets ip-address,
      * request-time and other values.
      *
-     * @param array $ctx
-     * @return array
+     * @param mixed[] $ctx
+     * @return mixed[]
      */
     protected function configureServer(array $ctx): array
     {
@@ -156,9 +158,9 @@ class PSR7Client
     /**
      * Wraps all uploaded files with UploadedFile.
      *
-     * @param array $files
+     * @param array[] $files
      *
-     * @return array
+     * @return UploadedFileInterface[]|mixed[]
      */
     private function wrapUploads($files): array
     {

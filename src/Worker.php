@@ -66,7 +66,7 @@ class Worker
         }
 
         if ($flags & Relay::PAYLOAD_ERROR) {
-            return new \Error($body);
+            return new \Error((string) $body);
         }
 
         return $body;
@@ -83,13 +83,13 @@ class Worker
      */
     public function send(string $payload = null, string $header = null): void
     {
-        if (is_null($header)) {
-            $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
+        if ($header === null) {
+            $this->relay->send('', Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
         } else {
             $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_RAW);
         }
 
-        $this->relay->send($payload, Relay::PAYLOAD_RAW);
+        $this->relay->send((string) $payload, Relay::PAYLOAD_RAW);
     }
 
     /**

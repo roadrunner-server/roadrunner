@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunner\Diactoros;
 
+use RuntimeException;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Stream;
@@ -17,10 +18,16 @@ final class StreamFactory implements StreamFactoryInterface
 {
     /**
      * @inheritdoc
+     * @throws RuntimeException
      */
     public function createStream(string $content = ''): StreamInterface
     {
-        $resource = fopen('php://temp', 'r+');
+        $resource = fopen('php://temp', 'rb+');
+
+        if (! \is_resource($resource)) {
+            throw new RuntimeException('Cannot create stream');
+        }
+
         fwrite($resource, $content);
         rewind($resource);
         return $this->createStreamFromResource($resource);
@@ -29,9 +36,14 @@ final class StreamFactory implements StreamFactoryInterface
     /**
      * @inheritdoc
      */
-    public function createStreamFromFile(string $file, string $mode = 'r'): StreamInterface
+    public function createStreamFromFile(string $file, string $mode = 'rb'): StreamInterface
     {
         $resource = fopen($file, $mode);
+
+        if (! \is_resource($resource)) {
+            throw new RuntimeException('Cannot create stream');
+        }
+
         return $this->createStreamFromResource($resource);
     }
 

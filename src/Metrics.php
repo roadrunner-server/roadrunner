@@ -31,13 +31,7 @@ final class Metrics implements MetricsInterface
     }
 
     /**
-     * Add collector value. Fallback to appropriate method of related collector.
-     *
-     * @param string $name
-     * @param float  $value
-     * @param array  $labels
-     *
-     * @throws MetricException
+     * @inheritDoc
      */
     public function add(string $name, float $value, array $labels = []): void
     {
@@ -49,13 +43,7 @@ final class Metrics implements MetricsInterface
     }
 
     /**
-     * Subtract the collector value, only for gauge collector.
-     *
-     * @param string $name
-     * @param float  $value
-     * @param array  $labels
-     *
-     * @throws MetricException
+     * @inheritDoc
      */
     public function sub(string $name, float $value, array $labels = []): void
     {
@@ -67,13 +55,7 @@ final class Metrics implements MetricsInterface
     }
 
     /**
-     * Observe collector value, only for histogram and summary collectors.
-     *
-     * @param string $name
-     * @param float  $value
-     * @param array  $labels
-     *
-     * @throws MetricException
+     * @inheritDoc
      */
     public function observe(string $name, float $value, array $labels = []): void
     {
@@ -85,13 +67,7 @@ final class Metrics implements MetricsInterface
     }
 
     /**
-     * Set collector value, only for gauge collector.
-     *
-     * @param string $name
-     * @param float  $value
-     * @param array  $labels
-     *
-     * @throws MetricException
+     * @inheritDoc
      */
     public function set(string $name, float $value, array $labels = []): void
     {
