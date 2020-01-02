@@ -24,7 +24,6 @@ package main
 
 import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/service/log"
 
 	// services (plugins)
 	"github.com/spiral/roadrunner/service/env"
@@ -32,6 +31,7 @@ import (
 	"github.com/spiral/roadrunner/service/health"
 	"github.com/spiral/roadrunner/service/http"
 	"github.com/spiral/roadrunner/service/limit"
+	"github.com/spiral/roadrunner/service/log"
 	"github.com/spiral/roadrunner/service/metrics"
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/spiral/roadrunner/service/static"
@@ -49,8 +49,8 @@ func main() {
 	rr.Container.Register(headers.ID, &headers.Service{})
 	rr.Container.Register(static.ID, &static.Service{})
 	rr.Container.Register(limit.ID, &limit.Service{})
-	rr.Container.Register(health.ID, &health.Service{})
 	rr.Container.Register(log.ID, &log.Service{})
+	rr.Container.Register(health.ID, &health.Service{})
 
 	// you can register additional commands using cmd.CLI
 	rr.Execute()
