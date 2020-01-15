@@ -27,6 +27,7 @@ import (
 
 	// services (plugins)
 	"github.com/spiral/roadrunner/service/env"
+	"github.com/spiral/roadrunner/service/gzip"
 	"github.com/spiral/roadrunner/service/headers"
 	"github.com/spiral/roadrunner/service/health"
 	"github.com/spiral/roadrunner/service/http"
@@ -49,6 +50,7 @@ func main() {
 	rr.Container.Register(static.ID, &static.Service{})
 	rr.Container.Register(limit.ID, &limit.Service{})
 	rr.Container.Register(health.ID, &health.Service{})
+	rr.Container.Register(gzip.ID, &gzip.Service{})
 
 	// you can register additional commands using cmd.CLI
 	rr.Execute()

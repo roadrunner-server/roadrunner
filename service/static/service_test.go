@@ -77,9 +77,9 @@ func Test_Files(t *testing.T) {
 				"command": "php ../../tests/http/client.php pid pipes",
 				"relay": "pipes",
 				"pool": {
-					"numWorkers": 1, 
+					"numWorkers": 1,
 					"allocateTimeout": 10000000,
-					"destroyTimeout": 10000000 
+					"destroyTimeout": 10000000
 				}
 			}
 	}`}))
