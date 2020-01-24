@@ -92,8 +92,8 @@ func (eb *errBuffer) Len() int {
 func (eb *errBuffer) Write(p []byte) (int, error) {
 	eb.mu.Lock()
 	eb.buf = append(eb.buf, p...)
-	eb.update <- nil
 	eb.mu.Unlock()
+	eb.update <- nil
 
 	return len(p), nil
 }
