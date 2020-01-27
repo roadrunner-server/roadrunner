@@ -67,7 +67,7 @@ func Test_FCGI_Service_Request_Uri(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"fcgi": {
-				"address": "tcp://0.0.0.0:6082"
+				"address": "tcp://0.0.0.0:6083"
 			},
 			"workers":{
 				"command": "php ../../tests/http/client.php request-uri pipes",
@@ -86,7 +86,7 @@ func Test_FCGI_Service_Request_Uri(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "0.0.0.0:6082")
+	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "0.0.0.0:6083")
 
 	fcgiHandler := gofast.NewHandler(
 		gofast.BasicParamsMap(gofast.BasicSession),
