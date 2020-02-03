@@ -170,6 +170,9 @@ func (r *Request) contentType() int {
 
 // uri fetches full uri from request in a form of string (including https scheme if TLS connection is enabled).
 func uri(r *http.Request) string {
+	if r.URL.Host != "" {
+		return r.URL.String()
+	}
 	if r.TLS != nil {
 		return fmt.Sprintf("https://%s%s", r.Host, r.URL.String())
 	}
