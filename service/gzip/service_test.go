@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"os"
 	"testing"
-	"time"
 )
 
 type testCfg struct {
