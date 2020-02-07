@@ -7,16 +7,13 @@ import (
 	"github.com/spiral/roadrunner/service"
 	rrhttp "github.com/spiral/roadrunner/service/http"
 	"github.com/stretchr/testify/assert"
-	"io/ioutil"
-	"net/http"
-	"os"
 	"testing"
 )
 
 type testCfg struct {
 	gzip    string
 	httpCfg string
-	static  string
+	//static  string
 	target  string
 }
 
@@ -34,24 +31,24 @@ func (cfg *testCfg) Unmarshal(out interface{}) error {
 	return json.Unmarshal([]byte(cfg.target), out)
 }
 
-func get(url string) (string, *http.Response, error) {
-	r, err := http.Get(url)
-	if err != nil {
-		return "", nil, err
-	}
-
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return "", nil, err
-	}
-
-	err = r.Body.Close()
-	if err != nil {
-		return "", nil, err
-	}
-
-	return string(b), r, err
-}
+//func get(url string) (string, *http.Response, error) {
+//	r, err := http.Get(url)
+//	if err != nil {
+//		return "", nil, err
+//	}
+//
+//	b, err := ioutil.ReadAll(r.Body)
+//	if err != nil {
+//		return "", nil, err
+//	}
+//
+//	err = r.Body.Close()
+//	if err != nil {
+//		return "", nil, err
+//	}
+//
+//	return string(b), r, err
+//}
 
 func Test_Disabled(t *testing.T) {
 	logger, _ := test.NewNullLogger()
@@ -115,9 +112,9 @@ func Test_Disabled(t *testing.T) {
 // 	//header should contain content-encoding:gzip because content-length > gziphandler.DefaultMinSize
 // }
 
-func tmpDir() string {
-	p := os.TempDir()
-	r, _ := json.Marshal(p)
-
-	return string(r)
-}
+//func tmpDir() string {
+//	p := os.TempDir()
+//	r, _ := json.Marshal(p)
+//
+//	return string(r)
+//}

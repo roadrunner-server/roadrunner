@@ -16,7 +16,7 @@ type Service struct {
 func (s *Service) Init(cfg *Config, r *rrhttp.Service) (bool, error) {
 	s.cfg = cfg
 
-	if s.cfg.Enable == false {
+	if !s.cfg.Enable {
 		return false, nil
 	}
 

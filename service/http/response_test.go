@@ -71,6 +71,11 @@ func TestNewResponse_Stream(t *testing.T) {
 		Context: []byte(`{"headers":{"key":["value"]},"status": 301}`),
 	})
 
+	// r is pointer, so, it might be nil
+	if r == nil {
+		t.Fatal("response is nil")
+	}
+
 	r.body = &bytes.Buffer{}
 	r.body.(*bytes.Buffer).WriteString("hello world")
 
@@ -90,6 +95,11 @@ func TestNewResponse_StreamError(t *testing.T) {
 		Context: []byte(`{"headers":{"key":["value"]},"status": 301}`),
 	})
 
+	// r is pointer, so, it might be nil
+	if r == nil {
+		t.Fatal("response is nil")
+	}
+
 	r.body = &bytes.Buffer{}
 	r.body.(*bytes.Buffer).WriteString("hello world")
 
@@ -102,7 +112,7 @@ func TestNewResponse_StreamError(t *testing.T) {
 
 func TestWrite_HandlesPush(t *testing.T) {
 	r, err := NewResponse(&roadrunner.Payload{
-		Context: []byte(`{"headers":{"http2-push":["/test.js"],"content-type":["text/html"]},"status": 200}`),
+		Context: []byte(`{"headers":{"Http2-Push":["/test.js"],"content-type":["text/html"]},"status": 200}`),
 	})
 
 	assert.NoError(t, err)
@@ -111,13 +121,13 @@ func TestWrite_HandlesPush(t *testing.T) {
 	w := &testWriter{h: http.Header(make(map[string][]string))}
 	assert.NoError(t, r.Write(w))
 
-	assert.Nil(t, w.h["http2-push"])
+	assert.Nil(t, w.h["Http2-Push"])
 	assert.Equal(t, []string{"/test.js"}, w.pushes)
 }
 
 func TestWrite_HandlesTrailers(t *testing.T) {
 	r, err := NewResponse(&roadrunner.Payload{
-		Context: []byte(`{"headers":{"trailer":["foo, bar", "baz"],"foo":["test"],"bar":["demo"]},"status": 200}`),
+		Context: []byte(`{"headers":{"Trailer":["foo, bar", "baz"],"foo":["test"],"bar":["demo"]},"status": 200}`),
 	})
 
 	assert.NoError(t, err)
@@ -126,9 +136,10 @@ func TestWrite_HandlesTrailers(t *testing.T) {
 	w := &testWriter{h: http.Header(make(map[string][]string))}
 	assert.NoError(t, r.Write(w))
 
-	assert.Nil(t, w.h["trailer"])
-	assert.Nil(t, w.h["foo"])
-	assert.Nil(t, w.h["baz"])
+	assert.Nil(t, w.h[trailerHeaderKey])
+	assert.Nil(t, w.h["foo"]) //nolint:golint,staticcheck
+	assert.Nil(t, w.h["baz"]) //nolint:golint,staticcheck
+
 	assert.Equal(t, "test", w.h.Get("Trailer:foo"))
 	assert.Equal(t, "demo", w.h.Get("Trailer:bar"))
 }
@@ -136,7 +147,7 @@ func TestWrite_HandlesTrailers(t *testing.T) {
 func TestWrite_HandlesHandlesWhitespacesInTrailer(t *testing.T) {
 	r, err := NewResponse(&roadrunner.Payload{
 		Context: []byte(
-			`{"headers":{"trailer":["foo\t,bar  ,    baz"],"foo":["a"],"bar":["b"],"baz":["c"]},"status": 200}`),
+			`{"headers":{"Trailer":["foo\t,bar  ,    baz"],"foo":["a"],"bar":["b"],"baz":["c"]},"status": 200}`),
 	})
 
 	assert.NoError(t, err)
