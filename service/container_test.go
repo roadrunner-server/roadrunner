@@ -457,7 +457,7 @@ func TestContainer_NoInit(t *testing.T) {
 }
 
 type testInitD struct {
-	c *testInitC
+	c *testInitC //nolint:golint,unused,structcheck
 }
 
 type DCfg struct {

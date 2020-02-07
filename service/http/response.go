@@ -33,7 +33,8 @@ func NewResponse(p *roadrunner.Payload) (*Response, error) {
 
 // Write writes response headers, status and body into ResponseWriter.
 func (r *Response) Write(w http.ResponseWriter) error {
-	p, h := handlePushHeaders(r.Headers)
+	// INFO map is the reference type in golang
+	p := handlePushHeaders(r.Headers)
 	if pusher, ok := w.(http.Pusher); ok {
 		for _, v := range p {
 			err := pusher.Push(v, nil)
@@ -43,7 +44,7 @@ func (r *Response) Write(w http.ResponseWriter) error {
 		}
 	}
 
-	h = handleTrailers(h)
+	handleTrailers(r.Headers)
 	for n, h := range r.Headers {
 		for _, v := range h {
 			w.Header().Add(n, v)
@@ -68,26 +69,24 @@ func (r *Response) Write(w http.ResponseWriter) error {
 	return nil
 }
 
-func handlePushHeaders(h map[string][]string) ([]string, map[string][]string) {
+func handlePushHeaders(h map[string][]string) []string {
 	var p []string
-	pushHeader, ok := h["http2-push"]
+	pushHeader, ok := h[http2pushHeaderKey]
 	if !ok {
-		return p, h
+		return p
 	}
 
-	for _, v := range pushHeader {
-		p = append(p, v)
-	}
+	p = append(p, pushHeader...)
 
-	delete(h, "http2-push")
+	delete(h, http2pushHeaderKey)
 
-	return p, h
+	return p
 }
 
-func handleTrailers(h map[string][]string) map[string][]string {
-	trailers, ok := h["trailer"]
+func handleTrailers(h map[string][]string) {
+	trailers, ok := h[trailerHeaderKey]
 	if !ok {
-		return h
+		return
 	}
 
 	for _, tr := range trailers {
@@ -101,7 +100,5 @@ func handleTrailers(h map[string][]string) map[string][]string {
 		}
 	}
 
-	delete(h, "trailer")
-
-	return h
+	delete(h, trailerHeaderKey)
 }

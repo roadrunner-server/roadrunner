@@ -1,10 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches: '**'
-    tags: '**'
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   build:
@@ -14,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [7.1, 7.2, 7.3, 7.4]
-        go: [1.12]
+        go: [1.12, 1.13]
     env:
       GO111MODULE: on
     steps:
@@ -102,6 +98,17 @@ jobs:
           ./codecov-bash -f metrics.txt
           ./codecov-bash -f health.txt
         fi
+
+  golangci-check:
+    name: runner / golangci-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+      - name: golangci-lint
+        uses: reviewdog/action-golangci-lint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
 
   image:
     name: Build docker image

@@ -247,7 +247,7 @@ func Test_SSL_Service_Push(t *testing.T) {
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
 
-	assert.Equal(t, "", r.Header.Get("http2-push"))
+	assert.Equal(t, "", r.Header.Get("Http2-Push"))
 
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
