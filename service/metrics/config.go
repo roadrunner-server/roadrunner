@@ -15,25 +15,45 @@ type Config struct {
 	Collect map[string]Collector
 }
 
+type NamedCollector struct {
+	// Name of the collector
+	Name string `json:"name"`
+
+	// Collector structure
+	Collector `json:"collector"`
+}
+
+// CollectorType represents prometheus collector types
+type CollectorType string
+
+const (
+	// Histogram type
+	Histogram CollectorType = "histogram"
+
+	// Gauge type
+	Gauge CollectorType = "gauge"
+
+	// Counter type
+	Counter CollectorType = "counter"
+
+	// Summary type
+	Summary CollectorType = "summary"
+)
+
 // Collector describes single application specific metric.
 type Collector struct {
 	// Namespace of the metric.
-	Namespace string
-
+	Namespace string `json:"namespace"`
 	// Subsystem of the metric.
-	Subsystem string
-
+	Subsystem string `json:"subsystem"`
 	// Collector type (histogram, gauge, counter, summary).
-	Type string
-
+	Type CollectorType `json:"type"`
 	// Help of collector.
-	Help string
-
+	Help string `json:"help"`
 	// Labels for vectorized metrics.
-	Labels []string
-
+	Labels []string `json:"labels"`
 	// Buckets for histogram metric.
-	Buckets []float64
+	Buckets []float64 `json:"buckets"`
 }
 
 // Hydrate configuration.
@@ -52,7 +72,7 @@ func (c *Config) getCollectors() (map[string]prometheus.Collector, error) {
 	for name, m := range c.Collect {
 		var collector prometheus.Collector
 		switch m.Type {
-		case "histogram":
+		case Histogram:
 			opts := prometheus.HistogramOpts{
 				Name:      name,
 				Namespace: m.Namespace,
@@ -66,7 +86,7 @@ func (c *Config) getCollectors() (map[string]prometheus.Collector, error) {
 			} else {
 				collector = prometheus.NewHistogram(opts)
 			}
-		case "gauge":
+		case Gauge:
 			opts := prometheus.GaugeOpts{
 				Name:      name,
 				Namespace: m.Namespace,
@@ -79,7 +99,7 @@ func (c *Config) getCollectors() (map[string]prometheus.Collector, error) {
 			} else {
 				collector = prometheus.NewGauge(opts)
 			}
-		case "counter":
+		case Counter:
 			opts := prometheus.CounterOpts{
 				Name:      name,
 				Namespace: m.Namespace,
@@ -92,7 +112,7 @@ func (c *Config) getCollectors() (map[string]prometheus.Collector, error) {
 			} else {
 				collector = prometheus.NewCounter(opts)
 			}
-		case "summary":
+		case Summary:
 			opts := prometheus.SummaryOpts{
 				Name:      name,
 				Namespace: m.Namespace,

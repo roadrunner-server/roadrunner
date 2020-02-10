@@ -1,6 +1,7 @@
-.idea/*
+.idea
 composer.lock
-vendor/
+vendor
 builds/
 tests/vendor/
-go.sum
+.rr.yaml
+psr-worker.php
