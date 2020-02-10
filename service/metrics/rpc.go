@@ -5,7 +5,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-type rpcServer struct{ svc *Service }
+type rpcServer struct {
+	svc *Service
+}
 
 // Metric represent single metric produced by the application.
 type Metric struct {
@@ -57,6 +59,7 @@ func (rpc *rpcServer) Add(m *Metric, ok *bool) (err error) {
 		return fmt.Errorf("collector `%s` does not support method `Add`", m.Name)
 	}
 
+	// RPC, set ok to true as return value. Need by rpc.Call reply argument
 	*ok = true
 	return nil
 }
@@ -88,6 +91,7 @@ func (rpc *rpcServer) Sub(m *Metric, ok *bool) (err error) {
 		return fmt.Errorf("collector `%s` does not support method `Sub`", m.Name)
 	}
 
+	// RPC, set ok to true as return value. Need by rpc.Call reply argument
 	*ok = true
 	return nil
 }
@@ -126,6 +130,96 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) (err error) {
 		return fmt.Errorf("collector `%s` does not support method `Observe`", m.Name)
 	}
 
+	// RPC, set ok to true as return value. Need by rpc.Call reply argument
+	*ok = true
+	return nil
+}
+// Register is used to register new collector in prometheus
+// THE TYPES ARE:
+// 	NamedCollector -> Collector with the name
+// 	bool -> RPC reply value
+// RETURNS:
+// 	error
+func (rpc *rpcServer) Register(c *NamedCollector, ok *bool) (err error) {
+	// MustRegister could panic, so, to return error and not shutdown whole app
+	// we recover and return error
+	defer func() {
+		if r, fail := recover().(error); fail {
+			err = r
+		}
+	}()
+
+	if rpc.svc.Collector(c.Name) != nil {
+		*ok = false
+		// alternative is to return error
+		// fmt.Errorf("tried to register existing collector with the name `%s`", c.Name)
+		return nil
+	}
+
+	var collector prometheus.Collector
+	switch c.Type {
+	case "histogram":
+		opts := prometheus.HistogramOpts{
+			Name:      c.Name,
+			Namespace: c.Namespace,
+			Subsystem: c.Subsystem,
+			Help:      c.Help,
+			Buckets:   c.Buckets,
+		}
+
+		if len(c.Labels) != 0 {
+			collector = prometheus.NewHistogramVec(opts, c.Labels)
+		} else {
+			collector = prometheus.NewHistogram(opts)
+		}
+	case "gauge":
+		opts := prometheus.GaugeOpts{
+			Name:      c.Name,
+			Namespace: c.Namespace,
+			Subsystem: c.Subsystem,
+			Help:      c.Help,
+		}
+
+		if len(c.Labels) != 0 {
+			collector = prometheus.NewGaugeVec(opts, c.Labels)
+		} else {
+			collector = prometheus.NewGauge(opts)
+		}
+	case "counter":
+		opts := prometheus.CounterOpts{
+			Name:      c.Name,
+			Namespace: c.Namespace,
+			Subsystem: c.Subsystem,
+			Help:      c.Help,
+		}
+
+		if len(c.Labels) != 0 {
+			collector = prometheus.NewCounterVec(opts, c.Labels)
+		} else {
+			collector = prometheus.NewCounter(opts)
+		}
+	case "summary":
+		opts := prometheus.SummaryOpts{
+			Name:      c.Name,
+			Namespace: c.Namespace,
+			Subsystem: c.Subsystem,
+			Help:      c.Help,
+		}
+
+		if len(c.Labels) != 0 {
+			collector = prometheus.NewSummaryVec(opts, c.Labels)
+		} else {
+			collector = prometheus.NewSummary(opts)
+		}
+
+	default:
+		return fmt.Errorf("unknown collector type `%s`", c.Type)
+
+	}
+
+	// that method might panic, we handle it by recover
+	rpc.svc.MustRegister(collector)
+
 	*ok = true
 	return nil
 }
@@ -158,6 +252,7 @@ func (rpc *rpcServer) Set(m *Metric, ok *bool) (err error) {
 		return fmt.Errorf("collector `%s` does not support method `Set`", m.Name)
 	}
 
+	// RPC, set ok to true as return value. Need by rpc.Call reply argument
 	*ok = true
 	return nil
 }

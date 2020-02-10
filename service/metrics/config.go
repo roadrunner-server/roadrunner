@@ -15,6 +15,14 @@ type Config struct {
 	Collect map[string]Collector
 }
 
+type NamedCollector struct {
+	// Name of the collector
+	Name string
+
+	// Collector structure
+	Collector
+}
+
 // Collector describes single application specific metric.
 type Collector struct {
 	// Namespace of the metric.

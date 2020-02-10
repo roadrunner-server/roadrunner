@@ -240,6 +240,58 @@ func Test_Sub_RPC_Vector(t *testing.T) {
 	assert.Contains(t, out, `user_gauge{section="first",type="core"} 90`)
 }
 
+func Test_Register_RPC(t *testing.T) {
+	client, c := setup(
+		t,
+		`"user_gauge":{
+				"type": "gauge",
+				"labels": ["type", "section"]
+			}`,
+		"2319",
+	)
+	defer c.Stop()
+	
+	var ok bool
+	assert.NoError(t, client.Call("metrics.Register", &NamedCollector{
+		Name:   "custom_histogram",
+		Collector: Collector{
+			Namespace: "test_histogram",
+			Subsystem: "test_histogram",
+			Type:      "histogram",
+			Help:      "test_histogram",
+			Labels:    nil,
+			Buckets:   nil,
+		},
+	}, &ok))
+	assert.True(t, ok)
+
+	var ok2 bool
+	// histogram does not support Add, should be an error
+	assert.Error(t, client.Call("metrics.Add", Metric{
+		Name:   "custom_histogram",
+	}, &ok2))
+	// ok should became false
+	assert.False(t, ok2)
+
+
+
+
+
+	// reset ok
+	//ok = false
+	//
+	//assert.NoError(t, client.Call("metrics.Sub", Metric{
+	//	Name:   "user_gauge",
+	//	Value:  10.0,
+	//	Labels: []string{"core", "first"},
+	//}, &ok))
+	//assert.True(t, ok)
+	//
+	//out, _, err := get("http://localhost:2119/metrics")
+	//assert.NoError(t, err)
+	//assert.Contains(t, out, `user_gauge{section="first",type="core"} 90`)
+}
+
 func Test_Sub_RPC_CollectorError(t *testing.T) {
 	client, c := setup(
 		t,
