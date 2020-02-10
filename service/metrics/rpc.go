@@ -134,13 +134,13 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) (err error) {
 	*ok = true
 	return nil
 }
-// Register is used to register new collector in prometheus
+// Declare is used to register new collector in prometheus
 // THE TYPES ARE:
 // 	NamedCollector -> Collector with the name
 // 	bool -> RPC reply value
 // RETURNS:
 // 	error
-func (rpc *rpcServer) Register(c *NamedCollector, ok *bool) (err error) {
+func (rpc *rpcServer) Declare(c *NamedCollector, ok *bool) (err error) {
 	// MustRegister could panic, so, to return error and not shutdown whole app
 	// we recover and return error
 	defer func() {

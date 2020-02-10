@@ -252,7 +252,7 @@ func Test_Register_RPC_Histogram(t *testing.T) {
 	defer c.Stop()
 
 	var ok bool
-	assert.NoError(t, client.Call("metrics.Register", &NamedCollector{
+	assert.NoError(t, client.Call("metrics.Declare", &NamedCollector{
 		Name: "custom_histogram",
 		Collector: Collector{
 			Namespace: "test_histogram",
@@ -296,7 +296,7 @@ func Test_Register_RPC_Gauge(t *testing.T) {
 	defer c.Stop()
 
 	var ok bool
-	assert.NoError(t, client.Call("metrics.Register", &NamedCollector{
+	assert.NoError(t, client.Call("metrics.Declare", &NamedCollector{
 		Name: "custom_gauge",
 		Collector: Collector{
 			Namespace: "test_gauge",
@@ -346,7 +346,7 @@ func Test_Register_RPC_Counter(t *testing.T) {
 	defer c.Stop()
 
 	var ok bool
-	assert.NoError(t, client.Call("metrics.Register", &NamedCollector{
+	assert.NoError(t, client.Call("metrics.Declare", &NamedCollector{
 		Name: "custom_counter",
 		Collector: Collector{
 			Namespace: "test_counter",
@@ -387,7 +387,7 @@ func Test_Register_RPC_Summary(t *testing.T) {
 	defer c.Stop()
 
 	var ok bool
-	assert.NoError(t, client.Call("metrics.Register", &NamedCollector{
+	assert.NoError(t, client.Call("metrics.Declare", &NamedCollector{
 		Name: "custom_summary",
 		Collector: Collector{
 			Namespace: "test_summary",
