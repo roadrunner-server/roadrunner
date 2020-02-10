@@ -240,7 +240,7 @@ func Test_Sub_RPC_Vector(t *testing.T) {
 	assert.Contains(t, out, `user_gauge{section="first",type="core"} 90`)
 }
 
-func Test_Register_RPC(t *testing.T) {
+func Test_Register_RPC_Histogram(t *testing.T) {
 	client, c := setup(
 		t,
 		`"user_gauge":{
@@ -250,17 +250,17 @@ func Test_Register_RPC(t *testing.T) {
 		"2319",
 	)
 	defer c.Stop()
-	
+
 	var ok bool
 	assert.NoError(t, client.Call("metrics.Register", &NamedCollector{
-		Name:   "custom_histogram",
+		Name: "custom_histogram",
 		Collector: Collector{
 			Namespace: "test_histogram",
 			Subsystem: "test_histogram",
-			Type:      "histogram",
+			Type:      Histogram,
 			Help:      "test_histogram",
 			Labels:    nil,
-			Buckets:   nil,
+			Buckets:   []float64{0.1, 0.2, 0.5},
 		},
 	}, &ok))
 	assert.True(t, ok)
@@ -268,28 +268,152 @@ func Test_Register_RPC(t *testing.T) {
 	var ok2 bool
 	// histogram does not support Add, should be an error
 	assert.Error(t, client.Call("metrics.Add", Metric{
-		Name:   "custom_histogram",
+		Name: "custom_histogram",
 	}, &ok2))
 	// ok should became false
 	assert.False(t, ok2)
 
+	out, _, err := get("http://localhost:2319/metrics")
+	assert.NoError(t, err)
+	assert.Contains(t, out, `TYPE test_histogram_test_histogram_custom_histogram histogram`)
 
+	// check buckets
+	assert.Contains(t, out, `test_histogram_test_histogram_custom_histogram_bucket{le="0.1"} 0`)
+	assert.Contains(t, out, `test_histogram_test_histogram_custom_histogram_bucket{le="0.2"} 0`)
+	assert.Contains(t, out, `test_histogram_test_histogram_custom_histogram_bucket{le="0.5"} 0`)
+}
 
+func Test_Register_RPC_Gauge(t *testing.T) {
+	// FOR register method, setup used just to init the rpc
+	client, c := setup(
+		t,
+		`"user_gauge":{
+				"type": "gauge",
+				"labels": ["type", "section"]
+			}`,
+		"2324",
+	)
+	defer c.Stop()
 
+	var ok bool
+	assert.NoError(t, client.Call("metrics.Register", &NamedCollector{
+		Name: "custom_gauge",
+		Collector: Collector{
+			Namespace: "test_gauge",
+			Subsystem: "test_gauge",
+			Type:      Gauge,
+			Help:      "test_gauge",
+			Labels:    []string{"type", "section"},
+			Buckets:   nil,
+		},
+	}, &ok))
+	assert.True(t, ok)
 
-	// reset ok
-	//ok = false
-	//
-	//assert.NoError(t, client.Call("metrics.Sub", Metric{
-	//	Name:   "user_gauge",
-	//	Value:  10.0,
-	//	Labels: []string{"core", "first"},
-	//}, &ok))
-	//assert.True(t, ok)
-	//
-	//out, _, err := get("http://localhost:2119/metrics")
-	//assert.NoError(t, err)
-	//assert.Contains(t, out, `user_gauge{section="first",type="core"} 90`)
+	var ok2 bool
+	// Add to custom_gauge
+	assert.NoError(t, client.Call("metrics.Add", Metric{
+		Name:   "custom_gauge",
+		Value:  100.0,
+		Labels: []string{"core", "first"},
+	}, &ok2))
+	// ok should became true
+	assert.True(t, ok2)
+
+	// Subtract from custom runtime metric
+	var ok3 bool
+	assert.NoError(t, client.Call("metrics.Sub", Metric{
+		Name:   "custom_gauge",
+		Value:  10.0,
+		Labels: []string{"core", "first"},
+	}, &ok3))
+	assert.True(t, ok3)
+
+	out, _, err := get("http://localhost:2324/metrics")
+	assert.NoError(t, err)
+	assert.Contains(t, out, `test_gauge_test_gauge_custom_gauge{section="first",type="core"} 90`)
+}
+
+func Test_Register_RPC_Counter(t *testing.T) {
+	// FOR register method, setup used just to init the rpc
+	client, c := setup(
+		t,
+		`"user_gauge":{
+				"type": "gauge",
+				"labels": ["type", "section"]
+			}`,
+		"2328",
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.NoError(t, client.Call("metrics.Register", &NamedCollector{
+		Name: "custom_counter",
+		Collector: Collector{
+			Namespace: "test_counter",
+			Subsystem: "test_counter",
+			Type:      Counter,
+			Help:      "test_counter",
+			Labels:    []string{"type", "section"},
+			Buckets:   nil,
+		},
+	}, &ok))
+	assert.True(t, ok)
+
+	var ok2 bool
+	// Add to custom_counter
+	assert.NoError(t, client.Call("metrics.Add", Metric{
+		Name:   "custom_counter",
+		Value:  100.0,
+		Labels: []string{"type2", "section2"},
+	}, &ok2))
+	// ok should became true
+	assert.True(t, ok2)
+
+	out, _, err := get("http://localhost:2328/metrics")
+	assert.NoError(t, err)
+	assert.Contains(t, out, `test_counter_test_counter_custom_counter{section="section2",type="type2"} 100`)
+}
+
+func Test_Register_RPC_Summary(t *testing.T) {
+	// FOR register method, setup used just to init the rpc
+	client, c := setup(
+		t,
+		`"user_gauge":{
+				"type": "gauge",
+				"labels": ["type", "section"]
+			}`,
+		"6666",
+	)
+	defer c.Stop()
+
+	var ok bool
+	assert.NoError(t, client.Call("metrics.Register", &NamedCollector{
+		Name: "custom_summary",
+		Collector: Collector{
+			Namespace: "test_summary",
+			Subsystem: "test_summary",
+			Type:      Summary,
+			Help:      "test_summary",
+			Labels:    nil,
+			Buckets:   nil,
+		},
+	}, &ok))
+	assert.True(t, ok)
+
+	var ok2 bool
+	// Add to custom_summary is not supported
+	assert.Error(t, client.Call("metrics.Add", Metric{
+		Name:   "custom_summary",
+		Value:  100.0,
+		Labels: []string{"type22", "section22"},
+	}, &ok2))
+	// ok should became false
+	assert.False(t, ok2)
+
+	out, _, err := get("http://localhost:6666/metrics")
+	assert.NoError(t, err)
+	assert.Contains(t, out, `test_summary_test_summary_custom_summary_sum 0`)
+	assert.Contains(t, out, `test_summary_test_summary_custom_summary_count 0`)
 }
 
 func Test_Sub_RPC_CollectorError(t *testing.T) {
@@ -673,6 +797,8 @@ func Test_Add_RPC_CollectorError(t *testing.T) {
 		Value:  100.0,
 		Labels: []string{"missing"},
 	}, &ok))
+
+	assert.False(t, ok)
 }
 
 func Test_Add_RPC_MetricError(t *testing.T) {
@@ -692,6 +818,8 @@ func Test_Add_RPC_MetricError(t *testing.T) {
 		Value:  100.0,
 		Labels: []string{"missing"},
 	}, &ok))
+
+	assert.False(t, ok)
 }
 
 func Test_Add_RPC_MetricError_2(t *testing.T) {
@@ -710,6 +838,8 @@ func Test_Add_RPC_MetricError_2(t *testing.T) {
 		Name:  "user_gauge",
 		Value: 100.0,
 	}, &ok))
+
+	assert.False(t, ok)
 }
 
 func Test_Add_RPC_MetricError_3(t *testing.T) {

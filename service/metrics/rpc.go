@@ -158,7 +158,7 @@ func (rpc *rpcServer) Register(c *NamedCollector, ok *bool) (err error) {
 
 	var collector prometheus.Collector
 	switch c.Type {
-	case "histogram":
+	case Histogram:
 		opts := prometheus.HistogramOpts{
 			Name:      c.Name,
 			Namespace: c.Namespace,
@@ -172,7 +172,7 @@ func (rpc *rpcServer) Register(c *NamedCollector, ok *bool) (err error) {
 		} else {
 			collector = prometheus.NewHistogram(opts)
 		}
-	case "gauge":
+	case Gauge:
 		opts := prometheus.GaugeOpts{
 			Name:      c.Name,
 			Namespace: c.Namespace,
@@ -185,7 +185,7 @@ func (rpc *rpcServer) Register(c *NamedCollector, ok *bool) (err error) {
 		} else {
 			collector = prometheus.NewGauge(opts)
 		}
-	case "counter":
+	case Counter:
 		opts := prometheus.CounterOpts{
 			Name:      c.Name,
 			Namespace: c.Namespace,
@@ -198,7 +198,7 @@ func (rpc *rpcServer) Register(c *NamedCollector, ok *bool) (err error) {
 		} else {
 			collector = prometheus.NewCounter(opts)
 		}
-	case "summary":
+	case Summary:
 		opts := prometheus.SummaryOpts{
 			Name:      c.Name,
 			Namespace: c.Namespace,
@@ -217,6 +217,8 @@ func (rpc *rpcServer) Register(c *NamedCollector, ok *bool) (err error) {
 
 	}
 
+	// add collector to sync.Map
+	rpc.svc.collectors.Store(c.Name, collector)
 	// that method might panic, we handle it by recover
 	rpc.svc.MustRegister(collector)
 
