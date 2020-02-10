@@ -38,6 +38,10 @@ func Sprintf(format string, args ...interface{}) string {
 }
 
 // Panicf prints `<white+hb>color formatted message to STDERR</reset>`.
-func Panicf(format string, args ...interface{}) {
-	fmt.Fprint(os.Stderr, Sprintf(format, args...))
+func Panicf(format string, args ...interface{}) error {
+	_, err := fmt.Fprint(os.Stderr, Sprintf(format, args...))
+	if err != nil {
+		return err
+	}
+	return nil
 }

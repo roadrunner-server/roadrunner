@@ -12,18 +12,18 @@ LDFLAGS="$LDFLAGS -X github.com/spiral/roadrunner/cmd/rr/cmd.BuildTime=$(date +%
 build(){
 	echo Packaging $1 Build
 	bdir=roadrunner-${RR_VERSION}-$2-$3
-	rm -rf builds/$bdir && mkdir -p builds/$bdir
+	rm -rf builds/"$bdir" && mkdir -p builds/"$bdir"
 	GOOS=$2 GOARCH=$3 ./build.sh
 
 	if [ "$2" == "windows" ]; then
-		mv rr builds/$bdir/rr.exe
+		mv rr builds/"$bdir"/rr.exe
 	else
-		mv rr builds/$bdir
+		mv rr builds/"$bdir"
 	fi
 
-	cp README.md builds/$bdir
-	cp CHANGELOG.md builds/$bdir
-	cp LICENSE builds/$bdir
+	cp README.md builds/"$bdir"
+	cp CHANGELOG.md builds/"$bdir"
+	cp LICENSE builds/"$bdir"
 	cd builds
 
 	if [ "$2" == "linux" ]; then
@@ -45,4 +45,4 @@ if [ "$1" == "all" ]; then
 	exit
 fi
 
-CGO_ENABLED=0 go build -ldflags "$LDFLAGS -extldflags '-static'" -o "$OD/rr" cmd/rr/main.go
+go build -o "$OD/rr" cmd/rr/main.go
