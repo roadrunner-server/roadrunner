@@ -89,7 +89,7 @@ func NewContainer(log logrus.FieldLogger) Container {
 	}
 }
 
-// Declare add new service to the container under given name.
+// Register add new service to the container under given name.
 func (c *container) Register(name string, service interface{}) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
