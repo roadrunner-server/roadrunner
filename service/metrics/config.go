@@ -17,10 +17,10 @@ type Config struct {
 
 type NamedCollector struct {
 	// Name of the collector
-	Name string
+	Name string `json:"name"`
 
 	// Collector structure
-	Collector
+	Collector `json:"collector"`
 }
 
 // CollectorType represents prometheus collector types
@@ -43,22 +43,17 @@ const (
 // Collector describes single application specific metric.
 type Collector struct {
 	// Namespace of the metric.
-	Namespace string
-
+	Namespace string `json:"namespace"`
 	// Subsystem of the metric.
-	Subsystem string
-
+	Subsystem string `json:"subsystem"`
 	// Collector type (histogram, gauge, counter, summary).
-	Type CollectorType
-
+	Type CollectorType `json:"type"`
 	// Help of collector.
-	Help string
-
+	Help string `json:"help"`
 	// Labels for vectorized metrics.
-	Labels []string
-
+	Labels []string `json:"labels"`
 	// Buckets for histogram metric.
-	Buckets []float64
+	Buckets []float64 `json:"buckets"`
 }
 
 // Hydrate configuration.
