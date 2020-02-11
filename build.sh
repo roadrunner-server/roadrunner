@@ -45,4 +45,4 @@ if [ "$1" == "all" ]; then
 	exit
 fi
 
-go build -o "$OD/rr" cmd/rr/main.go
+go build -ldflags "$LDFLAGS" -o "$OD/rr" cmd/rr/main.go
