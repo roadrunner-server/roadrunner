@@ -3,5 +3,5 @@ composer.lock
 vendor
 builds/
 tests/vendor/
-.rr.yaml
+.rr-sample.yaml
 psr-worker.php
