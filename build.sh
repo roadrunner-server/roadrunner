@@ -8,6 +8,8 @@ RR_VERSION=1.6.0
 # Hardcode some values to the core package
 LDFLAGS="$LDFLAGS -X github.com/spiral/roadrunner/cmd/rr/cmd.Version=${RR_VERSION}"
 LDFLAGS="$LDFLAGS -X github.com/spiral/roadrunner/cmd/rr/cmd.BuildTime=$(date +%FT%T%z)"
+# remove debug info from binary as well as string and symbol tables
+LDFLAGS="$LDFLAGS -s"
 
 build(){
 	echo Packaging $1 Build
