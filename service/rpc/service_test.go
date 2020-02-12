@@ -71,16 +71,16 @@ func Test_Serve_Client(t *testing.T) {
 	assert.NoError(t, s.Register("test", &testService{}))
 
 	go func() { assert.NoError(t, s.Serve()) }()
-	time.Sleep(time.Millisecond)
+	time.Sleep(time.Second)
 
 	client, err := s.Client()
 	assert.NotNil(t, client)
 	assert.NoError(t, err)
-	defer client.Close()
 
 	var resp string
 	assert.NoError(t, client.Call("test.Echo", "hello world", &resp))
 	assert.Equal(t, "hello world", resp)
+	assert.NoError(t, client.Close())
 }
 
 func TestSetEnv(t *testing.T) {
