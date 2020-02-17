@@ -1,9 +1,18 @@
 CHANGELOG
 =========
 
-UNRELEASED
-----------
-- added `Dockerfile` for building RR binary file by [@tarampampam](https://github.com/tarampampam) (closes [issue #218](https://github.com/spiral/roadrunner/issues/218))
+v1.6.1 (17.02.2020)
+-------------------
+- When you run ./rr server -d (debug mode), also pprof server will be launched on :6061 port (this is default golang port for pprof) with the default endpoints (see: https://golang.org/pkg/net/http/pprof/)
+- Added LDFLAGS "-s" to build.sh --> https://spiralscout.com/blog/golang-software-testing-tips
+
+v1.6.0 (11.02.2020)
+-------------------
+- Moved to GitHub Actions, thanks to @tarampampam
+- New GZIP handler, thanks to @wppd
+- Tests stabilization and fix REQUEST_URI for requests through FastCGI, thanks to @marliotto
+- Golang modules update and new RPC method to register metrics from the application, thanks to @48d90782
+- Deadlock on timer update in error buffer [bugfix], thanks to @camohob
 
 v1.5.3 (23.12.2019)
 -------------------
