@@ -24,6 +24,7 @@ package main
 
 import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
+	"github.com/spiral/roadrunner/service/reload"
 
 	// services (plugins)
 	"github.com/spiral/roadrunner/service/env"
@@ -51,6 +52,7 @@ func main() {
 	rr.Container.Register(limit.ID, &limit.Service{})
 	rr.Container.Register(health.ID, &health.Service{})
 	rr.Container.Register(gzip.ID, &gzip.Service{})
+	rr.Container.Register(reload.ID, &reload.Service{})
 
 	// you can register additional commands using cmd.CLI
 	rr.Execute()
