@@ -24,7 +24,6 @@ package main
 
 import (
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/service/reload"
 
 	// services (plugins)
 	"github.com/spiral/roadrunner/service/env"
@@ -34,6 +33,7 @@ import (
 	"github.com/spiral/roadrunner/service/http"
 	"github.com/spiral/roadrunner/service/limit"
 	"github.com/spiral/roadrunner/service/metrics"
+	"github.com/spiral/roadrunner/service/reload"
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/spiral/roadrunner/service/static"
 
