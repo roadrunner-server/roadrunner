@@ -3,7 +3,7 @@ cd $(dirname "${BASH_SOURCE[0]}")
 OD="$(pwd)"
 
 # Pushes application version into the build information.
-RR_VERSION=1.6.1
+RR_VERSION=1.6.2
 
 # Hardcode some values to the core package
 LDFLAGS="$LDFLAGS -X github.com/spiral/roadrunner/cmd/rr/cmd.Version=${RR_VERSION}"
@@ -29,12 +29,12 @@ build(){
 	cd builds
 
 	if [ "$2" == "linux" ]; then
-		tar -zcf $bdir.tar.gz $bdir
+		tar -zcf "$bdir".tar.gz "$bdir"
 	else
-		zip -r -q $bdir.zip $bdir
+		zip -r -q "$bdir".zip "$bdir"
 	fi
 
-	rm -rf $bdir
+	rm -rf "$bdir"
 	cd ..
 }
 

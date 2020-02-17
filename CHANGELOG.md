@@ -1,6 +1,9 @@
 CHANGELOG
 =========
 
+v1.6.2 (24.02.2020)
+-------------------
+
 v1.6.1 (17.02.2020)
 -------------------
 - When you run ./rr server -d (debug mode), also pprof server will be launched on :6061 port (this is default golang port for pprof) with the default endpoints (see: https://golang.org/pkg/net/http/pprof/)
