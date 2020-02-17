@@ -38,7 +38,6 @@ func stopHandler(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	defer client.Close()
 
 	util.Printf("<green>Stopping RoadRunner</reset>: ")
 
@@ -48,5 +47,5 @@ func stopHandler(cmd *cobra.Command, args []string) error {
 	}
 
 	util.Printf("<green+hb>done</reset>\n")
-	return nil
+	return client.Close()
 }
