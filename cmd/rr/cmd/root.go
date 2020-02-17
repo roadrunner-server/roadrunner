@@ -26,6 +26,9 @@ import (
 	"github.com/spiral/roadrunner/cmd/util"
 	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/limit"
+	"log"
+	"net/http"
+	"net/http/pprof"
 	"os"
 )
 
@@ -116,7 +119,28 @@ func init() {
 				})
 			}
 		}
+
+		// if debug --> also run pprof service
+		if Debug {
+			go runDebugServer()
+		}
 	})
+}
+func runDebugServer() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/debug/pprof/", pprof.Index)
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+	srv := http.Server{
+		Addr:    ":6061",
+		Handler: mux,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func configureLogger(format string) {
