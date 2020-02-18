@@ -2,11 +2,12 @@ package reload
 
 import (
 	"errors"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
 	"sync"
-	"time"
+	"syscall"
 )
 
 // Config is a Reload configuration point.
@@ -80,6 +81,12 @@ func RegexFilterHook(r *regexp.Regexp, useFullPath bool) FilterFileHookFunc {
 	}
 }
 
+func SetFileHooks(fileHook ...FilterFileHookFunc) Options {
+	return func(watcher *Watcher) {
+		watcher.filterHooks = fileHook
+	}
+}
+
 // An Event describes an event that is received when files or directory
 // changes occur. It includes the os.FileInfo of the changed file or
 // directory and the type of event that's occurred and the full path of the file.
@@ -99,9 +106,9 @@ type Watcher struct {
 
 	workingDir         string
 	maxFileWatchEvents int
-	ops                map[Op]struct{} // Op filtering.
-	files              map[string]string //files by service, http, grpc, etc..
-	ignored            map[string]string //ignored files or directories
+	operations         map[Op]struct{}        // Op filtering.
+	files              map[string]os.FileInfo //files by service, http, grpc, etc..
+	ignored            map[string]string      //ignored files or directories
 }
 
 // Options is used to set Watcher Options
@@ -115,6 +122,9 @@ func NewWatcher(options ...Options) (*Watcher, error) {
 
 	w := &Watcher{
 		workingDir: dir,
+		operations: make(map[Op]struct{}),
+		files:      make(map[string]os.FileInfo),
+		ignored:    make(map[string]string),
 	}
 
 	for _, option := range options {
@@ -137,9 +147,16 @@ func SetMaxFileEvents(events int) Options {
 
 }
 
+// SetDefaultRootPath is used to set own root path for adding files
+func SetDefaultRootPath(path string) Options {
+	return func(watcher *Watcher) {
+		watcher.workingDir = path
+	}
+}
+
 // Add
-// name will be
-func (w *Watcher) Add(name string) error {
+// name will be current working dir
+func (w *Watcher) AddSingle(name string) error {
 	name, err := filepath.Abs(name)
 	if err != nil {
 
@@ -154,14 +171,20 @@ func (w *Watcher) Add(name string) error {
 
 	// small optimization for smallvector
 	fileList := make(map[string]os.FileInfo, 10)
-	err = w.addDirectoryContent(" ", fileList)
+	err = w.addDirectoryContent(name, fileList)
 	if err != nil {
 		return err
 	}
 
+	for k, v := range fileList {
+		w.files[k] = v
+	}
+
+	return nil
 
 }
 
+// pass map from outside
 func (w *Watcher) addDirectoryContent(name string, filelist map[string]os.FileInfo) error {
 	fileInfo, err := os.Stat(name)
 	if err != nil {
@@ -175,44 +198,41 @@ func (w *Watcher) addDirectoryContent(name string, filelist map[string]os.FileIn
 		return nil
 	}
 
+	fileInfoList, err := ioutil.ReadDir(name)
+	if err != nil {
+		return err
+	}
 
+	// recursive calls are slow in compare to goto
+	// so, we will add files with goto pattern
 
+outer:
+	for i := 0; i < len(fileInfoList); i++ {
+		var path string
+		// BCE check elimination
+		// https://go101.org/article/bounds-check-elimination.html
+		if len(fileInfoList) != 0 && len(fileInfoList) >= i {
+			path = filepath.Join(name, fileInfoList[i].Name())
+		} else {
+			return errors.New("file info list len")
+		}
 
+		// if file in ignored --> continue
+		if _, ignored := w.ignored[name]; ignored {
+			continue
+		}
+
+		for _, fh := range w.filterHooks {
+			err := fh(fileInfo, path)
+			if err != nil {
+				// if err is not nil, move to the start of the cycle since the path not match the hook
+				continue outer
+			}
+		}
+
+		filelist[path] = fileInfo
+
+	}
+
+	return nil
 }
-
-func (w *Watcher) search(map[string]os.FileInfo) error {
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

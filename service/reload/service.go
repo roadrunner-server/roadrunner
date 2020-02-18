@@ -1,6 +1,9 @@
 package reload
 
-import "github.com/spiral/roadrunner/service"
+import (
+	"github.com/spiral/roadrunner/service"
+	"os"
+)
 
 // ID contains default service name.
 const ID = "reload"
@@ -25,12 +28,16 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 }
 
 func (s *Service) Serve() error {
-	w, err := NewWatcher(s.reloadConfig, SetMaxFileEvents(100))
+	w, err := NewWatcher(SetMaxFileEvents(100))
 	if err != nil {
 		return err
 	}
 
-	_ = w
+	name , _ := os.Getwd()
+
+	w.AddSingle(name)
+
+	println("test")
 
 	return nil
 }
