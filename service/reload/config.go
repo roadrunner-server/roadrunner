@@ -15,9 +15,11 @@ type Config struct {
 }
 
 type ServiceConfig struct {
-	// Watch is per-service specific files to watch
-	Watch []string
-	// Dirs is per-service specific dirs which will be combined with Watch
+	// Recursive is options to use nested files from root folder
+	Recursive bool
+	// Patterns is per-service specific files to watch
+	Patterns []string
+	// Dirs is per-service specific dirs which will be combined with Patterns
 	Dirs  []string
 	// Ignore is set of files which would not be watched
 	Ignore []string
