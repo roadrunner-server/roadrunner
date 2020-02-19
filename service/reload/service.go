@@ -3,6 +3,7 @@ package reload
 import (
 	"github.com/spiral/roadrunner/service"
 	"os"
+	"time"
 )
 
 // ID contains default service name.
@@ -10,18 +11,12 @@ const ID = "reload"
 
 type Service struct {
 	reloadConfig *Config
+	container service.Container
 }
 
 // Init controller service
 func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
-	// mount Services to designated services
-	//for id, watcher := range cfg.Controllers(s.throw) {
-	//	svc, _ := c.Get(id)
-	//	if ctrl, ok := svc.(controllable); ok {
-	//		ctrl.Attach(watcher)
-	//	}
-	//}
-
+	s.container = c
 	s.reloadConfig = cfg
 
 	return true, nil
@@ -33,11 +28,52 @@ func (s *Service) Serve() error {
 		return err
 	}
 
-	name , _ := os.Getwd()
+	name , err := os.Getwd()
+	if err != nil {
+		return err
+	}
 
-	w.AddSingle(name)
+	err = w.AddSingle(name)
+	if err != nil {
+		return err
+	}
 
-	println("test")
+	go func() {
+		err = w.StartPolling(time.Second)
+		if err != nil {
+
+		}
+	}()
+
+
+
+	// read events and restart corresponding services
+
+
+	for {
+		select {
+		case e := <- w.Event:
+			println(e.Name())
+		}
+	}
+	//for e = range w.Event {
+	//
+	//	println("event")
+	//	// todo use status
+	//	//svc, _ := s.container.Get("http")
+	//	//if svc != nil {
+	//	//	if srv, ok := svc.(service.Service); ok {
+	//	//		srv.Stop()
+	//	//		err = srv.Serve()
+	//	//		if err != nil {
+	//	//			return err
+	//	//		}
+	//	//	}
+	//	//}
+	//
+	//	//println("event skipped due to service is nil")
+	//}
+
 
 	return nil
 }
