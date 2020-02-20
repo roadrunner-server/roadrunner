@@ -190,9 +190,8 @@ func (w *Watcher) AddRecursive(serviceName string, relPath string) error {
 	}
 
 	fullPath := path.Join(workDirAbs, relPath)
-	filesList := make(map[string]os.FileInfo, 100)
 
-	err = w.retrieveFilesRecursive(serviceName, fullPath, filesList)
+	filesList, err := w.retrieveFilesRecursive(serviceName, fullPath)
 	if err != nil {
 		return err
 	}
@@ -310,28 +309,7 @@ func (w *Watcher) StartPolling(duration time.Duration) error {
 // this is blocking operation
 func (w *Watcher) waitEvent(d time.Duration) error {
 	for {
-		// done lets the inner polling cycle loop know when the
-		// current cycle's method has finished executing.
-		//done := make(chan struct{})
-
-		// Any events that are found are first piped to evt before
-		// being sent to the main Event channel.
-		//evt := make(chan Event)
-
-		// Retrieve the file list for all watched file's and dirs.
-		//fileList := w.files
-
-		// cancel can be used to cancel the current event polling function.
 		cancel := make(chan struct{})
-
-		// Look for events.
-		//go func() {
-		//	w.pollEvents(w.files, evt, cancel)
-		//	done <- struct{}{}
-		//}()
-
-		// numEvents holds the number of events for the current cycle.
-		//numEvents := 0
 
 		ticker := time.NewTicker(d)
 		for {
@@ -345,9 +323,15 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 				//w.mu.Lock()
 
 				for serviceName, config := range w.watcherConfigs {
-					fileList, _ := w.retrieveFileList(serviceName, config)
-					w.pollEvents(config.serviceName, fileList, cancel)
+					go func(sn string, c WatcherConfig) {
+						w.wg.Add(1)
+						fileList, _ := w.retrieveFileList(sn, c)
+						w.pollEvents(c.serviceName, fileList, cancel)
+						w.wg.Done()
+					}(serviceName, config)
 				}
+
+				w.wg.Wait()
 
 				//w.mu.Unlock()
 			default:
@@ -358,34 +342,25 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 }
 
 func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (map[string]os.FileInfo, error) {
+	fileList := make(map[string]os.FileInfo)
 	if config.recursive {
-		fileList := make(map[string]os.FileInfo)
-		err := w.retrieveFilesRecursive(serviceName, w.workingDir, fileList)
-		if err != nil {
-			if os.IsNotExist(err) {
-				w.mu.Unlock()
-				// todo path error
-				_, ok := err.(*os.PathError)
-				if ok {
-					// todo
-					//err = w.RemoveRecursive(path)
-					if err != nil {
-						return nil, err
-					}
-				}
-				w.mu.Lock()
-			} else {
-				w.errors <- err
+		// walk through directories recursively
+		for _, dir := range config.directories {
+			// full path is workdir/relative_path
+			fullPath := path.Join(w.workingDir, dir)
+			list, err := w.retrieveFilesRecursive(serviceName, fullPath)
+			if err != nil {
+				return nil, err
 			}
-		}
 
-		for k, v := range fileList {
-			fileList[k] = v
+			for k, v := range list {
+				fileList[k] = v
+			}
+			return fileList, nil
 		}
-		return fileList, nil
 	}
 
-	fileList := make(map[string]os.FileInfo)
+
 	for _, dir := range config.directories {
 		absPath, err := filepath.Abs(w.workingDir)
 		if err != nil {
@@ -441,20 +416,22 @@ func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (ma
 //	return nil
 //}
 
-func (w *Watcher) retrieveFilesRecursive(serviceName, root string, fileList map[string]os.FileInfo) error {
-	return filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+func (w *Watcher) retrieveFilesRecursive(serviceName, root string) (map[string]os.FileInfo, error) {
+	fileList := make(map[string]os.FileInfo)
+
+	return fileList, filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
-		// filename, pattern
-		err = w.watcherConfigs[serviceName].filterHooks(info.Name(), path)
-		if err == ErrorSkip {
-			return nil
-		}
-		if err != nil {
-			return err
-		}
+		// filename, pattern TODO
+		//err = w.watcherConfigs[serviceName].filterHooks(info.Name(), path)
+		//if err == ErrorSkip {
+		//	return nil
+		//}
+		//if err != nil {
+		//	return err
+		//}
 
 		// If path is ignored and it's a directory, skip the directory. If it's
 		// ignored and it's a single file, skip the file.
@@ -481,34 +458,34 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo, c
 	removes := make(map[string]os.FileInfo)
 
 	// Check for removed files.
-	for path, info := range w.watcherConfigs[serviceName].files {
-		if _, found := files[path]; !found {
-			removes[path] = info
+	for pth, info := range w.watcherConfigs[serviceName].files {
+		if _, found := files[pth]; !found {
+			removes[pth] = info
 		}
 	}
 
 	// Check for created files, writes and chmods.
-	for path, info := range files {
-		oldInfo, found := w.watcherConfigs[serviceName].files[path]
+	for pth, info := range files {
+		oldInfo, found := w.watcherConfigs[serviceName].files[pth]
 		if !found {
 			// A file was created.
-			creates[path] = info
+			creates[pth] = info
 			continue
 		}
 		if oldInfo.ModTime() != info.ModTime() {
-			w.watcherConfigs[serviceName].files[path] = info
+			w.watcherConfigs[serviceName].files[pth] = info
 			select {
 			case <-cancel:
 				return
-			case w.Event <- Event{Write, path, path, info, "http"}:
+			case w.Event <- Event{Write, pth, pth, info, serviceName}:
 			}
 		}
 		if oldInfo.Mode() != info.Mode() {
-			w.watcherConfigs[serviceName].files[path] = info
+			w.watcherConfigs[serviceName].files[pth] = info
 			select {
 			case <-cancel:
 				return
-			case w.Event <- Event{Chmod, path, path, info, "http"}:
+			case w.Event <- Event{Chmod, pth, pth, info, serviceName}:
 			}
 		}
 	}

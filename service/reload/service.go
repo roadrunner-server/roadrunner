@@ -31,7 +31,7 @@ func (s *Service) Serve() error {
 
 	var err error
 	s.watcher, err = NewWatcher([]WatcherConfig{WatcherConfig{
-		serviceName: "test",
+		serviceName: "test_service_name",
 		recursive:   false,
 		directories: []string{"/service"},
 		filterHooks: func(filename, pattern string) error {
@@ -49,14 +49,14 @@ func (s *Service) Serve() error {
 
 
 
-	s.watcher.AddSingle("test", "/service")
+	s.watcher.AddSingle("test_service_name", "/service")
 
 
 	go func() {
 		for {
 			select {
 			case e := <-s.watcher.Event:
-				println(e.Name())
+				println(e.Type)
 			}
 		}
 		//for e = range w.Event {
