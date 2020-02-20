@@ -23,6 +23,12 @@ const (
 	EventPoolDestruct
 )
 
+// Controllable defines the ability to attach rr controller.
+type Controllable interface {
+	// Server represents RR server
+	Server() *Server
+}
+
 // Server manages pool creation and swapping.
 type Server struct {
 	// configures server, pool, cmd creation and factory.

@@ -1,6 +1,9 @@
 package reload
 
-import "github.com/spiral/roadrunner/service"
+import (
+	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service"
+)
 
 // Config is a Reload configuration point.
 type Config struct {
@@ -20,11 +23,13 @@ type ServiceConfig struct {
 	// Patterns is per-service specific files to watch
 	Patterns []string
 	// Dirs is per-service specific dirs which will be combined with Patterns
-	Dirs  []string
+	Dirs []string
 	// Ignore is set of files which would not be watched
 	Ignore []string
-}
 
+	// service is a link to service to restart
+	service *roadrunner.Controllable
+}
 
 // Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
 func (c *Config) Hydrate(cfg service.Config) error {
@@ -40,4 +45,3 @@ func (c *Config) InitDefaults() error {
 
 	return nil
 }
-

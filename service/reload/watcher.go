@@ -87,6 +87,7 @@ type Watcher struct {
 	operations map[Op]struct{} // Op filtering.
 
 	// config for each service
+	// need pointer here to assign files
 	watcherConfigs map[string]WatcherConfig
 }
 
@@ -125,7 +126,25 @@ func NewWatcher(configs []WatcherConfig, options ...Options) (*Watcher, error) {
 		return nil, NoWalkerConfig
 	}
 
+	err = w.initFs()
+	if err != nil {
+		return nil, err
+	}
+
 	return w, nil
+}
+
+func (w *Watcher) initFs() error {
+	for srvName, config := range w.watcherConfigs {
+		fileList, err := w.retrieveFileList(srvName, config)
+		if err != nil {
+			return err
+		}
+		tmp := w.watcherConfigs[srvName]
+		tmp.files = fileList
+		w.watcherConfigs[srvName] = tmp
+	}
+	return nil
 }
 
 func (w *Watcher) AddWatcherConfig(config WatcherConfig) {
@@ -310,7 +329,6 @@ func (w *Watcher) StartPolling(duration time.Duration) error {
 func (w *Watcher) waitEvent(d time.Duration) error {
 	for {
 		cancel := make(chan struct{})
-
 		ticker := time.NewTicker(d)
 		for {
 			select {
@@ -324,16 +342,10 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 
 				for serviceName, config := range w.watcherConfigs {
 					go func(sn string, c WatcherConfig) {
-						w.wg.Add(1)
 						fileList, _ := w.retrieveFileList(sn, c)
 						w.pollEvents(c.serviceName, fileList, cancel)
-						w.wg.Done()
 					}(serviceName, config)
 				}
-
-				w.wg.Wait()
-
-				//w.mu.Unlock()
 			default:
 
 			}
@@ -342,6 +354,8 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 }
 
 func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (map[string]os.FileInfo, error) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
 	fileList := make(map[string]os.FileInfo)
 	if config.recursive {
 		// walk through directories recursively
@@ -359,7 +373,6 @@ func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (ma
 			return fileList, nil
 		}
 	}
-
 
 	for _, dir := range config.directories {
 		absPath, err := filepath.Abs(w.workingDir)
@@ -466,6 +479,9 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo, c
 
 	// Check for created files, writes and chmods.
 	for pth, info := range files {
+		if info.IsDir() {
+			continue
+		}
 		oldInfo, found := w.watcherConfigs[serviceName].files[pth]
 		if !found {
 			// A file was created.
@@ -491,46 +507,46 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo, c
 	}
 
 	// Check for renames and moves.
-	for path1, info1 := range removes {
-		for path2, info2 := range creates {
-			if sameFile(info1, info2) {
-				e := Event{
-					Op:       Move,
-					Path:     path2,
-					OldPath:  path1,
-					FileInfo: info1,
-				}
-				// If they are from the same directory, it's a rename
-				// instead of a move event.
-				if filepath.Dir(path1) == filepath.Dir(path2) {
-					e.Op = Rename
-				}
-
-				delete(removes, path1)
-				delete(creates, path2)
-
-				select {
-				case <-cancel:
-					return
-				case w.Event <- e:
-				}
-			}
-		}
-	}
-
-	// Send all the remaining create and remove events.
-	for path, info := range creates {
-		select {
-		case <-cancel:
-			return
-		case w.Event <- Event{Create, path, "", info, "http"}:
-		}
-	}
-	for path, info := range removes {
-		select {
-		case <-cancel:
-			return
-		case w.Event <- Event{Remove, path, path, info, "http"}:
-		}
-	}
+	//for path1, info1 := range removes {
+	//	for path2, info2 := range creates {
+	//		if sameFile(info1, info2) {
+	//			e := Event{
+	//				Op:       Move,
+	//				Path:     path2,
+	//				OldPath:  path1,
+	//				FileInfo: info1,
+	//			}
+	//			// If they are from the same directory, it's a rename
+	//			// instead of a move event.
+	//			if filepath.Dir(path1) == filepath.Dir(path2) {
+	//				e.Op = Rename
+	//			}
+	//
+	//			delete(removes, path1)
+	//			delete(creates, path2)
+	//
+	//			select {
+	//			case <-cancel:
+	//				return
+	//			case w.Event <- e:
+	//			}
+	//		}
+	//	}
+	//}
+	//
+	////Send all the remaining create and remove events.
+	//for pth, info := range creates {
+	//	select {
+	//	case <-cancel:
+	//		return
+	//	case w.Event <- Event{Create, pth, pth, info, serviceName}:
+	//	}
+	//}
+	//for pth, info := range removes {
+	//	select {
+	//	case <-cancel:
+	//		return
+	//	case w.Event <- Event{Remove, pth, pth, info, serviceName}:
+	//	}
+	//}
 }
