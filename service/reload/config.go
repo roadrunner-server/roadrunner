@@ -41,7 +41,6 @@ func (c *Config) Hydrate(cfg service.Config) error {
 
 // InitDefaults sets missing values to their default values.
 func (c *Config) InitDefaults() error {
-	//c.Interval = time.Second
-
+	c.Enabled = false
 	return nil
 }

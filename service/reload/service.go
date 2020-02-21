@@ -60,7 +60,7 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 			},
 			files:        make(map[string]os.FileInfo),
 			ignored:      ConvertIgnored(wd, config.Ignore),
-			filePatterns: config.Patterns,
+			filePatterns: append(config.Patterns, cfg.Patterns...),
 		})
 	}
 
@@ -76,6 +76,11 @@ func (s *Service) Serve() error {
 	if !s.reloadConfig.Enabled {
 		return nil
 	}
+
+	if s.reloadConfig.Interval < time.Second {
+		return errors.New("reload interval is too fast")
+	}
+
 	go func() {
 		for {
 			select {
@@ -98,10 +103,6 @@ func (s *Service) Serve() error {
 			}
 		}
 	}()
-
-	if s.reloadConfig.Interval < time.Second {
-		return errors.New("too fast")
-	}
 
 	err := s.watcher.StartPolling(s.reloadConfig.Interval)
 	if err != nil {
