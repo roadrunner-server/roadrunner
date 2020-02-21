@@ -24,10 +24,6 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 	if !s.reloadConfig.Enabled {
 		return false, nil
 	}
-	wd, err := os.Getwd()
-	if err != nil {
-		return false, err
-	}
 
 	var configs []WatcherConfig
 
@@ -45,6 +41,10 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 		if cfg.Services[serviceName].service == nil {
 			continue
 		}
+		ignored, err := ConvertIgnored(config.Ignore)
+		if err != nil {
+			return false, err
+		}
 		configs = append(configs, WatcherConfig{
 			serviceName: serviceName,
 			recursive:   config.Recursive,
@@ -59,12 +59,13 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 				return ErrorSkip
 			},
 			files:        make(map[string]os.FileInfo),
-			ignored:      ConvertIgnored(wd, config.Ignore),
+			ignored:      ignored,
 			filePatterns: append(config.Patterns, cfg.Patterns...),
 		})
 	}
 
-	s.watcher, err = NewWatcher(wd, configs)
+	var err error
+	s.watcher, err = NewWatcher(configs)
 	if err != nil {
 		return false, err
 	}

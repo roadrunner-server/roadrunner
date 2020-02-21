@@ -4,7 +4,6 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"sync"
 	"time"
@@ -38,7 +37,7 @@ type WatcherConfig struct {
 	// path to file with files
 	files map[string]os.FileInfo
 	// ignored directories, used map for O(1) amortized get
-	ignored map[string]string
+	ignored map[string]struct{}
 	// filePatterns to ignore
 	filePatterns []string
 }
@@ -50,12 +49,9 @@ type Watcher struct {
 
 	//=============================
 	mu *sync.Mutex
-	wg *sync.WaitGroup
 
 	// indicates is walker started or not
 	started bool
-	// working directory, same for all
-	workingDir string
 
 	// config for each service
 	// need pointer here to assign files
@@ -66,15 +62,14 @@ type Watcher struct {
 type Options func(*Watcher)
 
 // NewWatcher returns new instance of File Watcher
-func NewWatcher(workDir string, configs []WatcherConfig, options ...Options) (*Watcher, error) {
+func NewWatcher(configs []WatcherConfig, options ...Options) (*Watcher, error) {
 	w := &Watcher{
 		Event: make(chan Event),
 		mu:    &sync.Mutex{},
-		wg:    &sync.WaitGroup{},
 
 		close: make(chan struct{}),
 
-		workingDir:     workDir,
+		//workingDir:     workDir,
 		watcherConfigs: make(map[string]WatcherConfig),
 	}
 
@@ -115,19 +110,33 @@ func (w *Watcher) initFs() error {
 }
 
 // ConvertIgnored is used to convert slice to map with ignored files
-func ConvertIgnored(workdir string, ignored []string) map[string]string {
-	abs, _ := filepath.Abs(workdir)
+func ConvertIgnored(ignored []string) (map[string]struct{}, error) {
 	if len(ignored) == 0 {
-		return nil
+		return nil, nil
 	}
 
-	ign := make(map[string]string, len(ignored))
+	ign := make(map[string]struct{}, len(ignored))
 	for i := 0; i < len(ignored); i++ {
-		ign[filepath.Join(abs, ignored[i])] = filepath.Join(abs, ignored[i])
+		abs, err := filepath.Abs(ignored[i])
+		if err != nil {
+			return nil, err
+		}
+		ign[abs] = struct{}{}
 	}
 
-	return ign
+	return ign, nil
 
+}
+
+// GetAllFiles returns all files initialized for particular company
+func (w *Watcher) GetAllFiles(serviceName string) []os.FileInfo {
+	var ret []os.FileInfo
+
+	for _, v := range w.watcherConfigs[serviceName].files {
+		ret = append(ret, v)
+	}
+
+	return ret
 }
 
 // https://en.wikipedia.org/wiki/Inotify
@@ -181,9 +190,11 @@ outer:
 		}
 
 		// if filename does not contain pattern --> ignore that file
-		err = w.watcherConfigs[serviceName].filterHooks(fileInfoList[i].Name(), w.watcherConfigs[serviceName].filePatterns)
-		if err == ErrorSkip {
-			continue outer
+		if w.watcherConfigs[serviceName].filePatterns != nil && w.watcherConfigs[serviceName].filterHooks != nil {
+			err = w.watcherConfigs[serviceName].filterHooks(fileInfoList[i].Name(), w.watcherConfigs[serviceName].filePatterns)
+			if err == ErrorSkip {
+				continue outer
+			}
 		}
 
 		filesList[pathToFile] = fileInfoList[i]
@@ -244,7 +255,10 @@ func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (ma
 		// walk through directories recursively
 		for _, dir := range config.directories {
 			// full path is workdir/relative_path
-			fullPath := path.Join(w.workingDir, dir)
+			fullPath, err := filepath.Abs(dir)
+			if err != nil {
+				return nil, err
+			}
 			list, err := w.retrieveFilesRecursive(serviceName, fullPath)
 			if err != nil {
 				return nil, err
@@ -258,13 +272,11 @@ func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (ma
 	}
 
 	for _, dir := range config.directories {
-		absPath, err := filepath.Abs(w.workingDir)
+		// full path is workdir/relative_path
+		fullPath, err := filepath.Abs(dir)
 		if err != nil {
 			return nil, err
 		}
-
-		// full path is workdir/relative_path
-		fullPath := path.Join(absPath, dir)
 
 		// list is pathToFiles with files
 		list, err := w.retrieveFilesSingle(serviceName, fullPath)
@@ -285,22 +297,23 @@ func (w *Watcher) retrieveFilesRecursive(serviceName, root string) (map[string]o
 			return err
 		}
 
+		// If path is ignored and it's a directory, skip the directory. If it's
+		// ignored and it's a single file, skip the file.
+		_, ignored := w.watcherConfigs[serviceName].ignored[path]
+		if ignored {
+			if info.IsDir() {
+				// if it's dir, ignore whole
+				return filepath.SkipDir
+			}
+			return nil
+		}
+
 		// if filename does not contain pattern --> ignore that file
 		err = w.watcherConfigs[serviceName].filterHooks(info.Name(), w.watcherConfigs[serviceName].filePatterns)
 		if err == ErrorSkip {
 			return nil
 		}
 
-		// If path is ignored and it's a directory, skip the directory. If it's
-		// ignored and it's a single file, skip the file.
-		_, ignored := w.watcherConfigs[serviceName].ignored[path]
-
-		if ignored {
-			if info.IsDir() {
-				return filepath.SkipDir
-			}
-			return nil
-		}
 		// Add the path and it's info to the file list.
 		fileList[path] = info
 		return nil
