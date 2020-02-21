@@ -65,6 +65,7 @@ type Watcher struct {
 // Options is used to set Watcher Options
 type Options func(*Watcher)
 
+// NewWatcher returns new instance of File Watcher
 func NewWatcher(workDir string, configs []WatcherConfig, options ...Options) (*Watcher, error) {
 	w := &Watcher{
 		Event: make(chan Event),
@@ -98,6 +99,7 @@ func NewWatcher(workDir string, configs []WatcherConfig, options ...Options) (*W
 	return w, nil
 }
 
+// initFs makes initial map with files
 func (w *Watcher) initFs() error {
 	for srvName, config := range w.watcherConfigs {
 		fileList, err := w.retrieveFileList(srvName, config)
@@ -112,6 +114,7 @@ func (w *Watcher) initFs() error {
 	return nil
 }
 
+// ConvertIgnored is used to convert slice to map with ignored files
 func ConvertIgnored(workdir string, ignored []string) map[string]string {
 	abs, _ := filepath.Abs(workdir)
 	if len(ignored) == 0 {
@@ -127,10 +130,6 @@ func ConvertIgnored(workdir string, ignored []string) map[string]string {
 
 }
 
-func (w *Watcher) AddWatcherConfig(config WatcherConfig) {
-	w.watcherConfigs[config.serviceName] = config
-}
-
 // https://en.wikipedia.org/wiki/Inotify
 // SetMaxFileEvents sets max file notify events for Watcher
 // In case of file watch errors, this value can be increased system-wide
@@ -142,81 +141,6 @@ func (w *Watcher) AddWatcherConfig(config WatcherConfig) {
 //	}
 //
 //}
-
-// SetDefaultRootPath is used to set own root path for adding files
-func SetDefaultRootPath(path string) Options {
-	return func(watcher *Watcher) {
-		watcher.workingDir = path
-	}
-}
-
-// Add
-// name will be current working dir
-func (w *Watcher) AddSingle(serviceName, relPath string) error {
-	absPath, err := filepath.Abs(w.workingDir)
-	if err != nil {
-		return err
-	}
-
-	// full path is workdir/relative_path
-	fullPath := path.Join(absPath, relPath)
-
-	// Ignored files
-	// map is to have O(1) when search for file
-	_, ignored := w.watcherConfigs[serviceName].ignored[fullPath]
-	if ignored {
-		return nil
-	}
-
-	// small optimization for smallvector
-	//fileList := make(map[string]os.FileInfo, 10)
-	fileList, err := w.retrieveFilesSingle(serviceName, fullPath)
-	if err != nil {
-		return err
-	}
-
-	for fullPth, file := range fileList {
-		w.watcherConfigs[serviceName].files[fullPth] = file
-	}
-
-	return nil
-}
-
-func (w *Watcher) AddRecursive(serviceName string, relPath string) error {
-	workDirAbs, err := filepath.Abs(w.workingDir)
-	if err != nil {
-		return err
-	}
-
-	fullPath := path.Join(workDirAbs, relPath)
-
-	filesList, err := w.retrieveFilesRecursive(serviceName, fullPath)
-	if err != nil {
-		return err
-	}
-
-	for pathToFile, file := range filesList {
-		w.watcherConfigs[serviceName].files[pathToFile] = file
-	}
-
-	return nil
-}
-
-func (w *Watcher) AddIgnored(serviceName string, directories []string) error {
-	workDirAbs, err := filepath.Abs(w.workingDir)
-	if err != nil {
-		return err
-	}
-
-	// concat wd with relative paths from config
-	// todo check path for existance
-	for _, v := range directories {
-		fullPath := path.Join(workDirAbs, v)
-		w.watcherConfigs[serviceName].ignored[fullPath] = fullPath
-	}
-
-	return nil
-}
 
 // pass map from outside
 func (w *Watcher) retrieveFilesSingle(serviceName, path string) (map[string]os.FileInfo, error) {
@@ -297,6 +221,9 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 			ticker.Stop()
 			return nil
 		case <-ticker.C:
+			// this is not very effective way
+			// because we have to wait on Lock
+			// better is to listen files in parallel, but, since that would be used in debug... TODO
 			for serviceName, config := range w.watcherConfigs {
 				go func(sn string, c WatcherConfig) {
 					fileList, _ := w.retrieveFileList(sn, c)
@@ -308,6 +235,7 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 
 }
 
+// retrieveFileList get file list for service
 func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (map[string]os.FileInfo, error) {
 	w.mu.Lock()
 	defer w.mu.Unlock()

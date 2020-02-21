@@ -80,7 +80,7 @@ func (s *Service) Serve() error {
 		for {
 			select {
 			case e := <-s.watcher.Event:
-				println(fmt.Sprintf("Service is:%s, path:%s, name:%s", e.service, e.path, e.info.Name()))
+				println(fmt.Sprintf("[UPDATE] Service: %s, path to file: %s, filename: %s", e.service, e.path, e.info.Name()))
 
 				srv := s.reloadConfig.Services[e.service]
 
