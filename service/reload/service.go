@@ -1,6 +1,7 @@
 package reload
 
 import (
+	"errors"
 	"fmt"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
@@ -15,14 +16,19 @@ const ID = "reload"
 type Service struct {
 	reloadConfig *Config
 	watcher      *Watcher
-
 }
 
 // Init controller service
 func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 	s.reloadConfig = cfg
+	if !s.reloadConfig.Enabled {
+		return false, nil
+	}
+	wd, err := os.Getwd()
+	if err != nil {
+		return false, err
+	}
 
-	var err error
 	var configs []WatcherConfig
 
 	// mount Services to designated services
@@ -35,8 +41,6 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 		}
 	}
 
-
-
 	for serviceName, config := range s.reloadConfig.Services {
 		if cfg.Services[serviceName].service == nil {
 			continue
@@ -45,42 +49,24 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 			serviceName: serviceName,
 			recursive:   config.Recursive,
 			directories: config.Dirs,
-			filterHooks: func(filename, pattern string) error {
-				if strings.Contains(filename, pattern) {
-					return ErrorSkip
+			filterHooks: func(filename string, patterns []string) error {
+
+				for i := 0; i < len(patterns); i++ {
+					if strings.Contains(filename, patterns[i]) {
+						return nil
+					}
 				}
-				return nil
+				return ErrorSkip
 			},
-			files: make(map[string]os.FileInfo),
-			//ignored:
+			files:        make(map[string]os.FileInfo),
+			ignored:      ConvertIgnored(wd, config.Ignore),
+			filePatterns: config.Patterns,
 		})
 	}
 
-	s.watcher, err = NewWatcher(configs)
+	s.watcher, err = NewWatcher(wd, configs)
 	if err != nil {
 		return false, err
-	}
-
-	for serviceName, config := range s.reloadConfig.Services {
-		svc, _ := c.Get(serviceName)
-		if ctrl, ok := svc.(*roadrunner.Controllable); ok {
-			(*ctrl).Server().Reset()
-		}
-
-		configs = append(configs, WatcherConfig{
-			serviceName: serviceName,
-			recursive:   config.Recursive,
-			directories: config.Dirs,
-			filterHooks: func(filename, pattern string) error {
-				if strings.Contains(filename, pattern) {
-					return ErrorSkip
-				}
-				return nil
-			},
-			files: make(map[string]os.FileInfo),
-			//ignored:
-
-		})
 	}
 
 	return true, nil
@@ -90,14 +76,13 @@ func (s *Service) Serve() error {
 	if !s.reloadConfig.Enabled {
 		return nil
 	}
-
 	go func() {
 		for {
 			select {
 			case e := <-s.watcher.Event:
-				println(fmt.Sprintf("type is:%s, oldPath:%s, path:%s, name:%s", e.Type, e.OldPath, e.Path, e.FileInfo.Name()))
+				println(fmt.Sprintf("Service is:%s, path:%s, name:%s", e.service, e.path, e.info.Name()))
 
-				srv := s.reloadConfig.Services[e.Type]
+				srv := s.reloadConfig.Services[e.service]
 
 				if srv.service != nil {
 					s := *srv.service
@@ -107,14 +92,18 @@ func (s *Service) Serve() error {
 					}
 				} else {
 					s.watcher.mu.Lock()
-					delete(s.watcher.watcherConfigs, e.Type)
+					delete(s.watcher.watcherConfigs, e.service)
 					s.watcher.mu.Unlock()
 				}
 			}
 		}
 	}()
 
-	err := s.watcher.StartPolling(time.Second * 2)
+	if s.reloadConfig.Interval < time.Second {
+		return errors.New("too fast")
+	}
+
+	err := s.watcher.StartPolling(s.reloadConfig.Interval)
 	if err != nil {
 		return err
 	}
@@ -123,6 +112,5 @@ func (s *Service) Serve() error {
 }
 
 func (s *Service) Stop() {
-	//s.watcher.Stop()
-
+	s.watcher.Stop()
 }

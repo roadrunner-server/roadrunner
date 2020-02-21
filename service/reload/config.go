@@ -3,16 +3,17 @@ package reload
 import (
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
+	"time"
 )
 
 // Config is a Reload configuration point.
 type Config struct {
 	// Enable or disable Reload extension, default disable.
 	Enabled bool
-
-	// Watch is general pattern of files to watch. It will be applied to every directory in project
-	Watch []string
-
+	// Interval is a global refresh interval
+	Interval time.Duration
+	// Patterns is a global file patterns to watch. It will be applied to every directory in project
+	Patterns []string
 	// Services is set of services which would be reloaded in case of FS changes
 	Services map[string]ServiceConfig
 }
@@ -26,7 +27,6 @@ type ServiceConfig struct {
 	Dirs []string
 	// Ignore is set of files which would not be watched
 	Ignore []string
-
 	// service is a link to service to restart
 	service *roadrunner.Controllable
 }
