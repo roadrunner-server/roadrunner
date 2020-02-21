@@ -1,6 +1,7 @@
 package reload
 
 import (
+	"errors"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
 	"time"
@@ -41,6 +42,24 @@ func (c *Config) Hydrate(cfg service.Config) error {
 
 // InitDefaults sets missing values to their default values.
 func (c *Config) InitDefaults() error {
-	c.Enabled = false
+	return c.Valid()
+}
+
+// Valid validates the configuration.
+func (c *Config) Valid() error {
+	if c.Enabled == true && c.Interval < time.Second {
+		return errors.New("too short interval")
+	}
+
+	if c.Enabled {
+		if c.Services == nil {
+			return errors.New("should add at least 1 service")
+		}
+
+		if len(c.Services) == 0 {
+			return errors.New("should add initialized config")
+		}
+	}
+
 	return nil
 }

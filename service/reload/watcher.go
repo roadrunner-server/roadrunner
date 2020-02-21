@@ -78,14 +78,10 @@ func NewWatcher(configs []WatcherConfig, options ...Options) (*Watcher, error) {
 		w.watcherConfigs[v.serviceName] = v
 	}
 
+	// apply options
 	for _, option := range options {
 		option(w)
 	}
-
-	if w.watcherConfigs == nil {
-		return nil, NoWalkerConfig
-	}
-
 	err := w.initFs()
 	if err != nil {
 		return nil, err
@@ -205,10 +201,6 @@ outer:
 }
 
 func (w *Watcher) StartPolling(duration time.Duration) error {
-	if duration < time.Second {
-		return errors.New("too short duration, please use at least 1 second")
-	}
-
 	w.mu.Lock()
 	if w.started {
 		w.mu.Unlock()
@@ -217,8 +209,6 @@ func (w *Watcher) StartPolling(duration time.Duration) error {
 
 	w.started = true
 	w.mu.Unlock()
-
-	//w.wg.Done()
 
 	return w.waitEvent(duration)
 }
@@ -267,8 +257,8 @@ func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (ma
 			for k, v := range list {
 				fileList[k] = v
 			}
-			return fileList, nil
 		}
+		return fileList, nil
 	}
 
 	for _, dir := range config.directories {
@@ -280,6 +270,9 @@ func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (ma
 
 		// list is pathToFiles with files
 		list, err := w.retrieveFilesSingle(serviceName, fullPath)
+		if err != nil {
+			return nil, err
+		}
 
 		for pathToFile, file := range list {
 			fileList[pathToFile] = file
@@ -348,22 +341,18 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 		}
 		if oldInfo.ModTime() != info.ModTime() {
 			w.watcherConfigs[serviceName].files[pth] = info
-			select {
-			case w.Event <- Event{
+			w.Event <- Event{
 				path:    pth,
 				info:    info,
 				service: serviceName,
-			}:
 			}
 		}
 		if oldInfo.Mode() != info.Mode() {
 			w.watcherConfigs[serviceName].files[pth] = info
-			select {
-			case w.Event <- Event{
+			w.Event <- Event{
 				path:    pth,
 				info:    info,
 				service: serviceName,
-			}:
 			}
 		}
 	}
@@ -381,30 +370,24 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 				delete(removes, path1)
 				delete(creates, path2)
 
-				select {
-				case w.Event <- e:
-				}
+				w.Event <- e
 			}
 		}
 	}
 
 	//Send all the remaining create and remove events.
 	for pth, info := range creates {
-		select {
-		case w.Event <- Event{
+		w.Event <- Event{
 			path:    pth,
 			info:    info,
 			service: serviceName,
-		}:
 		}
 	}
 	for pth, info := range removes {
-		select {
-		case w.Event <- Event{
+		w.Event <- Event{
 			path:    pth,
 			info:    info,
 			service: serviceName,
-		}:
 		}
 	}
 }

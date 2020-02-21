@@ -28,7 +28,7 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 	var configs []WatcherConfig
 
 	// mount Services to designated services
-	for serviceName, _ := range cfg.Services {
+	for serviceName := range cfg.Services {
 		svc, _ := c.Get(serviceName)
 		if ctrl, ok := svc.(roadrunner.Controllable); ok {
 			tmp := cfg.Services[serviceName]
@@ -50,7 +50,6 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 			recursive:   config.Recursive,
 			directories: config.Dirs,
 			filterHooks: func(filename string, patterns []string) error {
-
 				for i := 0; i < len(patterns); i++ {
 					if strings.Contains(filename, patterns[i]) {
 						return nil
@@ -83,24 +82,21 @@ func (s *Service) Serve() error {
 	}
 
 	go func() {
-		for {
-			select {
-			case e := <-s.watcher.Event:
-				println(fmt.Sprintf("[UPDATE] Service: %s, path to file: %s, filename: %s", e.service, e.path, e.info.Name()))
+		for e := range s.watcher.Event {
+			println(fmt.Sprintf("[UPDATE] Service: %s, path to file: %s, filename: %s", e.service, e.path, e.info.Name()))
 
-				srv := s.reloadConfig.Services[e.service]
+			srv := s.reloadConfig.Services[e.service]
 
-				if srv.service != nil {
-					s := *srv.service
-					err := s.Server().Reset()
-					if err != nil {
-						fmt.Println(err)
-					}
-				} else {
-					s.watcher.mu.Lock()
-					delete(s.watcher.watcherConfigs, e.service)
-					s.watcher.mu.Unlock()
+			if srv.service != nil {
+				s := *srv.service
+				err := s.Server().Reset()
+				if err != nil {
+					fmt.Println(err)
 				}
+			} else {
+				s.watcher.mu.Lock()
+				delete(s.watcher.watcherConfigs, e.service)
+				s.watcher.mu.Unlock()
 			}
 		}
 	}()
