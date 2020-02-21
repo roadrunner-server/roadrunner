@@ -336,13 +336,6 @@ func Test_Wrong_Dir(t *testing.T) {
 	}
 }
 
-func Test_NoServiceConfigAttached(t *testing.T) {
-	_, err := NewWatcher(nil)
-	if err == nil {
-		t.Fatal(err)
-	}
-}
-
 func Test_Filter_Directory(t *testing.T) {
 	tempDir, err := ioutil.TempDir(".", "")
 	defer func() {
