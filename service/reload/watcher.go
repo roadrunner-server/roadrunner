@@ -28,16 +28,22 @@ type Event struct {
 type WatcherConfig struct {
 	// service name
 	serviceName string
+
 	// recursive or just add by singe directory
 	recursive bool
+
 	// directories used per-service
 	directories []string
+
 	// simple hook, just CONTAINS
 	filterHooks func(filename string, pattern []string) error
+
 	// path to file with files
 	files map[string]os.FileInfo
+
 	// ignored directories, used map for O(1) amortized get
 	ignored map[string]struct{}
+
 	// filePatterns to ignore
 	filePatterns []string
 }
@@ -194,7 +200,6 @@ outer:
 		}
 
 		filesList[pathToFile] = fileInfoList[i]
-
 	}
 
 	return filesList, nil

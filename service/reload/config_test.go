@@ -17,7 +17,6 @@ func Test_Config_Valid(t *testing.T) {
 	}
 
 	cfg := &Config{
-		Enabled:  true,
 		Interval: time.Second,
 		Patterns: nil,
 		Services: services,
@@ -28,7 +27,6 @@ func Test_Config_Valid(t *testing.T) {
 func Test_Fake_ServiceConfig(t *testing.T) {
 	services := make(map[string]ServiceConfig)
 	cfg := &Config{
-		Enabled:  true,
 		Interval: time.Second,
 		Patterns: nil,
 		Services: services,
@@ -39,7 +37,6 @@ func Test_Fake_ServiceConfig(t *testing.T) {
 func Test_Interval(t *testing.T) {
 	services := make(map[string]ServiceConfig)
 	cfg := &Config{
-		Enabled:  true,
 		Interval: time.Millisecond,
 		Patterns: nil,
 		Services: services,
@@ -50,7 +47,6 @@ func Test_Interval(t *testing.T) {
 func Test_NoServiceConfig(t *testing.T) {
 	services := make(map[string]ServiceConfig)
 	cfg := &Config{
-		Enabled:  true,
 		Interval: time.Millisecond,
 		Patterns: nil,
 		Services: services,

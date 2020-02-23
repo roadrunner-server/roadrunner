@@ -3,6 +3,7 @@ package reload
 import (
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
 	"os"
@@ -14,16 +15,19 @@ import (
 const ID = "reload"
 
 type Service struct {
-	reloadConfig *Config
-	watcher      *Watcher
+	cfg     *Config
+	log     *logrus.Logger
+	watcher *Watcher
 }
 
 // Init controller service
-func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
-	s.reloadConfig = cfg
-	if !s.reloadConfig.Enabled {
+func (s *Service) Init(cfg *Config, log *logrus.Logger, c service.Container) (bool, error) {
+	if cfg == nil || len(cfg.Services) == 0 {
 		return false, nil
 	}
+
+	s.cfg = cfg
+	s.log = log
 
 	var configs []WatcherConfig
 
@@ -37,7 +41,7 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 		}
 	}
 
-	for serviceName, config := range s.reloadConfig.Services {
+	for serviceName, config := range s.cfg.Services {
 		if cfg.Services[serviceName].service == nil {
 			continue
 		}
@@ -73,25 +77,22 @@ func (s *Service) Init(cfg *Config, c service.Container) (bool, error) {
 }
 
 func (s *Service) Serve() error {
-	if !s.reloadConfig.Enabled {
-		return nil
-	}
-
-	if s.reloadConfig.Interval < time.Second {
+	if s.cfg.Interval < time.Second {
 		return errors.New("reload interval is too fast")
 	}
 
 	go func() {
 		for e := range s.watcher.Event {
+
 			println(fmt.Sprintf("[UPDATE] Service: %s, path to file: %s, filename: %s", e.service, e.path, e.info.Name()))
 
-			srv := s.reloadConfig.Services[e.service]
+			srv := s.cfg.Services[e.service]
 
 			if srv.service != nil {
-				s := *srv.service
-				err := s.Server().Reset()
+				sv := *srv.service
+				err := sv.Server().Reset()
 				if err != nil {
-					fmt.Println(err)
+					s.log.Error(err)
 				}
 			} else {
 				s.watcher.mu.Lock()
@@ -101,7 +102,24 @@ func (s *Service) Serve() error {
 		}
 	}()
 
-	err := s.watcher.StartPolling(s.reloadConfig.Interval)
+	//go func() {
+	//	for {
+	//		select {
+	//		case <-update:
+	//			updated = append(updated, update)
+	//		case <-time.Ticker:
+	//			updated = updated[0:0]
+	//			err := sv.Server().Reset()
+	//			s.log.Debugf(
+	//				"reload %s, found file changes in %s",
+	//				strings.Join(updated, ","),
+	//			)
+	//		case <-exit:
+	//		}
+	//	}
+	//}()
+
+	err := s.watcher.StartPolling(s.cfg.Interval)
 	if err != nil {
 		return err
 	}
