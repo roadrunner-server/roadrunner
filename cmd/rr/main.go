@@ -23,7 +23,7 @@
 package main
 
 import (
-	rr "github.com/spiral/roadrunner/service/reload/cmd/rr/cmd"
+	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 
 	// services (plugins)
 	"github.com/spiral/roadrunner/service/env"
@@ -38,8 +38,8 @@ import (
 	"github.com/spiral/roadrunner/service/static"
 
 	// additional commands and debug handlers
-	_ "github.com/spiral/roadrunner/service/reload/cmd/rr/http"
-	_ "github.com/spiral/roadrunner/service/reload/cmd/rr/limit"
+	_ "github.com/spiral/roadrunner/cmd/rr/http"
+	_ "github.com/spiral/roadrunner/cmd/rr/limit"
 )
 
 func main() {

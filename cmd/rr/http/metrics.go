@@ -3,9 +3,9 @@ package http
 import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cobra"
+	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 	rrhttp "github.com/spiral/roadrunner/service/http"
 	"github.com/spiral/roadrunner/service/metrics"
-	rr "github.com/spiral/roadrunner/service/reload/cmd/rr/cmd"
 	"github.com/spiral/roadrunner/util"
 	"strconv"
 	"time"

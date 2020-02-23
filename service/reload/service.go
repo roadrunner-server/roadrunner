@@ -91,6 +91,9 @@ func (s *Service) Serve() error {
 		service       string
 	}, 100)
 
+	// use the same interval
+	ticker := time.NewTicker(s.cfg.Interval)
+
 	// drain channel in case of leaved messages
 	defer func() {
 		go func() {
@@ -109,11 +112,10 @@ func (s *Service) Serve() error {
 				service       string
 			}{serviceConfig: s.cfg.Services[e.service], service: e.service}
 
+			ticker.Stop()
+			ticker = time.NewTicker(s.cfg.Interval)
 		}
 	}()
-
-	// use the same interval
-	ticker := time.NewTicker(s.cfg.Interval)
 
 	// map with configs by services
 	updated := make(map[string]ServiceConfig, 100)

@@ -3,9 +3,9 @@ package limit
 import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cobra"
+	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 	rrlimit "github.com/spiral/roadrunner/service/limit"
 	"github.com/spiral/roadrunner/service/metrics"
-	rr "github.com/spiral/roadrunner/service/reload/cmd/rr/cmd"
 )
 
 func init() {
