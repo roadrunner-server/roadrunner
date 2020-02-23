@@ -160,3 +160,20 @@ static:
 health:
   # http host to serve health requests.
   address: localhost:2113
+  
+# reload can reset rr servers when files change
+reload:
+  # refresh internval (default 1s)
+  interval: 1s
+
+  # file extensions to watch, defaults to [.php]
+  patterns: [".php"]
+
+  # list of services to watch
+  services:
+    http:
+      # list of dirs, "" root
+      dirs: [""]
+
+      # include sub directories
+      recursive: true
