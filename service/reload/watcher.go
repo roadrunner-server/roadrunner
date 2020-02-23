@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync"
 	"time"
 )
@@ -225,7 +226,9 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 		select {
 		case <-w.close:
 			ticker.Stop()
-			return nil
+			// just exit
+			// no matter for the pollEvents
+			runtime.Goexit()
 		case <-ticker.C:
 			// this is not very effective way
 			// because we have to wait on Lock

@@ -109,9 +109,6 @@ func (s *Service) Serve() error {
 				serviceConfig ServiceConfig
 				service       string
 			}{serviceConfig: s.cfg.Services[e.service], service: e.service}
-
-			ticker.Stop()
-			ticker = time.NewTicker(s.cfg.Interval)
 		}
 	}()
 
@@ -124,6 +121,14 @@ func (s *Service) Serve() error {
 			case config := <-treshholdc:
 				// replace previous value in map by more recent without adding new one
 				updated[config.service] = config.serviceConfig
+				// stop ticker
+				ticker.Stop()
+				// restart
+				// logic is following:
+				// if we getting a lot of events, we should't restart particular service on each of it (user doing bug move or very fast typing)
+				// instead, we are resetting the ticker and wait for Interval time
+				// If there is no more events, we restart service only once
+				ticker = time.NewTicker(s.cfg.Interval)
 			case <-ticker.C:
 				if len(updated) > 0 {
 					for k, v := range updated {
@@ -154,4 +159,5 @@ func (s *Service) Serve() error {
 
 func (s *Service) Stop() {
 	s.watcher.Stop()
+	s.stopc <- struct{}{}
 }
