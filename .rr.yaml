@@ -161,6 +161,7 @@ health:
   # http host to serve health requests.
   address: localhost:2113
 
+# reload can reset rr servers when files change
 reload:
   # refresh internval (default 1s)
   interval: 1s
