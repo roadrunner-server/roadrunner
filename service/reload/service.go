@@ -105,8 +105,6 @@ func (s *Service) Serve() error {
 
 	go func() {
 		for e := range s.watcher.Event {
-			s.log.Debugf("[UPDATE] Service: %s, path to file: %s, filename: %s", e.service, e.path, e.info.Name())
-
 			treshholdc <- struct {
 				serviceConfig ServiceConfig
 				service       string
@@ -134,7 +132,7 @@ func (s *Service) Serve() error {
 						if err != nil {
 							s.log.Error(err)
 						}
-						s.log.Debugf("found file changes in %s service, reloading", k)
+						s.log.Debugf("[%s] found %v file(s) changes, reloading", k, len(updated))
 					}
 					// zero map
 					updated = make(map[string]ServiceConfig, 100)
