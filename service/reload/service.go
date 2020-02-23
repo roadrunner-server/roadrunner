@@ -2,11 +2,11 @@ package reload
 
 import (
 	"errors"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -18,6 +18,7 @@ type Service struct {
 	cfg     *Config
 	log     *logrus.Logger
 	watcher *Watcher
+	stopc   chan struct{}
 }
 
 // Init controller service
@@ -28,6 +29,7 @@ func (s *Service) Init(cfg *Config, log *logrus.Logger, c service.Container) (bo
 
 	s.cfg = cfg
 	s.log = log
+	s.stopc = make(chan struct{})
 
 	var configs []WatcherConfig
 
@@ -81,43 +83,66 @@ func (s *Service) Serve() error {
 		return errors.New("reload interval is too fast")
 	}
 
+	// make a map with unique services
+	// so, if we would have a 100 events from http service
+	// in map we would see only 1 key and it's config
+	treshholdc := make(chan struct {
+		serviceConfig ServiceConfig
+		service       string
+	}, 100)
+
+	// drain channel in case of leaved messages
+	defer func() {
+		go func() {
+			for range treshholdc {
+
+			}
+		}()
+	}()
+
 	go func() {
 		for e := range s.watcher.Event {
+			s.log.Debugf("[UPDATE] Service: %s, path to file: %s, filename: %s", e.service, e.path, e.info.Name())
 
-			println(fmt.Sprintf("[UPDATE] Service: %s, path to file: %s, filename: %s", e.service, e.path, e.info.Name()))
+			treshholdc <- struct {
+				serviceConfig ServiceConfig
+				service       string
+			}{serviceConfig: s.cfg.Services[e.service], service: e.service}
 
-			srv := s.cfg.Services[e.service]
-
-			if srv.service != nil {
-				sv := *srv.service
-				err := sv.Server().Reset()
-				if err != nil {
-					s.log.Error(err)
-				}
-			} else {
-				s.watcher.mu.Lock()
-				delete(s.watcher.watcherConfigs, e.service)
-				s.watcher.mu.Unlock()
-			}
 		}
 	}()
 
-	//go func() {
-	//	for {
-	//		select {
-	//		case <-update:
-	//			updated = append(updated, update)
-	//		case <-time.Ticker:
-	//			updated = updated[0:0]
-	//			err := sv.Server().Reset()
-	//			s.log.Debugf(
-	//				"reload %s, found file changes in %s",
-	//				strings.Join(updated, ","),
-	//			)
-	//		case <-exit:
-	//		}
-	//	}
-	//}()
+	// use the same interval
+	ticker := time.NewTicker(s.cfg.Interval)
+
+	// map with configs by services
+	updated := make(map[string]ServiceConfig, 100)
+
+	go func() {
+		for {
+			select {
+			case config := <-treshholdc:
+				// replace previous value in map by more recent without adding new one
+				updated[config.service] = config.serviceConfig
+			case <-ticker.C:
+				if len(updated) > 0 {
+					for k, v := range updated {
+						sv := *v.service
+						err := sv.Server().Reset()
+						if err != nil {
+							s.log.Error(err)
+						}
+						s.log.Debugf("found file changes in %s service, reloading", k)
+					}
+					// zero map
+					updated = make(map[string]ServiceConfig, 100)
+				}
+			case <-s.stopc:
+				ticker.Stop()
+				runtime.Goexit()
+			}
+		}
+	}()
 
 	err := s.watcher.StartPolling(s.cfg.Interval)
 	if err != nil {

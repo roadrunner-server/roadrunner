@@ -382,6 +382,7 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 
 	//Send all the remaining create and remove events.
 	for pth, info := range creates {
+		w.watcherConfigs[serviceName].files[pth] = info
 		w.Event <- Event{
 			path:    pth,
 			info:    info,
@@ -389,6 +390,7 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 		}
 	}
 	for pth, info := range removes {
+		delete(w.watcherConfigs[serviceName].files, pth)
 		w.Event <- Event{
 			path:    pth,
 			info:    info,
