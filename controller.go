@@ -8,3 +8,9 @@ type Controller interface {
 	// Detach pool watching.
 	Detach()
 }
+
+// Attacher defines the ability to attach rr controller.
+type Attacher interface {
+	// Attach attaches controller to the service.
+	Attach(c Controller)
+}

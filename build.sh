@@ -12,7 +12,7 @@ LDFLAGS="$LDFLAGS -X github.com/spiral/roadrunner/cmd/rr/cmd.BuildTime=$(date +%
 LDFLAGS="$LDFLAGS -s"
 
 build(){
-	echo Packaging $1 Build
+	echo Packaging "$1" Build
 	bdir=roadrunner-${RR_VERSION}-$2-$3
 	rm -rf builds/"$bdir" && mkdir -p builds/"$bdir"
 	GOOS=$2 GOARCH=$3 ./build.sh
