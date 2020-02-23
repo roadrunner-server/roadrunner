@@ -161,4 +161,5 @@ func (s *Service) Serve() error {
 
 func (s *Service) Stop() {
 	s.watcher.Stop()
+	s.stopc <- struct{}{}
 }
