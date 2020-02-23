@@ -4,9 +4,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spiral/roadrunner"
-	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/cmd/util"
 	"github.com/spiral/roadrunner/service/limit"
+	rr "github.com/spiral/roadrunner/service/reload/cmd/rr/cmd"
+	"github.com/spiral/roadrunner/service/reload/cmd/util"
 )
 
 func init() {

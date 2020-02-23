@@ -23,9 +23,9 @@ package cmd
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spiral/roadrunner/cmd/util"
 	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/limit"
+	"github.com/spiral/roadrunner/service/reload/cmd/util"
 	"log"
 	"net/http"
 	"net/http/pprof"

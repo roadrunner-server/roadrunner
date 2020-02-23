@@ -372,8 +372,11 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 					service: serviceName,
 				}
 
-				delete(removes, path1)
-				delete(creates, path2)
+				// remove initial path
+				delete(w.watcherConfigs[serviceName].files, path1)
+				// update with new
+				w.watcherConfigs[serviceName].files[path2] = info2
+
 
 				w.Event <- e
 			}
