@@ -6,7 +6,6 @@ import (
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
 	"os"
-	"runtime"
 	"strings"
 	"time"
 )
@@ -146,7 +145,7 @@ func (s *Service) Serve() error {
 				}
 			case <-s.stopc:
 				ticker.Stop()
-				runtime.Goexit()
+				return
 			}
 		}
 	}()
