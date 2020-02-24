@@ -1,5 +1,5 @@
 # Image page: <https://hub.docker.com/_/golang>
-FROM golang:1.12-alpine as builder
+FROM golang:1.13-alpine as builder
 
 COPY . /src
 
@@ -9,7 +9,6 @@ RUN set -x \
     && apk add --no-cache bash git \
     && go version \
     && bash ./build.sh \
-    && ./rr -v \
     && test -f ./.rr.yaml
 
 FROM alpine:latest
