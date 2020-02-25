@@ -47,4 +47,4 @@ if [ "$1" == "all" ]; then
 	exit
 fi
 
-go build -ldflags "$LDFLAGS" -o "$OD/rr" cmd/rr/main.go
+CGO_ENABLED=0 go build -ldflags "$LDFLAGS -extldflags '-static'" -o "$OD/rr" cmd/rr/main.go
