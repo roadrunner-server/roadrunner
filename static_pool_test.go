@@ -234,7 +234,7 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 	}()
 
 	// to ensure that worker is already busy
-	time.Sleep(time.Millisecond * 10)
+	time.Sleep(time.Millisecond * 1)
 
 	_, err = p.Exec(&Payload{Body: []byte("10")})
 	assert.Error(t, err)

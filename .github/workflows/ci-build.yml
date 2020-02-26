@@ -10,8 +10,8 @@ jobs:
       fail-fast: false
       matrix:
         php: [7.1, 7.2, 7.3, 7.4]
-        go: [1.12, 1.13]
-        os: [ubuntu-latest, macOS-latest, windows-latest]
+        go: [1.12, 1.13, 1.14]
+        os: [ubuntu-latest, macOS-latest]
     env:
       GO111MODULE: on
     steps:
