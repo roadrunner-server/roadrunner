@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: Build (PHP ${{ matrix.php }}, Go ${{ matrix.go }})
+    name: Build (PHP ${{ matrix.php }}, Go ${{ matrix.go }}, OS ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 1
 
       - name: Show versions
-        run: php -v && composer -V && go version
+        run: php -v ; composer -V ; go version
 
       - name: Debug if needed
         env:
