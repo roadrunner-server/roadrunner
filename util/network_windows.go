@@ -1,11 +1,10 @@
-// +build linux
+// +build windows
 
 package util
 
 import (
 	"errors"
 	"fmt"
-	"github.com/valyala/tcplisten"
 	"net"
 	"os"
 	"strings"
@@ -30,27 +29,5 @@ func CreateListener(address string) (net.Listener, error) {
 		}
 	}
 
-	cfg := tcplisten.Config{
-		ReusePort:   true,
-		DeferAccept: true,
-		FastOpen:    true,
-		Backlog:     0,
-	}
-
-	// tcp4 is currently supported
-	if dsn[0] == "tcp" {
-		return cfg.NewListener("tcp4", dsn[1])
-	}
-
 	return net.Listen(dsn[0], dsn[1])
-}
-
-// fileExists checks if a file exists and is not a directory before we
-// try using it to prevent further errors.
-func fileExists(filename string) bool {
-	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return !info.IsDir()
 }
