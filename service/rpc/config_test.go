@@ -48,7 +48,7 @@ func TestConfig_Listener(t *testing.T) {
 	}()
 
 	assert.Equal(t, "tcp", ln.Addr().Network())
-	assert.Equal(t, "[::]:18001", ln.Addr().String())
+	assert.Equal(t, "0.0.0.0:18001", ln.Addr().String())
 }
 
 func TestConfig_ListenerUnix(t *testing.T) {
