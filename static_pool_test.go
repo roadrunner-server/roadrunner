@@ -218,7 +218,7 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 		NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
-			AllocateTimeout: time.Millisecond * 50,
+			AllocateTimeout: time.Nanosecond * 1,
 			DestroyTimeout:  time.Second * 2,
 		},
 	)
