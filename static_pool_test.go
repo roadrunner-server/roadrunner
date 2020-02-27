@@ -222,16 +222,21 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 			DestroyTimeout:  time.Second,
 		},
 	)
-
-	assert.NotNil(t, p)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	done := make(chan interface{})
 	go func() {
-		_, err := p.Exec(&Payload{Body: []byte("100")})
-		assert.NoError(t, err)
-		close(done)
+		if p != nil {
+			_, err := p.Exec(&Payload{Body: []byte("100")})
+			assert.NoError(t, err)
+			close(done)
+		} else {
+			t.Fatal("Pool is nil")
+		}
 	}()
+
 
 	// to ensure that worker is already busy
 	time.Sleep(time.Millisecond * 10)

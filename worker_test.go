@@ -169,7 +169,7 @@ func Test_Broken(t *testing.T) {
 
 	defer func() {
 		err := w.Stop()
-		assert.Error(t, err)
+		assert.NoError(t, err)
 	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
