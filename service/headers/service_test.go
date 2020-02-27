@@ -259,13 +259,6 @@ func TestCORS_Pass(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("error during the body closing: error %v", err)
-		}
-	}()
-
 	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
 	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
 	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
@@ -275,4 +268,9 @@ func TestCORS_Pass(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, 200, r.StatusCode)
+
+	err = r.Body.Close()
+	if err != nil {
+		t.Errorf("error during the body closing: error %v", err)
+	}
 }
