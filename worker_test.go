@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"testing"
+	"time"
 )
 
 func Test_GetState(t *testing.T) {
@@ -168,6 +169,7 @@ func Test_Broken(t *testing.T) {
 	}()
 
 	defer func() {
+		time.Sleep(time.Second)
 		err := w.Stop()
 		assert.NoError(t, err)
 	}()
