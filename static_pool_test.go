@@ -238,7 +238,9 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 
 	_, err = p.Exec(&Payload{Body: []byte("10")})
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "worker timeout")
+	if err != nil {
+		assert.Contains(t, err.Error(), "worker timeout")
+	}
 
 	<-done
 	p.Destroy()
