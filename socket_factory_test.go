@@ -105,8 +105,8 @@ func Test_Tcp_Failboot(t *testing.T) {
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer func() {
-			err := ls.Close()
-			if err != nil {
+			err3 := ls.Close()
+			if err3 != nil {
 				t.Errorf("error closing the listener: error %v", err)
 			}
 		}()
@@ -116,10 +116,10 @@ func Test_Tcp_Failboot(t *testing.T) {
 
 	cmd := exec.Command("php", "tests/failboot.php")
 
-	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	w, err2 := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
 	assert.Nil(t, w)
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "failboot")
+	assert.Error(t, err2)
+	assert.Contains(t, err2.Error(), "failboot")
 }
 
 func Test_Tcp_Timeout(t *testing.T) {
