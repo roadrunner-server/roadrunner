@@ -146,26 +146,24 @@ func Test_Service_Echo(t *testing.T) {
 		}
 	}()
 	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
 	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("error closing the Body: error %v", err)
-		}
-	}()
-
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", string(b))
+
+	err2 := r.Body.Close()
+	if err2 != nil {
+		t.Errorf("error closing the Body: error %v", err2)
+	}
+	c.Stop()
 }
 
 func Test_Service_Env(t *testing.T) {
