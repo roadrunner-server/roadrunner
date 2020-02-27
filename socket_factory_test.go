@@ -193,14 +193,16 @@ func Test_Tcp_Broken(t *testing.T) {
 	}()
 
 	defer func() {
-		err = w.Stop()
-		assert.Error(t, err)
+		time.Sleep(time.Second)
+		err2 := w.Stop()
+		assert.NoError(t, err2)
 	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
 	assert.Nil(t, res)
+	return
 }
 
 func Test_Tcp_Echo(t *testing.T) {
