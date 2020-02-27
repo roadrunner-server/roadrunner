@@ -62,5 +62,11 @@ func (c *Config) Valid() error {
 		return errors.New("too short interval")
 	}
 
+	if c.Services == nil {
+		return errors.New("should add at least 1 service")
+	} else if len(c.Services) == 0 {
+		return errors.New("service initialized, however, no config added")
+	}
+
 	return nil
 }

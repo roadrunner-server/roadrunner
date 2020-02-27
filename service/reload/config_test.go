@@ -36,8 +36,17 @@ func Test_Fake_ServiceConfig(t *testing.T) {
 
 func Test_Interval(t *testing.T) {
 	services := make(map[string]ServiceConfig)
+	services["test"] = ServiceConfig{
+		Enabled:   false,
+		Recursive: false,
+		Patterns:  nil,
+		Dirs:      nil,
+		Ignore:    nil,
+		service:   nil,
+	}
+
 	cfg := &Config{
-		Interval: time.Millisecond,
+		Interval: time.Millisecond, // should crash here
 		Patterns: nil,
 		Services: services,
 	}
@@ -45,11 +54,10 @@ func Test_Interval(t *testing.T) {
 }
 
 func Test_NoServiceConfig(t *testing.T) {
-	services := make(map[string]ServiceConfig)
 	cfg := &Config{
-		Interval: time.Millisecond,
+		Interval: time.Second,
 		Patterns: nil,
-		Services: services,
+		Services: nil,
 	}
 	assert.Error(t, cfg.Valid())
 }
