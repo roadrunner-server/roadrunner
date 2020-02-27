@@ -37,8 +37,7 @@ func Test_FCGI_Service_Echo(t *testing.T) {
 	s.(*Service).Stop()
 
 	go func() { assert.NoError(t, c.Serve()) }()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+	time.Sleep(time.Second * 1)
 
 	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "0.0.0.0:6082")
 
@@ -56,6 +55,7 @@ func Test_FCGI_Service_Echo(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 201, w.Result().StatusCode)
 	assert.Equal(t, "WORLD", string(body))
+	c.Stop()
 }
 
 func Test_FCGI_Service_Request_Uri(t *testing.T) {
@@ -83,7 +83,7 @@ func Test_FCGI_Service_Request_Uri(t *testing.T) {
 	s.(*Service).Stop()
 
 	go func() { assert.NoError(t, c.Serve()) }()
-	time.Sleep(time.Millisecond * 100)
+	time.Sleep(time.Second * 1)
 
 	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "0.0.0.0:6083")
 

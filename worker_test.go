@@ -171,7 +171,7 @@ func Test_Broken(t *testing.T) {
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "undefined_function()")
 	}()
-	
+
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
 	assert.Nil(t, res)
 	assert.NotNil(t, err)
