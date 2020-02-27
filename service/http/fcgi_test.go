@@ -84,7 +84,6 @@ func Test_FCGI_Service_Request_Uri(t *testing.T) {
 
 	go func() { assert.NoError(t, c.Serve()) }()
 	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
 	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "0.0.0.0:6083")
 
@@ -102,4 +101,5 @@ func Test_FCGI_Service_Request_Uri(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 200, w.Result().StatusCode)
 	assert.Equal(t, "http://site.local/hello-world", string(body))
+	c.Stop()
 }
