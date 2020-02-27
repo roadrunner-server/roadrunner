@@ -107,7 +107,7 @@ func Test_Tcp_Failboot(t *testing.T) {
 		defer func() {
 			err3 := ls.Close()
 			if err3 != nil {
-				t.Errorf("error closing the listener: error %v", err)
+				t.Errorf("error closing the listener: error %v", err3)
 			}
 		}()
 	} else {
