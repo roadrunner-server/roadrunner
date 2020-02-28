@@ -109,8 +109,8 @@ func Test_SSL_Service_NoRedirect(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+
+	time.Sleep(time.Second)
 
 	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
 	assert.NoError(t, err)
@@ -118,10 +118,7 @@ func Test_SSL_Service_NoRedirect(t *testing.T) {
 	r, err := sslClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("fail to close the Body: error %v", err)
-		}
+
 	}()
 
 	assert.Nil(t, r.TLS)
@@ -132,6 +129,12 @@ func Test_SSL_Service_NoRedirect(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", string(b))
+
+	err2 := r.Body.Close()
+	if err2 != nil {
+		t.Errorf("fail to close the Body: error %v", err2)
+	}
+	c.Stop()
 }
 
 func Test_SSL_Service_Redirect(t *testing.T) {

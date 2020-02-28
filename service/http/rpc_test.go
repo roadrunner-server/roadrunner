@@ -128,21 +128,24 @@ func Test_RPC_Unix(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+
+	time.Sleep(time.Second)
 
 	res, _, err := get("http://localhost:6029")
 	if err != nil {
+		c.Stop()
 		t.Fatal(err)
 	}
 	if ss.rr.Workers() != nil && len(ss.rr.Workers()) > 0 {
 		assert.Equal(t, strconv.Itoa(*ss.rr.Workers()[0].Pid), res)
 	} else {
+		c.Stop()
 		t.Fatal("no workers initialized")
 	}
 
 	cl, err := rs.Client()
 	if err != nil {
+		c.Stop()
 		t.Fatal(err)
 	}
 
@@ -152,10 +155,12 @@ func Test_RPC_Unix(t *testing.T) {
 
 	res2, _, err := get("http://localhost:6029")
 	if err != nil {
+		c.Stop()
 		t.Fatal(err)
 	}
 	assert.Equal(t, strconv.Itoa(*ss.rr.Workers()[0].Pid), res2)
 	assert.NotEqual(t, res, res2)
+	c.Stop()
 }
 
 func Test_Workers(t *testing.T) {

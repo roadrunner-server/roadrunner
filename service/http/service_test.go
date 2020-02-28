@@ -351,8 +351,7 @@ func Test_Service_Middleware(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+	time.Sleep(time.Second)
 
 	req, err := http.NewRequest("GET", "http://localhost:6032?hello=world", nil)
 	assert.NoError(t, err)
@@ -386,8 +385,10 @@ func Test_Service_Middleware(t *testing.T) {
 
 	err = r.Body.Close()
 	if err != nil {
+		c.Stop()
 		t.Errorf("error closing the Body: error %v", err)
 	}
+	c.Stop()
 }
 
 func Test_Service_Listener(t *testing.T) {
