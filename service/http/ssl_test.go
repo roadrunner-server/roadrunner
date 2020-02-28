@@ -84,7 +84,7 @@ func Test_SSL_Service_NoRedirect(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
-			"address": ":6029",
+			"address": ":6030",
 			"ssl": {
 				"port": 6900,
 				"key": "fixtures/server.key",
@@ -112,7 +112,7 @@ func Test_SSL_Service_NoRedirect(t *testing.T) {
 
 	time.Sleep(time.Second)
 
-	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://localhost:6030?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := sslClient.Do(req)
@@ -145,7 +145,7 @@ func Test_SSL_Service_Redirect(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
-			"address": ":6029",
+			"address": ":6031",
 			"ssl": {
 				"port": 6900,
 				"redirect": true,
@@ -174,7 +174,7 @@ func Test_SSL_Service_Redirect(t *testing.T) {
 
 	time.Sleep(time.Second)
 
-	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://localhost:6031?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := sslClient.Do(req)
@@ -207,7 +207,7 @@ func Test_SSL_Service_Push(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
-			"address": ":6029",
+			"address": ":6032",
 			"ssl": {
 				"port": 6900,
 				"redirect": true,
