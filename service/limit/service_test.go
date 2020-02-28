@@ -147,7 +147,7 @@ func Test_Service_ListenerPlusTTL(t *testing.T) {
 	}()
 
 
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond * 100)
 
 	lastPID := getPID(s)
 
