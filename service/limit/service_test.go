@@ -57,7 +57,7 @@ func Test_Service_PidEcho(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{
 		httpCfg: `{
-			"address": ":6029",
+			"address": ":7029",
 			"workers":{
 				"command": "php ../../tests/http/client.php pid pipes",
 				"pool": {"numWorkers": 1}
@@ -83,7 +83,7 @@ func Test_Service_PidEcho(t *testing.T) {
 	}()
 
 	time.Sleep(time.Millisecond * 100)
-	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
+	req, err := http.NewRequest("GET", "http://localhost:7029", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -113,7 +113,7 @@ func Test_Service_ListenerPlusTTL(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{
 		httpCfg: `{
-			"address": ":6029",
+			"address": ":7030",
 			"workers":{
 				"command": "php ../../tests/http/client.php pid pipes",
 				"pool": {"numWorkers": 1}
@@ -151,7 +151,7 @@ func Test_Service_ListenerPlusTTL(t *testing.T) {
 
 	lastPID := getPID(s)
 
-	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
+	req, err := http.NewRequest("GET", "http://localhost:7030", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -165,7 +165,7 @@ func Test_Service_ListenerPlusTTL(t *testing.T) {
 	<-captured
 
 	// clean state
-	req, err = http.NewRequest("GET", "http://localhost:6029?new", nil)
+	req, err = http.NewRequest("GET", "http://localhost:7030?new", nil)
 	assert.NoError(t, err)
 
 	_, err = http.DefaultClient.Do(req)
@@ -191,7 +191,7 @@ func Test_Service_ListenerPlusIdleTTL(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{
 		httpCfg: `{
-			"address": ":6029",
+			"address": ":7031",
 			"workers":{
 				"command": "php ../../tests/http/client.php pid pipes",
 				"pool": {"numWorkers": 1}
@@ -229,7 +229,7 @@ func Test_Service_ListenerPlusIdleTTL(t *testing.T) {
 
 	lastPID := getPID(s)
 
-	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
+	req, err := http.NewRequest("GET", "http://localhost:7031", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -244,7 +244,7 @@ func Test_Service_ListenerPlusIdleTTL(t *testing.T) {
 	<-captured
 
 	// clean state
-	req, err = http.NewRequest("GET", "http://localhost:6029?new", nil)
+	req, err = http.NewRequest("GET", "http://localhost:7031?new", nil)
 	assert.NoError(t, err)
 
 	_, err = http.DefaultClient.Do(req)
@@ -269,7 +269,7 @@ func Test_Service_Listener_MaxExecTTL(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{
 		httpCfg: `{
-			"address": ":6029",
+			"address": ":7032",
 			"workers":{
 				"command": "php ../../tests/http/client.php stuck pipes",
 				"pool": {"numWorkers": 1}
@@ -304,7 +304,7 @@ func Test_Service_Listener_MaxExecTTL(t *testing.T) {
 
 	time.Sleep(time.Millisecond * 100)
 
-	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
+	req, err := http.NewRequest("GET", "http://localhost:7032", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -326,7 +326,7 @@ func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{
 		httpCfg: `{
-			"address": ":6029",
+			"address": ":7033",
 			"workers":{
 				"command": "php ../../tests/http/client.php memleak pipes",
 				"pool": {"numWorkers": 1}
@@ -365,7 +365,7 @@ func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
 
 	lastPID := getPID(s)
 
-	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
+	req, err := http.NewRequest("GET", "http://localhost:7033", nil)
 	assert.NoError(t, err)
 
 	for {
