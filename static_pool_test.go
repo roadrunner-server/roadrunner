@@ -151,11 +151,10 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 		cfg,
 	)
 	assert.NoError(t, err)
-	defer p.Destroy()
-
 	assert.NotNil(t, p)
 
 	done := make(chan interface{})
+
 	p.Listen(func(e int, ctx interface{}) {
 		if err, ok := ctx.(error); ok {
 			if strings.Contains(err.Error(), "undefined_function()") {
@@ -170,7 +169,9 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.Nil(t, res)
 
 	<-done
+	p.Destroy()
 }
+
 
 func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	p, err := NewPool(
