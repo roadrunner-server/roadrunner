@@ -376,8 +376,8 @@ func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
 				c.Stop()
 				t.Errorf("error during sending the http request: error %v", err)
 			}
-			c.Stop()
 			assert.NotEqual(t, lastPID, getPID(s))
+			c.Stop()
 			return
 		default:
 			_, err := http.DefaultClient.Do(req)
