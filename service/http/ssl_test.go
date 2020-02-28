@@ -236,7 +236,7 @@ func Test_SSL_Service_Push(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "https://localhost:6900?hello=world", nil)
+	req, err := http.NewRequest("GET", "https://localhost:6903?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := sslClient.Do(req)
