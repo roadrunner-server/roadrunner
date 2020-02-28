@@ -228,6 +228,7 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 	}
 
 	done := make(chan interface{})
+
 	go func() {
 		if p != nil {
 			_, err := p.Exec(&Payload{Body: []byte("100")})
@@ -236,17 +237,17 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 		} else {
 			panic("Pool is nil")
 		}
+
+		// to ensure that worker is already busy
+		time.Sleep(time.Millisecond * 100)
+
+		_, err = p.Exec(&Payload{Body: []byte("10")})
+		if err == nil {
+			t.Fatal("Test_StaticPool_AllocateTimeout exec should raise error")
+		}
+		assert.Contains(t, err.Error(), "worker timeout")
 	}()
 
-
-	// to ensure that worker is already busy
-	time.Sleep(time.Millisecond * 10)
-
-	_, err = p.Exec(&Payload{Body: []byte("10")})
-	if err == nil {
-		t.Fatal("Test_StaticPool_AllocateTimeout exec should raise error")
-	}
-	assert.Contains(t, err.Error(), "worker timeout")
 
 	<-done
 	p.Destroy()
