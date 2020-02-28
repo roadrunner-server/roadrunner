@@ -81,26 +81,26 @@ func Test_Service_PidEcho(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
+	time.Sleep(time.Second)
 	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("error during the body closing: error %v", err)
-		}
-	}()
+
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
 
 	assert.NoError(t, err)
 	assert.Equal(t, getPID(s), string(b))
+
+	err2 := r.Body.Close()
+	if err2 != nil {
+		t.Errorf("error during the body closing: error %v", err2)
+	}
+	c.Stop()
 }
 
 func Test_Service_ListenerPlusTTL(t *testing.T) {
@@ -145,8 +145,9 @@ func Test_Service_ListenerPlusTTL(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+
+
+	time.Sleep(time.Second)
 
 	lastPID := getPID(s)
 
@@ -155,12 +156,7 @@ func Test_Service_ListenerPlusTTL(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("error during the body closing: error %v", err)
-		}
-	}()
+
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -176,6 +172,13 @@ func Test_Service_ListenerPlusTTL(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.NotEqual(t, lastPID, getPID(s))
+
+	c.Stop()
+
+	err2 := r.Body.Close()
+	if err2 != nil {
+		t.Errorf("error during the body closing: error %v", err2)
+	}
 }
 
 func Test_Service_ListenerPlusIdleTTL(t *testing.T) {
@@ -220,8 +223,9 @@ func Test_Service_ListenerPlusIdleTTL(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+
+
+	time.Sleep(time.Second)
 
 	lastPID := getPID(s)
 
@@ -230,12 +234,6 @@ func Test_Service_ListenerPlusIdleTTL(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("error during the body closing: error %v", err)
-		}
-	}()
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
@@ -253,6 +251,12 @@ func Test_Service_ListenerPlusIdleTTL(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.NotEqual(t, lastPID, getPID(s))
+
+	c.Stop()
+	err2 := r.Body.Close()
+	if err2 != nil {
+		t.Errorf("error during the body closing: error %v", err2)
+	}
 }
 
 func Test_Service_Listener_MaxExecTTL(t *testing.T) {
@@ -297,8 +301,8 @@ func Test_Service_Listener_MaxExecTTL(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+
+	time.Sleep(time.Second)
 
 	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
 	assert.NoError(t, err)
@@ -308,6 +312,8 @@ func Test_Service_Listener_MaxExecTTL(t *testing.T) {
 	assert.Equal(t, 500, r.StatusCode)
 
 	<-captured
+
+	c.Stop()
 }
 
 func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
@@ -354,8 +360,8 @@ func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+
+	time.Sleep(time.Second)
 
 	lastPID := getPID(s)
 
@@ -367,15 +373,20 @@ func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
 		case <-captured:
 			_, err := http.DefaultClient.Do(req)
 			if err != nil {
+				c.Stop()
 				t.Errorf("error during sending the http request: error %v", err)
 			}
+			c.Stop()
 			assert.NotEqual(t, lastPID, getPID(s))
 			return
 		default:
 			_, err := http.DefaultClient.Do(req)
 			if err != nil {
+				c.Stop()
 				t.Errorf("error during sending the http request: error %v", err)
 			}
+			c.Stop()
+			return
 		}
 	}
 }
