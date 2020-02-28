@@ -391,6 +391,10 @@ func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
 	}
 }
 func getPID(s interface{}) string {
-	w := s.(*rrhttp.Service).Server().Workers()[0]
-	return fmt.Sprintf("%v", *w.Pid)
+	if len(s.(*rrhttp.Service).Server().Workers()) > 0 {
+		w := s.(*rrhttp.Service).Server().Workers()[0]
+		return fmt.Sprintf("%v", *w.Pid)
+	} else {
+		panic("no workers")
+	}
 }
