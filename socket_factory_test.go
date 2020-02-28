@@ -202,7 +202,6 @@ func Test_Tcp_Broken(t *testing.T) {
 
 	assert.Error(t, err)
 	assert.Nil(t, res)
-	return
 }
 
 func Test_Tcp_Echo(t *testing.T) {

@@ -233,7 +233,7 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 			assert.NoError(t, err)
 			close(done)
 		} else {
-			t.Fatal("Pool is nil")
+			panic("Pool is nil")
 		}
 	}()
 
