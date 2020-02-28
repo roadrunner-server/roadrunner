@@ -82,7 +82,7 @@ func Test_Service_PidEcho(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond * 100)
 	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
 	assert.NoError(t, err)
 
@@ -225,7 +225,7 @@ func Test_Service_ListenerPlusIdleTTL(t *testing.T) {
 	}()
 
 
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond * 100)
 
 	lastPID := getPID(s)
 
@@ -302,7 +302,7 @@ func Test_Service_Listener_MaxExecTTL(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond * 100)
 
 	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
 	assert.NoError(t, err)
@@ -361,7 +361,7 @@ func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond * 100)
 
 	lastPID := getPID(s)
 
