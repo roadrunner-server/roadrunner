@@ -86,7 +86,7 @@ func Test_SSL_Service_NoRedirect(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"address": ":6030",
 			"ssl": {
-				"port": 6900,
+				"port": 6901,
 				"key": "fixtures/server.key",
 				"cert": "fixtures/server.crt"
 			},
@@ -147,7 +147,7 @@ func Test_SSL_Service_Redirect(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"address": ":6031",
 			"ssl": {
-				"port": 6900,
+				"port": 6902,
 				"redirect": true,
 				"key": "fixtures/server.key",
 				"cert": "fixtures/server.crt"
@@ -209,7 +209,7 @@ func Test_SSL_Service_Push(t *testing.T) {
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"address": ":6032",
 			"ssl": {
-				"port": 6900,
+				"port": 6903,
 				"redirect": true,
 				"key": "fixtures/server.key",
 				"cert": "fixtures/server.crt"
