@@ -67,7 +67,7 @@ func Test_Files(t *testing.T) {
 		static: `{"enable":true, "dir":"../../tests", "forbid":[]}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":8029",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -94,7 +94,7 @@ func Test_Files(t *testing.T) {
 	time.Sleep(time.Second)
 
 
-	b, _, _ := get("http://localhost:6029/sample.txt")
+	b, _, _ := get("http://localhost:8029/sample.txt")
 	assert.Equal(t, "sample", b)
 	c.Stop()
 }
@@ -127,7 +127,7 @@ func Test_Files_Disable(t *testing.T) {
 		static: `{"enable":false, "dir":"../../tests", "forbid":[".php"]}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":8030",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -153,7 +153,7 @@ func Test_Files_Disable(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	b, _, _ := get("http://localhost:6029/client.php?hello=world")
+	b, _, _ := get("http://localhost:8030/client.php?hello=world")
 	assert.Equal(t, "WORLD", b)
 }
 
@@ -169,7 +169,7 @@ func Test_Files_Error(t *testing.T) {
 		static: `{"enable":true, "dir":"dir/invalid", "forbid":[".php"]}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":8031",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -199,7 +199,7 @@ func Test_Files_Error2(t *testing.T) {
 		static: `{"enable":true, "dir":"dir/invalid", "forbid":[".php"]`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":8032",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -229,7 +229,7 @@ func Test_Files_Forbid(t *testing.T) {
 		static: `{"enable":true, "dir":"../../tests", "forbid":[".php"]}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":8033",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -255,7 +255,7 @@ func Test_Files_Forbid(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	b, _, _ := get("http://localhost:6029/client.php?hello=world")
+	b, _, _ := get("http://localhost:8033/client.php?hello=world")
 	assert.Equal(t, "WORLD", b)
 }
 
@@ -271,7 +271,7 @@ func Test_Files_Always(t *testing.T) {
 		static: `{"enable":true, "dir":"../../tests", "forbid":[".php"], "always":[".ico"]}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":8034",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -297,7 +297,7 @@ func Test_Files_Always(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	_, r, _ := get("http://localhost:6029/favicon.ico")
+	_, r, _ := get("http://localhost:8034/favicon.ico")
 	assert.Equal(t, 404, r.StatusCode)
 }
 
@@ -313,7 +313,7 @@ func Test_Files_NotFound(t *testing.T) {
 		static: `{"enable":true, "dir":"../../tests", "forbid":[".php"]}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":8035",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -339,7 +339,7 @@ func Test_Files_NotFound(t *testing.T) {
 
 	time.Sleep(time.Second)
 
-	b, _, _ := get("http://localhost:6029/client.XXX?hello=world")
+	b, _, _ := get("http://localhost:8035/client.XXX?hello=world")
 	assert.Equal(t, "WORLD", b)
 	c.Stop()
 }
@@ -356,7 +356,7 @@ func Test_Files_Dir(t *testing.T) {
 		static: `{"enable":true, "dir":"../../tests", "forbid":[".php"]}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":8036",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -381,7 +381,7 @@ func Test_Files_Dir(t *testing.T) {
 	}()
 	time.Sleep(time.Second)
 
-	b, _, _ := get("http://localhost:6029/http?hello=world")
+	b, _, _ := get("http://localhost:8036/http?hello=world")
 	assert.Equal(t, "WORLD", b)
 	c.Stop()
 }
@@ -398,7 +398,7 @@ func Test_Files_NotForbid(t *testing.T) {
 		static: `{"enable":true, "dir":"../../tests", "forbid":[]}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":8037",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -424,7 +424,7 @@ func Test_Files_NotForbid(t *testing.T) {
 
 	time.Sleep(time.Second)
 
-	b, _, _ := get("http://localhost:6029/client.php")
+	b, _, _ := get("http://localhost:8037/client.php")
 	assert.Equal(t, all("../../tests/client.php"), b)
 	assert.Equal(t, all("../../tests/client.php"), b)
 	c.Stop()
