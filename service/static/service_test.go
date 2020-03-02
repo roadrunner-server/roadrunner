@@ -90,11 +90,13 @@ func Test_Files(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+
+	time.Sleep(time.Second)
+
 
 	b, _, _ := get("http://localhost:6029/sample.txt")
 	assert.Equal(t, "sample", b)
+	c.Stop()
 }
 
 func Test_Disabled(t *testing.T) {
@@ -334,11 +336,12 @@ func Test_Files_NotFound(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+
+	time.Sleep(time.Second)
 
 	b, _, _ := get("http://localhost:6029/client.XXX?hello=world")
 	assert.Equal(t, "WORLD", b)
+	c.Stop()
 }
 
 func Test_Files_Dir(t *testing.T) {
@@ -376,11 +379,11 @@ func Test_Files_Dir(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+	time.Sleep(time.Second)
 
 	b, _, _ := get("http://localhost:6029/http?hello=world")
 	assert.Equal(t, "WORLD", b)
+	c.Stop()
 }
 
 func Test_Files_NotForbid(t *testing.T) {
@@ -418,11 +421,13 @@ func Test_Files_NotForbid(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+
+	time.Sleep(time.Second)
 
 	b, _, _ := get("http://localhost:6029/client.php")
 	assert.Equal(t, all("../../tests/client.php"), b)
+	assert.Equal(t, all("../../tests/client.php"), b)
+	c.Stop()
 }
 
 func tmpDir() string {

@@ -46,7 +46,7 @@ func Test_RequestHeaders(t *testing.T) {
 		headers: `{"request":{"input": "custom-header"}}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6078",
 			"maxRequestSize": 1024,
 			"workers":{
 				"command": "php ../../tests/http/client.php header pipes",
@@ -68,7 +68,7 @@ func Test_RequestHeaders(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6029?hello=value", nil)
+	req, err := http.NewRequest("GET", "http://localhost:6078?hello=value", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -100,7 +100,7 @@ func Test_ResponseHeaders(t *testing.T) {
 		headers: `{"response":{"output": "output-header"},"request":{"input": "custom-header"}}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6079",
 			"maxRequestSize": 1024,
 			"workers":{
 				"command": "php ../../tests/http/client.php header pipes",
@@ -122,7 +122,7 @@ func Test_ResponseHeaders(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6029?hello=value", nil)
+	req, err := http.NewRequest("GET", "http://localhost:6079?hello=value", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -164,7 +164,7 @@ func TestCORS_OPTIONS(t *testing.T) {
 }`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6379",
 			"maxRequestSize": 1024,
 			"workers":{
 				"command": "php ../../tests/http/client.php headers pipes",
@@ -186,7 +186,7 @@ func TestCORS_OPTIONS(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	req, err := http.NewRequest("OPTIONS", "http://localhost:6029", nil)
+	req, err := http.NewRequest("OPTIONS", "http://localhost:6379", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -232,7 +232,7 @@ func TestCORS_Pass(t *testing.T) {
 }`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6672",
 			"maxRequestSize": 1024,
 			"workers":{
 				"command": "php ../../tests/http/client.php headers pipes",
@@ -254,18 +254,11 @@ func TestCORS_Pass(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
+	req, err := http.NewRequest("GET", "http://localhost:6672", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("error during the body closing: error %v", err)
-		}
-	}()
-
 	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
 	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
 	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
@@ -275,4 +268,9 @@ func TestCORS_Pass(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, 200, r.StatusCode)
+
+	err = r.Body.Close()
+	if err != nil {
+		t.Errorf("error during the body closing: error %v", err)
+	}
 }

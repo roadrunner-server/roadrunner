@@ -52,16 +52,15 @@ func Test_Service_H2C(t *testing.T) {
 	req.Header.Add("Connection", "HTTP2-Settings")
 	req.Header.Add("HTTP2-Settings", "")
 
-	r, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("fail to close the Body: error %v", err)
-		}
-	}()
+	r, err2 := http.DefaultClient.Do(req)
+	if err2 != nil {
+		t.Fatal(err2)
+	}
 
 	assert.Equal(t, "101 Switching Protocols", r.Status)
 
-	// will fail with h2c notice
+	err3 := r.Body.Close()
+	if err3 != nil {
+		t.Errorf("fail to close the Body: error %v", err3)
+	}
 }

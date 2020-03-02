@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"testing"
+	"time"
 )
 
 func Test_Pipe_Start(t *testing.T) {
@@ -108,8 +109,9 @@ func Test_Pipe_Broken(t *testing.T) {
 		assert.Contains(t, err.Error(), "undefined_function()")
 	}()
 	defer func() {
+		time.Sleep(time.Second)
 		err := w.Stop()
-		assert.Error(t, err)
+		assert.NoError(t, err)
 	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})

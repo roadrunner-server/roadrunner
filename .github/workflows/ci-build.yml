@@ -4,100 +4,101 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: Build (PHP ${{ matrix.php }}, Go ${{ matrix.go }})
-    runs-on: ubuntu-latest
+    name: Build (PHP ${{ matrix.php }}, Go ${{ matrix.go }}, OS ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         php: [7.1, 7.2, 7.3, 7.4]
-        go: [1.12, 1.13]
+        go: [1.13, 1.14]
+        os: [ubuntu-latest, macOS-latest]
     env:
       GO111MODULE: on
     steps:
-    - name: Set up Go ${{ matrix.go }}
-      uses: actions/setup-go@v1
-      with:
-        go-version: ${{ matrix.go }}
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go }}
 
-    - name: Set up PHP ${{ matrix.php }}
-      uses: shivammathur/setup-php@v1
-      with:
-        php-version: ${{ matrix.php }}
-        extensions: dom
-        coverage: xdebug
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v1
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom
+          coverage: xdebug
 
-    - name: Check out code
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 1
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
 
-    - name: Show versions
-      run: php -v && composer -V && go version
+      - name: Show versions
+        run: php -v ; composer -V ; go version
 
-    - name: Debug if needed
-      env:
-        DEBUG: ${{ secrets.DEBUG }}
-      run: if [[ "$DEBUG" == "true" ]]; then env && go env; fi
+      - name: Debug if needed
+        env:
+          DEBUG: ${{ secrets.DEBUG }}
+        run: if [[ "$DEBUG" == "true" ]]; then env && go env; fi
 
-    - name: Syntax check only (lint)
-      run: find ./src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
+      - name: Syntax check only (lint)
+        run: find ./src/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
 
-    - name: Get Composer Cache Directory # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
-      id: composer-cache
-      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Get Composer Cache Directory # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-    - name: Cache dependencies # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
-      uses: actions/cache@v1
-      with:
-        path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-        restore-keys: ${{ runner.os }}-composer-
+      - name: Cache dependencies # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
 
-    - name: Install Composer dependencies
-      run: composer install --prefer-dist --no-interaction --no-suggest # --prefer-source
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-suggest # --prefer-source
 
-    - name: Analyze PHP sources
-      run: composer analyze
+      - name: Analyze PHP sources
+        run: composer analyze
 
-    - name: Install Go dependencies
-      run: go mod download
+      - name: Install Go dependencies
+        run: go mod download
 
-    - name: Download binary roadrunner
-      run: php ./bin/rr get-binary
+      - name: Download binary roadrunner
+        run: php ./bin/rr get-binary
 
-    - name: Run golang tests
-      run: |
-        go test -race -v -coverprofile=lib.txt -covermode=atomic
-        go test ./util -race -v -coverprofile=util.txt -covermode=atomic
-        go test ./service -race -v -coverprofile=service.txt -covermode=atomic
-        go test ./service/env -race -v -coverprofile=env.txt -covermode=atomic
-        go test ./service/rpc -race -v -coverprofile=rpc.txt -covermode=atomic
-        go test ./service/http -race -v -coverprofile=http.txt -covermode=atomic
-        go test ./service/static -race -v -coverprofile=static.txt -covermode=atomic
-        go test ./service/limit -race -v -coverprofile=limit.txt -covermode=atomic
-        go test ./service/headers -race -v -coverprofile=headers.txt -covermode=atomic
-        go test ./service/metrics -race -v -coverprofile=metrics.txt -covermode=atomic
-        go test ./service/health -race -v -coverprofile=health.txt -covermode=atomic
+      - name: Run golang tests
+        run: |
+          go test -race -v -coverprofile=lib.txt -covermode=atomic
+          go test ./util -race -v -coverprofile=util.txt -covermode=atomic
+          go test ./service -race -v -coverprofile=service.txt -covermode=atomic
+          go test ./service/env -race -v -coverprofile=env.txt -covermode=atomic
+          go test ./service/rpc -race -v -coverprofile=rpc.txt -covermode=atomic
+          go test ./service/http -race -v -coverprofile=http.txt -covermode=atomic
+          go test ./service/static -race -v -coverprofile=static.txt -covermode=atomic
+          go test ./service/limit -race -v -coverprofile=limit.txt -covermode=atomic
+          go test ./service/headers -race -v -coverprofile=headers.txt -covermode=atomic
+          go test ./service/metrics -race -v -coverprofile=metrics.txt -covermode=atomic
+          go test ./service/health -race -v -coverprofile=health.txt -covermode=atomic
 
-    - name: Run code coverage
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      run: |
-        if [[ "$CODECOV_TOKEN" != "" ]]; then
-          curl https://codecov.io/bash -o codecov-bash
-          chmod +x codecov-bash
-          ./codecov-bash -f lib.txt
-          ./codecov-bash -f util.txt
-          ./codecov-bash -f service.txt
-          ./codecov-bash -f env.txt
-          ./codecov-bash -f rpc.txt
-          ./codecov-bash -f http.txt
-          ./codecov-bash -f static.txt
-          ./codecov-bash -f limit.txt
-          ./codecov-bash -f headers.txt
-          ./codecov-bash -f metrics.txt
-          ./codecov-bash -f health.txt
-        fi
+      - name: Run code coverage
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          if [[ "$CODECOV_TOKEN" != "" ]]; then
+            curl https://codecov.io/bash -o codecov-bash
+            chmod +x codecov-bash
+            ./codecov-bash -f lib.txt
+            ./codecov-bash -f util.txt
+            ./codecov-bash -f service.txt
+            ./codecov-bash -f env.txt
+            ./codecov-bash -f rpc.txt
+            ./codecov-bash -f http.txt
+            ./codecov-bash -f static.txt
+            ./codecov-bash -f limit.txt
+            ./codecov-bash -f headers.txt
+            ./codecov-bash -f metrics.txt
+            ./codecov-bash -f health.txt
+          fi
 
   golangci-check:
     name: runner / golangci-lint

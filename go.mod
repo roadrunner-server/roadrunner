@@ -19,6 +19,7 @@ require (
 	github.com/spf13/viper v1.6.2
 	github.com/spiral/goridge v2.1.4+incompatible
 	github.com/stretchr/testify v1.5.1
+	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/yookoala/gofast v0.4.0
 	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0
 )

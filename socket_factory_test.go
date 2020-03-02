@@ -105,9 +105,9 @@ func Test_Tcp_Failboot(t *testing.T) {
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer func() {
-			err := ls.Close()
-			if err != nil {
-				t.Errorf("error closing the listener: error %v", err)
+			err3 := ls.Close()
+			if err3 != nil {
+				t.Errorf("error closing the listener: error %v", err3)
 			}
 		}()
 	} else {
@@ -116,10 +116,10 @@ func Test_Tcp_Failboot(t *testing.T) {
 
 	cmd := exec.Command("php", "tests/failboot.php")
 
-	w, err := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
+	w, err2 := NewSocketFactory(ls, time.Minute).SpawnWorker(cmd)
 	assert.Nil(t, w)
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "failboot")
+	assert.Error(t, err2)
+	assert.Contains(t, err2.Error(), "failboot")
 }
 
 func Test_Tcp_Timeout(t *testing.T) {
@@ -193,8 +193,9 @@ func Test_Tcp_Broken(t *testing.T) {
 	}()
 
 	defer func() {
-		err = w.Stop()
-		assert.Error(t, err)
+		time.Sleep(time.Second)
+		err2 := w.Stop()
+		assert.NoError(t, err2)
 	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
@@ -375,8 +376,9 @@ func Test_Unix_Broken(t *testing.T) {
 	}()
 
 	defer func() {
+		time.Sleep(time.Second)
 		err = w.Stop()
-		assert.Error(t, err)
+		assert.NoError(t, err)
 	}()
 
 	res, err := w.Exec(&Payload{Body: []byte("hello")})

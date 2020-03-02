@@ -55,10 +55,13 @@ func Test_RPC(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	res, _, _ := get("http://localhost:6029")
+	time.Sleep(time.Second)
+
+	res, _, err := get("http://localhost:6029")
+	if err != nil {
+		t.Fatal(err)
+	}
 	assert.Equal(t, strconv.Itoa(*ss.rr.Workers()[0].Pid), res)
 
 	cl, err := rs.Client()
@@ -68,9 +71,13 @@ func Test_RPC(t *testing.T) {
 	assert.NoError(t, cl.Call("http.Reset", true, &r))
 	assert.Equal(t, "OK", r)
 
-	res2, _, _ := get("http://localhost:6029")
+	res2, _, err := get("http://localhost:6029")
+	if err != nil {
+		t.Fatal()
+	}
 	assert.Equal(t, strconv.Itoa(*ss.rr.Workers()[0].Pid), res2)
 	assert.NotEqual(t, res, res2)
+	c.Stop()
 }
 
 func Test_RPC_Unix(t *testing.T) {
@@ -121,22 +128,39 @@ func Test_RPC_Unix(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	res, _, _ := get("http://localhost:6029")
-	assert.Equal(t, strconv.Itoa(*ss.rr.Workers()[0].Pid), res)
+	time.Sleep(time.Second)
+
+	res, _, err := get("http://localhost:6029")
+	if err != nil {
+		c.Stop()
+		t.Fatal(err)
+	}
+	if ss.rr.Workers() != nil && len(ss.rr.Workers()) > 0 {
+		assert.Equal(t, strconv.Itoa(*ss.rr.Workers()[0].Pid), res)
+	} else {
+		c.Stop()
+		t.Fatal("no workers initialized")
+	}
 
 	cl, err := rs.Client()
-	assert.NoError(t, err)
+	if err != nil {
+		c.Stop()
+		t.Fatal(err)
+	}
 
 	r := ""
 	assert.NoError(t, cl.Call("http.Reset", true, &r))
 	assert.Equal(t, "OK", r)
 
-	res2, _, _ := get("http://localhost:6029")
+	res2, _, err := get("http://localhost:6029")
+	if err != nil {
+		c.Stop()
+		t.Fatal(err)
+	}
 	assert.Equal(t, strconv.Itoa(*ss.rr.Workers()[0].Pid), res2)
 	assert.NotEqual(t, res, res2)
+	c.Stop()
 }
 
 func Test_Workers(t *testing.T) {

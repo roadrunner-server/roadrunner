@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"testing"
+	"time"
 )
 
 func Test_GetState(t *testing.T) {
@@ -160,21 +161,23 @@ func Test_Echo_Slow(t *testing.T) {
 func Test_Broken(t *testing.T) {
 	cmd := exec.Command("php", "tests/client.php", "broken", "pipes")
 
-	w, _ := NewPipeFactory().SpawnWorker(cmd)
+	w, err := NewPipeFactory().SpawnWorker(cmd)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	go func() {
 		err := w.Wait()
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "undefined_function()")
 	}()
 
-	defer func() {
-		err := w.Stop()
-		assert.Error(t, err)
-	}()
-
 	res, err := w.Exec(&Payload{Body: []byte("hello")})
 	assert.Nil(t, res)
 	assert.NotNil(t, err)
+
+	time.Sleep(time.Second)
+	assert.NoError(t, w.Stop())
 }
 
 func Test_OnStarted(t *testing.T) {

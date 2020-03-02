@@ -129,7 +129,6 @@ func Test_Get_FileEvent(t *testing.T) {
 					panic("didn't handle event when write file2")
 				}
 				w.Stop()
-				return
 			}
 		}()
 	}()
@@ -224,7 +223,7 @@ func Test_FileExtensionFilter(t *testing.T) {
 			}
 		}()
 		w.Stop()
-		return
+		runtime.Goexit()
 	}()
 
 	err = w.StartPolling(time.Second)

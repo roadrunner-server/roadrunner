@@ -84,9 +84,9 @@ func Test_SSL_Service_NoRedirect(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
-			"address": ":6029",
+			"address": ":6030",
 			"ssl": {
-				"port": 6900,
+				"port": 6901,
 				"key": "fixtures/server.key",
 				"cert": "fixtures/server.crt"
 			},
@@ -109,19 +109,16 @@ func Test_SSL_Service_NoRedirect(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
+	time.Sleep(time.Second)
+
+	req, err := http.NewRequest("GET", "http://localhost:6030?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := sslClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("fail to close the Body: error %v", err)
-		}
+
 	}()
 
 	assert.Nil(t, r.TLS)
@@ -132,6 +129,12 @@ func Test_SSL_Service_NoRedirect(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", string(b))
+
+	err2 := r.Body.Close()
+	if err2 != nil {
+		t.Errorf("fail to close the Body: error %v", err2)
+	}
+	c.Stop()
 }
 
 func Test_SSL_Service_Redirect(t *testing.T) {
@@ -142,9 +145,9 @@ func Test_SSL_Service_Redirect(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
-			"address": ":6029",
+			"address": ":6031",
 			"ssl": {
-				"port": 6900,
+				"port": 6902,
 				"redirect": true,
 				"key": "fixtures/server.key",
 				"cert": "fixtures/server.crt"
@@ -168,19 +171,16 @@ func Test_SSL_Service_Redirect(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
+	time.Sleep(time.Second)
+
+	req, err := http.NewRequest("GET", "http://localhost:6031?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := sslClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("fail to close the Body: error %v", err)
-		}
+
 	}()
 
 	assert.NotNil(t, r.TLS)
@@ -191,6 +191,12 @@ func Test_SSL_Service_Redirect(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", string(b))
+
+	err2 := r.Body.Close()
+	if err2 != nil {
+		t.Errorf("fail to close the Body: error %v", err2)
+	}
+	c.Stop()
 }
 
 func Test_SSL_Service_Push(t *testing.T) {
@@ -201,9 +207,9 @@ func Test_SSL_Service_Push(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
-			"address": ":6029",
+			"address": ":6032",
 			"ssl": {
-				"port": 6900,
+				"port": 6903,
 				"redirect": true,
 				"key": "fixtures/server.key",
 				"cert": "fixtures/server.crt"
@@ -230,7 +236,7 @@ func Test_SSL_Service_Push(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "https://localhost:6900?hello=world", nil)
+	req, err := http.NewRequest("GET", "https://localhost:6903?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := sslClient.Do(req)

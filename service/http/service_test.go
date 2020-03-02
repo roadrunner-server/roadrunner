@@ -115,7 +115,7 @@ func Test_Service_Echo(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6536",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -146,26 +146,24 @@ func Test_Service_Echo(t *testing.T) {
 		}
 	}()
 	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://localhost:6536?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("error closing the Body: error %v", err)
-		}
-	}()
-
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", string(b))
+
+	err2 := r.Body.Close()
+	if err2 != nil {
+		t.Errorf("error closing the Body: error %v", err2)
+	}
+	c.Stop()
 }
 
 func Test_Service_Env(t *testing.T) {
@@ -178,7 +176,7 @@ func Test_Service_Env(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6031",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -208,10 +206,10 @@ func Test_Service_Env(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6029", nil)
+	time.Sleep(time.Second * 1)
+
+	req, err := http.NewRequest("GET", "http://localhost:6031", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -229,6 +227,7 @@ func Test_Service_Env(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 200, r.StatusCode)
 	assert.Equal(t, "ENV_VALUE", string(b))
+	c.Stop()
 }
 
 func Test_Service_ErrorEcho(t *testing.T) {
@@ -240,7 +239,7 @@ func Test_Service_ErrorEcho(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6030",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -276,10 +275,10 @@ func Test_Service_ErrorEcho(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
+	time.Sleep(time.Second)
+
+	req, err := http.NewRequest("GET", "http://localhost:6030?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -299,6 +298,7 @@ func Test_Service_ErrorEcho(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", string(b))
+	c.Stop()
 }
 
 func Test_Service_Middleware(t *testing.T) {
@@ -310,7 +310,7 @@ func Test_Service_Middleware(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6032",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -351,10 +351,9 @@ func Test_Service_Middleware(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+	time.Sleep(time.Second)
 
-	req, err := http.NewRequest("GET", "http://localhost:6029?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://localhost:6032?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -372,7 +371,7 @@ func Test_Service_Middleware(t *testing.T) {
 		t.Errorf("error closing the Body: error %v", err)
 	}
 
-	req, err = http.NewRequest("GET", "http://localhost:6029/halt", nil)
+	req, err = http.NewRequest("GET", "http://localhost:6032/halt", nil)
 	assert.NoError(t, err)
 
 	r, err = http.DefaultClient.Do(req)
@@ -386,8 +385,10 @@ func Test_Service_Middleware(t *testing.T) {
 
 	err = r.Body.Close()
 	if err != nil {
+		c.Stop()
 		t.Errorf("error closing the Body: error %v", err)
 	}
+	c.Stop()
 }
 
 func Test_Service_Listener(t *testing.T) {
@@ -399,7 +400,7 @@ func Test_Service_Listener(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6033",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -448,7 +449,7 @@ func Test_Service_Error(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6034",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -477,7 +478,7 @@ func Test_Service_Error2(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6035",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -506,7 +507,7 @@ func Test_Service_Error3(t *testing.T) {
 
 	assert.Error(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6036",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,

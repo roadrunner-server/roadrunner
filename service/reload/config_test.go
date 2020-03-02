@@ -27,7 +27,7 @@ func Test_Config_Valid(t *testing.T) {
 func Test_Fake_ServiceConfig(t *testing.T) {
 	services := make(map[string]ServiceConfig)
 	cfg := &Config{
-		Interval: time.Second,
+		Interval: time.Microsecond,
 		Patterns: nil,
 		Services: services,
 	}
