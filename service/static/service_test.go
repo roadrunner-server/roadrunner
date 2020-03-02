@@ -150,11 +150,15 @@ func Test_Files_Disable(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	b, _, _ := get("http://localhost:8030/client.php?hello=world")
+	time.Sleep(time.Second)
+
+	b, _, err := get("http://localhost:8030/client.php?hello=world")
+	if err != nil {
+		t.Fatal(err)
+	}
 	assert.Equal(t, "WORLD", b)
+	c.Stop()
 }
 
 func Test_Files_Error(t *testing.T) {
@@ -252,11 +256,14 @@ func Test_Files_Forbid(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+	time.Sleep(time.Millisecond * 500)
 
-	b, _, _ := get("http://localhost:8033/client.php?hello=world")
+	b, _, err := get("http://localhost:8033/client.php?hello=world")
+	if err != nil {
+		t.Fatal(err)
+	}
 	assert.Equal(t, "WORLD", b)
+	c.Stop()
 }
 
 func Test_Files_Always(t *testing.T) {
@@ -294,11 +301,15 @@ func Test_Files_Always(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	_, r, _ := get("http://localhost:8034/favicon.ico")
+	time.Sleep(time.Millisecond * 500)
+
+	_, r, err := get("http://localhost:8034/favicon.ico")
+	if err != nil {
+		t.Fatal(err)
+	}
 	assert.Equal(t, 404, r.StatusCode)
+	c.Stop()
 }
 
 func Test_Files_NotFound(t *testing.T) {
@@ -337,7 +348,7 @@ func Test_Files_NotFound(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond * 500)
 
 	b, _, _ := get("http://localhost:8035/client.XXX?hello=world")
 	assert.Equal(t, "WORLD", b)
@@ -379,7 +390,7 @@ func Test_Files_Dir(t *testing.T) {
 			t.Errorf("serve error: %v", err)
 		}
 	}()
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond * 500)
 
 	b, _, _ := get("http://localhost:8036/http?hello=world")
 	assert.Equal(t, "WORLD", b)
@@ -422,7 +433,7 @@ func Test_Files_NotForbid(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond * 500)
 
 	b, _, _ := get("http://localhost:8037/client.php")
 	assert.Equal(t, all("../../tests/client.php"), b)
