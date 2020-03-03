@@ -24,9 +24,6 @@ type Config struct {
 	// HTTP2 configuration
 	HTTP2 *HTTP2Config
 
-	// Unix socket configuration
-	Unix *UnixSocketsConfig
-
 	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
 	MaxRequestSize int64
 
@@ -57,14 +54,6 @@ type HTTP2Config struct {
 
 	// MaxConcurrentStreams defaults to 128.
 	MaxConcurrentStreams uint32
-}
-
-// UnixSocketsConfig is unix sockets configuration
-type UnixSocketsConfig struct {
-	// Enabled - Enable or disable unix sockets extension
-	Enabled bool
-	// Address is a Unix socket address [rr.sock for example]
-	Address string
 }
 
 // InitDefaults sets default values for HTTP/2 configuration.
