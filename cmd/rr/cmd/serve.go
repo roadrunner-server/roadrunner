@@ -44,8 +44,8 @@ func serveHandler(cmd *cobra.Command, args []string) error {
 
 	wg := &sync.WaitGroup{}
 
+	wg.Add(1)
 	go func() {
-		wg.Add(1)
 		defer wg.Done()
 		// get the signal
 		<-c
