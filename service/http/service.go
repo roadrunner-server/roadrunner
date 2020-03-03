@@ -32,19 +32,23 @@ type middleware func(f http.HandlerFunc) http.HandlerFunc
 
 // Service manages rr, http servers.
 type Service struct {
-	cfg        *Config
-	log        *logrus.Logger
-	cprod      roadrunner.CommandProducer
-	env        env.Environment
-	lsns       []func(event int, ctx interface{})
-	mdwr       []middleware
-	mu         sync.Mutex
+	sync.Mutex
+	sync.WaitGroup
+
+	cfg   *Config
+	log   *logrus.Logger
+	cprod roadrunner.CommandProducer
+	env   env.Environment
+	lsns  []func(event int, ctx interface{})
+	mdwr  []middleware
+
 	rr         *roadrunner.Server
 	controller roadrunner.Controller
 	handler    *Handler
-	http       *http.Server
-	https      *http.Server
-	fcgi       *http.Server
+
+	http  *http.Server
+	https *http.Server
+	fcgi  *http.Server
 }
 
 // Attach attaches controller. Currently only one controller is supported.
@@ -89,7 +93,7 @@ func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Environment, log *logr
 
 // Serve serves the svc.
 func (s *Service) Serve() error {
-	s.mu.Lock()
+	s.Lock()
 
 	if s.env != nil {
 		if err := s.env.Copy(s.cfg.Workers); err != nil {
@@ -132,7 +136,7 @@ func (s *Service) Serve() error {
 		s.fcgi = &http.Server{Handler: s}
 	}
 
-	s.mu.Unlock()
+	s.Unlock()
 
 	if err := s.rr.Start(); err != nil {
 		return err
@@ -161,9 +165,9 @@ func (s *Service) Serve() error {
 
 			if httpErr != nil && httpErr != http.ErrServerClosed {
 				err <- httpErr
-			} else {
-				err <- nil
+				return
 			}
+			err <- nil
 		}()
 	}
 
@@ -172,22 +176,23 @@ func (s *Service) Serve() error {
 			httpErr := s.serveFCGI()
 			if httpErr != nil && httpErr != http.ErrServerClosed {
 				err <- httpErr
-			} else {
-				err <- nil
+				return
 			}
+			err <- nil
 		}()
 	}
-
 	return <-err
 }
 
 // Stop stops the http.
 func (s *Service) Stop() {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.Lock()
+	defer s.Unlock()
 
 	if s.fcgi != nil {
+		s.Add(1)
 		go func() {
+			defer s.Done()
 			err := s.fcgi.Shutdown(context.Background())
 			if err != nil && err != http.ErrServerClosed {
 				// Stop() error
@@ -199,7 +204,9 @@ func (s *Service) Stop() {
 	}
 
 	if s.https != nil {
+		s.Add(1)
 		go func() {
+			defer s.Done()
 			err := s.https.Shutdown(context.Background())
 			if err != nil && err != http.ErrServerClosed {
 				s.log.Error(fmt.Errorf("error shutting down the https server, error: %v", err))
@@ -209,7 +216,9 @@ func (s *Service) Stop() {
 	}
 
 	if s.http != nil {
+		s.Add(1)
 		go func() {
+			defer s.Done()
 			err := s.http.Shutdown(context.Background())
 			if err != nil && err != http.ErrServerClosed {
 				s.log.Error(fmt.Errorf("error shutting down the http server, error: %v", err))
@@ -217,12 +226,14 @@ func (s *Service) Stop() {
 			}
 		}()
 	}
+
+	s.Wait()
 }
 
 // Server returns associated rr server (if any).
 func (s *Service) Server() *roadrunner.Server {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.Lock()
+	defer s.Unlock()
 
 	return s.rr
 }

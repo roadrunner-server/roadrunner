@@ -24,6 +24,9 @@ type Config struct {
 	// HTTP2 configuration
 	HTTP2 *HTTP2Config
 
+	// Unix socket configuration
+	Unix *UnixSocketsConfig
+
 	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
 	MaxRequestSize int64
 
@@ -54,6 +57,14 @@ type HTTP2Config struct {
 
 	// MaxConcurrentStreams defaults to 128.
 	MaxConcurrentStreams uint32
+}
+
+// UnixSocketsConfig is unix sockets configuration
+type UnixSocketsConfig struct {
+	// Enabled - Enable or disable unix sockets extension
+	Enabled bool
+	// Address is a Unix socket address [rr.sock for example]
+	Address string
 }
 
 // InitDefaults sets default values for HTTP/2 configuration.
@@ -201,19 +212,19 @@ func (c *Config) IsTrusted(ip string) bool {
 // Valid validates the configuration.
 func (c *Config) Valid() error {
 	if c.Uploads == nil {
-		return errors.New("mailformed uploads config")
+		return errors.New("malformed uploads config")
 	}
 
 	if c.HTTP2 == nil {
-		return errors.New("mailformed http2 config")
+		return errors.New("malformed http2 config")
 	}
 
 	if c.Workers == nil {
-		return errors.New("mailformed workers config")
+		return errors.New("malformed workers config")
 	}
 
 	if c.Workers.Pool == nil {
-		return errors.New("mailformed workers config (pool config is missing)")
+		return errors.New("malformed workers config (pool config is missing)")
 	}
 
 	if err := c.Workers.Pool.Valid(); err != nil {
@@ -225,7 +236,7 @@ func (c *Config) Valid() error {
 	}
 
 	if c.Address != "" && !strings.Contains(c.Address, ":") {
-		return errors.New("mailformed http server address")
+		return errors.New("malformed http server address")
 	}
 
 	if c.EnableTLS() {
