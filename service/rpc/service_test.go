@@ -49,7 +49,7 @@ func Test_StopNonServing(t *testing.T) {
 
 func Test_Serve_Errors(t *testing.T) {
 	s := &Service{}
-	ok, err := s.Init(&Config{Enable: true, Listen: "mailformed"}, service.NewContainer(nil), nil)
+	ok, err := s.Init(&Config{Enable: true, Listen: "malformed"}, service.NewContainer(nil), nil)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 

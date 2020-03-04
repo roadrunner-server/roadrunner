@@ -241,7 +241,7 @@ func (w *Worker) execPayload(rqs *Payload) (rsp *Payload, err error) {
 	}
 
 	if !pr.HasFlag(goridge.PayloadControl) {
-		return nil, fmt.Errorf("mailformed worker response")
+		return nil, fmt.Errorf("malformed worker response")
 	}
 
 	if pr.HasFlag(goridge.PayloadError) {

@@ -24,10 +24,9 @@ import (
 	"github.com/spf13/cobra"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 )
-
-var stopSignal = make(chan os.Signal, 1)
 
 func init() {
 	CLI.AddCommand(&cobra.Command{
@@ -35,23 +34,30 @@ func init() {
 		Short: "Serve RoadRunner service(s)",
 		RunE:  serveHandler,
 	})
-
-	signal.Notify(stopSignal, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 }
 
 func serveHandler(cmd *cobra.Command, args []string) error {
-	stopped := make(chan interface{})
+	// https://golang.org/pkg/os/signal/#Notify
+	// should be of buffer size at least 1
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 
+	wg := &sync.WaitGroup{}
+
+	wg.Add(1)
 	go func() {
-		<-stopSignal
+		defer wg.Done()
+		// get the signal
+		<-c
 		Container.Stop()
-		close(stopped)
 	}()
 
+	// blocking operation
 	if err := Container.Serve(); err != nil {
 		return err
 	}
 
-	<-stopped
+	wg.Wait()
+
 	return nil
 }
