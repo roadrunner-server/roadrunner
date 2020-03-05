@@ -162,27 +162,31 @@ func (c *container) Serve() error {
 		done       = make(chan interface{}, len(c.services))
 	)
 
+	mu := &sync.Mutex{}
+
 	for _, e := range c.services {
 		if e.hasStatus(StatusOK) && e.canServe() {
-			numServing++
+			c.log.Debugf("[%s]: started", e.name)
+			go func(e *entry) {
+				mu.Lock()
+				e.setStatus(StatusServing)
+				numServing++
+				mu.Unlock()
+				defer e.setStatus(StatusStopped)
+
+				if err := e.svc.(Service).Serve(); err != nil {
+					c.log.Errorf("[%s]: %s", e.name, err)
+					done <- errors.Wrap(err, fmt.Sprintf("[%s]", e.name))
+				} else {
+					done <- nil
+				}
+			}(e)
 		} else {
 			continue
 		}
-
-		c.log.Debugf("[%s]: started", e.name)
-		go func(e *entry) {
-			e.setStatus(StatusServing)
-			defer e.setStatus(StatusStopped)
-
-			if err := e.svc.(Service).Serve(); err != nil {
-				c.log.Errorf("[%s]: %s", e.name, err)
-				done <- errors.Wrap(err, fmt.Sprintf("[%s]", e.name))
-			} else {
-				done <- nil
-			}
-		}(e)
 	}
 
+	mu.Lock()
 	var serveErr error
 	for i := 0; i < numServing; i++ {
 		result := <-done
@@ -198,6 +202,7 @@ func (c *container) Serve() error {
 			serveErr = err
 		}
 	}
+	mu.Unlock()
 
 	return serveErr
 }
