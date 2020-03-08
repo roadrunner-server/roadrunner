@@ -23,7 +23,6 @@
 package main
 
 import (
-	"github.com/spiral/jobs/v2/broker/ephemeral"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 
 	// services (plugins)
@@ -38,7 +37,6 @@ import (
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/spiral/roadrunner/service/static"
 
-	"github.com/spiral/jobs/v2"
 	// additional commands and debug handlers
 	_ "github.com/spiral/roadrunner/cmd/rr/http"
 	_ "github.com/spiral/roadrunner/cmd/rr/limit"
@@ -55,12 +53,6 @@ func main() {
 	rr.Container.Register(health.ID, &health.Service{})
 	rr.Container.Register(gzip.ID, &gzip.Service{})
 	rr.Container.Register(reload.ID, &reload.Service{})
-
-	rr.Container.Register(jobs.ID, &jobs.Service{
-		Brokers: map[string]jobs.Broker{
-			"ephemeral": &ephemeral.Broker{},
-		},
-	})
 
 	// you can register additional commands using cmd.CLI
 	rr.Execute()
