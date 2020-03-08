@@ -4,11 +4,15 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+	"os"
+	"os/signal"
 	"reflect"
 	"sync"
+	"syscall"
 )
 
 var errNoConfig = fmt.Errorf("no config has been provided")
+var errTempFix223 = fmt.Errorf("temporary error for fix #223") // meant no error here, just shutdown the server
 
 // InitMethod contains name of the method to be automatically invoked while service initialization. Must return
 // (bool, error). Container can be requested as well. Config can be requested in a form
@@ -79,6 +83,10 @@ type container struct {
 	log      logrus.FieldLogger
 	mu       sync.Mutex
 	services []*entry
+	errc     chan struct {
+		name string
+		err  error
+	}
 }
 
 // NewContainer creates new service container.
@@ -86,6 +94,10 @@ func NewContainer(log logrus.FieldLogger) Container {
 	return &container{
 		log:      log,
 		services: make([]*entry, 0),
+		errc: make(chan struct {
+			name string
+			err  error
+		}, 1),
 	}
 }
 
@@ -157,54 +169,43 @@ func (c *container) Init(cfg Config) error {
 
 // Serve all configured services. Non blocking.
 func (c *container) Serve() error {
-	var (
-		numServing = 0
-		done       = make(chan interface{}, len(c.services))
-	)
-
-	mu := &sync.Mutex{}
+	cc := make(chan os.Signal, 1)
+	signal.Notify(cc, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 
 	for _, e := range c.services {
 		if e.hasStatus(StatusOK) && e.canServe() {
 			c.log.Debugf("[%s]: started", e.name)
 			go func(e *entry) {
-				mu.Lock()
 				e.setStatus(StatusServing)
-				numServing++
-				mu.Unlock()
 				defer e.setStatus(StatusStopped)
-
 				if err := e.svc.(Service).Serve(); err != nil {
-					c.log.Errorf("[%s]: %s", e.name, err)
-					done <- errors.Wrap(err, fmt.Sprintf("[%s]", e.name))
+					c.errc <- struct {
+						name string
+						err  error
+					}{name: e.name, err: errors.Wrap(err, fmt.Sprintf("[%s]", e.name))}
 				} else {
-					done <- nil
+					c.errc <- struct {
+						name string
+						err  error
+					}{name: e.name, err: errTempFix223}
 				}
 			}(e)
-		} else {
-			continue
 		}
 	}
 
-	mu.Lock()
-	var serveErr error
-	for i := 0; i < numServing; i++ {
-		result := <-done
-
-		if result == nil {
-			// no errors
-			continue
-		}
-
-		// found an error in one of the services, stopping the rest of running services.
-		if err := result.(error); err != nil {
+	for {
+		select {
+		case <-cc:
+			return nil
+		case fail := <-c.errc:
+			if fail.err == errTempFix223 {
+				return nil
+			}
+			c.log.Errorf("[%s]: %s", fail.name, fail.err)
 			c.Stop()
-			serveErr = err
+			return fail.err
 		}
 	}
-	mu.Unlock()
-
-	return serveErr
 }
 
 // Detach sends stop command to all running services.

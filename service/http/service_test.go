@@ -176,7 +176,7 @@ func Test_Service_Env(t *testing.T) {
 
 	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
 			"enable": true,
-			"address": ":6031",
+			"address": ":10031",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -209,7 +209,7 @@ func Test_Service_Env(t *testing.T) {
 
 	time.Sleep(time.Second * 1)
 
-	req, err := http.NewRequest("GET", "http://localhost:6031", nil)
+	req, err := http.NewRequest("GET", "http://localhost:10031", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)

@@ -26,7 +26,7 @@ func Test_RPC(t *testing.T) {
 		rpcCfg: `{"enable":true, "listen":"tcp://:5004"}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":16031",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -58,7 +58,7 @@ func Test_RPC(t *testing.T) {
 
 	time.Sleep(time.Second)
 
-	res, _, err := get("http://localhost:6029")
+	res, _, err := get("http://localhost:16031")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -71,9 +71,9 @@ func Test_RPC(t *testing.T) {
 	assert.NoError(t, cl.Call("http.Reset", true, &r))
 	assert.Equal(t, "OK", r)
 
-	res2, _, err := get("http://localhost:6029")
+	res2, _, err := get("http://localhost:16031")
 	if err != nil {
-		t.Fatal()
+		t.Fatal(err)
 	}
 	assert.Equal(t, strconv.Itoa(*ss.rr.Workers()[0].Pid), res2)
 	assert.NotEqual(t, res, res2)
@@ -99,7 +99,7 @@ func Test_RPC_Unix(t *testing.T) {
 		rpcCfg: `{"enable":true, "listen":` + string(j) + `}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6032",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -129,9 +129,9 @@ func Test_RPC_Unix(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second)
+	time.Sleep(time.Millisecond * 500)
 
-	res, _, err := get("http://localhost:6029")
+	res, _, err := get("http://localhost:6032")
 	if err != nil {
 		c.Stop()
 		t.Fatal(err)
@@ -153,7 +153,7 @@ func Test_RPC_Unix(t *testing.T) {
 	assert.NoError(t, cl.Call("http.Reset", true, &r))
 	assert.Equal(t, "OK", r)
 
-	res2, _, err := get("http://localhost:6029")
+	res2, _, err := get("http://localhost:6032")
 	if err != nil {
 		c.Stop()
 		t.Fatal(err)
@@ -175,7 +175,7 @@ func Test_Workers(t *testing.T) {
 		rpcCfg: `{"enable":true, "listen":"tcp://:5005"}`,
 		httpCfg: `{
 			"enable": true,
-			"address": ":6029",
+			"address": ":6033",
 			"maxRequestSize": 1024,
 			"uploads": {
 				"dir": ` + tmpDir() + `,
@@ -204,8 +204,7 @@ func Test_Workers(t *testing.T) {
 			t.Errorf("error during the Serve: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+	time.Sleep(time.Millisecond * 500)
 
 	cl, err := rs.Client()
 	assert.NoError(t, err)
@@ -215,6 +214,7 @@ func Test_Workers(t *testing.T) {
 	assert.Len(t, r.Workers, 1)
 
 	assert.Equal(t, *ss.rr.Workers()[0].Pid, r.Workers[0].Pid)
+	c.Stop()
 }
 
 func Test_Errors(t *testing.T) {
