@@ -187,17 +187,18 @@ func (c *container) Serve() error {
 		}
 	}
 
-	for {
-		select {
-		case fail := <-c.errc:
-			if fail.err == errTempFix223 {
-				return nil
-			}
+	for fail := range c.errc {
+		if fail.err == errTempFix223 {
+			// if we call stop, then stop all plugins
+			break
+		} else {
 			c.log.Errorf("[%s]: %s", fail.name, fail.err)
 			c.Stop()
 			return fail.err
 		}
 	}
+
+	return nil
 }
 
 // Detach sends stop command to all running services.
