@@ -4,11 +4,8 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"os"
-	"os/signal"
 	"reflect"
 	"sync"
-	"syscall"
 )
 
 var errNoConfig = fmt.Errorf("no config has been provided")
@@ -169,9 +166,6 @@ func (c *container) Init(cfg Config) error {
 
 // Serve all configured services. Non blocking.
 func (c *container) Serve() error {
-	cc := make(chan os.Signal, 1)
-	signal.Notify(cc, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
-
 	for _, e := range c.services {
 		if e.hasStatus(StatusOK) && e.canServe() {
 			c.log.Debugf("[%s]: started", e.name)
@@ -195,8 +189,6 @@ func (c *container) Serve() error {
 
 	for {
 		select {
-		case <-cc:
-			return nil
 		case fail := <-c.errc:
 			if fail.err == errTempFix223 {
 				return nil

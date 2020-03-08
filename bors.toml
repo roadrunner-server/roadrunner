@@ -1,0 +1,15 @@
+status = [
+'CI / Build (PHP 7.1, Go 1.13, OS ubuntu-latest)',
+'CI / Build (PHP 7.1, Go 1.14, OS ubuntu-latest)',
+'CI / Build (PHP 7.2, Go 1.13, OS ubuntu-latest)',
+'CI / Build (PHP 7.2, Go 1.14, OS ubuntu-latest)',
+'CI / Build (PHP 7.3, Go 1.13, OS ubuntu-latest)',
+'CI / Build (PHP 7.3, Go 1.14, OS ubuntu-latest)',
+'CI / Build (PHP 7.4, Go 1.13, OS ubuntu-latest)',
+'CI / Build (PHP 7.4, Go 1.14, OS ubuntu-latest)',
+'CI / runner / golangci-lint',
+'CI / Build docker image']
+
+required_approvals = 1
+delete_merged_branches = true
+timeout-sec = 1800
