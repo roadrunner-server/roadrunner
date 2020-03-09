@@ -1,6 +1,8 @@
 CHANGELOG
 =========
-v1.6.3
+
+v1.6.3 (10.03.2020)
+-------------------
 - Fixed bug with UB when the plugin is failing during start
 - Better signals handling
 - Rotate ports in tests
