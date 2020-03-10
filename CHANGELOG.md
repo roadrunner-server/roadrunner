@@ -1,12 +1,15 @@
 CHANGELOG
 =========
-v1.6.3
-- Fixed bug with UB when plugin is failing during start
+
+v1.6.3 (10.03.2020)
+-------------------
+- Fixed bug with UB when the plugin is failing during start
 - Better signals handling
 - Rotate ports in tests
 - Added BORS to repository [https://bors.tech/], so, now you can use commands from it, like `bors d=@some_user`, `bors try`, or `bors r+`
 - Reverted change with `musl-gcc`. We reverted `CGO_ENABLED=0`, so, CGO turned off for all targets and `netgo`, `osuser` etc.. system-dependent packages are not statically linked. Also separate `musl` binary provided.
-- macOS temporary removed from CI.
+- macOS temporarily removed from CI
+- Added curl dependency to download rr (@dkarlovi)
 
 v1.6.2 (23.02.2020)
 -------------------
