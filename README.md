@@ -100,7 +100,7 @@ http:
   workers.command: "php worker.php"
 ```
 
-> Read more in [Wiki](https://github.com/spiral/roadrunner/wiki/PHP-Workers).
+> Read more in [Documentation](https://roadrunner.dev/docs).
 
 Run:
 ----
