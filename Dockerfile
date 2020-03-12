@@ -14,13 +14,12 @@ RUN set -x \
 FROM alpine:latest
 
 LABEL \
-    org.label-schema.name="roadrunner" \
-    org.label-schema.description="High-performance PHP application server, load-balancer and process manager" \
-    org.label-schema.url="https://github.com/spiral/roadrunner" \
-    org.label-schema.vcs-url="https://github.com/spiral/roadrunner" \
-    org.label-schema.vendor="SpiralScout" \
-    org.label-schema.license="MIT" \
-    org.label-schema.schema-version="1.0"
+    org.opencontainers.image.title="roadrunner" \
+    org.opencontainers.image.description="High-performance PHP application server, load-balancer and process manager" \
+    org.opencontainers.image.url="https://github.com/spiral/roadrunner" \
+    org.opencontainers.image.source="https://github.com/spiral/roadrunner" \
+    org.opencontainers.image.vendor="SpiralScout" \
+    org.opencontainers.image.licenses="MIT"
 
 COPY --from=builder /src/rr /usr/bin/rr
 COPY --from=builder /src/.rr.yaml /etc/rr.yaml
