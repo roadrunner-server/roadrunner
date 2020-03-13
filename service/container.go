@@ -166,8 +166,10 @@ func (c *container) Init(cfg Config) error {
 
 // Serve all configured services. Non blocking.
 func (c *container) Serve() error {
+	var running = 0
 	for _, e := range c.services {
 		if e.hasStatus(StatusOK) && e.canServe() {
+			running++
 			c.log.Debugf("[%s]: started", e.name)
 			go func(e *entry) {
 				e.setStatus(StatusServing)
@@ -185,6 +187,11 @@ func (c *container) Serve() error {
 				}
 			}(e)
 		}
+	}
+
+	// simple handler to handle empty configs
+	if running == 0 {
+		return nil
 	}
 
 	for fail := range c.errc {

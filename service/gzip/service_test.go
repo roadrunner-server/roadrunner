@@ -47,3 +47,21 @@ func Test_Disabled(t *testing.T) {
 	assert.NotNil(t, s)
 	assert.Equal(t, service.StatusInactive, st)
 }
+
+// TEST bug #275
+func Test_Bug275(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	c := service.NewContainer(logger)
+	c.Register(ID, &Service{})
+
+	assert.Error(t, c.Init(&testCfg{
+		httpCfg:"",
+		gzip: `{"enable":false}`,
+	}))
+
+	s, st := c.Get(ID)
+	assert.NotNil(t, s)
+	assert.Equal(t, service.StatusInactive, st)
+}
