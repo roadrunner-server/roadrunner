@@ -13,7 +13,6 @@ import (
 type testCfg struct {
 	gzip    string
 	httpCfg string
-	//static  string
 	target  string
 }
 
@@ -31,15 +30,20 @@ func (cfg *testCfg) Unmarshal(out interface{}) error {
 	return json.Unmarshal([]byte(cfg.target), out)
 }
 
-
 func Test_Disabled(t *testing.T) {
 	logger, _ := test.NewNullLogger()
 	logger.SetLevel(logrus.DebugLevel)
 
 	c := service.NewContainer(logger)
-	c.Register(ID, &Service{})
+	c.Register(ID, &Service{cfg: &Config{Enable: true}})
 
 	assert.NoError(t, c.Init(&testCfg{
+		httpCfg: `{
+			"address": ":6029",
+			"workers":{
+				"command": "php ../../tests/http/client.php echo pipes",
+			}
+	}`,
 		gzip: `{"enable":false}`,
 	}))
 
@@ -57,8 +61,8 @@ func Test_Bug275(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	assert.Error(t, c.Init(&testCfg{
-		httpCfg:"",
-		gzip: `{"enable":false}`,
+		httpCfg: "",
+		gzip:    `{"enable":true}`,
 	}))
 
 	s, st := c.Get(ID)
