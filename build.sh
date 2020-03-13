@@ -44,7 +44,7 @@ build_musl() {
   echo Packaging "$2" Build
   bdir=roadrunner-${RR_VERSION}-$1-$2-$3
   rm -rf builds/"$bdir" && mkdir -p builds/"$bdir"
-  CC=musl-gcc GOARCH=amd64 go build -ldflags "$LDFLAGS" -o "$OD/rr" cmd/rr/main.go
+  CC=musl-gcc GOARCH=amd64 go build -trimpath -ldflags "$LDFLAGS" -o "$OD/rr" cmd/rr/main.go
 
   mv rr builds/"$bdir"
 
@@ -68,4 +68,4 @@ if [ "$1" == "all" ]; then
   exit
 fi
 
-CGO_ENABLED=0 go build -ldflags "$LDFLAGS" -o "$OD/rr" cmd/rr/main.go
+CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o "$OD/rr" cmd/rr/main.go
