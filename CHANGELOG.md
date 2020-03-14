@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+v1.6.4 (14.03.2020)
+-------------------
+- Fixed bug with RR getting unreasonable without config
+- Fixed bug with local paths in panic messages
+- Fixed NPE bug with empty `http` config and enabled `gzip` plugin
+
 v1.6.3 (10.03.2020)
 -------------------
 - Fixed bug with UB when the plugin is failing during start
