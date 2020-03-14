@@ -1,6 +1,7 @@
 package gzip
 
 import (
+	"errors"
 	"github.com/NYTimes/gziphandler"
 	rrhttp "github.com/spiral/roadrunner/service/http"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 
 // ID contains default service name.
 const ID = "gzip"
+var httpNotInitialized = errors.New("http service should be defined properly in config to use gzip")
 
 type Service struct {
 	cfg *Config
@@ -15,9 +17,11 @@ type Service struct {
 
 func (s *Service) Init(cfg *Config, r *rrhttp.Service) (bool, error) {
 	s.cfg = cfg
-
 	if !s.cfg.Enable {
 		return false, nil
+	}
+	if r == nil {
+		return false, httpNotInitialized
 	}
 
 	r.AddMiddleware(s.middleware)
