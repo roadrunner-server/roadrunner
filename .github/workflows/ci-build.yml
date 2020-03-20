@@ -61,7 +61,7 @@ jobs:
         run: composer analyze
 
       - name: Install Go dependencies
-        run: go mod download
+        run: go mod download && go mod vendor
 
       - name: Download binary roadrunner
         run: php ./bin/rr get-binary

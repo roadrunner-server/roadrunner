@@ -644,7 +644,7 @@ func TestHandler_FormData_POST(t *testing.T) {
 			t.Errorf("error listening the interface: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 10)
+	time.Sleep(time.Millisecond * 500)
 
 	form := url.Values{}
 
@@ -860,7 +860,7 @@ func TestHandler_FormData_PUT(t *testing.T) {
 			t.Errorf("error listening the interface: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 10)
+	time.Sleep(time.Millisecond * 500)
 
 	form := url.Values{}
 
@@ -1124,7 +1124,7 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 			t.Errorf("error listening the interface: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 10)
+	time.Sleep(time.Millisecond * 500)
 
 	var mb bytes.Buffer
 	w := multipart.NewWriter(&mb)
@@ -1241,7 +1241,7 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 			t.Errorf("error listening the interface: error %v", err)
 		}
 	}()
-	time.Sleep(time.Millisecond * 10)
+	time.Sleep(time.Millisecond * 500)
 
 	var mb bytes.Buffer
 	w := multipart.NewWriter(&mb)

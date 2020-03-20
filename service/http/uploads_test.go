@@ -424,7 +424,8 @@ func fileString(f string, errNo int, mime string) string {
 		v.Size = 0
 	}
 
-	r, err := json.Marshal(v)
+	j := json.ConfigCompatibleWithStandardLibrary
+	r, err := j.Marshal(v)
 	if err != nil {
 		fmt.Println(fmt.Errorf("error marshalling fInfo, error: %v", err))
 	}

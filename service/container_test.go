@@ -67,7 +67,8 @@ type testCfg struct{ cfg string }
 
 func (cfg *testCfg) Get(name string) Config {
 	vars := make(map[string]interface{})
-	err := json.Unmarshal([]byte(cfg.cfg), &vars)
+	j := json.ConfigCompatibleWithStandardLibrary
+	err := j.Unmarshal([]byte(cfg.cfg), &vars)
 	if err != nil {
 		panic("error unmarshalling the cfg.cfg value")
 	}
@@ -77,10 +78,13 @@ func (cfg *testCfg) Get(name string) Config {
 		return nil
 	}
 
-	d, _ := json.Marshal(v)
+	d, _ := j.Marshal(v)
 	return &testCfg{cfg: string(d)}
 }
-func (cfg *testCfg) Unmarshal(out interface{}) error { return json.Unmarshal([]byte(cfg.cfg), out) }
+func (cfg *testCfg) Unmarshal(out interface{}) error {
+	j := json.ConfigCompatibleWithStandardLibrary
+	return j.Unmarshal([]byte(cfg.cfg), out)
+}
 
 // Config defines RPC service config.
 type dConfig struct {

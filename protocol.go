@@ -20,7 +20,8 @@ func sendControl(rl goridge.Relay, v interface{}) error {
 		return rl.Send(data, goridge.PayloadControl|goridge.PayloadRaw)
 	}
 
-	data, err := json.Marshal(v)
+	j := json.ConfigCompatibleWithStandardLibrary
+	data, err := j.Marshal(v)
 	if err != nil {
 		return fmt.Errorf("invalid payload: %s", err)
 	}

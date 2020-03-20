@@ -1,6 +1,6 @@
 module github.com/spiral/roadrunner
 
-go 1.13
+go 1.14
 
 require (
 	github.com/NYTimes/gziphandler v1.1.1
@@ -23,5 +23,5 @@ require (
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/yookoala/gofast v0.4.0
 	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0
-	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
+	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
 )

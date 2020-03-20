@@ -42,7 +42,8 @@ type Uploads struct {
 
 // MarshalJSON marshal tree tree into JSON.
 func (u *Uploads) MarshalJSON() ([]byte, error) {
-	return json.Marshal(u.tree)
+	j := json.ConfigCompatibleWithStandardLibrary
+	return j.Marshal(u.tree)
 }
 
 // Open moves all uploaded files to temp directory, return error in case of issue with temp directory. File errors

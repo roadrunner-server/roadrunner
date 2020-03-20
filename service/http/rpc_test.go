@@ -93,10 +93,11 @@ func Test_RPC_Unix(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	sock := `unix://` + os.TempDir() + `/rpc.unix`
-	j, _ := json.Marshal(sock)
+	j := json.ConfigCompatibleWithStandardLibrary
+	data, _ := j.Marshal(sock)
 
 	assert.NoError(t, c.Init(&testCfg{
-		rpcCfg: `{"enable":true, "listen":` + string(j) + `}`,
+		rpcCfg: `{"enable":true, "listen":` + string(data) + `}`,
 		httpCfg: `{
 			"enable": true,
 			"address": ":6032",
