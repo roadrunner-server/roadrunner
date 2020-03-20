@@ -1,7 +1,7 @@
 package http
 
 import (
-	"encoding/json"
+	json "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"

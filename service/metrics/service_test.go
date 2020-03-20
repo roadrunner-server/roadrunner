@@ -1,7 +1,7 @@
 package metrics
 
 import (
-	"encoding/json"
+	json "github.com/json-iterator/go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"

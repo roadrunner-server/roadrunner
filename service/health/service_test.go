@@ -1,7 +1,7 @@
 package health
 
 import (
-	"encoding/json"
+	json "github.com/json-iterator/go"
 	"io/ioutil"
 	"net/http"
 	"testing"

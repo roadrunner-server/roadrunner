@@ -1,8 +1,8 @@
 package http
 
 import (
-	"encoding/json"
 	"fmt"
+	json "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"

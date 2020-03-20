@@ -1,8 +1,8 @@
 package roadrunner
 
 import (
-	"encoding/json"
 	"fmt"
+	json "github.com/json-iterator/go"
 	"github.com/spiral/goridge"
 	"os"
 )

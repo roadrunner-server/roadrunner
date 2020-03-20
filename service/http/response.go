@@ -1,7 +1,7 @@
 package http
 
 import (
-	"encoding/json"
+	json "github.com/json-iterator/go"
 	"io"
 	"net/http"
 	"strings"
