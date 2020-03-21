@@ -1,8 +1,8 @@
 package limit
 
 import (
-	"encoding/json"
 	"fmt"
+	json "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner/service"
@@ -37,7 +37,8 @@ func (cfg *testCfg) Get(name string) service.Config {
 }
 
 func (cfg *testCfg) Unmarshal(out interface{}) error {
-	err := json.Unmarshal([]byte(cfg.target), out)
+	j := json.ConfigCompatibleWithStandardLibrary
+	err := j.Unmarshal([]byte(cfg.target), out)
 
 	if cl, ok := out.(*Config); ok {
 		// to speed up tests

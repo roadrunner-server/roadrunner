@@ -1,7 +1,7 @@
 package gzip
 
 import (
-	"encoding/json"
+	json "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner/service"
@@ -27,7 +27,8 @@ func (cfg *testCfg) Get(name string) service.Config {
 	return nil
 }
 func (cfg *testCfg) Unmarshal(out interface{}) error {
-	return json.Unmarshal([]byte(cfg.target), out)
+	j := json.ConfigCompatibleWithStandardLibrary
+	return j.Unmarshal([]byte(cfg.target), out)
 }
 
 func Test_Disabled(t *testing.T) {

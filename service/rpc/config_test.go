@@ -1,7 +1,7 @@
 package rpc
 
 import (
-	"encoding/json"
+	json "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
 	"runtime"
@@ -10,8 +10,11 @@ import (
 
 type testCfg struct{ cfg string }
 
-func (cfg *testCfg) Get(name string) service.Config  { return nil }
-func (cfg *testCfg) Unmarshal(out interface{}) error { return json.Unmarshal([]byte(cfg.cfg), out) }
+func (cfg *testCfg) Get(name string) service.Config { return nil }
+func (cfg *testCfg) Unmarshal(out interface{}) error {
+	j := json.ConfigCompatibleWithStandardLibrary
+	return j.Unmarshal([]byte(cfg.cfg), out)
+}
 
 func Test_Config_Hydrate(t *testing.T) {
 	cfg := &testCfg{`{"enable": true, "listen": "tcp://:18001"}`}

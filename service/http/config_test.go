@@ -1,7 +1,7 @@
 package http
 
 import (
-	"encoding/json"
+	json "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
@@ -13,7 +13,10 @@ import (
 type mockCfg struct{ cfg string }
 
 func (cfg *mockCfg) Get(name string) service.Config  { return nil }
-func (cfg *mockCfg) Unmarshal(out interface{}) error { return json.Unmarshal([]byte(cfg.cfg), out) }
+func (cfg *mockCfg) Unmarshal(out interface{}) error {
+	j := json.ConfigCompatibleWithStandardLibrary
+	return j.Unmarshal([]byte(cfg.cfg), out)
+}
 
 func Test_Config_Hydrate_Error1(t *testing.T) {
 	cfg := &mockCfg{`{"address": "localhost:8080"}`}

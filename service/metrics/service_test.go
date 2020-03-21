@@ -1,7 +1,7 @@
 package metrics
 
 import (
-	"encoding/json"
+	json "github.com/json-iterator/go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
@@ -33,7 +33,8 @@ func (cfg *testCfg) Get(name string) service.Config {
 }
 
 func (cfg *testCfg) Unmarshal(out interface{}) error {
-	err := json.Unmarshal([]byte(cfg.target), out)
+	j := json.ConfigCompatibleWithStandardLibrary
+	err := j.Unmarshal([]byte(cfg.target), out)
 	return err
 }
 

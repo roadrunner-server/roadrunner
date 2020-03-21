@@ -1,6 +1,6 @@
 module github.com/spiral/roadrunner
 
-go 1.13
+go 1.14
 
 require (
 	github.com/NYTimes/gziphandler v1.1.1
@@ -8,6 +8,7 @@ require (
 	github.com/buger/goterm v0.0.0-20181115115552-c206103e1f37
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-ole/go-ole v1.2.4 // indirect
+	github.com/json-iterator/go v1.1.9
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b
 	github.com/olekukonko/tablewriter v0.0.4
@@ -22,5 +23,5 @@ require (
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/yookoala/gofast v0.4.0
 	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0
-	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
+	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
 )

@@ -2,7 +2,7 @@ package static
 
 import (
 	"bytes"
-	"encoding/json"
+	json "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner/service"
@@ -33,7 +33,8 @@ func (cfg *testCfg) Get(name string) service.Config {
 	return nil
 }
 func (cfg *testCfg) Unmarshal(out interface{}) error {
-	return json.Unmarshal([]byte(cfg.target), out)
+	j := json.ConfigCompatibleWithStandardLibrary
+	return j.Unmarshal([]byte(cfg.target), out)
 }
 
 func get(url string) (string, *http.Response, error) {
@@ -443,7 +444,8 @@ func Test_Files_NotForbid(t *testing.T) {
 
 func tmpDir() string {
 	p := os.TempDir()
-	r, _ := json.Marshal(p)
+	j := json.ConfigCompatibleWithStandardLibrary
+	r, _ := j.Marshal(p)
 
 	return string(r)
 }
