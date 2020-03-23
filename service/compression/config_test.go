@@ -1,4 +1,4 @@
-package gzip
+package compression
 
 import (
 	json "github.com/json-iterator/go"

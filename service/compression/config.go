@@ -1,4 +1,4 @@
-package gzip
+package compression
 
 import (
 	"github.com/spiral/roadrunner/service"

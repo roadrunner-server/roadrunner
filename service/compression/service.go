@@ -1,4 +1,4 @@
-package gzip
+package compression
 
 import (
 	"errors"

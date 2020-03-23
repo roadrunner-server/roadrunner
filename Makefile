@@ -22,7 +22,7 @@ test:
 	go test -v -race -cover ./service/headers
 	go test -v -race -cover ./service/metrics
 	go test -v -race -cover ./service/health
-	go test -v -race -cover ./service/gzip
+	go test -v -race -cover ./service/compression
 	go test -v -race -cover ./service/reload
 lint:
 	go fmt ./...
