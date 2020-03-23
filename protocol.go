@@ -3,7 +3,7 @@ package roadrunner
 import (
 	"fmt"
 	json "github.com/json-iterator/go"
-	"github.com/spiral/goridge"
+	"github.com/spiral/goridge/v2"
 	"os"
 )
 

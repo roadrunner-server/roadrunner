@@ -2,7 +2,7 @@ package roadrunner
 
 import (
 	"github.com/pkg/errors"
-	"github.com/spiral/goridge"
+	"github.com/spiral/goridge/v2"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

@@ -2,7 +2,7 @@ package rpc
 
 import (
 	"errors"
-	"github.com/spiral/goridge"
+	"github.com/spiral/goridge/v2"
 	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/env"
 	"net/rpc"
