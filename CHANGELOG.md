@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.7.0 (23.03.2020)
+-------------------
+- Replaced std encoding/json package with the https://github.com/json-iterator/go
+
 v1.6.4 (14.03.2020)
 -------------------
 - Fixed bug with RR getting unreasonable without config
