@@ -221,6 +221,7 @@ github.com/spf13/viper v1.6.2/go.mod h1:t3iDnF5Jlj76alVNuyFBk5oUMCvsrkbvZK0WQdfD
 github.com/spiral/goridge v2.1.3+incompatible/go.mod h1:prfLTN9qOpQxO6dtfCMJZ+uguUdCxb/ntS8ML/s5U2U=
 github.com/spiral/goridge v2.1.4+incompatible h1:L15TKrbPEp/G6JfS3jjuvY6whkhfD292XX+1iy9mO2k=
 github.com/spiral/goridge v2.1.4+incompatible/go.mod h1:prfLTN9qOpQxO6dtfCMJZ+uguUdCxb/ntS8ML/s5U2U=
+github.com/spiral/goridge/v2 v2.3.0/go.mod h1:NxcCipXONzZ6smmLUl9SsnT/YJjIjDphIfbzRJICLd8=
 github.com/spiral/jobs v1.1.4 h1:vyLYlZPrCLLBlcuIP/wxGOSw+PqQzz5VwHeHRbXId5I=
 github.com/spiral/jobs v1.1.4/go.mod h1:uBmVraLkPztuIzcneADDaqtKq/UEOXEvC/PAlBt5ltA=
 github.com/spiral/jobs/v2 v2.1.2 h1:uvMWVTuvMikuhFczSGMwzyEMoAqxJEJbiEM8AzIeEC4=
