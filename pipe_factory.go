@@ -3,7 +3,7 @@ package roadrunner
 import (
 	"fmt"
 	"github.com/pkg/errors"
-	"github.com/spiral/goridge"
+	"github.com/spiral/goridge/v2"
 	"io"
 	"os/exec"
 )
