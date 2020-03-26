@@ -1,6 +1,7 @@
 package headers
 
 import (
+	"github.com/cenkalti/backoff/v4"
 	json "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
@@ -68,24 +69,39 @@ func Test_RequestHeaders(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6078?hello=value", nil)
-	assert.NoError(t, err)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	r, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
+	err := backoff.Retry(func() error {
+		req, err := http.NewRequest("GET", "http://localhost:6078?hello=value", nil)
 		if err != nil {
-			t.Errorf("error during the body closing: error %v", err)
+			return err
 		}
-	}()
 
-	b, err := ioutil.ReadAll(r.Body)
-	assert.NoError(t, err)
+		r, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
 
-	assert.NoError(t, err)
-	assert.Equal(t, 200, r.StatusCode)
-	assert.Equal(t, "CUSTOM-HEADER", string(b))
+		b, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			return err
+		}
+
+		assert.Equal(t, 200, r.StatusCode)
+		assert.Equal(t, "CUSTOM-HEADER", string(b))
+
+		err = r.Body.Close()
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}, bkoff)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func Test_ResponseHeaders(t *testing.T) {
@@ -122,25 +138,40 @@ func Test_ResponseHeaders(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6079?hello=value", nil)
-	assert.NoError(t, err)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	r, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
+	err := backoff.Retry(func() error {
+		req, err := http.NewRequest("GET", "http://localhost:6079?hello=value", nil)
 		if err != nil {
-			t.Errorf("error during the body closing: error %v", err)
+			return err
 		}
-	}()
 
-	assert.Equal(t, "output-header", r.Header.Get("output"))
+		r, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
 
-	b, err := ioutil.ReadAll(r.Body)
-	assert.NoError(t, err)
+		assert.Equal(t, "output-header", r.Header.Get("output"))
 
-	assert.Equal(t, 200, r.StatusCode)
-	assert.Equal(t, "CUSTOM-HEADER", string(b))
+		b, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			return err
+		}
+		assert.Equal(t, 200, r.StatusCode)
+		assert.Equal(t, "CUSTOM-HEADER", string(b))
+
+		err = r.Body.Close()
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}, bkoff)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestCORS_OPTIONS(t *testing.T) {
@@ -186,29 +217,44 @@ func TestCORS_OPTIONS(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	req, err := http.NewRequest("OPTIONS", "http://localhost:6379", nil)
-	assert.NoError(t, err)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	r, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
+	err := backoff.Retry(func() error {
+		req, err := http.NewRequest("OPTIONS", "http://localhost:6379", nil)
 		if err != nil {
-			t.Errorf("error during the body closing: error %v", err)
+			return err
 		}
-	}()
 
-	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
-	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
-	assert.Equal(t, "GET,POST,PUT,DELETE", r.Header.Get("Access-Control-Allow-Methods"))
-	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
-	assert.Equal(t, "600", r.Header.Get("Access-Control-Max-Age"))
-	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+		r, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
 
-	_, err = ioutil.ReadAll(r.Body)
-	assert.NoError(t, err)
+		assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+		assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
+		assert.Equal(t, "GET,POST,PUT,DELETE", r.Header.Get("Access-Control-Allow-Methods"))
+		assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
+		assert.Equal(t, "600", r.Header.Get("Access-Control-Max-Age"))
+		assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
 
-	assert.Equal(t, 200, r.StatusCode)
+		_, err = ioutil.ReadAll(r.Body)
+		if err != nil {
+			return err
+		}
+		assert.Equal(t, 200, r.StatusCode)
+
+		err = r.Body.Close()
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}, bkoff)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestCORS_Pass(t *testing.T) {
@@ -254,23 +300,40 @@ func TestCORS_Pass(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6672", nil)
-	assert.NoError(t, err)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	r, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err)
-	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
-	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
-	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
-	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+	err := backoff.Retry(func() error {
+		req, err := http.NewRequest("GET", "http://localhost:6672", nil)
+		if err != nil {
+			return err
+		}
 
-	_, err = ioutil.ReadAll(r.Body)
-	assert.NoError(t, err)
+		r, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
 
-	assert.Equal(t, 200, r.StatusCode)
+		assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+		assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
+		assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
+		assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
 
-	err = r.Body.Close()
+		_, err = ioutil.ReadAll(r.Body)
+		if err != nil {
+			return err
+		}
+		assert.Equal(t, 200, r.StatusCode)
+
+		err = r.Body.Close()
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}, bkoff)
+
 	if err != nil {
-		t.Errorf("error during the body closing: error %v", err)
+		t.Fatal(err)
 	}
 }
