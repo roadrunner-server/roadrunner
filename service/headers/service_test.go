@@ -110,6 +110,39 @@ func Test_ResponseHeaders(t *testing.T) {
 	bkoff.MaxElapsedTime = time.Second * 15
 
 	err := backoff.Retry(func() error {
+		logger, _ := test.NewNullLogger()
+		logger.SetLevel(logrus.DebugLevel)
+
+		c := service.NewContainer(logger)
+		c.Register(rrhttp.ID, &rrhttp.Service{})
+		c.Register(ID, &Service{})
+
+		assert.NoError(t, c.Init(&testCfg{
+			headers: `{"response":{"output": "output-header"},"request":{"input": "custom-header"}}`,
+			httpCfg: `{
+			"enable": true,
+			"address": ":6079",
+			"maxRequestSize": 1024,
+			"workers":{
+				"command": "php ../../tests/http/client.php header pipes",
+				"relay": "pipes",
+				"pool": {
+					"numWorkers": 1, 
+					"allocateTimeout": 10000000,
+					"destroyTimeout": 10000000 
+				}
+			}
+	}`}))
+
+		go func() {
+			err := c.Serve()
+			if err != nil {
+				t.Errorf("error during the Serve: error %v", err)
+			}
+		}()
+		time.Sleep(time.Millisecond * 100)
+		defer c.Stop()
+		
 		req, err := http.NewRequest("GET", "http://localhost:6079?hello=value", nil)
 		if err != nil {
 			return err
