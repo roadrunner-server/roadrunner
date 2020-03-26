@@ -6,12 +6,17 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"sync"
+	"time"
 
 	rrhttp "github.com/spiral/roadrunner/service/http"
 )
 
-// ID declares the public service name
-const ID = "health"
+const (
+	// ID declares public service name.
+	ID = "health"
+	// maxHeaderSize declares max header size for prometheus server
+	maxHeaderSize = 1024 * 1024 * 100 // 104MB
+)
 
 // Service to serve an endpoint for checking the health of the worker pool
 type Service struct {
@@ -39,15 +44,23 @@ func (s *Service) Init(cfg *Config, r *rrhttp.Service, log *logrus.Logger) (bool
 func (s *Service) Serve() error {
 	// Configure and start the http server
 	s.mu.Lock()
-	s.http = &http.Server{Addr: s.cfg.Address, Handler: s}
+	s.http = &http.Server{
+		Addr: s.cfg.Address,
+		Handler: s,
+		IdleTimeout:       time.Hour * 24,
+		ReadTimeout:       time.Minute * 60,
+		MaxHeaderBytes:    maxHeaderSize,
+		ReadHeaderTimeout: time.Minute * 60,
+		WriteTimeout:      time.Minute * 60,
+	}
 	s.mu.Unlock()
 
 	err := s.http.ListenAndServe()
-	if err == nil || err == http.ErrServerClosed {
-		return nil
+	if err != nil && err != http.ErrServerClosed {
+		return err
 	}
 
-	return err
+	return nil
 }
 
 // Stop the health endpoint

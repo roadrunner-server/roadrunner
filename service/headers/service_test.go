@@ -1,6 +1,7 @@
 package headers
 
 import (
+	"github.com/cenkalti/backoff/v4"
 	json "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
@@ -35,16 +36,20 @@ func (cfg *testCfg) Unmarshal(out interface{}) error {
 }
 
 func Test_RequestHeaders(t *testing.T) {
-	logger, _ := test.NewNullLogger()
-	logger.SetLevel(logrus.DebugLevel)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	c := service.NewContainer(logger)
-	c.Register(rrhttp.ID, &rrhttp.Service{})
-	c.Register(ID, &Service{})
+	err := backoff.Retry(func() error {
+		logger, _ := test.NewNullLogger()
+		logger.SetLevel(logrus.DebugLevel)
 
-	assert.NoError(t, c.Init(&testCfg{
-		headers: `{"request":{"input": "custom-header"}}`,
-		httpCfg: `{
+		c := service.NewContainer(logger)
+		c.Register(rrhttp.ID, &rrhttp.Service{})
+		c.Register(ID, &Service{})
+
+		assert.NoError(t, c.Init(&testCfg{
+			headers: `{"request":{"input": "custom-header"}}`,
+			httpCfg: `{
 			"enable": true,
 			"address": ":6078",
 			"maxRequestSize": 1024,
@@ -59,46 +64,62 @@ func Test_RequestHeaders(t *testing.T) {
 			}
 	}`}))
 
-	go func() {
-		err := c.Serve()
+		go func() {
+			err := c.Serve()
+			if err != nil {
+				t.Errorf("error during Serve: error %v", err)
+			}
+		}()
+
+		time.Sleep(time.Millisecond * 100)
+		defer c.Stop()
+
+		req, err := http.NewRequest("GET", "http://localhost:6078?hello=value", nil)
 		if err != nil {
-			t.Errorf("error during Serve: error %v", err)
+			return err
 		}
-	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6078?hello=value", nil)
-	assert.NoError(t, err)
-
-	r, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
+		r, err := http.DefaultClient.Do(req)
 		if err != nil {
-			t.Errorf("error during the body closing: error %v", err)
+			return err
 		}
-	}()
 
-	b, err := ioutil.ReadAll(r.Body)
-	assert.NoError(t, err)
+		b, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			return err
+		}
 
-	assert.NoError(t, err)
-	assert.Equal(t, 200, r.StatusCode)
-	assert.Equal(t, "CUSTOM-HEADER", string(b))
+		assert.Equal(t, 200, r.StatusCode)
+		assert.Equal(t, "CUSTOM-HEADER", string(b))
+
+		err = r.Body.Close()
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}, bkoff)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func Test_ResponseHeaders(t *testing.T) {
-	logger, _ := test.NewNullLogger()
-	logger.SetLevel(logrus.DebugLevel)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	c := service.NewContainer(logger)
-	c.Register(rrhttp.ID, &rrhttp.Service{})
-	c.Register(ID, &Service{})
+	err := backoff.Retry(func() error {
+		logger, _ := test.NewNullLogger()
+		logger.SetLevel(logrus.DebugLevel)
 
-	assert.NoError(t, c.Init(&testCfg{
-		headers: `{"response":{"output": "output-header"},"request":{"input": "custom-header"}}`,
-		httpCfg: `{
+		c := service.NewContainer(logger)
+		c.Register(rrhttp.ID, &rrhttp.Service{})
+		c.Register(ID, &Service{})
+
+		assert.NoError(t, c.Init(&testCfg{
+			headers: `{"response":{"output": "output-header"},"request":{"input": "custom-header"}}`,
+			httpCfg: `{
 			"enable": true,
 			"address": ":6079",
 			"maxRequestSize": 1024,
@@ -113,46 +134,61 @@ func Test_ResponseHeaders(t *testing.T) {
 			}
 	}`}))
 
-	go func() {
-		err := c.Serve()
+		go func() {
+			err := c.Serve()
+			if err != nil {
+				t.Errorf("error during the Serve: error %v", err)
+			}
+		}()
+		time.Sleep(time.Millisecond * 100)
+		defer c.Stop()
+
+		req, err := http.NewRequest("GET", "http://localhost:6079?hello=value", nil)
 		if err != nil {
-			t.Errorf("error during the Serve: error %v", err)
+			return err
 		}
-	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6079?hello=value", nil)
-	assert.NoError(t, err)
-
-	r, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
+		r, err := http.DefaultClient.Do(req)
 		if err != nil {
-			t.Errorf("error during the body closing: error %v", err)
+			return err
 		}
-	}()
 
-	assert.Equal(t, "output-header", r.Header.Get("output"))
+		assert.Equal(t, "output-header", r.Header.Get("output"))
 
-	b, err := ioutil.ReadAll(r.Body)
-	assert.NoError(t, err)
+		b, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			return err
+		}
+		assert.Equal(t, 200, r.StatusCode)
+		assert.Equal(t, "CUSTOM-HEADER", string(b))
 
-	assert.Equal(t, 200, r.StatusCode)
-	assert.Equal(t, "CUSTOM-HEADER", string(b))
+		err = r.Body.Close()
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}, bkoff)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestCORS_OPTIONS(t *testing.T) {
-	logger, _ := test.NewNullLogger()
-	logger.SetLevel(logrus.DebugLevel)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	c := service.NewContainer(logger)
-	c.Register(rrhttp.ID, &rrhttp.Service{})
-	c.Register(ID, &Service{})
+	err := backoff.Retry(func() error {
+		logger, _ := test.NewNullLogger()
+		logger.SetLevel(logrus.DebugLevel)
 
-	assert.NoError(t, c.Init(&testCfg{
-		headers: `{
+		c := service.NewContainer(logger)
+		c.Register(rrhttp.ID, &rrhttp.Service{})
+		c.Register(ID, &Service{})
+
+		assert.NoError(t, c.Init(&testCfg{
+			headers: `{
 "cors":{
     "allowedOrigin": "*",
     "allowedHeaders": "*",
@@ -162,7 +198,7 @@ func TestCORS_OPTIONS(t *testing.T) {
     "maxAge": 600
 }
 }`,
-		httpCfg: `{
+			httpCfg: `{
 			"enable": true,
 			"address": ":6379",
 			"maxRequestSize": 1024,
@@ -177,50 +213,65 @@ func TestCORS_OPTIONS(t *testing.T) {
 			}
 	}`}))
 
-	go func() {
-		err := c.Serve()
+		go func() {
+			err := c.Serve()
+			if err != nil {
+				t.Errorf("error during the Serve: error %v", err)
+			}
+		}()
+		time.Sleep(time.Millisecond * 100)
+		defer c.Stop()
+
+		req, err := http.NewRequest("OPTIONS", "http://localhost:6379", nil)
 		if err != nil {
-			t.Errorf("error during the Serve: error %v", err)
+			return err
 		}
-	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	req, err := http.NewRequest("OPTIONS", "http://localhost:6379", nil)
-	assert.NoError(t, err)
-
-	r, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err)
-	defer func() {
-		err := r.Body.Close()
+		r, err := http.DefaultClient.Do(req)
 		if err != nil {
-			t.Errorf("error during the body closing: error %v", err)
+			return err
 		}
-	}()
 
-	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
-	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
-	assert.Equal(t, "GET,POST,PUT,DELETE", r.Header.Get("Access-Control-Allow-Methods"))
-	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
-	assert.Equal(t, "600", r.Header.Get("Access-Control-Max-Age"))
-	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+		assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+		assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
+		assert.Equal(t, "GET,POST,PUT,DELETE", r.Header.Get("Access-Control-Allow-Methods"))
+		assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
+		assert.Equal(t, "600", r.Header.Get("Access-Control-Max-Age"))
+		assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
 
-	_, err = ioutil.ReadAll(r.Body)
-	assert.NoError(t, err)
+		_, err = ioutil.ReadAll(r.Body)
+		if err != nil {
+			return err
+		}
+		assert.Equal(t, 200, r.StatusCode)
 
-	assert.Equal(t, 200, r.StatusCode)
+		err = r.Body.Close()
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}, bkoff)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestCORS_Pass(t *testing.T) {
-	logger, _ := test.NewNullLogger()
-	logger.SetLevel(logrus.DebugLevel)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	c := service.NewContainer(logger)
-	c.Register(rrhttp.ID, &rrhttp.Service{})
-	c.Register(ID, &Service{})
+	err := backoff.Retry(func() error {
+		logger, _ := test.NewNullLogger()
+		logger.SetLevel(logrus.DebugLevel)
 
-	assert.NoError(t, c.Init(&testCfg{
-		headers: `{
+		c := service.NewContainer(logger)
+		c.Register(rrhttp.ID, &rrhttp.Service{})
+		c.Register(ID, &Service{})
+
+		assert.NoError(t, c.Init(&testCfg{
+			headers: `{
 "cors":{
     "allowedOrigin": "*",
     "allowedHeaders": "*",
@@ -230,7 +281,7 @@ func TestCORS_Pass(t *testing.T) {
     "maxAge": 600
 }
 }`,
-		httpCfg: `{
+			httpCfg: `{
 			"enable": true,
 			"address": ":6672",
 			"maxRequestSize": 1024,
@@ -245,32 +296,45 @@ func TestCORS_Pass(t *testing.T) {
 			}
 	}`}))
 
-	go func() {
-		err := c.Serve()
+		go func() {
+			err := c.Serve()
+			if err != nil {
+				t.Errorf("error during the Serve: error %v", err)
+			}
+		}()
+		time.Sleep(time.Millisecond * 100)
+		defer c.Stop()
+
+		req, err := http.NewRequest("GET", "http://localhost:6672", nil)
 		if err != nil {
-			t.Errorf("error during the Serve: error %v", err)
+			return err
 		}
-	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	req, err := http.NewRequest("GET", "http://localhost:6672", nil)
-	assert.NoError(t, err)
+		r, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
 
-	r, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err)
-	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
-	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
-	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
-	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+		assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+		assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
+		assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
+		assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
 
-	_, err = ioutil.ReadAll(r.Body)
-	assert.NoError(t, err)
+		_, err = ioutil.ReadAll(r.Body)
+		if err != nil {
+			return err
+		}
+		assert.Equal(t, 200, r.StatusCode)
 
-	assert.Equal(t, 200, r.StatusCode)
+		err = r.Body.Close()
+		if err != nil {
+			return err
+		}
 
-	err = r.Body.Close()
+		return nil
+	}, bkoff)
+
 	if err != nil {
-		t.Errorf("error during the body closing: error %v", err)
+		t.Fatal(err)
 	}
 }
