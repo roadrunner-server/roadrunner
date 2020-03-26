@@ -142,7 +142,7 @@ func Test_ResponseHeaders(t *testing.T) {
 		}()
 		time.Sleep(time.Millisecond * 100)
 		defer c.Stop()
-		
+
 		req, err := http.NewRequest("GET", "http://localhost:6079?hello=value", nil)
 		if err != nil {
 			return err
