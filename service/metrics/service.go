@@ -11,10 +11,15 @@ import (
 	"github.com/spiral/roadrunner/service/rpc"
 	"net/http"
 	"sync"
+	"time"
 )
 
-// ID declares public service name.
-const ID = "metrics"
+const (
+	// ID declares public service name.
+	ID = "metrics"
+	// maxHeaderSize declares max header size for prometheus server
+	maxHeaderSize = 1024 * 1024 * 100 // 104MB
+)
 
 // Service to manage application metrics using Prometheus.
 type Service struct {
@@ -76,18 +81,23 @@ func (s *Service) Serve() error {
 	}
 
 	s.mu.Lock()
-	s.http = &http.Server{Addr: s.cfg.Address, Handler: promhttp.HandlerFor(
-		s.registry,
-		promhttp.HandlerOpts{},
-	)}
+	s.http = &http.Server{
+		Addr:              s.cfg.Address,
+		Handler:           promhttp.HandlerFor(s.registry, promhttp.HandlerOpts{}, ),
+		IdleTimeout:       time.Hour * 24,
+		ReadTimeout:       time.Minute * 60,
+		MaxHeaderBytes:    maxHeaderSize,
+		ReadHeaderTimeout: time.Minute * 60,
+		WriteTimeout:      time.Minute * 60,
+	}
 	s.mu.Unlock()
 
 	err = s.http.ListenAndServe()
-	if err == nil || err == http.ErrServerClosed {
-		return nil
+	if err != nil && err != http.ErrServerClosed {
+		return err
 	}
 
-	return err
+	return nil
 }
 
 // Stop prometheus metrics service.
