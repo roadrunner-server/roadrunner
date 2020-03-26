@@ -36,16 +36,20 @@ func (cfg *testCfg) Unmarshal(out interface{}) error {
 }
 
 func Test_RequestHeaders(t *testing.T) {
-	logger, _ := test.NewNullLogger()
-	logger.SetLevel(logrus.DebugLevel)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	c := service.NewContainer(logger)
-	c.Register(rrhttp.ID, &rrhttp.Service{})
-	c.Register(ID, &Service{})
+	err := backoff.Retry(func() error {
+		logger, _ := test.NewNullLogger()
+		logger.SetLevel(logrus.DebugLevel)
 
-	assert.NoError(t, c.Init(&testCfg{
-		headers: `{"request":{"input": "custom-header"}}`,
-		httpCfg: `{
+		c := service.NewContainer(logger)
+		c.Register(rrhttp.ID, &rrhttp.Service{})
+		c.Register(ID, &Service{})
+
+		assert.NoError(t, c.Init(&testCfg{
+			headers: `{"request":{"input": "custom-header"}}`,
+			httpCfg: `{
 			"enable": true,
 			"address": ":6078",
 			"maxRequestSize": 1024,
@@ -60,19 +64,16 @@ func Test_RequestHeaders(t *testing.T) {
 			}
 	}`}))
 
-	go func() {
-		err := c.Serve()
-		if err != nil {
-			t.Errorf("error during Serve: error %v", err)
-		}
-	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+		go func() {
+			err := c.Serve()
+			if err != nil {
+				t.Errorf("error during Serve: error %v", err)
+			}
+		}()
 
-	bkoff := backoff.NewExponentialBackOff()
-	bkoff.MaxElapsedTime = time.Second * 15
+		time.Sleep(time.Millisecond * 100)
+		defer c.Stop()
 
-	err := backoff.Retry(func() error {
 		req, err := http.NewRequest("GET", "http://localhost:6078?hello=value", nil)
 		if err != nil {
 			return err
@@ -105,39 +106,6 @@ func Test_RequestHeaders(t *testing.T) {
 }
 
 func Test_ResponseHeaders(t *testing.T) {
-	logger, _ := test.NewNullLogger()
-	logger.SetLevel(logrus.DebugLevel)
-
-	c := service.NewContainer(logger)
-	c.Register(rrhttp.ID, &rrhttp.Service{})
-	c.Register(ID, &Service{})
-
-	assert.NoError(t, c.Init(&testCfg{
-		headers: `{"response":{"output": "output-header"},"request":{"input": "custom-header"}}`,
-		httpCfg: `{
-			"enable": true,
-			"address": ":6079",
-			"maxRequestSize": 1024,
-			"workers":{
-				"command": "php ../../tests/http/client.php header pipes",
-				"relay": "pipes",
-				"pool": {
-					"numWorkers": 1, 
-					"allocateTimeout": 10000000,
-					"destroyTimeout": 10000000 
-				}
-			}
-	}`}))
-
-	go func() {
-		err := c.Serve()
-		if err != nil {
-			t.Errorf("error during the Serve: error %v", err)
-		}
-	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
-
 	bkoff := backoff.NewExponentialBackOff()
 	bkoff.MaxElapsedTime = time.Second * 15
 
@@ -175,15 +143,19 @@ func Test_ResponseHeaders(t *testing.T) {
 }
 
 func TestCORS_OPTIONS(t *testing.T) {
-	logger, _ := test.NewNullLogger()
-	logger.SetLevel(logrus.DebugLevel)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	c := service.NewContainer(logger)
-	c.Register(rrhttp.ID, &rrhttp.Service{})
-	c.Register(ID, &Service{})
+	err := backoff.Retry(func() error {
+		logger, _ := test.NewNullLogger()
+		logger.SetLevel(logrus.DebugLevel)
 
-	assert.NoError(t, c.Init(&testCfg{
-		headers: `{
+		c := service.NewContainer(logger)
+		c.Register(rrhttp.ID, &rrhttp.Service{})
+		c.Register(ID, &Service{})
+
+		assert.NoError(t, c.Init(&testCfg{
+			headers: `{
 "cors":{
     "allowedOrigin": "*",
     "allowedHeaders": "*",
@@ -193,7 +165,7 @@ func TestCORS_OPTIONS(t *testing.T) {
     "maxAge": 600
 }
 }`,
-		httpCfg: `{
+			httpCfg: `{
 			"enable": true,
 			"address": ":6379",
 			"maxRequestSize": 1024,
@@ -208,19 +180,15 @@ func TestCORS_OPTIONS(t *testing.T) {
 			}
 	}`}))
 
-	go func() {
-		err := c.Serve()
-		if err != nil {
-			t.Errorf("error during the Serve: error %v", err)
-		}
-	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+		go func() {
+			err := c.Serve()
+			if err != nil {
+				t.Errorf("error during the Serve: error %v", err)
+			}
+		}()
+		time.Sleep(time.Millisecond * 100)
+		defer c.Stop()
 
-	bkoff := backoff.NewExponentialBackOff()
-	bkoff.MaxElapsedTime = time.Second * 15
-
-	err := backoff.Retry(func() error {
 		req, err := http.NewRequest("OPTIONS", "http://localhost:6379", nil)
 		if err != nil {
 			return err
@@ -258,15 +226,19 @@ func TestCORS_OPTIONS(t *testing.T) {
 }
 
 func TestCORS_Pass(t *testing.T) {
-	logger, _ := test.NewNullLogger()
-	logger.SetLevel(logrus.DebugLevel)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	c := service.NewContainer(logger)
-	c.Register(rrhttp.ID, &rrhttp.Service{})
-	c.Register(ID, &Service{})
+	err := backoff.Retry(func() error {
+		logger, _ := test.NewNullLogger()
+		logger.SetLevel(logrus.DebugLevel)
 
-	assert.NoError(t, c.Init(&testCfg{
-		headers: `{
+		c := service.NewContainer(logger)
+		c.Register(rrhttp.ID, &rrhttp.Service{})
+		c.Register(ID, &Service{})
+
+		assert.NoError(t, c.Init(&testCfg{
+			headers: `{
 "cors":{
     "allowedOrigin": "*",
     "allowedHeaders": "*",
@@ -276,7 +248,7 @@ func TestCORS_Pass(t *testing.T) {
     "maxAge": 600
 }
 }`,
-		httpCfg: `{
+			httpCfg: `{
 			"enable": true,
 			"address": ":6672",
 			"maxRequestSize": 1024,
@@ -291,19 +263,15 @@ func TestCORS_Pass(t *testing.T) {
 			}
 	}`}))
 
-	go func() {
-		err := c.Serve()
-		if err != nil {
-			t.Errorf("error during the Serve: error %v", err)
-		}
-	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
+		go func() {
+			err := c.Serve()
+			if err != nil {
+				t.Errorf("error during the Serve: error %v", err)
+			}
+		}()
+		time.Sleep(time.Millisecond * 100)
+		defer c.Stop()
 
-	bkoff := backoff.NewExponentialBackOff()
-	bkoff.MaxElapsedTime = time.Second * 15
-
-	err := backoff.Retry(func() error {
 		req, err := http.NewRequest("GET", "http://localhost:6672", nil)
 		if err != nil {
 			return err
