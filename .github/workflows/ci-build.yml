@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [7.1, 7.2, 7.3, 7.4]
+        php: [7.3, 7.4]
         go: [1.13, 1.14]
         os: [ubuntu-latest]
     env:
@@ -63,12 +63,8 @@ jobs:
       - name: Install Go dependencies
         run: go mod download
 
-      - name: Download binary roadrunner
-        run: php ./bin/rr get-binary
-
       - name: Run golang tests
         run: |
-          go mod vendor
           composer update
           go test -race -v -coverprofile=lib.txt -covermode=atomic
           go test ./util -race -v -coverprofile=util.txt -covermode=atomic

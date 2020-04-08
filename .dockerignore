@@ -7,3 +7,4 @@
 /tests
 /bin
 composer.json
+vendor_php
