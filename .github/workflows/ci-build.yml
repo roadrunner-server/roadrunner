@@ -64,11 +64,10 @@ jobs:
         run: go mod download
 
       - name: Download binary roadrunner
-        run: php ./bin/rr get-binary
+        run: composer install && php ./bin/rr get-binary
 
       - name: Run golang tests
         run: |
-          go mod vendor
           composer update
           go test -race -v -coverprofile=lib.txt -covermode=atomic
           go test ./util -race -v -coverprofile=util.txt -covermode=atomic
