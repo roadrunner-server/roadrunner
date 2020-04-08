@@ -1,0 +1,11 @@
+[Unit]
+Description=High-performance PHP application server
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/roadrunner serve -v -d -c <path/to/.rr.yaml>
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=default.target
