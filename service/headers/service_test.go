@@ -200,7 +200,7 @@ func TestCORS_OPTIONS(t *testing.T) {
 }`,
 			httpCfg: `{
 			"enable": true,
-			"address": ":6379",
+			"address": ":16379",
 			"maxRequestSize": 1024,
 			"workers":{
 				"command": "php ../../tests/http/client.php headers pipes",
@@ -222,7 +222,7 @@ func TestCORS_OPTIONS(t *testing.T) {
 		time.Sleep(time.Millisecond * 100)
 		defer c.Stop()
 
-		req, err := http.NewRequest("OPTIONS", "http://localhost:6379", nil)
+		req, err := http.NewRequest("OPTIONS", "http://localhost:16379", nil)
 		if err != nil {
 			return err
 		}
