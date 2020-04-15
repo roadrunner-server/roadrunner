@@ -41,7 +41,7 @@ type ServerConfig struct {
 	Pool *Config
 
 	// values defines set of values to be passed to the command context.
-	mu  *sync.Mutex
+	mu  sync.Mutex
 	env map[string]string
 }
 
@@ -53,8 +53,6 @@ func (cfg *ServerConfig) InitDefaults() error {
 	if cfg.Pool == nil {
 		cfg.Pool = &Config{}
 	}
-
-	cfg.mu = &sync.Mutex{}
 
 	return cfg.Pool.InitDefaults()
 }
