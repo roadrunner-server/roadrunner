@@ -21,7 +21,7 @@ type ServerConfig struct {
 	// Command includes command strings with all the parameters, example: "php worker.php pipes".
 	Command string
 
-	// User under which process is starting
+	// User under which process will be started
 	User string
 
 	// CommandProducer overwrites
