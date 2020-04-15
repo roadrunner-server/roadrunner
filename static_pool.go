@@ -26,7 +26,7 @@ type StaticPool struct {
 	factory Factory
 
 	// active task executions
-	tmu   sync.Mutex
+	tmu   *sync.Mutex
 	tasks sync.WaitGroup
 
 	// workers circular allocation buf
@@ -36,13 +36,13 @@ type StaticPool struct {
 	numDead int64
 
 	// protects state of worker list, does not affect allocation
-	muw sync.RWMutex
+	muw *sync.RWMutex
 
 	// all registered workers
 	workers []*Worker
 
 	// invalid declares set of workers to be removed from the pool.
-	remove sync.Map
+	remove *sync.Map
 
 	// pool is being destroyed
 	inDestroy int32
@@ -66,6 +66,9 @@ func NewPool(cmd func() *exec.Cmd, factory Factory, cfg Config) (*StaticPool, er
 		workers: make([]*Worker, 0, cfg.NumWorkers),
 		free:    make(chan *Worker, cfg.NumWorkers),
 		destroy: make(chan interface{}),
+		tmu:     &sync.Mutex{},
+		remove:  &sync.Map{},
+		muw:     &sync.RWMutex{},
 	}
 
 	// constant number of workers simplify logic

@@ -21,6 +21,9 @@ type ServerConfig struct {
 	// Command includes command strings with all the parameters, example: "php worker.php pipes".
 	Command string
 
+	// User under which process is starting
+	User string
+
 	// CommandProducer overwrites
 	CommandProducer CommandProducer
 
@@ -38,7 +41,7 @@ type ServerConfig struct {
 	Pool *Config
 
 	// values defines set of values to be passed to the command context.
-	mu  sync.Mutex
+	mu  *sync.Mutex
 	env map[string]string
 }
 
@@ -50,6 +53,8 @@ func (cfg *ServerConfig) InitDefaults() error {
 	if cfg.Pool == nil {
 		cfg.Pool = &Config{}
 	}
+
+	cfg.mu = &sync.Mutex{}
 
 	return cfg.Pool.InitDefaults()
 }
@@ -96,7 +101,8 @@ func (cfg *ServerConfig) GetEnv() (env []string) {
 	return
 }
 
-// makeCommands returns new command provider based on configured options.
+//=================================== PRIVATE METHODS ======================================================
+
 func (cfg *ServerConfig) makeCommand() func() *exec.Cmd {
 	cfg.mu.Lock()
 	defer cfg.mu.Unlock()
@@ -105,10 +111,21 @@ func (cfg *ServerConfig) makeCommand() func() *exec.Cmd {
 		return cfg.CommandProducer(cfg)
 	}
 
-	var cmd = strings.Split(cfg.Command, " ")
+	var cmdArgs []string
+	cmdArgs = append(cmdArgs, strings.Split(cfg.Command, " ")...)
+
 	return func() *exec.Cmd {
-		cmd := exec.Command(cmd[0], cmd[1:]...)
+		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 		osutil.IsolateProcess(cmd)
+
+		// if user is not empty, and OS is linux or macos
+		// execute php worker from that particular user
+		if cfg.User != "" {
+			err := osutil.ExecuteFromUser(cmd, cfg.User)
+			if err != nil {
+				return nil
+			}
+		}
 
 		cmd.Env = cfg.GetEnv()
 

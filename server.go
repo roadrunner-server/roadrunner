@@ -166,7 +166,7 @@ func (s *Server) Reconfigure(cfg *ServerConfig) error {
 	pWatcher := s.pController
 	s.mu.Unlock()
 
-	pool, err := NewPool(cfg.makeCommand(), s.factory, *cfg.Pool)
+	pool, err := NewPool(s.cfg.makeCommand(), s.factory, *cfg.Pool)
 	if err != nil {
 		return err
 	}
