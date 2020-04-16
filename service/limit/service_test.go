@@ -63,7 +63,7 @@ func Test_Service_PidEcho(t *testing.T) {
 
 		err := c.Init(&testCfg{
 			httpCfg: `{
-			"address": ":7029",
+			"address": ":17029",
 			"workers":{
 				"command": "php ../../tests/http/client.php pid pipes",
 				"pool": {"numWorkers": 1}
@@ -92,7 +92,7 @@ func Test_Service_PidEcho(t *testing.T) {
 		}()
 
 		time.Sleep(time.Millisecond * 100)
-		req, err := http.NewRequest("GET", "http://localhost:7029", nil)
+		req, err := http.NewRequest("GET", "http://localhost:17029", nil)
 		if err != nil {
 			return err
 		}
