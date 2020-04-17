@@ -8,7 +8,6 @@ import (
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/stretchr/testify/assert"
 	"os"
-	"runtime"
 	"strconv"
 	"testing"
 	"time"
@@ -81,10 +80,6 @@ func Test_RPC(t *testing.T) {
 }
 
 func Test_RPC_Unix(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	logger, _ := test.NewNullLogger()
 	logger.SetLevel(logrus.DebugLevel)
 

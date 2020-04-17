@@ -4,7 +4,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net"
 	"os/exec"
-	"runtime"
 	"testing"
 	"time"
 )
@@ -243,10 +242,6 @@ func Test_Tcp_Echo(t *testing.T) {
 }
 
 func Test_Unix_Start(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	ls, err := net.Listen("unix", "sock.unix")
 	if err == nil {
 		defer func() {
@@ -276,10 +271,6 @@ func Test_Unix_Start(t *testing.T) {
 }
 
 func Test_Unix_Failboot(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	ls, err := net.Listen("unix", "sock.unix")
 	if err == nil {
 		defer func() {
@@ -301,10 +292,6 @@ func Test_Unix_Failboot(t *testing.T) {
 }
 
 func Test_Unix_Timeout(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	ls, err := net.Listen("unix", "sock.unix")
 	if err == nil {
 		defer func() {
@@ -326,10 +313,6 @@ func Test_Unix_Timeout(t *testing.T) {
 }
 
 func Test_Unix_Invalid(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	ls, err := net.Listen("unix", "sock.unix")
 	if err == nil {
 		defer func() {
@@ -350,10 +333,6 @@ func Test_Unix_Invalid(t *testing.T) {
 }
 
 func Test_Unix_Broken(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	ls, err := net.Listen("unix", "sock.unix")
 	if err == nil {
 		defer func() {
@@ -388,10 +367,6 @@ func Test_Unix_Broken(t *testing.T) {
 }
 
 func Test_Unix_Echo(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	ls, err := net.Listen("unix", "sock.unix")
 	if err == nil {
 		defer func() {
@@ -495,10 +470,6 @@ func Benchmark_Tcp_Worker_ExecEcho(b *testing.B) {
 }
 
 func Benchmark_Unix_SpawnWorker_Stop(b *testing.B) {
-	if runtime.GOOS == "windows" {
-		b.Skip("not supported on " + runtime.GOOS)
-	}
-
 	ls, err := net.Listen("unix", "sock.unix")
 	if err == nil {
 		defer func() {
@@ -530,10 +501,6 @@ func Benchmark_Unix_SpawnWorker_Stop(b *testing.B) {
 }
 
 func Benchmark_Unix_Worker_ExecEcho(b *testing.B) {
-	if runtime.GOOS == "windows" {
-		b.Skip("not supported on " + runtime.GOOS)
-	}
-
 	ls, err := net.Listen("unix", "sock.unix")
 	if err == nil {
 		defer func() {

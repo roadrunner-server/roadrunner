@@ -4,7 +4,6 @@ import (
 	json "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
-	"runtime"
 	"testing"
 )
 
@@ -55,10 +54,6 @@ func TestConfig_Listener(t *testing.T) {
 }
 
 func TestConfig_ListenerUnix(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	cfg := &Config{Listen: "unix://file.sock"}
 
 	ln, err := cfg.Listener()
@@ -76,10 +71,6 @@ func TestConfig_ListenerUnix(t *testing.T) {
 }
 
 func Test_Config_Error(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	cfg := &Config{Listen: "uni:unix.sock"}
 	ln, err := cfg.Listener()
 	assert.Nil(t, ln)
@@ -121,10 +112,6 @@ func TestConfig_Dialer(t *testing.T) {
 }
 
 func TestConfig_DialerUnix(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	cfg := &Config{Listen: "unix://file.sock"}
 
 	ln, _ := cfg.Listener()
@@ -150,10 +137,6 @@ func TestConfig_DialerUnix(t *testing.T) {
 }
 
 func Test_Config_DialerError(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	cfg := &Config{Listen: "uni:unix.sock"}
 	ln, err := cfg.Dialer()
 	assert.Nil(t, ln)

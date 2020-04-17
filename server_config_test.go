@@ -2,7 +2,6 @@ package roadrunner
 
 import (
 	"github.com/stretchr/testify/assert"
-	"runtime"
 	"testing"
 	"time"
 )
@@ -65,10 +64,6 @@ func Test_ServerConfig_SocketFactory(t *testing.T) {
 }
 
 func Test_ServerConfig_UnixSocketFactory(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	cfg := &ServerConfig{Relay: "unix://unix.sock"}
 	f, err := cfg.makeFactory()
 	if err != nil {
@@ -89,10 +84,6 @@ func Test_ServerConfig_UnixSocketFactory(t *testing.T) {
 }
 
 func Test_ServerConfig_ErrorFactory(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("not supported on " + runtime.GOOS)
-	}
-
 	cfg := &ServerConfig{Relay: "uni:unix.sock"}
 	f, err := cfg.makeFactory()
 	assert.Nil(t, f)
