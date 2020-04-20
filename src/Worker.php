@@ -72,6 +72,26 @@ class Worker
         return $body;
     }
 
+//     /**
+//      * Respond to the server with result of task execution and execution context.
+//      *
+//      * Example:
+//      * $worker->respond((string)$response->getBody(), json_encode($response->getHeaders()));
+//      *
+//      * @param string|null $payload
+//      * @param string|null $header
+//      */
+//     public function send(string $payload = null, string $header = null): void
+//     {
+//         if ($header === null) {
+//             $this->relay->send('', Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
+//         } else {
+//             $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_RAW);
+//         }
+//
+//         $this->relay->send((string) $payload, Relay::PAYLOAD_RAW);
+//     }
+
     /**
      * Respond to the server with result of task execution and execution context.
      *
@@ -83,15 +103,14 @@ class Worker
      */
     public function send(string $payload = null, string $header = null): void
     {
-        if ($header === null) {
-            $this->relay->send('', Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
-        } else {
-            $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_RAW);
-        }
+        $flag = Relay::PAYLOAD_CONTROL;
+        $flag = $flag | (empty($header) ? Relay::PAYLOAD_NONE : Relay::PAYLOAD_RAW);
 
-        $this->relay->send((string) $payload, Relay::PAYLOAD_RAW);
+        $head = pack('', $header, $flag);
+        $body = pack('', $payload, Relay::PAYLOAD_RAW);
+
+        $this->relay->send($head . $body);
     }
-
     /**
      * Respond to the server with an error. Error must be treated as TaskError and might not cause
      * worker destruction.
