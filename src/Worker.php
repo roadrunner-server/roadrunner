@@ -66,7 +66,7 @@ class Worker
         }
 
         if ($flags & Relay::PAYLOAD_ERROR) {
-            return new \Error((string) $body);
+            return new \Error((string)$body);
         }
 
         return $body;
@@ -89,7 +89,23 @@ class Worker
             $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_RAW);
         }
 
-        $this->relay->send((string) $payload, Relay::PAYLOAD_RAW);
+        $this->relay->send((string)$payload, Relay::PAYLOAD_RAW);
+    }
+
+    /**
+     * Respond to the server with result of task execution and execution context. Uses less amount of sys_calls.
+     *
+     * @param string|null $payload
+     * @param string|null $header
+     */
+    public function sendPackage(string $payload = null, string $header = null): void
+    {
+        $this->relay->sendPackage(
+            (string)$header,
+            Relay::PAYLOAD_CONTROL | ($header ? Relay::PAYLOAD_NONE : Relay::PAYLOAD_RAW),
+            (string)$payload,
+            Relay::PAYLOAD_RAW
+        );
     }
 
     /**
@@ -137,7 +153,7 @@ class Worker
     private function handleControl(string $body = null, &$header = null, int $flags = 0): bool
     {
         $header = $body;
-        if (is_null($body) || $flags & Relay::PAYLOAD_RAW) {
+        if ($body === null || $flags & Relay::PAYLOAD_RAW) {
             // empty or raw prefix
             return true;
         }
