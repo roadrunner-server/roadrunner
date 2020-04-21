@@ -14,7 +14,7 @@
     }
   ],
   "require": {
-    "php": "^7.1.*",
+    "php": "^7.1",
     "ext-json": "*",
     "ext-curl": "*",
     "spiral/goridge": "^2.0",
