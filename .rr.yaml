@@ -83,6 +83,9 @@ http:
     # connection method (pipes, tcp://:9000, unix://socket.unix). default "pipes"
     relay:    "pipes"
 
+    # user under which process will be started
+    user: ""
+
     # worker pool configuration.
     pool:
       # number of workers to be serving.
