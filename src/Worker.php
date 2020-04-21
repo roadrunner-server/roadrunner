@@ -66,31 +66,11 @@ class Worker
         }
 
         if ($flags & Relay::PAYLOAD_ERROR) {
-            return new \Error((string) $body);
+            return new \Error((string)$body);
         }
 
         return $body;
     }
-
-//     /**
-//      * Respond to the server with result of task execution and execution context.
-//      *
-//      * Example:
-//      * $worker->respond((string)$response->getBody(), json_encode($response->getHeaders()));
-//      *
-//      * @param string|null $payload
-//      * @param string|null $header
-//      */
-//     public function send(string $payload = null, string $header = null): void
-//     {
-//         if ($header === null) {
-//             $this->relay->send('', Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
-//         } else {
-//             $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_RAW);
-//         }
-//
-//         $this->relay->send((string) $payload, Relay::PAYLOAD_RAW);
-//     }
 
     /**
      * Respond to the server with result of task execution and execution context.
@@ -103,14 +83,31 @@ class Worker
      */
     public function send(string $payload = null, string $header = null): void
     {
-        $flag = Relay::PAYLOAD_CONTROL;
-        $flag = $flag | (empty($header) ? Relay::PAYLOAD_NONE : Relay::PAYLOAD_RAW);
+        if ($header === null) {
+            $this->relay->send('', Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
+        } else {
+            $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_RAW);
+        }
 
-        $head = pack('', $header, $flag);
-        $body = pack('', $payload, Relay::PAYLOAD_RAW);
-
-        $this->relay->send($head . $body);
+        $this->relay->send((string)$payload, Relay::PAYLOAD_RAW);
     }
+
+    /**
+     * Respond to the server with result of task execution and execution context. Uses less amount of sys_calls.
+     *
+     * @param string|null $payload
+     * @param string|null $header
+     */
+    public function sendPackage(string $payload = null, string $header = null): void
+    {
+        $this->relay->sendPackage(
+            (string)$header,
+            Relay::PAYLOAD_CONTROL | ($header ? Relay::PAYLOAD_NONE : Relay::PAYLOAD_RAW),
+            (string)$payload,
+            Relay::PAYLOAD_RAW
+        );
+    }
+
     /**
      * Respond to the server with an error. Error must be treated as TaskError and might not cause
      * worker destruction.
@@ -156,7 +153,7 @@ class Worker
     private function handleControl(string $body = null, &$header = null, int $flags = 0): bool
     {
         $header = $body;
-        if (is_null($body) || $flags & Relay::PAYLOAD_RAW) {
+        if ($body === null || $flags & Relay::PAYLOAD_RAW) {
             // empty or raw prefix
             return true;
         }
