@@ -9,6 +9,7 @@ v1.7.1 (22.04.2020)
 - Added ability to run the worker process from the particular user on Linux-based systems. Make sure, that the user have the permissions to run the script. See the [config](https://roadrunner.dev/docs/intro-config), option `user`.
 - Fixed: vendor directory conflict with golang part of the application. Now php uses vendor_php directory for the dependencies.
 - Goridge updated to version 2.3.2.
+- Deprecated Zend dependency replaced with Laminas-diactoros.
 - See the full log: [Milestone](https://github.com/spiral/roadrunner/milestone/9?closed=1)
 
 v1.7.0 (23.03.2020)
