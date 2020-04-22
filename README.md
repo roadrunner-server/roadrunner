@@ -46,7 +46,7 @@ Features:
 - Very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
 - Integrations with Symfony, Laravel, Slim, CakePHP, Zend Expressive, Spiral
 - Automatic reloading on file changes
-- Works on Windows
+- Works on Windows (Unix sockets (AF_UNIX) supported on Windows 10)
 
 Installation:
 --------
