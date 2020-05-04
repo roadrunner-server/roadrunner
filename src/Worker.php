@@ -31,12 +31,16 @@ class Worker
     /** @var Relay */
     private $relay;
 
+    /** @var bool */
+    private $optimizedRelay;
+
     /**
      * @param Relay $relay
      */
     public function __construct(Relay $relay)
     {
         $this->relay = $relay;
+        $this->optimizedRelay = method_exists($relay, 'sendPackage');
     }
 
     /**
@@ -83,12 +87,22 @@ class Worker
      */
     public function send(string $payload = null, string $header = null): void
     {
-        $this->relay->sendPackage(
-            (string)$header,
-            Relay::PAYLOAD_CONTROL | ($header === null ? Relay::PAYLOAD_NONE : Relay::PAYLOAD_RAW),
-            (string)$payload,
-            Relay::PAYLOAD_RAW
-        );
+        if (!$this->optimizedRelay) {
+            if ($header === null) {
+                $this->relay->send('', Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
+            } else {
+                $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_RAW);
+            }
+
+            $this->relay->send((string)$payload, Relay::PAYLOAD_RAW);
+        } else {
+            $this->relay->sendPackage(
+                (string)$header,
+                Relay::PAYLOAD_CONTROL | ($header === null ? Relay::PAYLOAD_NONE : Relay::PAYLOAD_RAW),
+                (string)$payload,
+                Relay::PAYLOAD_RAW
+            );
+        }
     }
 
     /**
