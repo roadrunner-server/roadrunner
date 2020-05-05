@@ -5,7 +5,7 @@ v1.8.0 (05.05.2020)
 -------------------
 - Update goridge version to 2.4.0
 - Update PHP version to the 7.2 (currently minimum supported)
-- See the full milestone here: [link](https://github.com/spiral/goridge/issues?q=is%3Aclosed+milestone%3A2.4.0)
+- See the full milestone here: [link](https://github.com/spiral/roadrunner/issues?q=is%3Aclosed+milestone%3A1.8.0)
 
 v1.7.1 (22.04.2020)
 -------------------
