@@ -10,11 +10,11 @@ declare(strict_types=1);
 namespace Spiral\RoadRunner;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
+use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * Manages PSR-7 request and response.
@@ -69,7 +69,7 @@ class PSR7Client
     /**
      * @return ServerRequestInterface|null
      */
-    public function acceptRequest()
+    public function acceptRequest(): ?ServerRequestInterface
     {
         $rawRequest = $this->httpClient->acceptRequest();
         if ($rawRequest === null) {
@@ -101,11 +101,11 @@ class PSR7Client
         }
 
         if ($rawRequest['ctx']['parsed']) {
-            $request = $request->withParsedBody(json_decode($rawRequest['body'], true));
-        } else {
-            if ($rawRequest['body'] !== null) {
-                $request = $request->withBody($this->streamFactory->createStream($rawRequest['body']));
-            }
+            return $request->withParsedBody(json_decode($rawRequest['body'], true));
+        }
+
+        if ($rawRequest['body'] !== null) {
+            return $request->withBody($this->streamFactory->createStream($rawRequest['body']));
         }
 
         return $request;
