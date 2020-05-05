@@ -11,6 +11,8 @@ namespace Spiral\RoadRunner;
 
 use Spiral\Goridge\Exceptions\GoridgeException;
 use Spiral\Goridge\RelayInterface as Relay;
+use Spiral\Goridge\SocketRelay;
+use Spiral\Goridge\StreamRelay;
 use Spiral\RoadRunner\Exception\RoadRunnerException;
 
 /**
@@ -28,7 +30,7 @@ class Worker
     // Send as response context to request worker termination
     public const STOP = '{"stop":true}';
 
-    /** @var Relay */
+    /** @var Relay|StreamRelay|SocketRelay */
     private $relay;
 
     /** @var bool */
