@@ -178,4 +178,8 @@ func (h *Handler) resolveIP(r *Request) {
 	if r.Header.Get("X-Real-Ip") != "" {
 		r.RemoteAddr = fetchIP(r.Header.Get("X-Real-Ip"))
 	}
+
+	if r.Header.Get("True-Client-IP") != "" {
+		r.RemoteAddr = fetchIP(r.Header.Get("True-Client-IP"))
+	}
 }
