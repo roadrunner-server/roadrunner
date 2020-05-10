@@ -175,7 +175,23 @@ func (h *Handler) resolveIP(r *Request) {
 		return
 	}
 
+	// The logic here is the following:
+	// In general case, we only expect X-Real-Ip header. If it exist, we get the IP addres from header and set request Remote address
+	// But, if there is no X-Real-Ip header, we also trying to check CloudFlare headers
+	// True-Client-IP is a general CF header in which copied information from X-Real-Ip in CF.
+	// CF-Connecting-IP is an Enterprise feature and we check it last in order.
+	// This operations are near O(1) because Headers struct are the map type -> type MIMEHeader map[string][]string
 	if r.Header.Get("X-Real-Ip") != "" {
 		r.RemoteAddr = fetchIP(r.Header.Get("X-Real-Ip"))
+		return
+	}
+
+	if r.Header.Get("True-Client-IP") != "" {
+		r.RemoteAddr = fetchIP(r.Header.Get("True-Client-IP"))
+		return
+	}
+
+	if r.Header.Get("CF-Connecting-IP") != "" {
+		r.RemoteAddr = fetchIP(r.Header.Get("CF-Connecting-IP"))
 	}
 }
