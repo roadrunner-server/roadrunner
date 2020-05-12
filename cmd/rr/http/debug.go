@@ -16,10 +16,14 @@ import (
 
 func init() {
 	cobra.OnInitialize(func() {
-		if rr.Debug {
-			svc, _ := rr.Container.Get(rrhttp.ID)
-			if svc, ok := svc.(*rrhttp.Service); ok {
+		svc, _ := rr.Container.Get(rrhttp.ID)
+		if svc, ok := svc.(*rrhttp.Service); ok {
+			if rr.Debug {
 				svc.AddListener((&debugger{logger: rr.Logger}).listener)
+			} else {
+				svc.AddListener(func(event int, ctx interface{}) {
+					util.StdErrOutput(event, ctx)
+				})
 			}
 		}
 	})

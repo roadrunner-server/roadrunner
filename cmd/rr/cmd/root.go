@@ -110,13 +110,6 @@ func init() {
 			util.ExitWithError(err)
 		}
 
-		wcv, _ := Container.Get(limit.ID)
-		if wcv, ok := wcv.(*limit.Service); ok {
-			wcv.AddListener(func(event int, ctx interface{}) {
-				util.StdErrOutput(event, ctx)
-			})
-		}
-
 		// global watcher config
 		if Verbose {
 			wcv, _ := Container.Get(limit.ID)
