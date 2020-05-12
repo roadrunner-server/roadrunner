@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
 	"strings"
@@ -34,7 +35,7 @@ func LogEvent(logger *logrus.Logger, event int, ctx interface{}) bool {
 				continue
 			}
 
-			logger.Warning(strings.Trim(line, "\r\n"))
+			fmt.Println(strings.Trim(line, "\r\n"))
 		}
 
 		return true
