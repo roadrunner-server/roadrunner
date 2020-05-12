@@ -44,7 +44,8 @@ Features:
 - Payload context and body
 - Protocol, worker and job level error management (including PHP errors)
 - Very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
-- Integrations with Symfony, Laravel, Slim, CakePHP, Zend Expressive, Spiral
+- Integrations with Symfony, Laravel, Slim, CakePHP, Zend Expressive
+- Application server for [Spiral](https://github.com/spiral/framework)
 - Automatic reloading on file changes
 - Works on Windows (Unix sockets (AF_UNIX) supported on Windows 10)
 
