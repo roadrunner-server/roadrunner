@@ -30,7 +30,7 @@
     "phpstan/phpstan": "~0.12"
   },
   "scripts": {
-    "analyze": "@php ./vendor_php/bin/phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi"
+    "analyze": "phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi"
   },
   "autoload": {
     "psr-4": {
