@@ -11,8 +11,7 @@ namespace Spiral\RoadRunner;
 
 use Spiral\Goridge\Exceptions\GoridgeException;
 use Spiral\Goridge\RelayInterface as Relay;
-use Spiral\Goridge\SocketRelay;
-use Spiral\Goridge\StreamRelay;
+use Spiral\Goridge\SendPackageRelayInterface;
 use Spiral\RoadRunner\Exception\RoadRunnerException;
 
 /**
@@ -30,11 +29,8 @@ class Worker
     // Send as response context to request worker termination
     public const STOP = '{"stop":true}';
 
-    /** @var Relay|StreamRelay|SocketRelay */
+    /** @var Relay */
     private $relay;
-
-    /** @var bool */
-    private $optimizedRelay;
 
     /**
      * @param Relay $relay
@@ -42,7 +38,6 @@ class Worker
     public function __construct(Relay $relay)
     {
         $this->relay = $relay;
-        $this->optimizedRelay = method_exists($relay, 'sendPackage');
     }
 
     /**
@@ -89,7 +84,7 @@ class Worker
      */
     public function send(string $payload = null, string $header = null): void
     {
-        if (!$this->optimizedRelay) {
+        if (!$this->relay instanceof SendPackageRelayInterface) {
             if ($header === null) {
                 $this->relay->send('', Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
             } else {

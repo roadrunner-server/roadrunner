@@ -57,8 +57,8 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-suggest # --prefer-source
 
-#      - name: Analyze PHP sources
-#        run: composer analyze
+      - name: Analyze PHP sources
+        run: composer analyze
 
       - name: Install Go dependencies
         run: go mod download
