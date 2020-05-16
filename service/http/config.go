@@ -77,6 +77,9 @@ type SSLConfig struct {
 
 	// Cert is https certificate.
 	Cert string
+
+	// Root CA file
+	RootCA string
 }
 
 // EnableHTTP is true when http server must run.
@@ -86,7 +89,7 @@ func (c *Config) EnableHTTP() bool {
 
 // EnableTLS returns true if rr must listen TLS connections.
 func (c *Config) EnableTLS() bool {
-	return c.SSL.Key != "" || c.SSL.Cert != ""
+	return c.SSL.Key != "" || c.SSL.Cert != "" || c.SSL.RootCA != ""
 }
 
 // EnableHTTP2 when HTTP/2 extension must be enabled (only with TSL).
@@ -243,6 +246,16 @@ func (c *Config) Valid() error {
 			}
 
 			return err
+		}
+
+		// RootCA is optional, but if provided - check it
+		if c.SSL.RootCA != "" {
+			if _, err := os.Stat(c.SSL.RootCA); err != nil {
+				if os.IsNotExist(err) {
+					return fmt.Errorf("root ca path provided, but key file '%s' does not exists", c.SSL.Key)
+				}
+				return err
+			}
 		}
 	}
 

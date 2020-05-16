@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
@@ -12,6 +13,7 @@ import (
 	"github.com/spiral/roadrunner/util"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
+	"io/ioutil"
 	"net/http"
 	"net/http/fcgi"
 	"net/url"
@@ -268,16 +270,43 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Init https server.
 func (s *Service) initSSL() *http.Server {
-	server := &http.Server{
+	// it already checked on Valid step, that file exist
+	var server http.Server
+	server.TLSConfig.MinVersion = tls.VersionTLS12
+
+	if s.cfg.SSL.RootCA != "" {
+		rootCAs, err := x509.SystemCertPool()
+		if err != nil {
+			s.throw(EventInitSSL, nil)
+			return nil
+		}
+		if rootCAs == nil {
+			rootCAs = x509.NewCertPool()
+		}
+
+		CA, err := ioutil.ReadFile(s.cfg.SSL.RootCA)
+		if err != nil {
+			s.throw(EventInitSSL, nil)
+			return nil
+		}
+
+		// should append our CA cert
+		rootCAs.AppendCertsFromPEM(CA)
+		config := &tls.Config{
+			InsecureSkipVerify: false,
+			RootCAs:            rootCAs,
+		}
+		server.TLSConfig = config
+	}
+
+	server = http.Server{
 		Addr:    s.tlsAddr(s.cfg.Address, true),
 		Handler: s,
-		TLSConfig: &tls.Config{
-			MinVersion: tls.VersionTLS12,
-		},
 	}
-	s.throw(EventInitSSL, server)
 
-	return server
+	s.throw(EventInitSSL, &server)
+
+	return &server
 }
 
 // init http/2 server
