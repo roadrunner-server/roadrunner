@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
@@ -28,6 +29,8 @@ const (
 	// EventInitSSL thrown at moment of https initialization. SSL server passed as context.
 	EventInitSSL = 750
 )
+
+var couldNotAppendPemError = errors.New("could not append Certs from PEM")
 
 // http middleware type.
 type middleware func(f http.HandlerFunc) http.HandlerFunc
@@ -126,6 +129,12 @@ func (s *Service) Serve() error {
 
 	if s.cfg.EnableTLS() {
 		s.https = s.initSSL()
+		if s.cfg.SSL.RootCA != "" {
+			err := s.appendRootCa()
+			if err != nil {
+				return err
+			}
+		}
 
 		if s.cfg.EnableHTTP2() {
 			if err := s.initHTTP2(); err != nil {
@@ -268,45 +277,49 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f(w, r)
 }
 
-// Init https server.
-func (s *Service) initSSL() *http.Server {
-	// it already checked on Valid step, that file exist
-	var server http.Server
-	server.TLSConfig.MinVersion = tls.VersionTLS12
-
-	if s.cfg.SSL.RootCA != "" {
-		rootCAs, err := x509.SystemCertPool()
-		if err != nil {
-			s.throw(EventInitSSL, nil)
-			return nil
-		}
-		if rootCAs == nil {
-			rootCAs = x509.NewCertPool()
-		}
-
-		CA, err := ioutil.ReadFile(s.cfg.SSL.RootCA)
-		if err != nil {
-			s.throw(EventInitSSL, nil)
-			return nil
-		}
-
-		// should append our CA cert
-		rootCAs.AppendCertsFromPEM(CA)
-		config := &tls.Config{
-			InsecureSkipVerify: false,
-			RootCAs:            rootCAs,
-		}
-		server.TLSConfig = config
+// append RootCA to the https server TLS config
+func (s *Service) appendRootCa() error {
+	rootCAs, err := x509.SystemCertPool()
+	if err != nil {
+		s.throw(EventInitSSL, nil)
+		return nil
+	}
+	if rootCAs == nil {
+		rootCAs = x509.NewCertPool()
 	}
 
-	server = http.Server{
+	CA, err := ioutil.ReadFile(s.cfg.SSL.RootCA)
+	if err != nil {
+		s.throw(EventInitSSL, nil)
+		return err
+	}
+
+	// should append our CA cert
+	ok := rootCAs.AppendCertsFromPEM(CA)
+	if !ok {
+		return couldNotAppendPemError
+	}
+	config := &tls.Config{
+		InsecureSkipVerify: false,
+		RootCAs:            rootCAs,
+	}
+	s.http.TLSConfig = config
+
+	return nil
+}
+
+// Init https server
+func (s *Service) initSSL() *http.Server {
+	server := &http.Server{
 		Addr:    s.tlsAddr(s.cfg.Address, true),
 		Handler: s,
+		TLSConfig: &tls.Config{
+			MinVersion: tls.VersionTLS12,
+		},
 	}
+	s.throw(EventInitSSL, server)
 
-	s.throw(EventInitSSL, &server)
-
-	return &server
+	return server
 }
 
 // init http/2 server
