@@ -11,6 +11,8 @@ namespace Spiral\RoadRunner;
 
 use Spiral\Goridge\Exceptions\GoridgeException;
 use Spiral\Goridge\RelayInterface as Relay;
+use Spiral\Goridge\SocketRelay;
+use Spiral\Goridge\StreamRelay;
 use Spiral\RoadRunner\Exception\RoadRunnerException;
 
 /**
@@ -28,8 +30,11 @@ class Worker
     // Send as response context to request worker termination
     public const STOP = '{"stop":true}';
 
-    /** @var Relay */
+    /** @var Relay|StreamRelay|SocketRelay */
     private $relay;
+
+    /** @var bool */
+    private $optimizedRelay;
 
     /**
      * @param Relay $relay
@@ -37,6 +42,7 @@ class Worker
     public function __construct(Relay $relay)
     {
         $this->relay = $relay;
+        $this->optimizedRelay = method_exists($relay, 'sendPackage');
     }
 
     /**
@@ -83,12 +89,22 @@ class Worker
      */
     public function send(string $payload = null, string $header = null): void
     {
-        $this->relay->sendPackage(
-            (string)$header,
-            Relay::PAYLOAD_CONTROL | ($header === null ? Relay::PAYLOAD_NONE : Relay::PAYLOAD_RAW),
-            (string)$payload,
-            Relay::PAYLOAD_RAW
-        );
+        if (!$this->optimizedRelay) {
+            if ($header === null) {
+                $this->relay->send('', Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_NONE);
+            } else {
+                $this->relay->send($header, Relay::PAYLOAD_CONTROL | Relay::PAYLOAD_RAW);
+            }
+
+            $this->relay->send((string)$payload, Relay::PAYLOAD_RAW);
+        } else {
+            $this->relay->sendPackage(
+                (string)$header,
+                Relay::PAYLOAD_CONTROL | ($header === null ? Relay::PAYLOAD_NONE : Relay::PAYLOAD_RAW),
+                (string)$payload,
+                Relay::PAYLOAD_RAW
+            );
+        }
     }
 
     /**

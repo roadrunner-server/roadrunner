@@ -34,7 +34,7 @@ final class HttpClient
      * @return mixed[]|null Request information as ['ctx'=>[], 'body'=>string]
      *                      or null if termination request or invalid context.
      */
-    public function acceptRequest()
+    public function acceptRequest(): ?array
     {
         $body = $this->getWorker()->receive($ctx);
         if (empty($body) && empty($ctx)) {
