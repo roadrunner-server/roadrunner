@@ -43,6 +43,10 @@ import (
 )
 
 func main() {
+
+	rr.Container.Register(logger.ID, &logrus.ConfigProvider{})
+	rr.Container.Register(config.ID, &cobra.ConfigPrivider{})
+
 	rr.Container.Register(env.ID, &env.Service{})
 	rr.Container.Register(rpc.ID, &rpc.Service{})
 	rr.Container.Register(http.ID, &http.Service{})
