@@ -2,16 +2,16 @@ package http
 
 import (
 	"fmt"
-	json "github.com/json-iterator/go"
-	"github.com/sirupsen/logrus"
-	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/service/http/attributes"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
 	"strings"
+
+	json "github.com/json-iterator/go"
+	"github.com/sirupsen/logrus"
+	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service/http/attributes"
 )
 
 const (
@@ -95,9 +95,6 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 		return req, err
 
 	case contentMultipart:
-		b, _ := ioutil.ReadAll(r.Body)
-		log.Print(string(b))
-
 		if err = r.ParseMultipartForm(defaultMaxMemory); err != nil {
 			return nil, err
 		}

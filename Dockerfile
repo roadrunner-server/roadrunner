@@ -1,12 +1,12 @@
-# Image page: <https://hub.docker.com/_/golang>
-FROM golang:1.13-alpine as builder
+FROM golang:1.14.3 as builder
 
 COPY . /src
 
 WORKDIR /src
 
 RUN set -x \
-    && apk add --no-cache bash git \
+    && apt-get update -y \
+    && apt-get install -y bash git \
     && go version \
     && bash ./build.sh \
     && test -f ./.rr.yaml

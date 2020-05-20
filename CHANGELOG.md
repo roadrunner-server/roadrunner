@@ -1,11 +1,21 @@
 CHANGELOG
 =========
 
+v1.8.1 (20.05.2020)
+-------------------
+- Update goridge version to 2.4.2
+- Fix code warnings from phpstan
+- Improve RPC
+- Create templates for the Bug reporting and Feature requests
+- Move docker images from golang-alpine to regular golang images
+- Add support for the CloudFlare CF-Connecting-IP and True-Client-IP headers (thanks @vsychov)
+- See the full milestone here: [link](https://github.com/spiral/roadrunner/milestone/11?closed=1)
+
 v1.8.0 (05.05.2020)
 -------------------
 - Update goridge version to 2.4.0
 - Update PHP version to the 7.2 (currently minimum supported)
-- See the full milestone here: [link](https://github.com/spiral/roadrunner/issues?q=is%3Aclosed+milestone%3A1.8.0)
+- See the full milestone here: [link](https://github.com/spiral/roadrunner/milestone/10?closed=1)
 
 v1.7.1 (22.04.2020)
 -------------------
