@@ -5,7 +5,8 @@ COPY . /src
 WORKDIR /src
 
 RUN set -x \
-    && apk add --no-cache bash git \
+    && apt-get update -y \
+    && apt-get install -y bash git \
     && go version \
     && bash ./build.sh \
     && test -f ./.rr.yaml
