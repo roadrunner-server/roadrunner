@@ -9,7 +9,7 @@ v1.8.1 (23.05.2020)
 - Create templates for the Bug reporting and Feature requests
 - Move docker images from golang-alpine to regular golang images
 - Add support for the CloudFlare CF-Connecting-IP and True-Client-IP headers (thanks @vsychov)
-- Add support for the RootCA via the 
+- Add support for the Root CA via the `rootCa` .rr.yaml option
 - See the full milestone here: [link](https://github.com/spiral/roadrunner/milestone/11?closed=1)
 
 v1.8.0 (05.05.2020)

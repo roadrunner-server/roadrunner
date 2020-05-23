@@ -76,7 +76,7 @@ func Test_Service_H2C(t *testing.T) {
 		}
 		return nil
 	}, bkoff)
-	
+
 	if err != nil {
 		t.Fatal(err)
 	}
