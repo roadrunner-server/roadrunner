@@ -1,23 +1,29 @@
 package http
 
 import (
+	"net/http"
+	"testing"
+	"time"
+
+	"github.com/cenkalti/backoff/v4"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
-	"net/http"
-	"testing"
-	"time"
 )
 
 func Test_Service_H2C(t *testing.T) {
-	logger, _ := test.NewNullLogger()
-	logger.SetLevel(logrus.DebugLevel)
+	bkoff := backoff.NewExponentialBackOff()
+	bkoff.MaxElapsedTime = time.Second * 15
 
-	c := service.NewContainer(logger)
-	c.Register(ID, &Service{})
+	err := backoff.Retry(func() error {
+		logger, _ := test.NewNullLogger()
+		logger.SetLevel(logrus.DebugLevel)
 
-	assert.NoError(t, c.Init(&testCfg{httpCfg: `{
+		c := service.NewContainer(logger)
+		c.Register(ID, &Service{})
+
+		err := c.Init(&testCfg{httpCfg: `{
 			"address": ":6029",
 			"http2": {"h2c":true},
 			"workers":{
@@ -27,40 +33,51 @@ func Test_Service_H2C(t *testing.T) {
 					"numWorkers": 1
 				}
 			}
-	}`}))
-
-	s, st := c.Get(ID)
-	assert.NotNil(t, s)
-	assert.Equal(t, service.StatusOK, st)
-
-	// should do nothing
-	s.(*Service).Stop()
-
-	go func() {
-		err := c.Serve()
+	}`})
 		if err != nil {
-			t.Errorf("error serving: %v", err)
+			return err
 		}
-	}()
-	time.Sleep(time.Millisecond * 100)
-	defer c.Stop()
 
-	req, err := http.NewRequest("PRI", "http://localhost:6029?hello=world", nil)
-	assert.NoError(t, err)
+		s, st := c.Get(ID)
+		assert.NotNil(t, s)
+		assert.Equal(t, service.StatusOK, st)
 
-	req.Header.Add("Upgrade", "h2c")
-	req.Header.Add("Connection", "HTTP2-Settings")
-	req.Header.Add("HTTP2-Settings", "")
+		// should do nothing
+		s.(*Service).Stop()
 
-	r, err2 := http.DefaultClient.Do(req)
-	if err2 != nil {
-		t.Fatal(err2)
-	}
+		go func() {
+			err := c.Serve()
+			if err != nil {
+				t.Errorf("error serving: %v", err)
+			}
+		}()
+		time.Sleep(time.Millisecond * 100)
+		defer c.Stop()
 
-	assert.Equal(t, "101 Switching Protocols", r.Status)
+		req, err := http.NewRequest("PRI", "http://localhost:6029?hello=world", nil)
+		if err != nil {
+			return err
+		}
 
-	err3 := r.Body.Close()
-	if err3 != nil {
-		t.Errorf("fail to close the Body: error %v", err3)
+		req.Header.Add("Upgrade", "h2c")
+		req.Header.Add("Connection", "HTTP2-Settings")
+		req.Header.Add("HTTP2-Settings", "")
+
+		r, err2 := http.DefaultClient.Do(req)
+		if err2 != nil {
+			return err2
+		}
+
+		assert.Equal(t, "101 Switching Protocols", r.Status)
+
+		err3 := r.Body.Close()
+		if err3 != nil {
+			return err3
+		}
+		return nil
+	}, bkoff)
+
+	if err != nil {
+		t.Fatal(err)
 	}
 }
