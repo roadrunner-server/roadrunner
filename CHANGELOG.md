@@ -3,7 +3,7 @@ CHANGELOG
 
 v1.8.1 (23.05.2020)
 -------------------
-- Update goridge version to 2.4.3
+- Update goridge version to 2.4.4
 - Fix code warnings from phpstan
 - Improve RPC
 - Create templates for the Bug reporting and Feature requests
