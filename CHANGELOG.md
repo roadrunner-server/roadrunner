@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.8.2 (06.06.2020)
+-------------------
+- Bugfix release
+
 v1.8.1 (23.05.2020)
 -------------------
 - Update goridge version to 2.4.4
