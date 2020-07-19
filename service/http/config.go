@@ -252,7 +252,7 @@ func (c *Config) Valid() error {
 		if c.SSL.RootCA != "" {
 			if _, err := os.Stat(c.SSL.RootCA); err != nil {
 				if os.IsNotExist(err) {
-					return fmt.Errorf("root ca path provided, but key file '%s' does not exists", c.SSL.Key)
+					return fmt.Errorf("root ca path provided, but path '%s' does not exists", c.SSL.RootCA)
 				}
 				return err
 			}
