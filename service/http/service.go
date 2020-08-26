@@ -6,6 +6,13 @@ import (
 	"crypto/x509"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/http/fcgi"
+	"net/url"
+	"strings"
+	"sync"
+
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service/env"
@@ -14,12 +21,6 @@ import (
 	"github.com/spiral/roadrunner/util"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
-	"io/ioutil"
-	"net/http"
-	"net/http/fcgi"
-	"net/url"
-	"strings"
-	"sync"
 )
 
 const (
@@ -264,7 +265,7 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if s.https != nil && r.TLS != nil {
-		w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains")
+		w.Header().Add("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
 	}
 
 	r = attributes.Init(r)
