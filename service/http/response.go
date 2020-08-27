@@ -1,13 +1,20 @@
 package http
 
 import (
-	json "github.com/json-iterator/go"
+	"errors"
 	"io"
+	"net"
 	"net/http"
+	"os"
 	"strings"
+	"syscall"
+
+	json "github.com/json-iterator/go"
 
 	"github.com/spiral/roadrunner"
 )
+
+var errEPIPE = errors.New("EPIPE(32) -> possibly connection reset by peer")
 
 // Response handles PSR7 response logic.
 type Response struct {
@@ -57,6 +64,13 @@ func (r *Response) Write(w http.ResponseWriter) error {
 	if data, ok := r.body.([]byte); ok {
 		_, err := w.Write(data)
 		if err != nil {
+			if netErr, ok2 := err.(*net.OpError); ok2 {
+				if syscallErr, ok3 := netErr.Err.(*os.SyscallError); ok3 {
+					if syscallErr.Err == syscall.EPIPE {
+						return errEPIPE
+					}
+				}
+			}
 			return err
 		}
 	}
