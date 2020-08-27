@@ -9,7 +9,7 @@ import (
 	"syscall"
 )
 
-var errEPIPE = errors.New("WSAECONNABORTED (10053) ->  an established connection was aborted")
+var errEPIPE = errors.New("WSAECONNABORTED (10053) ->  an established connection was aborted by peer")
 
 // handleWriteError just check if error was caused by aborted connection on windows
 func handleWriteError(err error) error {
