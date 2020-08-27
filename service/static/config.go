@@ -20,6 +20,12 @@ type Config struct {
 	// Always specifies list of extensions which must always be served by static
 	// service, even if file not found.
 	Always []string
+
+	// Request headers to add to every static.
+	Request map[string]string
+
+	// Response headers to add to every static.
+	Response map[string]string
 }
 
 // Hydrate must populate Config values using given Config source. Must return error if Config is not valid.

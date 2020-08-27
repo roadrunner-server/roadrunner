@@ -16,7 +16,7 @@ func (cfg *mockCfg) Unmarshal(out interface{}) error {
 }
 
 func Test_Config_Hydrate(t *testing.T) {
-	cfg := &mockCfg{`{"dir": "./"}`}
+	cfg := &mockCfg{`{"dir": "./", "request":{"foo": "bar"}, "response":{"xxx": "yyy"}}`}
 	c := &Config{}
 
 	assert.NoError(t, c.Hydrate(cfg))

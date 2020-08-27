@@ -162,6 +162,14 @@ static:
   # list of extensions for forbid for serving.
   forbid: [".php", ".htaccess"]
 
+  # Automatically add headers to every request.
+  request:
+    "Example-Request-Header": "Value"
+
+  # Automatically add headers to every response.
+  response:
+    "X-Powered-By": "RoadRunner"
+
 # health service configuration
 health:
   # http host to serve health requests.
