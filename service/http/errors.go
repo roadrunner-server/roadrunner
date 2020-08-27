@@ -9,6 +9,7 @@ import (
 	"syscall"
 )
 
+// Broken pipe
 var errEPIPE = errors.New("EPIPE(32) -> connection reset by peer")
 
 // handleWriteError just check if error was caused by aborted connection on linux
