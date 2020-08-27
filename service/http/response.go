@@ -1,3 +1,5 @@
+// +build !windows
+
 package http
 
 import (
@@ -14,7 +16,7 @@ import (
 	"github.com/spiral/roadrunner"
 )
 
-var errEPIPE = errors.New("EPIPE(32) -> possibly connection reset by peer")
+var errEPIPE = errors.New("EPIPE(32) -> connection reset by peer")
 
 // Response handles PSR7 response logic.
 type Response struct {
@@ -64,14 +66,7 @@ func (r *Response) Write(w http.ResponseWriter) error {
 	if data, ok := r.body.([]byte); ok {
 		_, err := w.Write(data)
 		if err != nil {
-			if netErr, ok2 := err.(*net.OpError); ok2 {
-				if syscallErr, ok3 := netErr.Err.(*os.SyscallError); ok3 {
-					if syscallErr.Err == syscall.EPIPE {
-						return errEPIPE
-					}
-				}
-			}
-			return err
+			return handleWriteError(err)
 		}
 	}
 
@@ -82,6 +77,17 @@ func (r *Response) Write(w http.ResponseWriter) error {
 	}
 
 	return nil
+}
+
+func handleWriteError(err error) error {
+	if netErr, ok2 := err.(*net.OpError); ok2 {
+		if syscallErr, ok3 := netErr.Err.(*os.SyscallError); ok3 {
+			if syscallErr.Err == syscall.EPIPE {
+				return errEPIPE
+			}
+		}
+	}
+	return err
 }
 
 func handlePushHeaders(h map[string][]string) []string {
