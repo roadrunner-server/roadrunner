@@ -25,6 +25,7 @@ RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP/2 server and can be us
 Features:
 --------
 - Production-ready
+- PCI DSS compliant
 - PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middlewares, event listeners)
 - HTTPS and HTTP/2 support (including HTTP/2 Push, H2C)
 - Fully customizable server, FastCGI support
