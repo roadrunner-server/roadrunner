@@ -1,13 +1,15 @@
 package http
 
 import (
-	json "github.com/json-iterator/go"
 	"io"
 	"net/http"
 	"strings"
 
+	json "github.com/json-iterator/go"
+
 	"github.com/spiral/roadrunner"
 )
+
 
 // Response handles PSR7 response logic.
 type Response struct {
@@ -57,7 +59,7 @@ func (r *Response) Write(w http.ResponseWriter) error {
 	if data, ok := r.body.([]byte); ok {
 		_, err := w.Write(data)
 		if err != nil {
-			return err
+			return handleWriteError(err)
 		}
 	}
 
