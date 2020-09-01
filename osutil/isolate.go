@@ -3,6 +3,8 @@
 package osutil
 
 import (
+	"fmt"
+	"os"
 	"os/exec"
 	"os/user"
 	"strconv"
@@ -28,6 +30,17 @@ func ExecuteFromUser(cmd *exec.Cmd, u string) error {
 	grI32, err := strconv.Atoi(usr.Gid)
 	if err != nil {
 		return err
+	}
+
+	if _, err := os.Stat("/proc/self/ns/user"); err != nil {
+		if os.IsNotExist(err) {
+			return fmt.Errorf("kernel doesn't support user namespaces")
+		}
+		if os.IsPermission(err) {
+			return fmt.Errorf("unable to test user namespaces due to permissions")
+		}
+
+		return fmt.Errorf("failed to stat /proc/self/ns/user: %v", err)
 	}
 
 	cmd.SysProcAttr.Credential = &syscall.Credential{
