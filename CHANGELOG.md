@@ -7,7 +7,7 @@ v1.8.3 (02.09.2020)
 - Proper handle of `broken pipe` error on Linux and Windows.
 - PCI DSS compliant upgrade (thanks @antonydevanchi).
 - Fix HSTS header (thanks @antonydevanchi).
-- Add Request and Response headers to a static files (thanks @siad007).
+- Add Request and Response headers to static files (thanks @siad007).
 - Add user_namespaces check when running RR worker from particular user.
 
 v1.8.2 (06.06.2020)
