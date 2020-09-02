@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+v1.8.3 (02.09.2020)
+-------------------
+- Fix superfluous response.WriteHeader issue.
+- Proper handle of `broken pipe` error on Linux and Windows.
+- PCI DSS compliant upgrade (thanks @antonydevanchi).
+- Fix HSTS header (thanks @antonydevanchi).
+- Add Request and Response headers to static files (thanks @siad007).
+- Add user_namespaces check when running RR worker from a particular user.
+
 v1.8.2 (06.06.2020)
 -------------------
 - Bugfix release
