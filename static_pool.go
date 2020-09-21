@@ -188,6 +188,7 @@ func (p *StaticPool) Destroy() {
 
 // finds free worker in a given time interval. Skips dead workers.
 func (p *StaticPool) allocateWorker() (w *Worker, err error) {
+	// TODO loop counts upward, but its variable is bounded downward.
 	for i := atomic.LoadInt64(&p.numDead); i >= 0; i++ {
 		// this loop is required to skip issues with dead workers still being in a ring
 		// (we know how many workers).
@@ -291,6 +292,7 @@ func (p *StaticPool) discardWorker(w *Worker, caused interface{}) {
 }
 
 // destroyWorker destroys workers and removes it from the pool.
+// TODO caused unused
 func (p *StaticPool) destroyWorker(w *Worker, caused interface{}) {
 	go func() {
 		err := w.Stop()
