@@ -250,7 +250,7 @@ func (w *Worker) execPayload(rqs *Payload) (rsp *Payload, err error) {
 	}
 
 	// add streaming support :)
-	if rsp.Body, pr, err = w.rl.Receive(); err != nil {
+	if rsp.Body, _, err = w.rl.Receive(); err != nil {
 		return nil, errors.Wrap(err, "worker error")
 	}
 
