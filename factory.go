@@ -1,13 +1,18 @@
 package roadrunner
 
-import "os/exec"
+import (
+	"context"
+	"os/exec"
+)
 
-// Factory is responsible of wrapping given command into tasks worker.
+// Factory is responsible of wrapping given command into tasks WorkerProcess.
 type Factory interface {
-	// SpawnWorker creates new worker process based on given command.
+	// SpawnWorker creates new WorkerProcess process based on given command.
 	// Process must not be started.
-	SpawnWorker(cmd *exec.Cmd) (w *Worker, err error)
+	SpawnWorkerWithContext(context.Context, *exec.Cmd) (WorkerBase, error)
+
+	SpawnWorker(*exec.Cmd) (WorkerBase, error)
 
 	// Close the factory and underlying connections.
-	Close() error
+	Close(ctx context.Context) error
 }

@@ -2,12 +2,13 @@ package roadrunner
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_JobError_Error(t *testing.T) {
-	e := JobError([]byte("error"))
+	e := TaskError([]byte("error"))
 	assert.Equal(t, "error", e.Error())
 }
 

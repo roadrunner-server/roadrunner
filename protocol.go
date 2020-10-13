@@ -2,10 +2,13 @@ package roadrunner
 
 import (
 	"fmt"
+	"os"
+
 	json "github.com/json-iterator/go"
 	"github.com/spiral/goridge/v2"
-	"os"
 )
+
+var j = json.ConfigCompatibleWithStandardLibrary
 
 type stopCommand struct {
 	Stop bool `json:"stop"`
@@ -20,7 +23,6 @@ func sendControl(rl goridge.Relay, v interface{}) error {
 		return rl.Send(data, goridge.PayloadControl|goridge.PayloadRaw)
 	}
 
-	j := json.ConfigCompatibleWithStandardLibrary
 	data, err := j.Marshal(v)
 	if err != nil {
 		return fmt.Errorf("invalid payload: %s", err)
@@ -29,8 +31,9 @@ func sendControl(rl goridge.Relay, v interface{}) error {
 	return rl.Send(data, goridge.PayloadControl)
 }
 
-func fetchPID(rl goridge.Relay) (pid int, err error) {
-	if err := sendControl(rl, pidCommand{Pid: os.Getpid()}); err != nil {
+func fetchPID(rl goridge.Relay) (int64, error) {
+	err := sendControl(rl, pidCommand{Pid: os.Getpid()})
+	if err != nil {
 		return 0, err
 	}
 
@@ -47,5 +50,5 @@ func fetchPID(rl goridge.Relay) (pid int, err error) {
 		return 0, err
 	}
 
-	return link.Pid, nil
+	return int64(link.Pid), nil
 }

@@ -5,18 +5,25 @@ import (
 	"sync/atomic"
 )
 
-// State represents worker status and updated time.
+// State represents WorkerProcess status and updated time.
 type State interface {
 	fmt.Stringer
 
 	// Value returns state value
 	Value() int64
+	Set(value int64)
 
-	// NumJobs shows how many times worker was invoked
+	// NumJobs shows how many times WorkerProcess was invoked
 	NumExecs() int64
 
-	// IsActive returns true if worker not Inactive or Stopped
+	// IsActive returns true if WorkerProcess not Inactive or Stopped
 	IsActive() bool
+
+	RegisterExec()
+
+	SetLastUsed(lu uint64)
+
+	LastUsed() uint64
 }
 
 const (
@@ -29,24 +36,35 @@ const (
 	// StateWorking - working on given payload.
 	StateWorking
 
-	// StateInvalid - indicates that worker is being disabled and will be removed.
+	// StateInvalid - indicates that WorkerProcess is being disabled and will be removed.
 	StateInvalid
 
 	// StateStopping - process is being softly stopped.
 	StateStopping
+
+	StateKilling
+	StateKilled
+
+	// State of worker, when no need to allocate new one
+	StateDestroyed
 
 	// StateStopped - process has been terminated.
 	StateStopped
 
 	// StateErrored - error state (can't be used).
 	StateErrored
+
+	StateRemove
 )
 
 type state struct {
 	value    int64
 	numExecs int64
+	// to be lightweight, use UnixNano
+	lastUsed uint64
 }
 
+// Thread safe
 func newState(value int64) *state {
 	return &state{value: value}
 }
@@ -71,7 +89,7 @@ func (s *state) String() string {
 	return "undefined"
 }
 
-// NumExecs returns number of registered worker execs.
+// NumExecs returns number of registered WorkerProcess execs.
 func (s *state) NumExecs() int64 {
 	return atomic.LoadInt64(&s.numExecs)
 }
@@ -81,18 +99,27 @@ func (s *state) Value() int64 {
 	return atomic.LoadInt64(&s.value)
 }
 
-// IsActive returns true if worker not Inactive or Stopped
+// IsActive returns true if WorkerProcess not Inactive or Stopped
 func (s *state) IsActive() bool {
 	state := s.Value()
 	return state == StateWorking || state == StateReady
 }
 
 // change state value (status)
-func (s *state) set(value int64) {
+func (s *state) Set(value int64) {
 	atomic.StoreInt64(&s.value, value)
 }
 
 // register new execution atomically
-func (s *state) registerExec() {
+func (s *state) RegisterExec() {
 	atomic.AddInt64(&s.numExecs, 1)
+}
+
+// Update last used time
+func (s *state) SetLastUsed(lu uint64) {
+	atomic.StoreUint64(&s.lastUsed, lu)
+}
+
+func (s *state) LastUsed() uint64 {
+	return atomic.LoadUint64(&s.lastUsed)
 }
