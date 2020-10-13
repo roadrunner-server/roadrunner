@@ -66,17 +66,7 @@ jobs:
       - name: Run golang tests
         run: |
           composer update
-          go test -race -v -coverprofile=lib.txt -covermode=atomic
-          go test ./util -race -v -coverprofile=util.txt -covermode=atomic
-          go test ./service -race -v -coverprofile=service.txt -covermode=atomic
-          go test ./service/env -race -v -coverprofile=env.txt -covermode=atomic
-          go test ./service/rpc -race -v -coverprofile=rpc.txt -covermode=atomic
-          go test ./service/http -race -v -coverprofile=http.txt -covermode=atomic
-          go test ./service/static -race -v -coverprofile=static.txt -covermode=atomic
-          go test ./service/limit -race -v -coverprofile=limit.txt -covermode=atomic
-          go test ./service/headers -race -v -coverprofile=headers.txt -covermode=atomic
-          go test ./service/metrics -race -v -coverprofile=metrics.txt -covermode=atomic
-          go test ./service/health -race -v -coverprofile=health.txt -covermode=atomic
+          go test -v -coverprofile=lib.txt -covermode=atomic
 
       - name: Run code coverage
         env:
@@ -86,16 +76,6 @@ jobs:
             curl https://codecov.io/bash -o codecov-bash
             chmod +x codecov-bash
             ./codecov-bash -f lib.txt
-            ./codecov-bash -f util.txt
-            ./codecov-bash -f service.txt
-            ./codecov-bash -f env.txt
-            ./codecov-bash -f rpc.txt
-            ./codecov-bash -f http.txt
-            ./codecov-bash -f static.txt
-            ./codecov-bash -f limit.txt
-            ./codecov-bash -f headers.txt
-            ./codecov-bash -f metrics.txt
-            ./codecov-bash -f health.txt
           fi
 
   golangci-check:
@@ -109,14 +89,14 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
 
-  image:
-    name: Build docker image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-
-      - name: Build image
-        run: docker build -t rr:local -f Dockerfile .
+#  image:
+#    name: Build docker image
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Check out code
+#        uses: actions/checkout@v2
+#        with:
+#          fetch-depth: 1
+#
+#      - name: Build image
+#        run: docker build -t rr:local -f Dockerfile .
