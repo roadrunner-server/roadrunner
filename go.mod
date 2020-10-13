@@ -1,4 +1,4 @@
-module github.com/roadrunner/v2
+module github.com/spiral/roadrunner/v2
 
 go 1.15
 
