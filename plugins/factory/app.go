@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/temporalio/roadrunner-temporal/config"
-	"github.com/temporalio/roadrunner-temporal/roadrunner"
-	"github.com/temporalio/roadrunner-temporal/roadrunner/util"
+	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/util"
 )
 
 // AppConfig config combines factory, pool and cmd configurations.

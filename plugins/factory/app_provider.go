@@ -3,7 +3,7 @@ package factory
 import (
 	"os/exec"
 
-	"github.com/temporalio/roadrunner-temporal/roadrunner"
+	"github.com/spiral/roadrunner/v2"
 )
 
 type Env map[string]string

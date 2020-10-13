@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/spiral/endure"
+	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/stretchr/testify/assert"
-	"github.com/temporalio/roadrunner-temporal/config"
 )
 
 func TestViperProvider_Init(t *testing.T) {

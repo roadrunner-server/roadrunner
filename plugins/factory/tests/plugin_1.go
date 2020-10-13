@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/temporalio/roadrunner-temporal/config"
-	"github.com/temporalio/roadrunner-temporal/factory"
+	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/factory"
 )
 
 type Foo struct {

@@ -2,9 +2,10 @@ package factory
 
 import (
 	"context"
-	"github.com/temporalio/roadrunner-temporal/events"
 
-	"github.com/temporalio/roadrunner-temporal/roadrunner"
+	"github.com/spiral/roadrunner/v2/plugins/events"
+
+	"github.com/spiral/roadrunner/v2"
 )
 
 type WorkerFactory interface {

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/temporalio/roadrunner-temporal/config"
+	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
 // ReloadConfig is a Reload configuration point.

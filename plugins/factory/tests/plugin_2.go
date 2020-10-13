@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/temporalio/roadrunner-temporal/config"
-	"github.com/temporalio/roadrunner-temporal/factory"
-	"github.com/temporalio/roadrunner-temporal/roadrunner"
+	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/factory"
 )
 
 type Foo2 struct {
