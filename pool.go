@@ -50,7 +50,7 @@ type Pool interface {
 	Exec(ctx context.Context, rqs Payload) (Payload, error)
 
 	// Workers returns worker list associated with the pool.
-	Workers(ctx context.Context) (workers []WorkerBase)
+	Workers() (workers []WorkerBase)
 
 	RemoveWorker(ctx context.Context, worker WorkerBase) error
 

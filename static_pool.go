@@ -51,7 +51,7 @@ func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg *Co
 		events:  make(chan PoolEvent),
 	}
 
-	p.ww = NewWorkerWatcher(func(args ...interface{}) (*SyncWorker, error) {
+	p.ww = NewWorkerWatcher(func(args ...interface{}) (WorkerBase, error) {
 		w, err := p.factory.SpawnWorkerWithContext(ctx, p.cmd())
 		if err != nil {
 			return nil, err
@@ -61,7 +61,7 @@ func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg *Co
 		if err != nil {
 			return nil, err
 		}
-		return &sw, nil
+		return sw, nil
 	}, p.cfg.NumWorkers, p.events)
 
 	workers, err := p.allocateWorkers(ctx, p.cfg.NumWorkers)
@@ -84,10 +84,8 @@ func (p *StaticPool) Config() Config {
 }
 
 // Workers returns worker list associated with the pool.
-func (p *StaticPool) Workers(ctx context.Context) (workers []WorkerBase) {
-	p.muw.RLock()
-	defer p.muw.RUnlock()
-	return p.ww.WorkersList(ctx)
+func (p *StaticPool) Workers() (workers []WorkerBase) {
+	return p.ww.WorkersList()
 }
 
 func (p *StaticPool) RemoveWorker(ctx context.Context, wb WorkerBase) error {
@@ -136,7 +134,7 @@ func (p *StaticPool) Exec(ctx context.Context, rqs Payload) (Payload, error) {
 		w.State().Set(StateInvalid)
 		err = w.Stop(ctx)
 		if err != nil {
-			panic(err)
+			return EmptyPayload, err
 		}
 		return p.Exec(ctx, rqs)
 	}

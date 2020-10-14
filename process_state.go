@@ -1,8 +1,6 @@
 package roadrunner
 
 import (
-	"context"
-
 	"github.com/shirou/gopsutil/process"
 )
 
@@ -45,7 +43,7 @@ func WorkerProcessState(w WorkerBase) (ProcessState, error) {
 // ServerState returns list of all worker states of a given rr server.
 func PoolState(pool Pool) ([]ProcessState, error) {
 	result := make([]ProcessState, 0)
-	for _, w := range pool.Workers(context.TODO()) {
+	for _, w := range pool.Workers() {
 		state, err := WorkerProcessState(w)
 		if err != nil {
 			return nil, err

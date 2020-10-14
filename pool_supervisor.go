@@ -99,7 +99,7 @@ func (sps *staticPoolSupervisor) control() error {
 	ctx := context.TODO()
 
 	// THIS IS A COPY OF WORKERS
-	workers := sps.pool.Workers(ctx)
+	workers := sps.pool.Workers()
 	var totalUsedMemory uint64
 
 	for i := 0; i < len(workers); i++ {
