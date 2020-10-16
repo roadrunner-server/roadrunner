@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/spiral/endure"
+	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/factory"
 	"github.com/stretchr/testify/assert"
-	"github.com/temporalio/roadrunner-temporal/config"
-	"github.com/temporalio/roadrunner-temporal/factory"
 )
 
 func TestFactory(t *testing.T) {
