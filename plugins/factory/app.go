@@ -82,7 +82,7 @@ func (app *App) NewCmd(env Env) (func() *exec.Cmd, error) {
 }
 
 // todo ENV unused
-func (app *App) NewFactory() (roadrunner.Factory, error) {
+func (app *App) NewFactory(env Env) (roadrunner.Factory, error) {
 	// if Listen is empty or doesn't contain separator, return error
 	if app.cfg.Listen == "" || !strings.Contains(app.cfg.Listen, "://") {
 		return nil, errors.New("relay should be set")
