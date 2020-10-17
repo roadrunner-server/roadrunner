@@ -88,7 +88,7 @@ func (app *App) NewFactory(env Env) (roadrunner.Factory, error) {
 	}
 
 	dsn := strings.Split(app.cfg.Listen, "://")
-	if len(dsn) != 2 {
+	if app.cfg.Listen != "" && len(dsn) != 2 {
 		return nil, errors.New("invalid DSN (tcp://:6001, unix://file.sock)")
 	}
 
