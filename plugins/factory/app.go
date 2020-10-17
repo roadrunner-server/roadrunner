@@ -83,11 +83,6 @@ func (app *App) NewCmd(env Env) (func() *exec.Cmd, error) {
 
 // todo ENV unused
 func (app *App) NewFactory(env Env) (roadrunner.Factory, error) {
-	// if Listen is empty or doesn't contain separator, return error
-	if app.cfg.Listen == "" || !strings.Contains(app.cfg.Listen, "://") {
-		return nil, errors.New("relay should be set")
-	}
-
 	lsn, err := util.CreateListener(app.cfg.Listen)
 	if err != nil {
 		return nil, err
@@ -116,10 +111,6 @@ func (app *App) Serve() chan error {
 }
 
 func (app *App) Stop() error {
-	err := app.factory.Close(context.Background())
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
