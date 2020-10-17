@@ -108,6 +108,7 @@ type Config struct {
 }
 
 // InitDefaults allows to init blank config with pre-defined set of default values.
+// todo: does not do anything
 func (cfg *Config) InitDefaults() error {
 	cfg.AllocateTimeout = time.Minute
 	cfg.DestroyTimeout = time.Minute
@@ -130,6 +131,7 @@ func (cfg *Config) Valid() error {
 		return fmt.Errorf("pool.DestroyTimeout must be set")
 	}
 
+	// todo: not required
 	if cfg.ExecTTL == 0 {
 		return fmt.Errorf("pool.ExecTTL must be set")
 	}
