@@ -111,15 +111,6 @@ func (app *App) NewFactory(env Env) (roadrunner.Factory, error) {
 	}
 }
 
-func (app *App) Serve() chan error {
-	errCh := make(chan error)
-	return errCh
-}
-
-func (app *App) Stop() error {
-	return nil
-}
-
 func (app *App) setEnv(e Env) []string {
 	env := append(os.Environ(), fmt.Sprintf("RR_RELAY=%s", app.cfg.Relay))
 	for k, v := range e {
