@@ -46,7 +46,6 @@ func TestFactory(t *testing.T) {
 		t.Fatal(err)
 	}
 
-
 	err = container.Init()
 	if err != nil {
 		t.Fatal(err)

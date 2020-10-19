@@ -101,7 +101,7 @@ func Test_Pipe_Echo(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := sw.Exec(ctx, Payload{Body: []byte("hello")})
+	res, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -129,7 +129,7 @@ func Test_Pipe_Broken(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := sw.Exec(ctx, Payload{Body: []byte("hello")})
+	res, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
 	assert.Nil(t, res.Body)
@@ -178,7 +178,7 @@ func Benchmark_Pipe_Worker_ExecEcho(b *testing.B) {
 	}()
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(context.Background(), Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.ExecWithContext(context.Background(), Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}
@@ -192,18 +192,6 @@ func Benchmark_Pipe_Worker_ExecEcho3(b *testing.B) {
 		b.Fatal(err)
 	}
 
-	//go func() {
-	//	for  {
-	//		select {
-	//		case event := <-w.Events():
-	//			b.Fatal(event)
-	//		}
-	//	}
-	//	//err := w.Wait()
-	//	//if err != nil {
-	//	//	b.Errorf("error waiting the WorkerProcess: error %v", err)
-	//	//}
-	//}()
 	defer func() {
 		err = w.Stop(ctx)
 		if err != nil {
@@ -217,7 +205,34 @@ func Benchmark_Pipe_Worker_ExecEcho3(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(ctx, Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")}); err != nil {
+			b.Fail()
+		}
+	}
+}
+
+func Benchmark_Pipe_Worker_ExecEchoWithoutContext(b *testing.B) {
+	cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
+	ctx := context.Background()
+	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	defer func() {
+		err = w.Stop(ctx)
+		if err != nil {
+			b.Errorf("error stopping the WorkerProcess: error %v", err)
+		}
+	}()
+
+	sw, err := NewSyncWorker(w)
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	for n := 0; n < b.N; n++ {
+		if _, err := sw.Exec(Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}

@@ -206,7 +206,7 @@ func Test_Tcp_Broken(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := sw.Exec(ctx, Payload{Body: []byte("hello")})
+	res, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 	assert.Error(t, err)
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
@@ -245,7 +245,7 @@ func Test_Tcp_Echo(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := sw.Exec(ctx, Payload{Body: []byte("hello")})
+	res, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -390,7 +390,7 @@ func Test_Unix_Broken(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := sw.Exec(ctx, Payload{Body: []byte("hello")})
+	res, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
 	assert.Nil(t, res.Context)
@@ -433,7 +433,7 @@ func Test_Unix_Echo(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := sw.Exec(ctx, Payload{Body: []byte("hello")})
+	res, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -511,7 +511,7 @@ func Benchmark_Tcp_Worker_ExecEcho(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(ctx, Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}
@@ -579,7 +579,7 @@ func Benchmark_Unix_Worker_ExecEcho(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(ctx, Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}

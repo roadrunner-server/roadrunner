@@ -17,17 +17,21 @@ type ViperProvider struct {
 //////// ENDURE //////////
 func (v *ViperProvider) Init() error {
 	v.viper = viper.New()
+
 	// read in environment variables that match
 	v.viper.AutomaticEnv()
 	if v.Prefix == "" {
 		return errors.New("prefix should be set")
 	}
+
 	v.viper.SetEnvPrefix(v.Prefix)
 	if v.Path == "" {
 		return errors.New("path should be set")
 	}
+
 	v.viper.SetConfigFile(v.Path)
 	v.viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
 	return v.viper.ReadInConfig()
 }
 
@@ -60,6 +64,11 @@ func (v *ViperProvider) UnmarshalKey(name string, out interface{}) error {
 // Get raw config in a form of config section.
 func (v *ViperProvider) Get(name string) interface{} {
 	return v.viper.Get(name)
+}
+
+// Has checks if config section exists.
+func (v *ViperProvider) Has(name string) bool {
+	return v.viper.IsSet(name)
 }
 
 /////////// PRIVATE //////////////

@@ -2,7 +2,6 @@ package roadrunner
 
 import (
 	"context"
-	"fmt"
 	"runtime"
 	"time"
 )
@@ -47,7 +46,9 @@ type Pool interface {
 	Events() chan PoolEvent
 
 	// Exec one task with given payload and context, returns result or error.
-	Exec(ctx context.Context, rqs Payload) (Payload, error)
+	ExecWithContext(ctx context.Context, rqs Payload) (Payload, error)
+
+	Exec(rqs Payload) (Payload, error)
 
 	// Workers returns worker list associated with the pool.
 	Workers() (workers []WorkerBase)
@@ -66,7 +67,7 @@ type Pool interface {
 //
 type Config struct {
 	// NumWorkers defines how many sub-processes can be run at once. This value
-	// might be doubled by Swapper while hot-swap.
+	// might be doubled by Swapper while hot-swap. Defaults to number of CPU cores.
 	NumWorkers int64
 
 	// MaxJobs defines how many executions is allowed for the worker until
@@ -75,17 +76,17 @@ type Config struct {
 	MaxJobs int64
 
 	// AllocateTimeout defines for how long pool will be waiting for a worker to
-	// be freed to handle the task.
+	// be freed to handle the task. Defaults to 60s.
 	AllocateTimeout time.Duration
 
 	// DestroyTimeout defines for how long pool should be waiting for worker to
-	// properly destroy, if timeout reached worker will be killed.
+	// properly destroy, if timeout reached worker will be killed. Defaults to 60s.
 	DestroyTimeout time.Duration
 
 	// TTL defines maximum time worker is allowed to live.
 	TTL int64
 
-	// IdleTTL defines maximum duration worker can spend in idle mode.
+	// IdleTTL defines maximum duration worker can spend in idle mode. Disabled when 0.
 	IdleTTL int64
 
 	// ExecTTL defines maximum lifetime per job.
@@ -94,45 +95,21 @@ type Config struct {
 	// MaxPoolMemory defines maximum amount of memory allowed for worker. In megabytes.
 	MaxPoolMemory uint64
 
+	// MaxWorkerMemory limits memory per worker.
 	MaxWorkerMemory uint64
-
-	// config from limit plugin, combine TODO
-	// single bootstrap TODO, bool
-	// warmup one worker and start consume requests and then start the rest of the stack
-
-	// max memory for pool
-	// max ttl
-	// max idle ttl
-
-	// ATTACHER interface - delete
 }
 
-// InitDefaults allows to init blank config with pre-defined set of default values.
-func (cfg *Config) InitDefaults() error {
-	cfg.AllocateTimeout = time.Minute
-	cfg.DestroyTimeout = time.Minute
-	cfg.NumWorkers = int64(runtime.NumCPU())
-
-	return nil
-}
-
-// Valid returns error if config not valid.
-func (cfg *Config) Valid() error {
+// InitDefaults enables default config values.
+func (cfg *Config) InitDefaults() {
 	if cfg.NumWorkers == 0 {
-		return fmt.Errorf("pool.NumWorkers must be set")
+		cfg.NumWorkers = int64(runtime.NumCPU())
 	}
 
 	if cfg.AllocateTimeout == 0 {
-		return fmt.Errorf("pool.AllocateTimeout must be set")
+		cfg.AllocateTimeout = time.Minute
 	}
 
 	if cfg.DestroyTimeout == 0 {
-		return fmt.Errorf("pool.DestroyTimeout must be set")
+		cfg.DestroyTimeout = time.Minute
 	}
-
-	if cfg.ExecTTL == 0 {
-		return fmt.Errorf("pool.ExecTTL must be set")
-	}
-
-	return nil
 }

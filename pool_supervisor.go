@@ -47,9 +47,11 @@ func NewStaticPoolSupervisor(maxWorkerMemory, maxPoolMemory, maxTtl, maxIdle, wa
 		// just set to a big number, 5GB
 		maxPoolMemory = 5000 * MB
 	}
+
 	if watchTimeout == 0 {
 		watchTimeout = 60
 	}
+
 	return &staticPoolSupervisor{
 		maxWorkerMemory: maxWorkerMemory,
 		maxPoolMemory:   maxPoolMemory,

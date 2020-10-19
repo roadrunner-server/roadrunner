@@ -14,8 +14,11 @@ var EmptyPayload = Payload{}
 type SyncWorker interface {
 	// WorkerBase provides basic functionality for the SyncWorker
 	WorkerBase
-	// Exec used to execute payload on the SyncWorker
-	Exec(ctx context.Context, rqs Payload) (Payload, error)
+	// Exec used to execute payload on the SyncWorker, there is no TIMEOUTS
+	Exec(rqs Payload) (Payload, error)
+
+	// ExecWithContext allow to set ExecTTL
+	ExecWithContext(ctx context.Context, rqs Payload) (Payload, error)
 }
 
 type taskWorker struct {
@@ -33,7 +36,7 @@ type twexec struct {
 	err     error
 }
 
-func (tw *taskWorker) Exec(ctx context.Context, rqs Payload) (Payload, error) {
+func (tw *taskWorker) ExecWithContext(ctx context.Context, rqs Payload) (Payload, error) {
 	c := make(chan twexec)
 	go func() {
 		if len(rqs.Body) == 0 && len(rqs.Context) == 0 {
@@ -90,6 +93,36 @@ func (tw *taskWorker) Exec(ctx context.Context, rqs Payload) (Payload, error) {
 			return res.payload, nil
 		}
 	}
+}
+
+//
+func (tw *taskWorker) Exec(rqs Payload) (Payload, error) {
+	if len(rqs.Body) == 0 && len(rqs.Context) == 0 {
+		return EmptyPayload, fmt.Errorf("payload can not be empty")
+	}
+
+	if tw.w.State().Value() != StateReady {
+		return EmptyPayload, fmt.Errorf("WorkerProcess is not ready (%s)", tw.w.State().String())
+	}
+
+	// set last used time
+	tw.w.State().SetLastUsed(uint64(time.Now().UnixNano()))
+	tw.w.State().Set(StateWorking)
+
+	rsp, err := tw.execPayload(rqs)
+	if err != nil {
+		if _, ok := err.(TaskError); !ok {
+			tw.w.State().Set(StateErrored)
+			tw.w.State().RegisterExec()
+		}
+		return EmptyPayload, err
+	}
+
+	tw.w.State().Set(StateReady)
+	tw.w.State().RegisterExec()
+
+	return rsp, nil
+
 }
 
 func (tw *taskWorker) execPayload(rqs Payload) (Payload, error) {

@@ -15,17 +15,16 @@ type ReloadConfig struct {
 }
 
 type ServiceConfig struct {
-	Enabled bool
+	Enabled   bool
 	Recursive bool
-	Patterns []string
-	Dirs []string
-	Ignore []string
+	Patterns  []string
+	Dirs      []string
+	Ignore    []string
 }
 
 type Foo struct {
 	configProvider config.Provider
 }
-
 
 // Depends on S2 and DB (S3 in the current case)
 func (f *Foo) Init(p config.Provider) error {

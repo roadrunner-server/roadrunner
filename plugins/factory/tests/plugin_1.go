@@ -9,8 +9,8 @@ import (
 )
 
 type Foo struct {
-	configProvider  config.Provider
-	spawner factory.Spawner
+	configProvider config.Provider
+	spawner        factory.Spawner
 }
 
 func (f *Foo) Init(p config.Provider, spw factory.Spawner) error {

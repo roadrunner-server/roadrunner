@@ -34,7 +34,7 @@ func Test_Echo(t *testing.T) {
 		}
 	}()
 
-	res, err := syncWorker.Exec(ctx, Payload{Body: []byte("hello")})
+	res, err := syncWorker.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -65,7 +65,7 @@ func Test_BadPayload(t *testing.T) {
 		}
 	}()
 
-	res, err := syncWorker.Exec(ctx, EmptyPayload)
+	res, err := syncWorker.ExecWithContext(ctx, EmptyPayload)
 
 	assert.Error(t, err)
 	assert.Nil(t, res.Body)
@@ -94,7 +94,7 @@ func Test_NotStarted_Exec(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := syncWorker.Exec(ctx, Payload{Body: []byte("hello")})
+	res, err := syncWorker.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
 	assert.Nil(t, res.Body)
@@ -143,7 +143,7 @@ func Test_Echo_Slow(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := syncWorker.Exec(ctx, Payload{Body: []byte("hello")})
+	res, err := syncWorker.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -185,7 +185,7 @@ func Test_Broken(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := syncWorker.Exec(ctx, Payload{Body: []byte("hello")})
+	res, err := syncWorker.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 	assert.NotNil(t, err)
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
@@ -215,7 +215,7 @@ func Test_Error(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := syncWorker.Exec(ctx, Payload{Body: []byte("hello")})
+	res, err := syncWorker.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 	assert.NotNil(t, err)
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
@@ -244,19 +244,19 @@ func Test_NumExecs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = syncWorker.Exec(ctx, Payload{Body: []byte("hello")})
+	_, err = syncWorker.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}
 	assert.Equal(t, int64(1), w.State().NumExecs())
 
-	_, err = syncWorker.Exec(ctx, Payload{Body: []byte("hello")})
+	_, err = syncWorker.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}
 	assert.Equal(t, int64(2), w.State().NumExecs())
 
-	_, err = syncWorker.Exec(ctx, Payload{Body: []byte("hello")})
+	_, err = syncWorker.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}

@@ -1,7 +1,6 @@
 package factory
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -21,11 +20,10 @@ type AppConfig struct {
 	Group   string
 	Env     Env
 
-	Relay string
 	// Listen defines connection method and factory to be used to connect to workers:
 	// "pipes", "tcp://:6001", "unix://rr.sock"
 	// This config section must not change on re-configuration.
-	Listen string
+	Relay string
 
 	// RelayTimeout defines for how long socket factory will be waiting for worker connection. This config section
 	// must not change on re-configuration.
@@ -33,23 +31,28 @@ type AppConfig struct {
 }
 
 type App struct {
-	cfg            *AppConfig
+	cfg            AppConfig
 	configProvider config.Provider
 	factory        roadrunner.Factory
 }
 
 func (app *App) Init(provider config.Provider) error {
-	app.cfg = &AppConfig{}
+	app.cfg = AppConfig{}
 	app.configProvider = provider
 
 	return nil
 }
 
 func (app *App) Configure() error {
-	err := app.configProvider.UnmarshalKey("app", app.cfg)
+	err := app.configProvider.UnmarshalKey("app", &app.cfg)
 	if err != nil {
 		return err
 	}
+
+	if app.cfg.Relay == "" {
+		app.cfg.Relay = "pipes"
+	}
+
 	return nil
 }
 
@@ -83,19 +86,18 @@ func (app *App) NewCmd(env Env) (func() *exec.Cmd, error) {
 
 // todo ENV unused
 func (app *App) NewFactory(env Env) (roadrunner.Factory, error) {
-	// if Listen is empty or doesn't contain separator, return error
-	if app.cfg.Listen == "" || !strings.Contains(app.cfg.Listen, "://") {
-		return nil, errors.New("relay should be set")
+	if app.cfg.Relay == "" || app.cfg.Relay == "pipes" {
+		return roadrunner.NewPipeFactory(), nil
 	}
 
-	lsn, err := util.CreateListener(app.cfg.Listen)
-	if err != nil {
-		return nil, err
-	}
-
-	dsn := strings.Split(app.cfg.Listen, "://")
+	dsn := strings.Split(app.cfg.Relay, "://")
 	if len(dsn) != 2 {
 		return nil, errors.New("invalid DSN (tcp://:6001, unix://file.sock)")
+	}
+
+	lsn, err := util.CreateListener(app.cfg.Relay)
+	if err != nil {
+		return nil, err
 	}
 
 	switch dsn[0] {
@@ -104,9 +106,8 @@ func (app *App) NewFactory(env Env) (roadrunner.Factory, error) {
 		return roadrunner.NewSocketServer(lsn, app.cfg.RelayTimeout), nil
 	case "tcp":
 		return roadrunner.NewSocketServer(lsn, app.cfg.RelayTimeout), nil
-		// pipes
 	default:
-		return roadrunner.NewPipeFactory(), nil
+		return nil, errors.New("invalid DSN (tcp://:6001, unix://file.sock)")
 	}
 }
 
@@ -116,10 +117,6 @@ func (app *App) Serve() chan error {
 }
 
 func (app *App) Stop() error {
-	err := app.factory.Close(context.Background())
-	if err != nil {
-		return err
-	}
 	return nil
 }
 

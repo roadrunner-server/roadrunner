@@ -24,7 +24,7 @@ const (
 	EventWorkerLog
 
 	// EventWorkerWaitDone triggered when worker exit from process Wait
-	EventWorkerWaitDone
+	EventWorkerWaitDone // todo: implemented?
 
 	EventWorkerBufferClosed
 
@@ -61,6 +61,7 @@ type WorkerBase interface {
 
 	// Start used to run Cmd and immediately return
 	Start() error
+
 	// Wait must be called once for each WorkerProcess, call will be released once WorkerProcess is
 	// complete and will return process error (if any), if stderr is presented it's value
 	// will be wrapped as WorkerError. Method will return error code if php process fails
@@ -69,11 +70,14 @@ type WorkerBase interface {
 
 	// Stop sends soft termination command to the WorkerProcess and waits for process completion.
 	Stop(ctx context.Context) error
+
 	// Kill kills underlying process, make sure to call Wait() func to gather
 	// error log from the stderr. Does not waits for process completion!
 	Kill(ctx context.Context) error
+
 	// Relay returns attached to worker goridge relay
 	Relay() goridge.Relay
+
 	// AttachRelay used to attach goridge relay to the worker process
 	AttachRelay(rl goridge.Relay)
 }

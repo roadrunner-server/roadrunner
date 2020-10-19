@@ -10,6 +10,10 @@ type Provider interface {
 	//     }
 	// }
 	UnmarshalKey(name string, out interface{}) error
+
 	// Get used to get config section
 	Get(name string) interface{}
+
+	// Has checks if config section exists.
+	Has(name string) bool
 }
