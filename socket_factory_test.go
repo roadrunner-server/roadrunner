@@ -187,12 +187,14 @@ func Test_Tcp_Broken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//go func() {
-	//	err := w.Wait()
-	//
-	//	assert.Error(t, err)
-	//	assert.Contains(t, err.Error(), "undefined_function()")
-	//}()
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		err := w.Wait(context.Background())
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "undefined_function()")
+	}()
 
 	defer func() {
 		time.Sleep(time.Second)
@@ -210,6 +212,7 @@ func Test_Tcp_Broken(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
+	wg.Wait()
 }
 
 func Test_Tcp_Echo(t *testing.T) {
@@ -230,9 +233,9 @@ func Test_Tcp_Echo(t *testing.T) {
 	cmd := exec.Command("php", "tests/client.php", "echo", "tcp")
 
 	w, _ := NewSocketServer(ls, time.Minute).SpawnWorkerWithContext(ctx, cmd)
-	//go func() {
-	//	assert.NoError(t, w.Wait())
-	//}()
+	go func() {
+		assert.NoError(t, w.Wait(context.Background()))
+	}()
 	defer func() {
 		err = w.Stop(ctx)
 		if err != nil {
@@ -275,9 +278,9 @@ func Test_Unix_Start(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, w)
 
-	//go func() {
-	//	assert.NoError(t, w.Wait())
-	//}()
+	go func() {
+		assert.NoError(t, w.Wait(context.Background()))
+	}()
 
 	err = w.Stop(ctx)
 	if err != nil {
@@ -418,9 +421,9 @@ func Test_Unix_Echo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//go func() {
-	//	assert.NoError(t, w.Wait())
-	//}()
+	go func() {
+		assert.NoError(t, w.Wait(context.Background()))
+	}()
 	defer func() {
 		err = w.Stop(ctx)
 		if err != nil {
@@ -465,11 +468,9 @@ func Benchmark_Tcp_SpawnWorker_Stop(b *testing.B) {
 		if err != nil {
 			b.Fatal(err)
 		}
-		//go func() {
-		//	if w.Wait() != nil {
-		//		b.Fail()
-		//	}
-		//}()
+		go func() {
+			assert.NoError(b, w.Wait(context.Background()))
+		}()
 
 		err = w.Stop(ctx)
 		if err != nil {

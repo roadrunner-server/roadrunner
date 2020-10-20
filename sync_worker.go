@@ -122,7 +122,6 @@ func (tw *taskWorker) Exec(rqs Payload) (Payload, error) {
 	tw.w.State().RegisterExec()
 
 	return rsp, nil
-
 }
 
 func (tw *taskWorker) execPayload(rqs Payload) (Payload, error) {

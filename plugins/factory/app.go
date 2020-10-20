@@ -33,7 +33,6 @@ type AppConfig struct {
 type App struct {
 	cfg            AppConfig
 	configProvider config.Provider
-	factory        roadrunner.Factory
 }
 
 func (app *App) Init(provider config.Provider) error {

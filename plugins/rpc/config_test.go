@@ -4,12 +4,10 @@ import (
 	"testing"
 
 	json "github.com/json-iterator/go"
-	//"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
 )
 
 type testCfg struct{ cfg string }
-
 
 func (cfg *testCfg) Unmarshal(out interface{}) error {
 	j := json.ConfigCompatibleWithStandardLibrary

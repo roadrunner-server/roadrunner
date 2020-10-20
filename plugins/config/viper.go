@@ -14,7 +14,6 @@ type ViperProvider struct {
 	Prefix string
 }
 
-//////// ENDURE //////////
 func (v *ViperProvider) Init() error {
 	v.viper = viper.New()
 
@@ -34,8 +33,6 @@ func (v *ViperProvider) Init() error {
 
 	return v.viper.ReadInConfig()
 }
-
-///////////// VIPER ///////////////
 
 // Overwrite overwrites existing config with provided values
 func (v *ViperProvider) Overwrite(values map[string]string) error {
@@ -71,8 +68,6 @@ func (v *ViperProvider) Has(name string) bool {
 	return v.viper.IsSet(name)
 }
 
-/////////// PRIVATE //////////////
-
 func parseFlag(flag string) (string, string, error) {
 	if !strings.Contains(flag, "=") {
 		return "", "", fmt.Errorf("invalid flag `%s`", flag)
@@ -88,7 +83,7 @@ func parseValue(value string) string {
 
 	if escape == '"' || escape == '\'' || escape == '`' {
 		value = strings.Trim(value, string(escape))
-		value = strings.Replace(value, fmt.Sprintf("\\%s", string(escape)), string(escape), -1)
+		value = strings.ReplaceAll(value, fmt.Sprintf("\\%s", string(escape)), string(escape))
 	}
 
 	return value
