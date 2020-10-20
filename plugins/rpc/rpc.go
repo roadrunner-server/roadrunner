@@ -9,7 +9,7 @@ import (
 	"net/rpc"
 )
 
-type Plugin interface {
+type PluginRpc interface {
 	Name() string
 	RpcService() (interface{}, error)
 }
@@ -25,7 +25,7 @@ type services struct {
 // Service is RPC service.
 type Service struct {
 	// TODO do we need a pointer here since all receivers are pointers??
-	rpc     *rpc.Server
+	rpc            *rpc.Server
 	configProvider config.Provider
 	services       []services
 	config         Config
@@ -114,7 +114,7 @@ func (s *Service) Depends() []interface{} {
 	}
 }
 
-func (s *Service) RpcService(p Plugin) error {
+func (s *Service) RpcService(p PluginRpc) error {
 	s.services = append(s.services, services{
 		service: p.RpcService(),
 		name:    p.Name(),
