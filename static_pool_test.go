@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"strconv"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -173,6 +174,8 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
+	var i int64
+	atomic.StoreInt64(&i, 10)
 
 	go func() {
 		for {
