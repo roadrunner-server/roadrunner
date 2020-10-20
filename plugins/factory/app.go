@@ -40,10 +40,6 @@ func (app *App) Init(provider config.Provider) error {
 	app.cfg = AppConfig{}
 	app.configProvider = provider
 
-	return nil
-}
-
-func (app *App) Configure() error {
 	err := app.configProvider.UnmarshalKey("app", &app.cfg)
 	if err != nil {
 		return err
@@ -53,10 +49,6 @@ func (app *App) Configure() error {
 		app.cfg.Relay = "pipes"
 	}
 
-	return nil
-}
-
-func (app *App) Close() error {
 	return nil
 }
 

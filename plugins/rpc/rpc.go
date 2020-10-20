@@ -11,7 +11,7 @@ import (
 
 type Plugin interface {
 	Name() string
-	RpcService() interface{}
+	RpcService() (interface{}, error)
 }
 
 // ID contains default service name.
@@ -35,12 +35,6 @@ type Service struct {
 // Init rpc service. Must return true if service is enabled.
 func (s *Service) Init(cfg config.Provider) error {
 	s.configProvider = cfg
-	s.close = make(chan struct{})
-
-	return nil
-}
-
-func (s *Service) Configure() error {
 	err := s.configProvider.UnmarshalKey(ID, &s.config)
 	if err != nil {
 		return err
@@ -51,22 +45,21 @@ func (s *Service) Configure() error {
 		s.config.InitDefaults()
 	}
 
-	server := rpc.NewServer()
-	if server == nil {
-		return errors.New("rpc server is il")
-	}
-	s.rpc = server
+	s.close = make(chan struct{})
+
 	return nil
 }
 
 // Serve serves the service.
 func (s *Service) Serve() chan error {
 	errCh := make(chan error, 1)
+	server := rpc.NewServer()
+	if server == nil {
+		errCh <- errors.New("rpc server is nil")
+		return errCh
+	}
+	s.rpc = server
 
-	//s.mu.Lock()
-	//s.serving = true
-	//s.stop = make(chan interface{})
-	//s.mu.Unlock()
 	if len(s.services) == 0 {
 		errCh <- errors.New("no services with RPC")
 		return errCh
@@ -106,28 +99,13 @@ func (s *Service) Serve() chan error {
 		}
 	}()
 
-	//
-	//s.mu.Lock()
-	//s.serving = false
-	//s.mu.Unlock()
-
-	return nil
-}
-
-func (s *Service) Close() error {
-	s.close <- struct{}{}
 	return nil
 }
 
 // Stop stops the service.
-func (s *Service) Stop() {
-	//s.mu.Lock()
-	//defer s.mu.Unlock()
-	//
-	//if s.serving {
-	//	close(s.stop)
-	//}
-
+func (s *Service) Stop() error {
+	s.close <- struct{}{}
+	return nil
 }
 
 func (s *Service) Depends() []interface{} {
