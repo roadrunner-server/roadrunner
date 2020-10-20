@@ -39,8 +39,7 @@ type PoolEvent struct {
 }
 
 // NewPool creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
-// supervisor Supervisor, todo: think about it
-// stack func() (WorkerBase, error),
+// TODO why cfg is passed by pointer?
 func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg *Config) (Pool, error) {
 	cfg.InitDefaults()
 

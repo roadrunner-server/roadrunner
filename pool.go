@@ -48,7 +48,7 @@ type Pool interface {
 	// Exec one task with given payload and context, returns result or error.
 	ExecWithContext(ctx context.Context, rqs Payload) (Payload, error)
 
-	// Exec 
+	// Exec
 	Exec(rqs Payload) (Payload, error)
 
 	// Workers returns worker list associated with the pool.

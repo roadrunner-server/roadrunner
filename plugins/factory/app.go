@@ -33,17 +33,12 @@ type AppConfig struct {
 type App struct {
 	cfg            AppConfig
 	configProvider config.Provider
-	factory        roadrunner.Factory
 }
 
 func (app *App) Init(provider config.Provider) error {
 	app.cfg = AppConfig{}
 	app.configProvider = provider
 
-	return nil
-}
-
-func (app *App) Configure() error {
 	err := app.configProvider.UnmarshalKey("app", &app.cfg)
 	if err != nil {
 		return err
@@ -53,10 +48,6 @@ func (app *App) Configure() error {
 		app.cfg.Relay = "pipes"
 	}
 
-	return nil
-}
-
-func (app *App) Close() error {
 	return nil
 }
 
@@ -109,15 +100,6 @@ func (app *App) NewFactory(env Env) (roadrunner.Factory, error) {
 	default:
 		return nil, errors.New("invalid DSN (tcp://:6001, unix://file.sock)")
 	}
-}
-
-func (app *App) Serve() chan error {
-	errCh := make(chan error)
-	return errCh
-}
-
-func (app *App) Stop() error {
-	return nil
 }
 
 func (app *App) setEnv(e Env) []string {
