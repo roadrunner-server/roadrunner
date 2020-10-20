@@ -190,9 +190,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 			}
 		}
 	}()
-
 	res, err := p.ExecWithContext(ctx, Payload{Body: []byte("hello")})
-
 	assert.Error(t, err)
 	assert.Nil(t, res.Context)
 	assert.Nil(t, res.Body)
