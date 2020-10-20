@@ -79,14 +79,13 @@ func (s *Service) Serve() chan error {
 		errCh <- err
 		return errCh
 	}
-	defer func() {
-		errCh <- ln.Close()
-	}()
 
 	go func() {
 		for {
 			select {
 			case <-s.close:
+				// log error
+				errCh <- ln.Close()
 				return
 			default:
 				conn, err := ln.Accept()
@@ -115,8 +114,13 @@ func (s *Service) Depends() []interface{} {
 }
 
 func (s *Service) RpcService(p PluginRpc) error {
+	service, err := p.RpcService()
+	if err != nil {
+		return err
+	}
+
 	s.services = append(s.services, services{
-		service: p.RpcService(),
+		service: service,
 		name:    p.Name(),
 	})
 	return nil
