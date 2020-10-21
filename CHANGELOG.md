@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.8.4 (21.10.2020)
+-------------------
+- Update Goridge go dep to 2.4.6
+
 v1.8.3 (02.09.2020)
 -------------------
 - Fix superfluous response.WriteHeader issue.
