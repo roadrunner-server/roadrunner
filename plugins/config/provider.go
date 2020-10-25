@@ -1,7 +1,7 @@
 package config
 
 type Provider interface {
-	// Unmarshal configuration section into configuration object.
+	// UnmarshalKey reads configuration section into configuration object.
 	//
 	// func (h *HttpService) Init(cp config.Provider) error {
 	//     h.config := &HttpConfig{}

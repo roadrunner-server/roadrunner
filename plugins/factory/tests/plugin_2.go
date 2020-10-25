@@ -13,11 +13,11 @@ import (
 
 type Foo2 struct {
 	configProvider config.Provider
-	wf             factory.WorkerFactory
+	wf             factory.AppFactory
 	spw            factory.Spawner
 }
 
-func (f *Foo2) Init(p config.Provider, workerFactory factory.WorkerFactory, spawner factory.Spawner) error {
+func (f *Foo2) Init(p config.Provider, workerFactory factory.AppFactory, spawner factory.Spawner) error {
 	f.configProvider = p
 	f.wf = workerFactory
 	f.spw = spawner
@@ -27,14 +27,14 @@ func (f *Foo2) Init(p config.Provider, workerFactory factory.WorkerFactory, spaw
 func (f *Foo2) Serve() chan error {
 	errCh := make(chan error, 1)
 
-	r := &factory.AppConfig{}
+	r := &factory.Config{}
 	err := f.configProvider.UnmarshalKey("app", r)
 	if err != nil {
 		errCh <- err
 		return errCh
 	}
 
-	cmd, err := f.spw.NewCmd(nil)
+	cmd, err := f.spw.CommandFactory(nil)
 	if err != nil {
 		errCh <- err
 		return errCh

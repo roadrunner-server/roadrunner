@@ -14,6 +14,7 @@ type ViperProvider struct {
 	Prefix string
 }
 
+// Inits config provider.
 func (v *ViperProvider) Init() error {
 	v.viper = viper.New()
 
@@ -49,7 +50,7 @@ func (v *ViperProvider) Overwrite(values map[string]string) error {
 	return nil
 }
 
-//
+// UnmarshalKey reads configuration section into configuration object.
 func (v *ViperProvider) UnmarshalKey(name string, out interface{}) error {
 	err := v.viper.UnmarshalKey(name, &out)
 	if err != nil {

@@ -22,14 +22,14 @@ func (f *Foo) Init(p config.Provider, spw factory.Spawner) error {
 func (f *Foo) Serve() chan error {
 	errCh := make(chan error, 1)
 
-	r := &factory.AppConfig{}
+	r := &factory.Config{}
 	err := f.configProvider.UnmarshalKey("app", r)
 	if err != nil {
 		errCh <- err
 		return errCh
 	}
 
-	cmd, err := f.spawner.NewCmd(nil)
+	cmd, err := f.spawner.CommandFactory(nil)
 	if err != nil {
 		errCh <- err
 		return errCh

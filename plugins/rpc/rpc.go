@@ -1,8 +1,7 @@
 package rpc
 
 import (
-	"errors"
-
+	"github.com/spiral/endure/errors"
 	"github.com/spiral/goridge/v2"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 
@@ -14,8 +13,8 @@ type RPCService interface {
 	RPCService() (interface{}, error)
 }
 
-// ID contains default service name.
-const ID = "rpc"
+// ServiceName contains default service name.
+const ServiceName = "rpc"
 
 type services struct {
 	service interface{}
@@ -32,14 +31,19 @@ type Service struct {
 
 // Init rpc service. Must return true if service is enabled.
 func (s *Service) Init(cfg config.Provider) error {
-	err := cfg.UnmarshalKey(ID, &s.config)
+	if !cfg.Has(ServiceName) {
+		return errors.E(errors.Disabled)
+	}
+
+	err := cfg.UnmarshalKey(ServiceName, &s.config)
 	if err != nil {
 		return err
 	}
-
 	s.config.InitDefaults()
 
-	// todo: handle disabled
+	if s.config.Disabled {
+		return errors.E(errors.Disabled)
+	}
 
 	return s.config.Valid()
 }
@@ -47,27 +51,15 @@ func (s *Service) Init(cfg config.Provider) error {
 // Serve serves the service.
 func (s *Service) Serve() chan error {
 	s.close = make(chan struct{})
-
 	errCh := make(chan error, 1)
 
-	server := rpc.NewServer()
-	if server == nil {
-		errCh <- errors.New("rpc server is nil")
-		return errCh
-	}
-	s.rpc = server
-
-	if len(s.services) == 0 {
-		// todo: why this is an error?
-		errCh <- errors.New("no services with RPC")
-		return errCh
-	}
+	s.rpc = rpc.NewServer()
 
 	// Attach all services
 	for i := 0; i < len(s.services); i++ {
 		err := s.Register(s.services[i].name, s.services[i].service)
 		if err != nil {
-			errCh <- err
+			errCh <- errors.E(errors.Op("register service"), err)
 			return errCh
 		}
 	}
@@ -134,7 +126,7 @@ func (s *Service) RegisterService(p RPCService) error {
 // no suitable methods. It also logs the error using package log.
 func (s *Service) Register(name string, svc interface{}) error {
 	if s.rpc == nil {
-		return errors.New("RPC service is not configured")
+		return errors.E("RPC service is not configured")
 	}
 
 	return s.rpc.RegisterName(name, svc)
