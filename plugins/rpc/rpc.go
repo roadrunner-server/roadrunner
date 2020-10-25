@@ -9,9 +9,9 @@ import (
 	"net/rpc"
 )
 
-type PluginRpc interface {
+type RPCService interface {
 	Name() string
-	RpcService() (interface{}, error)
+	RPCService() (interface{}, error)
 }
 
 // ID contains default service name.
@@ -24,28 +24,23 @@ type services struct {
 
 // Service is RPC service.
 type Service struct {
-	// TODO do we need a pointer here since all receivers are pointers??
-	rpc            *rpc.Server
-	configProvider config.Provider
-	services       []services
-	config         Config
-	close          chan struct{}
+	rpc      *rpc.Server
+	services []services
+	config   Config
+	close    chan struct{}
 }
 
 // Init rpc service. Must return true if service is enabled.
 func (s *Service) Init(cfg config.Provider) error {
-	s.configProvider = cfg
-	err := s.configProvider.UnmarshalKey(ID, &s.config)
+	err := cfg.UnmarshalKey(ID, &s.config)
 	if err != nil {
 		return err
 	}
 
-	// TODO Do we need to init defaults
-	if s.config.Listen == "" {
-		s.config.InitDefaults()
-	}
-
+	s.config.InitDefaults()
 	s.close = make(chan struct{})
+
+	// todo: handle disabled
 
 	return nil
 }
@@ -53,6 +48,7 @@ func (s *Service) Init(cfg config.Provider) error {
 // Serve serves the service.
 func (s *Service) Serve() chan error {
 	errCh := make(chan error, 1)
+
 	server := rpc.NewServer()
 	if server == nil {
 		errCh <- errors.New("rpc server is nil")
@@ -61,6 +57,7 @@ func (s *Service) Serve() chan error {
 	s.rpc = server
 
 	if len(s.services) == 0 {
+		// todo: why this is an error?
 		errCh <- errors.New("no services with RPC")
 		return errCh
 	}
@@ -109,12 +106,12 @@ func (s *Service) Stop() error {
 
 func (s *Service) Depends() []interface{} {
 	return []interface{}{
-		s.RpcService,
+		s.RegisterService,
 	}
 }
 
-func (s *Service) RpcService(p PluginRpc) error {
-	service, err := p.RpcService()
+func (s *Service) RegisterService(p RPCService) error {
+	service, err := p.RPCService()
 	if err != nil {
 		return err
 	}
@@ -144,10 +141,6 @@ func (s *Service) Register(name string, svc interface{}) error {
 
 // Client creates new RPC client.
 func (s *Service) Client() (*rpc.Client, error) {
-	if s.configProvider == nil {
-		return nil, errors.New("RPC service is not configured")
-	}
-
 	conn, err := s.config.Dialer()
 	if err != nil {
 		return nil, err
