@@ -74,7 +74,10 @@ func (s *Service) Serve() chan error {
 			select {
 			case <-s.close:
 				// log error
-				errCh <- ln.Close()
+				err := ln.Close()
+				if err != nil {
+					errCh <- errors.E(errors.Op("close RPC socket"), err)
+				}
 				return
 			default:
 				conn, err := ln.Accept()
