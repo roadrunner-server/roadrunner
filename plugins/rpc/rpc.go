@@ -4,7 +4,6 @@ import (
 	"github.com/spiral/endure/errors"
 	"github.com/spiral/goridge/v2"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-
 	"net/rpc"
 )
 
@@ -50,7 +49,7 @@ func (s *Service) Init(cfg config.Provider) error {
 
 // Serve serves the service.
 func (s *Service) Serve() chan error {
-	s.close = make(chan struct{})
+	s.close = make(chan struct{}, 1)
 	errCh := make(chan error, 1)
 
 	s.rpc = rpc.NewServer()
@@ -88,7 +87,7 @@ func (s *Service) Serve() chan error {
 		}
 	}()
 
-	return nil
+	return errCh
 }
 
 // Stop stops the service.
