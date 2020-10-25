@@ -38,15 +38,16 @@ func (s *Service) Init(cfg config.Provider) error {
 	}
 
 	s.config.InitDefaults()
-	s.close = make(chan struct{})
 
 	// todo: handle disabled
 
-	return nil
+	return s.config.Valid()
 }
 
 // Serve serves the service.
 func (s *Service) Serve() chan error {
+	s.close = make(chan struct{})
+
 	errCh := make(chan error, 1)
 
 	server := rpc.NewServer()
