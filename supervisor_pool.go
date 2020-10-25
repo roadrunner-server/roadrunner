@@ -8,6 +8,14 @@ import (
 
 const MB = 1024 * 1024
 
+type SupervisedPool interface {
+	Pool
+
+	// ExecWithContext provides the ability to execute with time deadline. Attention, worker will be destroyed if context
+	// deadline reached.
+	ExecWithContext(ctx context.Context, rqs Payload) (Payload, error)
+}
+
 type supervisedPool struct {
 	cfg    SupervisorConfig
 	events *util.EventHandler
