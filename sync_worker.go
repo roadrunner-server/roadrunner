@@ -30,11 +30,6 @@ func NewSyncWorker(w WorkerBase) (SyncWorker, error) {
 	}, nil
 }
 
-type twexec struct {
-	payload Payload
-	err     error
-}
-
 // Exec payload without TTL timeout.
 func (tw *syncWorker) Exec(p Payload) (Payload, error) {
 	if len(p.Body) == 0 && len(p.Context) == 0 {
