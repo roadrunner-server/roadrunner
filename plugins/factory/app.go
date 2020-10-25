@@ -42,6 +42,11 @@ func (app *App) Init(cfg config.Provider) error {
 	return nil
 }
 
+// Name contains service name.
+func (app *App) Name() string {
+	return ServiceName
+}
+
 func (app *App) Serve() chan error {
 	errCh := make(chan error, 1)
 	var err error

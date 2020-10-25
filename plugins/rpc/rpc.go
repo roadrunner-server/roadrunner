@@ -47,6 +47,11 @@ func (s *Service) Init(cfg config.Provider) error {
 	return s.config.Valid()
 }
 
+// Name contains service name.
+func (s *Service) Name() string {
+	return ServiceName
+}
+
 // Serve serves the service.
 func (s *Service) Serve() chan error {
 	s.close = make(chan struct{}, 1)
