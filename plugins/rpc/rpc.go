@@ -1,14 +1,18 @@
 package rpc
 
 import (
+	"github.com/spiral/endure"
 	"github.com/spiral/endure/errors"
 	"github.com/spiral/goridge/v2"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"net/rpc"
 )
 
-type RPCService interface {
-	Name() string
+// RPCPluggable declares the ability to create set of public RPC methods.
+type RPCPluggable interface {
+	endure.Named
+
+	// Provides RPC methods for the given service.
 	RPCService() (interface{}, error)
 }
 
@@ -110,7 +114,7 @@ func (s *Service) Depends() []interface{} {
 	}
 }
 
-func (s *Service) RegisterService(p RPCService) error {
+func (s *Service) RegisterService(p RPCPluggable) error {
 	service, err := p.RPCService()
 	if err != nil {
 		return err
