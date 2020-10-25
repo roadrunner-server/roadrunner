@@ -13,5 +13,5 @@ type Spawner interface {
 	NewCmd(env Env) (func() *exec.Cmd, error)
 
 	// NewFactory inits new factory for workers.
-	NewFactory(env Env) (roadrunner.Factory, error)
+	NewFactory() (roadrunner.Factory, error)
 }

@@ -76,7 +76,7 @@ func (app *App) NewCmd(env Env) (func() *exec.Cmd, error) {
 }
 
 // todo ENV unused
-func (app *App) NewFactory(env Env) (roadrunner.Factory, error) {
+func (app *App) NewFactory() (roadrunner.Factory, error) {
 	if app.cfg.Relay == "" || app.cfg.Relay == "pipes" {
 		return roadrunner.NewPipeFactory(), nil
 	}
