@@ -1,4 +1,4 @@
-package factory
+package app
 
 import "time"
 

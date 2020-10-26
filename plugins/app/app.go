@@ -1,4 +1,4 @@
-package factory
+package app
 
 import (
 	"context"
@@ -19,9 +19,9 @@ const ServiceName = "app"
 
 type Env map[string]string
 
-// AppFactory creates workers for the application.
-type AppFactory interface {
-	NewCmdFactory(env Env) (func() *exec.Cmd, error)
+// WorkerFactory creates workers for the application.
+type WorkerFactory interface {
+	CmdFactory(env Env) (func() *exec.Cmd, error)
 	NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, error)
 	NewWorkerPool(ctx context.Context, opt roadrunner.Config, env Env) (roadrunner.Pool, error)
 }
@@ -68,7 +68,8 @@ func (app *App) Stop() error {
 	return app.factory.Close(context.Background())
 }
 
-func (app *App) NewCmdFactory(env Env) (func() *exec.Cmd, error) {
+// CmdFactory provides worker command factory assocated with given context.
+func (app *App) CmdFactory(env Env) (func() *exec.Cmd, error) {
 	var cmdArgs []string
 
 	// create command according to the config
@@ -93,8 +94,9 @@ func (app *App) NewCmdFactory(env Env) (func() *exec.Cmd, error) {
 	}, nil
 }
 
+// NewWorker issues new standalone worker.
 func (app *App) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, error) {
-	spawnCmd, err := app.NewCmdFactory(env)
+	spawnCmd, err := app.CmdFactory(env)
 	if err != nil {
 		return nil, err
 	}
@@ -102,8 +104,9 @@ func (app *App) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, 
 	return app.factory.SpawnWorkerWithContext(ctx, spawnCmd())
 }
 
+// NewWorkerPool issues new worker pool.
 func (app *App) NewWorkerPool(ctx context.Context, opt roadrunner.Config, env Env) (roadrunner.Pool, error) {
-	spawnCmd, err := app.NewCmdFactory(env)
+	spawnCmd, err := app.CmdFactory(env)
 	if err != nil {
 		return nil, err
 	}
@@ -124,6 +127,7 @@ func (app *App) NewWorkerPool(ctx context.Context, opt roadrunner.Config, env En
 	return p, nil
 }
 
+// creates relay and worker factory.
 func (app *App) initFactory() (roadrunner.Factory, error) {
 	if app.cfg.Relay == "" || app.cfg.Relay == "pipes" {
 		return roadrunner.NewPipeFactory(), nil
