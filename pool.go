@@ -75,10 +75,8 @@ type Config struct {
 	// worker handle as many tasks as it can.
 	MaxJobs int64
 
-	// Deferred flag enables slower working mode which inits empty worker ahead of every request. Useful to debug
-	// applications with heavy bootload phase. Do not use at production. It is also keeps pool without any workers
-	// until first request.
-	Deferred bool
+	// HeavyLoad flag creates new fresh worker before every request.
+	HeavyLoad bool
 
 	// AllocateTimeout defines for how long pool will be waiting for a worker to
 	// be freed to handle the task. Defaults to 60s.

@@ -308,7 +308,7 @@ func Test_StaticPool_Debug_Worker(t *testing.T) {
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "pid", "pipes") },
 		NewPipeFactory(),
 		Config{
-			Deferred:        true,
+			HeavyLoad:       true,
 			NumWorkers:      1,
 			MaxJobs:         1,
 			AllocateTimeout: time.Second,
@@ -320,15 +320,10 @@ func Test_StaticPool_Debug_Worker(t *testing.T) {
 
 	assert.NotNil(t, p)
 
-	assert.Len(t, p.Workers(), 0)
+	assert.Len(t, p.Workers(), 1)
 
 	var lastPID string
 	res, _ := p.Exec(Payload{Body: []byte("hello")})
-
-	assert.Len(t, p.Workers(), 1)
-
-	lastPID = strconv.Itoa(int(p.Workers()[0].Pid()))
-	res, _ = p.Exec(Payload{Body: []byte("hello")})
 	assert.NotEqual(t, lastPID, string(res.Body))
 
 	for i := 0; i < 10; i++ {
