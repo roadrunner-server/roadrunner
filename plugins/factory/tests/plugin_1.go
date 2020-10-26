@@ -10,10 +10,10 @@ import (
 
 type Foo struct {
 	configProvider config.Provider
-	spawner        factory.Spawner
+	spawner        factory.AppFactory
 }
 
-func (f *Foo) Init(p config.Provider, spw factory.Spawner) error {
+func (f *Foo) Init(p config.Provider, spw factory.AppFactory) error {
 	f.configProvider = p
 	f.spawner = spw
 	return nil

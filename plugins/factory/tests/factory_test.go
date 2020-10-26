@@ -31,11 +31,6 @@ func TestFactory(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = container.Register(&factory.WFactory{})
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	err = container.Register(&Foo{})
 	if err != nil {
 		t.Fatal(err)
@@ -65,7 +60,7 @@ func TestFactory(t *testing.T) {
 	for {
 		select {
 		case e := <-errCh:
-			assert.NoError(t, e.Error.Err)
+			assert.NoError(t, e.Error)
 			assert.NoError(t, container.Stop())
 			return
 		case <-c:
