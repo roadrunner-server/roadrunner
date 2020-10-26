@@ -18,7 +18,7 @@ type SyncWorker interface {
 	WorkerBase
 
 	// Exec used to execute payload on the SyncWorker, there is no TIMEOUTS
-	Exec(rqs Payload) (Payload, error)
+	Exec(p Payload) (Payload, error)
 }
 
 type syncWorker struct {
@@ -47,7 +47,7 @@ func (tw *syncWorker) Exec(p Payload) (Payload, error) {
 
 	rsp, err := tw.execPayload(p)
 	if err != nil {
-		if _, ok := err.(JobError); !ok {
+		if _, ok := err.(ExecError); !ok {
 			tw.w.State().Set(StateErrored)
 			tw.w.State().RegisterExec()
 		}
@@ -60,13 +60,13 @@ func (tw *syncWorker) Exec(p Payload) (Payload, error) {
 	return rsp, nil
 }
 
-func (tw *syncWorker) execPayload(rqs Payload) (Payload, error) {
+func (tw *syncWorker) execPayload(p Payload) (Payload, error) {
 	// two things; todo: merge
-	if err := sendControl(tw.w.Relay(), rqs.Context); err != nil {
+	if err := sendControl(tw.w.Relay(), p.Context); err != nil {
 		return EmptyPayload, errors.Wrap(err, "header error")
 	}
 
-	if err := tw.w.Relay().Send(rqs.Body, 0); err != nil {
+	if err := tw.w.Relay().Send(p.Body, 0); err != nil {
 		return EmptyPayload, errors.Wrap(err, "sender error")
 	}
 
@@ -83,7 +83,7 @@ func (tw *syncWorker) execPayload(rqs Payload) (Payload, error) {
 	}
 
 	if pr.HasFlag(goridge.PayloadError) {
-		return EmptyPayload, JobError(rsp.Context)
+		return EmptyPayload, ExecError(rsp.Context)
 	}
 
 	// add streaming support :)

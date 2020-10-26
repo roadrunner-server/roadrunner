@@ -66,6 +66,9 @@ type Pool interface {
 
 // Configures the pool behaviour.
 type Config struct {
+	// Debug flag creates new fresh worker before every request.
+	Debug bool
+
 	// NumWorkers defines how many sub-processes can be run at once. This value
 	// might be doubled by Swapper while hot-swap. Defaults to number of CPU cores.
 	NumWorkers int64
@@ -74,9 +77,6 @@ type Config struct {
 	// it's destruction. set 1 to create new process for each new task, 0 to let
 	// worker handle as many tasks as it can.
 	MaxJobs int64
-
-	// HeavyLoad flag creates new fresh worker before every request.
-	HeavyLoad bool
 
 	// AllocateTimeout defines for how long pool will be waiting for a worker to
 	// be freed to handle the task. Defaults to 60s.

@@ -206,7 +206,7 @@ func Test_Error(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	assert.IsType(t, JobError{}, err)
+	assert.IsType(t, ExecError{}, err)
 	assert.Equal(t, "hello", err.Error())
 }
 
