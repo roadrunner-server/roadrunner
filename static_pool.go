@@ -43,6 +43,10 @@ type StaticPool struct {
 func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg Config) (Pool, error) {
 	cfg.InitDefaults()
 
+	if cfg.HeavyLoad {
+		cfg.NumWorkers = 0
+	}
+
 	p := &StaticPool{
 		cfg:     cfg,
 		cmd:     cmd,

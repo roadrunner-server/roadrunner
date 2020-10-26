@@ -320,11 +320,14 @@ func Test_StaticPool_Debug_Worker(t *testing.T) {
 
 	assert.NotNil(t, p)
 
-	assert.Len(t, p.Workers(), 1)
+	assert.Len(t, p.Workers(), 0)
 
 	var lastPID string
 	res, _ := p.Exec(Payload{Body: []byte("hello")})
 	assert.NotEqual(t, lastPID, string(res.Body))
+
+	// todo: necessary?
+	assert.Len(t, p.Workers(), 0)
 
 	for i := 0; i < 10; i++ {
 		lastPID = strconv.Itoa(int(p.Workers()[0].Pid()))
