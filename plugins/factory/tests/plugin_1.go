@@ -29,7 +29,7 @@ func (f *Foo) Serve() chan error {
 		return errCh
 	}
 
-	cmd, err := f.spawner.CommandFactory(nil)
+	cmd, err := f.spawner.NewCmdFactory(nil)
 	if err != nil {
 		errCh <- err
 		return errCh

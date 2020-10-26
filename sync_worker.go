@@ -3,8 +3,9 @@ package roadrunner
 import (
 	"context"
 	"fmt"
-	"github.com/spiral/roadrunner/v2/util"
 	"time"
+
+	"github.com/spiral/roadrunner/v2/util"
 
 	"github.com/pkg/errors"
 	"github.com/spiral/goridge/v2"

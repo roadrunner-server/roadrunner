@@ -3,9 +3,10 @@ package roadrunner
 import (
 	"context"
 	"errors"
-	"github.com/spiral/roadrunner/v2/util"
 	"sync"
 	"time"
+
+	"github.com/spiral/roadrunner/v2/util"
 )
 
 var ErrWatcherStopped = errors.New("watcher stopped")
@@ -282,7 +283,6 @@ func (ww *workerWatcher) wait(ctx context.Context, w WorkerBase) {
 	for i := 0; i < len(ww.stack.workers); i++ {
 		// worker in the stack, reallocating
 		if ww.stack.workers[i].Pid() == pid {
-
 			ww.stack.workers = append(ww.stack.workers[:i], ww.stack.workers[i+1:]...)
 			ww.decreaseNumOfActualWorkers()
 			ww.stack.mutex.Unlock()

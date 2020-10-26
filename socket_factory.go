@@ -2,12 +2,13 @@ package roadrunner
 
 import (
 	"context"
-	"github.com/shirou/gopsutil/process"
 	"net"
 	"os/exec"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/shirou/gopsutil/process"
 
 	"github.com/pkg/errors"
 	"github.com/spiral/goridge/v2"

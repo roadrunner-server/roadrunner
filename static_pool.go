@@ -3,9 +3,10 @@ package roadrunner
 import (
 	"context"
 	"fmt"
-	"github.com/spiral/roadrunner/v2/util"
 	"os/exec"
 	"sync"
+
+	"github.com/spiral/roadrunner/v2/util"
 
 	"github.com/pkg/errors"
 )
@@ -35,7 +36,7 @@ type StaticPool struct {
 	ww *workerWatcher
 
 	// supervises memory and TTL of workers
-	sp *supervisedPool
+	// sp *supervisedPool
 }
 
 // NewPool creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
@@ -74,8 +75,8 @@ func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg Con
 	}
 
 	// todo: implement
-	//p.sp = newPoolWatcher(p, p.events, p.cfg.Supervisor)
-	//p.sp.Start()
+	// p.sp = newPoolWatcher(p, p.events, p.cfg.Supervisor)
+	// p.sp.Start()
 
 	return p, nil
 }
@@ -167,7 +168,7 @@ func (p *StaticPool) Exec(rqs Payload) (Payload, error) {
 }
 
 // Exec one task with given payload and context, returns result or error.
-//func (p *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload, error) {
+// func (p *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload, error) {
 //	// todo: why TODO passed here?
 //	getWorkerCtx, cancel := context.WithTimeout(context.TODO(), p.cfg.AllocateTimeout)
 //	defer cancel()
@@ -235,7 +236,7 @@ func (p *StaticPool) Exec(rqs Payload) (Payload, error) {
 //	}
 //
 //	return rsp, nil
-//}
+// }
 
 // Destroy all underlying stack (but let them to complete the task).
 func (p *StaticPool) Destroy(ctx context.Context) {

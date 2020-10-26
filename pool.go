@@ -2,9 +2,10 @@ package roadrunner
 
 import (
 	"context"
-	"github.com/spiral/roadrunner/v2/util"
 	"runtime"
 	"time"
+
+	"github.com/spiral/roadrunner/v2/util"
 )
 
 // PoolEvent triggered by pool on different events. Pool as also trigger WorkerEvent in case of log.

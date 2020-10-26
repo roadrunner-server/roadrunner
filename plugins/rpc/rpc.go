@@ -1,11 +1,12 @@
 package rpc
 
 import (
+	"net/rpc"
+
 	"github.com/spiral/endure"
 	"github.com/spiral/endure/errors"
 	"github.com/spiral/goridge/v2"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"net/rpc"
 )
 
 // RPCPluggable declares the ability to create set of public RPC methods.

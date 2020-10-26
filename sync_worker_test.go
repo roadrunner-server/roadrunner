@@ -2,10 +2,11 @@ package roadrunner
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"sync"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_Echo(t *testing.T) {
@@ -165,23 +166,6 @@ func Test_Broken(t *testing.T) {
 		assert.Contains(t, string(event.(WorkerEvent).Payload.([]byte)), "undefined_function()")
 		wg.Done()
 	})
-
-	//go func() {
-	//	assert.NotNil(t, w)
-	//	tt := time.NewTimer(time.Second * 10)
-	//	defer wg.Done()
-	//	for {
-	//		select {
-	//		case ev := <-w.Events():
-	//			assert.Contains(t, string(ev.Payload.([]byte)), "undefined_function()")
-	//			return
-	//		case <-tt.C:
-	//			assert.Error(t, errors.New("no events from worker"))
-	//			return
-	//		}
-	//	}
-	//}()
-
 	syncWorker, err := NewSyncWorker(w)
 	if err != nil {
 		t.Fatal(err)

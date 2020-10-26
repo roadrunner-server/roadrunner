@@ -157,7 +157,7 @@ func Test_StaticPool_JobError(t *testing.T) {
 }
 
 // TODO temporary commented, figure out later
-//func Test_StaticPool_Broken_Replace(t *testing.T) {
+// func Test_StaticPool_Broken_Replace(t *testing.T) {
 //	ctx := context.Background()
 //	p, err := NewPool(
 //		ctx,
@@ -197,7 +197,7 @@ func Test_StaticPool_JobError(t *testing.T) {
 //	wg.Wait()
 //
 //	p.Destroy(ctx)
-//}
+// }
 
 //
 func Test_StaticPool_Broken_FromOutside(t *testing.T) {

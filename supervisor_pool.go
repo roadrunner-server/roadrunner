@@ -2,8 +2,9 @@ package roadrunner
 
 import (
 	"context"
-	"github.com/spiral/roadrunner/v2/util"
 	"time"
+
+	"github.com/spiral/roadrunner/v2/util"
 )
 
 const MB = 1024 * 1024
@@ -83,8 +84,6 @@ func (sp *supervisedPool) control() {
 		}
 
 		if sp.cfg.MaxWorkerMemory != 0 && s.MemoryUsage >= sp.cfg.MaxWorkerMemory*MB {
-			// TODO events
-			//sp.pool.Events() <- PoolEvent{Payload: fmt.Errorf("max allowed memory reached (%vMB)", sp.maxWorkerMemory)}
 			err = sp.pool.RemoveWorker(ctx, workers[i])
 			if err != nil {
 				sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: err})
@@ -127,13 +126,5 @@ func (sp *supervisedPool) control() {
 				}
 			}
 		}
-
-		// the very last step is to calculate pool memory usage (except excluded workers)
-		//totalUsedMemory += s.MemoryUsage
 	}
-
-	//// if current usage more than max allowed pool memory usage
-	//if totalUsedMemory > sp.maxPoolMemory {
-	//	sp.pool.Destroy(ctx)
-	//}
 }

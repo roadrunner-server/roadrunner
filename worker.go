@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/spiral/roadrunner/v2/util"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/spiral/roadrunner/v2/util"
 
 	"github.com/spiral/goridge/v2"
 	"go.uber.org/multierr"

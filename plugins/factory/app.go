@@ -3,15 +3,16 @@ package factory
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"strings"
+
 	"github.com/fatih/color"
 	"github.com/spiral/endure/errors"
 	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/util"
-	"log"
-	"os"
-	"os/exec"
-	"strings"
 )
 
 const ServiceName = "app"
