@@ -8,6 +8,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/shirou/gopsutil/process"
+
 	"github.com/pkg/errors"
 	"github.com/spiral/goridge/v2"
 	"go.uber.org/multierr"
@@ -110,6 +112,7 @@ func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cm
 				w.Kill(context.Background()),
 				w.Wait(context.Background()),
 			)
+
 			c <- socketSpawn{
 				w:   nil,
 				err: err,
@@ -178,10 +181,16 @@ func (f *SocketFactory) Close(ctx context.Context) error {
 
 // waits for WorkerProcess to connect over socket and returns associated relay of timeout
 func (f *SocketFactory) findRelayWithContext(ctx context.Context, w WorkerBase) (*goridge.SocketRelay, error) {
+	ticker := time.NewTicker(time.Millisecond * 100)
 	for {
 		select {
 		case <-ctx.Done():
 			return nil, ctx.Err()
+		case <-ticker.C:
+			_, err := process.NewProcess(int32(w.Pid()))
+			if err != nil {
+				return nil, err
+			}
 		default:
 			tmp, ok := f.relays.Load(w.Pid())
 			if !ok {

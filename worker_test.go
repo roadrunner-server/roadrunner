@@ -91,6 +91,7 @@ func TestErrBuffer_Write_Event(t *testing.T) {
 		assert.Equal(t, []byte("hello\n"), log)
 		wg.Done()
 	}
+	buf.enable = true
 
 	_, err := buf.Write([]byte("hello\n"))
 	if err != nil {
@@ -116,6 +117,8 @@ func TestErrBuffer_Write_Event_Separated(t *testing.T) {
 		assert.Equal(t, []byte("hello\nending"), log)
 		wg.Done()
 	}
+	buf.enable = true
+
 	_, err := buf.Write([]byte("hel"))
 	if err != nil {
 		t.Errorf("fail to write: error %v", err)

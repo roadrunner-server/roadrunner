@@ -101,7 +101,7 @@ func Test_Pipe_Echo(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")})
+	res, err := sw.Exec(Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -129,7 +129,7 @@ func Test_Pipe_Broken(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")})
+	res, err := sw.Exec(Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
 	assert.Nil(t, res.Body)
@@ -178,7 +178,7 @@ func Benchmark_Pipe_Worker_ExecEcho(b *testing.B) {
 	}()
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.ExecWithContext(context.Background(), Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.Exec(Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}
@@ -205,7 +205,7 @@ func Benchmark_Pipe_Worker_ExecEcho3(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.ExecWithContext(ctx, Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.Exec(Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}

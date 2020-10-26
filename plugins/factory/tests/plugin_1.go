@@ -10,10 +10,10 @@ import (
 
 type Foo struct {
 	configProvider config.Provider
-	spawner        factory.Spawner
+	spawner        factory.AppFactory
 }
 
-func (f *Foo) Init(p config.Provider, spw factory.Spawner) error {
+func (f *Foo) Init(p config.Provider, spw factory.AppFactory) error {
 	f.configProvider = p
 	f.spawner = spw
 	return nil
@@ -22,14 +22,14 @@ func (f *Foo) Init(p config.Provider, spw factory.Spawner) error {
 func (f *Foo) Serve() chan error {
 	errCh := make(chan error, 1)
 
-	r := &factory.AppConfig{}
+	r := &factory.Config{}
 	err := f.configProvider.UnmarshalKey("app", r)
 	if err != nil {
 		errCh <- err
 		return errCh
 	}
 
-	cmd, err := f.spawner.NewCmd(nil)
+	cmd, err := f.spawner.NewCmdFactory(nil)
 	if err != nil {
 		errCh <- err
 		return errCh

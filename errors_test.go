@@ -8,7 +8,7 @@ import (
 )
 
 func Test_JobError_Error(t *testing.T) {
-	e := TaskError([]byte("error"))
+	e := JobError([]byte("error"))
 	assert.Equal(t, "error", e.Error())
 }
 

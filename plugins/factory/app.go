@@ -1,58 +1,76 @@
 package factory
 
 import (
-	"errors"
+	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
-	"time"
 
+	"github.com/fatih/color"
+	"github.com/spiral/endure/errors"
 	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/util"
 )
 
-// AppConfig config combines factory, pool and cmd configurations.
-type AppConfig struct {
-	Command string
-	User    string
-	Group   string
-	Env     Env
+const ServiceName = "app"
 
-	// Listen defines connection method and factory to be used to connect to workers:
-	// "pipes", "tcp://:6001", "unix://rr.sock"
-	// This config section must not change on re-configuration.
-	Relay string
+type Env map[string]string
 
-	// RelayTimeout defines for how long socket factory will be waiting for worker connection. This config section
-	// must not change on re-configuration.
-	RelayTimeout time.Duration
+// AppFactory creates workers for the application.
+type AppFactory interface {
+	NewCmdFactory(env Env) (func() *exec.Cmd, error)
+	NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, error)
+	NewWorkerPool(ctx context.Context, opt roadrunner.Config, env Env) (roadrunner.Pool, error)
 }
 
+// App manages worker
 type App struct {
-	cfg            AppConfig
-	configProvider config.Provider
+	cfg     Config
+	factory roadrunner.Factory
 }
 
-func (app *App) Init(provider config.Provider) error {
-	app.cfg = AppConfig{}
-	app.configProvider = provider
-
-	err := app.configProvider.UnmarshalKey("app", &app.cfg)
+// Init application provider.
+func (app *App) Init(cfg config.Provider) error {
+	err := cfg.UnmarshalKey(ServiceName, &app.cfg)
 	if err != nil {
 		return err
 	}
-
-	if app.cfg.Relay == "" {
-		app.cfg.Relay = "pipes"
-	}
+	app.cfg.InitDefaults()
 
 	return nil
 }
 
-func (app *App) NewCmd(env Env) (func() *exec.Cmd, error) {
+// Name contains service name.
+func (app *App) Name() string {
+	return ServiceName
+}
+
+func (app *App) Serve() chan error {
+	errCh := make(chan error, 1)
+	var err error
+
+	app.factory, err = app.initFactory()
+	if err != nil {
+		errCh <- errors.E(errors.Op("init factory"), err)
+	}
+
+	return errCh
+}
+
+func (app *App) Stop() error {
+	if app.factory == nil {
+		return nil
+	}
+
+	return app.factory.Close(context.Background())
+}
+
+func (app *App) NewCmdFactory(env Env) (func() *exec.Cmd, error) {
 	var cmdArgs []string
+
 	// create command according to the config
 	cmdArgs = append(cmdArgs, strings.Split(app.cfg.Command, " ")...)
 
@@ -75,15 +93,45 @@ func (app *App) NewCmd(env Env) (func() *exec.Cmd, error) {
 	}, nil
 }
 
-// todo ENV unused
-func (app *App) NewFactory(env Env) (roadrunner.Factory, error) {
+func (app *App) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, error) {
+	spawnCmd, err := app.NewCmdFactory(env)
+	if err != nil {
+		return nil, err
+	}
+
+	return app.factory.SpawnWorkerWithContext(ctx, spawnCmd())
+}
+
+func (app *App) NewWorkerPool(ctx context.Context, opt roadrunner.Config, env Env) (roadrunner.Pool, error) {
+	spawnCmd, err := app.NewCmdFactory(env)
+	if err != nil {
+		return nil, err
+	}
+
+	p, err := roadrunner.NewPool(ctx, spawnCmd, app.factory, opt)
+	if err != nil {
+		return nil, err
+	}
+
+	p.AddListener(func(event interface{}) {
+		if we, ok := event.(roadrunner.WorkerEvent); ok {
+			if we.Event == roadrunner.EventWorkerLog {
+				log.Print(color.YellowString(string(we.Payload.([]byte))))
+			}
+		}
+	})
+
+	return p, nil
+}
+
+func (app *App) initFactory() (roadrunner.Factory, error) {
 	if app.cfg.Relay == "" || app.cfg.Relay == "pipes" {
 		return roadrunner.NewPipeFactory(), nil
 	}
 
 	dsn := strings.Split(app.cfg.Relay, "://")
 	if len(dsn) != 2 {
-		return nil, errors.New("invalid DSN (tcp://:6001, unix://file.sock)")
+		return nil, errors.E(errors.Str("invalid DSN (tcp://:6001, unix://file.sock)"))
 	}
 
 	lsn, err := util.CreateListener(app.cfg.Relay)
@@ -98,7 +146,7 @@ func (app *App) NewFactory(env Env) (roadrunner.Factory, error) {
 	case "tcp":
 		return roadrunner.NewSocketServer(lsn, app.cfg.RelayTimeout), nil
 	default:
-		return nil, errors.New("invalid DSN (tcp://:6001, unix://file.sock)")
+		return nil, errors.E(errors.Str("invalid DSN (tcp://:6001, unix://file.sock)"))
 	}
 }
 
