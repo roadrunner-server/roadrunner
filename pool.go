@@ -66,6 +66,9 @@ type Pool interface {
 
 // Configures the pool behaviour.
 type Config struct {
+	// Debug flag creates new fresh worker before every request.
+	Debug bool
+
 	// NumWorkers defines how many sub-processes can be run at once. This value
 	// might be doubled by Swapper while hot-swap. Defaults to number of CPU cores.
 	NumWorkers int64
