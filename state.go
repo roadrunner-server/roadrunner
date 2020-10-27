@@ -43,7 +43,6 @@ const (
 	StateStopping
 
 	StateKilling
-	StateKilled
 
 	// State of worker, when no need to allocate new one
 	StateDestroyed

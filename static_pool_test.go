@@ -235,7 +235,7 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	})
 
 	// killing random worker and expecting pool to replace it
-	err = p.Workers()[0].Kill(ctx)
+	err = p.Workers()[0].Kill()
 	if err != nil {
 		t.Errorf("error killing the process: error %v", err)
 	}

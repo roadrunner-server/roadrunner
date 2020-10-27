@@ -84,7 +84,7 @@ func (f *PipeFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd)
 			}
 
 			// todo kill timeout
-			errK := w.Kill(ctx)
+			errK := w.Kill()
 			if errK != nil {
 				errs = append(errs, fmt.Errorf("error killing the worker with PID number %d, Created: %s", w.Pid(), w.Created()).Error())
 			}
@@ -164,8 +164,7 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 			errs = append(errs, errF.Error())
 		}
 
-		// todo kill timeout ??
-		errK := w.Kill(context.Background())
+		errK := w.Kill()
 		if errK != nil {
 			errs = append(errs, fmt.Errorf("error killing the worker with PID number %d, Created: %s", w.Pid(), w.Created()).Error())
 		}

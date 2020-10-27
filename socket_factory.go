@@ -109,7 +109,7 @@ func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cm
 		if err != nil {
 			err = multierr.Combine(
 				err,
-				w.Kill(context.Background()),
+				w.Kill(),
 				w.Wait(context.Background()),
 			)
 
@@ -158,7 +158,7 @@ func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 	rl, err := f.findRelay(w)
 	if err != nil {
 		errs = append(errs, err.Error())
-		err = w.Kill(ctx)
+		err = w.Kill()
 		if err != nil {
 			errs = append(errs, err.Error())
 		}
