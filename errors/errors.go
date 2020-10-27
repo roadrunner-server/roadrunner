@@ -51,7 +51,6 @@ func (k Kind) String() string {
 		return "Watcher stopped"
 	case TimeOut:
 		return "TimedOut"
-
 	}
 	return "unknown error kind"
 }

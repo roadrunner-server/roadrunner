@@ -37,7 +37,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 	defer p.Destroy(context.Background())
 
 	go func() {
-		for ; ; {
+		for {
 			select {
 			case <-stopCh:
 				return
@@ -49,7 +49,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 					assert.NotNil(t, s)
 					// since this is soft limit, double max memory limit watch
 					if (s.MemoryUsage / MB) > cfgSupervised.Supervisor.MaxWorkerMemory*2 {
-						t.Fatal("max memory reached")
+						assert.Fail(t, "max memory reached")
 					}
 				}
 			}

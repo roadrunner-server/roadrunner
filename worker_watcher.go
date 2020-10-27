@@ -2,14 +2,13 @@ package roadrunner
 
 import (
 	"context"
+	"runtime"
 	"sync"
 	"time"
 
 	"github.com/spiral/roadrunner/v2/errors"
 	"github.com/spiral/roadrunner/v2/util"
 )
-
-//var  = errors.New("watcher stopped")
 
 type Stack struct {
 	workers []WorkerBase
@@ -19,7 +18,7 @@ type Stack struct {
 
 func NewWorkersStack() *Stack {
 	return &Stack{
-		workers: make([]WorkerBase, 0),
+		workers: make([]WorkerBase, 0, runtime.NumCPU()),
 	}
 }
 

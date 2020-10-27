@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os/exec"
-	"sync"
 
 	"github.com/spiral/roadrunner/v2/errors"
 	"github.com/spiral/roadrunner/v2/util"
@@ -27,9 +26,6 @@ type StaticPool struct {
 
 	// distributes the events
 	events *util.EventHandler
-
-	// protects state of worker list, does not affect allocation
-	muw sync.RWMutex
 
 	// manages worker states and TTLs
 	ww *workerWatcher
