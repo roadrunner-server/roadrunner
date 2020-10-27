@@ -13,6 +13,7 @@ const MB = 1024 * 1024
 
 type SupervisedPool interface {
 	Pool
+	// Start used to start watching process for all pool workers
 	Start()
 }
 

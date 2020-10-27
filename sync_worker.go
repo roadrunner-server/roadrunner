@@ -20,6 +20,7 @@ type SyncWorker interface {
 
 	// Exec used to execute payload on the SyncWorker, there is no TIMEOUTS
 	Exec(rqs Payload) (Payload, error)
+	// ExecWithContext used to handle Exec with TTL
 	ExecWithContext(ctx context.Context, p Payload) (Payload, error)
 }
 
@@ -94,7 +95,7 @@ func (tw *syncWorker) ExecWithContext(ctx context.Context, p Payload) (Payload, 
 
 		rsp, err := tw.execPayload(p)
 		if err != nil {
-			if _, ok := err.(JobError); !ok {
+			if _, ok := err.(ExecError); !ok {
 				tw.w.State().Set(StateErrored)
 				tw.w.State().RegisterExec()
 			}
