@@ -103,13 +103,12 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 	assert.Error(t, err)
 	assert.Empty(t, resp)
 
-	time.Sleep(time.Second * 3)
+	time.Sleep(time.Second * 1)
 	// should be new worker with new pid
 	assert.NotEqual(t, pid, p.Workers()[0].Pid())
 }
 
-func
-TestSupervisedPool_ExecTTL_OK(t *testing.T) {
+func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	var cfgExecTTL = Config{
 		NumWorkers:      int64(1),
 		AllocateTimeout: time.Second,
@@ -134,6 +133,8 @@ TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	assert.NotNil(t, p)
 	defer p.Destroy(context.Background())
 
+	pid := p.Workers()[0].Pid()
+
 	time.Sleep(time.Millisecond * 100)
 	resp, err := p.Exec(Payload{
 		Context: []byte(""),
@@ -142,4 +143,8 @@ TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Empty(t, resp)
+
+	time.Sleep(time.Second * 1)
+	// should be the same pid
+	assert.Equal(t, pid, p.Workers()[0].Pid())
 }
