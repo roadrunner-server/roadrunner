@@ -152,7 +152,7 @@ func Test_StaticPool_JobError(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	assert.IsType(t, JobError{}, err)
+	assert.IsType(t, ExecError{}, err)
 	assert.Equal(t, "hello", err.Error())
 }
 
@@ -289,6 +289,45 @@ func Test_StaticPool_Replace_Worker(t *testing.T) {
 	assert.Equal(t, lastPID, string(res.Body))
 
 	for i := 0; i < 10; i++ {
+		res, err := p.Exec(Payload{Body: []byte("hello")})
+
+		assert.NoError(t, err)
+		assert.NotNil(t, res)
+		assert.NotNil(t, res.Body)
+		assert.Nil(t, res.Context)
+
+		assert.NotEqual(t, lastPID, string(res.Body))
+		lastPID = string(res.Body)
+	}
+}
+
+func Test_StaticPool_Debug_Worker(t *testing.T) {
+	ctx := context.Background()
+	p, err := NewPool(
+		ctx,
+		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "pid", "pipes") },
+		NewPipeFactory(),
+		Config{
+			Debug:           true,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	)
+	assert.NoError(t, err)
+	defer p.Destroy(ctx)
+
+	assert.NotNil(t, p)
+
+	assert.Len(t, p.Workers(), 0)
+
+	var lastPID string
+	res, _ := p.Exec(Payload{Body: []byte("hello")})
+	assert.NotEqual(t, lastPID, string(res.Body))
+
+	assert.Len(t, p.Workers(), 0)
+
+	for i := 0; i < 10; i++ {
+		assert.Len(t, p.Workers(), 0)
 		res, err := p.Exec(Payload{Body: []byte("hello")})
 
 		assert.NoError(t, err)

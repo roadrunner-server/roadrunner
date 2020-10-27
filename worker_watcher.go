@@ -19,7 +19,7 @@ type Stack struct {
 
 func NewWorkersStack() *Stack {
 	return &Stack{
-		workers: make([]WorkerBase, 0, 12),
+		workers: make([]WorkerBase, 0),
 	}
 }
 
