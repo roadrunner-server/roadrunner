@@ -61,11 +61,11 @@ func (f *Foo2) Serve() chan error {
 		MaxJobs:         100,
 		AllocateTimeout: time.Second * 10,
 		DestroyTimeout:  time.Second * 10,
-		Supervisor: roadrunner.SupervisorConfig{
+		Supervisor: &roadrunner.SupervisorConfig{
 			WatchTick:       60,
 			TTL:             1000,
 			IdleTTL:         10,
-			ExecTTL:         time.Second * 10,
+			ExecTTL:         10,
 			MaxWorkerMemory: 1000,
 		},
 	}

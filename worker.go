@@ -74,7 +74,7 @@ type WorkerBase interface {
 
 	// Kill kills underlying process, make sure to call Wait() func to gather
 	// error log from the stderr. Does not waits for process completion!
-	Kill(ctx context.Context) error
+	Kill() error
 
 	// Relay returns attached to worker goridge relay
 	Relay() goridge.Relay
@@ -280,7 +280,7 @@ func (w *WorkerProcess) Stop(ctx context.Context) error {
 
 // Kill kills underlying process, make sure to call Wait() func to gather
 // error log from the stderr. Does not waits for process completion!
-func (w *WorkerProcess) Kill(ctx context.Context) error {
+func (w *WorkerProcess) Kill() error {
 	w.state.Set(StateKilling)
 	w.mu.Lock()
 	defer w.mu.Unlock()

@@ -39,21 +39,18 @@ type Kind uint8
 // Kinds of errors.
 const (
 	Undefined Kind = iota // Undefined error.
-	Network
-	Other
-	Test
+	ErrWatcherStopped
+	TimeOut
 )
 
 func (k Kind) String() string {
 	switch k {
 	case Undefined:
 		return "UNDEF"
-	case Network:
-		return "Network error"
-	case Other:
-		return "Other"
-	case Test:
-		return "Test"
+	case ErrWatcherStopped:
+		return "Watcher stopped"
+	case TimeOut:
+		return "TimedOut"
 
 	}
 	return "unknown error kind"
