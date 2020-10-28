@@ -83,7 +83,7 @@ func (s *Service) Serve() chan error {
 		return errCh
 	}
 
-	s.log.Debug("Started RPC service", zap.String("Address", s.cfg.Listen), zap.Any("Services", names))
+	s.log.Debug("Started RPC service", zap.String("address", s.cfg.Listen), zap.Any("services", names))
 
 	go func() {
 		for {
