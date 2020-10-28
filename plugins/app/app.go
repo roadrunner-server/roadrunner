@@ -60,7 +60,7 @@ func (app *App) Serve() chan error {
 		errCh <- errors.E(errors.Op("init factory"), err)
 	}
 
-	app.log.Debug("Started worker factory", zap.Any("relay", app.cfg.Relay), zap.Any("command", app.cfg.Command))
+	app.log.Info("Started worker factory", zap.Any("relay", app.cfg.Relay), zap.Any("command", app.cfg.Command))
 
 	return errCh
 }
