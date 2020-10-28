@@ -8,7 +8,7 @@ import (
 	"github.com/spiral/roadrunner/v2/util"
 )
 
-// Config defines RPC service cfg.
+// Config defines RPC service config.
 type Config struct {
 	// Listen string
 	Listen string
