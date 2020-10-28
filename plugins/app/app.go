@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"go.uber.org/zap"
 	"log"
 	"os"
 	"os/exec"
@@ -29,16 +30,18 @@ type WorkerFactory interface {
 // App manages worker
 type App struct {
 	cfg     Config
+	log     *zap.Logger
 	factory roadrunner.Factory
 }
 
 // Init application provider.
-func (app *App) Init(cfg config.Provider) error {
+func (app *App) Init(cfg config.Provider, log *zap.Logger) error {
 	err := cfg.UnmarshalKey(ServiceName, &app.cfg)
 	if err != nil {
 		return err
 	}
 	app.cfg.InitDefaults()
+	app.log = log
 
 	return nil
 }
@@ -56,6 +59,8 @@ func (app *App) Serve() chan error {
 	if err != nil {
 		errCh <- errors.E(errors.Op("init factory"), err)
 	}
+
+	app.log.Debug("Started worker factory", zap.Any("relay", app.cfg.Relay), zap.Any("command", app.cfg.Command))
 
 	return errCh
 }
