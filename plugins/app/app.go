@@ -1,8 +1,9 @@
-package factory
+package app
 
 import (
 	"context"
 	"fmt"
+	"go.uber.org/zap"
 	"log"
 	"os"
 	"os/exec"
@@ -19,9 +20,9 @@ const ServiceName = "app"
 
 type Env map[string]string
 
-// AppFactory creates workers for the application.
-type AppFactory interface {
-	NewCmdFactory(env Env) (func() *exec.Cmd, error)
+// WorkerFactory creates workers for the application.
+type WorkerFactory interface {
+	CmdFactory(env Env) (func() *exec.Cmd, error)
 	NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, error)
 	NewWorkerPool(ctx context.Context, opt roadrunner.Config, env Env) (roadrunner.Pool, error)
 }
@@ -29,16 +30,18 @@ type AppFactory interface {
 // App manages worker
 type App struct {
 	cfg     Config
+	log     *zap.Logger
 	factory roadrunner.Factory
 }
 
 // Init application provider.
-func (app *App) Init(cfg config.Provider) error {
+func (app *App) Init(cfg config.Provider, log *zap.Logger) error {
 	err := cfg.UnmarshalKey(ServiceName, &app.cfg)
 	if err != nil {
 		return err
 	}
 	app.cfg.InitDefaults()
+	app.log = log
 
 	return nil
 }
@@ -57,6 +60,8 @@ func (app *App) Serve() chan error {
 		errCh <- errors.E(errors.Op("init factory"), err)
 	}
 
+	app.log.Info("Started worker factory", zap.Any("relay", app.cfg.Relay), zap.Any("command", app.cfg.Command))
+
 	return errCh
 }
 
@@ -68,7 +73,8 @@ func (app *App) Stop() error {
 	return app.factory.Close(context.Background())
 }
 
-func (app *App) NewCmdFactory(env Env) (func() *exec.Cmd, error) {
+// CmdFactory provides worker command factory assocated with given context.
+func (app *App) CmdFactory(env Env) (func() *exec.Cmd, error) {
 	var cmdArgs []string
 
 	// create command according to the config
@@ -93,8 +99,9 @@ func (app *App) NewCmdFactory(env Env) (func() *exec.Cmd, error) {
 	}, nil
 }
 
+// NewWorker issues new standalone worker.
 func (app *App) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, error) {
-	spawnCmd, err := app.NewCmdFactory(env)
+	spawnCmd, err := app.CmdFactory(env)
 	if err != nil {
 		return nil, err
 	}
@@ -102,8 +109,9 @@ func (app *App) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, 
 	return app.factory.SpawnWorkerWithContext(ctx, spawnCmd())
 }
 
+// NewWorkerPool issues new worker pool.
 func (app *App) NewWorkerPool(ctx context.Context, opt roadrunner.Config, env Env) (roadrunner.Pool, error) {
-	spawnCmd, err := app.NewCmdFactory(env)
+	spawnCmd, err := app.CmdFactory(env)
 	if err != nil {
 		return nil, err
 	}
@@ -124,6 +132,7 @@ func (app *App) NewWorkerPool(ctx context.Context, opt roadrunner.Config, env En
 	return p, nil
 }
 
+// creates relay and worker factory.
 func (app *App) initFactory() (roadrunner.Factory, error) {
 	if app.cfg.Relay == "" || app.cfg.Relay == "pipes" {
 		return roadrunner.NewPipeFactory(), nil

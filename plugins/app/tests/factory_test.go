@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/spiral/endure"
+	"github.com/spiral/roadrunner/v2/plugins/app"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/factory"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,7 +26,7 @@ func TestFactory(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = container.Register(&factory.App{})
+	err = container.Register(&app.App{})
 	if err != nil {
 		t.Fatal(err)
 	}

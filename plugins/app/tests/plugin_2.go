@@ -7,16 +7,16 @@ import (
 	"time"
 
 	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/plugins/app"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/factory"
 )
 
 type Foo2 struct {
 	configProvider config.Provider
-	wf             factory.AppFactory
+	wf             app.WorkerFactory
 }
 
-func (f *Foo2) Init(p config.Provider, workerFactory factory.AppFactory) error {
+func (f *Foo2) Init(p config.Provider, workerFactory app.WorkerFactory) error {
 	f.configProvider = p
 	f.wf = workerFactory
 	return nil
@@ -25,14 +25,14 @@ func (f *Foo2) Init(p config.Provider, workerFactory factory.AppFactory) error {
 func (f *Foo2) Serve() chan error {
 	errCh := make(chan error, 1)
 
-	r := &factory.Config{}
+	r := &app.Config{}
 	err := f.configProvider.UnmarshalKey("app", r)
 	if err != nil {
 		errCh <- err
 		return errCh
 	}
 
-	cmd, err := f.wf.NewCmdFactory(nil)
+	cmd, err := f.wf.CmdFactory(nil)
 	if err != nil {
 		errCh <- err
 		return errCh
