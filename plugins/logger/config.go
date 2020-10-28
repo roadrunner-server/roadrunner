@@ -87,5 +87,7 @@ func (cfg *Config) BuildLogger() (*zap.Logger, error) {
 		zCfg.ErrorOutputPaths = cfg.ErrorOutput
 	}
 
+	// todo: https://github.com/uber-go/zap/blob/master/FAQ.md#does-zap-support-log-rotation
+
 	return zCfg.Build()
 }
