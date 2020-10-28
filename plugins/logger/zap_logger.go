@@ -1,13 +1,10 @@
 package logger
 
 import (
-	"github.com/fatih/color"
 	"github.com/spiral/endure"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"strings"
-	"time"
 )
 
 // ServiceName declares service name.
@@ -38,34 +35,13 @@ func (z *ZapLogger) Init(cfg config.Provider) (err error) {
 			Level:    zap.NewAtomicLevelAt(zap.DebugLevel),
 			Encoding: "console",
 			EncoderConfig: zapcore.EncoderConfig{
-				MessageKey: "message",
-				LevelKey:   "level",
-				TimeKey:    "time",
-				NameKey:    "name",
-				EncodeName: func(s string, enc zapcore.PrimitiveArrayEncoder) {
-					if len(s) < 12 {
-						s = s + strings.Repeat(" ", 12-len(s))
-					}
-
-					enc.AppendString(color.HiGreenString(s))
-				},
-				EncodeLevel: func(level zapcore.Level, enc zapcore.PrimitiveArrayEncoder) {
-					switch level {
-					case zapcore.DebugLevel:
-						enc.AppendString(color.HiWhiteString(level.CapitalString()))
-					case zapcore.InfoLevel:
-						enc.AppendString(color.HiCyanString(level.CapitalString()))
-					case zapcore.WarnLevel:
-						enc.AppendString(color.HiYellowString(level.CapitalString()))
-					case zapcore.ErrorLevel, zapcore.DPanicLevel:
-						enc.AppendString(color.HiRedString(level.CapitalString()))
-					case zapcore.PanicLevel, zapcore.FatalLevel:
-						enc.AppendString(color.HiMagentaString(level.CapitalString()))
-					}
-				},
-				EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-					enc.AppendString(t.UTC().Format("2006/01/02 15:04:05"))
-				},
+				MessageKey:   "message",
+				LevelKey:     "level",
+				TimeKey:      "time",
+				NameKey:      "name",
+				EncodeName:   ColoredHashedNameEncoder,
+				EncodeLevel:  ColoredLevelEncoder,
+				EncodeTime:   UTCTimeEncoder,
 				EncodeCaller: zapcore.ShortCallerEncoder,
 			},
 			OutputPaths:      []string{"stderr"},
