@@ -35,7 +35,6 @@ func MarshalErrorAppend(err error, b []byte) []byte {
 	b = append(b, 'e')
 	b = appendString(b, err.Error())
 	return b
-
 }
 
 func MarshalError(err error) []byte {

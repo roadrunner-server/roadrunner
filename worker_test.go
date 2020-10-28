@@ -47,7 +47,7 @@ func Test_Kill(t *testing.T) {
 	assert.NotNil(t, w)
 
 	assert.Equal(t, StateReady, w.State().Value())
-	err = w.Kill(ctx)
+	err = w.Kill()
 	if err != nil {
 		t.Errorf("error killing the WorkerProcess: error %v", err)
 	}

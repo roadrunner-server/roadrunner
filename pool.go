@@ -54,6 +54,8 @@ type Pool interface {
 	// Exec
 	Exec(rqs Payload) (Payload, error)
 
+	ExecWithContext(ctx context.Context, rqs Payload) (Payload, error)
+
 	// Workers returns worker list associated with the pool.
 	Workers() (workers []WorkerBase)
 
@@ -66,6 +68,9 @@ type Pool interface {
 
 // Configures the pool behaviour.
 type Config struct {
+	// Debug flag creates new fresh worker before every request.
+	Debug bool
+
 	// NumWorkers defines how many sub-processes can be run at once. This value
 	// might be doubled by Swapper while hot-swap. Defaults to number of CPU cores.
 	NumWorkers int64
@@ -84,7 +89,7 @@ type Config struct {
 	DestroyTimeout time.Duration
 
 	// Supervision config to limit worker and pool memory usage.
-	Supervisor SupervisorConfig
+	Supervisor *SupervisorConfig
 }
 
 // InitDefaults enables default config values.
@@ -100,22 +105,24 @@ func (cfg *Config) InitDefaults() {
 	if cfg.DestroyTimeout == 0 {
 		cfg.DestroyTimeout = time.Minute
 	}
-
+	if cfg.Supervisor == nil {
+		return
+	}
 	cfg.Supervisor.InitDefaults()
 }
 
 type SupervisorConfig struct {
 	// WatchTick defines how often to check the state of worker.
-	WatchTick time.Duration
+	WatchTick uint64
 
 	// TTL defines maximum time worker is allowed to live.
-	TTL int64
+	TTL uint64
 
 	// IdleTTL defines maximum duration worker can spend in idle mode. Disabled when 0.
-	IdleTTL int64
+	IdleTTL uint64
 
 	// ExecTTL defines maximum lifetime per job.
-	ExecTTL time.Duration
+	ExecTTL uint64
 
 	// MaxWorkerMemory limits memory per worker.
 	MaxWorkerMemory uint64
@@ -124,6 +131,6 @@ type SupervisorConfig struct {
 // InitDefaults enables default config values.
 func (cfg *SupervisorConfig) InitDefaults() {
 	if cfg.WatchTick == 0 {
-		cfg.WatchTick = time.Second
+		cfg.WatchTick = 1
 	}
 }

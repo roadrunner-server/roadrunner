@@ -1,11 +1,11 @@
 package roadrunner
 
-// JobError is job level error (no WorkerProcess halt), wraps at top
+// ExecError is job level error (no WorkerProcess halt), wraps at top
 // of error context
-type JobError []byte
+type ExecError []byte
 
 // Error converts error context to string
-func (te JobError) Error() string {
+func (te ExecError) Error() string {
 	return string(te)
 }
 
