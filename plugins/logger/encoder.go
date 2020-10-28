@@ -36,7 +36,7 @@ func ColoredLevelEncoder(level zapcore.Level, enc zapcore.PrimitiveArrayEncoder)
 // ColoredNameEncoder colorizes service names.
 func ColoredNameEncoder(s string, enc zapcore.PrimitiveArrayEncoder) {
 	if len(s) < 12 {
-		s = s + strings.Repeat(" ", 12-len(s))
+		s += strings.Repeat(" ", 12-len(s))
 	}
 
 	enc.AppendString(color.HiGreenString(s))
@@ -45,7 +45,7 @@ func ColoredNameEncoder(s string, enc zapcore.PrimitiveArrayEncoder) {
 // ColoredHashedNameEncoder colorizes service names and assigns different colors to different names.
 func ColoredHashedNameEncoder(s string, enc zapcore.PrimitiveArrayEncoder) {
 	if len(s) < 12 {
-		s = s + strings.Repeat(" ", 12-len(s))
+		s += strings.Repeat(" ", 12-len(s))
 	}
 
 	colorID := stringHash(s, len(colorMap))
