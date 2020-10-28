@@ -1,9 +1,10 @@
 package logger
 
 import (
+	"strings"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"strings"
 )
 
 // ChannelConfig configures loggers per channel.

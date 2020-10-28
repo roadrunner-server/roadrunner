@@ -1,8 +1,9 @@
 package rpc
 
 import (
-	"go.uber.org/zap"
 	"net/rpc"
+
+	"go.uber.org/zap"
 
 	"github.com/spiral/endure"
 	"github.com/spiral/endure/errors"

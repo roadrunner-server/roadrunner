@@ -1,11 +1,12 @@
 package logger
 
 import (
-	"github.com/fatih/color"
-	"go.uber.org/zap/zapcore"
 	"hash/fnv"
 	"strings"
 	"time"
+
+	"github.com/fatih/color"
+	"go.uber.org/zap/zapcore"
 )
 
 var colorMap = []func(string, ...interface{}) string{
