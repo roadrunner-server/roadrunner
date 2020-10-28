@@ -17,14 +17,14 @@ type Config struct {
 	Disabled bool
 }
 
-// InitDefaults allows to init blank cfg with pre-defined set of default values.
+// InitDefaults allows to init blank config with pre-defined set of default values.
 func (c *Config) InitDefaults() {
 	if c.Listen == "" {
 		c.Listen = "tcp://127.0.0.1:6001"
 	}
 }
 
-// Valid returns nil if cfg is valid.
+// Valid returns nil if config is valid.
 func (c *Config) Valid() error {
 	if dsn := strings.Split(c.Listen, "://"); len(dsn) != 2 {
 		return errors.New("invalid socket DSN (tcp://:6001, unix://file.sock)")
