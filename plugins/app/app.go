@@ -4,12 +4,10 @@ import (
 	"context"
 	"fmt"
 	"go.uber.org/zap"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/spiral/endure/errors"
 	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/plugins/config"
@@ -60,8 +58,6 @@ func (app *App) Serve() chan error {
 		errCh <- errors.E(errors.Op("init factory"), err)
 	}
 
-	app.log.Info("Started worker factory", zap.Any("relay", app.cfg.Relay), zap.Any("command", app.cfg.Command))
-
 	return errCh
 }
 
@@ -106,7 +102,14 @@ func (app *App) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, 
 		return nil, err
 	}
 
-	return app.factory.SpawnWorkerWithContext(ctx, spawnCmd())
+	w, err := app.factory.SpawnWorkerWithContext(ctx, spawnCmd())
+	if err != nil {
+		return nil, err
+	}
+
+	w.AddListener(app.collectLogs)
+
+	return w, nil
 }
 
 // NewWorkerPool issues new worker pool.
@@ -121,13 +124,7 @@ func (app *App) NewWorkerPool(ctx context.Context, opt roadrunner.Config, env En
 		return nil, err
 	}
 
-	p.AddListener(func(event interface{}) {
-		if we, ok := event.(roadrunner.WorkerEvent); ok {
-			if we.Event == roadrunner.EventWorkerLog {
-				log.Print(color.YellowString(string(we.Payload.([]byte))))
-			}
-		}
-	})
+	p.AddListener(app.collectLogs)
 
 	return p, nil
 }
@@ -166,4 +163,15 @@ func (app *App) setEnv(e Env) []string {
 	}
 
 	return env
+}
+
+func (app *App) collectLogs(event interface{}) {
+	if we, ok := event.(roadrunner.WorkerEvent); ok {
+		switch we.Event {
+		case roadrunner.EventWorkerError:
+			app.log.Error(we.Payload.(error).Error(), zap.Int64("pid", we.Worker.Pid()))
+		case roadrunner.EventWorkerLog:
+			app.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), zap.Int64("pid", we.Worker.Pid()))
+		}
+	}
 }
