@@ -11,6 +11,7 @@ require (
 	github.com/shirou/gopsutil v2.20.9+incompatible
 	github.com/spf13/viper v1.7.1
 	github.com/spiral/endure v1.0.0-beta10
+	github.com/spiral/errors v1.0.0
 	github.com/spiral/goridge/v2 v2.4.5
 	github.com/stretchr/testify v1.6.1
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
