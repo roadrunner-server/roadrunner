@@ -3,12 +3,13 @@ package app
 import (
 	"context"
 	"fmt"
-	"go.uber.org/zap"
 	"os"
 	"os/exec"
 	"strings"
 
-	"github.com/spiral/endure/errors"
+	"go.uber.org/zap"
+
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/util"
