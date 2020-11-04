@@ -65,9 +65,10 @@ jobs:
 
       - name: Run golang tests
         run: |
-          go test -v . -tags=debug -coverprofile=lib.txt -covermode=atomic
-          go test -v ./plugins/rpc -tags=debug -coverprofile=rpc_config.txt -covermode=atomic
-          go test -v ./plugins/rpc/tests -tags=debug -coverprofile=rpc.txt -covermode=atomic
+          go test -v -race . -tags=debug -coverprofile=lib.txt -covermode=atomic
+          go test -v -race ./plugins/rpc -tags=debug -coverprofile=rpc_config.txt -covermode=atomic
+          go test -v -race ./plugins/rpc/tests -tags=debug -coverprofile=rpc.txt -covermode=atomic
+          go test -v -race ./plugins/config/tests -tags=debug -coverprofile=plugin_config.txt -covermode=atomic
 
       - name: Run code coverage
         env:
@@ -79,6 +80,7 @@ jobs:
             ./codecov-bash -f lib.txt
             ./codecov-bash -f rpc_config.txt
             ./codecov-bash -f rpc.txt
+            ./codecov-bash -f plugin_config.txt
           fi
 
   golangci-check:
