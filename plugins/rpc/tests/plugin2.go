@@ -27,7 +27,7 @@ func (p2 *Plugin2) Serve() chan error {
 
 		conn, err := net.Dial("tcp", "127.0.0.1:6001")
 		if err != nil {
-			errCh <- err
+			errCh <- errors.E(errors.Serve, err)
 			return
 		}
 		client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
