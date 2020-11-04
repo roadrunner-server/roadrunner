@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   build:
@@ -9,9 +9,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [7.2, 7.3, 7.4]
-        go: [1.14, 1.15]
-        os: [ubuntu-latest]
+        php: [ 7.2, 7.3, 7.4 ]
+        go: [ 1.14, 1.15 ]
+        os: [ ubuntu-latest ]
     env:
       GO111MODULE: on
     steps:
@@ -57,16 +57,17 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-suggest # --prefer-source
 
-#      - name: Analyze PHP sources
-#        run: composer analyze
+      #      - name: Analyze PHP sources
+      #        run: composer analyze
 
       - name: Install Go dependencies
         run: go mod download
 
       - name: Run golang tests
         run: |
-          composer update
-          go test -v -coverprofile=lib.txt -covermode=atomic
+          go test -v . -tags=debug -coverprofile=lib.txt -covermode=atomic
+          go test -v ./plugins/rpc -tags=debug -coverprofile=rpc_config.txt -covermode=atomic
+          go test -v ./plugins/rpc/tests -tags=debug -coverprofile=rpc.txt -covermode=atomic
 
       - name: Run code coverage
         env:

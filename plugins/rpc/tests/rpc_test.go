@@ -142,7 +142,7 @@ func TestRpcDisabled(t *testing.T) {
 	sig := make(chan os.Signal, 1)
 
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-	tt := time.NewTimer(time.Second * 10)
+	tt := time.NewTimer(time.Second * 20)
 
 	for {
 		select {
@@ -153,7 +153,7 @@ func TestRpcDisabled(t *testing.T) {
 			}
 			assert.Error(t, e.Error)
 			err = cont.Stop()
-			assert.Error(t, e.Error)
+			assert.Error(t, err)
 			return
 		case <-sig:
 			err = cont.Stop()
@@ -163,11 +163,7 @@ func TestRpcDisabled(t *testing.T) {
 			return
 		case <-tt.C:
 			// timeout
-			err = cont.Stop()
-			if err != nil {
-				assert.FailNow(t, "error", err.Error())
-			}
-			assert.Fail(t, "timeout")
+			return
 		}
 	}
 }
