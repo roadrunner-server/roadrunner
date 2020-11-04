@@ -77,6 +77,8 @@ jobs:
             curl https://codecov.io/bash -o codecov-bash
             chmod +x codecov-bash
             ./codecov-bash -f lib.txt
+            ./codecov-bash -f rpc_config.txt
+            ./codecov-bash -f rpc.txt
           fi
 
   golangci-check:
