@@ -9,11 +9,11 @@ import (
 )
 
 type Foo struct {
-	configProvider config.Provider
+	configProvider config.Configurer
 	spawner        app.WorkerFactory
 }
 
-func (f *Foo) Init(p config.Provider, spw app.WorkerFactory) error {
+func (f *Foo) Init(p config.Configurer, spw app.WorkerFactory) error {
 	f.configProvider = p
 	f.spawner = spw
 	return nil

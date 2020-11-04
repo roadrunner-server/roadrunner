@@ -23,11 +23,11 @@ type ServiceConfig struct {
 }
 
 type Foo struct {
-	configProvider config.Provider
+	configProvider config.Configurer
 }
 
 // Depends on S2 and DB (S3 in the current case)
-func (f *Foo) Init(p config.Provider) error {
+func (f *Foo) Init(p config.Configurer) error {
 	f.configProvider = p
 	return nil
 }

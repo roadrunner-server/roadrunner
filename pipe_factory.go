@@ -6,8 +6,9 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/pkg/errors"
+	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v2"
+	"go.uber.org/multierr"
 )
 
 // PipeFactory connects to stack using standard
@@ -71,40 +72,23 @@ func (f *PipeFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd)
 		if err != nil {
 			c <- SpawnResult{
 				w:   nil,
-				err: errors.Wrap(err, "process error"),
+				err: errors.E(err, "process error"),
 			}
 			return
 		}
 
 		// errors bundle
-		var errs []string
-		if pid, errF := fetchPID(relay); pid != w.Pid() {
-			if errF != nil {
-				errs = append(errs, errF.Error())
+		pid, err := fetchPID(relay)
+		if pid != w.Pid() || err != nil {
+			err = multierr.Combine(
+				err,
+				w.Kill(),
+				w.Wait(context.Background()),
+			)
+			c <- SpawnResult{
+				w:   nil,
+				err: err,
 			}
-
-			// todo kill timeout
-			errK := w.Kill()
-			if errK != nil {
-				errs = append(errs, fmt.Errorf("error killing the worker with PID number %d, Created: %s", w.Pid(), w.Created()).Error())
-			}
-
-			if wErr := w.Wait(ctx); wErr != nil {
-				errs = append(errs, wErr.Error())
-			}
-
-			if len(errs) > 0 {
-				c <- SpawnResult{
-					w:   nil,
-					err: errors.New(strings.Join(errs, " : ")),
-				}
-			} else {
-				c <- SpawnResult{
-					w:   nil,
-					err: nil,
-				}
-			}
-
 			return
 		}
 
@@ -130,6 +114,7 @@ func (f *PipeFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd)
 }
 
 func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
+	const op = errors.Op("spawn worker")
 	w, err := InitBaseWorker(cmd)
 	if err != nil {
 		return nil, err
@@ -154,7 +139,7 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 	// Start the worker
 	err = w.Start()
 	if err != nil {
-		return nil, errors.Wrap(err, "process error")
+		return nil, errors.E(op, err, "process error")
 	}
 
 	// errors bundle
@@ -174,7 +159,7 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 		}
 
 		if len(errs) > 0 {
-			return nil, errors.New(strings.Join(errs, "/"))
+			return nil, errors.E(op, strings.Join(errs, "/"))
 		}
 	}
 

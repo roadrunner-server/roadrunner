@@ -12,11 +12,11 @@ import (
 )
 
 type Foo2 struct {
-	configProvider config.Provider
+	configProvider config.Configurer
 	wf             app.WorkerFactory
 }
 
-func (f *Foo2) Init(p config.Provider, workerFactory app.WorkerFactory) error {
+func (f *Foo2) Init(p config.Configurer, workerFactory app.WorkerFactory) error {
 	f.configProvider = p
 	f.wf = workerFactory
 	return nil

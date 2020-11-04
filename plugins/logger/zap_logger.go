@@ -25,7 +25,7 @@ type ZapLogger struct {
 }
 
 // Init logger service.
-func (z *ZapLogger) Init(cfg config.Provider) (err error) {
+func (z *ZapLogger) Init(cfg config.Configurer) (err error) {
 	err = cfg.UnmarshalKey(ServiceName, &z.cfg)
 	if err != nil {
 		return err
