@@ -1,7 +1,7 @@
 app:
   commmand: "php app.php"
-  user: user
-  group: group
+  user: ""
+  group: ""
   env:
     DEBUG: true
     APP_KEY: "..."
