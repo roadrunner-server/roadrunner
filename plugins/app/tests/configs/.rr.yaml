@@ -1,5 +1,5 @@
 app:
-  command: "php hello.php"
+  command: "php ../../../tests/client.php echo pipes"
   user: ""
   group: ""
   env:
