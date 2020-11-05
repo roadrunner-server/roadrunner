@@ -30,7 +30,7 @@ func (f *Foo3) Serve() chan error {
 	// test payload for echo
 	r := roadrunner.Payload{
 		Context: nil,
-		Body:    []byte("test"),
+		Body:    []byte(Response),
 	}
 
 	err = f.configProvider.UnmarshalKey(ConfigSection, conf)
@@ -70,7 +70,7 @@ func (f *Foo3) Serve() chan error {
 		return errCh
 	}
 
-	if string(rsp.Body) != "test" {
+	if string(rsp.Body) != Response {
 		errCh <- errors.E("response from worker is wrong", errors.Errorf("response: %s", rsp.Body))
 		return errCh
 	}
@@ -97,7 +97,7 @@ func (f *Foo3) Serve() chan error {
 	}
 
 	// echo of the "test" should be -> test
-	if string(rsp.Body) != "test" {
+	if string(rsp.Body) != Response {
 		errCh <- errors.E("response from worker is wrong", errors.Errorf("response: %s", rsp.Body))
 		return errCh
 	}
