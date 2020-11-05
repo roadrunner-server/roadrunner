@@ -7,10 +7,9 @@ import (
 	"os/exec"
 	"strings"
 
-	"go.uber.org/zap"
-
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/log"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/util"
 )
@@ -29,12 +28,12 @@ type WorkerFactory interface {
 // Plugin manages worker
 type Plugin struct {
 	cfg     Config
-	log     *zap.Logger
+	log     log.Logger
 	factory roadrunner.Factory
 }
 
 // Init application provider.
-func (app *Plugin) Init(cfg config.Configurer, log *zap.Logger) error {
+func (app *Plugin) Init(cfg config.Configurer, log log.Logger) error {
 	err := cfg.UnmarshalKey(ServiceName, &app.cfg)
 	if err != nil {
 		return err
@@ -170,9 +169,9 @@ func (app *Plugin) collectLogs(event interface{}) {
 	if we, ok := event.(roadrunner.WorkerEvent); ok {
 		switch we.Event {
 		case roadrunner.EventWorkerError:
-			app.log.Error(we.Payload.(error).Error(), zap.Int64("pid", we.Worker.Pid()))
+			app.log.Error(we.Payload.(error).Error(), "pid", we.Worker.Pid())
 		case roadrunner.EventWorkerLog:
-			app.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), zap.Int64("pid", we.Worker.Pid()))
+			app.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.Pid())
 		}
 	}
 }

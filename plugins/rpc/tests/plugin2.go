@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"fmt"
 	"net"
 	"net/rpc"
 	"time"
@@ -38,8 +37,6 @@ func (p2 *Plugin2) Serve() chan error {
 			errCh <- err
 			return
 		}
-		fmt.Println("--------------")
-		fmt.Println(ret)
 		if ret != "Hello, username: Valery" {
 			errCh <- errors.E("wrong response")
 			return

@@ -5,11 +5,10 @@ import (
 	"net/rpc"
 	"sync/atomic"
 
-	"go.uber.org/zap"
-
 	"github.com/spiral/endure"
 	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v2"
+	"github.com/spiral/roadrunner/v2/log"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
@@ -22,12 +21,12 @@ type Pluggable interface {
 }
 
 // ServiceName contains default service name.
-const ServiceName = "rpc"
+const ServiceName = "RPC"
 
 // Plugin is RPC service.
 type Plugin struct {
 	cfg      Config
-	log      *zap.Logger
+	log      log.Logger
 	rpc      *rpc.Server
 	services []Pluggable
 	listener net.Listener
@@ -35,7 +34,7 @@ type Plugin struct {
 }
 
 // Init rpc service. Must return true if service is enabled.
-func (s *Plugin) Init(cfg config.Configurer, log *zap.Logger) error {
+func (s *Plugin) Init(cfg config.Configurer, log log.Logger) error {
 	const op = errors.Op("RPC Init")
 	if !cfg.Has(ServiceName) {
 		return errors.E(op, errors.Disabled)
@@ -92,7 +91,7 @@ func (s *Plugin) Serve() chan error {
 		return errCh
 	}
 
-	s.log.Debug("Started RPC service", zap.String("address", s.cfg.Listen), zap.Any("services", services))
+	s.log.Debug("Started RPC service", "address", s.cfg.Listen, "services", services)
 
 	go func() {
 		for {
@@ -100,11 +99,11 @@ func (s *Plugin) Serve() chan error {
 			if err != nil {
 				if atomic.LoadUint32(s.closed) == 1 {
 					// just log and continue, this is not a critical issue, we just called Stop
-					s.log.Error("listener accept error, connection closed", zap.Error(err))
+					s.log.Error("listener accept error, connection closed", "error", err)
 					return
 				}
 
-				s.log.Error("listener accept error", zap.Error(err))
+				s.log.Error("listener accept error", "error", err)
 				errCh <- errors.E(errors.Op("listener accept"), errors.Serve, err)
 				return
 			}

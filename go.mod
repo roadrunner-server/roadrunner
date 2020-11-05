@@ -10,7 +10,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/shirou/gopsutil v3.20.10+incompatible
 	github.com/spf13/viper v1.7.1
-	github.com/spiral/endure v1.0.0-beta14
+	github.com/spiral/endure v1.0.0-beta15
 	github.com/spiral/errors v1.0.2
 	github.com/spiral/goridge/v2 v2.4.6
 	github.com/stretchr/testify v1.6.1

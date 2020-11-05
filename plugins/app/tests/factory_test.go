@@ -20,7 +20,7 @@ func TestFactory(t *testing.T) {
 	}
 	// config plugin
 	vp := &config.Viper{}
-	vp.Path = "plugins/app/tests/.rr.yaml"
+	vp.Path = ".rr.yaml"
 	vp.Prefix = "rr"
 	err = container.Register(vp)
 	if err != nil {
@@ -33,11 +33,6 @@ func TestFactory(t *testing.T) {
 	}
 
 	err = container.Register(&Foo{})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = container.Register(&Foo2{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -61,7 +56,8 @@ func TestFactory(t *testing.T) {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 
-	tt := time.NewTicker(time.Second * 200)
+	// stop after 10 seconds
+	tt := time.NewTicker(time.Second * 10)
 
 	for {
 		select {

@@ -1,5 +1,5 @@
 app:
-  command: "php plugins/app/tests/hello.php hello_echo"
+  command: "php hello.php"
   user: ""
   group: ""
   env:
