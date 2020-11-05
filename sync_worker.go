@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/spiral/roadrunner/v2/errors"
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/util"
 	"go.uber.org/multierr"
 

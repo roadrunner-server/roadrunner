@@ -61,6 +61,6 @@ func UTCTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 // returns string hash
 func stringHash(name string, base int) int {
 	h := fnv.New32a()
-	h.Write([]byte(name))
+	_, _ = h.Write([]byte(name))
 	return int(h.Sum32()) % base
 }

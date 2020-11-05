@@ -1,21 +1,12 @@
 reload:
-  # enable or disable file watcher
   enabled: true
-  # sync interval
   interval: 1s
-  # global patterns to sync
   patterns: [".php"]
-  # list of included for sync services
   services:
     http:
-      # recursive search for file patterns to add
       recursive: true
-      # ignored folders
       ignore: ["vendor"]
-      # service specific file pattens to sync
       patterns: [".php", ".go",".md",]
-      # directories to sync. If recursive is set to true,
-      # recursive sync will be applied only to the directories in `dirs` section
       dirs:     ["."]
     jobs:
       recursive: false
@@ -24,5 +15,4 @@ reload:
     rpc:
       recursive: true
       patterns: [".json"]
-      # to include all project directories from workdir, leave `dirs` empty or add a dot "."
       dirs:     [""]

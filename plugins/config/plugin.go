@@ -8,14 +8,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-type ViperProvider struct {
+type Viper struct {
 	viper  *viper.Viper
 	Path   string
 	Prefix string
 }
 
 // Inits config provider.
-func (v *ViperProvider) Init() error {
+func (v *Viper) Init() error {
 	v.viper = viper.New()
 
 	// read in environment variables that match
@@ -36,7 +36,7 @@ func (v *ViperProvider) Init() error {
 }
 
 // Overwrite overwrites existing config with provided values
-func (v *ViperProvider) Overwrite(values map[string]string) error {
+func (v *Viper) Overwrite(values map[string]string) error {
 	if len(values) != 0 {
 		for _, flag := range values {
 			key, value, err := parseFlag(flag)
@@ -51,7 +51,7 @@ func (v *ViperProvider) Overwrite(values map[string]string) error {
 }
 
 // UnmarshalKey reads configuration section into configuration object.
-func (v *ViperProvider) UnmarshalKey(name string, out interface{}) error {
+func (v *Viper) UnmarshalKey(name string, out interface{}) error {
 	err := v.viper.UnmarshalKey(name, &out)
 	if err != nil {
 		return err
@@ -60,12 +60,12 @@ func (v *ViperProvider) UnmarshalKey(name string, out interface{}) error {
 }
 
 // Get raw config in a form of config section.
-func (v *ViperProvider) Get(name string) interface{} {
+func (v *Viper) Get(name string) interface{} {
 	return v.viper.Get(name)
 }
 
 // Has checks if config section exists.
-func (v *ViperProvider) Has(name string) bool {
+func (v *Viper) Has(name string) bool {
 	return v.viper.IsSet(name)
 }
 

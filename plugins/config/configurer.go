@@ -1,9 +1,9 @@
 package config
 
-type Provider interface {
+type Configurer interface {
 	// UnmarshalKey reads configuration section into configuration object.
 	//
-	// func (h *HttpService) Init(cp config.Provider) error {
+	// func (h *HttpService) Init(cp config.Configurer) error {
 	//     h.config := &HttpConfig{}
 	//     if err := configProvider.UnmarshalKey("http", h.config); err != nil {
 	//         return err

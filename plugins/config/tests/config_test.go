@@ -12,11 +12,11 @@ import (
 )
 
 func TestViperProvider_Init(t *testing.T) {
-	container, err := endure.NewContainer(endure.DebugLevel, endure.RetryOnFail(true))
+	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.DebugLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
-	vp := &config.ViperProvider{}
+	vp := &config.Viper{}
 	vp.Path = ".rr.yaml"
 	vp.Prefix = "rr"
 	err = container.Register(vp)

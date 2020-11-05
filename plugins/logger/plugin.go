@@ -2,20 +2,13 @@ package logger
 
 import (
 	"github.com/spiral/endure"
+	"github.com/spiral/roadrunner/v2/log"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"go.uber.org/zap"
 )
 
 // ServiceName declares service name.
 const ServiceName = "logs"
-
-type LogFactory interface {
-	// GlobalLogger returns global log instance.
-	GlobalLogger() *zap.Logger
-
-	// NamedLogger returns logger dedicated to the specific channel. Similar to Named() but also reads the core params.
-	NamedLogger(name string) *zap.Logger
-}
 
 // ZapLogger manages zap logger.
 type ZapLogger struct {
@@ -25,8 +18,8 @@ type ZapLogger struct {
 }
 
 // Init logger service.
-func (z *ZapLogger) Init(cfg config.Provider) (err error) {
-	err = cfg.UnmarshalKey(ServiceName, &z.cfg)
+func (z *ZapLogger) Init(cfg config.Configurer) error {
+	err := cfg.UnmarshalKey(ServiceName, &z.cfg)
 	if err != nil {
 		return err
 	}
@@ -41,28 +34,32 @@ func (z *ZapLogger) Init(cfg config.Provider) (err error) {
 }
 
 // DefaultLogger returns default logger.
-func (z *ZapLogger) DefaultLogger() (*zap.Logger, error) {
-	return z.base, nil
+func (z *ZapLogger) DefaultLogger() (log.Logger, error) {
+	return log.NewZapAdapter(z.base), nil
 }
 
 // NamedLogger returns logger dedicated to the specific channel. Similar to Named() but also reads the core params.
-func (z *ZapLogger) NamedLogger(name string) (*zap.Logger, error) {
+func (z *ZapLogger) NamedLogger(name string) (log.Logger, error) {
 	if cfg, ok := z.channels.Channels[name]; ok {
-		return cfg.BuildLogger()
+		l, err := cfg.BuildLogger()
+		if err != nil {
+			return nil, err
+		}
+		return log.NewZapAdapter(l), nil
 	}
 
-	return z.base.Named(name), nil
+	return log.NewZapAdapter(z.base.Named(name)), nil
 }
 
 // NamedLogger returns logger dedicated to the specific channel. Similar to Named() but also reads the core params.
-func (z *ZapLogger) ServiceLogger(n endure.Named) (*zap.Logger, error) {
+func (z *ZapLogger) ServiceLogger(n endure.Named) (log.Logger, error) {
 	return z.NamedLogger(n.Name())
 }
 
 // Provides declares factory methods.
 func (z *ZapLogger) Provides() []interface{} {
 	return []interface{}{
-		z.DefaultLogger,
 		z.ServiceLogger,
+		z.DefaultLogger,
 	}
 }

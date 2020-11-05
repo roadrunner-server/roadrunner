@@ -7,18 +7,18 @@ import (
 	"time"
 
 	"github.com/spiral/endure"
-	"github.com/spiral/roadrunner/v2/plugins/app"
 	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFactory(t *testing.T) {
-	container, err := endure.NewContainer(endure.DebugLevel, endure.RetryOnFail(true))
+func TestLogger(t *testing.T) {
+	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.DebugLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
 	// config plugin
-	vp := &config.ViperProvider{}
+	vp := &config.Viper{}
 	vp.Path = ".rr.yaml"
 	vp.Prefix = "rr"
 	err = container.Register(vp)
@@ -26,17 +26,12 @@ func TestFactory(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = container.Register(&app.App{})
+	err = container.Register(&Plugin{})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = container.Register(&Foo{})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = container.Register(&Foo2{})
+	err = container.Register(&logger.ZapLogger{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -55,7 +50,8 @@ func TestFactory(t *testing.T) {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 
-	tt := time.NewTicker(time.Second * 2)
+	// stop after 10 seconds
+	tt := time.NewTicker(time.Second * 10)
 
 	for {
 		select {

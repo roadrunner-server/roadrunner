@@ -7,10 +7,9 @@ import (
 	"os/exec"
 	"strings"
 
-	"go.uber.org/zap"
-
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/log"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/util"
 )
@@ -26,15 +25,15 @@ type WorkerFactory interface {
 	NewWorkerPool(ctx context.Context, opt roadrunner.Config, env Env) (roadrunner.Pool, error)
 }
 
-// App manages worker
-type App struct {
+// Plugin manages worker
+type Plugin struct {
 	cfg     Config
-	log     *zap.Logger
+	log     log.Logger
 	factory roadrunner.Factory
 }
 
 // Init application provider.
-func (app *App) Init(cfg config.Provider, log *zap.Logger) error {
+func (app *Plugin) Init(cfg config.Configurer, log log.Logger) error {
 	err := cfg.UnmarshalKey(ServiceName, &app.cfg)
 	if err != nil {
 		return err
@@ -46,11 +45,11 @@ func (app *App) Init(cfg config.Provider, log *zap.Logger) error {
 }
 
 // Name contains service name.
-func (app *App) Name() string {
+func (app *Plugin) Name() string {
 	return ServiceName
 }
 
-func (app *App) Serve() chan error {
+func (app *Plugin) Serve() chan error {
 	errCh := make(chan error, 1)
 	var err error
 
@@ -62,7 +61,7 @@ func (app *App) Serve() chan error {
 	return errCh
 }
 
-func (app *App) Stop() error {
+func (app *Plugin) Stop() error {
 	if app.factory == nil {
 		return nil
 	}
@@ -71,7 +70,7 @@ func (app *App) Stop() error {
 }
 
 // CmdFactory provides worker command factory assocated with given context.
-func (app *App) CmdFactory(env Env) (func() *exec.Cmd, error) {
+func (app *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 	var cmdArgs []string
 
 	// create command according to the config
@@ -97,7 +96,7 @@ func (app *App) CmdFactory(env Env) (func() *exec.Cmd, error) {
 }
 
 // NewWorker issues new standalone worker.
-func (app *App) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, error) {
+func (app *Plugin) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, error) {
 	spawnCmd, err := app.CmdFactory(env)
 	if err != nil {
 		return nil, err
@@ -114,7 +113,7 @@ func (app *App) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, 
 }
 
 // NewWorkerPool issues new worker pool.
-func (app *App) NewWorkerPool(ctx context.Context, opt roadrunner.Config, env Env) (roadrunner.Pool, error) {
+func (app *Plugin) NewWorkerPool(ctx context.Context, opt roadrunner.Config, env Env) (roadrunner.Pool, error) {
 	spawnCmd, err := app.CmdFactory(env)
 	if err != nil {
 		return nil, err
@@ -131,7 +130,7 @@ func (app *App) NewWorkerPool(ctx context.Context, opt roadrunner.Config, env En
 }
 
 // creates relay and worker factory.
-func (app *App) initFactory() (roadrunner.Factory, error) {
+func (app *Plugin) initFactory() (roadrunner.Factory, error) {
 	if app.cfg.Relay == "" || app.cfg.Relay == "pipes" {
 		return roadrunner.NewPipeFactory(), nil
 	}
@@ -157,7 +156,7 @@ func (app *App) initFactory() (roadrunner.Factory, error) {
 	}
 }
 
-func (app *App) setEnv(e Env) []string {
+func (app *Plugin) setEnv(e Env) []string {
 	env := append(os.Environ(), fmt.Sprintf("RR_RELAY=%s", app.cfg.Relay))
 	for k, v := range e {
 		env = append(env, fmt.Sprintf("%s=%s", strings.ToUpper(k), v))
@@ -166,13 +165,13 @@ func (app *App) setEnv(e Env) []string {
 	return env
 }
 
-func (app *App) collectLogs(event interface{}) {
+func (app *Plugin) collectLogs(event interface{}) {
 	if we, ok := event.(roadrunner.WorkerEvent); ok {
 		switch we.Event {
 		case roadrunner.EventWorkerError:
-			app.log.Error(we.Payload.(error).Error(), zap.Int64("pid", we.Worker.Pid()))
+			app.log.Error(we.Payload.(error).Error(), "pid", we.Worker.Pid())
 		case roadrunner.EventWorkerLog:
-			app.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), zap.Int64("pid", we.Worker.Pid()))
+			app.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.Pid())
 		}
 	}
 }

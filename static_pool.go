@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os/exec"
 
-	"github.com/spiral/roadrunner/v2/errors"
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/util"
 )
 
