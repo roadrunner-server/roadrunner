@@ -57,8 +57,8 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-suggest # --prefer-source
 
-#      - name: Analyze PHP sources
-#        run: composer analyze
+      #      - name: Analyze PHP sources
+      #        run: composer analyze
 
       - name: Install Go dependencies
         run: go mod download
@@ -73,19 +73,15 @@ jobs:
            go test -v -race ./plugins/app/tests -tags=debug -coverprofile=app.txt -covermode=atomic
 
       - name: Run code coverage
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: |
-          if [[ "$CODECOV_TOKEN" != "" ]]; then
-            curl https://codecov.io/bash -o codecov-bash
-            chmod +x codecov-bash
-            ./codecov-bash -f lib.txt
-            ./codecov-bash -f rpc_config.txt
-            ./codecov-bash -f rpc.txt
-            ./codecov-bash -f plugin_config.txt
-            ./codecov-bash -f logger.txt
-            ./codecov-bash -f app.txt
-          fi
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: lib.txt, rpc_config.txt, rpc.txt, plugin_config.txt, logger.txt, app.txt
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+          verbose: true
+
 
   golangci-check:
     name: runner / golangci-lint

@@ -2,6 +2,7 @@ package roadrunner
 
 import (
 	"github.com/shirou/gopsutil/process"
+	"github.com/spiral/errors"
 )
 
 // ProcessState provides information about specific worker.
@@ -25,10 +26,11 @@ type ProcessState struct {
 
 // WorkerProcessState creates new worker state definition.
 func WorkerProcessState(w WorkerBase) (ProcessState, error) {
+	const op = errors.Op("worker_process state")
 	p, _ := process.NewProcess(int32(w.Pid()))
 	i, err := p.MemoryInfo()
 	if err != nil {
-		return ProcessState{}, err
+		return ProcessState{}, errors.E(op, err)
 	}
 
 	return ProcessState{
