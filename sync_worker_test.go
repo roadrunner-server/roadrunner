@@ -210,7 +210,7 @@ func Test_Error(t *testing.T) {
 	if errors.Is(errors.Exec, err) == false {
 		t.Fatal("error should be of type errors.Exec")
 	}
-	assert.Contains(t, err.Error(), "exec_payload: Exec: hello")
+	assert.Contains(t, err.Error(), "exec payload: Exec: hello")
 }
 
 func Test_NumExecs(t *testing.T) {

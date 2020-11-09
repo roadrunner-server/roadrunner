@@ -133,7 +133,7 @@ func (tw *syncWorker) ExecWithContext(ctx context.Context, p Payload) (Payload, 
 }
 
 func (tw *syncWorker) execPayload(p Payload) (Payload, error) {
-	const op = errors.Op("exec_payload")
+	const op = errors.Op("exec payload")
 	// two things; todo: merge
 	if err := sendControl(tw.w.Relay(), p.Context); err != nil {
 		return EmptyPayload, errors.E(op, err, "header error")
@@ -156,7 +156,7 @@ func (tw *syncWorker) execPayload(p Payload) (Payload, error) {
 	}
 
 	if pr.HasFlag(goridge.PayloadError) {
-		return EmptyPayload, errors.E(op, errors.Exec, errors.Str(string(rsp.Context))) //ExecError(rsp.Context)
+		return EmptyPayload, errors.E(op, errors.Exec, errors.Str(string(rsp.Context)))
 	}
 
 	// add streaming support :)

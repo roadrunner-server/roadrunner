@@ -54,7 +54,7 @@ func (sp *supervisedPool) ExecWithContext(ctx context.Context, rqs Payload) (Pay
 		res, err := sp.pool.ExecWithContext(ctx, rqs)
 		if err != nil {
 			c <- ttlExec{
-				err: err,
+				err: errors.E(op, err),
 				p:   EmptyPayload,
 			}
 		}
@@ -80,7 +80,12 @@ func (sp *supervisedPool) ExecWithContext(ctx context.Context, rqs Payload) (Pay
 }
 
 func (sp *supervisedPool) Exec(p Payload) (Payload, error) {
-	return sp.pool.Exec(p)
+	const op = errors.Op("supervised exec")
+	rsp, err := sp.pool.Exec(p)
+	if err != nil {
+		return EmptyPayload, errors.E(op, err)
+	}
+	return rsp, nil
 }
 
 func (sp *supervisedPool) AddListener(listener util.EventListener) {
@@ -130,6 +135,7 @@ func (sp *supervisedPool) Stop() {
 func (sp *supervisedPool) control() {
 	now := time.Now()
 	ctx := context.TODO()
+	const op = errors.Op("supervised pool control tick")
 
 	// THIS IS A COPY OF WORKERS
 	workers := sp.pool.Workers()
@@ -148,7 +154,7 @@ func (sp *supervisedPool) control() {
 		if sp.cfg.TTL != 0 && now.Sub(workers[i].Created()).Seconds() >= float64(sp.cfg.TTL) {
 			err = sp.pool.RemoveWorker(ctx, workers[i])
 			if err != nil {
-				sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: err})
+				sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
 				return
 			} else {
 				sp.events.Push(PoolEvent{Event: EventTTL, Payload: workers[i]})
@@ -160,7 +166,7 @@ func (sp *supervisedPool) control() {
 		if sp.cfg.MaxWorkerMemory != 0 && s.MemoryUsage >= sp.cfg.MaxWorkerMemory*MB {
 			err = sp.pool.RemoveWorker(ctx, workers[i])
 			if err != nil {
-				sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: err})
+				sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
 				return
 			} else {
 				sp.events.Push(PoolEvent{Event: EventMaxMemory, Payload: workers[i]})
@@ -193,7 +199,7 @@ func (sp *supervisedPool) control() {
 			if sp.cfg.IdleTTL-uint64(res) <= 0 {
 				err = sp.pool.RemoveWorker(ctx, workers[i])
 				if err != nil {
-					sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: err})
+					sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
 					return
 				} else {
 					sp.events.Push(PoolEvent{Event: EventIdleTTL, Payload: workers[i]})

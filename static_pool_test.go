@@ -157,7 +157,7 @@ func Test_StaticPool_JobError(t *testing.T) {
 		t.Fatal("error should be of type errors.Exec")
 	}
 
-	assert.Contains(t, err.Error(), "exec_payload: Exec: hello")
+	assert.Contains(t, err.Error(), "exec payload: Exec: hello")
 }
 
 func Test_StaticPool_Broken_Replace(t *testing.T) {
@@ -174,22 +174,24 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	p.AddListener(func(event interface{}) {
-		if pev, ok := event.(PoolEvent); ok {
-			sw := pev.Payload.(SyncWorker)
-			sw.AddListener(func(event interface{}) {
-				if wev, ok := event.(WorkerEvent); ok {
+	workers := p.Workers()
+	for i := 0; i < len(workers); i++ {
+		workers[i].AddListener(func(event interface{}) {
+			if wev, ok := event.(WorkerEvent); ok {
+				if wev.Event == EventWorkerLog {
 					assert.Contains(t, string(wev.Payload.([]byte)), "undefined_function()")
 					wg.Done()
 					return
 				}
-			})
-		}
-	})
+			}
+		})
+	}
+
 	res, err := p.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 	assert.Error(t, err)
 	assert.Nil(t, res.Context)
 	assert.Nil(t, res.Body)
+
 	wg.Wait()
 
 	p.Destroy(ctx)

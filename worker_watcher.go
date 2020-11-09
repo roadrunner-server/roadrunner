@@ -158,7 +158,7 @@ func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (WorkerBase, error) 
 				ww.ReduceWorkersCount()
 				return w, nil
 			case <-tout.C:
-				return nil, errors.Str("no free stack")
+				return nil, errors.E(op, errors.Str("no free workers in the stack"))
 			}
 		}
 	}
@@ -169,9 +169,10 @@ func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (WorkerBase, error) 
 
 func (ww *workerWatcher) AllocateNew(ctx context.Context) error {
 	ww.stack.mutex.Lock()
+	const op = errors.Op("allocate new worker")
 	sw, err := ww.allocator()
 	if err != nil {
-		return err
+		return errors.E(op, err)
 	}
 
 	ww.addToWatch(sw)
@@ -188,6 +189,7 @@ func (ww *workerWatcher) AllocateNew(ctx context.Context) error {
 
 func (ww *workerWatcher) RemoveWorker(ctx context.Context, wb WorkerBase) error {
 	ww.stack.mutex.Lock()
+	const op = errors.Op("remove worker")
 	defer ww.stack.mutex.Unlock()
 	pid := wb.Pid()
 	for i := 0; i < len(ww.stack.workers); i++ {
@@ -200,7 +202,7 @@ func (ww *workerWatcher) RemoveWorker(ctx context.Context, wb WorkerBase) error 
 			wb.State().Set(StateInvalid)
 			err := wb.Kill()
 			if err != nil {
-				return err
+				return errors.E(op, err)
 			}
 			break
 		}
@@ -274,12 +276,13 @@ func (ww *workerWatcher) WorkersList() []WorkerBase {
 }
 
 func (ww *workerWatcher) wait(ctx context.Context, w WorkerBase) {
+	const op = errors.Op("process wait")
 	err := w.Wait(ctx)
 	if err != nil {
 		ww.events.Push(WorkerEvent{
 			Event:   EventWorkerError,
 			Worker:  w,
-			Payload: err,
+			Payload: errors.E(op, err),
 		})
 	}
 
@@ -301,7 +304,7 @@ func (ww *workerWatcher) wait(ctx context.Context, w WorkerBase) {
 			if err != nil {
 				ww.events.Push(PoolEvent{
 					Event:   EventPoolError,
-					Payload: err,
+					Payload: errors.E(op, err),
 				})
 			}
 
@@ -316,7 +319,7 @@ func (ww *workerWatcher) wait(ctx context.Context, w WorkerBase) {
 	if err != nil {
 		ww.events.Push(PoolEvent{
 			Event:   EventPoolError,
-			Payload: err,
+			Payload: errors.E(op, err),
 		})
 		return
 	}
