@@ -135,7 +135,6 @@ func (sp *StaticPool) Exec(p Payload) (Payload, error) {
 			}
 
 			return EmptyPayload, err
-
 		}
 
 		sw.State().Set(StateInvalid)
