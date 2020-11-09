@@ -193,8 +193,8 @@ github.com/spiral/endure v1.0.0-beta15 h1:pBFn9LKQLPSzrG7kGE30T0VEjp2A6yT6p2BRRU
 github.com/spiral/endure v1.0.0-beta15/go.mod h1:iGh1Zf1cckkJa5J9Obm8d/96kKYvlJBv/D0iHOuYWLQ=
 github.com/spiral/errors v1.0.1 h1:OyKLwQH+42hhaRYuXGzfPKCFOmawA/PYXTY9wsK99n4=
 github.com/spiral/errors v1.0.1/go.mod h1:SwMSZVdZkkJVgXNNafccqOaxWg0XPzVU/dEdUEInE0o=
-github.com/spiral/errors v1.0.2 h1:i/XMmA2VJt9sD64N4/zgQ9Y0cwlNQRLDaxOZPZV09D4=
-github.com/spiral/errors v1.0.2/go.mod h1:SwMSZVdZkkJVgXNNafccqOaxWg0XPzVU/dEdUEInE0o=
+github.com/spiral/errors v1.0.4 h1:Y6Bop9GszdDh+Dn3s5aqsGebNLydqZ1F6OdOIQ9EpU0=
+github.com/spiral/errors v1.0.4/go.mod h1:SwMSZVdZkkJVgXNNafccqOaxWg0XPzVU/dEdUEInE0o=
 github.com/spiral/goridge/v2 v2.4.6 h1:9u/mrxCtOSy0lnumrpPCSOlGBX/Vprid/hFsnzWrd6k=
 github.com/spiral/goridge/v2 v2.4.6/go.mod h1:mYjL+Ny7nVfLqjRwIYV2pUSQ61eazvVclHII6FfZfYc=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

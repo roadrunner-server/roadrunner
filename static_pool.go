@@ -118,9 +118,9 @@ func (sp *StaticPool) Exec(p Payload) (Payload, error) {
 	rsp, err := sw.Exec(p)
 	if err != nil {
 		// soft job errors are allowed
-		if _, jobError := err.(ExecError); jobError {
+		if errors.Is(errors.Exec, err) {
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
-				err := sp.ww.AllocateNew(bCtx)
+				err = sp.ww.AllocateNew(bCtx)
 				if err != nil {
 					sp.events.Push(PoolEvent{Event: EventPoolError, Payload: err})
 				}
@@ -135,6 +135,7 @@ func (sp *StaticPool) Exec(p Payload) (Payload, error) {
 			}
 
 			return EmptyPayload, err
+
 		}
 
 		sw.State().Set(StateInvalid)
@@ -199,9 +200,9 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload
 	rsp, err := sw.ExecWithContext(ctx, rqs)
 	if err != nil {
 		// soft job errors are allowed
-		if _, jobError := err.(ExecError); jobError {
+		if errors.Is(errors.Exec, err) {
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
-				err := sp.ww.AllocateNew(bCtx)
+				err = sp.ww.AllocateNew(bCtx)
 				if err != nil {
 					sp.events.Push(PoolEvent{Event: EventPoolError, Payload: err})
 				}

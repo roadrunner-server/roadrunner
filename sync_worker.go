@@ -50,7 +50,8 @@ func (tw *syncWorker) Exec(p Payload) (Payload, error) {
 
 	rsp, err := tw.execPayload(p)
 	if err != nil {
-		if _, ok := err.(ExecError); !ok {
+		// just to be more verbose
+		if errors.Is(errors.Exec, err) == false {
 			tw.w.State().Set(StateErrored)
 			tw.w.State().RegisterExec()
 		}
@@ -95,7 +96,8 @@ func (tw *syncWorker) ExecWithContext(ctx context.Context, p Payload) (Payload, 
 
 		rsp, err := tw.execPayload(p)
 		if err != nil {
-			if _, ok := err.(ExecError); !ok {
+			// just to be more verbose
+			if errors.Is(errors.Exec, err) == false {
 				tw.w.State().Set(StateErrored)
 				tw.w.State().RegisterExec()
 			}
@@ -154,7 +156,7 @@ func (tw *syncWorker) execPayload(p Payload) (Payload, error) {
 	}
 
 	if pr.HasFlag(goridge.PayloadError) {
-		return EmptyPayload, ExecError(rsp.Context)
+		return EmptyPayload, errors.E(op, errors.Exec, errors.Str(string(rsp.Context))) //ExecError(rsp.Context)
 	}
 
 	// add streaming support :)

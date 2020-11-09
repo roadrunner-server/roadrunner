@@ -9,6 +9,8 @@ import (
 	"os/user"
 	"strconv"
 	"syscall"
+
+	"github.com/spiral/errors"
 )
 
 // IsolateProcess change gpid for the process to avoid bypassing signals to php processes.
@@ -18,19 +20,20 @@ func IsolateProcess(cmd *exec.Cmd) {
 
 // ExecuteFromUser may work only if run RR under root user
 func ExecuteFromUser(cmd *exec.Cmd, u string) error {
+	const op = errors.Op("execute from user")
 	usr, err := user.Lookup(u)
 	if err != nil {
-		return err
+		return errors.E(op, err)
 	}
 
 	usrI32, err := strconv.Atoi(usr.Uid)
 	if err != nil {
-		return err
+		return errors.E(op, err)
 	}
 
 	grI32, err := strconv.Atoi(usr.Gid)
 	if err != nil {
-		return err
+		return errors.E(op, err)
 	}
 
 	// For more information:
@@ -44,7 +47,7 @@ func ExecuteFromUser(cmd *exec.Cmd, u string) error {
 			return fmt.Errorf("unable to test user namespaces due to permissions")
 		}
 
-		return fmt.Errorf("failed to stat /proc/self/ns/user: %v", err)
+		return errors.E(op, errors.Errorf("failed to stat /proc/self/ns/user: %v", err))
 	}
 
 	cmd.SysProcAttr.Credential = &syscall.Credential{
