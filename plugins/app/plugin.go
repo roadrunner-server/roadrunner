@@ -34,9 +34,10 @@ type Plugin struct {
 
 // Init application provider.
 func (app *Plugin) Init(cfg config.Configurer, log log.Logger) error {
+	const op = errors.Op("Init")
 	err := cfg.UnmarshalKey(ServiceName, &app.cfg)
 	if err != nil {
-		return err
+		return errors.E(op, errors.Init, err)
 	}
 	app.cfg.InitDefaults()
 	app.log = log
@@ -97,14 +98,15 @@ func (app *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 
 // NewWorker issues new standalone worker.
 func (app *Plugin) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, error) {
+	const op = errors.Op("new worker")
 	spawnCmd, err := app.CmdFactory(env)
 	if err != nil {
-		return nil, err
+		return nil, errors.E(op, err)
 	}
 
 	w, err := app.factory.SpawnWorkerWithContext(ctx, spawnCmd())
 	if err != nil {
-		return nil, err
+		return nil, errors.E(op, err)
 	}
 
 	w.AddListener(app.collectLogs)
@@ -131,18 +133,19 @@ func (app *Plugin) NewWorkerPool(ctx context.Context, opt roadrunner.Config, env
 
 // creates relay and worker factory.
 func (app *Plugin) initFactory() (roadrunner.Factory, error) {
+	const op = errors.Op("network factory init")
 	if app.cfg.Relay == "" || app.cfg.Relay == "pipes" {
 		return roadrunner.NewPipeFactory(), nil
 	}
 
 	dsn := strings.Split(app.cfg.Relay, "://")
 	if len(dsn) != 2 {
-		return nil, errors.E(errors.Str("invalid DSN (tcp://:6001, unix://file.sock)"))
+		return nil, errors.E(op, errors.Network, errors.Str("invalid DSN (tcp://:6001, unix://file.sock)"))
 	}
 
 	lsn, err := util.CreateListener(app.cfg.Relay)
 	if err != nil {
-		return nil, err
+		return nil, errors.E(op, errors.Network, err)
 	}
 
 	switch dsn[0] {
@@ -152,7 +155,7 @@ func (app *Plugin) initFactory() (roadrunner.Factory, error) {
 	case "tcp":
 		return roadrunner.NewSocketServer(lsn, app.cfg.RelayTimeout), nil
 	default:
-		return nil, errors.E(errors.Str("invalid DSN (tcp://:6001, unix://file.sock)"))
+		return nil, errors.E(op, errors.Network, errors.Str("invalid DSN (tcp://:6001, unix://file.sock)"))
 	}
 }
 

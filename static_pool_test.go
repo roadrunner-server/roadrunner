@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/spiral/errors"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -152,52 +153,49 @@ func Test_StaticPool_JobError(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	assert.IsType(t, ExecError{}, err)
-	assert.Equal(t, "hello", err.Error())
+	if errors.Is(errors.Exec, err) == false {
+		t.Fatal("error should be of type errors.Exec")
+	}
+
+	assert.Contains(t, err.Error(), "exec payload: Exec: hello")
 }
 
-// TODO temporary commented, figure out later
-// func Test_StaticPool_Broken_Replace(t *testing.T) {
-//	ctx := context.Background()
-//	p, err := NewPool(
-//		ctx,
-//		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "broken", "pipes") },
-//		NewPipeFactory(),
-//		cfg,
-//	)
-//	assert.NoError(t, err)
-//	assert.NotNil(t, p)
-//
-//	wg := &sync.WaitGroup{}
-//	wg.Add(1)
-//	var i int64
-//	atomic.StoreInt64(&i, 10)
-//
-//	p.AddListener(func(event interface{}) {
-//
-//	})
-//
-//	go func() {
-//		for {
-//			select {
-//			case ev := <-p.Events():
-//				wev := ev.Payload.(WorkerEvent)
-//				if _, ok := wev.Payload.([]byte); ok {
-//					assert.Contains(t, string(wev.Payload.([]byte)), "undefined_function()")
-//					wg.Done()
-//					return
-//				}
-//			}
-//		}
-//	}()
-//	res, err := p.ExecWithContext(ctx, Payload{Body: []byte("hello")})
-//	assert.Error(t, err)
-//	assert.Nil(t, res.Context)
-//	assert.Nil(t, res.Body)
-//	wg.Wait()
-//
-//	p.Destroy(ctx)
-// }
+func Test_StaticPool_Broken_Replace(t *testing.T) {
+	ctx := context.Background()
+	p, err := NewPool(
+		ctx,
+		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "broken", "pipes") },
+		NewPipeFactory(),
+		cfg,
+	)
+	assert.NoError(t, err)
+	assert.NotNil(t, p)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	workers := p.Workers()
+	for i := 0; i < len(workers); i++ {
+		workers[i].AddListener(func(event interface{}) {
+			if wev, ok := event.(WorkerEvent); ok {
+				if wev.Event == EventWorkerLog {
+					assert.Contains(t, string(wev.Payload.([]byte)), "undefined_function()")
+					wg.Done()
+					return
+				}
+			}
+		})
+	}
+
+	res, err := p.ExecWithContext(ctx, Payload{Body: []byte("hello")})
+	assert.Error(t, err)
+	assert.Nil(t, res.Context)
+	assert.Nil(t, res.Body)
+
+	wg.Wait()
+
+	p.Destroy(ctx)
+}
 
 //
 func Test_StaticPool_Broken_FromOutside(t *testing.T) {

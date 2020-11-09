@@ -118,9 +118,9 @@ func (sp *StaticPool) Exec(p Payload) (Payload, error) {
 	rsp, err := sw.Exec(p)
 	if err != nil {
 		// soft job errors are allowed
-		if _, jobError := err.(ExecError); jobError {
+		if errors.Is(errors.Exec, err) {
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
-				err := sp.ww.AllocateNew(bCtx)
+				err = sp.ww.AllocateNew(bCtx)
 				if err != nil {
 					sp.events.Push(PoolEvent{Event: EventPoolError, Payload: err})
 				}
@@ -188,10 +188,8 @@ func (sp *StaticPool) execDebug(p Payload) (Payload, error) {
 func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload, error) {
 	const op = errors.Op("Exec")
 	w, err := sp.ww.GetFreeWorker(context.Background())
-	if err != nil && errors.Is(errors.ErrWatcherStopped, err) {
+	if err != nil {
 		return EmptyPayload, errors.E(op, err)
-	} else if err != nil {
-		return EmptyPayload, err
 	}
 
 	sw := w.(SyncWorker)
@@ -199,23 +197,23 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload
 	rsp, err := sw.ExecWithContext(ctx, rqs)
 	if err != nil {
 		// soft job errors are allowed
-		if _, jobError := err.(ExecError); jobError {
+		if errors.Is(errors.Exec, err) {
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
-				err := sp.ww.AllocateNew(bCtx)
+				err = sp.ww.AllocateNew(bCtx)
 				if err != nil {
-					sp.events.Push(PoolEvent{Event: EventPoolError, Payload: err})
+					sp.events.Push(PoolEvent{Event: EventPoolError, Payload: errors.E(op, err)})
 				}
 
 				w.State().Set(StateInvalid)
 				err = w.Stop(bCtx)
 				if err != nil {
-					sp.events.Push(WorkerEvent{Event: EventWorkerError, Worker: w, Payload: err})
+					sp.events.Push(WorkerEvent{Event: EventWorkerError, Worker: w, Payload: errors.E(op, err)})
 				}
 			} else {
 				sp.ww.PushWorker(w)
 			}
 
-			return EmptyPayload, err
+			return EmptyPayload, errors.E(op, err)
 		}
 
 		sw.State().Set(StateInvalid)
@@ -223,10 +221,10 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload
 		errS := w.Stop(bCtx)
 
 		if errS != nil {
-			return EmptyPayload, fmt.Errorf("%v, %v", err, errS)
+			return EmptyPayload, errors.E(op, errors.Errorf("%v, %v", err, errS))
 		}
 
-		return EmptyPayload, err
+		return EmptyPayload, errors.E(op, err)
 	}
 
 	// worker want's to be terminated
@@ -234,7 +232,7 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload
 		w.State().Set(StateInvalid)
 		err = w.Stop(bCtx)
 		if err != nil {
-			sp.events.Push(WorkerEvent{Event: EventWorkerError, Worker: w, Payload: err})
+			sp.events.Push(WorkerEvent{Event: EventWorkerError, Worker: w, Payload: errors.E(op, err)})
 		}
 
 		return sp.Exec(rqs)
@@ -243,7 +241,7 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload
 	if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
 		err = sp.ww.AllocateNew(bCtx)
 		if err != nil {
-			return EmptyPayload, err
+			return EmptyPayload, errors.E(op, err)
 		}
 	} else {
 		sp.ww.PushWorker(w)
@@ -258,6 +256,7 @@ func (sp *StaticPool) Destroy(ctx context.Context) {
 
 // allocate required number of stack
 func (sp *StaticPool) allocateWorkers(ctx context.Context, numWorkers int64) ([]WorkerBase, error) {
+	const op = errors.Op("allocate workers")
 	var workers []WorkerBase
 
 	// constant number of stack simplify logic
@@ -266,20 +265,21 @@ func (sp *StaticPool) allocateWorkers(ctx context.Context, numWorkers int64) ([]
 		w, err := sp.factory.SpawnWorkerWithContext(ctx, sp.cmd())
 		if err != nil {
 			cancel()
-			return nil, err
+			return nil, errors.E(op, err)
 		}
-		cancel()
 		workers = append(workers, w)
+		cancel()
 	}
 	return workers, nil
 }
 
 func (sp *StaticPool) checkMaxJobs(ctx context.Context, w WorkerBase) error {
+	const op = errors.Op("check max jobs")
 	if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
 		err := sp.ww.AllocateNew(ctx)
 		if err != nil {
 			sp.events.Push(PoolEvent{Event: EventPoolError, Payload: err})
-			return err
+			return errors.E(op, err)
 		}
 	}
 	return nil

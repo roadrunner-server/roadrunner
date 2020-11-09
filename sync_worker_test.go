@@ -6,6 +6,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/spiral/errors"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -206,8 +207,10 @@ func Test_Error(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	assert.IsType(t, ExecError{}, err)
-	assert.Equal(t, "hello", err.Error())
+	if errors.Is(errors.Exec, err) == false {
+		t.Fatal("error should be of type errors.Exec")
+	}
+	assert.Contains(t, err.Error(), "exec payload: Exec: hello")
 }
 
 func Test_NumExecs(t *testing.T) {
