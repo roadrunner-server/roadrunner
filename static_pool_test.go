@@ -157,7 +157,7 @@ func Test_StaticPool_JobError(t *testing.T) {
 		t.Fatal("error should be of type errors.Exec")
 	}
 
-	assert.Contains(t, err.Error(), "exec payload: Exec: hello")
+	assert.Contains(t, err.Error(), "hello")
 }
 
 func Test_StaticPool_Broken_Replace(t *testing.T) {

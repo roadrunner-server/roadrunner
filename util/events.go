@@ -1,11 +1,21 @@
 package util
 
+type EventsHandler interface {
+	NumListeners() int
+	AddListener(listener EventListener)
+	Push(e interface{})
+}
+
 // Event listener listens for the events produced by worker, worker pool or other servce.
 type EventListener func(event interface{})
 
 // EventHandler helps to broadcast events to multiple listeners.
 type EventHandler struct {
 	listeners []EventListener
+}
+
+func NewEventsHandler() EventsHandler {
+	return &EventHandler{listeners: make([]EventListener, 0, 2)}
 }
 
 // NumListeners returns number of event listeners.

@@ -19,13 +19,13 @@ type SupervisedPool interface {
 
 type supervisedPool struct {
 	cfg    *SupervisorConfig
-	events *util.EventHandler
+	events util.EventsHandler
 	pool   Pool
 	stopCh chan struct{}
 	mu     *sync.RWMutex
 }
 
-func newPoolWatcher(pool Pool, events *util.EventHandler, cfg *SupervisorConfig) SupervisedPool {
+func newPoolWatcher(pool Pool, events util.EventsHandler, cfg *SupervisorConfig) SupervisedPool {
 	sp := &supervisedPool{
 		cfg:    cfg,
 		events: events,
