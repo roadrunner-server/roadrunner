@@ -1,6 +1,6 @@
 linters:
   skip-files:
-    - ".*_test.go$"
+    - ".*\\test\\.go$"
     - lib/bad.go
   disable-all: true
   enable:
