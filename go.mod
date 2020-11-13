@@ -10,7 +10,7 @@ require (
 	github.com/shirou/gopsutil v3.20.10+incompatible
 	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/viper v1.7.1
-	github.com/spiral/endure v1.0.0-beta16
+	github.com/spiral/endure v1.0.0-beta18
 	github.com/spiral/errors v1.0.4
 	github.com/spiral/goridge/v2 v2.4.6
 	github.com/spiral/roadrunner v1.8.4
@@ -21,5 +21,3 @@ require (
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 	golang.org/x/sys v0.0.0-20200615200032-f1bc736245b1
 )
-
-replace github.com/spiral/endure v1.0.0-beta16 => /home/valery/Projects/opensource/spiral/endure

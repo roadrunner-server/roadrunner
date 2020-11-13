@@ -49,58 +49,50 @@ func (m *Plugin) Init(cfg config.Configurer, log log.Logger) error {
 		return err
 	}
 
-	//m.cfg.InitDefaults()
+	// TODO figure out what is Init
+	m.cfg.InitDefaults()
 
 	m.log = log
 	m.registry = prometheus.NewRegistry()
 
+	// Default
 	err = m.registry.Register(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
 	if err != nil {
 		return errors.E(op, err)
 	}
+
+	// Default
 	err = m.registry.Register(prometheus.NewGoCollector())
 	if err != nil {
 		return errors.E(op, err)
 	}
 
-	//m.collectors = make([]statsProvider, 0, 2)
+	collectors, err := m.cfg.getCollectors()
+	if err != nil {
+		return errors.E(op, err)
+	}
 
-	//if r != nil {
-	//	if err := r.Register(ID, &rpcServer{s}); err != nil {
-	//		return false, err
-	//	}
-	//}
-
+	// Register invocation will be later in the Serve method
+	for k, v := range collectors {
+		m.collectors.Store(k, statsProvider{
+			collector: v,
+			name:      k,
+		})
+	}
 	return nil
 }
 
-// Enabled indicates that server is able to collect metrics.
-//func (m *Plugin) Enabled() bool {
-//	return m.cfg != nil
-//}
-//
 // Register new prometheus collector.
 func (m *Plugin) Register(c prometheus.Collector) error {
 	return m.registry.Register(c)
 }
 
-// MustRegister registers new collector or fails with panic.
-//func (m *Plugin) MustRegister(c prometheus.Collector) {
-//	m.registry.MustRegister(c)
-//}
-
 // Serve prometheus metrics service.
 func (m *Plugin) Serve() chan error {
 	errCh := make(chan error, 1)
-	// register application specific metrics
-	//collectors, err := m.cfg.getCollectors()
-	//if err != nil {
-	//	return err
-	//}
-
 	m.collectors.Range(func(key, value interface{}) bool {
 		// key - name
-		// value - collector
+		// value - statsProvider struct
 		c := value.(statsProvider)
 		if err := m.registry.Register(c.collector); err != nil {
 			errCh <- err
@@ -207,6 +199,7 @@ func (m *Plugin) Stop() error {
 	return nil
 }
 
+// Collects used to collect all plugins which implement metrics.StatProvider interface (and Named)
 func (m *Plugin) Collects() []interface{} {
 	return []interface{}{
 		m.AddStatProvider,
@@ -222,10 +215,12 @@ func (m *Plugin) AddStatProvider(name endure.Named, stat metrics.StatProvider) e
 	return nil
 }
 
+// RPC interface satisfaction
 func (m *Plugin) Name() string {
 	return ServiceName
 }
 
+// RPC interface satisfaction
 func (m *Plugin) RPC() interface{} {
 	return &rpcServer{svc: m}
 }

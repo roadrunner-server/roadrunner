@@ -134,3 +134,7 @@ func (c *Config) getCollectors() (map[string]prometheus.Collector, error) {
 
 	return collectors, nil
 }
+
+func (c *Config) InitDefaults() {
+
+}
