@@ -37,7 +37,7 @@ type Plugin struct {
 	log        log.Logger
 	mu         sync.Mutex // all receivers are pointers
 	http       *http.Server
-	collectors sync.Map //[]statsProvider
+	collectors sync.Map // all receivers are pointers
 	registry   *prometheus.Registry
 }
 

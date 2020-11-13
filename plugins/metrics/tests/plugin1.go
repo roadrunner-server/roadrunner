@@ -58,7 +58,7 @@ func (p *Plugin3) Stop() error {
 }
 
 func (p *Plugin3) Name() string {
-	return "metrics_test.plugin1"
+	return "metrics_test.plugin3"
 }
 
 func (p *Plugin3) MetricsCollector() prometheus.Collector {
@@ -90,7 +90,7 @@ func (p *Plugin4) Stop() error {
 }
 
 func (p *Plugin4) Name() string {
-	return "metrics_test.plugin1"
+	return "metrics_test.plugin4"
 }
 
 func (p *Plugin4) MetricsCollector() prometheus.Collector {

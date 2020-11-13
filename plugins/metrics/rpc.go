@@ -24,12 +24,6 @@ type Metric struct {
 // Add new metric to the designated collector.
 func (rpc *rpcServer) Add(m *Metric, ok *bool) error {
 	const op = errors.Op("Add metric")
-	//defer func() {
-	//	if r, fail := recover().(error); fail {
-	//		err = r
-	//	}
-	//}()
-
 	c, exist := rpc.svc.collectors.Load(m.Name)
 	if !exist {
 		return errors.E(op, errors.Errorf("undefined collector `%s`", m.Name))
@@ -68,12 +62,6 @@ func (rpc *rpcServer) Add(m *Metric, ok *bool) error {
 // Sub subtract the value from the specific metric (gauge only).
 func (rpc *rpcServer) Sub(m *Metric, ok *bool) error {
 	const op = errors.Op("Sub metric")
-	//defer func() {
-	//	if r, fail := recover().(error); fail {
-	//		err = r
-	//	}
-	//}()
-
 	c, exist := rpc.svc.collectors.Load(m.Name)
 	if !exist {
 		return errors.E(op, errors.Errorf("undefined collector `%s`", m.Name))
@@ -105,12 +93,6 @@ func (rpc *rpcServer) Sub(m *Metric, ok *bool) error {
 // Observe the value (histogram and summary only).
 func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
 	const op = errors.Op("Observe metrics")
-	//defer func() {
-	//	if r, fail := recover().(error); fail {
-	//		err = r
-	//	}
-	//}()
-
 	c, exist := rpc.svc.collectors.Load(m.Name)
 	if !exist {
 		return errors.E(op, errors.Errorf("undefined collector `%s`", m.Name))
@@ -153,14 +135,6 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
 // 	error
 func (rpc *rpcServer) Declare(nc *NamedCollector, ok *bool) error {
 	const op = errors.Op("Declare metric")
-	// MustRegister could panic, so, to return error and not shutdown whole app
-	// we recover and return error
-	//defer func() {
-	//	if r, fail := recover().(error); fail {
-	//		err = r
-	//	}
-	//}()
-
 	_, exist := rpc.svc.collectors.Load(nc.Name)
 	if exist {
 		return errors.E(op, errors.Errorf("tried to register existing collector with the name `%s`", nc.Name))
@@ -224,7 +198,6 @@ func (rpc *rpcServer) Declare(nc *NamedCollector, ok *bool) error {
 
 	default:
 		return errors.E(op, errors.Errorf("unknown collector type `%s`", nc.Type))
-
 	}
 
 	// add collector to sync.Map

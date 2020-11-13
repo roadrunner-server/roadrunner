@@ -18,23 +18,23 @@ import (
 )
 
 // get request and return body
-func get(url string) (string, *http.Response, error) {
+func get(url string) (string, error) {
 	r, err := http.Get(url)
 	if err != nil {
-		return "", nil, err
+		return "", err
 	}
 
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		return "", nil, err
+		return "", err
 	}
 
 	err = r.Body.Close()
 	if err != nil {
-		return "", nil, err
+		return "", err
 	}
 	// unsafe
-	return string(b), r, err
+	return string(b), err
 }
 
 func TestMetricsInit(t *testing.T) {
@@ -84,7 +84,7 @@ func TestMetricsInit(t *testing.T) {
 
 	tt := time.NewTimer(time.Second * 5)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, err := get("http://localhost:2112/metrics")
 	assert.NoError(t, err)
 
 	assert.Contains(t, out, "go_gc_duration_seconds")
@@ -162,7 +162,8 @@ func TestMetricsGaugeCollector(t *testing.T) {
 	time.Sleep(time.Second)
 	tt := time.NewTimer(time.Second * 5)
 
-	out, _, err := get("http://localhost:2112/metrics")
+	out, err := get("http://localhost:2112/metrics")
+	assert.NoError(t, err)
 	assert.Contains(t, out, "my_gauge 100")
 
 	for {

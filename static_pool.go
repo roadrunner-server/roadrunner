@@ -70,12 +70,7 @@ func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg Con
 		before:  make([]Before, 0, 0),
 	}
 
-	var err error
-	p.allocator, err = newPoolAllocator(factory, cmd)
-	if err != nil {
-		return nil, errors.E(op, err)
-	}
-
+	p.allocator = newPoolAllocator(factory, cmd)
 	p.ww = newWorkerWatcher(p.allocator, p.cfg.NumWorkers, p.events)
 
 	workers, err := p.allocateWorkers(ctx, p.cfg.NumWorkers)
@@ -279,7 +274,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 	}
 }
 
-func newPoolAllocator(factory Factory, cmd func() *exec.Cmd) (Allocator, error) {
+func newPoolAllocator(factory Factory, cmd func() *exec.Cmd) Allocator {
 	return func() (WorkerBase, error) {
 		w, err := factory.SpawnWorkerWithContext(bCtx, cmd())
 		if err != nil {
@@ -291,7 +286,7 @@ func newPoolAllocator(factory Factory, cmd func() *exec.Cmd) (Allocator, error) 
 			return nil, err
 		}
 		return sw, nil
-	}, nil
+	}
 }
 
 func (sp *StaticPool) execDebug(p Payload) (Payload, error) {

@@ -56,11 +56,6 @@ type Collector struct {
 	Buckets []float64 `json:"buckets"`
 }
 
-// Hydrate configuration.
-//func (c *Config) Hydrate(cfg service.Config) error {
-//	return cfg.Unmarshal(c)
-//}
-
 // register application specific metrics.
 func (c *Config) getCollectors() (map[string]prometheus.Collector, error) {
 	if c.Collect == nil {
