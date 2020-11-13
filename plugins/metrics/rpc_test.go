@@ -1,6 +1,6 @@
 package metrics
 
-//import (
+// import (
 //	"github.com/sirupsen/logrus"
 //	"github.com/sirupsen/logrus/hooks/test"
 //	"github.com/spiral/roadrunner/service"
@@ -10,11 +10,11 @@ package metrics
 //	"strconv"
 //	"testing"
 //	"time"
-//)
+// )
 //
-//var port = 5004
+// var port = 5004
 //
-//func setup(t *testing.T, metric string, portNum string) (*rpc2.Client, service.Container) {
+// func setup(t *testing.T, metric string, portNum string) (*rpc2.Client, service.Container) {
 //	logger, _ := test.NewNullLogger()
 //	logger.SetLevel(logrus.DebugLevel)
 //
@@ -57,9 +57,9 @@ package metrics
 //	}
 //
 //	return client, c
-//}
+// }
 //
-//func Test_Set_RPC(t *testing.T) {
+// func Test_Set_RPC(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -79,9 +79,9 @@ package metrics
 //	out, _, err := get("http://localhost:2112/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `user_gauge 100`)
-//}
+// }
 //
-//func Test_Set_RPC_Vector(t *testing.T) {
+// func Test_Set_RPC_Vector(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -103,9 +103,9 @@ package metrics
 //	out, _, err := get("http://localhost:2113/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `user_gauge{section="first",type="core"} 100`)
-//}
+// }
 //
-//func Test_Set_RPC_CollectorError(t *testing.T) {
+// func Test_Set_RPC_CollectorError(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -124,7 +124,7 @@ package metrics
 //	}, &ok))
 //}
 //
-//func Test_Set_RPC_MetricError(t *testing.T) {
+// func Test_Set_RPC_MetricError(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -141,9 +141,9 @@ package metrics
 //		Value:  100.0,
 //		Labels: []string{"missing"},
 //	}, &ok))
-//}
+// }
 //
-//func Test_Set_RPC_MetricError_2(t *testing.T) {
+// func Test_Set_RPC_MetricError_2(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -159,9 +159,9 @@ package metrics
 //		Name:  "user_gauge",
 //		Value: 100.0,
 //	}, &ok))
-//}
+// }
 //
-//func Test_Set_RPC_MetricError_3(t *testing.T) {
+// func Test_Set_RPC_MetricError_3(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -177,11 +177,11 @@ package metrics
 //		Name:  "user_gauge",
 //		Value: 100.0,
 //	}, &ok))
-//}
+// }
 //
-//// sub
+// // sub
 //
-//func Test_Sub_RPC(t *testing.T) {
+// func Test_Sub_RPC(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -207,9 +207,9 @@ package metrics
 //	out, _, err := get("http://localhost:2118/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `user_gauge 90`)
-//}
+// }
 //
-//func Test_Sub_RPC_Vector(t *testing.T) {
+// func Test_Sub_RPC_Vector(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -238,9 +238,9 @@ package metrics
 //	out, _, err := get("http://localhost:2119/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `user_gauge{section="first",type="core"} 90`)
-//}
+// }
 //
-//func Test_Register_RPC_Histogram(t *testing.T) {
+// func Test_Register_RPC_Histogram(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -281,9 +281,9 @@ package metrics
 //	assert.Contains(t, out, `test_histogram_test_histogram_custom_histogram_bucket{le="0.1"} 0`)
 //	assert.Contains(t, out, `test_histogram_test_histogram_custom_histogram_bucket{le="0.2"} 0`)
 //	assert.Contains(t, out, `test_histogram_test_histogram_custom_histogram_bucket{le="0.5"} 0`)
-//}
+// }
 //
-//func Test_Register_RPC_Gauge(t *testing.T) {
+// func Test_Register_RPC_Gauge(t *testing.T) {
 //	// FOR register method, setup used just to init the rpc
 //	client, c := setup(
 //		t,
@@ -331,9 +331,9 @@ package metrics
 //	out, _, err := get("http://localhost:2324/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `test_gauge_test_gauge_custom_gauge{section="first",type="core"} 90`)
-//}
+// }
 //
-//func Test_Register_RPC_Counter(t *testing.T) {
+// func Test_Register_RPC_Counter(t *testing.T) {
 //	// FOR register method, setup used just to init the rpc
 //	client, c := setup(
 //		t,
@@ -372,9 +372,9 @@ package metrics
 //	out, _, err := get("http://localhost:2328/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `test_counter_test_counter_custom_counter{section="section2",type="type2"} 100`)
-//}
+// }
 //
-//func Test_Register_RPC_Summary(t *testing.T) {
+// func Test_Register_RPC_Summary(t *testing.T) {
 //	// FOR register method, setup used just to init the rpc
 //	client, c := setup(
 //		t,
@@ -414,9 +414,9 @@ package metrics
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `test_summary_test_summary_custom_summary_sum 0`)
 //	assert.Contains(t, out, `test_summary_test_summary_custom_summary_count 0`)
-//}
+// }
 //
-//func Test_Sub_RPC_CollectorError(t *testing.T) {
+// func Test_Sub_RPC_CollectorError(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -433,9 +433,9 @@ package metrics
 //		Value:  100.0,
 //		Labels: []string{"missing"},
 //	}, &ok))
-//}
+// }
 //
-//func Test_Sub_RPC_MetricError(t *testing.T) {
+// func Test_Sub_RPC_MetricError(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -452,9 +452,9 @@ package metrics
 //		Value:  100.0,
 //		Labels: []string{"missing"},
 //	}, &ok))
-//}
+// }
 //
-//func Test_Sub_RPC_MetricError_2(t *testing.T) {
+// func Test_Sub_RPC_MetricError_2(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -470,9 +470,9 @@ package metrics
 //		Name:  "user_gauge",
 //		Value: 100.0,
 //	}, &ok))
-//}
+// }
 //
-//func Test_Sub_RPC_MetricError_3(t *testing.T) {
+// func Test_Sub_RPC_MetricError_3(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -488,11 +488,11 @@ package metrics
 //		Name:  "user_gauge",
 //		Value: 100.0,
 //	}, &ok))
-//}
+// }
 //
-//// -- observe
+// // -- observe
 //
-//func Test_Observe_RPC(t *testing.T) {
+// func Test_Observe_RPC(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -512,9 +512,9 @@ package metrics
 //	out, _, err := get("http://localhost:2124/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `user_histogram`)
-//}
+// }
 //
-//func Test_Observe_RPC_Vector(t *testing.T) {
+// func Test_Observe_RPC_Vector(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -536,9 +536,9 @@ package metrics
 //	out, _, err := get("http://localhost:2125/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `user_histogram`)
-//}
+// }
 //
-//func Test_Observe_RPC_CollectorError(t *testing.T) {
+// func Test_Observe_RPC_CollectorError(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -555,9 +555,9 @@ package metrics
 //		Value:  100.0,
 //		Labels: []string{"missing"},
 //	}, &ok))
-//}
+// }
 //
-//func Test_Observe_RPC_MetricError(t *testing.T) {
+// func Test_Observe_RPC_MetricError(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -574,9 +574,9 @@ package metrics
 //		Value:  100.0,
 //		Labels: []string{"missing"},
 //	}, &ok))
-//}
+// }
 //
-//func Test_Observe_RPC_MetricError_2(t *testing.T) {
+// func Test_Observe_RPC_MetricError_2(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -592,11 +592,11 @@ package metrics
 //		Name:  "user_histogram",
 //		Value: 100.0,
 //	}, &ok))
-//}
+// }
 //
-//// -- observe summary
+// // -- observe summary
 //
-//func Test_Observe2_RPC(t *testing.T) {
+// func Test_Observe2_RPC(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -616,9 +616,9 @@ package metrics
 //	out, _, err := get("http://localhost:2129/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `user_histogram`)
-//}
+// }
 //
-//func Test_Observe2_RPC_Invalid(t *testing.T) {
+// func Test_Observe2_RPC_Invalid(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -634,9 +634,9 @@ package metrics
 //		Value:  100.0,
 //		Labels: []string{"missing"},
 //	}, &ok))
-//}
+// }
 //
-//func Test_Observe2_RPC_Invalid_2(t *testing.T) {
+// func Test_Observe2_RPC_Invalid_2(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -653,7 +653,7 @@ package metrics
 //	}, &ok))
 //}
 //
-//func Test_Observe2_RPC_Vector(t *testing.T) {
+// func Test_Observe2_RPC_Vector(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -675,9 +675,9 @@ package metrics
 //	out, _, err := get("http://localhost:2132/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `user_histogram`)
-//}
+// }
 //
-//func Test_Observe2_RPC_CollectorError(t *testing.T) {
+// func Test_Observe2_RPC_CollectorError(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -694,9 +694,9 @@ package metrics
 //		Value:  100.0,
 //		Labels: []string{"missing"},
 //	}, &ok))
-//}
+// }
 //
-//func Test_Observe2_RPC_MetricError(t *testing.T) {
+// func Test_Observe2_RPC_MetricError(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -713,9 +713,9 @@ package metrics
 //		Value:  100.0,
 //		Labels: []string{"missing"},
 //	}, &ok))
-//}
+// }
 //
-//func Test_Observe2_RPC_MetricError_2(t *testing.T) {
+// func Test_Observe2_RPC_MetricError_2(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_histogram":{
@@ -731,10 +731,10 @@ package metrics
 //		Name:  "user_histogram",
 //		Value: 100.0,
 //	}, &ok))
-//}
+// }
 //
-//// add
-//func Test_Add_RPC(t *testing.T) {
+// // add
+// func Test_Add_RPC(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -754,9 +754,9 @@ package metrics
 //	out, _, err := get("http://localhost:2136/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `user_gauge 100`)
-//}
+// }
 //
-//func Test_Add_RPC_Vector(t *testing.T) {
+// func Test_Add_RPC_Vector(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -778,9 +778,9 @@ package metrics
 //	out, _, err := get("http://localhost:2137/metrics")
 //	assert.NoError(t, err)
 //	assert.Contains(t, out, `user_gauge{section="first",type="core"} 100`)
-//}
+// }
 //
-//func Test_Add_RPC_CollectorError(t *testing.T) {
+// func Test_Add_RPC_CollectorError(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -799,9 +799,9 @@ package metrics
 //	}, &ok))
 //
 //	assert.False(t, ok)
-//}
+// }
 //
-//func Test_Add_RPC_MetricError(t *testing.T) {
+// func Test_Add_RPC_MetricError(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -820,9 +820,9 @@ package metrics
 //	}, &ok))
 //
 //	assert.False(t, ok)
-//}
+// }
 //
-//func Test_Add_RPC_MetricError_2(t *testing.T) {
+// func Test_Add_RPC_MetricError_2(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -840,9 +840,9 @@ package metrics
 //	}, &ok))
 //
 //	assert.False(t, ok)
-//}
+// }
 //
-//func Test_Add_RPC_MetricError_3(t *testing.T) {
+// func Test_Add_RPC_MetricError_3(t *testing.T) {
 //	client, c := setup(
 //		t,
 //		`"user_gauge":{
@@ -858,4 +858,4 @@ package metrics
 //		Name:  "user_gauge",
 //		Value: 100.0,
 //	}, &ok))
-//}
+// }

@@ -1,12 +1,12 @@
 package metrics
 
-//type testCfg struct {
+// type testCfg struct {
 //	rpcCfg     string
 //	metricsCfg string
 //	target     string
-//}
+// }
 //
-//func (cfg *testCfg) Get(name string) service.Config {
+// func (cfg *testCfg) Get(name string) service.Config {
 //	if name == ID {
 //		return &testCfg{target: cfg.metricsCfg}
 //	}
@@ -16,15 +16,15 @@ package metrics
 //	}
 //
 //	return nil
-//}
+// }
 //
-//func (cfg *testCfg) Unmarshal(out interface{}) error {
+// func (cfg *testCfg) Unmarshal(out interface{}) error {
 //	j := json.ConfigCompatibleWithStandardLibrary
 //	err := j.Unmarshal([]byte(cfg.target), out)
 //	return err
-//}
+// }
 //
-//func TestService_Serve(t *testing.T) {
+// func TestService_Serve(t *testing.T) {
 //	logger, _ := test.NewNullLogger()
 //	logger.SetLevel(logrus.DebugLevel)
 //
@@ -51,9 +51,9 @@ package metrics
 //	assert.NoError(t, err)
 //
 //	assert.Contains(t, out, "go_gc_duration_seconds")
-//}
+// }
 //
-//func Test_ServiceCustomMetric(t *testing.T) {
+// func Test_ServiceCustomMetric(t *testing.T) {
 //	logger, _ := test.NewNullLogger()
 //	logger.SetLevel(logrus.DebugLevel)
 //
@@ -89,9 +89,9 @@ package metrics
 //	assert.NoError(t, err)
 //
 //	assert.Contains(t, out, "my_gauge 100")
-//}
+// }
 //
-//func Test_ServiceCustomMetricMust(t *testing.T) {
+// func Test_ServiceCustomMetricMust(t *testing.T) {
 //	logger, _ := test.NewNullLogger()
 //	logger.SetLevel(logrus.DebugLevel)
 //
@@ -127,9 +127,9 @@ package metrics
 //	assert.NoError(t, err)
 //
 //	assert.Contains(t, out, "my_gauge_2 100")
-//}
+// }
 //
-//func Test_ConfiguredMetric(t *testing.T) {
+// func Test_ConfiguredMetric(t *testing.T) {
 //	logger, _ := test.NewNullLogger()
 //	logger.SetLevel(logrus.DebugLevel)
 //
@@ -167,9 +167,9 @@ package metrics
 //	assert.NoError(t, err)
 //
 //	assert.Contains(t, out, "user_gauge 100")
-//}
+// }
 //
-//func Test_ConfiguredDuplicateMetric(t *testing.T) {
+// func Test_ConfiguredDuplicateMetric(t *testing.T) {
 //	logger, _ := test.NewNullLogger()
 //	logger.SetLevel(logrus.DebugLevel)
 //
@@ -191,9 +191,9 @@ package metrics
 //	assert.True(t, s.(*Plugin).Enabled())
 //
 //	assert.Error(t, c.Serve())
-//}
+// }
 //
-//func Test_ConfiguredInvalidMetric(t *testing.T) {
+// func Test_ConfiguredInvalidMetric(t *testing.T) {
 //	logger, _ := test.NewNullLogger()
 //	logger.SetLevel(logrus.DebugLevel)
 //
@@ -211,4 +211,4 @@ package metrics
 //	}`}))
 //
 //	assert.Error(t, c.Serve())
-//}
+// }

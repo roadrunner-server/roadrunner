@@ -14,26 +14,26 @@ func (p2 *Plugin2) Serve() chan error {
 	errCh := make(chan error, 1)
 
 	go func() {
-		//time.Sleep(time.Second * 3)
+		// time.Sleep(time.Second * 3)
 		//
-		//conn, err := net.Dial("tcp", "127.0.0.1:6001")
-		//if err != nil {
+		// conn, err := net.Dial("tcp", "127.0.0.1:6001")
+		// if err != nil {
 		//	errCh <- errors.E(errors.Serve, err)
 		//	return
-		//}
-		//client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
-		//var ret string
-		//err = client.Call("metrics_test.plugin1.Hello", "Valery", &ret)
-		//if err != nil {
+		// }
+		// client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+		// var ret string
+		// err = client.Call("metrics_test.plugin1.Hello", "Valery", &ret)
+		// if err != nil {
 		//	errCh <- err
 		//	return
-		//}
-		//if ret != "Hello, username: Valery" {
+		// }
+		// if ret != "Hello, username: Valery" {
 		//	errCh <- errors.E("wrong response")
 		//	return
-		//}
-		//// to stop exec
-		//errCh <- errors.E(errors.Disabled)
+		// }
+		// // to stop exec
+		// errCh <- errors.E(errors.Disabled)
 		return
 	}()
 
