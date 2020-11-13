@@ -8,27 +8,25 @@ import (
 	"github.com/spiral/endure"
 	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v2"
-	"github.com/spiral/roadrunner/v2/log"
+	"github.com/spiral/roadrunner/v2/interfaces/log"
+	rpc_ "github.com/spiral/roadrunner/v2/interfaces/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
-// Pluggable declares the ability to create set of public RPC methods.
-type Pluggable interface {
-	endure.Named
-
-	// Provides RPC methods for the given service.
-	RPCService() (interface{}, error)
-}
-
 // ServiceName contains default service name.
 const ServiceName = "RPC"
+
+type pluggable struct {
+	service rpc_.RPCer
+	name    string
+}
 
 // Plugin is RPC service.
 type Plugin struct {
 	cfg      Config
 	log      log.Logger
 	rpc      *rpc.Server
-	services []Pluggable
+	services []pluggable
 	listener net.Listener
 	closed   *uint32
 }
@@ -69,19 +67,19 @@ func (s *Plugin) Serve() chan error {
 
 	// Attach all services
 	for i := 0; i < len(s.services); i++ {
-		svc, err := s.services[i].RPCService()
+		svc, err := s.services[i].service.RPC()
 		if err != nil {
 			errCh <- errors.E(op, err)
 			return errCh
 		}
 
-		err = s.Register(s.services[i].Name(), svc)
+		err = s.Register(s.services[i].name, svc)
 		if err != nil {
 			errCh <- errors.E(op, err)
 			return errCh
 		}
 
-		services = append(services, s.services[i].Name())
+		services = append(services, s.services[i].name)
 	}
 
 	var err error
@@ -139,8 +137,11 @@ func (s *Plugin) Collects() []interface{} {
 }
 
 // RegisterPlugin registers RPC service plugin.
-func (s *Plugin) RegisterPlugin(p Pluggable) error {
-	s.services = append(s.services, p)
+func (s *Plugin) RegisterPlugin(name endure.Named, p rpc_.RPCer) error {
+	s.services = append(s.services, pluggable{
+		service: p,
+		name:    name.Name(),
+	})
 	return nil
 }
 

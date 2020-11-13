@@ -2,7 +2,7 @@ package logger
 
 import (
 	"github.com/spiral/endure"
-	"github.com/spiral/roadrunner/v2/log"
+	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"go.uber.org/zap"
 )

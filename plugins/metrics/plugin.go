@@ -11,18 +11,25 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/spiral/endure"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/log"
-	"github.com/spiral/roadrunner/v2/metrics"
+	"github.com/spiral/roadrunner/v2/interfaces/log"
+	"github.com/spiral/roadrunner/v2/interfaces/metrics"
+	"github.com/spiral/roadrunner/v2/plugins/config"
 	"golang.org/x/sys/cpu"
 )
 
 const (
 	// ID declares public service name.
-	ID = "metrics"
+	ServiceName = "metrics"
 	// maxHeaderSize declares max header size for prometheus server
 	maxHeaderSize = 1024 * 1024 * 100 // 104MB
 )
+
+type statsProvider struct {
+	collector prometheus.Collector
+	name      string
+}
 
 // Plugin to manage application metrics using Prometheus.
 type Plugin struct {
@@ -30,18 +37,33 @@ type Plugin struct {
 	log        log.Logger
 	mu         sync.Mutex // all receivers are pointers
 	http       *http.Server
-	collectors []prometheus.Collector //sync.Map // all receivers are pointers
+	collectors sync.Map //[]statsProvider
 	registry   *prometheus.Registry
 }
 
 // Init service.
-func (m *Plugin) Init(cfg Config, log log.Logger) (bool, error) {
-	m.cfg = cfg
+func (m *Plugin) Init(cfg config.Configurer, log log.Logger) error {
+	const op = errors.Op("Metrics Init")
+	err := cfg.UnmarshalKey(ServiceName, &m.cfg)
+	if err != nil {
+		return err
+	}
+
+	//m.cfg.InitDefaults()
+
 	m.log = log
 	m.registry = prometheus.NewRegistry()
 
-	m.registry.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
-	m.registry.MustRegister(prometheus.NewGoCollector())
+	err = m.registry.Register(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
+	if err != nil {
+		return errors.E(op, err)
+	}
+	err = m.registry.Register(prometheus.NewGoCollector())
+	if err != nil {
+		return errors.E(op, err)
+	}
+
+	//m.collectors = make([]statsProvider, 0, 2)
 
 	//if r != nil {
 	//	if err := r.Register(ID, &rpcServer{s}); err != nil {
@@ -49,7 +71,7 @@ func (m *Plugin) Init(cfg Config, log log.Logger) (bool, error) {
 	//	}
 	//}
 
-	return true, nil
+	return nil
 }
 
 // Enabled indicates that server is able to collect metrics.
@@ -57,31 +79,35 @@ func (m *Plugin) Init(cfg Config, log log.Logger) (bool, error) {
 //	return m.cfg != nil
 //}
 //
-//// Register new prometheus collector.
-//func (m *Plugin) Register(c prometheus.Collector) error {
-//	return m.registry.Register(c)
-//}
-
-// MustRegister registers new collector or fails with panic.
-func (m *Plugin) MustRegister(c prometheus.Collector) {
-	m.registry.MustRegister(c)
+// Register new prometheus collector.
+func (m *Plugin) Register(c prometheus.Collector) error {
+	return m.registry.Register(c)
 }
 
+// MustRegister registers new collector or fails with panic.
+//func (m *Plugin) MustRegister(c prometheus.Collector) {
+//	m.registry.MustRegister(c)
+//}
+
 // Serve prometheus metrics service.
-func (m *Plugin) Serve() error {
+func (m *Plugin) Serve() chan error {
+	errCh := make(chan error, 1)
 	// register application specific metrics
-	collectors, err := m.cfg.getCollectors()
-	if err != nil {
-		return err
-	}
+	//collectors, err := m.cfg.getCollectors()
+	//if err != nil {
+	//	return err
+	//}
 
-	for name, collector := range collectors {
-		if err := m.registry.Register(collector); err != nil {
-			return err
+	m.collectors.Range(func(key, value interface{}) bool {
+		// key - name
+		// value - collector
+		c := value.(prometheus.Collector)
+		if err := m.registry.Register(c); err != nil {
+			errCh <- err
+			return false
 		}
-
-		m.collectors.Store(name, collector)
-	}
+		return true
+	})
 
 	m.mu.Lock()
 
@@ -155,12 +181,13 @@ func (m *Plugin) Serve() error {
 	}
 	m.mu.Unlock()
 
-	err = m.http.ListenAndServe()
+	err := m.http.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
-		return err
+		errCh <- err
+		return errCh
 	}
 
-	return nil
+	return errCh
 }
 
 // Stop prometheus metrics service.
@@ -182,12 +209,15 @@ func (m *Plugin) Stop() {
 
 func (m *Plugin) Collects() []interface{} {
 	return []interface{}{
-		m.Register,
+		m.AddStatProvider,
 	}
 }
 
 // Collector returns application specific collector by name or nil if collector not found.
-func (m *Plugin) Register(stat metrics.StatProvider) error {
-	m.collectors = append(m.collectors, stat.MetricsCollector())
+func (m *Plugin) AddStatProvider(name endure.Named, stat metrics.StatProvider) error {
+	m.collectors.Store(name, statsProvider{
+		collector: stat.MetricsCollector(),
+		name:      name.Name(),
+	})
 	return nil
 }
