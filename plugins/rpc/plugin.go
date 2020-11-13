@@ -67,13 +67,7 @@ func (s *Plugin) Serve() chan error {
 
 	// Attach all services
 	for i := 0; i < len(s.services); i++ {
-		svc, err := s.services[i].service.RPC()
-		if err != nil {
-			errCh <- errors.E(op, err)
-			return errCh
-		}
-
-		err = s.Register(s.services[i].name, svc)
+		err := s.Register(s.services[i].name, s.services[i].service.RPC())
 		if err != nil {
 			errCh <- errors.E(op, err)
 			return errCh
@@ -137,12 +131,11 @@ func (s *Plugin) Collects() []interface{} {
 }
 
 // RegisterPlugin registers RPC service plugin.
-func (s *Plugin) RegisterPlugin(name endure.Named, p rpc_.RPCer) error {
+func (s *Plugin) RegisterPlugin(name endure.Named, p rpc_.RPCer) {
 	s.services = append(s.services, pluggable{
 		service: p,
 		name:    name.Name(),
 	})
-	return nil
 }
 
 // Register publishes in the server the set of methods of the

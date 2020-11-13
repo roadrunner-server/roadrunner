@@ -3,6 +3,7 @@ package tests
 import (
 	"fmt"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
@@ -25,11 +26,17 @@ func (p1 *Plugin1) Stop() error {
 }
 
 func (p1 *Plugin1) Name() string {
-	return "rpc_test.plugin1"
+	return "metrics_test.plugin1"
 }
 
-func (p1 *Plugin1) RPC() interface{} {
-	return &PluginRpc{srv: p1}
+func (p1 *Plugin1) MetricsCollector() prometheus.Collector {
+	var (
+		cpuTemp = prometheus.NewGauge(prometheus.GaugeOpts{
+			Name: "cpu_temperature_celsius",
+			Help: "Current temperature of the CPU.",
+		})
+	)
+	return cpuTemp
 }
 
 type PluginRpc struct {

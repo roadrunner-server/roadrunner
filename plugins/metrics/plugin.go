@@ -101,15 +101,13 @@ func (m *Plugin) Serve() chan error {
 	m.collectors.Range(func(key, value interface{}) bool {
 		// key - name
 		// value - collector
-		c := value.(prometheus.Collector)
-		if err := m.registry.Register(c); err != nil {
+		c := value.(statsProvider)
+		if err := m.registry.Register(c.collector); err != nil {
 			errCh <- err
 			return false
 		}
 		return true
 	})
-
-	m.mu.Lock()
 
 	var topCipherSuites []uint16
 	var defaultCipherSuitesTLS13 []uint16
@@ -179,32 +177,34 @@ func (m *Plugin) Serve() chan error {
 			PreferServerCipherSuites: true,
 		},
 	}
-	m.mu.Unlock()
 
-	err := m.http.ListenAndServe()
-	if err != nil && err != http.ErrServerClosed {
-		errCh <- err
-		return errCh
-	}
+	go func() {
+		err := m.http.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			errCh <- err
+			return
+		}
+	}()
 
 	return errCh
 }
 
 // Stop prometheus metrics service.
-func (m *Plugin) Stop() {
+func (m *Plugin) Stop() error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
 	if m.http != nil {
-		// gracefully stop server
-		go func() {
-			err := m.http.Shutdown(context.Background())
-			if err != nil {
-				// Function should be Stop() error
-				m.log.Error("stop error", "error", errors.Errorf("error shutting down the metrics server: error %v", err))
-			}
-		}()
+		// timeout is 10 seconds
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		defer cancel()
+		err := m.http.Shutdown(ctx)
+		if err != nil {
+			// Function should be Stop() error
+			m.log.Error("stop error", "error", errors.Errorf("error shutting down the metrics server: error %v", err))
+		}
 	}
+	return nil
 }
 
 func (m *Plugin) Collects() []interface{} {
@@ -215,9 +215,17 @@ func (m *Plugin) Collects() []interface{} {
 
 // Collector returns application specific collector by name or nil if collector not found.
 func (m *Plugin) AddStatProvider(name endure.Named, stat metrics.StatProvider) error {
-	m.collectors.Store(name, statsProvider{
+	m.collectors.Store(name.Name(), statsProvider{
 		collector: stat.MetricsCollector(),
 		name:      name.Name(),
 	})
 	return nil
+}
+
+func (m *Plugin) Name() string {
+	return ServiceName
+}
+
+func (m *Plugin) RPC() interface{} {
+	return &rpcServer{svc: m}
 }
