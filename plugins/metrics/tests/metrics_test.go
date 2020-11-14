@@ -439,7 +439,6 @@ func registerHistogram(t *testing.T) {
 	err = client.Call("metrics.Add", m, &ret)
 	assert.Error(t, err)
 	assert.False(t, ret)
-
 }
 
 func subVector(t *testing.T) {
