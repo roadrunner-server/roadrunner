@@ -3,10 +3,12 @@ package metrics
 import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/interfaces/log"
 )
 
 type rpcServer struct {
 	svc *Plugin
+	log log.Logger
 }
 
 // Metric represent single metric produced by the application.
@@ -24,9 +26,11 @@ type Metric struct {
 // Add new metric to the designated collector.
 func (rpc *rpcServer) Add(m *Metric, ok *bool) error {
 	const op = errors.Op("Add metric")
+	rpc.log.Info("Adding metric", "name", m.Name, "value", m.Value, "labels", m.Labels)
 	c, exist := rpc.svc.collectors.Load(m.Name)
 	if !exist {
-		return errors.E(op, errors.Errorf("undefined collector `%s`", m.Name))
+		rpc.log.Error("undefined collector", "collector", m.Name)
+		return errors.E(op, errors.Errorf("undefined collector %s, try first Declare the desired collector", m.Name))
 	}
 
 	switch c := c.(type) {
@@ -56,6 +60,7 @@ func (rpc *rpcServer) Add(m *Metric, ok *bool) error {
 
 	// RPC, set ok to true as return value. Need by rpc.Call reply argument
 	*ok = true
+	rpc.log.Info("new metric successfully added")
 	return nil
 }
 
@@ -197,7 +202,7 @@ func (rpc *rpcServer) Declare(nc *NamedCollector, ok *bool) error {
 		}
 
 	default:
-		return errors.E(op, errors.Errorf("unknown collector type `%s`", nc.Type))
+		return errors.E(op, errors.Errorf("unknown collector type %s", nc.Type))
 	}
 
 	// add collector to sync.Map

@@ -1,7 +1,5 @@
 package metrics
 
-// todo: declare metric at runtime
-
 import (
 	"context"
 	"crypto/tls"
@@ -222,5 +220,8 @@ func (m *Plugin) Name() string {
 
 // RPC interface satisfaction
 func (m *Plugin) RPC() interface{} {
-	return &rpcServer{svc: m}
+	return &rpcServer{
+		svc: m,
+		log: m.log,
+	}
 }
