@@ -20,6 +20,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const dialAddr = "127.0.0.1:6001"
+const dialNetwork = "tcp"
+const getAddr = "http://localhost:2112/metrics"
+
 // get request and return body
 func get(url string) (string, error) {
 	r, err := http.Get(url)
@@ -240,22 +244,22 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 	}()
 
 	t.Run("DeclareMetric", declareMetricsTest)
-	genericOut, err := get("http://localhost:2112/metrics")
+	genericOut, err := get(getAddr)
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "test_metrics_named_collector")
 
 	t.Run("AddMetric", addMetricsTest)
-	genericOut, err = get("http://localhost:2112/metrics")
+	genericOut, err = get(getAddr)
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "test_metrics_named_collector 10000")
 
 	t.Run("SetMetric", setMetric)
-	genericOut, err = get("http://localhost:2112/metrics")
+	genericOut, err = get(getAddr)
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "user_gauge_collector 100")
 
 	t.Run("VectorMetric", vectorMetric)
-	genericOut, err = get("http://localhost:2112/metrics")
+	genericOut, err = get(getAddr)
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "gauge_2_collector{section=\"first\",type=\"core\"} 100")
 
@@ -263,12 +267,12 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 	t.Run("SetWithoutLabels", setWithoutLabels)
 	t.Run("SetOnHistogram", setOnHistogram)
 	t.Run("MetricSub", subMetric)
-	genericOut, err = get("http://localhost:2112/metrics")
+	genericOut, err = get(getAddr)
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "sub_gauge_subMetric 1")
 
 	t.Run("SubVector", subVector)
-	genericOut, err = get("http://localhost:2112/metrics")
+	genericOut, err = get(getAddr)
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "sub_gauge_subVector{section=\"first\",type=\"core\"} 1")
 
@@ -276,11 +280,11 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 }
 
 func subVector(t *testing.T) {
-	time.Sleep(time.Second * 1)
-
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	conn, err := net.Dial(dialNetwork, dialAddr)
 	assert.NoError(t, err)
-	defer conn.Close()
+	defer func() {
+		_ = conn.Close()
+	}()
 
 	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
 	var ret bool
@@ -323,12 +327,11 @@ func subVector(t *testing.T) {
 }
 
 func subMetric(t *testing.T) {
-	time.Sleep(time.Second * 1)
-
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	conn, err := net.Dial(dialNetwork, dialAddr)
 	assert.NoError(t, err)
-	defer conn.Close()
-
+	defer func() {
+		_ = conn.Close()
+	}()
 	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
 	var ret bool
 
@@ -338,9 +341,6 @@ func subMetric(t *testing.T) {
 			Namespace: "default",
 			Subsystem: "default",
 			Type:      metrics.Gauge,
-			Help:      "NO HELP!",
-			Labels:    nil,
-			Buckets:   nil,
 		},
 	}
 
@@ -370,12 +370,11 @@ func subMetric(t *testing.T) {
 }
 
 func setOnHistogram(t *testing.T) {
-	time.Sleep(time.Second * 1)
-
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	conn, err := net.Dial(dialNetwork, dialAddr)
 	assert.NoError(t, err)
-	defer conn.Close()
-
+	defer func() {
+		_ = conn.Close()
+	}()
 	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
 	var ret bool
 
@@ -385,9 +384,7 @@ func setOnHistogram(t *testing.T) {
 			Namespace: "default",
 			Subsystem: "default",
 			Type:      metrics.Histogram,
-			Help:      "NO HELP!",
 			Labels:    []string{"type", "section"},
-			Buckets:   nil,
 		},
 	}
 
@@ -408,12 +405,11 @@ func setOnHistogram(t *testing.T) {
 }
 
 func setWithoutLabels(t *testing.T) {
-	time.Sleep(time.Second * 1)
-
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	conn, err := net.Dial(dialNetwork, dialAddr)
 	assert.NoError(t, err)
-	defer conn.Close()
-
+	defer func() {
+		_ = conn.Close()
+	}()
 	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
 	var ret bool
 
@@ -423,9 +419,7 @@ func setWithoutLabels(t *testing.T) {
 			Namespace: "default",
 			Subsystem: "default",
 			Type:      metrics.Gauge,
-			Help:      "NO HELP!",
 			Labels:    []string{"type", "section"},
-			Buckets:   nil,
 		},
 	}
 
@@ -446,12 +440,11 @@ func setWithoutLabels(t *testing.T) {
 }
 
 func missingSection(t *testing.T) {
-	time.Sleep(time.Second * 1)
-
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	conn, err := net.Dial(dialNetwork, dialAddr)
 	assert.NoError(t, err)
-	defer conn.Close()
-
+	defer func() {
+		_ = conn.Close()
+	}()
 	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
 	var ret bool
 
@@ -461,9 +454,7 @@ func missingSection(t *testing.T) {
 			Namespace: "default",
 			Subsystem: "default",
 			Type:      metrics.Gauge,
-			Help:      "NO HELP!",
 			Labels:    []string{"type", "section"},
-			Buckets:   nil,
 		},
 	}
 
@@ -485,12 +476,11 @@ func missingSection(t *testing.T) {
 }
 
 func vectorMetric(t *testing.T) {
-	time.Sleep(time.Second * 1)
-
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	conn, err := net.Dial(dialNetwork, dialAddr)
 	assert.NoError(t, err)
-	defer conn.Close()
-
+	defer func() {
+		_ = conn.Close()
+	}()
 	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
 	var ret bool
 
@@ -500,9 +490,7 @@ func vectorMetric(t *testing.T) {
 			Namespace: "default",
 			Subsystem: "default",
 			Type:      metrics.Gauge,
-			Help:      "NO HELP!",
 			Labels:    []string{"type", "section"},
-			Buckets:   nil,
 		},
 	}
 
@@ -524,12 +512,11 @@ func vectorMetric(t *testing.T) {
 }
 
 func setMetric(t *testing.T) {
-	time.Sleep(time.Second * 1)
-
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	conn, err := net.Dial(dialNetwork, dialAddr)
 	assert.NoError(t, err)
-	defer conn.Close()
-
+	defer func() {
+		_ = conn.Close()
+	}()
 	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
 	var ret bool
 
@@ -539,9 +526,6 @@ func setMetric(t *testing.T) {
 			Namespace: "default",
 			Subsystem: "default",
 			Type:      metrics.Gauge,
-			Help:      "NO HELP!",
-			Labels:    nil,
-			Buckets:   nil,
 		},
 	}
 
@@ -561,12 +545,11 @@ func setMetric(t *testing.T) {
 }
 
 func addMetricsTest(t *testing.T) {
-	time.Sleep(time.Second * 1)
-
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	conn, err := net.Dial(dialNetwork, dialAddr)
 	assert.NoError(t, err)
-	defer conn.Close()
-
+	defer func() {
+		_ = conn.Close()
+	}()
 	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
 	var ret bool
 
@@ -582,12 +565,11 @@ func addMetricsTest(t *testing.T) {
 }
 
 func declareMetricsTest(t *testing.T) {
-	time.Sleep(time.Second * 1)
-
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	conn, err := net.Dial(dialNetwork, dialAddr)
 	assert.NoError(t, err)
-	defer conn.Close()
-
+	defer func() {
+		_ = conn.Close()
+	}()
 	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
 	var ret bool
 

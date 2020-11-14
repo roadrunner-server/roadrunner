@@ -9,7 +9,7 @@ linters:
     - dogsled
     #    - dupl
     - gochecknoinits
-    - goconst
+    #    - goconst
     - gocritic
     - gocyclo
     - gofmt
@@ -31,7 +31,7 @@ linters:
     #    - stylecheck
     - typecheck
     - unconvert
-    - unparam
+    #    - unparam
     #    - unused
     - varcheck
     - whitespace
