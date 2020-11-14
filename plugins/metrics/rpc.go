@@ -39,11 +39,16 @@ func (rpc *rpcServer) Add(m *Metric, ok *bool) error {
 
 	case *prometheus.GaugeVec:
 		if len(m.Labels) == 0 {
-			return errors.E(op, errors.Errorf("required labels for collector `%s`", m.Name))
+			rpc.log.Error("required labels for collector", "collector", m.Name)
+			return errors.E(op, errors.Errorf("required labels for collector %s", m.Name))
 		}
 
-		c.WithLabelValues(m.Labels...).Add(m.Value)
-
+		gauge, err := c.GetMetricWithLabelValues(m.Labels...)
+		if err != nil {
+			rpc.log.Error("failed to get metrics with label values", "collector", m.Name, "labels", m.Labels)
+			return errors.E(op, err)
+		}
+		gauge.Add(m.Value)
 	case prometheus.Counter:
 		c.Add(m.Value)
 
@@ -52,28 +57,35 @@ func (rpc *rpcServer) Add(m *Metric, ok *bool) error {
 			return errors.E(op, errors.Errorf("required labels for collector `%s`", m.Name))
 		}
 
-		c.WithLabelValues(m.Labels...).Add(m.Value)
+		gauge, err := c.GetMetricWithLabelValues(m.Labels...)
+		if err != nil {
+			rpc.log.Error("failed to get metrics with label values", "collector", m.Name, "labels", m.Labels)
+			return errors.E(op, err)
+		}
+		gauge.Add(m.Value)
 
 	default:
-		return errors.E(op, errors.Errorf("collector `%s` does not support method `Add`", m.Name))
+		return errors.E(op, errors.Errorf("collector %s does not support method `Add`", m.Name))
 	}
 
 	// RPC, set ok to true as return value. Need by rpc.Call reply argument
 	*ok = true
-	rpc.log.Info("new metric successfully added")
+	rpc.log.Info("new metric successfully added", "name", m.Name, "labels", m.Labels, "value", m.Value)
 	return nil
 }
 
 // Sub subtract the value from the specific metric (gauge only).
 func (rpc *rpcServer) Sub(m *Metric, ok *bool) error {
-	const op = errors.Op("Sub metric")
+	const op = errors.Op("Subtracting metric")
+	rpc.log.Info("Subtracting value from metric", "name", m.Name, "value", m.Value, "labels", m.Labels)
 	c, exist := rpc.svc.collectors.Load(m.Name)
 	if !exist {
-		return errors.E(op, errors.Errorf("undefined collector `%s`", m.Name))
+		rpc.log.Error("undefined collector", "name", m.Name, "value", m.Value, "labels", m.Labels)
+		return errors.E(op, errors.Errorf("undefined collector %s", m.Name))
 	}
 	if c == nil {
 		// can it be nil ??? I guess can't
-		return errors.E(op, errors.Errorf("undefined collector `%s`", m.Name))
+		return errors.E(op, errors.Errorf("undefined collector %s", m.Name))
 	}
 
 	switch c := c.(type) {
@@ -82,15 +94,21 @@ func (rpc *rpcServer) Sub(m *Metric, ok *bool) error {
 
 	case *prometheus.GaugeVec:
 		if len(m.Labels) == 0 {
-			return errors.E(op, errors.Errorf("required labels for collector `%s`", m.Name))
+			rpc.log.Error("required labels for collector, but none was provided", "name", m.Name, "value", m.Value)
+			return errors.E(op, errors.Errorf("required labels for collector %s", m.Name))
 		}
 
-		c.WithLabelValues(m.Labels...).Sub(m.Value)
+		gauge, err := c.GetMetricWithLabelValues(m.Labels...)
+		if err != nil {
+			rpc.log.Error("failed to get metrics with label values", "collector", m.Name, "labels", m.Labels)
+			return errors.E(op, err)
+		}
+		gauge.Sub(m.Value)
 	default:
 		return errors.E(op, errors.Errorf("collector `%s` does not support method `Sub`", m.Name))
 	}
+	rpc.log.Info("Subtracting operation applied successfully", "name", m.Name, "labels", m.Labels, "value", m.Value)
 
-	// RPC, set ok to true as return value. Need by rpc.Call reply argument
 	*ok = true
 	return nil
 }
@@ -98,12 +116,15 @@ func (rpc *rpcServer) Sub(m *Metric, ok *bool) error {
 // Observe the value (histogram and summary only).
 func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
 	const op = errors.Op("Observe metrics")
+	rpc.log.Info("Observing metric", "name", m.Name, "value", m.Value, "labels", m.Labels)
+
 	c, exist := rpc.svc.collectors.Load(m.Name)
 	if !exist {
-		return errors.E(op, errors.Errorf("undefined collector `%s`", m.Name))
+		rpc.log.Error("undefined collector", "name", m.Name, "value", m.Value, "labels", m.Labels)
+		return errors.E(op, errors.Errorf("undefined collector %s", m.Name))
 	}
 	if c == nil {
-		return errors.E(op, errors.Errorf("undefined collector `%s`", m.Name))
+		return errors.E(op, errors.Errorf("undefined collector %s", m.Name))
 	}
 
 	switch c := c.(type) {
@@ -128,6 +149,7 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
 
 		observer, err := c.GetMetricWithLabelValues(m.Labels...)
 		if err != nil {
+			rpc.log.Error("failed to get metrics with label values", "collector", m.Name, "labels", m.Labels)
 			return errors.E(op, err)
 		}
 		observer.Observe(m.Value)
@@ -135,7 +157,8 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
 		return errors.E(op, errors.Errorf("collector `%s` does not support method `Observe`", m.Name))
 	}
 
-	// RPC, set ok to true as return value. Need by rpc.Call reply argument
+	rpc.log.Info("observe operation finished successfully", "name", m.Name, "labels", m.Labels, "value", m.Value)
+
 	*ok = true
 	return nil
 }
@@ -148,8 +171,10 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
 // 	error
 func (rpc *rpcServer) Declare(nc *NamedCollector, ok *bool) error {
 	const op = errors.Op("Declare metric")
+	rpc.log.Info("Declaring new metric", "name", nc.Name, "type", nc.Type, "namespace", nc.Namespace)
 	_, exist := rpc.svc.collectors.Load(nc.Name)
 	if exist {
+		rpc.log.Error("metric with provided name already exist", "name", nc.Name, "type", nc.Type, "namespace", nc.Namespace)
 		return errors.E(op, errors.Errorf("tried to register existing collector with the name `%s`", nc.Name))
 	}
 
@@ -222,6 +247,8 @@ func (rpc *rpcServer) Declare(nc *NamedCollector, ok *bool) error {
 		return errors.E(op, err)
 	}
 
+	rpc.log.Info("metric successfully added", "name", nc.Name, "type", nc.Type, "namespace", nc.Namespace)
+
 	*ok = true
 	return nil
 }
@@ -229,18 +256,14 @@ func (rpc *rpcServer) Declare(nc *NamedCollector, ok *bool) error {
 // Set the metric value (only for gaude).
 func (rpc *rpcServer) Set(m *Metric, ok *bool) (err error) {
 	const op = errors.Op("Set metric")
-	defer func() {
-		if r, fail := recover().(error); fail {
-			err = r
-		}
-	}()
+	rpc.log.Info("Observing metric", "name", m.Name, "value", m.Value, "labels", m.Labels)
 
 	c, exist := rpc.svc.collectors.Load(m.Name)
 	if !exist {
-		return errors.E(op, errors.Errorf("undefined collector `%s`", m.Name))
+		return errors.E(op, errors.Errorf("undefined collector %s", m.Name))
 	}
 	if c == nil {
-		return errors.E(op, errors.Errorf("undefined collector `%s`", m.Name))
+		return errors.E(op, errors.Errorf("undefined collector %s", m.Name))
 	}
 
 	switch c := c.(type) {
@@ -249,16 +272,23 @@ func (rpc *rpcServer) Set(m *Metric, ok *bool) (err error) {
 
 	case *prometheus.GaugeVec:
 		if len(m.Labels) == 0 {
-			return errors.E(op, errors.Errorf("required labels for collector `%s`", m.Name))
+			rpc.log.Error("required labels for collector", "collector", m.Name)
+			return errors.E(op, errors.Errorf("required labels for collector %s", m.Name))
 		}
 
-		c.WithLabelValues(m.Labels...).Set(m.Value)
+		gauge, err := c.GetMetricWithLabelValues(m.Labels...)
+		if err != nil {
+			rpc.log.Error("failed to get metrics with label values", "collector", m.Name, "labels", m.Labels)
+			return errors.E(op, err)
+		}
+		gauge.Set(m.Value)
 
 	default:
-		return errors.E(op, errors.Errorf("collector `%s` does not support method `Set`", m.Name))
+		return errors.E(op, errors.Errorf("collector `%s` does not support method Set", m.Name))
 	}
 
-	// RPC, set ok to true as return value. Need by rpc.Call reply argument
+	rpc.log.Info("set operation finished successfully", "name", m.Name, "labels", m.Labels, "value", m.Value)
+
 	*ok = true
 	return nil
 }
