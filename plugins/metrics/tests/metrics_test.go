@@ -276,7 +276,170 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "sub_gauge_subVector{section=\"first\",type=\"core\"} 1")
 
+	t.Run("RegisterHistogram", registerHistogram)
+
+	genericOut, err = get(getAddr)
+	assert.NoError(t, err)
+	assert.Contains(t, genericOut, `TYPE histogram_registerHistogram`)
+
+	// check buckets
+	assert.Contains(t, genericOut, `histogram_registerHistogram_bucket{le="0.1"} 0`)
+	assert.Contains(t, genericOut, `histogram_registerHistogram_bucket{le="0.2"} 0`)
+	assert.Contains(t, genericOut, `histogram_registerHistogram_bucket{le="0.5"} 0`)
+	assert.Contains(t, genericOut, `histogram_registerHistogram_bucket{le="+Inf"} 0`)
+	assert.Contains(t, genericOut, `histogram_registerHistogram_sum 0`)
+	assert.Contains(t, genericOut, `histogram_registerHistogram_count 0`)
+
+	t.Run("CounterMetric", counterMetric)
+	genericOut, err = get(getAddr)
+	assert.NoError(t, err)
+	assert.Contains(t, genericOut, "HELP default_default_counter_CounterMetric test_counter")
+	assert.Contains(t, genericOut, `default_default_counter_CounterMetric{section="section2",type="type2"}`)
+
+	t.Run("ObserveMetric", observeMetric)
+	genericOut, err = get(getAddr)
+	assert.NoError(t, err)
+	assert.Contains(t, genericOut, "observe_observeMetric")
+
+	t.Run("ObserveMetricNotEnoughLabels", observeMetricNotEnoughLabels)
+
 	close(sig)
+}
+
+func observeMetricNotEnoughLabels(t *testing.T) {
+	conn, err := net.Dial(dialNetwork, dialAddr)
+	assert.NoError(t, err)
+	defer func() {
+		_ = conn.Close()
+	}()
+	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	var ret bool
+
+	nc := metrics.NamedCollector{
+		Name: "observe_observeMetricNotEnoughLabels",
+		Collector: metrics.Collector{
+			Namespace: "default",
+			Subsystem: "default",
+			Help:      "test_observe",
+			Type:      metrics.Histogram,
+			Labels:    []string{"type", "section"},
+		},
+	}
+
+	err = client.Call("metrics.Declare", nc, &ret)
+	assert.NoError(t, err)
+	assert.True(t, ret)
+	ret = false
+
+	assert.Error(t, client.Call("metrics.Observe", metrics.Metric{
+		Name:   "observe_observeMetric",
+		Value:  100.0,
+		Labels: []string{"test"},
+	}, &ret))
+	assert.False(t, ret)
+}
+
+func observeMetric(t *testing.T) {
+	conn, err := net.Dial(dialNetwork, dialAddr)
+	assert.NoError(t, err)
+	defer func() {
+		_ = conn.Close()
+	}()
+	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	var ret bool
+
+	nc := metrics.NamedCollector{
+		Name: "observe_observeMetric",
+		Collector: metrics.Collector{
+			Namespace: "default",
+			Subsystem: "default",
+			Help:      "test_observe",
+			Type:      metrics.Histogram,
+			Labels:    []string{"type", "section"},
+		},
+	}
+
+	err = client.Call("metrics.Declare", nc, &ret)
+	assert.NoError(t, err)
+	assert.True(t, ret)
+	ret = false
+
+	assert.NoError(t, client.Call("metrics.Observe", metrics.Metric{
+		Name:   "observe_observeMetric",
+		Value:  100.0,
+		Labels: []string{"test", "test2"},
+	}, &ret))
+	assert.True(t, ret)
+}
+
+func counterMetric(t *testing.T) {
+	conn, err := net.Dial(dialNetwork, dialAddr)
+	assert.NoError(t, err)
+	defer func() {
+		_ = conn.Close()
+	}()
+	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	var ret bool
+
+	nc := metrics.NamedCollector{
+		Name: "counter_CounterMetric",
+		Collector: metrics.Collector{
+			Namespace: "default",
+			Subsystem: "default",
+			Help:      "test_counter",
+			Type:      metrics.Counter,
+			Labels:    []string{"type", "section"},
+		},
+	}
+
+	err = client.Call("metrics.Declare", nc, &ret)
+	assert.NoError(t, err)
+	assert.True(t, ret)
+
+	ret = false
+
+	assert.NoError(t, client.Call("metrics.Add", metrics.Metric{
+		Name:   "counter_CounterMetric",
+		Value:  100.0,
+		Labels: []string{"type2", "section2"},
+	}, &ret))
+	assert.True(t, ret)
+}
+
+func registerHistogram(t *testing.T) {
+	conn, err := net.Dial(dialNetwork, dialAddr)
+	assert.NoError(t, err)
+	defer func() {
+		_ = conn.Close()
+	}()
+	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	var ret bool
+
+	nc := metrics.NamedCollector{
+		Name: "histogram_registerHistogram",
+		Collector: metrics.Collector{
+			Help:    "test_histogram",
+			Type:    metrics.Histogram,
+			Buckets: []float64{0.1, 0.2, 0.5},
+		},
+	}
+
+	err = client.Call("metrics.Declare", nc, &ret)
+	assert.NoError(t, err)
+	assert.True(t, ret)
+
+	ret = false
+
+	m := metrics.Metric{
+		Name:   "histogram_registerHistogram",
+		Value:  10000,
+		Labels: nil,
+	}
+
+	err = client.Call("metrics.Add", m, &ret)
+	assert.Error(t, err)
+	assert.False(t, ret)
+
 }
 
 func subVector(t *testing.T) {

@@ -112,7 +112,11 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
 			return errors.E(op, errors.Errorf("required labels for collector `%s`", m.Name))
 		}
 
-		c.WithLabelValues(m.Labels...).Observe(m.Value)
+		observer, err := c.GetMetricWithLabelValues(m.Labels...)
+		if err != nil {
+			return errors.E(op, err)
+		}
+		observer.Observe(m.Value)
 
 	case prometheus.Histogram:
 		c.Observe(m.Value)
@@ -122,7 +126,11 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
 			return errors.E(op, errors.Errorf("required labels for collector `%s`", m.Name))
 		}
 
-		c.WithLabelValues(m.Labels...).Observe(m.Value)
+		observer, err := c.GetMetricWithLabelValues(m.Labels...)
+		if err != nil {
+			return errors.E(op, err)
+		}
+		observer.Observe(m.Value)
 	default:
 		return errors.E(op, errors.Errorf("collector `%s` does not support method `Observe`", m.Name))
 	}
