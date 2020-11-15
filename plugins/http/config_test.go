@@ -1,13 +1,12 @@
 package http
 
 import (
-	json "github.com/json-iterator/go"
-	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/service"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 	"time"
+
+	json "github.com/json-iterator/go"
+	"github.com/stretchr/testify/assert"
 )
 
 type mockCfg struct{ cfg string }

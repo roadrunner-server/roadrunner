@@ -10,8 +10,6 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
-	"github.com/spiral/roadrunner"
 )
 
 const (

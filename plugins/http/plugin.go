@@ -13,12 +13,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/sirupsen/logrus"
-	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/service/env"
-	"github.com/spiral/roadrunner/service/http/attributes"
-	"github.com/spiral/roadrunner/service/rpc"
-	"github.com/spiral/roadrunner/util"
+	"github.com/spiral/roadrunner/v2/interfaces/log"
+	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/rpc"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"golang.org/x/sys/cpu"
@@ -80,20 +77,19 @@ func (s *Service) AddListener(l func(event int, ctx interface{})) {
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Service) Init(cfg *Config, r *rpc.Service, e env.Environment, log *logrus.Logger) (bool, error) {
+func (s *Service) Init(cfg config.Configurer, r rpc.Plugin, log log.Logger) (bool, error) {
 	s.cfg = cfg
 	s.log = log
-	s.env = e
 
-	if r != nil {
-		if err := r.Register(ID, &rpcServer{s}); err != nil {
-			return false, err
-		}
-	}
-
-	if !cfg.EnableHTTP() && !cfg.EnableTLS() && !cfg.EnableFCGI() {
-		return false, nil
-	}
+	//if r != nil {
+	//	if err := r.Register(ID, &rpcServer{s}); err != nil {
+	//		return false, err
+	//	}
+	//}
+	//
+	//if !cfg.EnableHTTP() && !cfg.EnableTLS() && !cfg.EnableFCGI() {
+	//	return false, nil
+	//}
 
 	return true, nil
 }

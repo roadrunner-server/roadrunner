@@ -3,8 +3,6 @@ package http
 import (
 	"errors"
 	"fmt"
-	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/service"
 	"net"
 	"os"
 	"strings"

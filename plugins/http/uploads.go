@@ -2,8 +2,10 @@ package http
 
 import (
 	"fmt"
+
 	json "github.com/json-iterator/go"
-	"github.com/sirupsen/logrus"
+	"github.com/spiral/roadrunner/v2/interfaces/log"
+
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -48,7 +50,7 @@ func (u *Uploads) MarshalJSON() ([]byte, error) {
 
 // Open moves all uploaded files to temp directory, return error in case of issue with temp directory. File errors
 // will be handled individually.
-func (u *Uploads) Open(log *logrus.Logger) {
+func (u *Uploads) Open(log log.Logger) {
 	var wg sync.WaitGroup
 	for _, f := range u.list {
 		wg.Add(1)

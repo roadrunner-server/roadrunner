@@ -11,8 +11,7 @@ import (
 
 // PipeFactory connects to stack using standard
 // streams (STDIN, STDOUT pipes).
-type PipeFactory struct {
-}
+type PipeFactory struct{}
 
 // NewPipeFactory returns new factory instance and starts
 // listening

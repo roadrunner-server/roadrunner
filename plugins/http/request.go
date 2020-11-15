@@ -9,9 +9,7 @@ import (
 	"strings"
 
 	json "github.com/json-iterator/go"
-	"github.com/sirupsen/logrus"
-	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/service/http/attributes"
+	"github.com/spiral/roadrunner/v2/interfaces/log"
 )
 
 const (
@@ -114,7 +112,7 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 }
 
 // Open moves all uploaded files to temporary directory so it can be given to php later.
-func (r *Request) Open(log *logrus.Logger) {
+func (r *Request) Open(log log.Logger) {
 	if r.Uploads == nil {
 		return
 	}

@@ -6,9 +6,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	json "github.com/json-iterator/go"
-	"github.com/spiral/roadrunner"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -16,6 +13,9 @@ import (
 	"os"
 	"testing"
 	"time"
+
+	json "github.com/json-iterator/go"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHandler_Upload_File(t *testing.T) {
