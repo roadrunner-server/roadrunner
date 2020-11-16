@@ -1,4 +1,4 @@
-package app
+package server
 
 import (
 	"context"
@@ -10,20 +10,12 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
+	"github.com/spiral/roadrunner/v2/interfaces/server"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/util"
 )
 
-const ServiceName = "app"
-
-type Env map[string]string
-
-// WorkerFactory creates workers for the application.
-type WorkerFactory interface {
-	CmdFactory(env Env) (func() *exec.Cmd, error)
-	NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, error)
-	NewWorkerPool(ctx context.Context, opt roadrunner.Config, env Env) (roadrunner.Pool, error)
-}
+const ServiceName = "server"
 
 // Plugin manages worker
 type Plugin struct {
@@ -71,7 +63,7 @@ func (app *Plugin) Stop() error {
 }
 
 // CmdFactory provides worker command factory assocated with given context.
-func (app *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
+func (app *Plugin) CmdFactory(env server.Env) (func() *exec.Cmd, error) {
 	var cmdArgs []string
 
 	// create command according to the config
@@ -97,7 +89,7 @@ func (app *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 }
 
 // NewWorker issues new standalone worker.
-func (app *Plugin) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBase, error) {
+func (app *Plugin) NewWorker(ctx context.Context, env server.Env) (roadrunner.WorkerBase, error) {
 	const op = errors.Op("new worker")
 	spawnCmd, err := app.CmdFactory(env)
 	if err != nil {
@@ -115,7 +107,7 @@ func (app *Plugin) NewWorker(ctx context.Context, env Env) (roadrunner.WorkerBas
 }
 
 // NewWorkerPool issues new worker pool.
-func (app *Plugin) NewWorkerPool(ctx context.Context, opt roadrunner.Config, env Env) (roadrunner.Pool, error) {
+func (app *Plugin) NewWorkerPool(ctx context.Context, opt roadrunner.PoolConfig, env server.Env) (roadrunner.Pool, error) {
 	spawnCmd, err := app.CmdFactory(env)
 	if err != nil {
 		return nil, err
@@ -159,7 +151,7 @@ func (app *Plugin) initFactory() (roadrunner.Factory, error) {
 	}
 }
 
-func (app *Plugin) setEnv(e Env) []string {
+func (app *Plugin) setEnv(e server.Env) []string {
 	env := append(os.Environ(), fmt.Sprintf("RR_RELAY=%s", app.cfg.Relay))
 	for k, v := range e {
 		env = append(env, fmt.Sprintf("%s=%s", strings.ToUpper(k), v))

@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var cfg = Config{
+var cfg = PoolConfig{
 	NumWorkers:      int64(runtime.NumCPU()),
 	AllocateTimeout: time.Second,
 	DestroyTimeout:  time.Second,
@@ -52,7 +52,7 @@ func Test_ConfigNoErrorInitDefaults(t *testing.T) {
 		context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
-		Config{
+		PoolConfig{
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
 		},
@@ -252,7 +252,7 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 		context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "delay", "pipes") },
 		NewPipeFactory(),
-		Config{
+		PoolConfig{
 			NumWorkers:      1,
 			AllocateTimeout: time.Nanosecond * 1,
 			DestroyTimeout:  time.Second * 2,
@@ -268,7 +268,7 @@ func Test_StaticPool_Replace_Worker(t *testing.T) {
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "pid", "pipes") },
 		NewPipeFactory(),
-		Config{
+		PoolConfig{
 			NumWorkers:      1,
 			MaxJobs:         1,
 			AllocateTimeout: time.Second,
@@ -305,7 +305,7 @@ func Test_StaticPool_Debug_Worker(t *testing.T) {
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "pid", "pipes") },
 		NewPipeFactory(),
-		Config{
+		PoolConfig{
 			Debug:           true,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
@@ -345,7 +345,7 @@ func Test_StaticPool_Stop_Worker(t *testing.T) {
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "stop", "pipes") },
 		NewPipeFactory(),
-		Config{
+		PoolConfig{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
@@ -385,7 +385,7 @@ func Test_Static_Pool_Destroy_And_Close(t *testing.T) {
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "delay", "pipes") },
 		NewPipeFactory(),
-		Config{
+		PoolConfig{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
@@ -407,7 +407,7 @@ func Test_Static_Pool_Destroy_And_Close_While_Wait(t *testing.T) {
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "delay", "pipes") },
 		NewPipeFactory(),
-		Config{
+		PoolConfig{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
@@ -437,7 +437,7 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 		context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "tests/slow-destroy.php", "echo", "pipes") },
 		NewPipeFactory(),
-		Config{
+		PoolConfig{
 			NumWorkers:      5,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
@@ -462,7 +462,7 @@ func Test_Static_Pool_Slow_Destroy(t *testing.T) {
 		context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "tests/slow-destroy.php", "echo", "pipes") },
 		NewPipeFactory(),
-		Config{
+		PoolConfig{
 			NumWorkers:      5,
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
@@ -503,7 +503,7 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
-		Config{
+		PoolConfig{
 			NumWorkers:      int64(runtime.NumCPU()),
 			AllocateTimeout: time.Second * 100,
 			DestroyTimeout:  time.Second,
@@ -533,7 +533,7 @@ func Benchmark_Pool_Echo_Replaced(b *testing.B) {
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
 		NewPipeFactory(),
-		Config{
+		PoolConfig{
 			NumWorkers:      1,
 			MaxJobs:         1,
 			AllocateTimeout: time.Second,

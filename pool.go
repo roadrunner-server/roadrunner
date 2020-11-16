@@ -49,7 +49,7 @@ type Pool interface {
 	AddListener(listener util.EventListener)
 
 	// GetConfig returns pool configuration.
-	GetConfig() Config
+	GetConfig() PoolConfig
 
 	// Exec
 	Exec(rqs Payload) (Payload, error)
@@ -67,7 +67,7 @@ type Pool interface {
 }
 
 // Configures the pool behaviour.
-type Config struct {
+type PoolConfig struct {
 	// Debug flag creates new fresh worker before every request.
 	Debug bool
 
@@ -93,7 +93,7 @@ type Config struct {
 }
 
 // InitDefaults enables default config values.
-func (cfg *Config) InitDefaults() {
+func (cfg *PoolConfig) InitDefaults() {
 	if cfg.NumWorkers == 0 {
 		cfg.NumWorkers = int64(runtime.NumCPU())
 	}

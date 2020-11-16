@@ -1,5 +1,5 @@
-upp:
-  command: "php ../../../tests/client.php echo pipes"
+server:
+  command: "php some_absent_file.php"
   user: ""
   group: ""
   env:

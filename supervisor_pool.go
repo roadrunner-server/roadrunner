@@ -92,7 +92,7 @@ func (sp *supervisedPool) AddListener(listener util.EventListener) {
 	sp.pool.AddListener(listener)
 }
 
-func (sp *supervisedPool) GetConfig() Config {
+func (sp *supervisedPool) GetConfig() PoolConfig {
 	return sp.pool.GetConfig()
 }
 

@@ -1,6 +1,10 @@
-package app
+package server
 
-import "time"
+import (
+	"time"
+
+	"github.com/spiral/roadrunner/v2/interfaces/server"
+)
 
 // Config config combines factory, pool and cmd configurations.
 type Config struct {
@@ -14,7 +18,7 @@ type Config struct {
 	Group string
 
 	// Env represents application environment.
-	Env Env
+	Env server.Env
 
 	// Listen defines connection method and factory to be used to connect to workers:
 	// "pipes", "tcp://:6001", "unix://rr.sock"

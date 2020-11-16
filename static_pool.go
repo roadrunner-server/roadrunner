@@ -29,7 +29,7 @@ type PoolOptions func(p *StaticPool)
 
 // StaticPool controls worker creation, destruction and task routing. Pool uses fixed amount of stack.
 type StaticPool struct {
-	cfg Config
+	cfg PoolConfig
 
 	// worker command creator
 	cmd func() *exec.Cmd
@@ -52,7 +52,7 @@ type StaticPool struct {
 }
 
 // NewPool creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
-func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg Config, options ...PoolOptions) (Pool, error) {
+func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg PoolConfig, options ...PoolOptions) (Pool, error) {
 	const op = errors.Op("NewPool")
 	cfg.InitDefaults()
 
@@ -119,8 +119,8 @@ func (sp *StaticPool) AddListener(listener util.EventListener) {
 	sp.events.AddListener(listener)
 }
 
-// Config returns associated pool configuration. Immutable.
-func (sp *StaticPool) GetConfig() Config {
+// PoolConfig returns associated pool configuration. Immutable.
+func (sp *StaticPool) GetConfig() PoolConfig {
 	return sp.cfg
 }
 
