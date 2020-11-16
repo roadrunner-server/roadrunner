@@ -28,8 +28,8 @@ func (p1 *Plugin1) Name() string {
 	return "rpc_test.plugin1"
 }
 
-func (p1 *Plugin1) RPCService() (interface{}, error) {
-	return &PluginRpc{srv: p1}, nil
+func (p1 *Plugin1) RPC() interface{} {
+	return &PluginRpc{srv: p1}
 }
 
 type PluginRpc struct {

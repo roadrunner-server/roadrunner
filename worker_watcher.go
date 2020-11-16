@@ -84,7 +84,7 @@ type WorkerWatcher interface {
 }
 
 // workerCreateFunc can be nil, but in that case, dead stack will not be replaced
-func newWorkerWatcher(allocator func(args ...interface{}) (WorkerBase, error), numWorkers int64, events *util.EventHandler) *workerWatcher {
+func newWorkerWatcher(allocator Allocator, numWorkers int64, events util.EventsHandler) WorkerWatcher {
 	ww := &workerWatcher{
 		stack:             NewWorkersStack(),
 		allocator:         allocator,
@@ -99,10 +99,10 @@ func newWorkerWatcher(allocator func(args ...interface{}) (WorkerBase, error), n
 type workerWatcher struct {
 	mutex             sync.RWMutex
 	stack             *Stack
-	allocator         func(args ...interface{}) (WorkerBase, error)
+	allocator         Allocator
 	initialNumWorkers int64
 	actualNumWorkers  int64
-	events            *util.EventHandler
+	events            util.EventsHandler
 }
 
 func (ww *workerWatcher) AddToWatch(ctx context.Context, workers []WorkerBase) error {

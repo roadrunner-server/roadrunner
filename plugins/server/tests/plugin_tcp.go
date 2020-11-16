@@ -5,27 +5,28 @@ import (
 
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2"
-	"github.com/spiral/roadrunner/v2/plugins/app"
+	"github.com/spiral/roadrunner/v2/interfaces/server"
 	"github.com/spiral/roadrunner/v2/plugins/config"
+	plugin "github.com/spiral/roadrunner/v2/plugins/server"
 )
 
-type Foo2 struct {
+type Foo3 struct {
 	configProvider config.Configurer
-	wf             app.WorkerFactory
+	wf             server.WorkerFactory
 	pool           roadrunner.Pool
 }
 
-func (f *Foo2) Init(p config.Configurer, workerFactory app.WorkerFactory) error {
+func (f *Foo3) Init(p config.Configurer, workerFactory server.WorkerFactory) error {
 	f.configProvider = p
 	f.wf = workerFactory
 	return nil
 }
 
-func (f *Foo2) Serve() chan error {
+func (f *Foo3) Serve() chan error {
 	const op = errors.Op("serve")
 	var err error
 	errCh := make(chan error, 1)
-	conf := &app.Config{}
+	conf := &plugin.Config{}
 
 	// test payload for echo
 	r := roadrunner.Payload{
@@ -105,7 +106,7 @@ func (f *Foo2) Serve() chan error {
 	return errCh
 }
 
-func (f *Foo2) Stop() error {
+func (f *Foo3) Stop() error {
 	f.pool.Destroy(context.Background())
 	return nil
 }

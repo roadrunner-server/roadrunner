@@ -1,0 +1,7 @@
+version: '3.7'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+    - 9090:9090

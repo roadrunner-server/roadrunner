@@ -2,7 +2,7 @@ package tests
 
 import (
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/log"
+	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 

@@ -1,14 +1,15 @@
 linters:
-  # please, do not use `enable-all`: it's deprecated and will be removed soon.
-  # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
+  skip-files:
+    - ".*\\test\\.go$"
+    - lib/bad.go
   disable-all: true
   enable:
     - bodyclose
     - depguard
     - dogsled
-#    - dupl
+    #    - dupl
     - gochecknoinits
-    - goconst
+    #    - goconst
     - gocritic
     - gocyclo
     - gofmt
@@ -27,10 +28,10 @@ linters:
     - scopelint
     - staticcheck
     - structcheck
-#    - stylecheck
+    #    - stylecheck
     - typecheck
     - unconvert
-    - unparam
+    #    - unparam
     #    - unused
     - varcheck
     - whitespace
