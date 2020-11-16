@@ -157,6 +157,7 @@ func TestMetricsGaugeCollector(t *testing.T) {
 	out, err := get("http://localhost:2112/metrics")
 	assert.NoError(t, err)
 	assert.Contains(t, out, "my_gauge 100")
+	assert.Contains(t, out, "my_gauge2 100")
 
 	out, err = get("http://localhost:2112/metrics")
 	assert.NoError(t, err)

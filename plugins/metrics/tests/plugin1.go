@@ -35,5 +35,12 @@ func (p1 *Plugin1) MetricsCollector() []prometheus.Collector {
 	})
 
 	collector.Set(100)
-	return []prometheus.Collector{collector}
+
+	collector2 := prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "my_gauge2",
+		Help: "My gauge2 value",
+	})
+
+	collector2.Set(100)
+	return []prometheus.Collector{collector, collector2}
 }
