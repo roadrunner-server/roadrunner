@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/interfaces/log"
 )
 
 const (
@@ -60,8 +62,8 @@ func (e *ResponseEvent) Elapsed() time.Duration {
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Handler struct {
 	cfg *Config
-	log *logrus.Logger
-	rr  *roadrunner.Server
+	log log.Logger
+	rr  roadrunner.Pool
 	mul sync.Mutex
 	lsn func(event int, ctx interface{})
 }

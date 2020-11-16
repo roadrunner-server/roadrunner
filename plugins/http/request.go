@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	json "github.com/json-iterator/go"
+	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 )
 
@@ -66,8 +67,8 @@ func fetchIP(pair string) string {
 }
 
 // NewRequest creates new PSR7 compatible request using net/http request.
-func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
-	req = &Request{
+func NewRequest(r *http.Request, cfg *UploadsConfig) (*Request, error) {
+	req := &Request{
 		RemoteAddr: fetchIP(r.RemoteAddr),
 		Protocol:   r.Proto,
 		Method:     r.Method,
@@ -75,7 +76,7 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 		Header:     r.Header,
 		Cookies:    make(map[string]string),
 		RawQuery:   r.URL.RawQuery,
-		Attributes: attributes.All(r),
+		//Attributes: attributes.All(r),
 	}
 
 	for _, c := range r.Cookies() {
@@ -89,18 +90,19 @@ func NewRequest(r *http.Request, cfg *UploadsConfig) (req *Request, err error) {
 		return req, nil
 
 	case contentStream:
+		var err error
 		req.body, err = ioutil.ReadAll(r.Body)
 		return req, err
 
 	case contentMultipart:
-		if err = r.ParseMultipartForm(defaultMaxMemory); err != nil {
+		if err := r.ParseMultipartForm(defaultMaxMemory); err != nil {
 			return nil, err
 		}
 
 		req.Uploads = parseUploads(r, cfg)
 		fallthrough
 	case contentFormData:
-		if err = r.ParseForm(); err != nil {
+		if err := r.ParseForm(); err != nil {
 			return nil, err
 		}
 
@@ -121,7 +123,7 @@ func (r *Request) Open(log log.Logger) {
 }
 
 // Close clears all temp file uploads
-func (r *Request) Close(log *logrus.Logger) {
+func (r *Request) Close(log log.Logger) {
 	if r.Uploads == nil {
 		return
 	}
@@ -131,17 +133,17 @@ func (r *Request) Close(log *logrus.Logger) {
 
 // Payload request marshaled RoadRunner payload based on PSR7 data. values encode method is JSON. Make sure to open
 // files prior to calling this method.
-func (r *Request) Payload() (p *roadrunner.Payload, err error) {
-	p = &roadrunner.Payload{}
+func (r *Request) Payload() (roadrunner.Payload, error) {
+	p := roadrunner.Payload{}
 
-	j := json.ConfigCompatibleWithStandardLibrary
-	if p.Context, err = j.Marshal(r); err != nil {
-		return nil, err
+	var err error
+	if p.Context, err = json.Marshal(r); err != nil {
+		return roadrunner.EmptyPayload, err
 	}
 
 	if r.Parsed {
-		if p.Body, err = j.Marshal(r.body); err != nil {
-			return nil, err
+		if p.Body, err = json.Marshal(r.body); err != nil {
+			return roadrunner.EmptyPayload, err
 		}
 	} else if r.body != nil {
 		p.Body = r.body.([]byte)

@@ -6,7 +6,36 @@ import (
 	"net"
 	"os"
 	"strings"
+	"time"
+
+	"github.com/spiral/roadrunner/v2"
 )
+
+type PoolConfig struct {
+}
+
+type ServerConfig struct {
+	// Command includes command strings with all the parameters, example: "php worker.php pipes".
+	Command string
+
+	// User under which process will be started
+	User string
+
+	// Relay defines connection method and factory to be used to connect to workers:
+	// "pipes", "tcp://:6001", "unix://rr.sock"
+	// This config section must not change on re-configuration.
+	Relay string
+
+	// RelayTimeout defines for how long socket factory will be waiting for worker connection. This config section
+	// must not change on re-configuration.
+	RelayTimeout time.Duration
+
+	// Pool defines worker pool configuration, number of workers, timeouts and etc. This config section might change
+	// while server is running.
+	PoolCfg *roadrunner.PoolConfig
+
+	env map[string]string
+}
 
 // Config configures RoadRunner HTTP server.
 type Config struct {
@@ -33,7 +62,7 @@ type Config struct {
 	Uploads *UploadsConfig
 
 	// Workers configures rr server and worker pool.
-	Workers *roadrunner.ServerConfig
+	Workers *ServerConfig
 }
 
 // FCGIConfig for FastCGI server.

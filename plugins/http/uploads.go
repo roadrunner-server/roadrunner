@@ -1,8 +1,6 @@
 package http
 
 import (
-	"fmt"
-
 	json "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 
@@ -58,7 +56,7 @@ func (u *Uploads) Open(log log.Logger) {
 			defer wg.Done()
 			err := f.Open(u.cfg)
 			if err != nil && log != nil {
-				log.Error(fmt.Errorf("error opening the file: error %v", err))
+				log.Error("error opening the file", "err", err)
 			}
 		}(f)
 	}
@@ -67,12 +65,12 @@ func (u *Uploads) Open(log log.Logger) {
 }
 
 // Clear deletes all temporary files.
-func (u *Uploads) Clear(log *logrus.Logger) {
+func (u *Uploads) Clear(log log.Logger) {
 	for _, f := range u.list {
 		if f.TempFilename != "" && exists(f.TempFilename) {
 			err := os.Remove(f.TempFilename)
 			if err != nil && log != nil {
-				log.Error(fmt.Errorf("error removing the file: error %v", err))
+				log.Error("error removing the file", "err", err)
 			}
 		}
 	}

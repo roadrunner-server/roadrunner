@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -13,9 +12,11 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2"
+	factory "github.com/spiral/roadrunner/v2/interfaces/app"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/rpc"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"golang.org/x/sys/cpu"
@@ -23,63 +24,84 @@ import (
 
 const (
 	// ID contains default service name.
-	ID = "http"
+	ServiceName = "http"
 
 	// EventInitSSL thrown at moment of https initialization. SSL server passed as context.
 	EventInitSSL = 750
 )
 
-var couldNotAppendPemError = errors.New("could not append Certs from PEM")
+//var couldNotAppendPemError = errors.New("could not append Certs from PEM")
 
 // http middleware type.
 type middleware func(f http.HandlerFunc) http.HandlerFunc
 
 // Service manages rr, http servers.
-type Service struct {
+type Plugin struct {
 	sync.Mutex
 	sync.WaitGroup
 
-	cfg   *Config
-	log   *logrus.Logger
-	cprod roadrunner.CommandProducer
-	env   env.Environment
-	lsns  []func(event int, ctx interface{})
-	mdwr  []middleware
+	cfg *Config
+	log log.Logger
 
-	rr         *roadrunner.Server
-	controller roadrunner.Controller
-	handler    *Handler
+	//cprod roadrunner.CommandProducer
+	env  map[string]string
+	lsns []func(event int, ctx interface{})
+	mdwr []middleware
+
+	rr roadrunner.Pool
+	//controller roadrunner.Controller
+	handler *Handler
 
 	http  *http.Server
 	https *http.Server
 	fcgi  *http.Server
 }
 
-// Attach attaches controller. Currently only one controller is supported.
-func (s *Service) Attach(w roadrunner.Controller) {
-	s.controller = w
-}
-
-// ProduceCommands changes the default command generator method
-func (s *Service) ProduceCommands(producer roadrunner.CommandProducer) {
-	s.cprod = producer
-}
+//// Attach attaches controller. Currently only one controller is supported.
+//func (s *Service) Attach(w roadrunner.Controller) {
+//	s.controller = w
+//}
+//
+//// ProduceCommands changes the default command generator method
+//func (s *Service) ProduceCommands(producer roadrunner.CommandProducer) {
+//	s.cprod = producer
+//}
 
 // AddMiddleware adds new net/http mdwr.
-func (s *Service) AddMiddleware(m middleware) {
+func (s *Plugin) AddMiddleware(m middleware) {
 	s.mdwr = append(s.mdwr, m)
 }
 
 // AddListener attaches server event controller.
-func (s *Service) AddListener(l func(event int, ctx interface{})) {
+func (s *Plugin) AddListener(l func(event int, ctx interface{})) {
 	s.lsns = append(s.lsns, l)
 }
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Service) Init(cfg config.Configurer, r rpc.Plugin, log log.Logger) (bool, error) {
-	s.cfg = cfg
+func (s *Plugin) Init(cfg config.Configurer, log log.Logger, app factory.WorkerFactory) error {
+	const op = errors.Op("http Init")
+	err := cfg.UnmarshalKey(ServiceName, &s.cfg)
+	if err != nil {
+		return errors.E(op, err)
+	}
+
 	s.log = log
+
+	p, err := app.NewWorkerPool(context.Background(), roadrunner.PoolConfig{
+		Debug:           s.cfg.Workers.PoolCfg.Debug,
+		NumWorkers:      s.cfg.Workers.PoolCfg.NumWorkers,
+		MaxJobs:         s.cfg.Workers.PoolCfg.MaxJobs,
+		AllocateTimeout: s.cfg.Workers.PoolCfg.AllocateTimeout,
+		DestroyTimeout:  s.cfg.Workers.PoolCfg.DestroyTimeout,
+		Supervisor:      nil,
+	}, nil)
+
+	if err != nil {
+		return errors.E(op, err)
+	}
+
+	s.rr = p
 
 	//if r != nil {
 	//	if err := r.Register(ID, &rpcServer{s}); err != nil {
@@ -91,11 +113,11 @@ func (s *Service) Init(cfg config.Configurer, r rpc.Plugin, log log.Logger) (boo
 	//	return false, nil
 	//}
 
-	return true, nil
+	return nil
 }
 
 // Serve serves the svc.
-func (s *Service) Serve() error {
+func (s *Plugin) Serve() error {
 	s.Lock()
 
 	if s.env != nil {
@@ -190,11 +212,12 @@ func (s *Service) Serve() error {
 			err <- nil
 		}()
 	}
+
 	return <-err
 }
 
 // Stop stops the http.
-func (s *Service) Stop() {
+func (s *Plugin) Stop() {
 	s.Lock()
 	defer s.Unlock()
 
@@ -240,7 +263,7 @@ func (s *Service) Stop() {
 }
 
 // Server returns associated rr server (if any).
-func (s *Service) Server() *roadrunner.Server {
+func (s *Plugin) Server() *roadrunner.Server {
 	s.Lock()
 	defer s.Unlock()
 
@@ -276,7 +299,7 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // append RootCA to the https server TLS config
-func (s *Service) appendRootCa() error {
+func (s *Plugin) appendRootCa() error {
 	rootCAs, err := x509.SystemCertPool()
 	if err != nil {
 		s.throw(EventInitSSL, nil)
@@ -307,7 +330,7 @@ func (s *Service) appendRootCa() error {
 }
 
 // Init https server
-func (s *Service) initSSL() *http.Server {
+func (s *Plugin) initSSL() *http.Server {
 	var topCipherSuites []uint16
 	var defaultCipherSuitesTLS13 []uint16
 
@@ -377,14 +400,14 @@ func (s *Service) initSSL() *http.Server {
 }
 
 // init http/2 server
-func (s *Service) initHTTP2() error {
+func (s *Plugin) initHTTP2() error {
 	return http2.ConfigureServer(s.https, &http2.Server{
 		MaxConcurrentStreams: s.cfg.HTTP2.MaxConcurrentStreams,
 	})
 }
 
 // serveFCGI starts FastCGI server.
-func (s *Service) serveFCGI() error {
+func (s *Plugin) serveFCGI() error {
 	l, err := util.CreateListener(s.cfg.FCGI.Address)
 	if err != nil {
 		return err
@@ -399,7 +422,7 @@ func (s *Service) serveFCGI() error {
 }
 
 // throw handles service, server and pool events.
-func (s *Service) throw(event int, ctx interface{}) {
+func (s *Plugin) throw(event int, ctx interface{}) {
 	for _, l := range s.lsns {
 		l(event, ctx)
 	}
@@ -411,7 +434,7 @@ func (s *Service) throw(event int, ctx interface{}) {
 }
 
 // tlsAddr replaces listen or host port with port configured by SSL config.
-func (s *Service) tlsAddr(host string, forcePort bool) string {
+func (s *Plugin) tlsAddr(host string, forcePort bool) string {
 	// remove current forcePort first
 	host = strings.Split(host, ":")[0]
 

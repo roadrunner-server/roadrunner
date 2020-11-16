@@ -13,7 +13,7 @@ import (
 const ConfigSection = "app"
 const Response = "test"
 
-var testPoolConfig = roadrunner.Config{
+var testPoolConfig = roadrunner.PoolConfig{
 	NumWorkers:      10,
 	MaxJobs:         100,
 	AllocateTimeout: time.Second * 10,

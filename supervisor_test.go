@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var cfgSupervised = Config{
+var cfgSupervised = PoolConfig{
 	NumWorkers:      int64(1),
 	AllocateTimeout: time.Second,
 	DestroyTimeout:  time.Second,
@@ -69,7 +69,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 }
 
 func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
-	var cfgExecTTL = Config{
+	var cfgExecTTL = PoolConfig{
 		NumWorkers:      int64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
@@ -109,7 +109,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 }
 
 func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
-	var cfgExecTTL = Config{
+	var cfgExecTTL = PoolConfig{
 		NumWorkers:      int64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
