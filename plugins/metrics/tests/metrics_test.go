@@ -158,9 +158,9 @@ func TestMetricsGaugeCollector(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Contains(t, out, "my_gauge 100")
 
-	genericOut, err := get("http://localhost:2112/metrics")
+	out, err = get("http://localhost:2112/metrics")
 	assert.NoError(t, err)
-	assert.Contains(t, genericOut, "go_gc_duration_seconds")
+	assert.Contains(t, out, "go_gc_duration_seconds")
 
 	for {
 		select {

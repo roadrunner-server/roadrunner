@@ -25,8 +25,8 @@ const (
 )
 
 type statsProvider struct {
-	collector prometheus.Collector
-	name      string
+	collectors []prometheus.Collector
+	name       string
 }
 
 // Plugin to manage application metrics using Prometheus.
@@ -73,8 +73,8 @@ func (m *Plugin) Init(cfg config.Configurer, log log.Logger) error {
 	// Register invocation will be later in the Serve method
 	for k, v := range collectors {
 		m.collectors.Store(k, statsProvider{
-			collector: v,
-			name:      k,
+			collectors: []prometheus.Collector{v},
+			name:       k,
 		})
 	}
 	return nil
@@ -92,10 +92,13 @@ func (m *Plugin) Serve() chan error {
 		// key - name
 		// value - statsProvider struct
 		c := value.(statsProvider)
-		if err := m.registry.Register(c.collector); err != nil {
-			errCh <- err
-			return false
+		for _, v := range c.collectors {
+			if err := m.registry.Register(v); err != nil {
+				errCh <- err
+				return false
+			}
 		}
+
 		return true
 	})
 
@@ -207,8 +210,8 @@ func (m *Plugin) Collects() []interface{} {
 // Collector returns application specific collector by name or nil if collector not found.
 func (m *Plugin) AddStatProvider(name endure.Named, stat metrics.StatProvider) error {
 	m.collectors.Store(name.Name(), statsProvider{
-		collector: stat.MetricsCollector(),
-		name:      name.Name(),
+		collectors: stat.MetricsCollector(),
+		name:       name.Name(),
 	})
 	return nil
 }
