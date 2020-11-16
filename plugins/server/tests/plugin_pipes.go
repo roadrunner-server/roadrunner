@@ -2,30 +2,46 @@ package tests
 
 import (
 	"context"
+	"time"
 
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2"
-	"github.com/spiral/roadrunner/v2/plugins/app"
+	"github.com/spiral/roadrunner/v2/interfaces/server"
 	"github.com/spiral/roadrunner/v2/plugins/config"
+	plugin "github.com/spiral/roadrunner/v2/plugins/server"
 )
 
-type Foo2 struct {
+const ConfigSection = "app"
+const Response = "test"
+
+var testPoolConfig = roadrunner.PoolConfig{
+	NumWorkers:      10,
+	MaxJobs:         100,
+	AllocateTimeout: time.Second * 10,
+	DestroyTimeout:  time.Second * 10,
+	Supervisor: &roadrunner.SupervisorConfig{
+		WatchTick:       60,
+		TTL:             1000,
+		IdleTTL:         10,
+		ExecTTL:         10,
+		MaxWorkerMemory: 1000,
+	},
+}
+
+type Foo struct {
 	configProvider config.Configurer
-	wf             app.WorkerFactory
+	wf             server.WorkerFactory
 	pool           roadrunner.Pool
 }
 
-func (f *Foo2) Init(p config.Configurer, workerFactory app.WorkerFactory) error {
+func (f *Foo) Init(p config.Configurer, workerFactory server.WorkerFactory) error {
 	f.configProvider = p
 	f.wf = workerFactory
 	return nil
 }
 
-func (f *Foo2) Serve() chan error {
+func (f *Foo) Serve() chan error {
 	const op = errors.Op("serve")
-	var err error
-	errCh := make(chan error, 1)
-	conf := &app.Config{}
 
 	// test payload for echo
 	r := roadrunner.Payload{
@@ -33,6 +49,10 @@ func (f *Foo2) Serve() chan error {
 		Body:    []byte(Response),
 	}
 
+	errCh := make(chan error, 1)
+
+	conf := &plugin.Config{}
+	var err error
 	err = f.configProvider.UnmarshalKey(ConfigSection, conf)
 	if err != nil {
 		errCh <- err
@@ -105,7 +125,7 @@ func (f *Foo2) Serve() chan error {
 	return errCh
 }
 
-func (f *Foo2) Stop() error {
+func (f *Foo) Stop() error {
 	f.pool.Destroy(context.Background())
 	return nil
 }

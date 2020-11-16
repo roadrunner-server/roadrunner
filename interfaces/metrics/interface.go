@@ -5,5 +5,5 @@ import (
 )
 
 type StatProvider interface {
-	MetricsCollector() prometheus.Collector
+	MetricsCollector() []prometheus.Collector
 }

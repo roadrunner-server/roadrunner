@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/spiral/endure"
-	"github.com/spiral/roadrunner/v2/plugins/app"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,7 +27,7 @@ func TestAppPipes(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = container.Register(&app.Plugin{})
+	err = container.Register(&server.Plugin{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -93,7 +93,7 @@ func TestAppSockets(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = container.Register(&app.Plugin{})
+	err = container.Register(&server.Plugin{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -159,7 +159,7 @@ func TestAppTCP(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = container.Register(&app.Plugin{})
+	err = container.Register(&server.Plugin{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -225,7 +225,7 @@ func TestAppWrongConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = container.Register(&app.Plugin{})
+	err = container.Register(&server.Plugin{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -257,7 +257,7 @@ func TestAppWrongRelay(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = container.Register(&app.Plugin{})
+	err = container.Register(&server.Plugin{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -295,7 +295,7 @@ func TestAppWrongCommand(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = container.Register(&app.Plugin{})
+	err = container.Register(&server.Plugin{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -333,7 +333,7 @@ func TestAppNoAppSectionInConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = container.Register(&app.Plugin{})
+	err = container.Register(&server.Plugin{})
 	if err != nil {
 		t.Fatal(err)
 	}

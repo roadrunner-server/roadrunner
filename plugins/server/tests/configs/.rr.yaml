@@ -1,9 +1,9 @@
-app:
-  command: "php tcp.php"
+server:
+  command: "php ../../../tests/client.php echo pipes"
   user: ""
   group: ""
   env:
     "RR_CONFIG": "/some/place/on/the/C134"
     "RR_CONFIG2": "C138"
-  relay: "tcp://localhost:9999"
+  relay: "pipes"
   relayTimeout: "20s"
