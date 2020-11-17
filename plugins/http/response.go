@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	json "github.com/json-iterator/go"
+	"github.com/spiral/roadrunner/v2"
 )
-
 
 // Response handles PSR7 response logic.
 type Response struct {
@@ -22,7 +22,7 @@ type Response struct {
 }
 
 // NewResponse creates new response based on given rr payload.
-func NewResponse(p *roadrunner.Payload) (*Response, error) {
+func NewResponse(p roadrunner.Payload) (*Response, error) {
 	r := &Response{body: p.Body}
 	j := json.ConfigCompatibleWithStandardLibrary
 	if err := j.Unmarshal(p.Context, r); err != nil {

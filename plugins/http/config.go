@@ -11,9 +11,6 @@ import (
 	"github.com/spiral/roadrunner/v2"
 )
 
-type PoolConfig struct {
-}
-
 type ServerConfig struct {
 	// Command includes command strings with all the parameters, example: "php worker.php pipes".
 	Command string
@@ -32,7 +29,7 @@ type ServerConfig struct {
 
 	// Pool defines worker pool configuration, number of workers, timeouts and etc. This config section might change
 	// while server is running.
-	PoolCfg *roadrunner.PoolConfig
+
 
 	env map[string]string
 }
@@ -61,8 +58,8 @@ type Config struct {
 	// Uploads configures uploads configuration.
 	Uploads *UploadsConfig
 
-	// Workers configures rr server and worker pool.
-	Workers *ServerConfig
+	// Pool configures worker pool.
+	Pool *roadrunner.PoolConfig
 }
 
 // FCGIConfig for FastCGI server.
@@ -135,10 +132,10 @@ func (c *Config) EnableFCGI() bool {
 }
 
 // Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
-func (c *Config) Hydrate(cfg service.Config) error {
-	if c.Workers == nil {
-		c.Workers = &roadrunner.ServerConfig{}
-	}
+func (c *Config) Hydrate(cfg Config) error {
+	//if c.Workers == nil {
+	//	c.Workers = &ServerConfig{}
+	//}
 
 	if c.HTTP2 == nil {
 		c.HTTP2 = &HTTP2Config{}
@@ -164,16 +161,16 @@ func (c *Config) Hydrate(cfg service.Config) error {
 	if err != nil {
 		return err
 	}
-	err = c.Workers.InitDefaults()
-	if err != nil {
-		return err
-	}
-
-	if err := cfg.Unmarshal(c); err != nil {
-		return err
-	}
-
-	c.Workers.UpscaleDurations()
+	//err = c.Workers.InitDefaults()
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//if err := cfg.Unmarshal(c); err != nil {
+	//	return err
+	//}
+	//
+	//c.Workers.UpscaleDurations()
 
 	if c.TrustedSubnets == nil {
 		// @see https://en.wikipedia.org/wiki/Reserved_IP_addresses
@@ -238,17 +235,17 @@ func (c *Config) Valid() error {
 		return errors.New("malformed http2 config")
 	}
 
-	if c.Workers == nil {
-		return errors.New("malformed workers config")
-	}
+	//if c.Workers == nil {
+	//	return errors.New("malformed workers config")
+	//}
+	//
+	//if c.Workers.Pool == nil {
+	//	return errors.New("malformed workers config (pool config is missing)")
+	//}
 
-	if c.Workers.Pool == nil {
-		return errors.New("malformed workers config (pool config is missing)")
-	}
-
-	if err := c.Workers.Pool.Valid(); err != nil {
-		return err
-	}
+	//if err := c.Workers.Pool.Valid(); err != nil {
+	//	return err
+	//}
 
 	if !c.EnableHTTP() && !c.EnableTLS() && !c.EnableFCGI() {
 		return errors.New("unable to run http service, no method has been specified (http, https, http/2 or FastCGI)")

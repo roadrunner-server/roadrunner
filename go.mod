@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/fatih/color v1.10.0
+	github.com/hashicorp/go-multierror v1.0.0
 	github.com/json-iterator/go v1.1.10
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.7.1
@@ -16,6 +17,7 @@ require (
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.16.0
+	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 	golang.org/x/sys v0.0.0-20200615200032-f1bc736245b1
 )
