@@ -4,13 +4,12 @@ import (
 	"context"
 	"net"
 	"os/exec"
-	"strings"
 	"sync"
 	"time"
 
 	"github.com/shirou/gopsutil/process"
+	"github.com/spiral/errors"
 
-	"github.com/pkg/errors"
 	"github.com/spiral/goridge/v2"
 	"go.uber.org/multierr"
 	"golang.org/x/sync/errgroup"
@@ -83,6 +82,7 @@ type socketSpawn struct {
 
 // SpawnWorker creates WorkerProcess and connects it to appropriate relay or returns error
 func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd) (WorkerBase, error) {
+	const op = errors.Op("spawn_worker_with_context")
 	c := make(chan socketSpawn)
 	go func() {
 		ctx, cancel := context.WithTimeout(ctx, f.tout)
@@ -100,7 +100,7 @@ func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cm
 		if err != nil {
 			c <- socketSpawn{
 				w:   nil,
-				err: errors.Wrap(err, "process error"),
+				err: errors.E(op, err),
 			}
 			return
 		}
@@ -115,7 +115,7 @@ func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cm
 
 			c <- socketSpawn{
 				w:   nil,
-				err: err,
+				err: errors.E(op, err),
 			}
 			return
 		}
@@ -144,6 +144,7 @@ func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cm
 
 func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 	ctx := context.Background()
+	const op = errors.Op("spawn_worker")
 	w, err := InitBaseWorker(cmd)
 	if err != nil {
 		return nil, err
@@ -151,21 +152,17 @@ func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 
 	err = w.Start()
 	if err != nil {
-		return nil, errors.Wrap(err, "process error")
+		return nil, errors.E(op, err)
 	}
 
-	var errs []string
 	rl, err := f.findRelay(w)
 	if err != nil {
-		errs = append(errs, err.Error())
-		err = w.Kill()
-		if err != nil {
-			errs = append(errs, err.Error())
-		}
-		if err = w.Wait(ctx); err != nil {
-			errs = append(errs, err.Error())
-		}
-		return nil, errors.New(strings.Join(errs, "/"))
+		err = multierr.Combine(
+			err,
+			w.Kill(),
+			w.Wait(ctx),
+		)
+		return nil, err
 	}
 
 	w.AttachRelay(rl)
@@ -202,12 +199,13 @@ func (f *SocketFactory) findRelayWithContext(ctx context.Context, w WorkerBase) 
 }
 
 func (f *SocketFactory) findRelay(w WorkerBase) (*goridge.SocketRelay, error) {
+	const op = errors.Op("find_relay")
 	// poll every 1ms for the relay
 	pollDone := time.NewTimer(f.tout)
 	for {
 		select {
 		case <-pollDone.C:
-			return nil, errors.New("relay timeout")
+			return nil, errors.E(op, errors.Str("relay timeout"))
 		default:
 			tmp, ok := f.relays.Load(w.Pid())
 			if !ok {

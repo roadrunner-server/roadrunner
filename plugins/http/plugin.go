@@ -18,6 +18,7 @@ import (
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	factory "github.com/spiral/roadrunner/v2/interfaces/server"
 	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 	"github.com/spiral/roadrunner/v2/util"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -272,7 +273,7 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
 	}
 
-	//r = attributes.Init(r)
+	r = attributes.Init(r)
 
 	// chaining middleware
 	f := s.handler.ServeHTTP

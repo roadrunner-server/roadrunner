@@ -70,7 +70,7 @@ func (f *PipeFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd)
 		if err != nil {
 			c <- SpawnResult{
 				w:   nil,
-				err: errors.E(op, err, "process error"),
+				err: errors.E(op, err),
 			}
 			return
 		}
@@ -137,7 +137,7 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 	// Start the worker
 	err = w.Start()
 	if err != nil {
-		return nil, errors.E(op, err, "process error")
+		return nil, errors.E(op, err)
 	}
 
 	// errors bundle

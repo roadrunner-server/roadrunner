@@ -273,9 +273,7 @@ func TestAppWrongRelay(t *testing.T) {
 	}
 
 	err = container.Init()
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Error(t, err)
 
 	_, err = container.Serve()
 	assert.Error(t, err)
