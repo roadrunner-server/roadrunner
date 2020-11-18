@@ -35,7 +35,7 @@ func (z *ZapLogger) Init(cfg config.Configurer) error {
 
 // DefaultLogger returns default logger.
 func (z *ZapLogger) DefaultLogger() (log.Logger, error) {
-	return log.NewZapAdapter(z.base), nil
+	return NewZapAdapter(z.base), nil
 }
 
 // NamedLogger returns logger dedicated to the specific channel. Similar to Named() but also reads the core params.
@@ -45,10 +45,10 @@ func (z *ZapLogger) NamedLogger(name string) (log.Logger, error) {
 		if err != nil {
 			return nil, err
 		}
-		return log.NewZapAdapter(l), nil
+		return NewZapAdapter(l), nil
 	}
 
-	return log.NewZapAdapter(z.base.Named(name)), nil
+	return NewZapAdapter(z.base.Named(name)), nil
 }
 
 // NamedLogger returns logger dedicated to the specific channel. Similar to Named() but also reads the core params.

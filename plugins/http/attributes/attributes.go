@@ -6,9 +6,18 @@ import (
 	"net/http"
 )
 
-type attrKey int
+// contextKey is a value for use with context.WithValue. It's used as
+// a pointer so it fits in an interface{} without allocation.
+type contextKey struct {
+	name string
+}
 
-const contextKey attrKey = iota
+func (k *contextKey) String() string { return k.name }
+
+var (
+	// PsrContextKey is a context key. It can be used in the http attributes
+	PsrContextKey = &contextKey{"psr_attributes"}
+)
 
 type attrs map[string]interface{}
 
@@ -30,12 +39,12 @@ func (v attrs) del(key string) {
 
 // Init returns request with new context and attribute bag.
 func Init(r *http.Request) *http.Request {
-	return r.WithContext(context.WithValue(r.Context(), contextKey, attrs{}))
+	return r.WithContext(context.WithValue(r.Context(), PsrContextKey, attrs{}))
 }
 
 // All returns all context attributes.
 func All(r *http.Request) map[string]interface{} {
-	v := r.Context().Value(contextKey)
+	v := r.Context().Value(PsrContextKey)
 	if v == nil {
 		return attrs{}
 	}
@@ -46,7 +55,7 @@ func All(r *http.Request) map[string]interface{} {
 // Get gets the value from request context. It replaces any existing
 // values.
 func Get(r *http.Request, key string) interface{} {
-	v := r.Context().Value(contextKey)
+	v := r.Context().Value(PsrContextKey)
 	if v == nil {
 		return nil
 	}
@@ -57,7 +66,7 @@ func Get(r *http.Request, key string) interface{} {
 // Set sets the key to value. It replaces any existing
 // values. Context specific.
 func Set(r *http.Request, key string, value interface{}) error {
-	v := r.Context().Value(contextKey)
+	v := r.Context().Value(PsrContextKey)
 	if v == nil {
 		return errors.New("unable to find `psr:attributes` context key")
 	}

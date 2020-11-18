@@ -47,13 +47,13 @@ type Plugin struct {
 	configurer config.Configurer
 	log        log.Logger
 
-	mdwr      []middleware
-	listeners []util.EventListener
+	mdwr     []middleware
+	listener util.EventListener
 
 	pool   roadrunner.Pool
 	server factory.Server
-	//controller roadrunner.Controller
-	handler *Handler
+
+	handler Handler
 
 	http  *http.Server
 	https *http.Server
@@ -68,7 +68,7 @@ func (s *Plugin) AddMiddleware(m middleware) {
 // AddListener attaches server event controller.
 func (s *Plugin) AddListener(listener util.EventListener) {
 	// save listeners for Reset
-	s.listeners = append(s.listeners, listener)
+	s.listener = listener
 	s.pool.AddListener(listener)
 }
 
@@ -82,7 +82,6 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Serv
 	}
 
 	s.configurer = cfg
-	s.listeners = make([]util.EventListener, 0, 1)
 	s.log = log
 
 	// Set needed env vars
@@ -141,8 +140,21 @@ func (s *Plugin) Serve() chan error {
 	//	s.pool.Attach(s.controller)
 	//}
 
-	s.handler = &Handler{cfg: s.cfg, rr: s.pool}
-	//s.handler.Listen(s.throw)
+	var err error
+	s.handler, err = NewHandler(
+		s.cfg.MaxRequestSize,
+		*s.cfg.Uploads,
+		s.cfg.cidrs,
+		s.pool,
+	)
+	if err != nil {
+		errCh <- errors.E(op, err)
+		return errCh
+	}
+
+	if s.listener != nil {
+		s.handler.AddListener(s.listener)
+	}
 
 	if s.cfg.EnableHTTP() {
 		if s.cfg.EnableH2C() {
@@ -155,7 +167,7 @@ func (s *Plugin) Serve() chan error {
 	if s.cfg.EnableTLS() {
 		s.https = s.initSSL()
 		if s.cfg.SSL.RootCA != "" {
-			err := s.appendRootCa()
+			err = s.appendRootCa()
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -464,8 +476,7 @@ func (s *Plugin) Reset() error {
 	}
 
 	// restore original listeners
-	for i := 0; i < len(s.listeners); i++ {
-		s.pool.AddListener(s.listeners[i])
-	}
+	s.pool.AddListener(s.listener)
+
 	return nil
 }

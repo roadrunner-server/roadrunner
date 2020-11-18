@@ -21,11 +21,11 @@ http:
     allocateTimeout: 60s
     destroyTimeout: 60s
 
-  #  ssl:
-  #    port: 443
-  #    redirect: true
-  #    cert: server.crt
-  #    key: server.key
+  ssl:
+    port: 8888
+    redirect: true
+    cert: fixtures/server.crt
+    key: fixtures/server.key
   #    rootCa: root.crt
   fcgi:
     address: tcp://0.0.0.0:6920

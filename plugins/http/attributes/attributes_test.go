@@ -72,8 +72,6 @@ func TestSetAttribute(t *testing.T) {
 func TestSetAttributeNone(t *testing.T) {
 	r := &http.Request{}
 	err := Set(r, "key", "value")
-	if err != nil {
-		t.Errorf("error during the Set: error %v", err)
-	}
+	assert.Error(t, err)
 	assert.Equal(t, Get(r, "key"), nil)
 }

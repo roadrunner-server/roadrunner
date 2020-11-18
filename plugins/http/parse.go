@@ -60,7 +60,7 @@ func (d dataTree) mount(i []string, v []string) {
 }
 
 // parse incoming dataTree request into JSON (including contentMultipart form dataTree)
-func parseUploads(r *http.Request, cfg *UploadsConfig) *Uploads {
+func parseUploads(r *http.Request, cfg UploadsConfig) *Uploads {
 	u := &Uploads{
 		cfg:  cfg,
 		tree: make(fileTree),

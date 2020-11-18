@@ -24,8 +24,7 @@ type Response struct {
 // NewResponse creates new response based on given pool payload.
 func NewResponse(p roadrunner.Payload) (*Response, error) {
 	r := &Response{body: p.Body}
-	j := json.ConfigCompatibleWithStandardLibrary
-	if err := j.Unmarshal(p.Context, r); err != nil {
+	if err := json.Unmarshal(p.Context, r); err != nil {
 		return nil, err
 	}
 

@@ -11,6 +11,27 @@ import (
 	"github.com/spiral/roadrunner/v2"
 )
 
+type Cidrs []*net.IPNet
+
+func (c *Cidrs) IsTrusted(ip string) bool {
+	if len(*c) == 0 {
+		return false
+	}
+
+	i := net.ParseIP(ip)
+	if i == nil {
+		return false
+	}
+
+	for _, cird := range *c {
+		if cird.Contains(i) {
+			return true
+		}
+	}
+
+	return false
+}
+
 type ServerConfig struct {
 	// Command includes command strings with all the parameters, example: "php worker.php pipes".
 	Command string
@@ -30,7 +51,6 @@ type ServerConfig struct {
 	// Pool defines worker pool configuration, number of workers, timeouts and etc. This config section might change
 	// while server is running.
 
-
 	env map[string]string
 }
 
@@ -49,11 +69,11 @@ type Config struct {
 	HTTP2 *HTTP2Config
 
 	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
-	MaxRequestSize int64
+	MaxRequestSize uint64
 
 	// TrustedSubnets declare IP subnets which are allowed to set ip using X-Real-Ip and X-Forwarded-For
 	TrustedSubnets []string
-	cidrs          []*net.IPNet
+	cidrs          Cidrs
 
 	// Uploads configures uploads configuration.
 	Uploads *UploadsConfig
@@ -185,24 +205,27 @@ func (c *Config) Hydrate(cfg Config) error {
 		}
 	}
 
-	if err := c.parseCIDRs(); err != nil {
+	cidrs, err := ParseCIDRs(c.TrustedSubnets)
+	if err != nil {
 		return err
 	}
+	c.cidrs = cidrs
 
 	return c.Valid()
 }
 
-func (c *Config) parseCIDRs() error {
-	for _, cidr := range c.TrustedSubnets {
+func ParseCIDRs(subnets []string) (Cidrs, error) {
+	c := make(Cidrs, 0, len(subnets))
+	for _, cidr := range subnets {
 		_, cr, err := net.ParseCIDR(cidr)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		c.cidrs = append(c.cidrs, cr)
+		c = append(c, cr)
 	}
 
-	return nil
+	return c, nil
 }
 
 // IsTrusted if api can be trusted to use X-Real-Ip, X-Forwarded-For

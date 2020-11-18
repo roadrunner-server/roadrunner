@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net"
 	"net/http"
 	"strconv"
@@ -9,9 +8,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
+	"github.com/hashicorp/go-multierror"
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
+	"github.com/spiral/roadrunner/v2/util"
 )
 
 const (
@@ -21,6 +22,11 @@ const (
 	// EventError thrown on any non job error provided by road runner server.
 	EventError
 )
+
+type Handler interface {
+	AddListener(l util.EventListener)
+	ServeHTTP(w http.ResponseWriter, r *http.Request)
+}
 
 // ErrorEvent represents singular http error event.
 type ErrorEvent struct {
@@ -60,16 +66,30 @@ func (e *ResponseEvent) Elapsed() time.Duration {
 
 // Handler serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
-type Handler struct {
-	cfg *Config
-	log log.Logger
-	rr  roadrunner.Pool
-	mul sync.Mutex
-	lsn func(event int, ctx interface{})
+type handler struct {
+	maxRequestSize uint64
+	uploads        UploadsConfig
+	trusted        Cidrs
+	log            log.Logger
+	pool           roadrunner.Pool
+	mul            sync.Mutex
+	lsn            util.EventListener
+}
+
+func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool roadrunner.Pool) (Handler, error) {
+	if pool == nil {
+		return nil, errors.E(errors.Str("pool should be initialized"))
+	}
+	return &handler{
+		maxRequestSize: maxReqSize * roadrunner.MB,
+		uploads:        uploads,
+		pool:           pool,
+		trusted:        trusted,
+	}, nil
 }
 
 // Listen attaches handler event controller.
-func (h *Handler) Listen(l func(event int, ctx interface{})) {
+func (h *handler) AddListener(l util.EventListener) {
 	h.mul.Lock()
 	defer h.mul.Unlock()
 
@@ -77,23 +97,19 @@ func (h *Handler) Listen(l func(event int, ctx interface{})) {
 }
 
 // mdwr serve using PSR-7 requests passed to underlying application. Attempts to serve static files first if enabled.
-func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	const op = errors.Op("ServeHTTP")
 	start := time.Now()
 
 	// validating request size
-	if h.cfg.MaxRequestSize != 0 {
-		if length := r.Header.Get("content-length"); length != "" {
-			if size, err := strconv.ParseInt(length, 10, 64); err != nil {
-				h.handleError(w, r, err, start)
-				return
-			} else if size > h.cfg.MaxRequestSize*1024*1024 {
-				h.handleError(w, r, errors.New("request body max size is exceeded"), start)
-				return
-			}
+	if h.maxRequestSize != 0 {
+		err := h.maxSize(w, r, start, op)
+		if err != nil {
+			return
 		}
 	}
 
-	req, err := NewRequest(r, h.cfg.Uploads)
+	req, err := NewRequest(r, h.uploads)
 	if err != nil {
 		h.handleError(w, r, err, start)
 		return
@@ -111,7 +127,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rsp, err := h.rr.Exec(p)
+	rsp, err := h.pool.Exec(p)
 	if err != nil {
 		h.handleError(w, r, err, start)
 		return
@@ -130,44 +146,59 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *handler) maxSize(w http.ResponseWriter, r *http.Request, start time.Time, op errors.Op) error {
+	if length := r.Header.Get("content-length"); length != "" {
+		if size, err := strconv.ParseInt(length, 10, 64); err != nil {
+			h.handleError(w, r, err, start)
+			return err
+		} else if size > int64(h.maxRequestSize) {
+			h.handleError(w, r, errors.E(op, errors.Str("request body max size is exceeded")), start)
+			return err
+		}
+	}
+	return nil
+}
+
 // handleError sends error.
-func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error, start time.Time) {
+func (h *handler) handleError(w http.ResponseWriter, r *http.Request, err error, start time.Time) {
 	// if pipe is broken, there is no sense to write the header
 	// in this case we just report about error
 	if err == errEPIPE {
-		h.throw(EventError, &ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
+		h.throw(ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
 		return
 	}
+	err = multierror.Append(err)
 	// ResponseWriter is ok, write the error code
 	w.WriteHeader(500)
 	_, err2 := w.Write([]byte(err.Error()))
 	// error during the writing to the ResponseWriter
 	if err2 != nil {
+		err = multierror.Append(err2, err)
 		// concat original error with ResponseWriter error
-		h.throw(EventError, &ErrorEvent{Request: r, Error: errors.New(fmt.Sprintf("error: %v, during handle this error, ResponseWriter error occurred: %v", err, err2)), start: start, elapsed: time.Since(start)})
+		h.throw(ErrorEvent{Request: r, Error: errors.E(err), start: start, elapsed: time.Since(start)})
 		return
 	}
-	h.throw(EventError, &ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
+	h.throw(ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
 }
 
 // handleResponse triggers response event.
-func (h *Handler) handleResponse(req *Request, resp *Response, start time.Time) {
-	h.throw(EventResponse, &ResponseEvent{Request: req, Response: resp, start: start, elapsed: time.Since(start)})
+func (h *handler) handleResponse(req *Request, resp *Response, start time.Time) {
+	h.throw(ResponseEvent{Request: req, Response: resp, start: start, elapsed: time.Since(start)})
 }
 
 // throw invokes event handler if any.
-func (h *Handler) throw(event int, ctx interface{}) {
+func (h *handler) throw(ctx interface{}) {
 	h.mul.Lock()
 	defer h.mul.Unlock()
 
 	if h.lsn != nil {
-		h.lsn(event, ctx)
+		h.lsn(ctx)
 	}
 }
 
 // get real ip passing multiple proxy
-func (h *Handler) resolveIP(r *Request) {
-	if !h.cfg.IsTrusted(r.RemoteAddr) {
+func (h *handler) resolveIP(r *Request) {
+	if h.trusted.IsTrusted(r.RemoteAddr) == false {
 		return
 	}
 
@@ -187,7 +218,7 @@ func (h *Handler) resolveIP(r *Request) {
 	}
 
 	// The logic here is the following:
-	// In general case, we only expect X-Real-Ip header. If it exist, we get the IP addres from header and set request Remote address
+	// In general case, we only expect X-Real-Ip header. If it exist, we get the IP address from header and set request Remote address
 	// But, if there is no X-Real-Ip header, we also trying to check CloudFlare headers
 	// True-Client-IP is a general CF header in which copied information from X-Real-Ip in CF.
 	// CF-Connecting-IP is an Enterprise feature and we check it last in order.
