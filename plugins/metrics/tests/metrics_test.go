@@ -54,29 +54,14 @@ func TestMetricsInit(t *testing.T) {
 	cfg.Prefix = "rr"
 	cfg.Path = ".rr-test.yaml"
 
-	err = cont.Register(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = cont.Register(&metrics.Plugin{})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = cont.Register(&rpcPlugin.Plugin{})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = cont.Register(&logger.ZapLogger{})
-	if err != nil {
-		t.Fatal(err)
-	}
-	err = cont.Register(&Plugin1{})
-	if err != nil {
-		t.Fatal(err)
-	}
+	err = cont.RegisterAll(
+		cfg,
+		&metrics.Plugin{},
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&Plugin1{},
+	)
+	assert.NoError(t, err)
 
 	err = cont.Init()
 	if err != nil {

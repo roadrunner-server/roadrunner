@@ -11,7 +11,7 @@ import (
 	plugin "github.com/spiral/roadrunner/v2/plugins/server"
 )
 
-const ConfigSection = "app"
+const ConfigSection = "server"
 const Response = "test"
 
 var testPoolConfig = roadrunner.PoolConfig{

@@ -15,7 +15,6 @@ require (
 	github.com/spiral/endure v1.0.0-beta19
 	github.com/spiral/errors v1.0.4
 	github.com/spiral/goridge/v2 v2.4.6
-	github.com/spiral/roadrunner v1.8.4
 	github.com/stretchr/testify v1.6.1
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	go.uber.org/multierr v1.6.0

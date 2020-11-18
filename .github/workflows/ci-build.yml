@@ -72,12 +72,14 @@ jobs:
           go test -v -race ./plugins/logger/tests -tags=debug -coverprofile=logger.txt -covermode=atomic
           go test -v -race ./plugins/server/tests -tags=debug -coverprofile=server.txt -covermode=atomic
           go test -v -race ./plugins/metrics/tests -tags=debug -coverprofile=metrics.txt -covermode=atomic
+          go test -v -race ./plugins/informer/tests -tags=debug -coverprofile=informer.txt -covermode=atomic
+          go test -v -race ./plugins/resetter/tests -tags=debug -coverprofile=informer.txt -covermode=atomic
 
       - name: Run code coverage
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: lib.txt, rpc_config.txt, rpc.txt, plugin_config.txt, logger.txt, server.txt, metrics.txt
+          files: lib.txt, rpc_config.txt, rpc.txt, plugin_config.txt, logger.txt, server.txt, metrics.txt, informer.txt
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
