@@ -17,7 +17,7 @@ type PipeFactory struct{}
 // listening
 
 // todo: review tests
-func NewPipeFactory() *PipeFactory {
+func NewPipeFactory() Factory {
 	return &PipeFactory{}
 }
 
