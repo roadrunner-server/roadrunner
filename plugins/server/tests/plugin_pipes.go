@@ -11,7 +11,7 @@ import (
 	plugin "github.com/spiral/roadrunner/v2/plugins/server"
 )
 
-const ConfigSection = "app"
+const ConfigSection = "server"
 const Response = "test"
 
 var testPoolConfig = roadrunner.PoolConfig{
@@ -30,11 +30,11 @@ var testPoolConfig = roadrunner.PoolConfig{
 
 type Foo struct {
 	configProvider config.Configurer
-	wf             server.WorkerFactory
+	wf             server.Server
 	pool           roadrunner.Pool
 }
 
-func (f *Foo) Init(p config.Configurer, workerFactory server.WorkerFactory) error {
+func (f *Foo) Init(p config.Configurer, workerFactory server.Server) error {
 	f.configProvider = p
 	f.wf = workerFactory
 	return nil
