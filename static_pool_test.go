@@ -174,6 +174,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	time.Sleep(time.Second)
 	workers := p.Workers()
 	for i := 0; i < len(workers); i++ {
 		workers[i].AddListener(func(event interface{}) {
