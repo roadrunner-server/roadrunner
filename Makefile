@@ -7,3 +7,4 @@ test:
 	go test -v -race -cover ./plugins/logger/tests -tags=debug
 	go test -v -race -cover ./plugins/metrics/tests -tags=debug
 	go test -v -race -cover ./plugins/informer/tests -tags=debug
+	go test -v -race -cover ./plugins/resetter/tests -tags=debug

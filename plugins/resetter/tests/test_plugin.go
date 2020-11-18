@@ -60,5 +60,7 @@ func (p1 *Plugin1) Reset() error {
 		panic(err)
 	}
 
+	_ = pool
+
 	return nil
 }
