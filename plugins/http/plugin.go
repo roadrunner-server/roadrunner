@@ -37,20 +37,20 @@ const (
 // http middleware type.
 type middleware func(f http.HandlerFunc) http.HandlerFunc
 
-// Service manages rr, http servers.
+// Service manages pool, http servers.
 type Plugin struct {
 	sync.Mutex
 	sync.WaitGroup
 
-	cfg *Config
-	log log.Logger
+	cfg        *Config
+	configurer config.Configurer
+	log        log.Logger
 
-	//cprod roadrunner.CommandProducer
-	env  map[string]string
-	lsns []func(event int, ctx interface{})
-	mdwr []middleware
+	mdwr      []middleware
+	listeners []util.EventListener
 
-	rr roadrunner.Pool
+	pool   roadrunner.Pool
+	server factory.Server
 	//controller roadrunner.Controller
 	handler *Handler
 
@@ -59,35 +59,29 @@ type Plugin struct {
 	fcgi  *http.Server
 }
 
-//// Attach attaches controller. Currently only one controller is supported.
-//func (s *Service) Attach(w roadrunner.Controller) {
-//	s.controller = w
-//}
-//
-//// ProduceCommands changes the default command generator method
-//func (s *Service) ProduceCommands(producer roadrunner.CommandProducer) {
-//	s.cprod = producer
-//}
-
 // AddMiddleware adds new net/http mdwr.
 func (s *Plugin) AddMiddleware(m middleware) {
 	s.mdwr = append(s.mdwr, m)
 }
 
 // AddListener attaches server event controller.
-func (s *Plugin) AddListener(l func(event int, ctx interface{})) {
-	s.lsns = append(s.lsns, l)
+func (s *Plugin) AddListener(listener util.EventListener) {
+	// save listeners for Reset
+	s.listeners = append(s.listeners, listener)
+	s.pool.AddListener(listener)
 }
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.WorkerFactory) error {
+func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Server) error {
 	const op = errors.Op("http Init")
 	err := cfg.UnmarshalKey(ServiceName, &s.cfg)
 	if err != nil {
 		return errors.E(op, err)
 	}
 
+	s.configurer = cfg
+	s.listeners = make([]util.EventListener, 0, 1)
 	s.log = log
 
 	// Set needed env vars
@@ -107,7 +101,7 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Work
 		return errors.E(op, err)
 	}
 
-	s.rr = p
+	s.pool = p
 
 	//if r != nil {
 	//	if err := r.Register(ID, &rpcServer{s}); err != nil {
@@ -125,6 +119,8 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Work
 // Serve serves the svc.
 func (s *Plugin) Serve() chan error {
 	s.Lock()
+	defer s.Unlock()
+
 	const op = errors.Op("serve http")
 	errCh := make(chan error, 2)
 
@@ -137,14 +133,14 @@ func (s *Plugin) Serve() chan error {
 	//s.cfg.Workers.CommandProducer = s.cprod
 	//s.cfg.Workers.SetEnv("RR_HTTP", "true")
 	//
-	//s.rr = roadrunner.NewServer(s.cfg.Workers)
-	//s.rr.Listen(s.throw)
+	//s.pool = roadrunner.NewServer(s.cfg.Workers)
+	//s.pool.Listen(s.throw)
 	//
 	//if s.controller != nil {
-	//	s.rr.Attach(s.controller)
+	//	s.pool.Attach(s.controller)
 	//}
 
-	s.handler = &Handler{cfg: s.cfg, rr: s.rr}
+	s.handler = &Handler{cfg: s.cfg, rr: s.pool}
 	//s.handler.Listen(s.throw)
 
 	if s.cfg.EnableHTTP() {
@@ -177,12 +173,10 @@ func (s *Plugin) Serve() chan error {
 		s.fcgi = &http.Server{Handler: s}
 	}
 
-	s.Unlock()
-
-	//if err := s.rr.Start(); err != nil {
+	//if err := s.pool.Start(); err != nil {
 	//	return err
 	//}
-	//defer s.rr.Stop()
+	//defer s.pool.Stop()
 
 	if s.http != nil {
 		go func() {
@@ -260,7 +254,7 @@ func (s *Plugin) Stop() error {
 	return err
 }
 
-// ServeHTTP handles connection using set of middleware and rr PSR-7 server.
+// ServeHTTP handles connection using set of middleware and pool PSR-7 server.
 func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if s.https != nil && r.TLS == nil && s.cfg.SSL.Redirect {
 		target := &url.URL{
@@ -385,7 +379,6 @@ func (s *Plugin) initSSL() *http.Server {
 			PreferServerCipherSuites: true,
 		},
 	}
-	//s.throw(EventInitSSL, server)
 
 	return server
 }
@@ -419,7 +412,7 @@ func (s *Plugin) serveFCGI() error {
 //	}
 //
 //	if event == roadrunner.EventServerFailure {
-//		// underlying rr server is dead
+//		// underlying pool server is dead
 //		s.Stop()
 //	}
 //}
@@ -436,65 +429,42 @@ func (s *Plugin) tlsAddr(host string, forcePort bool) string {
 	return host
 }
 
-// Server returns associated rr workers
+// Server returns associated pool workers
 func (s *Plugin) Workers() []roadrunner.WorkerBase {
-	return s.rr.Workers()
+	return s.pool.Workers()
 }
 
 func (s *Plugin) Reset() error {
-	// re-read the config
-	// destroy the pool
-	// attach new one
+	s.Lock()
+	defer s.Unlock()
+	s.pool.Destroy(context.Background())
 
-	//s.mup.Lock()
-	//defer s.mup.Unlock()
-	//
-	//s.mu.Lock()
-	//if !s.started {
-	//	s.cfg = cfg
-	//	s.mu.Unlock()
-	//	return nil
-	//}
-	//s.mu.Unlock()
-	//
-	//if s.cfg.Differs(cfg) {
-	//	return errors.New("unable to reconfigure server (cmd and pool changes are allowed)")
-	//}
-	//
-	//s.mu.Lock()
-	//previous := s.pool
-	//pWatcher := s.pController
-	//s.mu.Unlock()
-	//
-	//pool, err := NewPool(cfg.makeCommand(), s.factory, *cfg.Pool)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//pool.Listen(s.poolListener)
-	//
-	//s.mu.Lock()
-	//s.cfg.Pool, s.pool = cfg.Pool, pool
-	//
-	//if s.controller != nil {
-	//	s.pController = s.controller.Attach(pool)
-	//}
-	//
-	//s.mu.Unlock()
-	//
-	//s.throw(EventPoolConstruct, pool)
-	//
-	//if previous != nil {
-	//	go func(previous Pool, pWatcher Controller) {
-	//		s.throw(EventPoolDestruct, previous)
-	//		if pWatcher != nil {
-	//			pWatcher.Detach()
-	//		}
-	//
-	//		previous.Destroy()
-	//	}(previous, pWatcher)
-	//}
-	//
-	//return nil
+	// Set needed env vars
+	env := make(map[string]string)
+	env["RR_HTTP"] = "true"
+	var err error
+
+	// re-read the config
+	err = s.configurer.UnmarshalKey(ServiceName, &s.cfg)
+	if err != nil {
+		return err
+	}
+
+	s.pool, err = s.server.NewWorkerPool(context.Background(), roadrunner.PoolConfig{
+		Debug:           false,
+		NumWorkers:      0,
+		MaxJobs:         0,
+		AllocateTimeout: 0,
+		DestroyTimeout:  0,
+		Supervisor:      nil,
+	}, env)
+	if err != nil {
+		return err
+	}
+
+	// restore original listeners
+	for i := 0; i < len(s.listeners); i++ {
+		s.pool.AddListener(s.listeners[i])
+	}
 	return nil
 }

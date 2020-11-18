@@ -21,7 +21,7 @@ type Response struct {
 	body interface{}
 }
 
-// NewResponse creates new response based on given rr payload.
+// NewResponse creates new response based on given pool payload.
 func NewResponse(p roadrunner.Payload) (*Response, error) {
 	r := &Response{body: p.Body}
 	j := json.ConfigCompatibleWithStandardLibrary

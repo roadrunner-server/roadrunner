@@ -12,11 +12,11 @@ import (
 
 type Foo3 struct {
 	configProvider config.Configurer
-	wf             server.WorkerFactory
+	wf             server.Server
 	pool           roadrunner.Pool
 }
 
-func (f *Foo3) Init(p config.Configurer, workerFactory server.WorkerFactory) error {
+func (f *Foo3) Init(p config.Configurer, workerFactory server.Server) error {
 	f.configProvider = p
 	f.wf = workerFactory
 	return nil

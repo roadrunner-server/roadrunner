@@ -73,7 +73,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php echo pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -84,8 +84,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8177", Handler: h}
 //	defer func() {
@@ -118,7 +118,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php echo pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -145,7 +145,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php echo pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -174,7 +174,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php header pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -185,8 +185,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8078", Handler: h}
 //	defer func() {
@@ -237,7 +237,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php user-agent pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -248,8 +248,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8088", Handler: h}
 //	defer func() {
@@ -299,7 +299,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php user-agent pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -310,8 +310,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8088", Handler: h}
 //	defer func() {
@@ -361,7 +361,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php cookie pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -372,8 +372,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8079", Handler: h}
 //	defer func() {
@@ -428,7 +428,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php payload pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -439,8 +439,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8090", Handler: h}
 //	defer func() {
@@ -494,7 +494,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php payload pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -505,8 +505,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8081", Handler: h}
 //	defer func() {
@@ -555,7 +555,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php payload pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -566,8 +566,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8082", Handler: h}
 //	defer func() {
@@ -617,7 +617,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php data pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -628,8 +628,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8083", Handler: h}
 //	defer func() {
@@ -691,7 +691,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php data pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -702,8 +702,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8083", Handler: h}
 //	defer func() {
@@ -759,7 +759,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php data pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -770,8 +770,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8083", Handler: h}
 //	defer func() {
@@ -833,7 +833,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php data pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -844,8 +844,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8084", Handler: h}
 //	defer func() {
@@ -907,7 +907,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php data pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -918,8 +918,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8085", Handler: h}
 //	defer func() {
@@ -981,7 +981,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php data pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -992,8 +992,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8019", Handler: h}
 //	defer func() {
@@ -1097,7 +1097,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php data pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1108,8 +1108,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8020", Handler: h}
 //	defer func() {
@@ -1213,7 +1213,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php data pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1224,8 +1224,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8021", Handler: h}
 //	defer func() {
@@ -1331,7 +1331,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php error pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1342,8 +1342,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8177", Handler: h}
 //	defer func() {
@@ -1375,7 +1375,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php error2 pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1386,8 +1386,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8177", Handler: h}
 //	defer func() {
@@ -1419,7 +1419,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php pid pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1430,8 +1430,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8177", Handler: h}
 //	defer func() {
@@ -1480,7 +1480,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php echo pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1491,8 +1491,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8177", Handler: h}
 //	defer func() {
@@ -1539,7 +1539,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php echoDelay pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1550,8 +1550,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8177", Handler: h}
 //	defer func() {
@@ -1598,7 +1598,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php error pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1609,8 +1609,8 @@ package http
 //		}),
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8177", Handler: h}
 //	defer func() {
@@ -1665,7 +1665,7 @@ package http
 //				"fe80::/10",
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php ip pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1681,8 +1681,8 @@ package http
 //		t.Errorf("error parsing CIDRs: error %v", err)
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
 //	defer func() {
@@ -1724,7 +1724,7 @@ package http
 //				"fe80::/10",
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php ip pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1740,8 +1740,8 @@ package http
 //		t.Errorf("error parsing CIDRs: error %v", err)
 //	}
 //
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
 //	defer func() {
@@ -1788,7 +1788,7 @@ package http
 //				"fe80::/10",
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php ip pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1803,8 +1803,8 @@ package http
 //	if err != nil {
 //		t.Errorf("error parsing CIDRs: error %v", err)
 //	}
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
 //	defer func() {
@@ -1851,7 +1851,7 @@ package http
 //				"10.0.0.0/8",
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php ip pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1866,8 +1866,8 @@ package http
 //	if err != nil {
 //		t.Errorf("error parsing CIDRs: error %v", err)
 //	}
-//	assert.NoError(t, h.rr.Start())
-//	defer h.rr.Stop()
+//	assert.NoError(t, h.pool.Start())
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
 //	defer func() {
@@ -1903,7 +1903,7 @@ package http
 //				Forbid: []string{},
 //			},
 //		},
-//		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+//		pool: roadrunner.NewServer(&roadrunner.ServerConfig{
 //			Command: "php ../../tests/http/client.php echo pipes",
 //			Relay:   "pipes",
 //			Pool: &roadrunner.Config{
@@ -1914,11 +1914,11 @@ package http
 //		}),
 //	}
 //
-//	err := h.rr.Start()
+//	err := h.pool.Start()
 //	if err != nil {
 //		b.Errorf("error starting the worker pool: error %v", err)
 //	}
-//	defer h.rr.Stop()
+//	defer h.pool.Stop()
 //
 //	hs := &http.Server{Addr: ":8177", Handler: h}
 //	defer func() {

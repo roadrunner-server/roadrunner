@@ -9,6 +9,6 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunner\Exception;
 
-class RoadRunnerException extends \Spiral\RoadRunner\Exceptions\RoadRunnerException
+class RoadRunnerException extends \RuntimeException
 {
 }

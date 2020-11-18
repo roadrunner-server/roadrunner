@@ -19,7 +19,7 @@ type ServerConfig struct {
 	User string
 
 	// Relay defines connection method and factory to be used to connect to workers:
-	// "pipes", "tcp://:6001", "unix://rr.sock"
+	// "pipes", "tcp://:6001", "unix://pool.sock"
 	// This config section must not change on re-configuration.
 	Relay string
 
@@ -111,7 +111,7 @@ func (c *Config) EnableHTTP() bool {
 	return c.Address != ""
 }
 
-// EnableTLS returns true if rr must listen TLS connections.
+// EnableTLS returns true if pool must listen TLS connections.
 func (c *Config) EnableTLS() bool {
 	return c.SSL.Key != "" || c.SSL.Cert != "" || c.SSL.RootCA != ""
 }
