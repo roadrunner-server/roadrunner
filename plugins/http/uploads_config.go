@@ -19,6 +19,7 @@ type UploadsConfig struct {
 // InitDefaults sets missing values to their default values.
 func (cfg *UploadsConfig) InitDefaults() error {
 	cfg.Forbid = []string{".php", ".exe", ".bat"}
+	cfg.Dir = os.TempDir()
 	return nil
 }
 

@@ -1,14 +1,15 @@
-package http
+package tests
 
 import (
 	"os"
 	"testing"
 
+	"github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFsConfig_Forbids(t *testing.T) {
-	cfg := UploadsConfig{Forbid: []string{".php"}}
+	cfg := http.UploadsConfig{Forbid: []string{".php"}}
 
 	assert.True(t, cfg.Forbids("index.php"))
 	assert.True(t, cfg.Forbids("index.PHP"))
@@ -17,9 +18,9 @@ func TestFsConfig_Forbids(t *testing.T) {
 }
 
 func TestFsConfig_TmpFallback(t *testing.T) {
-	cfg := UploadsConfig{Dir: "test"}
+	cfg := http.UploadsConfig{Dir: "test"}
 	assert.Equal(t, "test", cfg.TmpDir())
 
-	cfg = UploadsConfig{Dir: ""}
+	cfg = http.UploadsConfig{Dir: ""}
 	assert.Equal(t, os.TempDir(), cfg.TmpDir())
 }

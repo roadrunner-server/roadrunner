@@ -1,4 +1,4 @@
-package http
+package tests
 
 //import (
 //	"github.com/cenkalti/backoff/v4"

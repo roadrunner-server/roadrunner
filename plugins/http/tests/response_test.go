@@ -1,4 +1,4 @@
-package http
+package tests
 
 import (
 	"bytes"
@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/spiral/roadrunner/v2"
+	http2 "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -44,13 +45,13 @@ func (tw *testWriter) Push(target string, opts *http.PushOptions) error {
 }
 
 func TestNewResponse_Error(t *testing.T) {
-	r, err := NewResponse(roadrunner.Payload{Context: []byte(`invalid payload`)})
+	r, err := http2.NewResponse(roadrunner.Payload{Context: []byte(`invalid payload`)})
 	assert.Error(t, err)
 	assert.Nil(t, r)
 }
 
 func TestNewResponse_Write(t *testing.T) {
-	r, err := NewResponse(roadrunner.Payload{
+	r, err := http2.NewResponse(roadrunner.Payload{
 		Context: []byte(`{"headers":{"key":["value"]},"status": 301}`),
 		Body:    []byte(`sample body`),
 	})
@@ -67,7 +68,7 @@ func TestNewResponse_Write(t *testing.T) {
 }
 
 func TestNewResponse_Stream(t *testing.T) {
-	r, err := NewResponse(roadrunner.Payload{
+	r, err := http2.NewResponse(roadrunner.Payload{
 		Context: []byte(`{"headers":{"key":["value"]},"status": 301}`),
 	})
 
@@ -76,8 +77,8 @@ func TestNewResponse_Stream(t *testing.T) {
 		t.Fatal("response is nil")
 	}
 
-	r.body = &bytes.Buffer{}
-	r.body.(*bytes.Buffer).WriteString("hello world")
+	r.Body = &bytes.Buffer{}
+	r.Body.(*bytes.Buffer).WriteString("hello world")
 
 	assert.NoError(t, err)
 	assert.NotNil(t, r)
@@ -91,7 +92,7 @@ func TestNewResponse_Stream(t *testing.T) {
 }
 
 func TestNewResponse_StreamError(t *testing.T) {
-	r, err := NewResponse(roadrunner.Payload{
+	r, err := http2.NewResponse(roadrunner.Payload{
 		Context: []byte(`{"headers":{"key":["value"]},"status": 301}`),
 	})
 
@@ -100,8 +101,8 @@ func TestNewResponse_StreamError(t *testing.T) {
 		t.Fatal("response is nil")
 	}
 
-	r.body = &bytes.Buffer{}
-	r.body.(*bytes.Buffer).WriteString("hello world")
+	r.Body = &bytes.Buffer{}
+	r.Body.(*bytes.Buffer).WriteString("hello world")
 
 	assert.NoError(t, err)
 	assert.NotNil(t, r)
@@ -111,7 +112,7 @@ func TestNewResponse_StreamError(t *testing.T) {
 }
 
 func TestWrite_HandlesPush(t *testing.T) {
-	r, err := NewResponse(roadrunner.Payload{
+	r, err := http2.NewResponse(roadrunner.Payload{
 		Context: []byte(`{"headers":{"Http2-Push":["/test.js"],"content-type":["text/html"]},"status": 200}`),
 	})
 
@@ -126,7 +127,7 @@ func TestWrite_HandlesPush(t *testing.T) {
 }
 
 func TestWrite_HandlesTrailers(t *testing.T) {
-	r, err := NewResponse(roadrunner.Payload{
+	r, err := http2.NewResponse(roadrunner.Payload{
 		Context: []byte(`{"headers":{"Trailer":["foo, bar", "baz"],"foo":["test"],"bar":["demo"]},"status": 200}`),
 	})
 
@@ -136,7 +137,7 @@ func TestWrite_HandlesTrailers(t *testing.T) {
 	w := &testWriter{h: http.Header(make(map[string][]string))}
 	assert.NoError(t, r.Write(w))
 
-	assert.Nil(t, w.h[trailerHeaderKey])
+	assert.Nil(t, w.h[http2.TrailerHeaderKey])
 	assert.Nil(t, w.h["foo"]) //nolint:golint,staticcheck
 	assert.Nil(t, w.h["baz"]) //nolint:golint,staticcheck
 
@@ -145,7 +146,7 @@ func TestWrite_HandlesTrailers(t *testing.T) {
 }
 
 func TestWrite_HandlesHandlesWhitespacesInTrailer(t *testing.T) {
-	r, err := NewResponse(roadrunner.Payload{
+	r, err := http2.NewResponse(roadrunner.Payload{
 		Context: []byte(
 			`{"headers":{"Trailer":["foo\t,bar  ,    baz"],"foo":["a"],"bar":["b"],"baz":["c"]},"status": 200}`),
 	})

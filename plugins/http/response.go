@@ -16,13 +16,13 @@ type Response struct {
 	// Header contains list of response headers.
 	Headers map[string][]string `json:"headers"`
 
-	// associated body payload.
-	body interface{}
+	// associated Body payload.
+	Body interface{}
 }
 
 // NewResponse creates new response based on given pool payload.
 func NewResponse(p roadrunner.Payload) (*Response, error) {
-	r := &Response{body: p.Body}
+	r := &Response{Body: p.Body}
 	if err := json.Unmarshal(p.Context, r); err != nil {
 		return nil, err
 	}
@@ -52,14 +52,14 @@ func (r *Response) Write(w http.ResponseWriter) error {
 
 	w.WriteHeader(r.Status)
 
-	if data, ok := r.body.([]byte); ok {
+	if data, ok := r.Body.([]byte); ok {
 		_, err := w.Write(data)
 		if err != nil {
 			return handleWriteError(err)
 		}
 	}
 
-	if rc, ok := r.body.(io.Reader); ok {
+	if rc, ok := r.Body.(io.Reader); ok {
 		if _, err := io.Copy(w, rc); err != nil {
 			return err
 		}
@@ -83,7 +83,7 @@ func handlePushHeaders(h map[string][]string) []string {
 }
 
 func handleTrailers(h map[string][]string) {
-	trailers, ok := h[trailerHeaderKey]
+	trailers, ok := h[TrailerHeaderKey]
 	if !ok {
 		return
 	}
@@ -99,5 +99,5 @@ func handleTrailers(h map[string][]string) {
 		}
 	}
 
-	delete(h, trailerHeaderKey)
+	delete(h, TrailerHeaderKey)
 }

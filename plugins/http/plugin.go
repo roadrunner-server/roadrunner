@@ -108,7 +108,18 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Serv
 	}
 	s.pool = p
 
+	s.AddListener(s.logCallback)
+
 	return nil
+}
+
+func (s *Plugin) logCallback(event interface{}) {
+	switch ev := event.(type) {
+	case ResponseEvent:
+		s.log.Info("response received", "elapsed", ev.Elapsed().String(), "remote address", ev.Request.RemoteAddr)
+	default:
+		fmt.Println(event)
+	}
 }
 
 // Serve serves the svc.
