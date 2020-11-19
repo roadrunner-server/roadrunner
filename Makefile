@@ -9,3 +9,4 @@ test:
 	go test -v -race -cover ./plugins/informer/tests -tags=debug
 	go test -v -race -cover ./plugins/resetter/tests -tags=debug
 	go test -v -race -cover ./plugins/http/attributes -tags=debug
+	go test -v -race -cover ./plugins/http/tests -tags=debug

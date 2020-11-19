@@ -127,7 +127,6 @@ func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cm
 			w:   w,
 			err: nil,
 		}
-		return
 	}()
 
 	select {

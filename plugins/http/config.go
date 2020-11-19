@@ -1,13 +1,13 @@
 package http
 
 import (
-	"errors"
-	"fmt"
 	"net"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2"
 )
 
@@ -47,11 +47,6 @@ type ServerConfig struct {
 	// RelayTimeout defines for how long socket factory will be waiting for worker connection. This config section
 	// must not change on re-configuration.
 	RelayTimeout time.Duration
-
-	// Pool defines worker pool configuration, number of workers, timeouts and etc. This config section might change
-	// while server is running.
-
-	env map[string]string
 }
 
 // Config configures RoadRunner HTTP server.
@@ -60,7 +55,7 @@ type Config struct {
 	Address string
 
 	// SSL defines https server options.
-	SSL SSLConfig
+	SSL *SSLConfig
 
 	// FCGI configuration. You can use FastCGI without HTTP server.
 	FCGI *FCGIConfig
@@ -73,13 +68,14 @@ type Config struct {
 
 	// TrustedSubnets declare IP subnets which are allowed to set ip using X-Real-Ip and X-Forwarded-For
 	TrustedSubnets []string
-	cidrs          Cidrs
 
 	// Uploads configures uploads configuration.
 	Uploads *UploadsConfig
 
 	// Pool configures worker pool.
 	Pool *roadrunner.PoolConfig
+
+	cidrs Cidrs
 }
 
 // FCGIConfig for FastCGI server.
@@ -152,10 +148,18 @@ func (c *Config) EnableFCGI() bool {
 }
 
 // Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
-func (c *Config) Hydrate(cfg Config) error {
-	//if c.Workers == nil {
-	//	c.Workers = &ServerConfig{}
-	//}
+func (c *Config) InitDefaults() error {
+	if c.Pool == nil {
+		// default pool
+		c.Pool = &roadrunner.PoolConfig{
+			Debug:           false,
+			NumWorkers:      int64(runtime.NumCPU()),
+			MaxJobs:         1000,
+			AllocateTimeout: time.Second * 60,
+			DestroyTimeout:  time.Second * 60,
+			Supervisor:      nil,
+		}
+	}
 
 	if c.HTTP2 == nil {
 		c.HTTP2 = &HTTP2Config{}
@@ -167,6 +171,10 @@ func (c *Config) Hydrate(cfg Config) error {
 
 	if c.Uploads == nil {
 		c.Uploads = &UploadsConfig{}
+	}
+
+	if c.SSL == nil {
+		c.SSL = &SSLConfig{}
 	}
 
 	if c.SSL.Port == 0 {
@@ -181,16 +189,6 @@ func (c *Config) Hydrate(cfg Config) error {
 	if err != nil {
 		return err
 	}
-	//err = c.Workers.InitDefaults()
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//if err := cfg.Unmarshal(c); err != nil {
-	//	return err
-	//}
-	//
-	//c.Workers.UpscaleDurations()
 
 	if c.TrustedSubnets == nil {
 		// @see https://en.wikipedia.org/wiki/Reserved_IP_addresses
@@ -250,38 +248,31 @@ func (c *Config) IsTrusted(ip string) bool {
 
 // Valid validates the configuration.
 func (c *Config) Valid() error {
+	const op = errors.Op("validation")
 	if c.Uploads == nil {
-		return errors.New("malformed uploads config")
+		return errors.E(op, errors.Str("malformed uploads config"))
 	}
 
 	if c.HTTP2 == nil {
-		return errors.New("malformed http2 config")
+		return errors.E(op, errors.Str("malformed http2 config"))
 	}
 
-	//if c.Workers == nil {
-	//	return errors.New("malformed workers config")
-	//}
-	//
-	//if c.Workers.Pool == nil {
-	//	return errors.New("malformed workers config (pool config is missing)")
-	//}
-
-	//if err := c.Workers.Pool.Valid(); err != nil {
-	//	return err
-	//}
+	if c.Pool == nil {
+		return errors.E(op, "malformed pool config")
+	}
 
 	if !c.EnableHTTP() && !c.EnableTLS() && !c.EnableFCGI() {
-		return errors.New("unable to run http service, no method has been specified (http, https, http/2 or FastCGI)")
+		return errors.E(op, errors.Str("unable to run http service, no method has been specified (http, https, http/2 or FastCGI)"))
 	}
 
 	if c.Address != "" && !strings.Contains(c.Address, ":") {
-		return errors.New("malformed http server address")
+		return errors.E(op, errors.Str("malformed http server address"))
 	}
 
 	if c.EnableTLS() {
 		if _, err := os.Stat(c.SSL.Key); err != nil {
 			if os.IsNotExist(err) {
-				return fmt.Errorf("key file '%s' does not exists", c.SSL.Key)
+				return errors.E(op, errors.Errorf("key file '%s' does not exists", c.SSL.Key))
 			}
 
 			return err
@@ -289,7 +280,7 @@ func (c *Config) Valid() error {
 
 		if _, err := os.Stat(c.SSL.Cert); err != nil {
 			if os.IsNotExist(err) {
-				return fmt.Errorf("cert file '%s' does not exists", c.SSL.Cert)
+				return errors.E(op, errors.Errorf("cert file '%s' does not exists", c.SSL.Cert))
 			}
 
 			return err
@@ -299,7 +290,7 @@ func (c *Config) Valid() error {
 		if c.SSL.RootCA != "" {
 			if _, err := os.Stat(c.SSL.RootCA); err != nil {
 				if os.IsNotExist(err) {
-					return fmt.Errorf("root ca path provided, but path '%s' does not exists", c.SSL.RootCA)
+					return errors.E(op, errors.Errorf("root ca path provided, but path '%s' does not exists", c.SSL.RootCA))
 				}
 				return err
 			}

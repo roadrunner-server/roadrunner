@@ -3,15 +3,16 @@ package rpc
 import (
 	"testing"
 
-	json "github.com/json-iterator/go"
+	j "github.com/json-iterator/go"
 	"github.com/stretchr/testify/assert"
 )
+
+var json = j.ConfigCompatibleWithStandardLibrary
 
 type testCfg struct{ cfg string }
 
 func (cfg *testCfg) Unmarshal(out interface{}) error {
-	j := json.ConfigCompatibleWithStandardLibrary
-	return j.Unmarshal([]byte(cfg.cfg), out)
+	return json.Unmarshal([]byte(cfg.cfg), out)
 }
 
 func TestConfig_Listener(t *testing.T) {

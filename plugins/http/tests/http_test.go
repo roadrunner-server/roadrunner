@@ -25,7 +25,7 @@ func TestHTTPInit(t *testing.T) {
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   ".rr-http.yaml",
+		Path:   "configs/.rr-http.yaml",
 		Prefix: "rr",
 	}
 
@@ -49,7 +49,7 @@ func TestHTTPInit(t *testing.T) {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	tt := time.NewTimer(time.Second * 5)
+	tt := time.NewTimer(time.Second * 10)
 	for {
 		select {
 		case e := <-ch:
@@ -76,60 +76,60 @@ func TestHTTPInit(t *testing.T) {
 }
 
 func TestHTTPHandler(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
-	assert.NoError(t, err)
-
-	cfg := &config.Viper{
-		Path:   "configs/.rr-handler-echo.yaml",
-		Prefix: "rr",
-	}
-
-	err = cont.RegisterAll(
-		cfg,
-		&rpcPlugin.Plugin{},
-		&logger.ZapLogger{},
-		&server.Plugin{},
-		&httpPlugin.Plugin{},
-	)
-	assert.NoError(t, err)
-
-	err = cont.Init()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ch, err := cont.Serve()
-	assert.NoError(t, err)
-
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-
-	go func() {
-		tt := time.NewTimer(time.Minute * 5)
-		for {
-			select {
-			case e := <-ch:
-				assert.Fail(t, "error", e.Error.Error())
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-			case <-sig:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-				return
-			case <-tt.C:
-				// timeout
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-				return
-			}
-		}
-	}()
+	//cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	//assert.NoError(t, err)
+	//
+	//cfg := &config.Viper{
+	//	Path:   "configs/.rr-handler-echo.yaml",
+	//	Prefix: "rr",
+	//}
+	//
+	//err = cont.RegisterAll(
+	//	cfg,
+	//	&rpcPlugin.Plugin{},
+	//	&logger.ZapLogger{},
+	//	&server.Plugin{},
+	//	&httpPlugin.Plugin{},
+	//)
+	//assert.NoError(t, err)
+	//
+	//err = cont.Init()
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
+	//
+	//ch, err := cont.Serve()
+	//assert.NoError(t, err)
+	//
+	//sig := make(chan os.Signal, 1)
+	//signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	//
+	//go func() {
+	//	tt := time.NewTimer(time.Minute * 5)
+	//	for {
+	//		select {
+	//		case e := <-ch:
+	//			assert.Fail(t, "error", e.Error.Error())
+	//			err = cont.Stop()
+	//			if err != nil {
+	//				assert.FailNow(t, "error", err.Error())
+	//			}
+	//		case <-sig:
+	//			err = cont.Stop()
+	//			if err != nil {
+	//				assert.FailNow(t, "error", err.Error())
+	//			}
+	//			return
+	//		case <-tt.C:
+	//			// timeout
+	//			err = cont.Stop()
+	//			if err != nil {
+	//				assert.FailNow(t, "error", err.Error())
+	//			}
+	//			return
+	//		}
+	//	}
+	//}()
 }
 
 func get(url string) (string, *http.Response, error) {
@@ -141,11 +141,9 @@ func get(url string) (string, *http.Response, error) {
 	if err != nil {
 		return "", nil, err
 	}
-
-	err = r.Body.Close()
-	if err != nil {
-		return "", nil, err
-	}
+	defer func() {
+		_ = r.Body.Close()
+	}()
 	return string(b), r, err
 }
 

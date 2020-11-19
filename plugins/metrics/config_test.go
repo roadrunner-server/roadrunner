@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"testing"
 
-	json "github.com/json-iterator/go"
+	j "github.com/json-iterator/go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/stretchr/testify/assert"
 )
+
+var json = j.ConfigCompatibleWithStandardLibrary
 
 func Test_Config_Hydrate_Error1(t *testing.T) {
 	cfg := `{"request": {"From": "Something"}}`

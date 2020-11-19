@@ -62,11 +62,17 @@ func (server *Plugin) Stop() error {
 
 // CmdFactory provides worker command factory assocated with given context.
 func (server *Plugin) CmdFactory(env server.Env) (func() *exec.Cmd, error) {
+	const op = errors.Op("cmd factory")
 	var cmdArgs []string
 
 	// create command according to the config
 	cmdArgs = append(cmdArgs, strings.Split(server.cfg.Command, " ")...)
-
+	if len(cmdArgs) < 2 {
+		return nil, errors.E(op, errors.Str("should be in form of `php <script>"))
+	}
+	if cmdArgs[0] != "php" {
+		return nil, errors.E(op, errors.Str("first arg in command should be `php`"))
+	}
 	return func() *exec.Cmd {
 		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 		util.IsolateProcess(cmd)

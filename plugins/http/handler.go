@@ -161,6 +161,8 @@ func (h *handler) maxSize(w http.ResponseWriter, r *http.Request, start time.Tim
 
 // handleError sends error.
 func (h *handler) handleError(w http.ResponseWriter, r *http.Request, err error, start time.Time) {
+	h.mul.Lock()
+	defer h.mul.Unlock()
 	// if pipe is broken, there is no sense to write the header
 	// in this case we just report about error
 	if err == errEPIPE {
@@ -188,9 +190,6 @@ func (h *handler) handleResponse(req *Request, resp *Response, start time.Time) 
 
 // throw invokes event handler if any.
 func (h *handler) throw(ctx interface{}) {
-	h.mul.Lock()
-	defer h.mul.Unlock()
-
 	if h.lsn != nil {
 		h.lsn(ctx)
 	}

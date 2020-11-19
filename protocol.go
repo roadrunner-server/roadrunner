@@ -3,10 +3,12 @@ package roadrunner
 import (
 	"os"
 
-	json "github.com/json-iterator/go"
+	j "github.com/json-iterator/go"
 	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v2"
 )
+
+var json = j.ConfigCompatibleWithStandardLibrary
 
 type stopCommand struct {
 	Stop bool `json:"stop"`

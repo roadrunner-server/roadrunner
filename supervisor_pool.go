@@ -156,10 +156,8 @@ func (sp *supervisedPool) control() {
 			if err != nil {
 				sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
 				return
-			} else {
-				sp.events.Push(PoolEvent{Event: EventTTL, Payload: workers[i]})
 			}
-
+			sp.events.Push(PoolEvent{Event: EventTTL, Payload: workers[i]})
 			continue
 		}
 
@@ -168,9 +166,8 @@ func (sp *supervisedPool) control() {
 			if err != nil {
 				sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
 				return
-			} else {
-				sp.events.Push(PoolEvent{Event: EventMaxMemory, Payload: workers[i]})
 			}
+			sp.events.Push(PoolEvent{Event: EventMaxMemory, Payload: workers[i]})
 
 			continue
 		}
@@ -201,9 +198,8 @@ func (sp *supervisedPool) control() {
 				if err != nil {
 					sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
 					return
-				} else {
-					sp.events.Push(PoolEvent{Event: EventIdleTTL, Payload: workers[i]})
 				}
+				sp.events.Push(PoolEvent{Event: EventIdleTTL, Payload: workers[i]})
 			}
 		}
 	}

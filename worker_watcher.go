@@ -323,8 +323,6 @@ func (ww *workerWatcher) wait(ctx context.Context, w WorkerBase) {
 		})
 		return
 	}
-
-	return
 }
 
 func (ww *workerWatcher) addToWatch(wb WorkerBase) {

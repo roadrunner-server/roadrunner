@@ -1,9 +1,10 @@
 package http
 
 import (
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFsConfig_Forbids(t *testing.T) {

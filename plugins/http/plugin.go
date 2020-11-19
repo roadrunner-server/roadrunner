@@ -33,8 +33,6 @@ const (
 	EventInitSSL = 750
 )
 
-//var couldNotAppendPemError = errors.New("could not append Certs from PEM")
-
 // http middleware type.
 type middleware func(f http.HandlerFunc) http.HandlerFunc
 
@@ -81,8 +79,17 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Serv
 		return errors.E(op, err)
 	}
 
+	err = s.cfg.InitDefaults()
+	if err != nil {
+		return errors.E(op, err)
+	}
+
 	s.configurer = cfg
 	s.log = log
+
+	if !s.cfg.EnableHTTP() && !s.cfg.EnableTLS() && !s.cfg.EnableFCGI() {
+		return errors.E(op, errors.Disabled)
+	}
 
 	// Set needed env vars
 	env := make(map[string]string)
@@ -94,24 +101,12 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Serv
 		MaxJobs:         s.cfg.Pool.MaxJobs,
 		AllocateTimeout: s.cfg.Pool.AllocateTimeout,
 		DestroyTimeout:  s.cfg.Pool.DestroyTimeout,
-		Supervisor:      nil,
+		Supervisor:      s.cfg.Pool.Supervisor,
 	}, env)
-
 	if err != nil {
 		return errors.E(op, err)
 	}
-
 	s.pool = p
-
-	//if r != nil {
-	//	if err := r.Register(ID, &rpcServer{s}); err != nil {
-	//		return false, err
-	//	}
-	//}
-	//
-	//if !cfg.EnableHTTP() && !cfg.EnableTLS() && !cfg.EnableFCGI() {
-	//	return false, nil
-	//}
 
 	return nil
 }
@@ -123,22 +118,6 @@ func (s *Plugin) Serve() chan error {
 
 	const op = errors.Op("serve http")
 	errCh := make(chan error, 2)
-
-	//if s.env != nil {
-	//	if err := s.env.Copy(s.cfg.Workers); err != nil {
-	//		return nil
-	//	}
-	//}
-	//
-	//s.cfg.Workers.CommandProducer = s.cprod
-	//s.cfg.Workers.SetEnv("RR_HTTP", "true")
-	//
-	//s.pool = roadrunner.NewServer(s.cfg.Workers)
-	//s.pool.Listen(s.throw)
-	//
-	//if s.controller != nil {
-	//	s.pool.Attach(s.controller)
-	//}
 
 	var err error
 	s.handler, err = NewHandler(
@@ -186,11 +165,6 @@ func (s *Plugin) Serve() chan error {
 		s.fcgi = &http.Server{Handler: s}
 	}
 
-	//if err := s.pool.Start(); err != nil {
-	//	return err
-	//}
-	//defer s.pool.Stop()
-
 	if s.http != nil {
 		go func() {
 			httpErr := s.http.ListenAndServe()
@@ -198,7 +172,6 @@ func (s *Plugin) Serve() chan error {
 				errCh <- errors.E(op, httpErr)
 				return
 			}
-			return
 		}()
 	}
 
@@ -213,7 +186,6 @@ func (s *Plugin) Serve() chan error {
 				errCh <- errors.E(op, httpErr)
 				return
 			}
-			return
 		}()
 	}
 
@@ -224,7 +196,6 @@ func (s *Plugin) Serve() chan error {
 				errCh <- errors.E(op, httpErr)
 				return
 			}
-			return
 		}()
 	}
 
@@ -300,7 +271,6 @@ func (s *Plugin) appendRootCa() error {
 	const op = errors.Op("append root CA")
 	rootCAs, err := x509.SystemCertPool()
 	if err != nil {
-		//s.throw(EventInitSSL, nil)
 		return nil
 	}
 	if rootCAs == nil {
@@ -309,7 +279,6 @@ func (s *Plugin) appendRootCa() error {
 
 	CA, err := ioutil.ReadFile(s.cfg.SSL.RootCA)
 	if err != nil {
-		//s.throw(EventInitSSL, nil)
 		return err
 	}
 
@@ -318,6 +287,8 @@ func (s *Plugin) appendRootCa() error {
 	if !ok {
 		return errors.E(op, errors.Str("could not append Certs from PEM"))
 	}
+	// disable "G402 (CWE-295): TLS MinVersion too low. (Confidence: HIGH, Severity: HIGH)"
+	// #nosec G402
 	cfg := &tls.Config{
 		InsecureSkipVerify: false,
 		RootCAs:            rootCAs,
@@ -418,18 +389,6 @@ func (s *Plugin) serveFCGI() error {
 	return nil
 }
 
-// throw handles service, server and pool events.
-//func (s *Plugin) throw(event int, ctx interface{}) {
-//	for _, l := range s.lsns {
-//		l(event, ctx)
-//	}
-//
-//	if event == roadrunner.EventServerFailure {
-//		// underlying pool server is dead
-//		s.Stop()
-//	}
-//}
-
 // tlsAddr replaces listen or host port with port configured by SSL config.
 func (s *Plugin) tlsAddr(host string, forcePort bool) string {
 	// remove current forcePort first
@@ -464,12 +423,12 @@ func (s *Plugin) Reset() error {
 	}
 
 	s.pool, err = s.server.NewWorkerPool(context.Background(), roadrunner.PoolConfig{
-		Debug:           false,
-		NumWorkers:      0,
-		MaxJobs:         0,
-		AllocateTimeout: 0,
-		DestroyTimeout:  0,
-		Supervisor:      nil,
+		Debug:           s.cfg.Pool.Debug,
+		NumWorkers:      s.cfg.Pool.NumWorkers,
+		MaxJobs:         s.cfg.Pool.MaxJobs,
+		AllocateTimeout: s.cfg.Pool.AllocateTimeout,
+		DestroyTimeout:  s.cfg.Pool.DestroyTimeout,
+		Supervisor:      s.cfg.Pool.Supervisor,
 	}, env)
 	if err != nil {
 		return err

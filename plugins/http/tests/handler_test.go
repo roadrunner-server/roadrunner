@@ -41,22 +41,24 @@ func TestHandler_Echo(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer func() {
-		err = hs.Shutdown(context.Background())
+		err := hs.Shutdown(context.Background())
 		if err != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
-
-	go func() {
-		err = hs.ListenAndServe()
+	go func(server *http.Server) {
+		err := server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
-	}()
+	}(hs)
 	time.Sleep(time.Millisecond * 10)
 
 	body, r, err := get("http://localhost:8177/?hello=world")
 	assert.NoError(t, err)
+	defer func() {
+		_ = r.Body.Close()
+	}()
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", body)
 }
@@ -118,7 +120,6 @@ func TestHandler_Headers(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -180,7 +181,6 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -241,7 +241,6 @@ func TestHandler_User_Agent(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -302,7 +301,6 @@ func TestHandler_Cookies(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -372,7 +370,6 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -493,7 +490,6 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -565,7 +561,6 @@ func TestHandler_FormData_POST(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -576,7 +571,7 @@ func TestHandler_FormData_POST(t *testing.T) {
 	assert.Equal(t, 200, r.StatusCode)
 
 	// Sorted
-	assert.Equal(t, "{\"arr\":{\"c\":{\"z\":\"\",\"p\":\"l\"},\"x\":{\"y\":{\"e\":\"f\",\"z\":\"y\"}}},\"key\":\"value\",\"name\":[\"name1\",\"name2\",\"name3\"]}", string(b))
+	assert.Equal(t, "{\"arr\":{\"c\":{\"p\":\"l\",\"z\":\"\"},\"x\":{\"y\":{\"e\":\"f\",\"z\":\"y\"}}},\"key\":\"value\",\"name\":[\"name1\",\"name2\",\"name3\"]}", string(b))
 }
 
 func TestHandler_FormData_POST_Overwrite(t *testing.T) {
@@ -633,7 +628,6 @@ func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -706,7 +700,6 @@ func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -779,7 +772,6 @@ func TestHandler_FormData_PUT(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -852,7 +844,6 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -967,7 +958,6 @@ func TestHandler_Multipart_POST(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -977,7 +967,7 @@ func TestHandler_Multipart_POST(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 200, r.StatusCode)
 
-	assert.Equal(t, "{\"arr\":{\"c\":{\"z\":\"\",\"p\":\"l\"},\"x\":{\"y\":{\"e\":\"f\",\"z\":\"y\"}}},\"key\":\"value\",\"name\":[\"name1\",\"name2\",\"name3\"]}", string(b))
+	assert.Equal(t, "{\"arr\":{\"c\":{\"p\":\"l\",\"z\":\"\"},\"x\":{\"y\":{\"e\":\"f\",\"z\":\"y\"}}},\"key\":\"value\",\"name\":[\"name1\",\"name2\",\"name3\"]}", string(b))
 }
 
 func TestHandler_Multipart_PUT(t *testing.T) {
@@ -1082,7 +1072,6 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -1199,7 +1188,6 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 		err := r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -1252,6 +1240,9 @@ func TestHandler_Error(t *testing.T) {
 
 	_, r, err := get("http://localhost:8177/?hello=world")
 	assert.NoError(t, err)
+	defer func() {
+		_ = r.Body.Close()
+	}()
 	assert.Equal(t, 500, r.StatusCode)
 }
 
@@ -1295,6 +1286,9 @@ func TestHandler_Error2(t *testing.T) {
 
 	_, r, err := get("http://localhost:8177/?hello=world")
 	assert.NoError(t, err)
+	defer func() {
+		_ = r.Body.Close()
+	}()
 	assert.Equal(t, 500, r.StatusCode)
 }
 
@@ -1350,7 +1344,6 @@ func TestHandler_Error3(t *testing.T) {
 		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
-
 		}
 	}()
 
@@ -1403,11 +1396,15 @@ func TestHandler_ResponseDuration(t *testing.T) {
 			if t.Elapsed() > 0 {
 				close(gotresp)
 			}
+		default:
 		}
 	})
 
 	body, r, err := get("http://localhost:8177/?hello=world")
 	assert.NoError(t, err)
+	defer func() {
+		_ = r.Body.Close()
+	}()
 
 	<-gotresp
 
@@ -1439,14 +1436,14 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer func() {
-		err = hs.Shutdown(context.Background())
+		err := hs.Shutdown(context.Background())
 		if err != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err = hs.ListenAndServe()
+		err := hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1460,12 +1457,15 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 			if tp.Elapsed() > time.Second {
 				close(gotresp)
 			}
+		default:
 		}
 	})
 
 	body, r, err := get("http://localhost:8177/?hello=world")
 	assert.NoError(t, err)
-
+	defer func() {
+		_ = r.Body.Close()
+	}()
 	<-gotresp
 
 	assert.Equal(t, 201, r.StatusCode)
@@ -1517,11 +1517,15 @@ func TestHandler_ErrorDuration(t *testing.T) {
 			if tp.Elapsed() > 0 {
 				close(goterr)
 			}
+		default:
 		}
 	})
 
 	_, r, err := get("http://localhost:8177/?hello=world")
 	assert.NoError(t, err)
+	defer func() {
+		_ = r.Body.Close()
+	}()
 
 	<-goterr
 
@@ -1582,6 +1586,9 @@ func TestHandler_IP(t *testing.T) {
 
 	body, r, err := get("http://127.0.0.1:8177/")
 	assert.NoError(t, err)
+	defer func() {
+		_ = r.Body.Close()
+	}()
 	assert.Equal(t, 200, r.StatusCode)
 	assert.Equal(t, "127.0.0.1", body)
 }
@@ -1624,14 +1631,14 @@ func TestHandler_XRealIP(t *testing.T) {
 
 	hs := &http.Server{Addr: "127.0.0.1:8179", Handler: h}
 	defer func() {
-		err = hs.Shutdown(context.Background())
+		err := hs.Shutdown(context.Background())
 		if err != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err = hs.ListenAndServe()
+		err := hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1643,6 +1650,9 @@ func TestHandler_XRealIP(t *testing.T) {
 	})
 
 	assert.NoError(t, err)
+	defer func() {
+		_ = r.Body.Close()
+	}()
 	assert.Equal(t, 200, r.StatusCode)
 	assert.Equal(t, "200.0.0.1", body)
 }
@@ -1708,12 +1718,14 @@ func TestHandler_XForwardedFor(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 200, r.StatusCode)
 	assert.Equal(t, "101.0.0.1", body)
+	_ = r.Body.Close()
 
 	body, r, err = getHeader("http://127.0.0.1:8177/", map[string]string{
 		"X-Forwarded-For": "100.0.0.1, 200.0.0.1, 101.0.0.1, invalid",
 	})
 
 	assert.NoError(t, err)
+	_ = r.Body.Close()
 	assert.Equal(t, 200, r.StatusCode)
 	assert.Equal(t, "101.0.0.1", body)
 }
@@ -1769,6 +1781,7 @@ func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
 	})
 
 	assert.NoError(t, err)
+	_ = r.Body.Close()
 	assert.Equal(t, 200, r.StatusCode)
 	assert.Equal(t, "127.0.0.1", body)
 }

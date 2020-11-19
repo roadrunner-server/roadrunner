@@ -8,11 +8,13 @@ import (
 	"net/url"
 	"strings"
 
-	json "github.com/json-iterator/go"
+	j "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 )
+
+var json = j.ConfigCompatibleWithStandardLibrary
 
 const (
 	defaultMaxMemory = 32 << 20 // 32 MB

@@ -1,7 +1,6 @@
 package http
 
 import (
-	json "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 
 	"io"
@@ -42,8 +41,7 @@ type Uploads struct {
 
 // MarshalJSON marshal tree tree into JSON.
 func (u *Uploads) MarshalJSON() ([]byte, error) {
-	j := json.ConfigCompatibleWithStandardLibrary
-	return j.Marshal(u.tree)
+	return json.Marshal(u.tree)
 }
 
 // Open moves all uploaded files to temp directory, return error in case of issue with temp directory. File errors

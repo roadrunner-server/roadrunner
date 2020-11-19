@@ -23,4 +23,3 @@ func (p1 *Plugin1) Stop() error {
 func (p1 *Plugin1) Name() string {
 	return "http_test.plugin1"
 }
-
