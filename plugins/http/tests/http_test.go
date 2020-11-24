@@ -423,7 +423,7 @@ func TestFastCGI_RequestUri(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
-		tt := time.NewTimer(time.Second * 5)
+		tt := time.NewTimer(time.Second * 10)
 		defer wg.Done()
 		for {
 			select {
@@ -455,7 +455,7 @@ func TestFastCGI_RequestUri(t *testing.T) {
 }
 
 func fcgiReqURI(t *testing.T) {
-	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "0.0.0.0:6921")
+	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "127.0.0.1:6921")
 
 	fcgiHandler := gofast.NewHandler(
 		gofast.BasicParamsMap(gofast.BasicSession),
