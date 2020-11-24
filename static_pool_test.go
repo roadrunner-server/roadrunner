@@ -180,6 +180,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 		select {
 		case <-tt.C:
 			tt.Stop()
+			assert.Fail(t, "force exit from the test")
 			wg.Done()
 		}
 	}()
