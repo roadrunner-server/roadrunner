@@ -1,5 +1,5 @@
 server:
-  command: "php ../../../tests/http/client.php echo pipes"
+  command: "php ../../../tests/http/client.php push pipes"
   user: ""
   group: ""
   env:
@@ -9,7 +9,7 @@ server:
 
 http:
   debug: true
-  address: :8081
+  address: :8086
   maxRequestSize: 1024
   middleware: [ "" ]
   uploads:
@@ -22,8 +22,8 @@ http:
     destroyTimeout: 60s
 
   ssl:
-    port: 8889
-    redirect: false
+    port: 8894
+    redirect: true
     cert: fixtures/server.crt
     key: fixtures/server.key
   #    rootCa: root.crt

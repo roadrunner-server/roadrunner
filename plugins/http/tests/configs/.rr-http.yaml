@@ -9,7 +9,7 @@ server:
 
 http:
   debug: true
-  address: 127.0.0.1:8080
+  address: 127.0.0.1:8084
   maxRequestSize: 200
   middleware: [ "" ]
   uploads:
@@ -22,13 +22,13 @@ http:
     destroyTimeout: 60s
 
   ssl:
-    port: 8888
+    port: 8892
     redirect: true
     cert: fixtures/server.crt
     key: fixtures/server.key
   #    rootCa: root.crt
   fcgi:
-    address: tcp://0.0.0.0:6920
+    address: tcp://0.0.0.0:6921
   http2:
     enabled: false
     h2c: false

@@ -251,15 +251,12 @@ func (s *Plugin) Stop() error {
 
 // ServeHTTP handles connection using set of middleware and pool PSR-7 server.
 func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if s.https != nil && r.TLS == nil && s.cfg.SSL.Redirect {
-		target := &url.URL{
-			Scheme:   "https",
-			Host:     s.tlsAddr(r.Host, false),
-			Path:     r.URL.Path,
-			RawQuery: r.URL.RawQuery,
-		}
+	if headerContainsUpgrade(r, s) {
+		http.Error(w, "server does not support upgrade header", http.StatusInternalServerError)
+		return
+	}
 
-		http.Redirect(w, r, target.String(), http.StatusTemporaryRedirect)
+	if s.redirect(w, r) {
 		return
 	}
 
@@ -275,6 +272,30 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		f = m(f)
 	}
 	f(w, r)
+}
+
+func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) bool {
+	if s.https != nil && r.TLS == nil && s.cfg.SSL.Redirect {
+		target := &url.URL{
+			Scheme:   "https",
+			Host:     s.tlsAddr(r.Host, false),
+			Path:     r.URL.Path,
+			RawQuery: r.URL.RawQuery,
+		}
+
+		http.Redirect(w, r, target.String(), http.StatusTemporaryRedirect)
+		return true
+	}
+	return false
+}
+
+func headerContainsUpgrade(r *http.Request, s *Plugin) bool {
+	if _, ok := r.Header["Upgrade"]; ok {
+		// https://golang.org/pkg/net/http/#Hijacker
+		s.log.Error("server does not support Upgrade header")
+		return true
+	}
+	return false
 }
 
 // append RootCA to the https server TLS config

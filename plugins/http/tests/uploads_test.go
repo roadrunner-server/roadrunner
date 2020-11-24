@@ -371,11 +371,11 @@ func mustOpen(f string) *os.File {
 }
 
 type fInfo struct {
-	Name  string `json:"name"`
-	Size  int64  `json:"size"`
-	Mime  string `json:"mime"`
-	Error int    `json:"error"`
-	MD5   string `json:"md5,omitempty"`
+	Name   string `json:"name"`
+	Size   int64  `json:"size"`
+	Mime   string `json:"mime"`
+	Error  int    `json:"error"`
+	Sha512 string `json:"sha512,omitempty"`
 }
 
 func fileString(f string, errNo int, mime string) string {
@@ -403,15 +403,15 @@ func fileString(f string, errNo int, mime string) string {
 	}
 
 	v := &fInfo{
-		Name:  s.Name(),
-		Size:  s.Size(),
-		Error: errNo,
-		Mime:  mime,
-		MD5:   hex.EncodeToString(h.Sum(nil)),
+		Name:   s.Name(),
+		Size:   s.Size(),
+		Error:  errNo,
+		Mime:   mime,
+		Sha512: hex.EncodeToString(h.Sum(nil)),
 	}
 
 	if errNo != 0 {
-		v.MD5 = ""
+		v.Sha512 = ""
 		v.Size = 0
 	}
 

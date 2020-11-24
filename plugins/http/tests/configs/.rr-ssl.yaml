@@ -9,7 +9,7 @@ server:
 
 http:
   debug: true
-  address: :8080
+  address: :8085
   maxRequestSize: 1024
   middleware: [ "" ]
   uploads:
@@ -22,7 +22,7 @@ http:
     destroyTimeout: 60s
 
   ssl:
-    port: 8888
+    port: 8893
     redirect: false
     cert: fixtures/server.crt
     key: fixtures/server.key

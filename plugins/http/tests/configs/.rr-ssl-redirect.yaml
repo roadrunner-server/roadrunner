@@ -9,7 +9,7 @@ server:
 
 http:
   debug: true
-  address: :8081
+  address: :8087
   maxRequestSize: 1024
   middleware: [ "" ]
   uploads:
@@ -22,8 +22,8 @@ http:
     destroyTimeout: 60s
 
   ssl:
-    port: 8889
-    redirect: false
+    port: 8895
+    redirect: true
     cert: fixtures/server.crt
     key: fixtures/server.key
   #    rootCa: root.crt
