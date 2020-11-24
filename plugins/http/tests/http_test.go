@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"crypto/tls"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/http/httptest"
+	"net/rpc"
 	"os"
 	"os/signal"
 	"sync"
@@ -14,9 +16,13 @@ import (
 	"time"
 
 	"github.com/spiral/endure"
+	"github.com/spiral/goridge/v2"
+	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
+	"github.com/spiral/roadrunner/v2/plugins/informer"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/plugins/resetter"
 	"github.com/yookoala/gofast"
 
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
@@ -92,6 +98,126 @@ func TestHTTPInit(t *testing.T) {
 	}()
 
 	wg.Wait()
+}
+
+func TestHTTPInformerReset(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-http.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+		&informer.Plugin{},
+		&resetter.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		tt := time.NewTimer(time.Second * 10)
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-tt.C:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	t.Run("HTTPInformerTest", informerTest)
+	t.Run("HTTPEchoTestBefore", echoHTTP)
+	t.Run("HTTPResetTest", resetTest)
+	t.Run("HTTPEchoTestAfter", echoHTTP)
+
+	wg.Wait()
+}
+
+func echoHTTP(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://localhost:8084?hello=world", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "hello world", string(b))
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
+}
+
+func resetTest(t *testing.T) {
+	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	assert.NoError(t, err)
+	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	// WorkerList contains list of workers.
+
+	var ret bool
+	err = client.Call("resetter.Reset", "http", &ret)
+	assert.NoError(t, err)
+	assert.True(t, ret)
+	ret = false
+
+	var services []string
+	err = client.Call("resetter.List", nil, &services)
+	assert.NoError(t, err)
+	if services[0] != "http" {
+		t.Fatal("no enough services")
+	}
+}
+
+func informerTest(t *testing.T) {
+	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	assert.NoError(t, err)
+	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	// WorkerList contains list of workers.
+	list := struct {
+		// Workers is list of workers.
+		Workers []roadrunner.ProcessState `json:"workers"`
+	}{}
+
+	err = client.Call("informer.Workers", "http", &list)
+	assert.NoError(t, err)
+	assert.Len(t, list.Workers, 12)
 }
 
 func TestSSL(t *testing.T) {

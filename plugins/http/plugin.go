@@ -95,7 +95,7 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Serv
 	env := make(map[string]string)
 	env["RR_HTTP"] = "true"
 
-	p, err := server.NewWorkerPool(context.Background(), roadrunner.PoolConfig{
+	s.pool, err = server.NewWorkerPool(context.Background(), roadrunner.PoolConfig{
 		Debug:           s.cfg.Pool.Debug,
 		NumWorkers:      s.cfg.Pool.NumWorkers,
 		MaxJobs:         s.cfg.Pool.MaxJobs,
@@ -106,7 +106,8 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Serv
 	if err != nil {
 		return errors.E(op, err)
 	}
-	s.pool = p
+
+	s.server = server
 
 	s.AddListener(s.logCallback)
 
@@ -117,6 +118,8 @@ func (s *Plugin) logCallback(event interface{}) {
 	switch ev := event.(type) {
 	case ResponseEvent:
 		s.log.Info("response received", "elapsed", ev.Elapsed().String(), "remote address", ev.Request.RemoteAddr)
+	case ErrorEvent:
+		s.log.Error("error event received", "elapsed", ev.Elapsed().String(), "error", ev.Error)
 	default:
 		fmt.Println(event)
 	}
@@ -438,9 +441,15 @@ func (s *Plugin) Workers() []roadrunner.WorkerBase {
 	return s.pool.Workers()
 }
 
+func (s *Plugin) Name() string {
+	return ServiceName
+}
+
 func (s *Plugin) Reset() error {
 	s.Lock()
 	defer s.Unlock()
+	const op = errors.Op("http reset")
+	s.log.Info("Resetting http plugin")
 	s.pool.Destroy(context.Background())
 
 	// Set needed env vars
@@ -451,7 +460,7 @@ func (s *Plugin) Reset() error {
 	// re-read the config
 	err = s.configurer.UnmarshalKey(ServiceName, &s.cfg)
 	if err != nil {
-		return err
+		return errors.E(op, err)
 	}
 
 	s.pool, err = s.server.NewWorkerPool(context.Background(), roadrunner.PoolConfig{
@@ -463,7 +472,17 @@ func (s *Plugin) Reset() error {
 		Supervisor:      s.cfg.Pool.Supervisor,
 	}, env)
 	if err != nil {
-		return err
+		return errors.E(op, err)
+	}
+
+	s.handler, err = NewHandler(
+		s.cfg.MaxRequestSize,
+		*s.cfg.Uploads,
+		s.cfg.cidrs,
+		s.pool,
+	)
+	if err != nil {
+		return errors.E(op, err)
 	}
 
 	// restore original listeners
