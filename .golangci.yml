@@ -1,7 +1,10 @@
-linters:
+run:
   skip-files:
-    - ".*\\test\\.go$"
-    - lib/bad.go
+    - plugins/http/tests/http_test.go
+    - plugins/http/tests/plugin_test_old.go
+    - plugins/http/tests/rpc_test_old.go
+    - plugins/http/tests/config_test.go
+linters:
   disable-all: true
   enable:
     - bodyclose

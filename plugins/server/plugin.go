@@ -74,7 +74,7 @@ func (server *Plugin) CmdFactory(env server.Env) (func() *exec.Cmd, error) {
 		return nil, errors.E(op, errors.Str("first arg in command should be `php`"))
 	}
 	return func() *exec.Cmd {
-		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
+		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...) //nolint:gosec
 		util.IsolateProcess(cmd)
 
 		// if user is not empty, and OS is linux or macos

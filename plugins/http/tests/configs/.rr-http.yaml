@@ -28,7 +28,7 @@ http:
     key: fixtures/server.key
   #    rootCa: root.crt
   fcgi:
-    address: tcp://0.0.0.0:6921
+    address: tcp://0.0.0.0:7921
   http2:
     enabled: false
     h2c: false

@@ -43,7 +43,6 @@ func TestHTTPInit(t *testing.T) {
 
 	err = cont.RegisterAll(
 		cfg,
-		&rpcPlugin.Plugin{},
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
@@ -63,8 +62,9 @@ func TestHTTPInit(t *testing.T) {
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 2)
+		tt := time.NewTimer(time.Second * 5)
 		defer wg.Done()
 		for {
 			select {
@@ -403,7 +403,6 @@ func TestFastCGI_RequestUri(t *testing.T) {
 
 	err = cont.RegisterAll(
 		cfg,
-		&rpcPlugin.Plugin{},
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
@@ -451,11 +450,11 @@ func TestFastCGI_RequestUri(t *testing.T) {
 		}
 	}()
 
-	t.Run("FastCGIServiceRequestUri", fcgiReqUri)
+	t.Run("FastCGIServiceRequestUri", fcgiReqURI)
 	wg.Wait()
 }
 
-func fcgiReqUri(t *testing.T) {
+func fcgiReqURI(t *testing.T) {
 	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "0.0.0.0:6921")
 
 	fcgiHandler := gofast.NewHandler(
