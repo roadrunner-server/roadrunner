@@ -422,6 +422,9 @@ func TestFastCGI_RequestUri(t *testing.T) {
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
+
+	t.Run("FastCGIServiceRequestUri", fcgiReqURI)
+
 	go func() {
 		tt := time.NewTimer(time.Second * 10)
 		defer wg.Done()
@@ -450,7 +453,6 @@ func TestFastCGI_RequestUri(t *testing.T) {
 		}
 	}()
 
-	t.Run("FastCGIServiceRequestUri", fcgiReqURI)
 	wg.Wait()
 }
 
