@@ -268,12 +268,18 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r = attributes.Init(r)
+	// protect the case, when user send Reset and we are replacing handler with pool
+	s.Lock()
+	f := s.handler.ServeHTTP
+	s.Unlock()
 
 	// chaining middleware
-	f := s.handler.ServeHTTP
-	for _, m := range s.mdwr {
-		f = m(f)
+	if len(s.mdwr) > 0 {
+		for i := 0; i < len(s.mdwr); i++ {
+			f = s.mdwr[i](f)
+		}
 	}
+
 	f(w, r)
 }
 

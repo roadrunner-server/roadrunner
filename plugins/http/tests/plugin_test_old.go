@@ -24,45 +24,7 @@ package tests
 //	target  string
 //}
 //
-//func (cfg *testCfg) Get(name string) service.Config {
-//	if name == ID {
-//		if cfg.httpCfg == "" {
-//			return nil
-//		}
-//
-//		return &testCfg{target: cfg.httpCfg}
-//	}
-//
-//	if name == rpc.ID {
-//		return &testCfg{target: cfg.rpcCfg}
-//	}
-//
-//	if name == env.ID {
-//		return &testCfg{target: cfg.envCfg}
-//	}
-//
-//	return nil
-//}
-//func (cfg *testCfg) Unmarshal(out interface{}) error {
-//	j := json.ConfigCompatibleWithStandardLibrary
-//	return j.Unmarshal([]byte(cfg.target), out)
-//}
-//
-//func Test_Service_NoConfig(t *testing.T) {
-//	logger, _ := test.NewNullLogger()
-//	logger.SetLevel(logrus.DebugLevel)
-//
-//	c := service.NewContainer(logger)
-//	c.Register(ID, &Service{})
-//
-//	err := c.Init(&testCfg{httpCfg: `{"Enable":true}`})
-//	assert.Error(t, err)
-//
-//	s, st := c.Get(ID)
-//	assert.NotNil(t, s)
-//	assert.Equal(t, service.StatusInactive, st)
-//}
-//
+
 //func Test_Service_Configure_Disable(t *testing.T) {
 //	logger, _ := test.NewNullLogger()
 //	logger.SetLevel(logrus.DebugLevel)
