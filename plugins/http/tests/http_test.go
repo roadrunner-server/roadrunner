@@ -961,6 +961,115 @@ func echoError(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestHttpEnvVariables(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-env.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+		&PluginMiddleware{},
+		&PluginMiddleware2{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		tt := time.NewTimer(time.Second * 5)
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-tt.C:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	t.Run("EnvVariablesTest", envVarsTest)
+	wg.Wait()
+}
+
+func envVarsTest(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://localhost:8084", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "ENV_VALUE", string(b))
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
+}
+
+func TestHttpBrokenPipes(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-broken-pipes.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+		&PluginMiddleware{},
+		&PluginMiddleware2{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	assert.Error(t, err)
+
+	_, err = cont.Serve()
+	assert.Error(t, err)
+}
+
+
 func get(url string) (string, *http.Response, error) {
 	r, err := http.Get(url)
 	if err != nil {

@@ -92,10 +92,6 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Serv
 		return errors.E(op, errors.Disabled)
 	}
 
-	// Set needed env vars
-	env := make(map[string]string)
-	env["RR_HTTP"] = "true"
-
 	s.pool, err = server.NewWorkerPool(context.Background(), roadrunner.PoolConfig{
 		Debug:           s.cfg.Pool.Debug,
 		NumWorkers:      s.cfg.Pool.NumWorkers,
@@ -103,7 +99,7 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Serv
 		AllocateTimeout: s.cfg.Pool.AllocateTimeout,
 		DestroyTimeout:  s.cfg.Pool.DestroyTimeout,
 		Supervisor:      s.cfg.Pool.Supervisor,
-	}, env)
+	}, s.cfg.Env)
 	if err != nil {
 		return errors.E(op, err)
 	}
@@ -297,13 +293,8 @@ func (s *Plugin) Reset() error {
 	s.log.Info("Resetting http plugin")
 	s.pool.Destroy(context.Background())
 
-	// Set needed env vars
-	env := make(map[string]string)
-	env["RR_HTTP"] = "true"
-	var err error
-
 	// re-read the config
-	err = s.configurer.UnmarshalKey(ServiceName, &s.cfg)
+	err := s.configurer.UnmarshalKey(ServiceName, &s.cfg)
 	if err != nil {
 		return errors.E(op, err)
 	}
@@ -315,7 +306,7 @@ func (s *Plugin) Reset() error {
 		AllocateTimeout: s.cfg.Pool.AllocateTimeout,
 		DestroyTimeout:  s.cfg.Pool.DestroyTimeout,
 		Supervisor:      s.cfg.Pool.Supervisor,
-	}, env)
+	}, s.cfg.Env)
 	if err != nil {
 		return errors.E(op, err)
 	}

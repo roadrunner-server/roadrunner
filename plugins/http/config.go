@@ -75,6 +75,9 @@ type Config struct {
 	// Pool configures worker pool.
 	Pool *roadrunner.PoolConfig
 
+	// Env is environment variables passed to the  http pool
+	Env map[string]string
+
 	cidrs Cidrs
 }
 
