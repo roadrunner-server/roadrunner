@@ -123,9 +123,9 @@ func (s *Service) Serve() error {
 
 	if s.cfg.EnableHTTP() {
 		if s.cfg.EnableH2C() {
-			s.http = &http.Server{Addr: s.cfg.Address, Handler: h2c.NewHandler(s, &http2.Server{})}
+			s.http = &http.Server{Handler: h2c.NewHandler(s, &http2.Server{})}
 		} else {
-			s.http = &http.Server{Addr: s.cfg.Address, Handler: s}
+			s.http = &http.Server{Handler: s}
 		}
 	}
 
@@ -159,8 +159,13 @@ func (s *Service) Serve() error {
 	err := make(chan error, 3)
 
 	if s.http != nil {
+		l, lErr := util.CreateListener(s.cfg.Address)
+		if lErr != nil {
+			return lErr
+		}
+
 		go func() {
-			httpErr := s.http.ListenAndServe()
+			httpErr := s.http.Serve(l)
 			if httpErr != nil && httpErr != http.ErrServerClosed {
 				err <- httpErr
 			} else {
