@@ -3,7 +3,6 @@ package roadrunner
 import (
 	"context"
 	"os/exec"
-	"sync"
 	"testing"
 
 	"github.com/spiral/errors"
@@ -160,12 +159,11 @@ func Test_Broken(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
+	ch := make(chan struct{})
 
 	w.AddListener(func(event interface{}) {
 		assert.Contains(t, string(event.(WorkerEvent).Payload.([]byte)), "undefined_function()")
-		wg.Done()
+		ch <- struct{}{}
 	})
 
 	syncWorker, err := NewSyncWorker(w)
@@ -178,7 +176,7 @@ func Test_Broken(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	wg.Wait()
+	<-ch
 	assert.Error(t, w.Stop(ctx))
 }
 
