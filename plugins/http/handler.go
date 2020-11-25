@@ -23,7 +23,7 @@ const (
 	EventError
 )
 
-type Handler interface {
+type Handle interface {
 	AddListener(l util.EventListener)
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
@@ -76,7 +76,7 @@ type handler struct {
 	lsn            util.EventListener
 }
 
-func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool roadrunner.Pool) (Handler, error) {
+func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool roadrunner.Pool) (Handle, error) {
 	if pool == nil {
 		return nil, errors.E(errors.Str("pool should be initialized"))
 	}

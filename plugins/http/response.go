@@ -4,6 +4,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"sync"
 
 	"github.com/spiral/roadrunner/v2"
 )
@@ -18,6 +19,7 @@ type Response struct {
 
 	// associated Body payload.
 	Body interface{}
+	sync.Mutex
 }
 
 // NewResponse creates new response based on given pool payload.

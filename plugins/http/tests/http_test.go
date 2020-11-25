@@ -15,9 +15,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/golang/mock/gomock"
 	"github.com/spiral/endure"
 	"github.com/spiral/goridge/v2"
 	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/mocks"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
@@ -178,8 +180,8 @@ func echoHTTP(t *testing.T) {
 	assert.NoError(t, err)
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
-	assert.Equal(t, 200, r.StatusCode)
-	assert.Equal(t, "hello world", string(b))
+	assert.Equal(t, 201, r.StatusCode)
+	assert.Equal(t, "WORLD", string(b))
 
 	err = r.Body.Close()
 	assert.NoError(t, err)
@@ -583,6 +585,7 @@ func TestFastCGI_RequestUri(t *testing.T) {
 }
 
 func fcgiReqURI(t *testing.T) {
+	time.Sleep(time.Second * 2)
 	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "127.0.0.1:6921")
 
 	fcgiHandler := gofast.NewHandler(
@@ -771,6 +774,191 @@ func h2c(t *testing.T) {
 	if err3 != nil {
 		t.Fatal(err)
 	}
+}
+
+func TestHttpMiddleware(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-http.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+		&PluginMiddleware{},
+		&PluginMiddleware2{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		tt := time.NewTimer(time.Second * 10)
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-tt.C:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	t.Run("MiddlewareTest", middleware)
+	wg.Wait()
+}
+
+func middleware(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://localhost:8084?hello=world", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 201, r.StatusCode)
+	assert.Equal(t, "WORLD", string(b))
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
+
+	req, err = http.NewRequest("GET", "http://localhost:8084/halt", nil)
+	assert.NoError(t, err)
+
+	r, err = http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	b, err = ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 500, r.StatusCode)
+	assert.Equal(t, "halted", string(b))
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
+}
+
+func TestHttpEchoErr(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-echoErr.yaml",
+		Prefix: "rr",
+	}
+
+	controller := gomock.NewController(t)
+	mockLogger := mocks.NewMockLogger(controller)
+
+	mockLogger.EXPECT().Info("response received", "elapsed", gomock.Any(), "remote address", "127.0.0.1")
+	mockLogger.EXPECT().Debug("WORLD", "pid", gomock.Any())
+	mockLogger.EXPECT().Info("worker event received", "event", roadrunner.EventWorkerLog, "worker state", gomock.Any())
+
+	err = cont.RegisterAll(
+		cfg,
+		mockLogger,
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+		&PluginMiddleware{},
+		&PluginMiddleware2{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		tt := time.NewTimer(time.Second * 5)
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-tt.C:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	t.Run("HttpEchoError", echoError)
+	wg.Wait()
+}
+
+func echoError(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://localhost:8080?hello=world", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+
+	assert.Equal(t, 201, r.StatusCode)
+	assert.Equal(t, "WORLD", string(b))
+	err = r.Body.Close()
+	assert.NoError(t, err)
 }
 
 func get(url string) (string, *http.Response, error) {

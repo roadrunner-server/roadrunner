@@ -3,14 +3,17 @@ module github.com/spiral/roadrunner/v2
 go 1.15
 
 require (
+	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/fatih/color v1.10.0
+	github.com/go-ole/go-ole v1.2.4 // indirect
+	github.com/golang/mock v1.4.4
 	github.com/hashicorp/go-multierror v1.0.0
 	github.com/json-iterator/go v1.1.10
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.7.1
 	github.com/shirou/gopsutil v3.20.10+incompatible
 	github.com/spf13/viper v1.7.1
-	github.com/spiral/endure v1.0.0-beta19
+	github.com/spiral/endure v1.0.0-beta20
 	github.com/spiral/errors v1.0.4
 	github.com/spiral/goridge/v2 v2.4.6
 	github.com/stretchr/testify v1.6.1
