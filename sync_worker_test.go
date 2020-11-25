@@ -4,6 +4,7 @@ import (
 	"context"
 	"os/exec"
 	"testing"
+	"time"
 
 	"github.com/spiral/errors"
 	"github.com/stretchr/testify/assert"
@@ -158,8 +159,16 @@ func Test_Broken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	ch := make(chan struct{})
+
+	go func() {
+		tt := time.NewTimer(time.Second * 10)
+		select {
+		case <-tt.C:
+			tt.Stop()
+			ch <- struct{}{}
+		}
+	}()
 
 	w.AddListener(func(event interface{}) {
 		assert.Contains(t, string(event.(WorkerEvent).Payload.([]byte)), "undefined_function()")
