@@ -167,7 +167,7 @@ func Test_Broken(t *testing.T) {
 		assert.Contains(t, string(event.(WorkerEvent).Payload.([]byte)), "undefined_function()")
 		wg.Done()
 	})
-	
+
 	syncWorker, err := NewSyncWorker(w)
 	if err != nil {
 		t.Fatal(err)
