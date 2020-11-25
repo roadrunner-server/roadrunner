@@ -75,7 +75,6 @@ func Test_Config_Error(t *testing.T) {
 	ln, err := cfg.Listener()
 	assert.Nil(t, ln)
 	assert.Error(t, err)
-	assert.Equal(t, "invalid DSN (tcp://:6001, unix://file.sock)", err.Error())
 }
 
 func Test_Config_ErrorMethod(t *testing.T) {
