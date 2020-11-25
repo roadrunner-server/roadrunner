@@ -9,8 +9,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/fcgi"
-	"net/url"
-	"strings"
 	"sync"
 
 	"github.com/sirupsen/logrus"
@@ -175,8 +173,14 @@ func (s *Service) Serve() error {
 	}
 
 	if s.https != nil {
+		l, lErr := util.CreateListener(s.cfg.SSL.Address)
+		if lErr != nil {
+			return lErr
+		}
+
 		go func() {
-			httpErr := s.https.ListenAndServeTLS(
+			httpErr := s.https.ServeTLS(
+				l,
 				s.cfg.SSL.Cert,
 				s.cfg.SSL.Key,
 			)
@@ -258,18 +262,6 @@ func (s *Service) Server() *roadrunner.Server {
 
 // ServeHTTP handles connection using set of middleware and rr PSR-7 server.
 func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if s.https != nil && r.TLS == nil && s.cfg.SSL.Redirect {
-		target := &url.URL{
-			Scheme:   "https",
-			Host:     s.tlsAddr(r.Host, false),
-			Path:     r.URL.Path,
-			RawQuery: r.URL.RawQuery,
-		}
-
-		http.Redirect(w, r, target.String(), http.StatusTemporaryRedirect)
-		return
-	}
-
 	if s.https != nil && r.TLS != nil {
 		w.Header().Add("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
 	}
@@ -366,7 +358,6 @@ func (s *Service) initSSL() *http.Server {
 	DefaultCipherSuites = append(DefaultCipherSuites, defaultCipherSuitesTLS13...)
 
 	server := &http.Server{
-		Addr:    s.tlsAddr(s.cfg.Address, true),
 		Handler: s,
 		TLSConfig: &tls.Config{
 			CurvePreferences: []tls.CurveID{
@@ -417,16 +408,4 @@ func (s *Service) throw(event int, ctx interface{}) {
 		// underlying rr server is dead
 		s.Stop()
 	}
-}
-
-// tlsAddr replaces listen or host port with port configured by SSL config.
-func (s *Service) tlsAddr(host string, forcePort bool) string {
-	// remove current forcePort first
-	host = strings.Split(host, ":")[0]
-
-	if forcePort || s.cfg.SSL.Port != 443 {
-		host = fmt.Sprintf("%s:%v", host, s.cfg.SSL.Port)
-	}
-
-	return host
 }

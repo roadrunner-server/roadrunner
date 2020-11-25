@@ -12,7 +12,7 @@ import (
 
 // Config configures RoadRunner HTTP server.
 type Config struct {
-	// Port and port to handle as http server.
+	// Socket to handle as http server.
 	Address string
 
 	// SSL defines https server options.
@@ -40,7 +40,7 @@ type Config struct {
 
 // FCGIConfig for FastCGI server.
 type FCGIConfig struct {
-	// Address and port to handle as http server.
+	// Socket to handle as fastcgi server.
 	Address string
 }
 
@@ -66,11 +66,8 @@ func (cfg *HTTP2Config) InitDefaults() error {
 
 // SSLConfig defines https server configuration.
 type SSLConfig struct {
-	// Port to listen as HTTPS server, defaults to 443.
-	Port int
-
-	// Redirect when enabled forces all http connections to switch to https.
-	Redirect bool
+	// Socket to handle as https server.
+	Address string
 
 	// Key defined private server key.
 	Key string
@@ -123,10 +120,6 @@ func (c *Config) Hydrate(cfg service.Config) error {
 
 	if c.Uploads == nil {
 		c.Uploads = &UploadsConfig{}
-	}
-
-	if c.SSL.Port == 0 {
-		c.SSL.Port = 443
 	}
 
 	err := c.HTTP2.InitDefaults()
@@ -232,6 +225,10 @@ func (c *Config) Valid() error {
 	}
 
 	if c.EnableTLS() {
+		if c.SSL.Address == "" {
+			return errors.New("no SSL address specified")
+		}
+
 		if _, err := os.Stat(c.SSL.Key); err != nil {
 			if os.IsNotExist(err) {
 				return fmt.Errorf("key file '%s' does not exists", c.SSL.Key)
