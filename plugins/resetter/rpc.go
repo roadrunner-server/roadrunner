@@ -9,7 +9,7 @@ type rpc struct {
 
 // List all resettable services.
 func (rpc *rpc) List(_ bool, list *[]string) error {
-	rpc.log.Info("started List method")
+	rpc.log.Debug("started List method")
 	*list = make([]string, 0)
 
 	for name := range rpc.srv.registry {
@@ -17,14 +17,14 @@ func (rpc *rpc) List(_ bool, list *[]string) error {
 	}
 	rpc.log.Debug("services list", "services", *list)
 
-	rpc.log.Info("finished List method")
+	rpc.log.Debug("finished List method")
 	return nil
 }
 
 // Reset named service.
 func (rpc *rpc) Reset(service string, done *bool) error {
-	rpc.log.Info("started Reset method for the service", "service", service)
-	defer rpc.log.Info("finished Reset method for the service", "service", service)
+	rpc.log.Debug("started Reset method for the service", "service", service)
+	defer rpc.log.Debug("finished Reset method for the service", "service", service)
 	*done = true
 	return rpc.srv.Reset(service)
 }

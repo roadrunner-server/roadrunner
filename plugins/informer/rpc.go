@@ -18,7 +18,7 @@ type WorkerList struct {
 
 // List all resettable services.
 func (rpc *rpc) List(_ bool, list *[]string) error {
-	rpc.log.Info("Started List method")
+	rpc.log.Debug("Started List method")
 	*list = make([]string, 0, len(rpc.srv.registry))
 
 	for name := range rpc.srv.registry {
@@ -26,13 +26,13 @@ func (rpc *rpc) List(_ bool, list *[]string) error {
 	}
 	rpc.log.Debug("list of services", "list", *list)
 
-	rpc.log.Info("successfully finished List method")
+	rpc.log.Debug("successfully finished List method")
 	return nil
 }
 
 // Workers state of a given service.
 func (rpc *rpc) Workers(service string, list *WorkerList) error {
-	rpc.log.Info("started Workers method", "service", service)
+	rpc.log.Debug("started Workers method", "service", service)
 	workers, err := rpc.srv.Workers(service)
 	if err != nil {
 		return err
@@ -48,6 +48,6 @@ func (rpc *rpc) Workers(service string, list *WorkerList) error {
 		list.Workers = append(list.Workers, ps)
 	}
 	rpc.log.Debug("list of workers", "workers", list.Workers)
-	rpc.log.Info("successfully finished Workers method")
+	rpc.log.Debug("successfully finished Workers method")
 	return nil
 }
