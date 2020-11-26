@@ -11,14 +11,13 @@ import (
 
 // PipeFactory connects to stack using standard
 // streams (STDIN, STDOUT pipes).
-type PipeFactory struct {
-}
+type PipeFactory struct{}
 
 // NewPipeFactory returns new factory instance and starts
 // listening
 
 // todo: review tests
-func NewPipeFactory() *PipeFactory {
+func NewPipeFactory() Factory {
 	return &PipeFactory{}
 }
 
@@ -71,7 +70,7 @@ func (f *PipeFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd)
 		if err != nil {
 			c <- SpawnResult{
 				w:   nil,
-				err: errors.E(op, err, "process error"),
+				err: errors.E(op, err),
 			}
 			return
 		}
@@ -82,7 +81,7 @@ func (f *PipeFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd)
 			err = multierr.Combine(
 				err,
 				w.Kill(),
-				w.Wait(context.Background()),
+				w.Wait(),
 			)
 			c <- SpawnResult{
 				w:   nil,
@@ -138,7 +137,7 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 	// Start the worker
 	err = w.Start()
 	if err != nil {
-		return nil, errors.E(op, err, "process error")
+		return nil, errors.E(op, err)
 	}
 
 	// errors bundle
@@ -146,7 +145,7 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 		err = multierr.Combine(
 			err,
 			w.Kill(),
-			w.Wait(context.Background()),
+			w.Wait(),
 		)
 		return nil, errors.E(op, err)
 	}

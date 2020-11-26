@@ -1,8 +1,9 @@
-package log
+package logger
 
 import (
 	"fmt"
 
+	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"go.uber.org/zap"
 )
 
@@ -51,6 +52,6 @@ func (log *ZapAdapter) Error(msg string, keyvals ...interface{}) {
 	log.zl.Error(msg, log.fields(keyvals)...)
 }
 
-func (log *ZapAdapter) With(keyvals ...interface{}) Logger {
+func (log *ZapAdapter) With(keyvals ...interface{}) log.Logger {
 	return NewZapAdapter(log.zl.With(log.fields(keyvals)...))
 }

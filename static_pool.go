@@ -54,6 +54,9 @@ type StaticPool struct {
 // NewPool creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
 func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg PoolConfig, options ...PoolOptions) (Pool, error) {
 	const op = errors.Op("NewPool")
+	if factory == nil {
+		return nil, errors.E(op, errors.Str("no factory initialized"))
+	}
 	cfg.InitDefaults()
 
 	if cfg.Debug {
@@ -75,13 +78,13 @@ func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg Poo
 
 	workers, err := p.allocateWorkers(ctx, p.cfg.NumWorkers)
 	if err != nil {
-		return nil, err
+		return nil, errors.E(op, err)
 	}
 
 	// put stack in the pool
 	err = p.ww.AddToWatch(ctx, workers)
 	if err != nil {
-		return nil, err
+		return nil, errors.E(op, err)
 	}
 
 	p.errEncoder = defaultErrEncoder(p)

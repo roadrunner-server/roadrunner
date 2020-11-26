@@ -25,8 +25,8 @@ const dialNetwork = "tcp"
 const getAddr = "http://localhost:2112/metrics"
 
 // get request and return body
-func get(url string) (string, error) {
-	r, err := http.Get(url)
+func get() (string, error) {
+	r, err := http.Get(getAddr)
 	if err != nil {
 		return "", err
 	}
@@ -76,7 +76,7 @@ func TestMetricsInit(t *testing.T) {
 
 	tt := time.NewTimer(time.Second * 5)
 
-	out, err := get("http://localhost:2112/metrics")
+	out, err := get()
 	assert.NoError(t, err)
 
 	assert.Contains(t, out, "go_gc_duration_seconds")
@@ -139,12 +139,12 @@ func TestMetricsGaugeCollector(t *testing.T) {
 	time.Sleep(time.Second)
 	tt := time.NewTimer(time.Second * 5)
 
-	out, err := get("http://localhost:2112/metrics")
+	out, err := get()
 	assert.NoError(t, err)
 	assert.Contains(t, out, "my_gauge 100")
 	assert.Contains(t, out, "my_gauge2 100")
 
-	out, err = get("http://localhost:2112/metrics")
+	out, err = get()
 	assert.NoError(t, err)
 	assert.Contains(t, out, "go_gc_duration_seconds")
 
@@ -230,22 +230,22 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 	}()
 
 	t.Run("DeclareMetric", declareMetricsTest)
-	genericOut, err := get(getAddr)
+	genericOut, err := get()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "test_metrics_named_collector")
 
 	t.Run("AddMetric", addMetricsTest)
-	genericOut, err = get(getAddr)
+	genericOut, err = get()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "test_metrics_named_collector 10000")
 
 	t.Run("SetMetric", setMetric)
-	genericOut, err = get(getAddr)
+	genericOut, err = get()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "user_gauge_collector 100")
 
 	t.Run("VectorMetric", vectorMetric)
-	genericOut, err = get(getAddr)
+	genericOut, err = get()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "gauge_2_collector{section=\"first\",type=\"core\"} 100")
 
@@ -253,18 +253,18 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 	t.Run("SetWithoutLabels", setWithoutLabels)
 	t.Run("SetOnHistogram", setOnHistogram)
 	t.Run("MetricSub", subMetric)
-	genericOut, err = get(getAddr)
+	genericOut, err = get()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "sub_gauge_subMetric 1")
 
 	t.Run("SubVector", subVector)
-	genericOut, err = get(getAddr)
+	genericOut, err = get()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "sub_gauge_subVector{section=\"first\",type=\"core\"} 1")
 
 	t.Run("RegisterHistogram", registerHistogram)
 
-	genericOut, err = get(getAddr)
+	genericOut, err = get()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, `TYPE histogram_registerHistogram`)
 
@@ -277,13 +277,13 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 	assert.Contains(t, genericOut, `histogram_registerHistogram_count 0`)
 
 	t.Run("CounterMetric", counterMetric)
-	genericOut, err = get(getAddr)
+	genericOut, err = get()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "HELP default_default_counter_CounterMetric test_counter")
 	assert.Contains(t, genericOut, `default_default_counter_CounterMetric{section="section2",type="type2"}`)
 
 	t.Run("ObserveMetric", observeMetric)
-	genericOut, err = get(getAddr)
+	genericOut, err = get()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "observe_observeMetric")
 

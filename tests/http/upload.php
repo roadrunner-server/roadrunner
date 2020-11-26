@@ -24,7 +24,7 @@ function handleRequest(ServerRequestInterface $req, ResponseInterface $resp): Re
                 'size'  => $v->getSize(),
                 'mime'  => $v->getClientMediaType(),
                 'error' => $v->getError(),
-                'md5'   => md5($v->getStream()->__toString()),
+                'sha512'   => hash('sha512', $v->getStream()->__toString()),
             ];
         }
     });

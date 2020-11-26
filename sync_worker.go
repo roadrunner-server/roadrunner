@@ -17,7 +17,6 @@ var EmptyPayload = Payload{}
 type SyncWorker interface {
 	// WorkerBase provides basic functionality for the SyncWorker
 	WorkerBase
-
 	// Exec used to execute payload on the SyncWorker, there is no TIMEOUTS
 	Exec(rqs Payload) (Payload, error)
 	// ExecWithContext used to handle Exec with TTL
@@ -28,6 +27,7 @@ type syncWorker struct {
 	w WorkerBase
 }
 
+// NewSyncWorker creates SyncWorker from WorkerBasa
 func NewSyncWorker(w WorkerBase) (SyncWorker, error) {
 	return &syncWorker{
 		w: w,
@@ -71,7 +71,7 @@ type wexec struct {
 
 // Exec payload without TTL timeout.
 func (tw *syncWorker) ExecWithContext(ctx context.Context, p Payload) (Payload, error) {
-	const op = errors.Op("exec_with_context")
+	const op = errors.Op("ExecWithContext")
 	c := make(chan wexec, 1)
 	go func() {
 		if len(p.Body) == 0 && len(p.Context) == 0 {
@@ -191,8 +191,8 @@ func (tw *syncWorker) Start() error {
 	return tw.w.Start()
 }
 
-func (tw *syncWorker) Wait(ctx context.Context) error {
-	return tw.w.Wait(ctx)
+func (tw *syncWorker) Wait() error {
+	return tw.w.Wait()
 }
 
 func (tw *syncWorker) Stop(ctx context.Context) error {

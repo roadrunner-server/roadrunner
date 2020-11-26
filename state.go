@@ -11,18 +11,17 @@ type State interface {
 
 	// Value returns state value
 	Value() int64
+	// Set sets the state
 	Set(value int64)
-
 	// NumJobs shows how many times WorkerProcess was invoked
 	NumExecs() int64
-
 	// IsActive returns true if WorkerProcess not Inactive or Stopped
 	IsActive() bool
-
+	// RegisterExec using to registering php executions
 	RegisterExec()
-
+	// SetLastUsed sets worker last used time
 	SetLastUsed(lu uint64)
-
+	// LastUsed return worker last used time
 	LastUsed() uint64
 }
 
@@ -100,8 +99,8 @@ func (s *state) Value() int64 {
 
 // IsActive returns true if WorkerProcess not Inactive or Stopped
 func (s *state) IsActive() bool {
-	state := s.Value()
-	return state == StateWorking || state == StateReady
+	val := s.Value()
+	return val == StateWorking || val == StateReady
 }
 
 // change state value (status)

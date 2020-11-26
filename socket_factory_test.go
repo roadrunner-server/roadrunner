@@ -34,7 +34,7 @@ func Test_Tcp_Start(t *testing.T) {
 	assert.NotNil(t, w)
 
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 
 	err = w.Stop(ctx)
@@ -192,7 +192,7 @@ func Test_Tcp_Broken(t *testing.T) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err := w.Wait(context.Background())
+		err := w.Wait()
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "undefined_function()")
 	}()
@@ -235,7 +235,7 @@ func Test_Tcp_Echo(t *testing.T) {
 
 	w, _ := NewSocketServer(ls, time.Minute).SpawnWorkerWithContext(ctx, cmd)
 	go func() {
-		assert.NoError(t, w.Wait(context.Background()))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err = w.Stop(ctx)
@@ -280,7 +280,7 @@ func Test_Unix_Start(t *testing.T) {
 	assert.NotNil(t, w)
 
 	go func() {
-		assert.NoError(t, w.Wait(context.Background()))
+		assert.NoError(t, w.Wait())
 	}()
 
 	err = w.Stop(ctx)
@@ -305,7 +305,7 @@ func Test_Unix_Failboot(t *testing.T) {
 
 	cmd := exec.Command("php", "tests/failboot.php")
 
-	w, err := NewSocketServer(ls, time.Second*1).SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewSocketServer(ls, time.Second*5).SpawnWorkerWithContext(ctx, cmd)
 	assert.Nil(t, w)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "failboot")
@@ -378,7 +378,7 @@ func Test_Unix_Broken(t *testing.T) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err := w.Wait(ctx)
+		err := w.Wait()
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "undefined_function()")
 	}()
@@ -423,7 +423,7 @@ func Test_Unix_Echo(t *testing.T) {
 		t.Fatal(err)
 	}
 	go func() {
-		assert.NoError(t, w.Wait(context.Background()))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err = w.Stop(ctx)
@@ -470,7 +470,7 @@ func Benchmark_Tcp_SpawnWorker_Stop(b *testing.B) {
 			b.Fatal(err)
 		}
 		go func() {
-			assert.NoError(b, w.Wait(context.Background()))
+			assert.NoError(b, w.Wait())
 		}()
 
 		err = w.Stop(ctx)

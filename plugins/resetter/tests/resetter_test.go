@@ -53,7 +53,7 @@ func TestInformerInit(t *testing.T) {
 
 	tt := time.NewTimer(time.Second * 15)
 
-	t.Run("InformerRpcTest", resetterRpcTest)
+	t.Run("InformerRpcTest", resetterRPCTest)
 
 	for {
 		select {
@@ -80,7 +80,7 @@ func TestInformerInit(t *testing.T) {
 	}
 }
 
-func resetterRpcTest(t *testing.T) {
+func resetterRPCTest(t *testing.T) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))

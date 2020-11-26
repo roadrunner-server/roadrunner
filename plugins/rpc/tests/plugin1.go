@@ -29,14 +29,14 @@ func (p1 *Plugin1) Name() string {
 }
 
 func (p1 *Plugin1) RPC() interface{} {
-	return &PluginRpc{srv: p1}
+	return &PluginRPC{srv: p1}
 }
 
-type PluginRpc struct {
+type PluginRPC struct {
 	srv *Plugin1
 }
 
-func (r *PluginRpc) Hello(in string, out *string) error {
+func (r *PluginRPC) Hello(in string, out *string) error {
 	*out = fmt.Sprintf("Hello, username: %s", in)
 	return nil
 }

@@ -3,8 +3,8 @@ package roadrunner
 import (
 	"context"
 	"os/exec"
-	"sync"
 	"testing"
+	"time"
 
 	"github.com/spiral/errors"
 	"github.com/stretchr/testify/assert"
@@ -24,7 +24,7 @@ func Test_Echo(t *testing.T) {
 		t.Fatal(err)
 	}
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err := w.Stop(ctx)
@@ -55,7 +55,7 @@ func Test_BadPayload(t *testing.T) {
 	}
 
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err := w.Stop(ctx)
@@ -107,7 +107,7 @@ func Test_String(t *testing.T) {
 
 	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err := w.Stop(ctx)
@@ -127,7 +127,7 @@ func Test_Echo_Slow(t *testing.T) {
 
 	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err := w.Stop(ctx)
@@ -159,14 +159,22 @@ func Test_Broken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	ch := make(chan struct{})
 
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
+	go func() {
+		tt := time.NewTimer(time.Second * 10)
+		select {
+		case <-tt.C:
+			tt.Stop()
+			ch <- struct{}{}
+		}
+	}()
 
 	w.AddListener(func(event interface{}) {
 		assert.Contains(t, string(event.(WorkerEvent).Payload.([]byte)), "undefined_function()")
-		wg.Done()
+		ch <- struct{}{}
 	})
+
 	syncWorker, err := NewSyncWorker(w)
 	if err != nil {
 		t.Fatal(err)
@@ -177,7 +185,7 @@ func Test_Broken(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	wg.Wait()
+	<-ch
 	assert.Error(t, w.Stop(ctx))
 }
 
@@ -187,7 +195,7 @@ func Test_Error(t *testing.T) {
 
 	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 
 	defer func() {
@@ -219,7 +227,7 @@ func Test_NumExecs(t *testing.T) {
 
 	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err := w.Stop(ctx)

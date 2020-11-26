@@ -24,13 +24,19 @@ func CreateListener(address string) (net.Listener, error) {
 		return nil, errors.New("invalid Protocol (tcp://:6001, unix://file.sock)")
 	}
 
-	if dsn[0] == "unix" && fileExists(dsn[1]) {
-		err := syscall.Unlink(dsn[1])
-		if err != nil {
-			return nil, fmt.Errorf("error during the unlink syscall: error %v", err)
+	// create unix listener
+	if dsn[0] == "unix" {
+		// check if the file exist
+		if fileExists(dsn[1]) {
+			err := syscall.Unlink(dsn[1])
+			if err != nil {
+				return nil, fmt.Errorf("error during the unlink syscall: error %v", err)
+			}
 		}
+		return net.Listen(dsn[0], dsn[1])
 	}
 
+	// configure and create tcp4 listener
 	cfg := tcplisten.Config{
 		ReusePort:   true,
 		DeferAccept: true,
@@ -38,12 +44,8 @@ func CreateListener(address string) (net.Listener, error) {
 		Backlog:     0,
 	}
 
-	// tcp4 is currently supported
-	if dsn[0] == "tcp" {
-		return cfg.NewListener("tcp4", dsn[1])
-	}
-
-	return net.Listen(dsn[0], dsn[1])
+	// only tcp4 is currently supported
+	return cfg.NewListener("tcp4", dsn[1])
 }
 
 // fileExists checks if a file exists and is not a directory before we

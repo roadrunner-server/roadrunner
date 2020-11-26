@@ -1,14 +1,14 @@
 package roadrunner
 
 import (
-	"fmt"
 	"os"
 
-	json "github.com/json-iterator/go"
+	j "github.com/json-iterator/go"
+	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v2"
 )
 
-var j = json.ConfigCompatibleWithStandardLibrary
+var json = j.ConfigCompatibleWithStandardLibrary
 
 type stopCommand struct {
 	Stop bool `json:"stop"`
@@ -19,35 +19,42 @@ type pidCommand struct {
 }
 
 func sendControl(rl goridge.Relay, v interface{}) error {
+	const op = errors.Op("send control")
 	if data, ok := v.([]byte); ok {
-		return rl.Send(data, goridge.PayloadControl|goridge.PayloadRaw)
+		err := rl.Send(data, goridge.PayloadControl|goridge.PayloadRaw)
+		if err != nil {
+			return errors.E(op, err)
+		}
+		return nil
 	}
 
-	data, err := j.Marshal(v)
+	data, err := json.Marshal(v)
 	if err != nil {
-		return fmt.Errorf("invalid payload: %s", err)
+		return errors.E(op, errors.Errorf("invalid payload: %s", err))
 	}
 
 	return rl.Send(data, goridge.PayloadControl)
 }
 
 func fetchPID(rl goridge.Relay) (int64, error) {
+	const op = errors.Op("fetchPID")
 	err := sendControl(rl, pidCommand{Pid: os.Getpid()})
 	if err != nil {
-		return 0, err
+		return 0, errors.E(op, err)
 	}
 
 	body, p, err := rl.Receive()
 	if err != nil {
-		return 0, err
+		return 0, errors.E(op, err)
 	}
 	if !p.HasFlag(goridge.PayloadControl) {
-		return 0, fmt.Errorf("unexpected response, header is missing")
+		return 0, errors.E(op, errors.Str("unexpected response, header is missing"))
 	}
 
 	link := &pidCommand{}
-	if err := json.Unmarshal(body, link); err != nil {
-		return 0, err
+	err = json.Unmarshal(body, link)
+	if err != nil {
+		return 0, errors.E(op, err)
 	}
 
 	return int64(link.Pid), nil

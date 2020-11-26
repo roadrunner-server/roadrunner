@@ -1,38 +1,48 @@
-linters:
+run:
   skip-files:
-    - ".*\\test\\.go$"
-    - lib/bad.go
+    - plugins/http/tests/http_test.go
+    - plugins/http/tests/plugin_test_old.go
+    - plugins/http/tests/rpc_test_old.go
+    - plugins/http/tests/config_test.go
+linters:
   disable-all: true
   enable:
     - bodyclose
+    - deadcode
     - depguard
     - dogsled
-    #    - dupl
+#    - dupl
+    - errcheck
+    - exhaustive
+#    - funlen
     - gochecknoinits
-    #    - goconst
+#    - goconst
     - gocritic
     - gocyclo
     - gofmt
     - goimports
-    #    - golint
+    - golint
+#    - gomnd
     - goprintffuncname
-    #    - gosec
-    #    - gosimple
+    - gosec
+#    - gosimple
     - govet
     - ineffassign
     - interfacer
+#    - lll
     - misspell
     - nakedret
+#    - noctx
     - nolintlint
     - rowserrcheck
     - scopelint
     - staticcheck
     - structcheck
-    #    - stylecheck
+    - stylecheck
     - typecheck
     - unconvert
-    #    - unparam
-    #    - unused
+#    - unparam
+#    - unused
     - varcheck
     - whitespace
 
