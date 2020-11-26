@@ -173,7 +173,7 @@ func TestHTTPInformerReset(t *testing.T) {
 }
 
 func echoHTTP(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:8084?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://localhost:10084?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -219,7 +219,7 @@ func informerTest(t *testing.T) {
 
 	err = client.Call("informer.Workers", "http", &list)
 	assert.NoError(t, err)
-	assert.Len(t, list.Workers, 4)
+	assert.Len(t, list.Workers, 2)
 }
 
 func TestSSL(t *testing.T) {
