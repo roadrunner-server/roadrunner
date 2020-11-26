@@ -107,7 +107,7 @@ func TestHTTPInformerReset(t *testing.T) {
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "configs/.rr-http.yaml",
+		Path:   "configs/.rr-resetter.yaml",
 		Prefix: "rr",
 	}
 
@@ -219,7 +219,7 @@ func informerTest(t *testing.T) {
 
 	err = client.Call("informer.Workers", "http", &list)
 	assert.NoError(t, err)
-	assert.Len(t, list.Workers, 12)
+	assert.Len(t, list.Workers, 4)
 }
 
 func TestSSL(t *testing.T) {

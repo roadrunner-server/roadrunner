@@ -232,7 +232,6 @@ func (w *WorkerProcess) Wait(ctx context.Context) error {
 		// if process return code > 0, here will be an error from stderr (if presents)
 		if w.stderr.Len() > 0 {
 			err = multierr.Append(err, errors.E(op, errors.Str(w.stderr.String())))
-			w.stderr.Truncate(0)
 		}
 
 		return multierr.Append(err, w.closeRelay())
@@ -307,7 +306,10 @@ func (w *WorkerProcess) Kill() error {
 func (w *WorkerProcess) Write(p []byte) (int, error) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
+	// clean all previous messages in the stderr
+	w.stderr.Truncate(0)
 	w.events.Push(WorkerEvent{Event: EventWorkerLog, Worker: w, Payload: p})
+	// write new message
 	w.stderr.Write(p)
 
 	return len(p), nil
