@@ -16,25 +16,25 @@ import (
 func CreateListener(address string) (net.Listener, error) {
 	dsn := strings.Split(address, "://")
 
-	var protocol string
-	var param    string
+	var socket_type string
+	var socket_addr string
 
 	if len(dsn) == 1 {
-		protocol = "tcp"
-		param = dsn[0]
+		socket_type = "tcp"
+		socket_addr = dsn[0]
 	} else if len(dsn) == 2 {
 		if dsn[0] != "unix" && dsn[0] != "tcp" {
 			return nil, errors.New("invalid Protocol ([tcp://]:6001, unix://file.sock)")
 		} else {
-			protocol = dsn[0]
-			param = dsn[1]
+			socket_type = dsn[0]
+			socket_addr = dsn[1]
 		}
 	} else {
 		return nil, errors.New("invalid DSN ([tcp://]:6001, unix://file.sock)")
 	}
 
-	if protocol == "unix" && fileExists(param) {
-		err := syscall.Unlink(param)
+	if socket_type == "unix" && fileExists(socket_addr) {
+		err := syscall.Unlink(socket_addr)
 		if err != nil {
 			return nil, fmt.Errorf("error during the unlink syscall: error %v", err)
 		}
@@ -48,11 +48,11 @@ func CreateListener(address string) (net.Listener, error) {
 	}
 
 	// tcp4 is currently supported
-	if protocol == "tcp" {
-		return cfg.NewListener("tcp4", param)
+	if socket_type == "tcp" {
+		return cfg.NewListener("tcp4", socket_addr)
 	}
 
-	return net.Listen(protocol, param)
+	return net.Listen(socket_type, socket_addr)
 }
 
 // fileExists checks if a file exists and is not a directory before we
