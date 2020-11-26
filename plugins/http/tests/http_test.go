@@ -843,7 +843,7 @@ func TestHttpMiddleware(t *testing.T) {
 }
 
 func middleware(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:8084?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://localhost:18903?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -858,7 +858,7 @@ func middleware(t *testing.T) {
 	err = r.Body.Close()
 	assert.NoError(t, err)
 
-	req, err = http.NewRequest("GET", "http://localhost:8084/halt", nil)
+	req, err = http.NewRequest("GET", "http://localhost:18903/halt", nil)
 	assert.NoError(t, err)
 
 	r, err = http.DefaultClient.Do(req)
