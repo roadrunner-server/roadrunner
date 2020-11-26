@@ -110,7 +110,7 @@ func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cm
 			err = multierr.Combine(
 				err,
 				w.Kill(),
-				w.Wait(context.Background()),
+				w.Wait(),
 			)
 
 			c <- socketSpawn{
@@ -142,7 +142,6 @@ func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cm
 }
 
 func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
-	ctx := context.Background()
 	const op = errors.Op("spawn_worker")
 	w, err := InitBaseWorker(cmd)
 	if err != nil {
@@ -159,7 +158,7 @@ func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 		err = multierr.Combine(
 			err,
 			w.Kill(),
-			w.Wait(ctx),
+			w.Wait(),
 		)
 		return nil, err
 	}

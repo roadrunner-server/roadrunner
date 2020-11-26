@@ -80,7 +80,7 @@ type WorkerBase interface {
 	// complete and will return process error (if any), if stderr is presented it's value
 	// will be wrapped as WorkerError. Method will return error code if php process fails
 	// to find or Start the script.
-	Wait(ctx context.Context) error
+	Wait() error
 
 	// Stop sends soft termination command to the WorkerProcess and waits for process completion.
 	Stop(ctx context.Context) error
@@ -219,7 +219,7 @@ func (w *WorkerProcess) Start() error {
 // complete and will return process error (if any), if stderr is presented it's value
 // will be wrapped as WorkerError. Method will return error code if php process fails
 // to find or Start the script.
-func (w *WorkerProcess) Wait(ctx context.Context) error {
+func (w *WorkerProcess) Wait() error {
 	const op = errors.Op("worker process wait")
 	err := multierr.Combine(w.cmd.Wait())
 	// at this point according to the documentation (see cmd.Wait comment)

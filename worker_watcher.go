@@ -277,7 +277,7 @@ func (ww *workerWatcher) WorkersList() []WorkerBase {
 
 func (ww *workerWatcher) wait(ctx context.Context, w WorkerBase) {
 	const op = errors.Op("process wait")
-	err := w.Wait(ctx)
+	err := w.Wait()
 	if err != nil {
 		ww.events.Push(WorkerEvent{
 			Event:   EventWorkerError,

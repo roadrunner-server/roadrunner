@@ -81,7 +81,7 @@ func (f *PipeFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd)
 			err = multierr.Combine(
 				err,
 				w.Kill(),
-				w.Wait(context.Background()),
+				w.Wait(),
 			)
 			c <- SpawnResult{
 				w:   nil,
@@ -145,7 +145,7 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 		err = multierr.Combine(
 			err,
 			w.Kill(),
-			w.Wait(context.Background()),
+			w.Wait(),
 		)
 		return nil, errors.E(op, err)
 	}

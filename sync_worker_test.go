@@ -24,7 +24,7 @@ func Test_Echo(t *testing.T) {
 		t.Fatal(err)
 	}
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err := w.Stop(ctx)
@@ -55,7 +55,7 @@ func Test_BadPayload(t *testing.T) {
 	}
 
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err := w.Stop(ctx)
@@ -107,7 +107,7 @@ func Test_String(t *testing.T) {
 
 	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err := w.Stop(ctx)
@@ -127,7 +127,7 @@ func Test_Echo_Slow(t *testing.T) {
 
 	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err := w.Stop(ctx)
@@ -195,7 +195,7 @@ func Test_Error(t *testing.T) {
 
 	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 
 	defer func() {
@@ -227,7 +227,7 @@ func Test_NumExecs(t *testing.T) {
 
 	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
 		err := w.Stop(ctx)
