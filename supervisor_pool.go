@@ -102,8 +102,8 @@ func (sp *supervisedPool) Workers() (workers []WorkerBase) {
 	return sp.pool.Workers()
 }
 
-func (sp *supervisedPool) RemoveWorker(ctx context.Context, worker WorkerBase) error {
-	return sp.pool.RemoveWorker(ctx, worker)
+func (sp *supervisedPool) RemoveWorker(worker WorkerBase) error {
+	return sp.pool.RemoveWorker(worker)
 }
 
 func (sp *supervisedPool) Destroy(ctx context.Context) {
@@ -134,7 +134,6 @@ func (sp *supervisedPool) Stop() {
 
 func (sp *supervisedPool) control() {
 	now := time.Now()
-	ctx := context.TODO()
 	const op = errors.Op("supervised pool control tick")
 
 	// THIS IS A COPY OF WORKERS
@@ -152,7 +151,7 @@ func (sp *supervisedPool) control() {
 		}
 
 		if sp.cfg.TTL != 0 && now.Sub(workers[i].Created()).Seconds() >= float64(sp.cfg.TTL) {
-			err = sp.pool.RemoveWorker(ctx, workers[i])
+			err = sp.pool.RemoveWorker(workers[i])
 			if err != nil {
 				sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
 				return
@@ -162,13 +161,12 @@ func (sp *supervisedPool) control() {
 		}
 
 		if sp.cfg.MaxWorkerMemory != 0 && s.MemoryUsage >= sp.cfg.MaxWorkerMemory*MB {
-			err = sp.pool.RemoveWorker(ctx, workers[i])
+			err = sp.pool.RemoveWorker(workers[i])
 			if err != nil {
 				sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
 				return
 			}
 			sp.events.Push(PoolEvent{Event: EventMaxMemory, Payload: workers[i]})
-
 			continue
 		}
 
@@ -194,7 +192,7 @@ func (sp *supervisedPool) control() {
 
 			// maxWorkerIdle more than diff between now and last used
 			if sp.cfg.IdleTTL-uint64(res) <= 0 {
-				err = sp.pool.RemoveWorker(ctx, workers[i])
+				err = sp.pool.RemoveWorker(workers[i])
 				if err != nil {
 					sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
 					return
