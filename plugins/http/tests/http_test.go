@@ -1027,7 +1027,7 @@ func TestHttpEnvVariables(t *testing.T) {
 }
 
 func envVarsTest(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:8084", nil)
+	req, err := http.NewRequest("GET", "http://localhost:12084", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
