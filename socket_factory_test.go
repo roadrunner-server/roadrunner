@@ -305,7 +305,7 @@ func Test_Unix_Failboot(t *testing.T) {
 
 	cmd := exec.Command("php", "tests/failboot.php")
 
-	w, err := NewSocketServer(ls, time.Second*1).SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewSocketServer(ls, time.Second*5).SpawnWorkerWithContext(ctx, cmd)
 	assert.Nil(t, w)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "failboot")
