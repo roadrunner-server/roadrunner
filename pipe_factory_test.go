@@ -18,8 +18,7 @@ func Test_Pipe_Start(t *testing.T) {
 	assert.NotNil(t, w)
 
 	go func() {
-		ctx := context.Background()
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 	}()
 
 	assert.NoError(t, w.Stop(ctx))
@@ -142,7 +141,7 @@ func Benchmark_Pipe_SpawnWorker_Stop(b *testing.B) {
 		cmd := exec.Command("php", "tests/client.php", "echo", "pipes")
 		w, _ := f.SpawnWorkerWithContext(context.Background(), cmd)
 		go func() {
-			if w.Wait(context.Background()) != nil {
+			if w.Wait() != nil {
 				b.Fail()
 			}
 		}()
@@ -165,7 +164,7 @@ func Benchmark_Pipe_Worker_ExecEcho(b *testing.B) {
 	b.ReportAllocs()
 	b.ResetTimer()
 	go func() {
-		err := w.Wait(context.Background())
+		err := w.Wait()
 		if err != nil {
 			b.Errorf("error waiting the worker: error %v", err)
 		}

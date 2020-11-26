@@ -15,7 +15,7 @@ func Test_GetState(t *testing.T) {
 
 	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
 	go func() {
-		assert.NoError(t, w.Wait(ctx))
+		assert.NoError(t, w.Wait())
 		assert.Equal(t, StateStopped, w.State().Value())
 	}()
 
@@ -38,7 +38,7 @@ func Test_Kill(t *testing.T) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		assert.Error(t, w.Wait(ctx))
+		assert.Error(t, w.Wait())
 		// TODO changed from stopped, discuss
 		assert.Equal(t, StateErrored, w.State().Value())
 	}()
