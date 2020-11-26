@@ -262,8 +262,6 @@ func (w *WorkerProcess) closeRelay() error {
 
 // Stop sends soft termination command to the WorkerProcess and waits for process completion.
 func (w *WorkerProcess) Stop(ctx context.Context) error {
-	w.mu.Lock()
-	defer w.mu.Unlock()
 	c := make(chan error)
 
 	go func() {
