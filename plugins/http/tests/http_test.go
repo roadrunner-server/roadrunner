@@ -45,7 +45,7 @@ func TestHTTPInit(t *testing.T) {
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "configs/.rr-http.yaml",
+		Path:   "configs/.rr-init.yaml",
 		Prefix: "rr",
 	}
 

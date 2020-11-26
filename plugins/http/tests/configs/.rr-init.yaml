@@ -3,7 +3,7 @@ rpc:
   disabled: false
 
 server:
-  command: "php ../../../tests/http/client.php broken pipes"
+  command: "php ../../../tests/http/client.php echo pipes"
   user: ""
   group: ""
   env:
@@ -13,7 +13,7 @@ server:
 
 http:
   debug: true
-  address: 127.0.0.1:12384
+  address: 127.0.0.1:15395
   maxRequestSize: 1024
   middleware: [ "" ]
   uploads:
@@ -25,5 +25,17 @@ http:
     allocateTimeout: 60s
     destroyTimeout: 60s
 
+  ssl:
+    port: 8892
+    redirect: false
+    cert: fixtures/server.crt
+    key: fixtures/server.key
+  #    rootCa: root.crt
+  fcgi:
+    address: tcp://0.0.0.0:7921
+  http2:
+    enabled: false
+    h2c: false
+    maxConcurrentStreams: 128
 
 
