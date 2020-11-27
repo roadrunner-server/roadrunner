@@ -811,7 +811,7 @@ func TestHttpMiddleware(t *testing.T) {
 	wg.Add(1)
 
 	go func() {
-		tt := time.NewTimer(time.Second * 10)
+		tt := time.NewTimer(time.Second * 15)
 		defer wg.Done()
 		for {
 			select {
