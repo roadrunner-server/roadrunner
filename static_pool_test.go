@@ -153,7 +153,7 @@ func Test_StaticPool_JobError(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	if errors.Is(errors.Exec, err) == false {
+	if errors.Is(errors.ErrSoftJob, err) == false {
 		t.Fatal("error should be of type errors.Exec")
 	}
 
@@ -273,6 +273,9 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 		},
 	)
 	assert.Error(t, err)
+	if !errors.Is(errors.WorkerAllocate, err) {
+		t.Fatal("error should be of type WorkerAllocate")
+	}
 	assert.Nil(t, p)
 }
 

@@ -2,7 +2,6 @@ package roadrunner
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/spiral/errors"
@@ -36,12 +35,13 @@ func NewSyncWorker(w WorkerBase) (SyncWorker, error) {
 
 // Exec payload without TTL timeout.
 func (tw *syncWorker) Exec(p Payload) (Payload, error) {
+	const op = errors.Op("sync worker Exec")
 	if len(p.Body) == 0 && len(p.Context) == 0 {
-		return EmptyPayload, fmt.Errorf("payload can not be empty")
+		return EmptyPayload, errors.E(op, errors.Str("payload can not be empty"))
 	}
 
 	if tw.w.State().Value() != StateReady {
-		return EmptyPayload, fmt.Errorf("WorkerProcess is not ready (%s)", tw.w.State().String())
+		return EmptyPayload, errors.E(op, errors.Errorf("WorkerProcess is not ready (%s)", tw.w.State().String()))
 	}
 
 	// set last used time
@@ -51,7 +51,7 @@ func (tw *syncWorker) Exec(p Payload) (Payload, error) {
 	rsp, err := tw.execPayload(p)
 	if err != nil {
 		// just to be more verbose
-		if errors.Is(errors.Exec, err) == false {
+		if errors.Is(errors.ErrSoftJob, err) == false {
 			tw.w.State().Set(StateErrored)
 			tw.w.State().RegisterExec()
 		}
@@ -97,7 +97,7 @@ func (tw *syncWorker) ExecWithContext(ctx context.Context, p Payload) (Payload, 
 		rsp, err := tw.execPayload(p)
 		if err != nil {
 			// just to be more verbose
-			if errors.Is(errors.Exec, err) == false {
+			if errors.Is(errors.ErrSoftJob, err) == false {
 				tw.w.State().Set(StateErrored)
 				tw.w.State().RegisterExec()
 			}
@@ -152,11 +152,11 @@ func (tw *syncWorker) execPayload(p Payload) (Payload, error) {
 	}
 
 	if !pr.HasFlag(goridge.PayloadControl) {
-		return EmptyPayload, fmt.Errorf("malformed WorkerProcess response")
+		return EmptyPayload, errors.E(op, errors.Str("malformed WorkerProcess response"))
 	}
 
 	if pr.HasFlag(goridge.PayloadError) {
-		return EmptyPayload, errors.E(op, errors.Exec, errors.Str(string(rsp.Context)))
+		return EmptyPayload, errors.E(op, errors.ErrSoftJob, errors.Str(string(rsp.Context)))
 	}
 
 	// add streaming support :)

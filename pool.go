@@ -30,6 +30,9 @@ const (
 	// EventSupervisorError triggered when supervisor can not complete work.
 	EventSupervisorError
 
+	// EventNoFreeWorkers triggered when there are no free workers in the stack and timeout for worker allocate elapsed
+	EventNoFreeWorkers
+
 	// todo: EventMaxMemory caused when worker consumes more memory than allowed.
 	EventMaxMemory
 
@@ -60,7 +63,7 @@ type Pool interface {
 	Workers() (workers []WorkerBase)
 
 	// Remove worker from the pool.
-	RemoveWorker(ctx context.Context, worker WorkerBase) error
+	RemoveWorker(worker WorkerBase) error
 
 	// Destroy all underlying stack (but let them to complete the task).
 	Destroy(ctx context.Context)

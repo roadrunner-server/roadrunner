@@ -70,7 +70,7 @@ func Test_BadPayload(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	assert.Equal(t, "payload can not be empty", err.Error())
+	assert.Contains(t, err.Error(), "payload can not be empty")
 }
 
 func Test_NotStarted_String(t *testing.T) {
@@ -98,7 +98,7 @@ func Test_NotStarted_Exec(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	assert.Equal(t, "WorkerProcess is not ready (inactive)", err.Error())
+	assert.Contains(t, err.Error(), "WorkerProcess is not ready (inactive)")
 }
 
 func Test_String(t *testing.T) {
@@ -215,10 +215,10 @@ func Test_Error(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	if errors.Is(errors.Exec, err) == false {
-		t.Fatal("error should be of type errors.Exec")
+	if errors.Is(errors.ErrSoftJob, err) == false {
+		t.Fatal("error should be of type errors.ErrSoftJob")
 	}
-	assert.Contains(t, err.Error(), "exec payload: Exec: hello")
+	assert.Contains(t, err.Error(), "exec payload: SoftJobError: hello")
 }
 
 func Test_NumExecs(t *testing.T) {
