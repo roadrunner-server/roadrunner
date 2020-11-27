@@ -61,6 +61,7 @@ type Config struct {
 	// Env is environment variables passed to the  http pool
 	Env map[string]string
 
+	// List of the middleware names (order will be preserved)
 	Middleware []string
 
 	// slice of net.IPNet
