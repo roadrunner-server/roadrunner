@@ -16,30 +16,38 @@ import (
 func CreateListener(address string) (net.Listener, error) {
 	dsn := strings.Split(address, "://")
 
-	var socket_type string
-	var socket_addr string
+	switch len(dsn) {
+	case 1:
+		// socket type prefix not specified
+		// assume TCP
+		return createTCPListener(dsn[0])
+	case 2:
+		// socket type prefix specified
+		// try parse it
+		switch dsn[0] {
+		case "unix":
+			if fileExists(dsn[1]) {
+				err := syscall.Unlink(dsn[1])
 
-	if len(dsn) == 1 {
-		socket_type = "tcp"
-		socket_addr = dsn[0]
-	} else if len(dsn) == 2 {
-		if dsn[0] != "unix" && dsn[0] != "tcp" {
+				if err != nil {
+					return nil, fmt.Errorf("error during the unlink syscall: error %v", err)
+				}
+			}
+
+			return net.Listen(dsn[0], dsn[1])
+		case "tcp":
+			return createTCPListener(dsn[1])
+		default:
+			// fail out if invalid socket type is given
 			return nil, errors.New("invalid Protocol ([tcp://]:6001, unix://file.sock)")
-		} else {
-			socket_type = dsn[0]
-			socket_addr = dsn[1]
 		}
-	} else {
+	default:
+		// invalid syntax
 		return nil, errors.New("invalid DSN ([tcp://]:6001, unix://file.sock)")
 	}
+}
 
-	if socket_type == "unix" && fileExists(socket_addr) {
-		err := syscall.Unlink(socket_addr)
-		if err != nil {
-			return nil, fmt.Errorf("error during the unlink syscall: error %v", err)
-		}
-	}
-
+func createTCPListener(addr string) (net.Listener, error) {
 	cfg := tcplisten.Config{
 		ReusePort:   true,
 		DeferAccept: true,
@@ -47,12 +55,13 @@ func CreateListener(address string) (net.Listener, error) {
 		Backlog:     0,
 	}
 
-	// tcp4 is currently supported
-	if socket_type == "tcp" {
-		return cfg.NewListener("tcp4", socket_addr)
+	listener, err := cfg.NewListener("tcp4", addr)
+
+	if err != nil {
+		return nil, err
 	}
 
-	return net.Listen(socket_type, socket_addr)
+	return listener, nil;
 }
 
 // fileExists checks if a file exists and is not a directory before we
