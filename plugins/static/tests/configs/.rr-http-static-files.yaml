@@ -1,5 +1,5 @@
 server:
-  command: "php ../../../tests/http/client.php pid pipes"
+  command: "php ../../../tests/http/client.php echo pipes"
   user: ""
   group: ""
   env:
@@ -9,7 +9,7 @@ server:
 
 http:
   debug: true
-  address: 127.0.0.1:21603
+  address: 127.0.0.1:34653
   maxRequestSize: 1024
   middleware: [ "gzip", "static" ]
   trustedSubnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
@@ -17,11 +17,13 @@ http:
     forbid: [ ".php", ".exe", ".bat" ]
   static:
     dir: "../../../tests"
-    forbid: [ "" ]
+    forbid: [ ".php", ".htaccess" ]
+    always: [ ".ico" ]
     request:
-      "input": "custom-header"
+      "Example-Request-Header": "Value"
+    # Automatically add headers to every response.
     response:
-      "output": "output-header"
+      "X-Powered-By": "RoadRunner"
   pool:
     numWorkers: 2
     maxJobs: 0

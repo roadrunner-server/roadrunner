@@ -885,9 +885,9 @@ func TestHttpEchoErr(t *testing.T) {
 	controller := gomock.NewController(t)
 	mockLogger := mocks.NewMockLogger(controller)
 
-	mockLogger.EXPECT().Info("response received", "elapsed", gomock.Any(), "remote address", "127.0.0.1")
+	mockLogger.EXPECT().Debug("http handler response received", "elapsed", gomock.Any(), "remote address", "127.0.0.1")
 	mockLogger.EXPECT().Debug("WORLD", "pid", gomock.Any())
-	mockLogger.EXPECT().Info("worker event received", "event", roadrunner.EventWorkerLog, "worker state", gomock.Any())
+	mockLogger.EXPECT().Debug("worker event received", "event", roadrunner.EventWorkerLog, "worker state", gomock.Any())
 
 	err = cont.RegisterAll(
 		cfg,
