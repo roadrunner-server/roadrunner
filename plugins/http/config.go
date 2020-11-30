@@ -32,23 +32,6 @@ func (c *Cidrs) IsTrusted(ip string) bool {
 	return false
 }
 
-type ServerConfig struct {
-	// Command includes command strings with all the parameters, example: "php worker.php pipes".
-	Command string
-
-	// User under which process will be started
-	User string
-
-	// Relay defines connection method and factory to be used to connect to workers:
-	// "pipes", "tcp://:6001", "unix://pool.sock"
-	// This config section must not change on re-configuration.
-	Relay string
-
-	// RelayTimeout defines for how long socket factory will be waiting for worker connection. This config section
-	// must not change on re-configuration.
-	RelayTimeout time.Duration
-}
-
 // Config configures RoadRunner HTTP server.
 type Config struct {
 	// Port and port to handle as http server.
@@ -78,6 +61,10 @@ type Config struct {
 	// Env is environment variables passed to the  http pool
 	Env map[string]string
 
+	// List of the middleware names (order will be preserved)
+	Middleware []string
+
+	// slice of net.IPNet
 	cidrs Cidrs
 }
 

@@ -13,6 +13,7 @@ import (
 	"sync"
 
 	"github.com/hashicorp/go-multierror"
+	"github.com/spiral/endure"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
@@ -38,6 +39,8 @@ type Middleware interface {
 	Middleware(f http.Handler) http.HandlerFunc
 }
 
+type middleware map[string]Middleware
+
 // Service manages pool, http servers.
 type Plugin struct {
 	sync.Mutex
@@ -48,7 +51,7 @@ type Plugin struct {
 
 	cfg *Config
 	// middlewares to chain
-	mdwr []Middleware
+	mdwr middleware
 	// Event listener to stdout
 	listener util.EventListener
 
@@ -87,6 +90,7 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Serv
 
 	s.configurer = cfg
 	s.log = log
+	s.mdwr = make(map[string]Middleware)
 
 	if !s.cfg.EnableHTTP() && !s.cfg.EnableTLS() && !s.cfg.EnableFCGI() {
 		return errors.E(op, errors.Disabled)
@@ -333,8 +337,8 @@ func (s *Plugin) Collects() []interface{} {
 	}
 }
 
-func (s *Plugin) AddMiddleware(m Middleware) {
-	s.mdwr = append(s.mdwr, m)
+func (s *Plugin) AddMiddleware(name endure.Named, m Middleware) {
+	s.mdwr[name.Name()] = m
 }
 
 func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) bool {
@@ -498,19 +502,23 @@ func (s *Plugin) tlsAddr(host string, forcePort bool) string {
 
 func (s *Plugin) addMiddlewares() {
 	if s.http != nil {
-		for i := 0; i < len(s.mdwr); i++ {
-			s.http.Handler = s.mdwr[i].Middleware(s.http.Handler)
-		}
+		applyMiddlewares(s.http, s.mdwr, s.cfg.Middleware, s.log)
 	}
 	if s.https != nil {
-		for i := 0; i < len(s.mdwr); i++ {
-			s.https.Handler = s.mdwr[i].Middleware(s.https.Handler)
-		}
+		applyMiddlewares(s.https, s.mdwr, s.cfg.Middleware, s.log)
 	}
 
 	if s.fcgi != nil {
-		for i := 0; i < len(s.mdwr); i++ {
-			s.fcgi.Handler = s.mdwr[i].Middleware(s.fcgi.Handler)
+		applyMiddlewares(s.fcgi, s.mdwr, s.cfg.Middleware, s.log)
+	}
+}
+
+func applyMiddlewares(server *http.Server, middlewares map[string]Middleware, order []string, log log.Logger) {
+	for i := 0; i < len(order); i++ {
+		if mdwr, ok := middlewares[order[i]]; ok {
+			server.Handler = mdwr.Middleware(server.Handler)
+		} else {
+			log.Warn("requested middleware does not exist", "requested", order[i])
 		}
 	}
 }
