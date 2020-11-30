@@ -175,7 +175,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	wg.Add(1)
 
 	// force test to finish
-	tt := time.NewTimer(time.Second * 20)
+	tt := time.NewTimer(time.Second * 30)
 	go func() {
 		select {
 		case <-tt.C:
@@ -185,8 +185,6 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second)
-
 	workers := p.Workers()
 	for i := 0; i < len(workers); i++ {
 		workers[i].AddListener(func(event interface{}) {
@@ -194,6 +192,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 				if wev.Event == EventWorkerLog {
 					assert.Contains(t, string(wev.Payload.([]byte)), "undefined_function()")
 					wg.Done()
+					tt.Stop()
 					return
 				}
 			}
@@ -211,7 +210,6 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	p.Destroy(ctx)
 }
 
-//
 func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	ctx := context.Background()
 	p, err := NewPool(
