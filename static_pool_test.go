@@ -174,31 +174,15 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	// force test to finish
-	tt := time.NewTimer(time.Second * 20)
-	go func() {
-		select {
-		case <-tt.C:
-			tt.Stop()
-			assert.Fail(t, "force exit from the test")
-			wg.Done()
-		}
-	}()
-
-	time.Sleep(time.Second)
-
-	workers := p.Workers()
-	for i := 0; i < len(workers); i++ {
-		workers[i].AddListener(func(event interface{}) {
-			if wev, ok := event.(WorkerEvent); ok {
-				if wev.Event == EventWorkerLog {
-					assert.Contains(t, string(wev.Payload.([]byte)), "undefined_function()")
-					wg.Done()
-					return
-				}
+	p.AddListener(func(event interface{}) {
+		if wev, ok := event.(WorkerEvent); ok {
+			if wev.Event == EventWorkerLog {
+				assert.Contains(t, string(wev.Payload.([]byte)), "undefined_function()")
+				wg.Done()
+				return
 			}
-		})
-	}
+		}
+	})
 
 	res, err := p.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 	assert.Error(t, err)
@@ -206,7 +190,6 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.Nil(t, res.Body)
 
 	wg.Wait()
-	tt.Stop()
 
 	p.Destroy(ctx)
 }
