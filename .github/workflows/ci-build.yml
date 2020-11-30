@@ -55,7 +55,7 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-suggest # --prefer-source
+        run: composer install --prefer-dist --no-interaction
 
       #      - name: Analyze PHP sources
       #        run: composer analyze
