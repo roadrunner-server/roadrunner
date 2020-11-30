@@ -1,4 +1,4 @@
 coverage:
   status:
-    project: off
-    patch: off
+    project: true
+    patch: false
