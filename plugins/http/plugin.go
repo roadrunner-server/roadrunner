@@ -118,11 +118,11 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Serv
 func (s *Plugin) logCallback(event interface{}) {
 	switch ev := event.(type) {
 	case ResponseEvent:
-		s.log.Info("response received", "elapsed", ev.Elapsed().String(), "remote address", ev.Request.RemoteAddr)
+		s.log.Debug("http handler response received", "elapsed", ev.Elapsed().String(), "remote address", ev.Request.RemoteAddr)
 	case ErrorEvent:
 		s.log.Error("error event received", "elapsed", ev.Elapsed().String(), "error", ev.Error)
 	case roadrunner.WorkerEvent:
-		s.log.Info("worker event received", "event", ev.Event, "worker state", ev.Worker.State())
+		s.log.Debug("worker event received", "event", ev.Event, "worker state", ev.Worker.State())
 	default:
 		fmt.Println(event)
 	}

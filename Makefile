@@ -12,3 +12,5 @@ test:
 	go test -v -race -cover ./plugins/http/attributes -tags=debug
 	go test -v -race -cover ./plugins/http/tests -tags=debug
 	go test -v -race -cover ./plugins/gzip/tests -tags=debug
+	go test -v -race -cover ./plugins/static/tests -tags=debug
+	go test -v -race -cover ./plugins/static -tags=debug

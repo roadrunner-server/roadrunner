@@ -8,8 +8,7 @@ import (
 
 const PluginName = "gzip"
 
-type Gzip struct {
-}
+type Gzip struct{}
 
 func (g *Gzip) Init() error {
 	return nil

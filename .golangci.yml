@@ -4,6 +4,7 @@ run:
     - plugins/http/tests/plugin_test_old.go
     - plugins/http/tests/rpc_test_old.go
     - plugins/http/tests/config_test.go
+    - plugins/static/tests/static_plugin_test.go
 linters:
   disable-all: true
   enable:
@@ -11,28 +12,28 @@ linters:
     - deadcode
     - depguard
     - dogsled
-#    - dupl
+    #    - dupl
     - errcheck
     - exhaustive
-#    - funlen
+    #    - funlen
     - gochecknoinits
-#    - goconst
+    #    - goconst
     - gocritic
     - gocyclo
     - gofmt
     - goimports
     - golint
-#    - gomnd
+    #    - gomnd
     - goprintffuncname
     - gosec
-#    - gosimple
+    #    - gosimple
     - govet
     - ineffassign
     - interfacer
-#    - lll
+    #    - lll
     - misspell
     - nakedret
-#    - noctx
+    #    - noctx
     - nolintlint
     - rowserrcheck
     - scopelint
@@ -41,8 +42,8 @@ linters:
     - stylecheck
     - typecheck
     - unconvert
-#    - unparam
-#    - unused
+    #    - unparam
+    #    - unused
     - varcheck
     - whitespace
 
