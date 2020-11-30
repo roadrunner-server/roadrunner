@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	j "github.com/json-iterator/go"
 	"github.com/spiral/endure"
 	"github.com/spiral/roadrunner/v2/mocks"
 	"github.com/spiral/roadrunner/v2/plugins/config"
@@ -24,8 +23,6 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/static"
 	"github.com/stretchr/testify/assert"
 )
-
-var json = j.ConfigCompatibleWithStandardLibrary
 
 func TestStaticPlugin(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
@@ -398,14 +395,6 @@ func get(url string) (string, *http.Response, error) {
 	}
 
 	return string(b), r, err
-}
-
-func tmpDir() string {
-	p := os.TempDir()
-
-	r, _ := j.Marshal(p)
-
-	return string(r)
 }
 
 func all(fn string) string {
