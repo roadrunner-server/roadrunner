@@ -172,15 +172,14 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
+	block := make(chan struct{})
 
 	p.AddListener(func(event interface{}) {
 		if wev, ok := event.(WorkerEvent); ok {
 			if wev.Event == EventWorkerLog {
 				e := string(wev.Payload.([]byte))
 				if strings.ContainsAny(e, "undefined_function()") {
-					wg.Done()
+					block <- struct{}{}
 					return
 				}
 			}
@@ -192,7 +191,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.Nil(t, res.Context)
 	assert.Nil(t, res.Body)
 
-	wg.Wait()
+	<-block
 
 	p.Destroy(ctx)
 }
