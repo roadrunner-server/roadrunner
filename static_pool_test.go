@@ -16,8 +16,8 @@ import (
 
 var cfg = PoolConfig{
 	NumWorkers:      int64(runtime.NumCPU()),
-	AllocateTimeout: time.Second,
-	DestroyTimeout:  time.Second,
+	AllocateTimeout: time.Second * 5,
+	DestroyTimeout:  time.Second * 5,
 }
 
 func Test_NewPool(t *testing.T) {
