@@ -34,7 +34,6 @@ func (s *Plugin) Init(cfg config.Configurer) error {
 func (s *Plugin) Middleware(next http.Handler) http.HandlerFunc {
 	// Define the http.HandlerFunc
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		if s.cfg.Headers.Request != nil {
 			for k, v := range s.cfg.Headers.Request {
 				r.Header.Add(k, v)
@@ -58,6 +57,10 @@ func (s *Plugin) Middleware(next http.Handler) http.HandlerFunc {
 
 		next.ServeHTTP(w, r)
 	}
+}
+
+func (s *Plugin) Name() string {
+	return PluginName
 }
 
 // configure OPTIONS response

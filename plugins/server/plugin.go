@@ -15,7 +15,7 @@ import (
 	"github.com/spiral/roadrunner/v2/util"
 )
 
-const ServiceName = "server"
+const PluginName = "server"
 
 // Plugin manages worker
 type Plugin struct {
@@ -27,7 +27,7 @@ type Plugin struct {
 // Init application provider.
 func (server *Plugin) Init(cfg config.Configurer, log log.Logger) error {
 	const op = errors.Op("Init")
-	err := cfg.UnmarshalKey(ServiceName, &server.cfg)
+	err := cfg.UnmarshalKey(PluginName, &server.cfg)
 	if err != nil {
 		return errors.E(op, errors.Init, err)
 	}
@@ -44,7 +44,7 @@ func (server *Plugin) Init(cfg config.Configurer, log log.Logger) error {
 
 // Name contains service name.
 func (server *Plugin) Name() string {
-	return ServiceName
+	return PluginName
 }
 
 func (server *Plugin) Serve() chan error {

@@ -41,7 +41,7 @@ var sslClient = &http.Client{
 }
 
 func TestHTTPInit(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -104,7 +104,7 @@ func TestHTTPInit(t *testing.T) {
 }
 
 func TestHTTPInformerReset(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -225,7 +225,7 @@ func informerTest(t *testing.T) {
 }
 
 func TestSSL(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -353,7 +353,7 @@ func fcgiEcho(t *testing.T) {
 }
 
 func TestSSLRedirect(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -439,8 +439,7 @@ func sslRedirect(t *testing.T) {
 }
 
 func TestSSLPushPipes(t *testing.T) {
-	time.Sleep(time.Second)
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -528,7 +527,7 @@ func sslPush(t *testing.T) {
 }
 
 func TestFastCGI_RequestUri(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -612,7 +611,7 @@ func fcgiReqURI(t *testing.T) {
 }
 
 func TestH2CUpgrade(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -701,7 +700,7 @@ func h2cUpgrade(t *testing.T) {
 }
 
 func TestH2C(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -789,7 +788,7 @@ func h2c(t *testing.T) {
 }
 
 func TestHttpMiddleware(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -888,7 +887,7 @@ func middleware(t *testing.T) {
 }
 
 func TestHttpEchoErr(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -978,7 +977,7 @@ func echoError(t *testing.T) {
 }
 
 func TestHttpEnvVariables(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -1062,7 +1061,7 @@ func envVarsTest(t *testing.T) {
 }
 
 func TestHttpBrokenPipes(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{

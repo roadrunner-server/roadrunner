@@ -21,7 +21,7 @@ import (
 )
 
 func TestGzipPlugin(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -102,7 +102,7 @@ func headerCheck(t *testing.T) {
 }
 
 func TestMiddlewareNotExist(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{

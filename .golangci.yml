@@ -5,6 +5,7 @@ run:
     - plugins/http/tests/rpc_test_old.go
     - plugins/http/tests/config_test.go
     - plugins/static/tests/static_plugin_test.go
+    - plugins/headers/tests/old.go
 linters:
   disable-all: true
   enable:

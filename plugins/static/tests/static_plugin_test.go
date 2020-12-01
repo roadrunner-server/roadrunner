@@ -25,7 +25,7 @@ import (
 )
 
 func TestStaticPlugin(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -133,7 +133,7 @@ func serveStaticSample(t *testing.T) {
 }
 
 func TestStaticDisabled(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -206,7 +206,7 @@ func staticDisabled(t *testing.T) {
 }
 
 func TestStaticFilesDisabled(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -282,7 +282,7 @@ func staticFilesDisabled(t *testing.T) {
 }
 
 func TestStaticFilesForbid(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.Visualize(endure.StdOut, ""))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{

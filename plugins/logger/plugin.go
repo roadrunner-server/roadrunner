@@ -7,8 +7,8 @@ import (
 	"go.uber.org/zap"
 )
 
-// ServiceName declares service name.
-const ServiceName = "logs"
+// PluginName declares plugin name.
+const PluginName = "logs"
 
 // ZapLogger manages zap logger.
 type ZapLogger struct {
@@ -19,12 +19,12 @@ type ZapLogger struct {
 
 // Init logger service.
 func (z *ZapLogger) Init(cfg config.Configurer) error {
-	err := cfg.UnmarshalKey(ServiceName, &z.cfg)
+	err := cfg.UnmarshalKey(PluginName, &z.cfg)
 	if err != nil {
 		return err
 	}
 
-	err = cfg.UnmarshalKey(ServiceName, &z.channels)
+	err = cfg.UnmarshalKey(PluginName, &z.channels)
 	if err != nil {
 		return err
 	}
