@@ -57,8 +57,9 @@ func TestStaticPlugin(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	tt := time.NewTimer(time.Second * 10)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 10)
 		defer wg.Done()
 		for {
 			select {
@@ -85,6 +86,7 @@ func TestStaticPlugin(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second)
 	t.Run("ServeSample", serveStaticSample)
 	t.Run("StaticNotForbid", staticNotForbid)
 	t.Run("StaticHeaders", staticHeaders)
@@ -163,8 +165,9 @@ func TestStaticDisabled(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	tt := time.NewTimer(time.Second * 10)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 10)
 		defer wg.Done()
 		for {
 			select {
@@ -191,6 +194,7 @@ func TestStaticDisabled(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second)
 	t.Run("StaticDisabled", staticDisabled)
 	wg.Wait()
 }
@@ -234,8 +238,9 @@ func TestStaticFilesDisabled(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	tt := time.NewTimer(time.Second * 10)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 10)
 		defer wg.Done()
 		for {
 			select {
@@ -262,6 +267,7 @@ func TestStaticFilesDisabled(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second)
 	t.Run("StaticFilesDisabled", staticFilesDisabled)
 	wg.Wait()
 }
@@ -314,8 +320,9 @@ func TestStaticFilesForbid(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	tt := time.NewTimer(time.Second * 10)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 10)
 		defer wg.Done()
 		for {
 			select {
@@ -342,6 +349,7 @@ func TestStaticFilesForbid(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second)
 	t.Run("StaticTestFilesDir", staticTestFilesDir)
 	t.Run("StaticNotFound", staticNotFound)
 	t.Run("StaticFilesForbid", staticFilesForbid)
