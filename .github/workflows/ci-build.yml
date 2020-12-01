@@ -11,7 +11,7 @@ jobs:
       matrix:
         php: [ 7.4, 8.0 ]
         go: [ 1.14, 1.15 ]
-        os: [ ubuntu-20.04 ]
+        os: [ self-hosted ]
     env:
       GO111MODULE: on
     steps:
