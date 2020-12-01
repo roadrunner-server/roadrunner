@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strconv"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -177,9 +178,11 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	p.AddListener(func(event interface{}) {
 		if wev, ok := event.(WorkerEvent); ok {
 			if wev.Event == EventWorkerLog {
-				assert.Contains(t, string(wev.Payload.([]byte)), "undefined_function()")
-				wg.Done()
-				return
+				e := string(wev.Payload.([]byte))
+				if strings.ContainsAny(e, "undefined_function()") {
+					wg.Done()
+					return
+				}
 			}
 		}
 	})
