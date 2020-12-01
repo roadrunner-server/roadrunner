@@ -1,5 +1,5 @@
 server:
-  command: "php ../../../tests/http/client.php echo pipes"
+  command: "php ../../../tests/http/client.php header pipes"
   user: ""
   group: ""
   env:
@@ -9,7 +9,7 @@ server:
 
 http:
   debug: true
-  address: 127.0.0.1:33453
+  address: 127.0.0.1:22655
   maxRequestSize: 1024
   middleware: [ "headers" ]
   uploads:
@@ -17,17 +17,10 @@ http:
   trustedSubnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
   # Additional HTTP headers and CORS control.
   headers:
-    cors:
-      allowedOrigin: "*"
-      allowedHeaders: "*"
-      allowedMethods: "GET,POST,PUT,DELETE"
-      allowCredentials: true
-      exposedHeaders: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
-      maxAge: 600
     request:
-      "Example-Request-Header": "Value"
+      "input": "custom-header"
     response:
-      "X-Powered-By": "RoadRunner"
+      "output": "output-header"
   pool:
     numWorkers: 2
     maxJobs: 0

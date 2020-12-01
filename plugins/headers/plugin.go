@@ -24,7 +24,7 @@ func (s *Plugin) Init(cfg config.Configurer) error {
 	const op = errors.Op("headers plugin init")
 	err := cfg.UnmarshalKey(RootPluginName, &s.cfg)
 	if err != nil {
-		return errors.E(op, err)
+		return errors.E(op, errors.Disabled, err)
 	}
 
 	return nil
@@ -51,7 +51,6 @@ func (s *Plugin) Middleware(next http.Handler) http.HandlerFunc {
 				s.preflightRequest(w)
 				return
 			}
-
 			s.corsHeaders(w)
 		}
 

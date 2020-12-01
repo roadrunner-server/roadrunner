@@ -1,5 +1,5 @@
 server:
-  command: "php ../../../tests/http/client.php echo pipes"
+  command: "php ../../../tests/http/client.php headers pipes"
   user: ""
   group: ""
   env:
@@ -9,7 +9,7 @@ server:
 
 http:
   debug: true
-  address: 127.0.0.1:33453
+  address: 127.0.0.1:22855
   maxRequestSize: 1024
   middleware: [ "headers" ]
   uploads:
@@ -25,9 +25,9 @@ http:
       exposedHeaders: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
       maxAge: 600
     request:
-      "Example-Request-Header": "Value"
+      "input": "custom-header"
     response:
-      "X-Powered-By": "RoadRunner"
+      "output": "output-header"
   pool:
     numWorkers: 2
     maxJobs: 0
