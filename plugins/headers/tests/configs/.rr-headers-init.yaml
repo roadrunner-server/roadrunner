@@ -1,0 +1,41 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+  disabled: false
+
+server:
+  command: "php ../../../tests/http/client.php echo pipes"
+  user: ""
+  group: ""
+  env:
+    "RR_HTTP": "true"
+  relay: "pipes"
+  relayTimeout: "20s"
+
+http:
+  debug: true
+  address: 127.0.0.1:18903
+  maxRequestSize: 1024
+  middleware: [ "headers" ]
+  uploads:
+    forbid: [ ".php", ".exe", ".bat" ]
+  trustedSubnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
+  # Additional HTTP headers and CORS control.
+  headers:
+    cors:
+      allowedOrigin: "*"
+      allowedHeaders: "*"
+      allowedMethods: "GET,POST,PUT,DELETE"
+      allowCredentials: true
+      exposedHeaders: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
+      maxAge: 600
+    request:
+      "Example-Request-Header": "Value"
+    response:
+      "X-Powered-By": "RoadRunner"
+  pool:
+    numWorkers: 2
+    maxJobs: 0
+    allocateTimeout: 60s
+    destroyTimeout: 60s
+
+

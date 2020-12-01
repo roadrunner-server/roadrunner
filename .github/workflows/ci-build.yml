@@ -65,26 +65,27 @@ jobs:
 
       - name: Run golang tests
         run: |
-          go test -v -race . -tags=debug -coverprofile=lib.txt -covermode=atomic
-          go test -v -race ./plugins/rpc -tags=debug -coverprofile=rpc_config.txt -covermode=atomic
-          go test -v -race ./plugins/rpc/tests -tags=debug -coverprofile=rpc.txt -covermode=atomic
-          go test -v -race ./plugins/config/tests -tags=debug -coverprofile=plugin_config.txt -covermode=atomic
-          go test -v -race ./plugins/logger/tests -tags=debug -coverprofile=logger.txt -covermode=atomic
-          go test -v -race ./plugins/server/tests -tags=debug -coverprofile=server.txt -covermode=atomic
-          go test -v -race ./plugins/metrics/tests -tags=debug -coverprofile=metrics.txt -covermode=atomic
-          go test -v -race ./plugins/informer/tests -tags=debug -coverprofile=informer.txt -covermode=atomic
-          go test -v -race ./plugins/resetter/tests -tags=debug -coverprofile=informer.txt -covermode=atomic
-          go test -v -race ./plugins/http/attributes -tags=debug -coverprofile=attributes.txt -covermode=atomic
-          go test -v -race ./plugins/http/tests -tags=debug -coverprofile=http_tests.txt -covermode=atomic
-          go test -v -race ./plugins/gzip/tests -tags=debug -coverprofile=gzip.txt -covermode=atomic
-          go test -v -race -cover ./plugins/static/tests -tags=debug -coverprofile=static.txt -covermode=atomic
-          go test -v -race -cover ./plugins/static -tags=debug -coverprofile=static_root.txt -covermode=atomic
+          go test -v -race -cover -tags=debug -coverprofile=lib.txt -covermode=atomic .
+          go test -v -race -cover -tags=debug -coverprofile=rpc_config.txt -covermode=atomic ./plugins/rpc
+          go test -v -race -cover -tags=debug -coverprofile=rpc.txt -covermode=atomic ./plugins/rpc/tests
+          go test -v -race -cover -tags=debug -coverprofile=plugin_config.txt -covermode=atomic ./plugins/config/tests
+          go test -v -race -cover -tags=debug -coverprofile=logger.txt -covermode=atomic ./plugins/logger/tests
+          go test -v -race -cover -tags=debug -coverprofile=server.txt -covermode=atomic ./plugins/server/tests
+          go test -v -race -cover -tags=debug -coverprofile=metrics.txt -covermode=atomic ./plugins/metrics/tests
+          go test -v -race -cover -tags=debug -coverprofile=informer.txt -covermode=atomic ./plugins/informer/tests
+          go test -v -race -cover -tags=debug -coverprofile=informer.txt -covermode=atomic ./plugins/resetter/tests
+          go test -v -race -cover -tags=debug -coverprofile=attributes.txt -covermode=atomic ./plugins/http/attributes
+          go test -v -race -cover -tags=debug -coverprofile=http_tests.txt -covermode=atomic ./plugins/http/tests
+          go test -v -race -cover -tags=debug -coverprofile=gzip.txt -covermode=atomic ./plugins/gzip/tests
+          go test -v -race -cover -tags=debug -coverprofile=static.txt -covermode=atomic ./plugins/static/tests
+          go test -v -race -cover -tags=debug -coverprofile=static_root.txt -covermode=atomic ./plugins/static
+          go test -v -race -cover -tags=debug -coverprofile=headers.txt -covermode=atomic ./plugins/headers/tests
 
       - name: Run code coverage
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: static.txt, static_root.txt, gzip.txt, lib.txt, rpc_config.txt, rpc.txt, plugin_config.txt, logger.txt, server.txt, metrics.txt, informer.txt attributes.txt http_tests.txt
+          files: headers.txt, static.txt, static_root.txt, gzip.txt, lib.txt, rpc_config.txt, rpc.txt, plugin_config.txt, logger.txt, server.txt, metrics.txt, informer.txt attributes.txt http_tests.txt
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false

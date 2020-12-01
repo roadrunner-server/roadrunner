@@ -22,7 +22,7 @@ type Plugin struct {
 // misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Plugin) Init(cfg config.Configurer) error {
 	const op = errors.Op("headers plugin init")
-	err := cfg.UnmarshalKey(RootPluginName, s.cfg)
+	err := cfg.UnmarshalKey(RootPluginName, &s.cfg)
 	if err != nil {
 		return errors.E(op, err)
 	}
@@ -48,11 +48,11 @@ func (s *Plugin) Middleware(next http.Handler) http.HandlerFunc {
 
 		if s.cfg.Headers.CORS != nil {
 			if r.Method == http.MethodOptions {
-				s.preflightRequest(w, r)
+				s.preflightRequest(w)
 				return
 			}
 
-			s.corsHeaders(w, r)
+			s.corsHeaders(w)
 		}
 
 		next.ServeHTTP(w, r)
@@ -64,7 +64,7 @@ func (s *Plugin) Name() string {
 }
 
 // configure OPTIONS response
-func (s *Plugin) preflightRequest(w http.ResponseWriter, r *http.Request) {
+func (s *Plugin) preflightRequest(w http.ResponseWriter) {
 	headers := w.Header()
 
 	headers.Add("Vary", "Origin")
@@ -95,7 +95,7 @@ func (s *Plugin) preflightRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 // configure CORS headers
-func (s *Plugin) corsHeaders(w http.ResponseWriter, r *http.Request) {
+func (s *Plugin) corsHeaders(w http.ResponseWriter) {
 	headers := w.Header()
 
 	headers.Add("Vary", "Origin")
