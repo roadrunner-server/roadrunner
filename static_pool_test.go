@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strconv"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -16,8 +17,8 @@ import (
 
 var cfg = PoolConfig{
 	NumWorkers:      int64(runtime.NumCPU()),
-	AllocateTimeout: time.Second,
-	DestroyTimeout:  time.Second,
+	AllocateTimeout: time.Second * 5,
+	DestroyTimeout:  time.Second * 5,
 }
 
 func Test_NewPool(t *testing.T) {
@@ -171,15 +172,16 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
+	block := make(chan struct{})
 
 	p.AddListener(func(event interface{}) {
 		if wev, ok := event.(WorkerEvent); ok {
 			if wev.Event == EventWorkerLog {
-				assert.Contains(t, string(wev.Payload.([]byte)), "undefined_function()")
-				wg.Done()
-				return
+				e := string(wev.Payload.([]byte))
+				if strings.ContainsAny(e, "undefined_function()") {
+					block <- struct{}{}
+					return
+				}
 			}
 		}
 	})
@@ -189,7 +191,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.Nil(t, res.Context)
 	assert.Nil(t, res.Body)
 
-	wg.Wait()
+	<-block
 
 	p.Destroy(ctx)
 }

@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ 7.4 ]
+        php: [ 7.4, 8.0 ]
         go: [ 1.14, 1.15 ]
         os: [ ubuntu-20.04 ]
     env:
@@ -55,7 +55,7 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-suggest # --prefer-source
+        run: composer install --prefer-dist --no-interaction
 
       #      - name: Analyze PHP sources
       #        run: composer analyze
