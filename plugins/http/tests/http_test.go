@@ -71,8 +71,9 @@ func TestHTTPInit(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	tt := time.NewTimer(time.Second * 5)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 5)
 		defer wg.Done()
 		for {
 			select {
@@ -164,6 +165,7 @@ func TestHTTPInformerReset(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 1)
 	t.Run("HTTPInformerTest", informerTest)
 	t.Run("HTTPEchoTestBefore", echoHTTP)
 	t.Run("HTTPResetTest", resetTest)
@@ -253,8 +255,9 @@ func TestSSL(t *testing.T) {
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
+	tt := time.NewTimer(time.Second * 10)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 5)
 		defer wg.Done()
 		for {
 			select {
@@ -281,6 +284,7 @@ func TestSSL(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 1)
 	t.Run("SSLEcho", sslEcho)
 	t.Run("SSLNoRedirect", sslNoRedirect)
 	t.Run("fCGIecho", fcgiEcho)
@@ -379,8 +383,9 @@ func TestSSLRedirect(t *testing.T) {
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
+
+	tt := time.NewTimer(time.Second * 10)
 	go func() {
-		tt := time.NewTimer(time.Second * 5)
 		defer wg.Done()
 		for {
 			select {
@@ -407,6 +412,7 @@ func TestSSLRedirect(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 1)
 	t.Run("SSLRedirect", sslRedirect)
 	wg.Wait()
 }
@@ -464,8 +470,8 @@ func TestSSLPushPipes(t *testing.T) {
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
+	tt := time.NewTimer(time.Second * 10)
 	go func() {
-		tt := time.NewTimer(time.Second * 5)
 		defer wg.Done()
 		for {
 			select {
@@ -492,6 +498,7 @@ func TestSSLPushPipes(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 1)
 	t.Run("SSLPush", sslPush)
 	wg.Wait()
 }
@@ -551,10 +558,9 @@ func TestFastCGI_RequestUri(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	t.Run("FastCGIServiceRequestUri", fcgiReqURI)
+	tt := time.NewTimer(time.Second * 10)
 
 	go func() {
-		tt := time.NewTimer(time.Second * 10)
 		defer wg.Done()
 		for {
 			select {
@@ -581,6 +587,8 @@ func TestFastCGI_RequestUri(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 1)
+	t.Run("FastCGIServiceRequestUri", fcgiReqURI)
 	wg.Wait()
 }
 
@@ -635,8 +643,9 @@ func TestH2CUpgrade(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	tt := time.NewTimer(time.Second * 10)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 5)
 		defer wg.Done()
 		for {
 			select {
@@ -663,6 +672,7 @@ func TestH2CUpgrade(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 1)
 	t.Run("H2cUpgrade", h2cUpgrade)
 	wg.Wait()
 }
@@ -722,8 +732,9 @@ func TestH2C(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	tt := time.NewTimer(time.Second * 10)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 5)
 		defer wg.Done()
 		for {
 			select {
@@ -750,6 +761,7 @@ func TestH2C(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 1)
 	t.Run("H2c", h2c)
 	wg.Wait()
 }
@@ -810,8 +822,9 @@ func TestHttpMiddleware(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	tt := time.NewTimer(time.Second * 15)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 15)
 		defer wg.Done()
 		for {
 			select {
@@ -838,6 +851,7 @@ func TestHttpMiddleware(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 1)
 	t.Run("MiddlewareTest", middleware)
 	wg.Wait()
 }
@@ -913,8 +927,9 @@ func TestHttpEchoErr(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	tt := time.NewTimer(time.Second * 10)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 5)
 		defer wg.Done()
 		for {
 			select {
@@ -941,6 +956,7 @@ func TestHttpEchoErr(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 1)
 	t.Run("HttpEchoError", echoError)
 	wg.Wait()
 }
@@ -994,8 +1010,9 @@ func TestHttpEnvVariables(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
+	tt := time.NewTimer(time.Second * 10)
+
 	go func() {
-		tt := time.NewTimer(time.Second * 5)
 		defer wg.Done()
 		for {
 			select {
@@ -1022,6 +1039,7 @@ func TestHttpEnvVariables(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 1)
 	t.Run("EnvVariablesTest", envVarsTest)
 	wg.Wait()
 }
@@ -1068,7 +1086,6 @@ func TestHttpBrokenPipes(t *testing.T) {
 	_, err = cont.Serve()
 	assert.Error(t, err)
 }
-
 
 func get(url string) (string, *http.Response, error) {
 	r, err := http.Get(url)

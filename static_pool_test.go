@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strconv"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -16,8 +17,8 @@ import (
 
 var cfg = PoolConfig{
 	NumWorkers:      int64(runtime.NumCPU()),
-	AllocateTimeout: time.Second,
-	DestroyTimeout:  time.Second,
+	AllocateTimeout: time.Second * 5,
+	DestroyTimeout:  time.Second * 5,
 }
 
 func Test_NewPool(t *testing.T) {
@@ -171,42 +172,26 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
+	block := make(chan struct{})
 
-	// force test to finish
-	tt := time.NewTimer(time.Second * 20)
-	go func() {
-		select {
-		case <-tt.C:
-			tt.Stop()
-			assert.Fail(t, "force exit from the test")
-			wg.Done()
-		}
-	}()
-
-	time.Sleep(time.Second)
-
-	workers := p.Workers()
-	for i := 0; i < len(workers); i++ {
-		workers[i].AddListener(func(event interface{}) {
-			if wev, ok := event.(WorkerEvent); ok {
-				if wev.Event == EventWorkerLog {
-					assert.Contains(t, string(wev.Payload.([]byte)), "undefined_function()")
-					wg.Done()
+	p.AddListener(func(event interface{}) {
+		if wev, ok := event.(WorkerEvent); ok {
+			if wev.Event == EventWorkerLog {
+				e := string(wev.Payload.([]byte))
+				if strings.ContainsAny(e, "undefined_function()") {
+					block <- struct{}{}
 					return
 				}
 			}
-		})
-	}
+		}
+	})
 
 	res, err := p.ExecWithContext(ctx, Payload{Body: []byte("hello")})
 	assert.Error(t, err)
 	assert.Nil(t, res.Context)
 	assert.Nil(t, res.Body)
 
-	wg.Wait()
-	tt.Stop()
+	<-block
 
 	p.Destroy(ctx)
 }
