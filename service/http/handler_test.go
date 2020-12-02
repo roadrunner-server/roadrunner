@@ -852,7 +852,7 @@ func TestHandler_FormData_PUT(t *testing.T) {
 	assert.NoError(t, h.rr.Start())
 	defer h.rr.Stop()
 
-	hs := &http.Server{Addr: ":8084", Handler: h}
+	hs := &http.Server{Addr: ":18084", Handler: h}
 	defer func() {
 		err := hs.Shutdown(context.Background())
 		if err != nil {

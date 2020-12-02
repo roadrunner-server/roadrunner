@@ -1,4 +1,4 @@
-FROM golang:1.14.3 as builder
+FROM golang:1.15.5 as builder
 
 COPY . /src
 

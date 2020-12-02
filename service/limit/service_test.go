@@ -2,6 +2,11 @@ package limit
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"testing"
+	"time"
+
 	"github.com/cenkalti/backoff/v4"
 	json "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
@@ -9,10 +14,6 @@ import (
 	"github.com/spiral/roadrunner/service"
 	rrhttp "github.com/spiral/roadrunner/service/http"
 	"github.com/stretchr/testify/assert"
-	"io/ioutil"
-	"net/http"
-	"testing"
-	"time"
 )
 
 type testCfg struct {
@@ -63,7 +64,7 @@ func Test_Service_PidEcho(t *testing.T) {
 
 		err := c.Init(&testCfg{
 			httpCfg: `{
-			"address": ":17029",
+			"address": ":27029",
 			"workers":{
 				"command": "php ../../tests/http/client.php pid pipes",
 				"pool": {"numWorkers": 1}
@@ -91,8 +92,8 @@ func Test_Service_PidEcho(t *testing.T) {
 			}
 		}()
 
-		time.Sleep(time.Millisecond * 100)
-		req, err := http.NewRequest("GET", "http://localhost:17029", nil)
+		time.Sleep(time.Millisecond * 800)
+		req, err := http.NewRequest("GET", "http://localhost:27029", nil)
 		if err != nil {
 			return err
 		}
@@ -101,7 +102,6 @@ func Test_Service_PidEcho(t *testing.T) {
 		if err != nil {
 			return err
 		}
-
 
 		b, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -137,7 +137,7 @@ func Test_Service_ListenerPlusTTL(t *testing.T) {
 		c.Register(rrhttp.ID, &rrhttp.Service{})
 		c.Register(ID, &Service{})
 
-		err :=  c.Init(&testCfg{
+		err := c.Init(&testCfg{
 			httpCfg: `{
 			"address": ":7030",
 			"workers":{
@@ -175,7 +175,6 @@ func Test_Service_ListenerPlusTTL(t *testing.T) {
 			}
 		}()
 
-
 		time.Sleep(time.Millisecond * 100)
 
 		lastPID := getPID(s)
@@ -189,7 +188,6 @@ func Test_Service_ListenerPlusTTL(t *testing.T) {
 		if err != nil {
 			return err
 		}
-
 
 		b, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -277,7 +275,6 @@ func Test_Service_ListenerPlusIdleTTL(t *testing.T) {
 				t.Errorf("error during the Serve: error %v", err)
 			}
 		}()
-
 
 		time.Sleep(time.Millisecond * 100)
 
@@ -415,7 +412,7 @@ func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
 
 		err := c.Init(&testCfg{
 			httpCfg: `{
-			"address": ":7033",
+			"address": ":10033",
 			"workers":{
 				"command": "php ../../tests/http/client.php memleak pipes",
 				"pool": {"numWorkers": 1}
@@ -433,6 +430,7 @@ func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
 			return err
 		}
 
+		time.Sleep(time.Second * 3)
 		s, _ := c.Get(rrhttp.ID)
 		assert.NotNil(t, s)
 
@@ -453,11 +451,11 @@ func Test_Service_Listener_MaxMemoryUsage(t *testing.T) {
 			}
 		}()
 
-		time.Sleep(time.Millisecond * 100)
+		time.Sleep(time.Millisecond * 500)
 
 		lastPID := getPID(s)
 
-		req, err := http.NewRequest("GET", "http://localhost:7033", nil)
+		req, err := http.NewRequest("GET", "http://localhost:10033", nil)
 		if err != nil {
 			return err
 		}

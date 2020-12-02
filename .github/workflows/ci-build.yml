@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   build:
@@ -9,9 +9,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [7.3, 7.4, 8.0]
-        go: [1.14, 1.15]
-        os: [ubuntu-latest]
+        php: [ 7.3, 7.4, 8.0 ]
+        go: [ 1.14, 1.15 ]
+        os: [ ubuntu-20.04 ]
     env:
       GO111MODULE: on
     steps:
@@ -100,7 +100,7 @@ jobs:
 
   golangci-check:
     name: runner / golangci-lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
@@ -111,7 +111,7 @@ jobs:
 
   image:
     name: Build docker image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out code
         uses: actions/checkout@v2
