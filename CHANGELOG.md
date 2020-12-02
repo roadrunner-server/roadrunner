@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v1.9.0 (02.12.2020)
+-------------------
+- Update PHP minimal supported version to 7.3
+- Support PHP 8.0
+- Update Ubuntu version in GHA to 20.04
+- Update Golang version in the RR Dockerfile to 1.15.5
+
 v1.8.4 (21.10.2020)
 -------------------
 - Update Goridge go dep to 2.4.6

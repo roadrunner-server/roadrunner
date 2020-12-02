@@ -1,10 +1,10 @@
 status = [
-'Build (PHP 7.3, Go 1.15, OS ubuntu-latest)',
-'Build (PHP 7.3, Go 1.14, OS ubuntu-latest)',
-'Build (PHP 7.4, Go 1.15, OS ubuntu-latest)',
-'Build (PHP 7.4, Go 1.14, OS ubuntu-latest)',
-'Build (PHP 8, Go 1.15, OS ubuntu-latest)',
-'Build (PHP 8, Go 1.14, OS ubuntu-latest)',
+'Build (PHP 7.3, Go 1.15, OS ubuntu-20.04)',
+'Build (PHP 7.3, Go 1.14, OS ubuntu-20.04)',
+'Build (PHP 7.4, Go 1.15, OS ubuntu-20.04)',
+'Build (PHP 7.4, Go 1.14, OS ubuntu-20.04)',
+'Build (PHP 8, Go 1.15, OS ubuntu-20.04)',
+'Build (PHP 8, Go 1.14, OS ubuntu-20.04)',
 'runner / golangci-lint',
 'Build docker image',]
 
