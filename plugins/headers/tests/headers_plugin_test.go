@@ -1,8 +1,6 @@
 package tests
 
 import (
-	"bytes"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -12,24 +10,21 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/spiral/endure"
-	"github.com/spiral/roadrunner/v2/mocks"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/gzip"
+	"github.com/spiral/roadrunner/v2/plugins/headers"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/server"
-	"github.com/spiral/roadrunner/v2/plugins/static"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestStaticPlugin(t *testing.T) {
+func TestHeadersInit(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "configs/.rr-http-static.yaml",
+		Path:   "configs/.rr-headers-init.yaml",
 		Prefix: "rr",
 	}
 
@@ -38,8 +33,7 @@ func TestStaticPlugin(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&gzip.Gzip{},
-		&static.Plugin{},
+		&headers.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -57,7 +51,7 @@ func TestStaticPlugin(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	tt := time.NewTimer(time.Second * 10)
+	tt := time.NewTimer(time.Second * 5)
 
 	go func() {
 		defer wg.Done()
@@ -85,59 +79,15 @@ func TestStaticPlugin(t *testing.T) {
 			}
 		}
 	}()
-
-	time.Sleep(time.Second)
-	t.Run("ServeSample", serveStaticSample)
-	t.Run("StaticNotForbid", staticNotForbid)
-	t.Run("StaticHeaders", staticHeaders)
 	wg.Wait()
 }
 
-func staticHeaders(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:21603/client.php", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if resp.Header.Get("Output") != "output-header" {
-		t.Fatal("can't find output header in response")
-	}
-
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assert.Equal(t, all("../../../tests/client.php"), string(b))
-	assert.Equal(t, all("../../../tests/client.php"), string(b))
-}
-
-func staticNotForbid(t *testing.T) {
-	b, r, err := get("http://localhost:21603/client.php")
-	assert.NoError(t, err)
-	assert.Equal(t, all("../../../tests/client.php"), b)
-	assert.Equal(t, all("../../../tests/client.php"), b)
-	_ = r.Body.Close()
-}
-
-func serveStaticSample(t *testing.T) {
-	b, r, err := get("http://localhost:21603/sample.txt")
-	assert.NoError(t, err)
-	assert.Equal(t, "sample", b)
-	_ = r.Body.Close()
-}
-
-func TestStaticDisabled(t *testing.T) {
+func TestRequestHeaders(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "configs/.rr-http-static-disabled.yaml",
+		Path:   "configs/.rr-req-headers.yaml",
 		Prefix: "rr",
 	}
 
@@ -146,8 +96,7 @@ func TestStaticDisabled(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&gzip.Gzip{},
-		&static.Plugin{},
+		&headers.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -195,229 +144,216 @@ func TestStaticDisabled(t *testing.T) {
 	}()
 
 	time.Sleep(time.Second)
-	t.Run("StaticDisabled", staticDisabled)
+	t.Run("RequestHeaders", reqHeaders)
 	wg.Wait()
 }
 
-func staticDisabled(t *testing.T) {
-	_, r, err := get("http://localhost:21234/sample.txt")
-	assert.Error(t, err)
-	assert.Nil(t, r)
-}
-
-func TestStaticFilesDisabled(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+func reqHeaders(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://localhost:22655?hello=value", nil)
 	assert.NoError(t, err)
 
-	cfg := &config.Viper{
-		Path:   "configs/.rr-http-static-files-disable.yaml",
-		Prefix: "rr",
-	}
-
-	err = cont.RegisterAll(
-		cfg,
-		&logger.ZapLogger{},
-		&server.Plugin{},
-		&httpPlugin.Plugin{},
-		&gzip.Gzip{},
-		&static.Plugin{},
-	)
+	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
-
-	err = cont.Init()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ch, err := cont.Serve()
-	assert.NoError(t, err)
-
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-
-	tt := time.NewTimer(time.Second * 10)
-
-	go func() {
-		defer wg.Done()
-		for {
-			select {
-			case e := <-ch:
-				assert.Fail(t, "error", e.Error.Error())
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-			case <-sig:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-				return
-			case <-tt.C:
-				// timeout
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-				return
-			}
-		}
-	}()
-
-	time.Sleep(time.Second)
-	t.Run("StaticFilesDisabled", staticFilesDisabled)
-	wg.Wait()
-}
-
-func staticFilesDisabled(t *testing.T) {
-	b, r, err := get("http://localhost:45877/client.php?hello=world")
-	if err != nil {
-		t.Fatal(err)
-	}
-	assert.Equal(t, "WORLD", b)
-	_ = r.Body.Close()
-}
-
-func TestStaticFilesForbid(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
-	assert.NoError(t, err)
-
-	cfg := &config.Viper{
-		Path:   "configs/.rr-http-static-files.yaml",
-		Prefix: "rr",
-	}
-
-	controller := gomock.NewController(t)
-	mockLogger := mocks.NewMockLogger(controller)
-
-	mockLogger.EXPECT().Debug("http handler response received", "elapsed", gomock.Any(), "remote address", "127.0.0.1").AnyTimes()
-	mockLogger.EXPECT().Error("file open error", "error", gomock.Any()).AnyTimes()
-
-	err = cont.RegisterAll(
-		cfg,
-		mockLogger,
-		&server.Plugin{},
-		&httpPlugin.Plugin{},
-		&gzip.Gzip{},
-		&static.Plugin{},
-	)
-	assert.NoError(t, err)
-
-	err = cont.Init()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ch, err := cont.Serve()
-	assert.NoError(t, err)
-
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-
-	tt := time.NewTimer(time.Second * 10)
-
-	go func() {
-		defer wg.Done()
-		for {
-			select {
-			case e := <-ch:
-				assert.Fail(t, "error", e.Error.Error())
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-			case <-sig:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-				return
-			case <-tt.C:
-				// timeout
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-				return
-			}
-		}
-	}()
-
-	time.Sleep(time.Second)
-	t.Run("StaticTestFilesDir", staticTestFilesDir)
-	t.Run("StaticNotFound", staticNotFound)
-	t.Run("StaticFilesForbid", staticFilesForbid)
-	t.Run("StaticFilesAlways", staticFilesAlways)
-	wg.Wait()
-}
-
-func staticTestFilesDir(t *testing.T) {
-	b, r, err := get("http://localhost:34653/http?hello=world")
-	assert.NoError(t, err)
-	assert.Equal(t, "WORLD", b)
-	_ = r.Body.Close()
-}
-
-func staticNotFound(t *testing.T) {
-	b, _, _ := get("http://localhost:34653/client.XXX?hello=world")
-	assert.Equal(t, "WORLD", b)
-}
-
-func staticFilesAlways(t *testing.T) {
-	_, r, err := get("http://localhost:34653/favicon.ico")
-	assert.NoError(t, err)
-	assert.Equal(t, 404, r.StatusCode)
-	_ = r.Body.Close()
-}
-
-func staticFilesForbid(t *testing.T) {
-	b, r, err := get("http://localhost:34653/client.php?hello=world")
-	if err != nil {
-		t.Fatal(err)
-	}
-	assert.Equal(t, "WORLD", b)
-	_ = r.Body.Close()
-}
-
-// HELPERS
-func get(url string) (string, *http.Response, error) {
-	r, err := http.Get(url)
-	if err != nil {
-		return "", nil, err
-	}
 
 	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return "", nil, err
-	}
+	assert.NoError(t, err)
+
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "CUSTOM-HEADER", string(b))
 
 	err = r.Body.Close()
-	if err != nil {
-		return "", nil, err
-	}
-
-	return string(b), r, err
+	assert.NoError(t, err)
 }
 
-func all(fn string) string {
-	f, _ := os.Open(fn)
+func TestResponseHeaders(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	assert.NoError(t, err)
 
-	b := new(bytes.Buffer)
-	_, err := io.Copy(b, f)
-	if err != nil {
-		return ""
+	cfg := &config.Viper{
+		Path:   "configs/.rr-res-headers.yaml",
+		Prefix: "rr",
 	}
 
-	err = f.Close()
+	err = cont.RegisterAll(
+		cfg,
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+		&headers.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
 	if err != nil {
-		return ""
+		t.Fatal(err)
 	}
 
-	return b.String()
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	tt := time.NewTimer(time.Second * 10)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-tt.C:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second)
+	t.Run("ResponseHeaders", resHeaders)
+	wg.Wait()
+}
+
+func resHeaders(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://localhost:22455?hello=value", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "output-header", r.Header.Get("output"))
+
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, "CUSTOM-HEADER", string(b))
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
+}
+
+func TestCORSHeaders(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-cors-headers.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+		&headers.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	tt := time.NewTimer(time.Second * 10)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-tt.C:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second)
+	t.Run("CORSHeaders", corsHeaders)
+	t.Run("CORSHeadersPass", corsHeadersPass)
+	wg.Wait()
+}
+
+func corsHeadersPass(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://localhost:22855", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
+	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
+	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+
+	_, err = ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
+}
+
+func corsHeaders(t *testing.T) {
+	req, err := http.NewRequest("OPTIONS", "http://localhost:22855", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Headers"))
+	assert.Equal(t, "GET,POST,PUT,DELETE", r.Header.Get("Access-Control-Allow-Methods"))
+	assert.Equal(t, "*", r.Header.Get("Access-Control-Allow-Origin"))
+	assert.Equal(t, "600", r.Header.Get("Access-Control-Max-Age"))
+	assert.Equal(t, "true", r.Header.Get("Access-Control-Allow-Credentials"))
+
+	_, err = ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
 }

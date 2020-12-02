@@ -18,8 +18,8 @@ import (
 )
 
 const (
-	// ID declares public service name.
-	ServiceName = "metrics"
+	// PluginName declares plugin name.
+	PluginName = "metrics"
 	// maxHeaderSize declares max header size for prometheus server
 	maxHeaderSize = 1024 * 1024 * 100 // 104MB
 )
@@ -42,7 +42,7 @@ type Plugin struct {
 // Init service.
 func (m *Plugin) Init(cfg config.Configurer, log log.Logger) error {
 	const op = errors.Op("Metrics Init")
-	err := cfg.UnmarshalKey(ServiceName, &m.cfg)
+	err := cfg.UnmarshalKey(PluginName, &m.cfg)
 	if err != nil {
 		return err
 	}
@@ -218,7 +218,7 @@ func (m *Plugin) AddStatProvider(name endure.Named, stat metrics.StatProvider) e
 
 // RPC interface satisfaction
 func (m *Plugin) Name() string {
-	return ServiceName
+	return PluginName
 }
 
 // RPC interface satisfaction

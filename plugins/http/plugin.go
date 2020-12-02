@@ -27,8 +27,8 @@ import (
 )
 
 const (
-	// ID contains default service name.
-	ServiceName = "http"
+	// PluginName declares plugin name.
+	PluginName = "http"
 
 	// EventInitSSL thrown at moment of https initialization. SSL server passed as context.
 	EventInitSSL = 750
@@ -78,7 +78,7 @@ func (s *Plugin) AddListener(listener util.EventListener) {
 // misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Server) error {
 	const op = errors.Op("http Init")
-	err := cfg.UnmarshalKey(ServiceName, &s.cfg)
+	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
 		return errors.E(op, err)
 	}
@@ -287,7 +287,7 @@ func (s *Plugin) Workers() []roadrunner.WorkerBase {
 }
 
 func (s *Plugin) Name() string {
-	return ServiceName
+	return PluginName
 }
 
 func (s *Plugin) Reset() error {
@@ -298,7 +298,7 @@ func (s *Plugin) Reset() error {
 	s.pool.Destroy(context.Background())
 
 	// re-read the config
-	err := s.configurer.UnmarshalKey(ServiceName, &s.cfg)
+	err := s.configurer.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
 		return errors.E(op, err)
 	}

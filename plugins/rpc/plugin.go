@@ -13,8 +13,8 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
-// ServiceName contains default service name.
-const ServiceName = "RPC"
+// PluginName contains default plugin name.
+const PluginName = "RPC"
 
 type pluggable struct {
 	service rpc_.RPCer
@@ -34,11 +34,11 @@ type Plugin struct {
 // Init rpc service. Must return true if service is enabled.
 func (s *Plugin) Init(cfg config.Configurer, log log.Logger) error {
 	const op = errors.Op("RPC Init")
-	if !cfg.Has(ServiceName) {
+	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
 	}
 
-	err := cfg.UnmarshalKey(ServiceName, &s.cfg)
+	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func (s *Plugin) Stop() error {
 
 // Name contains service name.
 func (s *Plugin) Name() string {
-	return ServiceName
+	return PluginName
 }
 
 // Depends declares services to collect for RPC.

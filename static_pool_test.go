@@ -196,7 +196,6 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	p.Destroy(ctx)
 }
 
-//
 func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	ctx := context.Background()
 	p, err := NewPool(
