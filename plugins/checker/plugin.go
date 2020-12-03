@@ -30,8 +30,13 @@ func (c *Plugin) Init(log log.Logger, cfg config.Configurer) error {
 	const op = errors.Op("status plugin init")
 	err := cfg.UnmarshalKey(PluginName, &c.cfg)
 	if err != nil {
-		return errors.E(op, err)
+		return errors.E(op, errors.Disabled, err)
 	}
+
+	if c.cfg == nil {
+		return errors.E(errors.Disabled)
+	}
+
 	c.registry = make(map[string]status.Checker)
 	c.log = log
 	return nil
