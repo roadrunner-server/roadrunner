@@ -3,8 +3,9 @@ package roadrunner
 import (
 	"context"
 	"os/exec"
-	"sync"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/spiral/errors"
 	"github.com/stretchr/testify/assert"
@@ -160,13 +161,11 @@ func Test_Broken(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-
+	data := ""
 	w.AddListener(func(event interface{}) {
-		assert.Contains(t, string(event.(WorkerEvent).Payload.([]byte)), "undefined_function()")
-		wg.Done()
-		return
+		if wev, ok := event.(WorkerEvent); ok {
+			data = string(wev.Payload.([]byte))
+		}
 	})
 
 	syncWorker, err := NewSyncWorker(w)
@@ -179,7 +178,10 @@ func Test_Broken(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	wg.Wait()
+	time.Sleep(time.Second * 3)
+	if strings.ContainsAny(data, "undefined_function()") == false {
+		t.Fail()
+	}
 	assert.Error(t, w.Stop(ctx))
 }
 
