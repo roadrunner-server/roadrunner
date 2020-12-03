@@ -1,6 +1,8 @@
 package tests
 
 import (
+	"io/ioutil"
+	"net/http"
 	"os"
 	"os/signal"
 	"sync"
@@ -49,7 +51,7 @@ func TestStatusInit(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	tt := time.NewTimer(time.Second * 5)
+	tt := time.NewTimer(time.Second * 10)
 
 	go func() {
 		defer wg.Done()
@@ -78,5 +80,25 @@ func TestStatusInit(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second)
+	t.Run("CheckerGetStatus", checkHttpStatus)
 	wg.Wait()
+}
+
+const resp = `Service: http: Status: 200
+Service: rpc not found`
+
+func checkHttpStatus(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://127.0.0.1:34333/v1/health?plugin=http&plugin=rpc", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, resp, string(b))
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
 }

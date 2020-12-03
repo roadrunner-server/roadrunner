@@ -3,6 +3,7 @@ package checker
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -36,10 +37,13 @@ func (c *Plugin) Init(log log.Logger, cfg config.Configurer) error {
 	return nil
 }
 
-// localhost:88294/status/all
 func (c *Plugin) Serve() chan error {
 	errCh := make(chan error, 1)
-	c.server = fiber.New()
+	c.server = fiber.New(fiber.Config{
+		ReadTimeout:  time.Second * 5,
+		WriteTimeout: time.Second * 5,
+		IdleTimeout:  time.Second * 5,
+	})
 	c.server.Group("/v1", c.healthHandler)
 	c.server.Use(logger.New())
 	c.server.Use("/health", c.healthHandler)
@@ -55,7 +59,12 @@ func (c *Plugin) Serve() chan error {
 }
 
 func (c *Plugin) Stop() error {
-	return c.server.Shutdown()
+	const op = errors.Op("checker stop")
+	err := c.server.Shutdown()
+	if err != nil {
+		return errors.E(op, err)
+	}
+	return nil
 }
 
 // Reset named service.
