@@ -4,6 +4,7 @@ import (
 	"context"
 	"os/exec"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -162,9 +163,12 @@ func Test_Broken(t *testing.T) {
 	}
 
 	data := ""
+	mu := &sync.Mutex{}
 	w.AddListener(func(event interface{}) {
 		if wev, ok := event.(WorkerEvent); ok {
+			mu.Lock()
 			data = string(wev.Payload.([]byte))
+			mu.Unlock()
 		}
 	})
 
@@ -179,9 +183,11 @@ func Test_Broken(t *testing.T) {
 	assert.Nil(t, res.Context)
 
 	time.Sleep(time.Second * 3)
+	mu.Lock()
 	if strings.ContainsAny(data, "undefined_function()") == false {
 		t.Fail()
 	}
+	mu.Unlock()
 	assert.Error(t, w.Stop(ctx))
 }
 
