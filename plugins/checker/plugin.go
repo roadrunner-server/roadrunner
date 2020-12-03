@@ -93,7 +93,7 @@ func (c *Plugin) RPC() interface{} {
 }
 
 type Plugins struct {
-	Plugins []string `query:"service"`
+	Plugins []string `query:"plugin"`
 }
 
 const template string = "Service: %s: Status: %d\n"

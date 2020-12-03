@@ -3,8 +3,8 @@ package roadrunner
 import (
 	"context"
 	"os/exec"
+	"sync"
 	"testing"
-	"time"
 
 	"github.com/spiral/errors"
 	"github.com/stretchr/testify/assert"
@@ -159,20 +159,13 @@ func Test_Broken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ch := make(chan struct{})
 
-	go func() {
-		tt := time.NewTimer(time.Second * 10)
-		select {
-		case <-tt.C:
-			tt.Stop()
-			ch <- struct{}{}
-		}
-	}()
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
 
 	w.AddListener(func(event interface{}) {
 		assert.Contains(t, string(event.(WorkerEvent).Payload.([]byte)), "undefined_function()")
-		ch <- struct{}{}
+		wg.Done()
 	})
 
 	syncWorker, err := NewSyncWorker(w)
@@ -185,7 +178,7 @@ func Test_Broken(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	<-ch
+	wg.Wait()
 	assert.Error(t, w.Stop(ctx))
 }
 
