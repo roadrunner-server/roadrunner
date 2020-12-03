@@ -6,7 +6,7 @@ type EventsHandler interface {
 	Push(e interface{})
 }
 
-// Event listener listens for the events produced by worker, worker pool or other servce.
+// Event listener listens for the events produced by worker, worker pool or other service.
 type EventListener func(event interface{})
 
 // EventHandler helps to broadcast events to multiple listeners.

@@ -21,7 +21,7 @@ func (p *Plugin) Init(log log.Logger) error {
 	return nil
 }
 
-// Reset named service.
+// Workers provides WorkerBase slice with workers for the requested plugin
 func (p *Plugin) Workers(name string) ([]roadrunner.WorkerBase, error) {
 	const op = errors.Op("get workers")
 	svc, ok := p.registry[name]

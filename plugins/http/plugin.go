@@ -18,6 +18,7 @@ import (
 	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	factory "github.com/spiral/roadrunner/v2/interfaces/server"
+	"github.com/spiral/roadrunner/v2/interfaces/status"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 	"github.com/spiral/roadrunner/v2/util"
@@ -339,6 +340,22 @@ func (s *Plugin) Collects() []interface{} {
 
 func (s *Plugin) AddMiddleware(name endure.Named, m Middleware) {
 	s.mdwr[name.Name()] = m
+}
+
+// Status return status of the particular plugin
+func (s *Plugin) Status() status.Status {
+	workers := s.Workers()
+	for i := 0; i < len(workers); i++ {
+		if workers[i].State().IsActive() {
+			return status.Status{
+				Code: http.StatusOK,
+			}
+		}
+	}
+	// if there are no workers, threat this as error
+	return status.Status{
+		Code: http.StatusInternalServerError,
+	}
 }
 
 func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) bool {

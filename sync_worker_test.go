@@ -3,6 +3,8 @@ package roadrunner
 import (
 	"context"
 	"os/exec"
+	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -159,20 +161,15 @@ func Test_Broken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ch := make(chan struct{})
 
-	go func() {
-		tt := time.NewTimer(time.Second * 10)
-		select {
-		case <-tt.C:
-			tt.Stop()
-			ch <- struct{}{}
-		}
-	}()
-
+	data := ""
+	mu := &sync.Mutex{}
 	w.AddListener(func(event interface{}) {
-		assert.Contains(t, string(event.(WorkerEvent).Payload.([]byte)), "undefined_function()")
-		ch <- struct{}{}
+		if wev, ok := event.(WorkerEvent); ok {
+			mu.Lock()
+			data = string(wev.Payload.([]byte))
+			mu.Unlock()
+		}
 	})
 
 	syncWorker, err := NewSyncWorker(w)
@@ -185,7 +182,12 @@ func Test_Broken(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	<-ch
+	time.Sleep(time.Second * 3)
+	mu.Lock()
+	if strings.ContainsAny(data, "undefined_function()") == false {
+		t.Fail()
+	}
+	mu.Unlock()
 	assert.Error(t, w.Stop(ctx))
 }
 
