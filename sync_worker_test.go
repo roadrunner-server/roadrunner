@@ -166,6 +166,7 @@ func Test_Broken(t *testing.T) {
 	w.AddListener(func(event interface{}) {
 		assert.Contains(t, string(event.(WorkerEvent).Payload.([]byte)), "undefined_function()")
 		wg.Done()
+		return
 	})
 
 	syncWorker, err := NewSyncWorker(w)
