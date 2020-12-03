@@ -15,6 +15,9 @@ test:
 	go test -v -race -cover ./plugins/static/tests -tags=debug
 	go test -v -race -cover ./plugins/static -tags=debug
 	go test -v -race -cover ./plugins/headers/tests -tags=debug
+	go test -v -race -cover ./plugins/checker/tests -tags=debug
 
 test_headers:
 	go test -v -race -cover ./plugins/headers/tests -tags=debug
+test_checker:
+	go test -v -race -cover ./plugins/checker/tests -tags=debug

@@ -5,11 +5,14 @@ go 1.15
 require (
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
+	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/fatih/color v1.10.0
 	github.com/go-ole/go-ole v1.2.4 // indirect
+	github.com/gofiber/fiber/v2 v2.2.2
 	github.com/golang/mock v1.4.4
 	github.com/hashicorp/go-multierror v1.0.0
 	github.com/json-iterator/go v1.1.10
+	github.com/klauspost/compress v1.11.3 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.7.1
 	github.com/shirou/gopsutil v3.20.10+incompatible
@@ -24,6 +27,6 @@ require (
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20201021035429-f5854403a974
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
-	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
+	golang.org/x/sys v0.0.0-20201201145000-ef89a241ccb3
 	golang.org/x/tools v0.0.0-20201119174615-0557df368a99 // indirect
 )
