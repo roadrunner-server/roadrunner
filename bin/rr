@@ -57,13 +57,18 @@ use function Couchbase\defaultDecoder;
 class RRHelper
 {
     /**
+     * @var string
+     */
+    public const SELF_PACKAGE_NAME = 'spiral/roadrunner';
+
+    /**
      * Returns version of RoadRunner based on current package version.
      *
      * @return string Version of RoadRunner (eg.: `1.8.0`)
      */
     public static function getVersion(): string
     {
-        $version = \PackageVersions\Versions::getVersion('spiral/roadrunner');
+        $version = \PackageVersions\Versions::getVersion(self::SELF_PACKAGE_NAME);
 
         if (\is_int($delimiter_position = \mb_strpos($version, '@'))) {
             $version = \mb_substr($version, 0, (int) $delimiter_position);
