@@ -1,0 +1,33 @@
+name: release
+
+on:
+  on: [ push, pull_request ] # TODO remove this line after code-review
+  release: # Docs: <https://help.github.com/en/articles/events-that-trigger-workflows#release-event-release>
+    types: [published]
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }} (${{ matrix.arch }})
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [linux, freebsd, windows, darwin]
+        cc: [gcc]
+        archiver: [tar]
+        arch: [amd64]
+        ext: []
+        include:
+          - os: windows
+            archiver: zip
+            ext: '.exe'
+          - os: linux
+            cc: musl
+    steps:
+#      - name: Set up Go
+#        uses: actions/setup-go@v2
+#        with:
+#          go-version: 1.15.5
+
+      - name: Install dependencies
+        run: echo OS=${{ matrix.os }} CC=${{ matrix.cc }} ARCHIVER=${{ matrix.archiver }} ARCH=${{ matrix.arch }} EXT=${{ matrix.ext }}
