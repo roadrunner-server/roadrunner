@@ -16,5 +16,10 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 .idea
+composer.lock
+vendor
 vendor_php
-builds
+builds/
+tests/vendor/
+.rr-sample.yaml
+psr-worker.php

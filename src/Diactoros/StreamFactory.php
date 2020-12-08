@@ -12,7 +12,7 @@ namespace Spiral\RoadRunner\Diactoros;
 use RuntimeException;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
-use Zend\Diactoros\Stream;
+use Laminas\Diactoros\Stream;
 
 final class StreamFactory implements StreamFactoryInterface
 {

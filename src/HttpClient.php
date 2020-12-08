@@ -62,14 +62,13 @@ final class HttpClient
      */
     public function respond(int $status, string $body, array $headers = []): void
     {
-        if (empty($headers)) {
-            // this is required to represent empty header set as map and not as array
-            $headers = new \stdClass();
-        }
+        $sendHeaders = empty($headers)
+            ? new \stdClass() // this is required to represent empty header set as map and not as array
+            : $headers;
 
         $this->getWorker()->send(
             $body,
-            (string) json_encode(['status' => $status, 'headers' => $headers])
+            (string) json_encode(['status' => $status, 'headers' => $sendHeaders])
         );
     }
 }
