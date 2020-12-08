@@ -22,7 +22,7 @@ jobs:
             arch: amd64
           - os: ''
             compiler: musl-gcc # more info: <https://musl.libc.org/>
-            archiver: tar
+            archiver: zip
             arch: amd64
     steps:
       - name: Set up Go
