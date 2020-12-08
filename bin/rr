@@ -11,7 +11,8 @@ declare(strict_types=1);
 foreach ([
              __DIR__ . '/../../../autoload.php',
              __DIR__ . '/../vendor/autoload.php',
-             __DIR__ . '/vendor/autoload.php'
+             __DIR__ . '/vendor/autoload.php',
+             __DIR__ . '/../vendor_php/autoload.php'
          ] as $file) {
     if (file_exists($file)) {
         define('RR_COMPOSER_INSTALL', $file);
@@ -51,28 +52,29 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use function Couchbase\defaultDecoder;
 
 class RRHelper
 {
     /**
-     * Returns version of RoadRunner based on build.sh file
+     * @var string
+     */
+    public const SELF_PACKAGE_NAME = 'spiral/roadrunner';
+
+    /**
+     * Returns version of RoadRunner based on current package version.
      *
-     * @return string Version of RoadRunner
-     * @throws Exception
+     * @return string Version of RoadRunner (eg.: `1.8.0`)
      */
     public static function getVersion(): string
     {
-        $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'build.sh';
-        $fileResource = fopen($file, 'r') or die(1);
-        while (!feof($fileResource)) {
-            $line = fgets($fileResource, 4096);
-            $matches = [];
-            if (preg_match("/^RR_VERSION=(.*)/", $line, $matches)) {
-                return trim($matches[1]);
-            }
+        $version = \PackageVersions\Versions::getVersion(self::SELF_PACKAGE_NAME);
+
+        if (\is_int($delimiter_position = \mb_strpos($version, '@'))) {
+            $version = \mb_substr($version, 0, (int) $delimiter_position);
         }
-        fclose($fileResource);
-        throw new Exception("Can't find version of RoadRunner");
+
+        return \ltrim($version, 'vV');
     }
 
     /**

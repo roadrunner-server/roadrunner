@@ -1,0 +1,139 @@
+name: release
+
+on:
+  release: # Docs: <https://help.github.com/en/articles/events-that-trigger-workflows#release-event-release>
+    types: [published]
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }} (${{ matrix.arch }}, ${{ matrix.compiler }})
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows, freebsd, darwin] # linux, freebsd, darwin, windows
+        compiler: [gcc] # gcc, musl-gcc
+        archiver: [zip] # tar, zip
+        arch: [amd64]   # amd64, 386
+        include:
+          - os: linux
+            compiler: gcc
+            archiver: tar
+            arch: amd64
+          - os: ''
+            compiler: musl-gcc # more info: <https://musl.libc.org/>
+            archiver: zip
+            arch: amd64
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.5
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install musl
+        if: matrix.compiler == 'musl-gcc'
+        run: sudo apt-get install -y musl-tools
+
+      - name: Download dependencies
+        run: go mod download # `-x` means "verbose" mode
+
+      - name: Generate builder values
+        id: values
+        run: |
+          echo "::set-output name=version::`echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//'`"
+          echo "::set-output name=timestamp::`date +%FT%T%z`"
+          echo "::set-output name=binary-name::rr`[ ${{ matrix.os }} = 'windows' ] && echo '.exe'`"
+
+      - name: Compile binary file
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+          CC: ${{ matrix.compiler }}
+          CGO_ENABLED: 0
+          LDFLAGS: >-
+            -s
+            -X github.com/spiral/roadrunner/cmd/rr/cmd.Version=${{ steps.values.outputs.version }}
+            -X github.com/spiral/roadrunner/cmd/rr/cmd.BuildTime=${{ steps.values.outputs.timestamp }}
+        run: |
+          go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr/main.go
+          stat "./${{ steps.values.outputs.binary-name }}"
+
+      - name: Generate distributive directory name
+        id: dist-dir
+        run: >
+          echo "::set-output name=name::roadrunner-${{ steps.values.outputs.version }}-$(
+            [ ${{ matrix.os }} != '' ] && echo '${{ matrix.os }}' || echo 'unknown'
+          )$(
+            [ ${{ matrix.compiler }} = 'musl-gcc' ] && echo '-musl'
+          )-${{ matrix.arch }}"
+
+      - name: Generate distributive archive name
+        id: dist-arch
+        run: >
+          echo "::set-output name=name::${{ steps.dist-dir.outputs.name }}.$(
+            case ${{ matrix.archiver }} in
+              zip) echo 'zip';;
+              tar) echo 'tar.gz';;
+              *)   exit 10;
+            esac
+          )"
+
+      - name: Create distributive
+        run: |
+          mkdir ${{ steps.dist-dir.outputs.name }}
+          mv "./${{ steps.values.outputs.binary-name }}" ./${{ steps.dist-dir.outputs.name }}/
+          cp ./README.md ./CHANGELOG.md ./LICENSE ./${{ steps.dist-dir.outputs.name }}/
+
+      - name: Pack distributive using tar
+        if: matrix.archiver == 'tar'
+        run: tar -zcf "${{ steps.dist-arch.outputs.name }}" "${{ steps.dist-dir.outputs.name }}"
+
+      - name: Pack distributive using zip
+        if: matrix.archiver == 'zip'
+        run: zip -r -q "${{ steps.dist-arch.outputs.name }}" "${{ steps.dist-dir.outputs.name }}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ steps.dist-dir.outputs.name }}
+          path: ${{ steps.dist-arch.outputs.name }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ steps.dist-arch.outputs.name }}
+          asset_name: ${{ steps.dist-arch.outputs.name }}
+          tag: ${{ github.ref }}
+
+  docker:
+    name: Build docker image
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Make docker login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin
+
+      - name: Generate builder values
+        id: values
+        run: |
+          echo "::set-output name=version::`echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//'`"
+          echo "::set-output name=timestamp::`date +%FT%T%z`"
+
+      - name: Build image
+        run: |
+          docker build \
+            --tag "spiralscout/roadrunner:${{ steps.values.outputs.version }}" \
+            --build-arg "APP_VERSION=${{ steps.values.outputs.version }}" \
+            --build-arg "BUILD_TIME=${{ steps.values.outputs.timestamp }}" \
+            .
+
+      - name: Push image into registry
+        run: docker push "spiralscout/roadrunner:${{ steps.values.outputs.version }}"
