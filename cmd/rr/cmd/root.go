@@ -55,6 +55,7 @@ var (
 		Use:           "rr",
 		SilenceErrors: true,
 		SilenceUsage:  true,
+		Version:       Version, // allows to use `--version` flag
 		Short: util.Sprintf(
 			"<green>RoadRunner</reset>, PHP Application Server\nVersion: <yellow+hb>%s</reset>, %s",
 			Version,
