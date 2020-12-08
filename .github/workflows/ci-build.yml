@@ -81,12 +81,13 @@ jobs:
           go test -v -race -cover -tags=debug -coverprofile=static_root.txt -covermode=atomic ./plugins/static
           go test -v -race -cover -tags=debug -coverprofile=headers.txt -covermode=atomic ./plugins/headers/tests
           go test -v -race -cover -tags=debug -coverprofile=checker.txt -covermode=atomic ./plugins/checker/tests
+          cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
       - name: Run code coverage
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: checker.txt, headers.txt, static.txt, static_root.txt, gzip.txt, lib.txt, rpc_config.txt, rpc.txt, plugin_config.txt, logger.txt, server.txt, metrics.txt, informer.txt attributes.txt http_tests.txt
+          files: summary.txt
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
