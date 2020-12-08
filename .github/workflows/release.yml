@@ -3,6 +3,7 @@ name: release
 on:
   release: # Docs: <https://help.github.com/en/articles/events-that-trigger-workflows#release-event-release>
     types: [published]
+  push: # TODO just for a test (remove this line)
 
 jobs:
   build:
@@ -39,7 +40,7 @@ jobs:
       - name: Download dependencies
         run: go mod download # `-x` means "verbose" mode
 
-      - name: Generate compiler values
+      - name: Generate builder values
         id: values
         run: |
           echo "::set-output name=version::`echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//'`"
@@ -51,6 +52,7 @@ jobs:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CC: ${{ matrix.compiler }}
+          CGO_ENABLED: 0
           LDFLAGS: >-
             -s
             -X github.com/spiral/roadrunner/cmd/rr/cmd.Version=${{ steps.values.outputs.version }}
@@ -93,7 +95,8 @@ jobs:
         if: matrix.archiver == 'zip'
         run: zip -r -q "${{ steps.dist-arch.outputs.name }}" "${{ steps.dist-dir.outputs.name }}"
 
-      - uses: actions/upload-artifact@v2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.dist-dir.outputs.name }}
           path: ${{ steps.dist-arch.outputs.name }}
@@ -107,3 +110,24 @@ jobs:
           file: ${{ steps.dist-arch.outputs.name }}
           asset_name: ${{ steps.dist-arch.outputs.name }}
           tag: ${{ github.ref }}
+
+  docker:
+    name: Build docker image
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Generate builder values
+        id: values
+        run: |
+          echo "::set-output name=version::`echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//'`"
+          echo "::set-output name=timestamp::`date +%FT%T%z`"
+
+      - name: Build image
+        run: |
+          docker build \
+            --tag rr:local \
+            --build-arg "APP_VERSION=${{ steps.values.outputs.version }}" \
+            --build-arg "BUILD_TIME=${{ steps.values.outputs.timestamp }}" \
+            .
