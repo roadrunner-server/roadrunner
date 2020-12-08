@@ -3,7 +3,6 @@ name: release
 on:
   release: # Docs: <https://help.github.com/en/articles/events-that-trigger-workflows#release-event-release>
     types: [published]
-  push: # TODO just for a test (remove this line)
 
 jobs:
   build:
@@ -12,16 +11,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [linux, freebsd, darwin]
-        compiler: [gcc]
-        archiver: [tar]
-        arch: [amd64]
+        os: [windows, freebsd, darwin] # linux, freebsd, darwin, windows
+        compiler: [gcc] # gcc, musl-gcc
+        archiver: [zip] # tar, zip
+        arch: [amd64]   # amd64, 386
         include:
-          - os: windows # include build for windows directly
+          - os: linux
             compiler: gcc
-            archiver: zip
+            archiver: tar
             arch: amd64
-          - compiler: musl-gcc # more info: <https://musl.libc.org/>
+          - os: ''
+            compiler: musl-gcc # more info: <https://musl.libc.org/>
             archiver: tar
             arch: amd64
     steps:
@@ -119,7 +119,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Make docker login
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin
 
       - name: Generate builder values
         id: values
