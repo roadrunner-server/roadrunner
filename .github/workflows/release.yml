@@ -118,6 +118,9 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
+      - name: Make docker login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_LOGIN }}" --password-stdin &> /dev/null
+
       - name: Generate builder values
         id: values
         run: |
@@ -127,7 +130,10 @@ jobs:
       - name: Build image
         run: |
           docker build \
-            --tag rr:local \
+            --tag "spiralscout/roadrunner:${{ steps.values.outputs.version }}" \
             --build-arg "APP_VERSION=${{ steps.values.outputs.version }}" \
             --build-arg "BUILD_TIME=${{ steps.values.outputs.timestamp }}" \
             .
+
+      - name: Push image into registry
+        run: docker push "spiralscout/roadrunner:${{ steps.values.outputs.version }}"

@@ -7,9 +7,9 @@ ARG APP_VERSION="undefined"
 ARG BUILD_TIME="undefined"
 
 # arguments to pass on each go tool link invocation
-ENV LDFLAGS="-X github.com/spiral/roadrunner/cmd/rr/cmd.Version=$APP_VERSION \
--X github.com/spiral/roadrunner/cmd/rr/cmd.BuildTime=$BUILD_TIME \
--s"
+ENV LDFLAGS="-s \
+-X github.com/spiral/roadrunner/cmd/rr/cmd.Version=$APP_VERSION \
+-X github.com/spiral/roadrunner/cmd/rr/cmd.BuildTime=$BUILD_TIME"
 
 COPY . /src
 
