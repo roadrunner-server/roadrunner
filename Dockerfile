@@ -19,7 +19,7 @@ WORKDIR /src
 RUN set -x \
     && go mod download \
     && go mod verify \
-    && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr/main.go
+    && CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr/main.go
 
 # Image page: <https://hub.docker.com/_/alpine>
 FROM alpine:3.12
