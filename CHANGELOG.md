@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+UNRELEASED
+----------
+- Add `rr --version` flag support
+
 v1.9.0 (02.12.2020)
 -------------------
 - Update PHP minimal supported version to 7.3
