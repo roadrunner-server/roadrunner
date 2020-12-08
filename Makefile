@@ -24,6 +24,7 @@ uninstall: ## Uninstall locally installed RR
 	rm -f /usr/local/bin/rr
 
 test: ## Run application tests
+	go test -v -race -cover
 	go test -v -race -cover ./util
 	go test -v -race -cover ./service
 	go test -v -race -cover ./service/env
