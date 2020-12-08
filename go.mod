@@ -12,10 +12,13 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.8.0
 	github.com/shirou/gopsutil v3.20.11+incompatible
+	github.com/sirupsen/logrus v1.6.0
+	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.7.1
 	github.com/spiral/endure v1.0.0-beta20
 	github.com/spiral/errors v1.0.5
 	github.com/spiral/goridge/v2 v2.4.6
+	github.com/spiral/roadrunner v1.9.0
 	github.com/stretchr/testify v1.6.1
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/yookoala/gofast v0.4.0
