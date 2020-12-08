@@ -1,7 +1,7 @@
 name: release
 
 on:
-  release: # Docs: <https://help.github.com/en/articles/events-that-trigger-workflows#release-event-release>
+  release: # Docs: <https://git.io/JeBz1#release-event-release>
     types: [published]
 
 jobs:
