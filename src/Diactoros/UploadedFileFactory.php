@@ -12,7 +12,7 @@ namespace Spiral\RoadRunner\Diactoros;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use Zend\Diactoros\UploadedFile;
+use Laminas\Diactoros\UploadedFile;
 
 final class UploadedFileFactory implements UploadedFileFactoryInterface
 {

@@ -1,0 +1,154 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  php:
+    name: Build (PHP ${{ matrix.php }}, ${{ matrix.setup }} setup)
+    runs-on: ubuntu-20.04
+    timeout-minutes: 6
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.3', '7.4', '8.0']
+        setup: [basic, lowest]
+    steps:
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2 # action page: <https://github.com/shivammathur/setup-php>
+        with:
+          php-version: ${{ matrix.php }}
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Syntax check only (lint)
+        run: find ./src/ ./tests/ -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Init Composer Cache # Docs: <https://git.io/JfAKn#php---composer>
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.setup }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install lowest Composer dependencies
+        if: matrix.setup == 'lowest'
+        run: composer update --prefer-dist --no-progress --prefer-lowest --ansi
+
+      - name: Install basic Composer dependencies
+        if: matrix.setup == 'basic'
+        run: composer update --prefer-dist --no-progress --ansi
+
+      - name: Analyze PHP sources
+        run: composer analyze
+
+      # TODO write phpunit tests
+      #- name: Analyze PHP sources
+      #  run: composer test
+
+  golang:
+    name: Build (Go ${{ matrix.go }}, PHP ${{ matrix.php }})
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.3', '7.4', '8.0']
+        go: ['1.14', '1.15']
+    steps:
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2 # action page: <https://github.com/shivammathur/setup-php>
+        with:
+          php-version: ${{ matrix.php }}
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Init Composer Cache # Docs: <https://git.io/JfAKn#php---composer>
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer update --prefer-dist --no-progress --ansi
+
+      - name: Init Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Install Go dependencies
+        run: go mod download
+
+      - name: Run golang tests
+        run: |
+          mkdir ./coverage-ci
+          go test                   -race -v -covermode=atomic -coverprofile=./coverage-ci/lib.txt
+          go test ./util            -race -v -covermode=atomic -coverprofile=./coverage-ci/util.txt
+          go test ./service         -race -v -covermode=atomic -coverprofile=./coverage-ci/service.txt
+          go test ./service/env     -race -v -covermode=atomic -coverprofile=./coverage-ci/env.txt
+          go test ./service/rpc     -race -v -covermode=atomic -coverprofile=./coverage-ci/rpc.txt
+          go test ./service/http    -race -v -covermode=atomic -coverprofile=./coverage-ci/http.txt
+          go test ./service/static  -race -v -covermode=atomic -coverprofile=./coverage-ci/static.txt
+          go test ./service/limit   -race -v -covermode=atomic -coverprofile=./coverage-ci/limit.txt
+          go test ./service/headers -race -v -covermode=atomic -coverprofile=./coverage-ci/headers.txt
+          go test ./service/metrics -race -v -covermode=atomic -coverprofile=./coverage-ci/metrics.txt
+          go test ./service/health  -race -v -covermode=atomic -coverprofile=./coverage-ci/health.txt
+          go test ./service/gzip    -race -v -covermode=atomic -coverprofile=./coverage-ci/gzip.txt
+          go test ./service/reload  -race -v -covermode=atomic -coverprofile=./coverage-ci/reload.txt
+          cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
+
+      - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage-ci/summary.txt
+          fail_ci_if_error: false
+
+  golangci-check:
+    name: Golang-CI (lint)
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: golangci-lint
+        uses: reviewdog/action-golangci-lint@v1 # action page: <https://github.com/reviewdog/action-golangci-lint>
+        with:
+          github_token: ${{ secrets.github_token }}
+
+  image:
+    name: Build docker image
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build -t roadrunner:local -f Dockerfile .
+
+      - name: Scan image
+        uses: anchore/scan-action@v2 # action page: <https://github.com/anchore/scan-action>
+        with:
+          image: roadrunner:local
+          fail-build: true
+          severity-cutoff: low # negligible, low, medium, high or critical

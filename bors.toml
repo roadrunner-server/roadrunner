@@ -1,13 +1,17 @@
 status = [
-'Build (PHP 7.3, Go 1.15, OS ubuntu-20.04)',
-'Build (PHP 7.3, Go 1.14, OS ubuntu-20.04)',
-'Build (PHP 7.4, Go 1.15, OS ubuntu-20.04)',
-'Build (PHP 7.4, Go 1.14, OS ubuntu-20.04)',
-'Build (PHP 8, Go 1.15, OS ubuntu-20.04)',
-'Build (PHP 8, Go 1.14, OS ubuntu-20.04)',
-'runner / golangci-lint',
-'Build docker image',]
-
+'Build (PHP 7.3, basic setup)',
+'Build (PHP 7.3, lowest setup)',
+'Build (PHP 8.0, basic setup)',
+'Build (PHP 8.0, lowest setup)',
+'Build (Go 1.14, PHP 7.3)',
+'Build (Go 1.15, PHP 7.3)',
+'Build (Go 1.14, PHP 7.4)',
+'Build (Go 1.15, PHP 7.4)',
+'Build (Go 1.14, PHP 8.0)',
+'Build (Go 1.15, PHP 8.0)',
+'Golang-CI (lint)',
+'Build docker image',
+]
 
 required_approvals = 1
 delete_merged_branches = true
