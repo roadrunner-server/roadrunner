@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"fmt"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spiral/roadrunner/service"
 )
@@ -54,6 +55,8 @@ type Collector struct {
 	Labels []string `json:"labels"`
 	// Buckets for histogram metric.
 	Buckets []float64 `json:"buckets"`
+	// Objectives for the summary opts
+	Objectives map[float64]float64 `json:"objectives"`
 }
 
 // Hydrate configuration.
@@ -114,10 +117,11 @@ func (c *Config) getCollectors() (map[string]prometheus.Collector, error) {
 			}
 		case Summary:
 			opts := prometheus.SummaryOpts{
-				Name:      name,
-				Namespace: m.Namespace,
-				Subsystem: m.Subsystem,
-				Help:      m.Help,
+				Name:       name,
+				Namespace:  m.Namespace,
+				Subsystem:  m.Subsystem,
+				Help:       m.Help,
+				Objectives: m.Objectives,
 			}
 
 			if len(m.Labels) != 0 {

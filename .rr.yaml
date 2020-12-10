@@ -8,27 +8,34 @@ rpc:
   enable: true
 
   # rpc connection DSN. Supported TCP and Unix sockets.
-  listen:     tcp://127.0.0.1:6001
+  listen: tcp://127.0.0.1:6001
 
 metrics:
   # prometheus client address (path /metrics added automatically)
   address: localhost:2112
-  
+
   # list of metrics to collect from application
   collect:
     # metric name
     app_metric:
       # type [gauge, counter, histogram, summary]
-      type:    histogram
-      
+      type: histogram
+
       # short description
-      help:    "Custom application metric"
-      
+      help: "Custom application metric"
+
       # metric groups/tags
-      labels:  ["type"]
-      
+      labels: [ "type" ]
+
       # for histogram only
-      buckets: [0.1, 0.2, 0.3, 1.0]
+      buckets: [ 0.1, 0.2, 0.3, 1.0 ]
+
+      # objectives defines the quantile rank estimates with their respective
+      #	absolute error [ for summary only ]
+      objectives:
+        - 1.4: 2.3
+        - 2.0: 1.4
+
 
 # http service configuration.
 http:
@@ -37,19 +44,19 @@ http:
 
   ssl:
     # custom https port (default 443)
-    port:     443
+    port: 443
 
     # force redirect to https connection
     redirect: true
 
     # ssl cert
-    cert:     server.crt
+    cert: server.crt
 
     # ssl private key
-    key:      server.key
+    key: server.key
 
     # rootCA certificate
-    rootCa:   root.crt
+    rootCa: root.crt
 
   # HTTP service provides FastCGI as frontend
   fcgi:
@@ -63,7 +70,7 @@ http:
 
     # enable H2C on TCP connections
     h2c: true
-    
+
     # max transfer channels
     maxConcurrentStreams: 128
 
@@ -73,18 +80,18 @@ http:
   # file upload configuration.
   uploads:
     # list of file extensions which are forbidden for uploading.
-    forbid: [".php", ".exe", ".bat"]
+    forbid: [ ".php", ".exe", ".bat" ]
 
   # cidr blocks which can set ip using X-Real-Ip or X-Forwarded-For
-  trustedSubnets: ["10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10"]
+  trustedSubnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
 
   # http worker pool configuration.
   workers:
     # php worker command.
-    command:  "php psr-worker.php pipes"
+    command: "php psr-worker.php pipes"
 
     # connection method (pipes, tcp://:9000, unix://socket.unix). default "pipes"
-    relay:    "pipes"
+    relay: "pipes"
 
     # user under which process will be started
     user: ""
@@ -95,13 +102,13 @@ http:
       numWorkers: 4
 
       # maximum jobs per worker, 0 - unlimited.
-      maxJobs:  0
+      maxJobs: 0
 
       # for how long worker is allowed to be bootstrapped.
       allocateTimeout: 60
 
       # amount of time given to worker to gracefully destruct itself.
-      destroyTimeout:  60
+      destroyTimeout: 60
 
 # Additional HTTP headers and CORS control.
 headers:
@@ -157,10 +164,10 @@ limit:
 # static file serving. remove this section to disable static file serving.
 static:
   # root directory for static file (http would not serve .php and .htaccess files).
-  dir:   "public"
+  dir: "public"
 
   # list of extensions for forbid for serving.
-  forbid: [".php", ".htaccess"]
+  forbid: [ ".php", ".htaccess" ]
 
   # Automatically add headers to every request.
   request:
@@ -181,13 +188,13 @@ reload:
   interval: 1s
 
   # file extensions to watch, defaults to [.php]
-  patterns: [".php"]
+  patterns: [ ".php" ]
 
   # list of services to watch
   services:
     http:
       # list of dirs, "" root
-      dirs: [""]
+      dirs: [ "" ]
 
       # include sub directories
       recursive: true

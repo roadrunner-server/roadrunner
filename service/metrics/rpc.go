@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"fmt"
+
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -134,6 +135,7 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) (err error) {
 	*ok = true
 	return nil
 }
+
 // Declare is used to register new collector in prometheus
 // THE TYPES ARE:
 // 	NamedCollector -> Collector with the name
@@ -200,10 +202,11 @@ func (rpc *rpcServer) Declare(c *NamedCollector, ok *bool) (err error) {
 		}
 	case Summary:
 		opts := prometheus.SummaryOpts{
-			Name:      c.Name,
-			Namespace: c.Namespace,
-			Subsystem: c.Subsystem,
-			Help:      c.Help,
+			Name:       c.Name,
+			Namespace:  c.Namespace,
+			Subsystem:  c.Subsystem,
+			Help:       c.Help,
+			Objectives: c.Objectives,
 		}
 
 		if len(c.Labels) != 0 {
