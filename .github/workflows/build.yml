@@ -45,13 +45,6 @@ jobs:
         if: matrix.setup == 'basic'
         run: composer update --prefer-dist --no-progress --ansi
 
-      - name: Analyze PHP sources
-        run: composer analyze
-
-      # TODO write phpunit tests
-      #- name: Analyze PHP sources
-      #  run: composer test
-
   golang:
     name: Build (Go ${{ matrix.go }}, PHP ${{ matrix.php }})
     runs-on: ubuntu-20.04
@@ -102,22 +95,22 @@ jobs:
       - name: Run golang tests
         run: |
           mkdir ./coverage-ci
-          go test -v -race -cover -tags=debug -coverprofile=lib.txt -covermode=atomic .
-          go test -v -race -cover -tags=debug -coverprofile=rpc_config.txt -covermode=atomic ./plugins/rpc
-          go test -v -race -cover -tags=debug -coverprofile=rpc.txt -covermode=atomic ./plugins/rpc/tests
-          go test -v -race -cover -tags=debug -coverprofile=plugin_config.txt -covermode=atomic ./plugins/config/tests
-          go test -v -race -cover -tags=debug -coverprofile=logger.txt -covermode=atomic ./plugins/logger/tests
-          go test -v -race -cover -tags=debug -coverprofile=server.txt -covermode=atomic ./plugins/server/tests
-          go test -v -race -cover -tags=debug -coverprofile=metrics.txt -covermode=atomic ./plugins/metrics/tests
-          go test -v -race -cover -tags=debug -coverprofile=informer.txt -covermode=atomic ./plugins/informer/tests
-          go test -v -race -cover -tags=debug -coverprofile=informer.txt -covermode=atomic ./plugins/resetter/tests
-          go test -v -race -cover -tags=debug -coverprofile=attributes.txt -covermode=atomic ./plugins/http/attributes
-          go test -v -race -cover -tags=debug -coverprofile=http_tests.txt -covermode=atomic ./plugins/http/tests
-          go test -v -race -cover -tags=debug -coverprofile=gzip.txt -covermode=atomic ./plugins/gzip/tests
-          go test -v -race -cover -tags=debug -coverprofile=static.txt -covermode=atomic ./plugins/static/tests
-          go test -v -race -cover -tags=debug -coverprofile=static_root.txt -covermode=atomic ./plugins/static
-          go test -v -race -cover -tags=debug -coverprofile=headers.txt -covermode=atomic ./plugins/headers/tests
-          go test -v -race -cover -tags=debug -coverprofile=checker.txt -covermode=atomic ./plugins/checker/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/lib.txt -covermode=atomic .
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/rpc_config.txt -covermode=atomic ./plugins/rpc
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/rpc.txt -covermode=atomic ./plugins/rpc/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/plugin_config.txt -covermode=atomic ./plugins/config/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/logger.txt -covermode=atomic ./plugins/logger/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/server.txt -covermode=atomic ./plugins/server/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/metrics.txt -covermode=atomic ./plugins/metrics/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/informer.txt -covermode=atomic ./plugins/informer/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/resetter.txt -covermode=atomic ./plugins/resetter/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/attributes.txt -covermode=atomic ./plugins/http/attributes
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/http_tests.txt -covermode=atomic ./plugins/http/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/gzip.txt -covermode=atomic ./plugins/gzip/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/static.txt -covermode=atomic ./plugins/static/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/static_root.txt -covermode=atomic ./plugins/static
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/headers.txt -covermode=atomic ./plugins/headers/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/checker.txt -covermode=atomic ./plugins/checker/tests
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
@@ -138,20 +131,20 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
 
-  image:
-    name: Build docker image
-    runs-on: ubuntu-20.04
-    timeout-minutes: 10
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+#   image:
+#     name: Build docker image
+#     runs-on: ubuntu-20.04
+#     timeout-minutes: 10
+#     steps:
+#       - name: Check out code
+#         uses: actions/checkout@v2
 
-      - name: Build image
-        run: docker build -t roadrunner:local -f Dockerfile .
+#       - name: Build image
+#         run: docker build -t roadrunner:local -f Dockerfile .
 
-      - name: Scan image
-        uses: anchore/scan-action@v2 # action page: <https://github.com/anchore/scan-action>
-        with:
-          image: roadrunner:local
-          fail-build: true
-          severity-cutoff: low # negligible, low, medium, high or critical
+#       - name: Scan image
+#         uses: anchore/scan-action@v2 # action page: <https://github.com/anchore/scan-action>
+#         with:
+#           image: roadrunner:local
+#           fail-build: true
+#           severity-cutoff: low # negligible, low, medium, high or critical
