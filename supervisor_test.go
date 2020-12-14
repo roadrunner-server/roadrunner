@@ -142,7 +142,8 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	})
 
 	assert.NoError(t, err)
-	assert.Empty(t, resp)
+	assert.Empty(t, resp.Body)
+	assert.Empty(t, resp.Context)
 
 	time.Sleep(time.Second * 1)
 	// should be the same pid

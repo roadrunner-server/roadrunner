@@ -82,7 +82,7 @@ func Test_StaticPool_Echo(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 	assert.NotNil(t, res.Body)
-	assert.Nil(t, res.Context)
+	assert.Empty(t, res.Context)
 
 	assert.Equal(t, "hello", res.String())
 }
@@ -106,7 +106,7 @@ func Test_StaticPool_Echo_NilContext(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 	assert.NotNil(t, res.Body)
-	assert.Nil(t, res.Context)
+	assert.Empty(t, res.Context)
 
 	assert.Equal(t, "hello", res.String())
 }
@@ -129,7 +129,7 @@ func Test_StaticPool_Echo_Context(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
-	assert.Nil(t, res.Body)
+	assert.Empty(t, res.Body)
 	assert.NotNil(t, res.Context)
 
 	assert.Equal(t, "world", string(res.Context))
@@ -214,7 +214,7 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 	assert.NotNil(t, res.Body)
-	assert.Nil(t, res.Context)
+	assert.Empty(t, res.Context)
 
 	assert.Equal(t, "hello", res.String())
 	assert.Equal(t, runtime.NumCPU(), len(p.Workers()))
@@ -293,7 +293,7 @@ func Test_StaticPool_Replace_Worker(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, res)
 		assert.NotNil(t, res.Body)
-		assert.Nil(t, res.Context)
+		assert.Empty(t, res.Context)
 
 		assert.NotEqual(t, lastPID, string(res.Body))
 		lastPID = string(res.Body)
@@ -332,7 +332,7 @@ func Test_StaticPool_Debug_Worker(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, res)
 		assert.NotNil(t, res.Body)
-		assert.Nil(t, res.Context)
+		assert.Empty(t, res.Context)
 
 		assert.NotEqual(t, lastPID, string(res.Body))
 		lastPID = string(res.Body)
@@ -372,7 +372,7 @@ func Test_StaticPool_Stop_Worker(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, res)
 		assert.NotNil(t, res.Body)
-		assert.Nil(t, res.Context)
+		assert.Empty(t, res.Context)
 
 		assert.NotEqual(t, lastPID, string(res.Body))
 		lastPID = string(res.Body)

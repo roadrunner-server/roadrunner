@@ -163,7 +163,7 @@ func (sp *StaticPool) Exec(p Payload) (Payload, error) {
 
 	// worker want's to be terminated
 	// TODO careful with string(rsp.Context)
-	if rsp.Body == nil && rsp.Context != nil && string(rsp.Context) == StopRequest {
+	if len(rsp.Body) == 0 && string(rsp.Context) == StopRequest {
 		sw.State().Set(StateInvalid)
 		err = sw.Stop(bCtx)
 		if err != nil {

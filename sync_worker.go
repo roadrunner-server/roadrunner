@@ -185,7 +185,6 @@ func (tw *syncWorker) execPayload(p Payload) (Payload, error) {
 	}
 
 	payload := Payload{}
-
 	payload.Context = frameR.Payload()[:options[0]]
 	payload.Body = frameR.Payload()[options[0]:]
 
