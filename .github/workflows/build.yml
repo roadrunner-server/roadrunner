@@ -30,6 +30,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get Composer Cache Directory
+        if: ${{ matrix.os }} == 'ubuntu-latest'
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
