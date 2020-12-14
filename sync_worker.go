@@ -1,6 +1,7 @@
 package roadrunner
 
 import (
+	"bytes"
 	"context"
 	"time"
 
@@ -8,7 +9,7 @@ import (
 	"github.com/spiral/roadrunner/v2/util"
 	"go.uber.org/multierr"
 
-	"github.com/spiral/goridge/v2"
+	"github.com/spiral/goridge/v3"
 )
 
 var EmptyPayload = Payload{}
@@ -134,37 +135,61 @@ func (tw *syncWorker) ExecWithContext(ctx context.Context, p Payload) (Payload, 
 
 func (tw *syncWorker) execPayload(p Payload) (Payload, error) {
 	const op = errors.Op("exec payload")
-	// two things; todo: merge
-	if err := sendControl(tw.w.Relay(), p.Context); err != nil {
-		return EmptyPayload, errors.E(op, err, "header error")
+
+	frame := goridge.NewFrame()
+	frame.WriteVersion(goridge.VERSION_1)
+	// can be 0 here
+
+	buf := new(bytes.Buffer)
+	buf.Write(p.Context)
+	buf.Write(p.Body)
+
+	// Context offset
+	frame.WriteOptions(uint32(len(p.Context)))
+	frame.WritePayloadLen(uint32(buf.Len()))
+	frame.WritePayload(buf.Bytes())
+
+	frame.WriteCRC()
+
+	// empty and free the buffer
+	buf.Truncate(0)
+
+	err := tw.Relay().Send(frame)
+	if err != nil {
+		return EmptyPayload, err
 	}
 
-	if err := tw.w.Relay().Send(p.Body, 0); err != nil {
-		return EmptyPayload, errors.E(op, err, "sender error")
+	frameR := goridge.NewFrame()
+
+	err = tw.w.Relay().Receive(frameR)
+	if err != nil {
+		return EmptyPayload, errors.E(op, err)
+	}
+	if frameR == nil {
+		return EmptyPayload, errors.E(op, errors.Str("nil frame received"))
 	}
 
-	var pr goridge.Prefix
-	rsp := Payload{}
-
-	var err error
-	if rsp.Context, pr, err = tw.w.Relay().Receive(); err != nil {
-		return EmptyPayload, errors.E(op, err, "WorkerProcess error")
+	if !frameR.VerifyCRC() {
+		return EmptyPayload, errors.E(op, errors.Str("failed to verify CRC"))
 	}
 
-	if !pr.HasFlag(goridge.PayloadControl) {
-		return EmptyPayload, errors.E(op, errors.Str("malformed WorkerProcess response"))
+	flags := frameR.ReadFlags()
+
+	if flags&byte(goridge.ERROR) != byte(0) {
+		return EmptyPayload, errors.E(op, errors.ErrSoftJob, errors.Str(string(frameR.Payload())))
 	}
 
-	if pr.HasFlag(goridge.PayloadError) {
-		return EmptyPayload, errors.E(op, errors.ErrSoftJob, errors.Str(string(rsp.Context)))
+	options := frameR.ReadOptions()
+	if len(options) != 1 {
+		return EmptyPayload, errors.E(op, errors.Str("options length should be equal 1 (body offset)"))
 	}
 
-	// add streaming support :)
-	if rsp.Body, pr, err = tw.w.Relay().Receive(); err != nil {
-		return EmptyPayload, errors.E(op, err, "WorkerProcess error")
-	}
+	payload := Payload{}
 
-	return rsp, nil
+	payload.Context = frameR.Payload()[:options[0]]
+	payload.Body = frameR.Payload()[options[0]:]
+
+	return payload, nil
 }
 
 func (tw *syncWorker) String() string {

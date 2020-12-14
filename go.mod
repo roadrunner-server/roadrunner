@@ -4,21 +4,19 @@ go 1.15
 
 require (
 	github.com/NYTimes/gziphandler v1.1.1
+	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/fatih/color v1.10.0
+	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/gofiber/fiber/v2 v2.2.3
 	github.com/golang/mock v1.4.4
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/json-iterator/go v1.1.10
-	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.8.0
 	github.com/shirou/gopsutil v3.20.11+incompatible
-	github.com/sirupsen/logrus v1.6.0
-	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.7.1
 	github.com/spiral/endure v1.0.0-beta20
 	github.com/spiral/errors v1.0.5
-	github.com/spiral/goridge/v2 v2.4.6
-	github.com/spiral/roadrunner v1.9.0
+	github.com/spiral/goridge/v3 v3.0.0-beta6
 	github.com/stretchr/testify v1.6.1
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/yookoala/gofast v0.4.0

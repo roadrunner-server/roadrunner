@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/spiral/endure"
-	"github.com/spiral/goridge/v2"
+	"github.com/spiral/goridge/v3"
 	"github.com/spiral/roadrunner/v2/interfaces/status"
 	"github.com/spiral/roadrunner/v2/plugins/checker"
 	"github.com/spiral/roadrunner/v2/plugins/config"

@@ -5,7 +5,7 @@ import (
 
 	j "github.com/json-iterator/go"
 	"github.com/spiral/errors"
-	"github.com/spiral/goridge/v2"
+	"github.com/spiral/goridge/v3"
 )
 
 var json = j.ConfigCompatibleWithStandardLibrary
@@ -19,9 +19,22 @@ type pidCommand struct {
 }
 
 func sendControl(rl goridge.Relay, v interface{}) error {
-	const op = errors.Op("send control")
+	const op = errors.Op("send control frame")
+	frame := goridge.NewFrame()
+	frame.WriteVersion(goridge.VERSION_1)
+	frame.WriteFlags(goridge.CONTROL)
+
 	if data, ok := v.([]byte); ok {
-		err := rl.Send(data, goridge.PayloadControl|goridge.PayloadRaw)
+		// check if payload no more that 4Gb
+		if uint32(len(data)) > ^uint32(0) {
+			return errors.E(op, errors.Str("payload is more that 4gb"))
+		}
+
+		frame.WritePayloadLen(uint32(len(data)))
+		frame.WritePayload(data)
+		frame.WriteCRC()
+
+		err := rl.Send(frame)
 		if err != nil {
 			return errors.E(op, err)
 		}
@@ -33,7 +46,16 @@ func sendControl(rl goridge.Relay, v interface{}) error {
 		return errors.E(op, errors.Errorf("invalid payload: %s", err))
 	}
 
-	return rl.Send(data, goridge.PayloadControl)
+	frame.WritePayloadLen(uint32(len(data)))
+	frame.WritePayload(data)
+	frame.WriteCRC()
+
+	err = rl.Send(frame)
+	if err != nil {
+		return errors.E(op, err)
+	}
+
+	return nil
 }
 
 func fetchPID(rl goridge.Relay) (int64, error) {
@@ -43,16 +65,26 @@ func fetchPID(rl goridge.Relay) (int64, error) {
 		return 0, errors.E(op, err)
 	}
 
-	body, p, err := rl.Receive()
+	frameR := goridge.NewFrame()
+	err = rl.Receive(frameR)
+	if !frameR.VerifyCRC() {
+		return 0, errors.E(op, errors.Str("CRC mismatch"))
+	}
 	if err != nil {
 		return 0, errors.E(op, err)
 	}
-	if !p.HasFlag(goridge.PayloadControl) {
-		return 0, errors.E(op, errors.Str("unexpected response, header is missing"))
+	if frameR == nil {
+		return 0, errors.E(op, errors.Str("nil frame received"))
+	}
+
+	flags := frameR.ReadFlags()
+
+	if flags&(byte(goridge.CONTROL)) == 0 {
+		return 0, errors.E(op, errors.Str("unexpected response, header is missing, no CONTROL flag"))
 	}
 
 	link := &pidCommand{}
-	err = json.Unmarshal(body, link)
+	err = json.Unmarshal(frameR.Payload(), link)
 	if err != nil {
 		return 0, errors.E(op, err)
 	}

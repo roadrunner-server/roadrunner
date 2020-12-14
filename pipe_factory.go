@@ -5,7 +5,7 @@ import (
 	"os/exec"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/goridge/v2"
+	"github.com/spiral/goridge/v3"
 	"go.uber.org/multierr"
 )
 

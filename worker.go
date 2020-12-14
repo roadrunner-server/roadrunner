@@ -14,7 +14,7 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/util"
 
-	"github.com/spiral/goridge/v2"
+	"github.com/spiral/goridge/v3"
 	"go.uber.org/multierr"
 )
 
