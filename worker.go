@@ -18,14 +18,6 @@ import (
 	"go.uber.org/multierr"
 )
 
-// #include <stdio.h>
-// #include <errno.h>
-import "C"
-
-func init() {
-	C.setvbuf(C.stderr, nil, C._IONBF, 0)
-}
-
 const (
 	// WaitDuration - for how long error buffer should attempt to aggregate error messages
 	// before merging output together since lastError update (required to keep error update together).
