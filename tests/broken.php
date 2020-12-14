@@ -8,7 +8,7 @@ use Spiral\RoadRunner;
 
 $rr = new RoadRunner\Worker($relay);
 
-while ($in = $rr->receive($ctx)) {
+while ($in = $rr->waitPayload()) {
     echo undefined_function();
-    $rr->send((string)$in);
+    $rr->send((string)$in->body, null);
 }

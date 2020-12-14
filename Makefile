@@ -24,7 +24,6 @@ uninstall: ## Uninstall locally installed RR
 	rm -f /usr/local/bin/rr
 
 test: ## Run application tests
-	test -d ./vendor_php || composer update --prefer-dist --ansi
 	go test -v -race -cover
 	go test -v -race -cover ./util
 	go test -v -race -cover ./service

@@ -8,7 +8,7 @@
 
  $rr = new RoadRunner\Worker($relay);
 
- while ($in = $rr->receive($ctx)) {
+ while ($in = $rr->waitPayload()) {
      try {
          $rr->send((string)getmypid());
      } catch (\Throwable $e) {

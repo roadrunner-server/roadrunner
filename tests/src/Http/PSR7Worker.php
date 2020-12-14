@@ -7,7 +7,7 @@
  */
 declare(strict_types=1);
 
-namespace Spiral\RoadRunner;
+namespace Spiral\RoadRunner\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
@@ -15,100 +15,64 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use Spiral\RoadRunner\WorkerInterface;
 
 /**
  * Manages PSR-7 request and response.
  */
-class PSR7Client
+class PSR7Worker
 {
-    /** @var HttpClient */
-    private $httpClient;
-
-    /** @var ServerRequestFactoryInterface */
-    private $requestFactory;
-
-    /** @var StreamFactoryInterface */
-    private $streamFactory;
-
-    /** @var UploadedFileFactoryInterface */
-    private $uploadsFactory;
+    private HttpWorker                    $httpWorker;
+    private ServerRequestFactoryInterface $requestFactory;
+    private StreamFactoryInterface        $streamFactory;
+    private UploadedFileFactoryInterface  $uploadsFactory;
 
     /** @var mixed[] */
-    private $originalServer = [];
+    private array $originalServer = [];
 
     /** @var string[] Valid values for HTTP protocol version */
-    private static $allowedVersions = ['1.0', '1.1', '2',];
+    private static array $allowedVersions = ['1.0', '1.1', '2',];
 
     /**
-     * @param Worker                             $worker
-     * @param ServerRequestFactoryInterface|null $requestFactory
-     * @param StreamFactoryInterface|null        $streamFactory
-     * @param UploadedFileFactoryInterface|null  $uploadsFactory
+     * @param WorkerInterface               $worker
+     * @param ServerRequestFactoryInterface $requestFactory
+     * @param StreamFactoryInterface        $streamFactory
+     * @param UploadedFileFactoryInterface  $uploadsFactory
      */
     public function __construct(
-        Worker $worker,
-        ServerRequestFactoryInterface $requestFactory = null,
-        StreamFactoryInterface $streamFactory = null,
-        UploadedFileFactoryInterface $uploadsFactory = null
+        WorkerInterface $worker,
+        ServerRequestFactoryInterface $requestFactory,
+        StreamFactoryInterface $streamFactory,
+        UploadedFileFactoryInterface $uploadsFactory
     ) {
-        $this->httpClient = new HttpClient($worker);
-        $this->requestFactory = $requestFactory ?? new Diactoros\ServerRequestFactory();
-        $this->streamFactory = $streamFactory ?? new Diactoros\StreamFactory();
-        $this->uploadsFactory = $uploadsFactory ?? new Diactoros\UploadedFileFactory();
+        $this->httpWorker = new HttpWorker($worker);
+        $this->requestFactory = $requestFactory;
+        $this->streamFactory = $streamFactory;
+        $this->uploadsFactory = $uploadsFactory;
         $this->originalServer = $_SERVER;
     }
 
     /**
-     * @return Worker
+     * @return WorkerInterface
      */
-    public function getWorker(): Worker
+    public function getWorker(): WorkerInterface
     {
-        return $this->httpClient->getWorker();
+        return $this->httpWorker->getWorker();
     }
 
     /**
      * @return ServerRequestInterface|null
      */
-    public function acceptRequest(): ?ServerRequestInterface
+    public function waitRequest(): ?ServerRequestInterface
     {
-        $rawRequest = $this->httpClient->acceptRequest();
-        if ($rawRequest === null) {
+        $httpRequest = $this->httpWorker->waitRequest();
+        if ($httpRequest === null) {
             return null;
         }
 
-        $_SERVER = $this->configureServer($rawRequest['ctx']);
+        $_SERVER = $this->configureServer($httpRequest['ctx']);
 
-        $request = $this->requestFactory->createServerRequest(
-            $rawRequest['ctx']['method'],
-            $rawRequest['ctx']['uri'],
-            $_SERVER
-        );
-
-        parse_str($rawRequest['ctx']['rawQuery'], $query);
-
-        $request = $request
-            ->withProtocolVersion(static::fetchProtocolVersion($rawRequest['ctx']['protocol']))
-            ->withCookieParams($rawRequest['ctx']['cookies'])
-            ->withQueryParams($query)
-            ->withUploadedFiles($this->wrapUploads($rawRequest['ctx']['uploads']));
-
-        foreach ($rawRequest['ctx']['attributes'] as $name => $value) {
-            $request = $request->withAttribute($name, $value);
-        }
-
-        foreach ($rawRequest['ctx']['headers'] as $name => $value) {
-            $request = $request->withHeader($name, $value);
-        }
-
-        if ($rawRequest['ctx']['parsed']) {
-            return $request->withParsedBody(json_decode($rawRequest['body'], true));
-        }
-
-        if ($rawRequest['body'] !== null) {
-            return $request->withBody($this->streamFactory->createStream($rawRequest['body']));
-        }
-
-        return $request;
+        return $this->mapRequest($httpRequest, $_SERVER);
     }
 
     /**
@@ -118,7 +82,7 @@ class PSR7Client
      */
     public function respond(ResponseInterface $response): void
     {
-        $this->httpClient->respond(
+        $this->httpWorker->respond(
             $response->getStatusCode(),
             $response->getBody()->__toString(),
             $response->getHeaders()
@@ -129,21 +93,21 @@ class PSR7Client
      * Returns altered copy of _SERVER variable. Sets ip-address,
      * request-time and other values.
      *
-     * @param mixed[] $ctx
+     * @param Request $request
      * @return mixed[]
      */
-    protected function configureServer(array $ctx): array
+    protected function configureServer(Request $request): array
     {
         $server = $this->originalServer;
 
-        $server['REQUEST_URI'] = $ctx['uri'];
+        $server['REQUEST_URI'] = $request->uri;
         $server['REQUEST_TIME'] = time();
         $server['REQUEST_TIME_FLOAT'] = microtime(true);
-        $server['REMOTE_ADDR'] = $ctx['attributes']['ipAddress'] ?? $ctx['remoteAddr'] ?? '127.0.0.1';
-        $server['REQUEST_METHOD'] = $ctx['method'];
+        $server['REMOTE_ADDR'] = $request->getRemoteAddr();
+        $server['REQUEST_METHOD'] = $request->method;
 
         $server['HTTP_USER_AGENT'] = '';
-        foreach ($ctx['headers'] as $key => $value) {
+        foreach ($request->headers as $key => $value) {
             $key = strtoupper(str_replace('-', '_', $key));
             if (\in_array($key, ['CONTENT_TYPE', 'CONTENT_LENGTH'])) {
                 $server[$key] = implode(', ', $value);
@@ -156,18 +120,51 @@ class PSR7Client
     }
 
     /**
+     * @param Request $httpRequest
+     * @param array   $server
+     * @return ServerRequestInterface
+     */
+    protected function mapRequest(Request $httpRequest, array $server): ServerRequestInterface
+    {
+        $request = $this->requestFactory->createServerRequest(
+            $httpRequest->method,
+            $httpRequest->uri,
+            $_SERVER
+        );
+
+        $request = $request
+            ->withProtocolVersion(static::fetchProtocolVersion($httpRequest->protocol))
+            ->withCookieParams($httpRequest->cookies)
+            ->withQueryParams($httpRequest->query)
+            ->withUploadedFiles($this->wrapUploads($httpRequest->uploads));
+
+        foreach ($httpRequest->attributes as $name => $value) {
+            $request = $request->withAttribute($name, $value);
+        }
+
+        foreach ($httpRequest->headers as $name => $value) {
+            $request = $request->withHeader($name, $value);
+        }
+
+        if ($httpRequest->parsed) {
+            return $request->withParsedBody($httpRequest->getParsedBody());
+        }
+
+        if ($httpRequest->body !== null) {
+            return $request->withBody($this->streamFactory->createStream($httpRequest->body));
+        }
+
+        return $request;
+    }
+
+    /**
      * Wraps all uploaded files with UploadedFile.
      *
      * @param array[] $files
-     *
      * @return UploadedFileInterface[]|mixed[]
      */
-    private function wrapUploads($files): array
+    protected function wrapUploads(array $files): array
     {
-        if (empty($files)) {
-            return [];
-        }
-
         $result = [];
         foreach ($files as $index => $f) {
             if (!isset($f['name'])) {
