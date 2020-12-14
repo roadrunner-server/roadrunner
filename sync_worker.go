@@ -135,6 +135,7 @@ func (tw *syncWorker) ExecWithContext(ctx context.Context, p Payload) (Payload, 
 func (tw *syncWorker) execPayload(p Payload) (Payload, error) {
 	const op = errors.Op("exec payload")
 	// two things; todo: merge
+	// NO CONTROL HERE
 	if err := sendControl(tw.w.Relay(), p.Context); err != nil {
 		return EmptyPayload, errors.E(op, err, "header error")
 	}
