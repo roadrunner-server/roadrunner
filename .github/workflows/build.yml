@@ -6,7 +6,7 @@ on:
 
 jobs:
   golang:
-    name: Build (Go ${{ matrix.go }}, PHP ${{ matrix.php }})
+    name: Build (Go ${{ matrix.go }}, PHP ${{ matrix.php }}, OS ${{matrix.os}})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     strategy:
