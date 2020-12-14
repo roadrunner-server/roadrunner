@@ -70,7 +70,7 @@ class PSR7Worker
             return null;
         }
 
-        $_SERVER = $this->configureServer($httpRequest['ctx']);
+        $_SERVER = $this->configureServer($httpRequest);
 
         return $this->mapRequest($httpRequest, $_SERVER);
     }

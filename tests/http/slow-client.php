@@ -4,13 +4,13 @@ use Spiral\Goridge;
 use Spiral\RoadRunner;
 
 ini_set('display_errors', 'stderr');
-require dirname(__DIR__) . "/../vendor_php/autoload.php";
+require dirname(__DIR__) . "/vendor/autoload.php";
 
 if (count($argv) < 3) {
     die("need 2 arguments");
 }
 
-list($test, $goridge, $bootDelay) = [$argv[1], $argv[2], $argv[3]];
+[$test, $goridge, $bootDelay] = [$argv[1], $argv[2], $argv[3]];
 usleep($bootDelay * 1000);
 
 switch ($goridge) {
@@ -34,13 +34,19 @@ switch ($goridge) {
         die("invalid protocol selection");
 }
 
-$psr7 = new RoadRunner\PSR7Client(new RoadRunner\Worker($relay));
+$psr7 = new RoadRunner\Http\PSR7Worker(
+    new RoadRunner\Worker($relay),
+    new \Nyholm\Psr7\Factory\Psr17Factory(),
+    new \Nyholm\Psr7\Factory\Psr17Factory(),
+    new \Nyholm\Psr7\Factory\Psr17Factory()
+);
+
 require_once sprintf("%s/%s.php", __DIR__, $test);
 
-while ($req = $psr7->acceptRequest()) {
+while ($req = $psr7->waitRequest()) {
     try {
-        $psr7->respond(handleRequest($req, new \Zend\Diactoros\Response()));
+        $psr7->respond(handleRequest($req, new \Nyholm\Psr7\Response()));
     } catch (\Throwable $e) {
-        $psr7->getWorker()->error((string)$e);
+        $psr7->getWorker()->error((string) $e);
     }
 }

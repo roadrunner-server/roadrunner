@@ -91,10 +91,12 @@ class HttpWorker
         $request->protocol = $context['protocol'];
         $request->method = $context['method'];
         $request->uri = $context['uri'];
-        $request->attributes = $context['attributes'];
+        $request->attributes = $context['attributes'] ?? [];
         $request->headers = $context['headers'];
-        $request->cookies = $context['cookies'];
-        $request->uploads = $context['uploads'];
+        $request->cookies = $context['cookies'] ?? [];
+        $request->uploads = $context['uploads'] ?? [];
+
+        $request->query = [];
         parse_str($context['rawQuery'], $request->query);
 
         // indicates that body was parsed
