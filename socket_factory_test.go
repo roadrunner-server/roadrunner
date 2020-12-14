@@ -2,6 +2,7 @@ package roadrunner
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"os/exec"
 	"sync"
@@ -208,6 +209,12 @@ func Test_Tcp_Broken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	sw.AddListener(func(event interface{}) {
+		if ev, ok := event.(WorkerEvent); ok {
+			fmt.Println(string(ev.Payload.([]byte)))
+		}
+	})
 
 	res, err := sw.Exec(Payload{Body: []byte("hello")})
 	assert.Error(t, err)
