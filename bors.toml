@@ -1,10 +1,4 @@
 status = [
-'Build (PHP 7.3, basic setup)',
-'Build (PHP 7.3, lowest setup)',
-'Build (PHP 8.0, basic setup)',
-'Build (PHP 8.0, lowest setup)',
-'Build (Go 1.14, PHP 7.3)',
-'Build (Go 1.15, PHP 7.3)',
 'Build (Go 1.14, PHP 7.4)',
 'Build (Go 1.15, PHP 7.4)',
 'Build (Go 1.14, PHP 8.0)',
