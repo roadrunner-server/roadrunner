@@ -25,6 +25,7 @@ jobs:
         uses: shivammathur/setup-php@v2 # action page: <https://github.com/shivammathur/setup-php>
         with:
           php-version: ${{ matrix.php }}
+          extensions: sockets
 
       - name: Check out code
         uses: actions/checkout@v2
