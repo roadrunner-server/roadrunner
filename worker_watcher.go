@@ -11,27 +11,31 @@ import (
 )
 
 type Stack struct {
-	workers []WorkerBase
-	mutex   sync.RWMutex
-	destroy bool
+	workers            []WorkerBase
+	mutex              sync.RWMutex
+	destroy            bool
+	actualNumOfWorkers int64
 }
 
 func NewWorkersStack() *Stack {
+	w := runtime.NumCPU()
 	return &Stack{
-		workers: make([]WorkerBase, 0, runtime.NumCPU()),
+		workers:            make([]WorkerBase, 0, w),
+		actualNumOfWorkers: 0,
 	}
 }
 
 func (stack *Stack) Reset() {
 	stack.mutex.Lock()
 	defer stack.mutex.Unlock()
-
+	stack.actualNumOfWorkers = 0
 	stack.workers = nil
 }
 
 func (stack *Stack) Push(w WorkerBase) {
 	stack.mutex.Lock()
 	defer stack.mutex.Unlock()
+	stack.actualNumOfWorkers++
 	stack.workers = append(stack.workers, w)
 }
 
@@ -56,8 +60,58 @@ func (stack *Stack) Pop() (WorkerBase, bool) {
 
 	w := stack.workers[len(stack.workers)-1]
 	stack.workers = stack.workers[:len(stack.workers)-1]
-
+	stack.actualNumOfWorkers--
 	return w, false
+}
+
+func (stack *Stack) FindAndRemoveByPid(pid int64) bool {
+	stack.mutex.Lock()
+	defer stack.mutex.Unlock()
+	for i := 0; i < len(stack.workers); i++ {
+		// worker in the stack, reallocating
+		if stack.workers[i].Pid() == pid {
+			stack.workers = append(stack.workers[:i], stack.workers[i+1:]...)
+			stack.actualNumOfWorkers--
+			// worker found and removed
+			return true
+		}
+	}
+	// no worker with such ID
+	return false
+}
+
+// we also have to give a chance to pool to Push worker (return it)
+func (stack *Stack) Destroy(ctx context.Context) {
+	stack.mutex.Lock()
+	stack.destroy = true
+	stack.mutex.Unlock()
+
+	tt := time.NewTicker(time.Millisecond * 100)
+	for {
+		select {
+		case <-tt.C:
+			stack.mutex.Lock()
+			// that might be one of the workers is working
+			if len(stack.workers) != int(stack.actualNumOfWorkers) {
+				stack.mutex.Unlock()
+				continue
+			}
+			stack.mutex.Unlock()
+			// unnecessary mutex, but
+			// just to make sure. All stack at this moment are in the stack
+			// Pop operation is blocked, push can't be done, since it's not possible to pop
+			stack.mutex.Lock()
+			for i := 0; i < len(stack.workers); i++ {
+				// set state for the stack in the stack (unused at the moment)
+				stack.workers[i].State().Set(StateDestroyed)
+			}
+			stack.mutex.Unlock()
+			tt.Stop()
+			// clear
+			stack.Reset()
+			return
+		}
+	}
 }
 
 type WorkerWatcher interface {
@@ -151,7 +205,7 @@ func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (WorkerBase, error) 
 				if w == nil {
 					continue
 				}
-				ww.ReduceWorkersCount()
+				//ww.ReduceWorkersCount()
 				return w, nil
 			case <-ctx.Done():
 				return nil, errors.E(op, errors.NoFreeWorkers, errors.Str("no free workers in the stack, timeout exceed"))
@@ -159,7 +213,7 @@ func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (WorkerBase, error) 
 		}
 	}
 
-	ww.ReduceWorkersCount()
+	//ww.ReduceWorkersCount()
 	return w, nil
 }
 
@@ -184,78 +238,38 @@ func (ww *workerWatcher) AllocateNew() error {
 }
 
 func (ww *workerWatcher) RemoveWorker(wb WorkerBase) error {
-	ww.stack.mutex.Lock()
-	const op = errors.Op("remove worker")
-	defer ww.stack.mutex.Unlock()
-	pid := wb.Pid()
-	for i := 0; i < len(ww.stack.workers); i++ {
-		if ww.stack.workers[i].Pid() == pid {
-			// found in the stack
-			// remove worker
-			ww.stack.workers = append(ww.stack.workers[:i], ww.stack.workers[i+1:]...)
-			ww.ReduceWorkersCount()
+	ww.mutex.Lock()
+	defer ww.mutex.Unlock()
 
-			wb.State().Set(StateInvalid)
-			err := wb.Kill()
-			if err != nil {
-				return errors.E(op, err)
-			}
-			break
+	const op = errors.Op("remove worker")
+	pid := wb.Pid()
+
+	if ww.stack.FindAndRemoveByPid(pid) {
+		wb.State().Set(StateInvalid)
+		err := wb.Kill()
+		if err != nil {
+			return errors.E(op, err)
 		}
+		return nil
 	}
-	// worker currently handle request, set state Remove
+
 	wb.State().Set(StateRemove)
 	return nil
+
 }
 
 // O(1) operation
 func (ww *workerWatcher) PushWorker(w WorkerBase) {
-	ww.IncreaseWorkersCount()
+	//ww.IncreaseWorkersCount()
+	ww.mutex.Lock()
+	defer ww.mutex.Unlock()
 	ww.stack.Push(w)
-}
-
-func (ww *workerWatcher) ReduceWorkersCount() {
-	ww.mutex.Lock()
-	ww.actualNumWorkers--
-	ww.mutex.Unlock()
-}
-func (ww *workerWatcher) IncreaseWorkersCount() {
-	ww.mutex.Lock()
-	ww.actualNumWorkers++
-	ww.mutex.Unlock()
 }
 
 // Destroy all underlying stack (but let them to complete the task)
 func (ww *workerWatcher) Destroy(ctx context.Context) {
-	ww.stack.mutex.Lock()
-	ww.stack.destroy = true
-	ww.stack.mutex.Unlock()
-
-	tt := time.NewTicker(time.Millisecond * 100)
-	for {
-		select {
-		case <-tt.C:
-			ww.stack.mutex.Lock()
-			if len(ww.stack.workers) != int(ww.actualNumWorkers) {
-				ww.stack.mutex.Unlock()
-				continue
-			}
-			ww.stack.mutex.Unlock()
-			// unnecessary mutex, but
-			// just to make sure. All stack at this moment are in the stack
-			// Pop operation is blocked, push can't be done, since it's not possible to pop
-			ww.stack.mutex.Lock()
-			for i := 0; i < len(ww.stack.workers); i++ {
-				// set state for the stack in the stack (unused at the moment)
-				ww.stack.workers[i].State().Set(StateDestroyed)
-			}
-			ww.stack.mutex.Unlock()
-			tt.Stop()
-			// clear
-			ww.stack.Reset()
-			return
-		}
-	}
+	// destroy stack
+	ww.stack.Destroy(ctx)
 }
 
 // Warning, this is O(n) operation, and it will return copy of the actual workers
@@ -287,37 +301,13 @@ func (ww *workerWatcher) wait(w WorkerBase) {
 		return
 	}
 
-	pid := w.Pid()
-	ww.stack.mutex.Lock()
-	for i := 0; i < len(ww.stack.workers); i++ {
-		// worker in the stack, reallocating
-		if ww.stack.workers[i].Pid() == pid {
-			ww.stack.workers = append(ww.stack.workers[:i], ww.stack.workers[i+1:]...)
-			ww.ReduceWorkersCount()
-			ww.stack.mutex.Unlock()
-
-			err = ww.AllocateNew()
-			if err != nil {
-				ww.events.Push(PoolEvent{
-					Event:   EventPoolError,
-					Payload: errors.E(op, err),
-				})
-			}
-
-			return
-		}
-	}
-
-	ww.stack.mutex.Unlock()
-
-	// worker not in the stack (not returned), forget and allocate new
+	_ = ww.stack.FindAndRemoveByPid(w.Pid())
 	err = ww.AllocateNew()
 	if err != nil {
 		ww.events.Push(PoolEvent{
 			Event:   EventPoolError,
 			Payload: errors.E(op, err),
 		})
-		return
 	}
 }
 

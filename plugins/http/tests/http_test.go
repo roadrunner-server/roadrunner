@@ -334,7 +334,7 @@ func sslEcho(t *testing.T) {
 }
 
 func fcgiEcho(t *testing.T) {
-	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "0.0.0.0:6920")
+	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "0.0.0.0:16920")
 
 	fcgiHandler := gofast.NewHandler(
 		gofast.BasicParamsMap(gofast.BasicSession),
