@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/goridge/v2"
+	"github.com/spiral/goridge/v3"
 )
 
 // plugin2 makes a call to the plugin1 via RPC

@@ -6,7 +6,7 @@
 use Spiral\Goridge;
 use Spiral\RoadRunner;
 
-require dirname(__DIR__) . "/../../vendor_php/autoload.php";
+require dirname(__DIR__) . "/../../tests/vendor/autoload.php";
 
 $relay = new Goridge\SocketRelay(
             "unix.sock",
@@ -16,9 +16,9 @@ $relay = new Goridge\SocketRelay(
 
 $rr = new RoadRunner\Worker($relay);
 
-while ($in = $rr->receive($ctx)) {
+while ($in = $rr->waitPayload()) {
     try {
-        $rr->send((string)$in);
+        $rr->send((string)$in->body);
     } catch (\Throwable $e) {
         $rr->error((string)$e);
     }

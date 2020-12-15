@@ -3,7 +3,7 @@
 use Spiral\Goridge;
 
 ini_set('display_errors', 'stderr');
-require dirname(__DIR__) . "/vendor_php/autoload.php";
+require __DIR__ . "/vendor/autoload.php";
 
 if (count($argv) < 3) {
     die("need 2 arguments");

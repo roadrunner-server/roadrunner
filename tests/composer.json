@@ -1,0 +1,12 @@
+{
+  "minimum-stability": "beta",
+  "require": {
+    "nyholm/psr7": "^1.3",
+    "spiral/goridge": "^3.0@beta"
+  },
+  "autoload": {
+    "psr-4": {
+      "Spiral\\RoadRunner\\": "src/"
+    }
+  }
+}

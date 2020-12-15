@@ -105,7 +105,7 @@ func Test_Pipe_Echo(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 	assert.NotNil(t, res.Body)
-	assert.Nil(t, res.Context)
+	assert.Empty(t, res.Context)
 
 	assert.Equal(t, "hello", res.String())
 }

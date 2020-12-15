@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/spiral/endure"
-	"github.com/spiral/goridge/v2"
+	"github.com/spiral/goridge/v3"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
@@ -19,7 +19,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestInformerInit(t *testing.T) {
+func TestResetterInit(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
 	if err != nil {
 		t.Fatal(err)
@@ -53,7 +53,7 @@ func TestInformerInit(t *testing.T) {
 
 	tt := time.NewTimer(time.Second * 15)
 
-	t.Run("InformerRpcTest", resetterRPCTest)
+	t.Run("ResetterRpcTest", resetterRPCTest)
 
 	for {
 		select {
@@ -94,6 +94,7 @@ func resetterRPCTest(t *testing.T) {
 
 	var services []string
 	err = client.Call("resetter.List", nil, &services)
+	assert.NotNil(t, services)
 	assert.NoError(t, err)
 	if services[0] != "resetter.plugin1" {
 		t.Fatal("no enough services")

@@ -1,5 +1,5 @@
 server:
-  command: "php psr-worker.php"
+  command: "php ../../../tests/psr-worker.php"
   user: ""
   group: ""
   env:

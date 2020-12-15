@@ -10,7 +10,7 @@ import (
 	"github.com/shirou/gopsutil/process"
 	"github.com/spiral/errors"
 
-	"github.com/spiral/goridge/v2"
+	"github.com/spiral/goridge/v3"
 	"go.uber.org/multierr"
 	"golang.org/x/sync/errgroup"
 )
@@ -215,7 +215,7 @@ func (f *SocketFactory) findRelay(w WorkerBase) (*goridge.SocketRelay, error) {
 }
 
 // chan to store relay associated with specific pid
-func (f *SocketFactory) attachRelayToPid(pid int64, relay *goridge.SocketRelay) {
+func (f *SocketFactory) attachRelayToPid(pid int64, relay goridge.Relay) {
 	f.relays.Store(pid, relay)
 }
 
