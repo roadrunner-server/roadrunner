@@ -26,12 +26,12 @@ func ExecuteFromUser(cmd *exec.Cmd, u string) error {
 		return errors.E(op, err)
 	}
 
-	usrI32, err := strconv.Atoi(usr.Uid)
+	usrI32, err := strconv.ParseInt(usr.Uid, 10, 32)
 	if err != nil {
 		return errors.E(op, err)
 	}
 
-	grI32, err := strconv.Atoi(usr.Gid)
+	grI32, err := strconv.ParseInt(usr.Gid, 10, 32)
 	if err != nil {
 		return errors.E(op, err)
 	}
