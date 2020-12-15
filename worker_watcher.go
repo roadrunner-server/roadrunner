@@ -80,6 +80,25 @@ func (stack *Stack) FindAndRemoveByPid(pid int64) bool {
 	return false
 }
 
+func (stack *Stack) Workers() []WorkerBase {
+	stack.mutex.Lock()
+	defer stack.mutex.Unlock()
+	workersCopy := make([]WorkerBase, 0, 1)
+	// copy
+	for _, v := range stack.workers {
+		sw := v.(SyncWorker)
+		workersCopy = append(workersCopy, sw)
+	}
+
+	return workersCopy
+}
+
+func (stack *Stack) isDestroying() bool {
+	stack.mutex.Lock()
+	defer stack.mutex.Unlock()
+	return stack.destroy
+}
+
 // we also have to give a chance to pool to Push worker (return it)
 func (stack *Stack) Destroy(ctx context.Context) {
 	stack.mutex.Lock()
@@ -260,7 +279,6 @@ func (ww *workerWatcher) RemoveWorker(wb WorkerBase) error {
 
 // O(1) operation
 func (ww *workerWatcher) PushWorker(w WorkerBase) {
-	//ww.IncreaseWorkersCount()
 	ww.mutex.Lock()
 	defer ww.mutex.Unlock()
 	ww.stack.Push(w)
@@ -268,21 +286,13 @@ func (ww *workerWatcher) PushWorker(w WorkerBase) {
 
 // Destroy all underlying stack (but let them to complete the task)
 func (ww *workerWatcher) Destroy(ctx context.Context) {
-	// destroy stack
+	// destroy stack, we don't use ww mutex here, since we should be able to push worker
 	ww.stack.Destroy(ctx)
 }
 
 // Warning, this is O(n) operation, and it will return copy of the actual workers
 func (ww *workerWatcher) WorkersList() []WorkerBase {
-	ww.stack.mutex.Lock()
-	defer ww.stack.mutex.Unlock()
-	workersCopy := make([]WorkerBase, 0, 1)
-	for _, v := range ww.stack.workers {
-		sw := v.(SyncWorker)
-		workersCopy = append(workersCopy, sw)
-	}
-
-	return workersCopy
+	return ww.stack.Workers()
 }
 
 func (ww *workerWatcher) wait(w WorkerBase) {
