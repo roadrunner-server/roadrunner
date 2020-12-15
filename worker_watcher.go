@@ -32,6 +32,8 @@ func (stack *Stack) Reset() {
 	stack.workers = nil
 }
 
+// Push worker back to the stack
+// If stack in destroy state, Push will provide 100ms window to unlock the mutex
 func (stack *Stack) Push(w WorkerBase) {
 	stack.mutex.Lock()
 	defer stack.mutex.Unlock()
@@ -42,13 +44,13 @@ func (stack *Stack) Push(w WorkerBase) {
 func (stack *Stack) IsEmpty() bool {
 	stack.mutex.Lock()
 	defer stack.mutex.Unlock()
-
 	return len(stack.workers) == 0
 }
 
 func (stack *Stack) Pop() (WorkerBase, bool) {
 	stack.mutex.Lock()
 	defer stack.mutex.Unlock()
+
 	// do not release new stack
 	if stack.destroy {
 		return nil, true
@@ -58,6 +60,7 @@ func (stack *Stack) Pop() (WorkerBase, bool) {
 		return nil, false
 	}
 
+	// move worker
 	w := stack.workers[len(stack.workers)-1]
 	stack.workers = stack.workers[:len(stack.workers)-1]
 	stack.actualNumOfWorkers--
@@ -80,6 +83,7 @@ func (stack *Stack) FindAndRemoveByPid(pid int64) bool {
 	return false
 }
 
+// Workers return copy of the workers in the stack
 func (stack *Stack) Workers() []WorkerBase {
 	stack.mutex.Lock()
 	defer stack.mutex.Unlock()

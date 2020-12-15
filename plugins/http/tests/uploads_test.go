@@ -269,7 +269,7 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 200, r.StatusCode)
 
-	fs := fileString(testFile, 5, "application/octet-stream")
+	fs := fileString(testFile, 6, "application/octet-stream")
 
 	assert.Equal(t, `{"upload":`+fs+`}`, string(b))
 }
@@ -352,7 +352,7 @@ func TestHandler_Upload_File_Forbids(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 200, r.StatusCode)
 
-	fs := fileString(testFile, 7, "application/octet-stream")
+	fs := fileString(testFile, 8, "application/octet-stream")
 
 	assert.Equal(t, `{"upload":`+fs+`}`, string(b))
 }
