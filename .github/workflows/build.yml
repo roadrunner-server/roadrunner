@@ -57,7 +57,7 @@ jobs:
         run: go mod download
 
       - name: Run golang tests on Windows without codecov
-        if: ${{ matrix.os == 'windows-latest' || matrix.os == 'macos-latest' }}
+        if: ${{ matrix.os == 'windows-latest' }}
         run: |
           go test -v -race -cover -tags=debug .
           go test -v -race -cover -tags=debug ./plugins/rpc
