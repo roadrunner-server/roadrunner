@@ -1,10 +1,9 @@
 package reload
 
 import (
-	"errors"
-	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/service"
 	"time"
+
+	"github.com/spiral/errors"
 )
 
 // Config is a Reload configuration point.
@@ -34,38 +33,25 @@ type ServiceConfig struct {
 
 	// Ignore is set of files which would not be watched
 	Ignore []string
-
-	// service is a link to service to restart
-	service *roadrunner.Controllable
-}
-
-// Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
-func (c *Config) Hydrate(cfg service.Config) error {
-	if err := cfg.Unmarshal(c); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 // InitDefaults sets missing values to their default values.
-func (c *Config) InitDefaults() error {
+func InitDefaults(c *Config) {
 	c.Interval = time.Second
 	c.Patterns = []string{".php"}
-
-	return nil
 }
 
 // Valid validates the configuration.
 func (c *Config) Valid() error {
+	const op = errors.Op("config validation [reload plugin]")
 	if c.Interval < time.Second {
-		return errors.New("too short interval")
+		return errors.E(op, errors.Str("too short interval"))
 	}
 
 	if c.Services == nil {
-		return errors.New("should add at least 1 service")
+		return errors.E(op, errors.Str("should add at least 1 service"))
 	} else if len(c.Services) == 0 {
-		return errors.New("service initialized, however, no config added")
+		return errors.E(op, errors.Str("service initialized, however, no config added"))
 	}
 
 	return nil

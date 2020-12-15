@@ -23,6 +23,9 @@ const (
 	// WaitDuration - for how long error buffer should attempt to aggregate error messages
 	// before merging output together since lastError update (required to keep error update together).
 	WaitDuration = 25 * time.Millisecond
+
+	// ReadBufSize used to make a slice with specified length to read from stderr
+	ReadBufSize = 10240 // Kb
 )
 
 // EventWorkerKill thrown after WorkerProcess is being forcefully killed.
@@ -60,7 +63,7 @@ type WorkerEvent struct {
 
 var pool = sync.Pool{
 	New: func() interface{} {
-		buf := make([]byte, 10240)
+		buf := make([]byte, ReadBufSize)
 		return &buf
 	},
 }
@@ -164,7 +167,7 @@ func InitBaseWorker(cmd *exec.Cmd) (WorkerBase, error) {
 
 	// small buffer optimization
 	// at this point we know, that stderr will contain huge messages
-	w.stderr.Grow(10240)
+	w.stderr.Grow(ReadBufSize)
 
 	go func() {
 		w.watch()

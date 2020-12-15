@@ -7,7 +7,7 @@ type rpc struct {
 	log log.Logger
 }
 
-// List all resettable services.
+// List all resettable plugins.
 func (rpc *rpc) List(_ bool, list *[]string) error {
 	rpc.log.Debug("started List method")
 	*list = make([]string, 0)
@@ -21,7 +21,7 @@ func (rpc *rpc) List(_ bool, list *[]string) error {
 	return nil
 }
 
-// Reset named service.
+// Reset named plugin.
 func (rpc *rpc) Reset(service string, done *bool) error {
 	rpc.log.Debug("started Reset method for the service", "service", service)
 	defer rpc.log.Debug("finished Reset method for the service", "service", service)

@@ -7,23 +7,27 @@ import (
 
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
+	"github.com/spiral/roadrunner/v2/interfaces/resetter"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
 // PluginName contains default plugin name.
 const PluginName string = "reload"
 
-type Service struct {
+type Plugin struct {
 	cfg      *Config
 	log      log.Logger
 	watcher  *Watcher
 	services map[string]interface{}
+	res      resetter.Resetter
 	stopc    chan struct{}
 }
 
 // Init controller service
-func (s *Service) Init(cfg config.Configurer, log log.Logger) error {
+func (s *Plugin) Init(cfg config.Configurer, log log.Logger, res resetter.Resetter) error {
 	const op = errors.Op("reload plugin init")
+	s.cfg = &Config{}
+	InitDefaults(s.cfg)
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
 		// disable plugin in case of error
@@ -31,34 +35,32 @@ func (s *Service) Init(cfg config.Configurer, log log.Logger) error {
 	}
 
 	s.log = log
+	s.res = res
 	s.stopc = make(chan struct{})
 	s.services = make(map[string]interface{})
 
 	var configs []WatcherConfig
 
 	for serviceName, serviceConfig := range s.cfg.Services {
-		if s.cfg.Services[serviceName].service == nil {
-			continue
-		}
 		ignored, err := ConvertIgnored(serviceConfig.Ignore)
 		if err != nil {
 			return errors.E(op, err)
 		}
 		configs = append(configs, WatcherConfig{
-			serviceName: serviceName,
-			recursive:   serviceConfig.Recursive,
-			directories: serviceConfig.Dirs,
-			filterHooks: func(filename string, patterns []string) error {
+			ServiceName: serviceName,
+			Recursive:   serviceConfig.Recursive,
+			Directories: serviceConfig.Dirs,
+			FilterHooks: func(filename string, patterns []string) error {
 				for i := 0; i < len(patterns); i++ {
 					if strings.Contains(filename, patterns[i]) {
 						return nil
 					}
 				}
-				return ErrorSkip
+				return errors.E(op, errors.Skip, err)
 			},
-			files:        make(map[string]os.FileInfo),
-			ignored:      ignored,
-			filePatterns: append(serviceConfig.Patterns, s.cfg.Patterns...),
+			Files:        make(map[string]os.FileInfo),
+			Ignored:      ignored,
+			FilePatterns: append(serviceConfig.Patterns, s.cfg.Patterns...),
 		})
 	}
 
@@ -70,7 +72,7 @@ func (s *Service) Init(cfg config.Configurer, log log.Logger) error {
 	return nil
 }
 
-func (s *Service) Serve() chan error {
+func (s *Plugin) Serve() chan error {
 	const op = errors.Op("reload plugin serve")
 	errCh := make(chan error, 1)
 	if s.cfg.Interval < time.Second {
@@ -126,13 +128,12 @@ func (s *Service) Serve() chan error {
 				ticker = time.NewTicker(s.cfg.Interval)
 			case <-ticker.C:
 				if len(updated) > 0 {
-					for k, v := range updated {
-						sv := *v.service
-						err := sv.Server().Reset()
+					for name := range updated {
+						err := s.res.ResetByName(name)
 						if err != nil {
-							s.log.Error(err)
+							errCh <- errors.E(op, err)
+							return
 						}
-						s.log.Debugf("[%s] found %v file(s) changes, reloading", k, len(updated))
 					}
 					// zero map
 					updated = make(map[string]ServiceConfig, 100)
@@ -153,7 +154,11 @@ func (s *Service) Serve() chan error {
 	return errCh
 }
 
-func (s *Service) Stop() {
+func (s *Plugin) Stop() {
 	s.watcher.Stop()
 	s.stopc <- struct{}{}
+}
+
+func (s *Plugin) Name() string {
+	return PluginName
 }

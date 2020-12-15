@@ -1,22 +1,23 @@
-package reload
+package tests
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/spiral/roadrunner/v2/plugins/reload"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_Config_Valid(t *testing.T) {
-	services := make(map[string]ServiceConfig)
-	services["test"] = ServiceConfig{
+	services := make(map[string]reload.ServiceConfig)
+	services["test"] = reload.ServiceConfig{
 		Recursive: false,
 		Patterns:  nil,
 		Dirs:      nil,
 		Ignore:    nil,
-		service:   nil,
 	}
 
-	cfg := &Config{
+	cfg := &reload.Config{
 		Interval: time.Second,
 		Patterns: nil,
 		Services: services,
@@ -25,8 +26,8 @@ func Test_Config_Valid(t *testing.T) {
 }
 
 func Test_Fake_ServiceConfig(t *testing.T) {
-	services := make(map[string]ServiceConfig)
-	cfg := &Config{
+	services := make(map[string]reload.ServiceConfig)
+	cfg := &reload.Config{
 		Interval: time.Microsecond,
 		Patterns: nil,
 		Services: services,
@@ -35,17 +36,16 @@ func Test_Fake_ServiceConfig(t *testing.T) {
 }
 
 func Test_Interval(t *testing.T) {
-	services := make(map[string]ServiceConfig)
-	services["test"] = ServiceConfig{
+	services := make(map[string]reload.ServiceConfig)
+	services["test"] = reload.ServiceConfig{
 		Enabled:   false,
 		Recursive: false,
 		Patterns:  nil,
 		Dirs:      nil,
 		Ignore:    nil,
-		service:   nil,
 	}
 
-	cfg := &Config{
+	cfg := &reload.Config{
 		Interval: time.Millisecond, // should crash here
 		Patterns: nil,
 		Services: services,
@@ -54,7 +54,7 @@ func Test_Interval(t *testing.T) {
 }
 
 func Test_NoServiceConfig(t *testing.T) {
-	cfg := &Config{
+	cfg := &reload.Config{
 		Interval: time.Second,
 		Patterns: nil,
 		Services: nil,

@@ -10,12 +10,39 @@ import (
 const PluginName = "resetter"
 
 type Plugin struct {
-	registry map[string]resetter.Resetter
+	registry map[string]resetter.Resettable
 	log      log.Logger
 }
 
+func (p *Plugin) ResetAll() error {
+	const op = errors.Op("reset all")
+	for name := range p.registry {
+		err := p.registry[name].Reset()
+		if err != nil {
+			return errors.E(op, err)
+		}
+	}
+	return nil
+}
+
+func (p *Plugin) ResetByName(plugin string) error {
+	const op = errors.Op("reset by name")
+	if plugin, ok := p.registry[plugin]; ok {
+		return plugin.Reset()
+	}
+	return errors.E(op, errors.Errorf("can't find plugin: %s", plugin))
+}
+
+func (p *Plugin) GetAll() []string {
+	all := make([]string, 0, len(p.registry))
+	for name := range p.registry {
+		all = append(all, name)
+	}
+	return all
+}
+
 func (p *Plugin) Init(log log.Logger) error {
-	p.registry = make(map[string]resetter.Resetter)
+	p.registry = make(map[string]resetter.Resettable)
 	p.log = log
 	return nil
 }
@@ -31,7 +58,7 @@ func (p *Plugin) Reset(name string) error {
 }
 
 // RegisterTarget resettable service.
-func (p *Plugin) RegisterTarget(name endure.Named, r resetter.Resetter) error {
+func (p *Plugin) RegisterTarget(name endure.Named, r resetter.Resettable) error {
 	p.registry[name.Name()] = r
 	return nil
 }

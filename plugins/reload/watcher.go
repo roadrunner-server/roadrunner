@@ -1,16 +1,14 @@
 package reload
 
 import (
-	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sync"
 	"time"
-)
 
-var ErrorSkip = errors.New("file is skipped")
-var NoWalkerConfig = errors.New("should add at least one walker config, when reload is set to true")
+	"github.com/spiral/errors"
+)
 
 // SimpleHook is used to filter by simple criteria, CONTAINS
 type SimpleHook func(filename string, pattern []string) error
@@ -19,33 +17,33 @@ type SimpleHook func(filename string, pattern []string) error
 // changes occur. It includes the os.FileInfo of the changed file or
 // directory and the type of event that's occurred and the full path of the file.
 type Event struct {
-	path string
-	info os.FileInfo
+	Path string
+	Info os.FileInfo
 
 	service string // type of service, http, grpc, etc...
 }
 
 type WatcherConfig struct {
 	// service name
-	serviceName string
+	ServiceName string
 
-	// recursive or just add by singe directory
-	recursive bool
+	// Recursive or just add by singe directory
+	Recursive bool
 
-	// directories used per-service
-	directories []string
+	// Directories used per-service
+	Directories []string
 
 	// simple hook, just CONTAINS
-	filterHooks func(filename string, pattern []string) error
+	FilterHooks func(filename string, pattern []string) error
 
-	// path to file with files
-	files map[string]os.FileInfo
+	// path to file with Files
+	Files map[string]os.FileInfo
 
-	// ignored directories, used map for O(1) amortized get
-	ignored map[string]struct{}
+	// Ignored Directories, used map for O(1) amortized get
+	Ignored map[string]struct{}
 
-	// filePatterns to ignore
-	filePatterns []string
+	// FilePatterns to ignore
+	FilePatterns []string
 }
 
 type Watcher struct {
@@ -53,7 +51,7 @@ type Watcher struct {
 	Event chan Event
 	close chan struct{}
 
-	//=============================
+	// =============================
 	mu *sync.Mutex
 
 	// indicates is walker started or not
@@ -81,7 +79,7 @@ func NewWatcher(configs []WatcherConfig, options ...Options) (*Watcher, error) {
 
 	// add watcherConfigs by service names
 	for _, v := range configs {
-		w.watcherConfigs[v.serviceName] = v
+		w.watcherConfigs[v.ServiceName] = v
 	}
 
 	// apply options
@@ -105,7 +103,7 @@ func (w *Watcher) initFs() error {
 		}
 		// workaround. in golang you can't assign to map in struct field
 		tmp := w.watcherConfigs[srvName]
-		tmp.files = fileList
+		tmp.Files = fileList
 		w.watcherConfigs[srvName] = tmp
 	}
 	return nil
@@ -127,14 +125,13 @@ func ConvertIgnored(ignored []string) (map[string]struct{}, error) {
 	}
 
 	return ign, nil
-
 }
 
 // GetAllFiles returns all files initialized for particular company
 func (w *Watcher) GetAllFiles(serviceName string) []os.FileInfo {
 	var ret []os.FileInfo
 
-	for _, v := range w.watcherConfigs[serviceName].files {
+	for _, v := range w.watcherConfigs[serviceName].Files {
 		ret = append(ret, v)
 	}
 
@@ -146,12 +143,12 @@ func (w *Watcher) GetAllFiles(serviceName string) []os.FileInfo {
 // In case of file watch errors, this value can be increased system-wide
 // For linux: set --> fs.inotify.max_user_watches = 600000 (under /etc/<choose_name_here>.conf)
 // Add apply: sudo sysctl -p --system
-//func SetMaxFileEvents(events int) Options {
+// func SetMaxFileEvents(events int) Options {
 //	return func(watcher *Watcher) {
 //		watcher.maxFileWatchEvents = events
 //	}
 //
-//}
+// }
 
 // pass map from outside
 func (w *Watcher) retrieveFilesSingle(serviceName, path string) (map[string]os.FileInfo, error) {
@@ -178,14 +175,14 @@ func (w *Watcher) retrieveFilesSingle(serviceName, path string) (map[string]os.F
 outer:
 	for i := 0; i < len(fileInfoList); i++ {
 		// if file in ignored --> continue
-		if _, ignored := w.watcherConfigs[serviceName].ignored[path]; ignored {
+		if _, ignored := w.watcherConfigs[serviceName].Ignored[path]; ignored {
 			continue
 		}
 
 		// if filename does not contain pattern --> ignore that file
-		if w.watcherConfigs[serviceName].filePatterns != nil && w.watcherConfigs[serviceName].filterHooks != nil {
-			err = w.watcherConfigs[serviceName].filterHooks(fileInfoList[i].Name(), w.watcherConfigs[serviceName].filePatterns)
-			if err == ErrorSkip {
+		if w.watcherConfigs[serviceName].FilePatterns != nil && w.watcherConfigs[serviceName].FilterHooks != nil {
+			err = w.watcherConfigs[serviceName].FilterHooks(fileInfoList[i].Name(), w.watcherConfigs[serviceName].FilePatterns)
+			if errors.Is(errors.Skip, err) {
 				continue outer
 			}
 		}
@@ -198,9 +195,10 @@ outer:
 
 func (w *Watcher) StartPolling(duration time.Duration) error {
 	w.mu.Lock()
+	const op = errors.Op("start polling")
 	if w.started {
 		w.mu.Unlock()
-		return errors.New("already started")
+		return errors.E(op, errors.Str("already started"))
 	}
 
 	w.started = true
@@ -226,12 +224,11 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 			for serviceName, config := range w.watcherConfigs {
 				go func(sn string, c WatcherConfig) {
 					fileList, _ := w.retrieveFileList(sn, c)
-					w.pollEvents(c.serviceName, fileList)
+					w.pollEvents(c.ServiceName, fileList)
 				}(serviceName, config)
 			}
 		}
 	}
-
 }
 
 // retrieveFileList get file list for service
@@ -239,9 +236,9 @@ func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (ma
 	w.mu.Lock()
 	defer w.mu.Unlock()
 	fileList := make(map[string]os.FileInfo)
-	if config.recursive {
+	if config.Recursive {
 		// walk through directories recursively
-		for _, dir := range config.directories {
+		for _, dir := range config.Directories {
 			// full path is workdir/relative_path
 			fullPath, err := filepath.Abs(dir)
 			if err != nil {
@@ -259,7 +256,7 @@ func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (ma
 		return fileList, nil
 	}
 
-	for _, dir := range config.directories {
+	for _, dir := range config.Directories {
 		// full path is workdir/relative_path
 		fullPath, err := filepath.Abs(dir)
 		if err != nil {
@@ -290,7 +287,7 @@ func (w *Watcher) retrieveFilesRecursive(serviceName, root string) (map[string]o
 
 		// If path is ignored and it's a directory, skip the directory. If it's
 		// ignored and it's a single file, skip the file.
-		_, ignored := w.watcherConfigs[serviceName].ignored[path]
+		_, ignored := w.watcherConfigs[serviceName].Ignored[path]
 		if ignored {
 			if info.IsDir() {
 				// if it's dir, ignore whole
@@ -300,8 +297,8 @@ func (w *Watcher) retrieveFilesRecursive(serviceName, root string) (map[string]o
 		}
 
 		// if filename does not contain pattern --> ignore that file
-		err = w.watcherConfigs[serviceName].filterHooks(info.Name(), w.watcherConfigs[serviceName].filePatterns)
-		if err == ErrorSkip {
+		err = w.watcherConfigs[serviceName].FilterHooks(info.Name(), w.watcherConfigs[serviceName].FilePatterns)
+		if errors.Is(errors.Skip, err) {
 			return nil
 		}
 
@@ -320,7 +317,7 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 	removes := make(map[string]os.FileInfo)
 
 	// Check for removed files.
-	for pth, info := range w.watcherConfigs[serviceName].files {
+	for pth, info := range w.watcherConfigs[serviceName].Files {
 		if _, found := files[pth]; !found {
 			removes[pth] = info
 		}
@@ -331,65 +328,64 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 		if info.IsDir() {
 			continue
 		}
-		oldInfo, found := w.watcherConfigs[serviceName].files[pth]
+		oldInfo, found := w.watcherConfigs[serviceName].Files[pth]
 		if !found {
 			// A file was created.
 			creates[pth] = info
 			continue
 		}
 		if oldInfo.ModTime() != info.ModTime() {
-			w.watcherConfigs[serviceName].files[pth] = info
+			w.watcherConfigs[serviceName].Files[pth] = info
 			w.Event <- Event{
-				path:    pth,
-				info:    info,
+				Path:    pth,
+				Info:    info,
 				service: serviceName,
 			}
 		}
 		if oldInfo.Mode() != info.Mode() {
-			w.watcherConfigs[serviceName].files[pth] = info
+			w.watcherConfigs[serviceName].Files[pth] = info
 			w.Event <- Event{
-				path:    pth,
-				info:    info,
+				Path:    pth,
+				Info:    info,
 				service: serviceName,
 			}
 		}
 	}
 
-	//Check for renames and moves.
+	// Check for renames and moves.
 	for path1, info1 := range removes {
 		for path2, info2 := range creates {
 			if sameFile(info1, info2) {
 				e := Event{
-					path:    path2,
-					info:    info2,
+					Path:    path2,
+					Info:    info2,
 					service: serviceName,
 				}
 
 				// remove initial path
-				delete(w.watcherConfigs[serviceName].files, path1)
+				delete(w.watcherConfigs[serviceName].Files, path1)
 				// update with new
-				w.watcherConfigs[serviceName].files[path2] = info2
-
+				w.watcherConfigs[serviceName].Files[path2] = info2
 
 				w.Event <- e
 			}
 		}
 	}
 
-	//Send all the remaining create and remove events.
+	// Send all the remaining create and remove events.
 	for pth, info := range creates {
-		w.watcherConfigs[serviceName].files[pth] = info
+		w.watcherConfigs[serviceName].Files[pth] = info
 		w.Event <- Event{
-			path:    pth,
-			info:    info,
+			Path:    pth,
+			Info:    info,
 			service: serviceName,
 		}
 	}
 	for pth, info := range removes {
-		delete(w.watcherConfigs[serviceName].files, pth)
+		delete(w.watcherConfigs[serviceName].Files, pth)
 		w.Event <- Event{
-			path:    pth,
-			info:    info,
+			Path:    pth,
+			Info:    info,
 			service: serviceName,
 		}
 	}
