@@ -9,11 +9,11 @@ ini_set('display_errors', 'stderr');
 require dirname(__DIR__) . "/vendor/autoload.php";
 
 $worker = new RoadRunner\Worker(new Goridge\StreamRelay(STDIN, STDOUT));
-$psr7 = new RoadRunner\PSR7Client($worker);
+$psr7 = new RoadRunner\Http\PSR7Worker($worker);
 
-while ($req = $psr7->acceptRequest()) {
+while ($req = $psr7->waitRequest()) {
     try {
-        $resp = new \Zend\Diactoros\Response();
+        $resp = new \Nyholm\Psr7\Response();
         $resp->getBody()->write(str_repeat("hello world", 1000));
 
         $psr7->respond($resp);
