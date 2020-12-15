@@ -228,7 +228,6 @@ func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (WorkerBase, error) 
 				if w == nil {
 					continue
 				}
-				//ww.ReduceWorkersCount()
 				return w, nil
 			case <-ctx.Done():
 				return nil, errors.E(op, errors.NoFreeWorkers, errors.Str("no free workers in the stack, timeout exceed"))
@@ -236,7 +235,6 @@ func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (WorkerBase, error) 
 		}
 	}
 
-	//ww.ReduceWorkersCount()
 	return w, nil
 }
 
@@ -278,7 +276,6 @@ func (ww *workerWatcher) RemoveWorker(wb WorkerBase) error {
 
 	wb.State().Set(StateRemove)
 	return nil
-
 }
 
 // O(1) operation

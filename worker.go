@@ -61,7 +61,7 @@ type WorkerEvent struct {
 var pool = sync.Pool{
 	New: func() interface{} {
 		buf := make([]byte, 10240)
-		return buf
+		return &buf
 	},
 }
 
@@ -320,13 +320,18 @@ func (w *WorkerProcess) Kill() error {
 	return nil
 }
 
-func (w *WorkerProcess) put(data []byte) {
-	data = make([]byte, 10240)
+// put the pointer, to not allocate new slice
+// but erase it len and then return back
+func (w *WorkerProcess) put(data *[]byte) {
+	*data = (*data)[:0]
+	*data = (*data)[:cap(*data)]
+
 	pool.Put(data)
 }
 
-func (w *WorkerProcess) get() []byte {
-	return pool.Get().([]byte)
+// get pointer to the byte slice
+func (w *WorkerProcess) get() *[]byte {
+	return pool.Get().(*[]byte)
 }
 
 // Write appends the contents of pool to the errBuffer, growing the errBuffer as
@@ -338,22 +343,22 @@ func (w *WorkerProcess) watch() {
 			case <-w.stop:
 				buf := w.get()
 				// read the last data
-				n, _ := w.rd.Read(buf[:])
-				w.events.Push(WorkerEvent{Event: EventWorkerLog, Worker: w, Payload: buf[:n]})
+				n, _ := w.rd.Read(*buf)
+				w.events.Push(WorkerEvent{Event: EventWorkerLog, Worker: w, Payload: (*buf)[:n]})
 				w.mu.Lock()
 				// write new message
-				w.stderr.Write(buf[:n])
+				w.stderr.Write((*buf)[:n])
 				w.mu.Unlock()
 				w.put(buf)
 				return
 			default:
 				// read the max 10kb of stderr per one read
 				buf := w.get()
-				n, _ := w.rd.Read(buf[:])
-				w.events.Push(WorkerEvent{Event: EventWorkerLog, Worker: w, Payload: buf[:n]})
+				n, _ := w.rd.Read(*buf)
+				w.events.Push(WorkerEvent{Event: EventWorkerLog, Worker: w, Payload: (*buf)[:n]})
 				w.mu.Lock()
 				// write new message
-				w.stderr.Write(buf[:n])
+				w.stderr.Write((*buf)[:n])
 				w.mu.Unlock()
 				w.put(buf)
 			}
