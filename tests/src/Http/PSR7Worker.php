@@ -132,6 +132,7 @@ class PSR7Worker
             $_SERVER
         );
 
+
         $request = $request
             ->withProtocolVersion(static::fetchProtocolVersion($httpRequest->protocol))
             ->withCookieParams($httpRequest->cookies)
