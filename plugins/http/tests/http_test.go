@@ -17,7 +17,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/spiral/endure"
-	"github.com/spiral/goridge/v2"
+	"github.com/spiral/goridge/v3"
 	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/mocks"
 	"github.com/spiral/roadrunner/v2/plugins/config"
@@ -334,7 +334,7 @@ func sslEcho(t *testing.T) {
 }
 
 func fcgiEcho(t *testing.T) {
-	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "0.0.0.0:6920")
+	fcgiConnFactory := gofast.SimpleConnFactory("tcp", "0.0.0.0:16920")
 
 	fcgiHandler := gofast.NewHandler(
 		gofast.BasicParamsMap(gofast.BasicSession),

@@ -8,9 +8,9 @@ use Spiral\RoadRunner;
 
 $rr = new RoadRunner\Worker($relay);
 
-while ($in = $rr->receive($ctx)) {
+while ($in = $rr->waitPayload()) {
     try {
-        usleep($in * 1000);
+        usleep($in->body * 1000);
         $rr->send('');
     } catch (\Throwable $e) {
         $rr->error((string)$e);

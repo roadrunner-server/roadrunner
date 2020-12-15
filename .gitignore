@@ -22,4 +22,3 @@ vendor_php
 builds/
 tests/vendor/
 .rr-sample.yaml
-psr-worker.php

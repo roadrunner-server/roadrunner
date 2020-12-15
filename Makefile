@@ -24,20 +24,21 @@ uninstall: ## Uninstall locally installed RR
 	rm -f /usr/local/bin/rr
 
 test: ## Run application tests
-	test -d ./vendor_php || composer update --prefer-dist --ansi
-	go test -v -race -cover
-	go test -v -race -cover ./util
-	go test -v -race -cover ./service
-	go test -v -race -cover ./service/env
-	go test -v -race -cover ./service/rpc
-	go test -v -race -cover ./service/http
-	go test -v -race -cover ./service/static
-	go test -v -race -cover ./service/limit
-	go test -v -race -cover ./service/headers
-	go test -v -race -cover ./service/metrics
-	go test -v -race -cover ./service/health
-	go test -v -race -cover ./service/gzip
-	go test -v -race -cover ./service/reload
+	go test -v -race -cover -tags=debug -covermode=atomic .
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/rpc
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/rpc/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/config/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/logger/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/server/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/metrics/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/informer/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/resetter/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/http/attributes
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/http/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/gzip/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/static/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/headers/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/checker/tests
 
 lint: ## Run application linters
 	go fmt ./...

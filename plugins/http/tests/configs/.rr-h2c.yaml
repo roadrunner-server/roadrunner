@@ -20,15 +20,6 @@ http:
     maxJobs: 0
     allocateTimeout: 60s
     destroyTimeout: 60s
-
-  ssl:
-    port: 8891
-    redirect: false
-    cert: fixtures/server.crt
-    key: fixtures/server.key
-  #    rootCa: root.crt
-  fcgi:
-    address: tcp://0.0.0.0:6920
   http2:
     enabled: true
     h2c: true

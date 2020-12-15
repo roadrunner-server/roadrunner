@@ -18,13 +18,13 @@ const (
 	UploadErrorNoFile = 4
 
 	// UploadErrorNoTmpDir - missing a temporary folder.
-	UploadErrorNoTmpDir = 5
+	UploadErrorNoTmpDir = 6
 
 	// UploadErrorCantWrite - failed to write file to disk.
-	UploadErrorCantWrite = 6
+	UploadErrorCantWrite = 7
 
 	// UploadErrorExtension - forbidden file extension.
-	UploadErrorExtension = 7
+	UploadErrorExtension = 8
 )
 
 // Uploads tree manages uploaded files tree and temporary files.

@@ -183,6 +183,11 @@ func (s *Plugin) Serve() chan error {
 		s.fcgi = &http.Server{Handler: s}
 	}
 
+	// apply middlewares before starting the server
+	if len(s.mdwr) > 0 {
+		s.addMiddlewares()
+	}
+
 	if s.http != nil {
 		go func() {
 			httpErr := s.http.ListenAndServe()
@@ -215,10 +220,6 @@ func (s *Plugin) Serve() chan error {
 				return
 			}
 		}()
-	}
-
-	if len(s.mdwr) > 0 {
-		s.addMiddlewares()
 	}
 
 	return errCh
