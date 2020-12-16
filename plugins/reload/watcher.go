@@ -217,10 +217,9 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 			// because we have to wait on Lock
 			// better is to listen files in parallel, but, since that would be used in debug... TODO
 			for serviceName := range w.watcherConfigs {
-				go func(sn string, c WatcherConfig) {
-					fileList, _ := w.retrieveFileList(sn, c)
-					w.pollEvents(c.ServiceName, fileList)
-				}(serviceName, w.watcherConfigs[serviceName])
+				// TODO sync approach
+				fileList, _ := w.retrieveFileList(serviceName, w.watcherConfigs[serviceName])
+				w.pollEvents(w.watcherConfigs[serviceName].ServiceName, fileList)
 			}
 		}
 	}
@@ -228,8 +227,6 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 
 // retrieveFileList get file list for service
 func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (map[string]os.FileInfo, error) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
 	fileList := make(map[string]os.FileInfo)
 	if config.Recursive {
 		// walk through directories recursively
