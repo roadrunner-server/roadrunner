@@ -4,8 +4,10 @@ import (
 	"context"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/interfaces/server"
+	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	plugin "github.com/spiral/roadrunner/v2/plugins/server"
 )
@@ -13,7 +15,7 @@ import (
 type Foo2 struct {
 	configProvider config.Configurer
 	wf             server.Server
-	pool           roadrunner.Pool
+	pool           pool.Pool
 }
 
 func (f *Foo2) Init(p config.Configurer, workerFactory server.Server) error {
@@ -29,7 +31,7 @@ func (f *Foo2) Serve() chan error {
 	conf := &plugin.Config{}
 
 	// test payload for echo
-	r := roadrunner.Payload{
+	r := internal.Payload{
 		Context: nil,
 		Body:    []byte(Response),
 	}
@@ -59,7 +61,7 @@ func (f *Foo2) Serve() chan error {
 	}
 
 	// test that our worker is functional
-	sw, err := roadrunner.NewSyncWorker(w)
+	sw, err := worker.From(w)
 	if err != nil {
 		errCh <- err
 		return errCh

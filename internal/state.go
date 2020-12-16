@@ -1,4 +1,4 @@
-package roadrunner
+package internal
 
 import (
 	"fmt"
@@ -8,10 +8,9 @@ import (
 // State represents WorkerProcess status and updated time.
 type State interface {
 	fmt.Stringer
-
-	// Value returns state value
+	// Value returns WorkerState value
 	Value() int64
-	// Set sets the state
+	// Set sets the WorkerState
 	Set(value int64)
 	// NumJobs shows how many times WorkerProcess was invoked
 	NumExecs() int64
@@ -49,13 +48,13 @@ const (
 	// StateStopped - process has been terminated.
 	StateStopped
 
-	// StateErrored - error state (can't be used).
+	// StateErrored - error WorkerState (can't be used).
 	StateErrored
 
 	StateRemove
 )
 
-type state struct {
+type WorkerState struct {
 	value    int64
 	numExecs int64
 	// to be lightweight, use UnixNano
@@ -63,12 +62,12 @@ type state struct {
 }
 
 // Thread safe
-func newState(value int64) *state {
-	return &state{value: value}
+func NewWorkerState(value int64) *WorkerState {
+	return &WorkerState{value: value}
 }
 
-// String returns current state as string.
-func (s *state) String() string {
+// String returns current WorkerState as string.
+func (s *WorkerState) String() string {
 	switch s.Value() {
 	case StateInactive:
 		return "inactive"
@@ -88,36 +87,36 @@ func (s *state) String() string {
 }
 
 // NumExecs returns number of registered WorkerProcess execs.
-func (s *state) NumExecs() int64 {
+func (s *WorkerState) NumExecs() int64 {
 	return atomic.LoadInt64(&s.numExecs)
 }
 
-// Value state returns state value
-func (s *state) Value() int64 {
+// Value WorkerState returns WorkerState value
+func (s *WorkerState) Value() int64 {
 	return atomic.LoadInt64(&s.value)
 }
 
 // IsActive returns true if WorkerProcess not Inactive or Stopped
-func (s *state) IsActive() bool {
+func (s *WorkerState) IsActive() bool {
 	val := s.Value()
 	return val == StateWorking || val == StateReady
 }
 
-// change state value (status)
-func (s *state) Set(value int64) {
+// change WorkerState value (status)
+func (s *WorkerState) Set(value int64) {
 	atomic.StoreInt64(&s.value, value)
 }
 
 // register new execution atomically
-func (s *state) RegisterExec() {
+func (s *WorkerState) RegisterExec() {
 	atomic.AddInt64(&s.numExecs, 1)
 }
 
 // Update last used time
-func (s *state) SetLastUsed(lu uint64) {
+func (s *WorkerState) SetLastUsed(lu uint64) {
 	atomic.StoreUint64(&s.lastUsed, lu)
 }
 
-func (s *state) LastUsed() uint64 {
+func (s *WorkerState) LastUsed() uint64 {
 	return atomic.LoadUint64(&s.lastUsed)
 }

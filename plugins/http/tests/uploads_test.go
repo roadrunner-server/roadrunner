@@ -16,7 +16,8 @@ import (
 	"time"
 
 	j "github.com/json-iterator/go"
-	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/pkg/pipe"
+	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/stretchr/testify/assert"
 )
@@ -26,10 +27,10 @@ var json = j.ConfigCompatibleWithStandardLibrary
 const testFile = "uploads_test.go"
 
 func TestHandler_Upload_File(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "upload", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -109,10 +110,10 @@ func TestHandler_Upload_File(t *testing.T) {
 }
 
 func TestHandler_Upload_NestedFile(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "upload", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -192,10 +193,10 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 }
 
 func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "upload", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -275,10 +276,10 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 }
 
 func TestHandler_Upload_File_Forbids(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "upload", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,

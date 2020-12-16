@@ -4,17 +4,18 @@ import (
 	"context"
 	"time"
 
-	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/server"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
-var testPoolConfig = roadrunner.PoolConfig{
+var testPoolConfig = poolImpl.Config{
 	NumWorkers:      10,
 	MaxJobs:         100,
 	AllocateTimeout: time.Second * 10,
 	DestroyTimeout:  time.Second * 10,
-	Supervisor: &roadrunner.SupervisorConfig{
+	Supervisor: &poolImpl.SupervisorConfig{
 		WatchTick:       60,
 		TTL:             1000,
 		IdleTTL:         10,
@@ -48,7 +49,7 @@ func (p1 *Plugin1) Name() string {
 	return "informer.plugin1"
 }
 
-func (p1 *Plugin1) Workers() []roadrunner.WorkerBase {
+func (p1 *Plugin1) Workers() []worker.BaseProcess {
 	pool, err := p1.server.NewWorkerPool(context.Background(), testPoolConfig, nil)
 	if err != nil {
 		panic(err)

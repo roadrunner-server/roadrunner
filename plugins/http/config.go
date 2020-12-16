@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2"
+	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 )
 
 type Cidrs []*net.IPNet
@@ -56,7 +56,7 @@ type Config struct {
 	Uploads *UploadsConfig
 
 	// Pool configures worker pool.
-	Pool *roadrunner.PoolConfig
+	Pool *poolImpl.Config
 
 	// Env is environment variables passed to the  http pool
 	Env map[string]string
@@ -141,7 +141,7 @@ func (c *Config) EnableFCGI() bool {
 func (c *Config) InitDefaults() error {
 	if c.Pool == nil {
 		// default pool
-		c.Pool = &roadrunner.PoolConfig{
+		c.Pool = &poolImpl.Config{
 			Debug:           false,
 			NumWorkers:      int64(runtime.NumCPU()),
 			MaxJobs:         1000,

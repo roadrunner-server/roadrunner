@@ -4,17 +4,17 @@ import (
 	"context"
 	"time"
 
-	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/server"
+	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
-var testPoolConfig = roadrunner.PoolConfig{
+var testPoolConfig = poolImpl.Config{
 	NumWorkers:      10,
 	MaxJobs:         100,
 	AllocateTimeout: time.Second * 10,
 	DestroyTimeout:  time.Second * 10,
-	Supervisor: &roadrunner.SupervisorConfig{
+	Supervisor: &poolImpl.SupervisorConfig{
 		WatchTick:       60,
 		TTL:             1000,
 		IdleTTL:         10,

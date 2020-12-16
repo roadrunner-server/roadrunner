@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	j "github.com/json-iterator/go"
-	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
+	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 )
 
@@ -136,17 +136,17 @@ func (r *Request) Close(log log.Logger) {
 
 // Payload request marshaled RoadRunner payload based on PSR7 data. values encode method is JSON. Make sure to open
 // files prior to calling this method.
-func (r *Request) Payload() (roadrunner.Payload, error) {
-	p := roadrunner.Payload{}
+func (r *Request) Payload() (internal.Payload, error) {
+	p := internal.Payload{}
 
 	var err error
 	if p.Context, err = json.Marshal(r); err != nil {
-		return roadrunner.EmptyPayload, err
+		return internal.Payload{}, err
 	}
 
 	if r.Parsed {
 		if p.Body, err = json.Marshal(r.body); err != nil {
-			return roadrunner.EmptyPayload, err
+			return internal.Payload{}, err
 		}
 	} else if r.body != nil {
 		p.Body = r.body.([]byte)

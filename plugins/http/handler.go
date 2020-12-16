@@ -10,9 +10,9 @@ import (
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
-	"github.com/spiral/roadrunner/v2/util"
+	"github.com/spiral/roadrunner/v2/interfaces/pool"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
 )
 
 const (
@@ -23,8 +23,10 @@ const (
 	EventError
 )
 
+const MB = 1024 * 1024
+
 type Handle interface {
-	AddListener(l util.EventListener)
+	AddListener(l worker.EventListener)
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
@@ -71,17 +73,17 @@ type handler struct {
 	uploads        UploadsConfig
 	trusted        Cidrs
 	log            log.Logger
-	pool           roadrunner.Pool
+	pool           pool.Pool
 	mul            sync.Mutex
-	lsn            util.EventListener
+	lsn            worker.EventListener
 }
 
-func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool roadrunner.Pool) (Handle, error) {
+func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool pool.Pool) (Handle, error) {
 	if pool == nil {
 		return nil, errors.E(errors.Str("pool should be initialized"))
 	}
 	return &handler{
-		maxRequestSize: maxReqSize * roadrunner.MB,
+		maxRequestSize: maxReqSize * MB,
 		uploads:        uploads,
 		pool:           pool,
 		trusted:        trusted,
@@ -89,7 +91,7 @@ func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool ro
 }
 
 // Listen attaches handler event controller.
-func (h *handler) AddListener(l util.EventListener) {
+func (h *handler) AddListener(l worker.EventListener) {
 	h.mul.Lock()
 	defer h.mul.Unlock()
 

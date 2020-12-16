@@ -1,4 +1,4 @@
-package roadrunner
+package internal
 
 import (
 	"os"
@@ -10,7 +10,7 @@ import (
 
 var json = j.ConfigCompatibleWithStandardLibrary
 
-type stopCommand struct {
+type StopCommand struct {
 	Stop bool `json:"stop"`
 }
 
@@ -18,7 +18,7 @@ type pidCommand struct {
 	Pid int `json:"pid"`
 }
 
-func sendControl(rl goridge.Relay, v interface{}) error {
+func SendControl(rl goridge.Relay, v interface{}) error {
 	const op = errors.Op("send control frame")
 	frame := goridge.NewFrame()
 	frame.WriteVersion(goridge.VERSION_1)
@@ -58,9 +58,9 @@ func sendControl(rl goridge.Relay, v interface{}) error {
 	return nil
 }
 
-func fetchPID(rl goridge.Relay) (int64, error) {
+func FetchPID(rl goridge.Relay) (int64, error) {
 	const op = errors.Op("fetchPID")
-	err := sendControl(rl, pidCommand{Pid: os.Getpid()})
+	err := SendControl(rl, pidCommand{Pid: os.Getpid()})
 	if err != nil {
 		return 0, errors.E(op, err)
 	}

@@ -10,7 +10,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/pkg/pipe"
+	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/stretchr/testify/assert"
 
@@ -21,10 +22,10 @@ import (
 )
 
 func TestHandler_Echo(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "echo", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -72,10 +73,10 @@ func Test_HandlerErrors(t *testing.T) {
 }
 
 func TestHandler_Headers(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "header", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -133,10 +134,10 @@ func TestHandler_Headers(t *testing.T) {
 }
 
 func TestHandler_Empty_User_Agent(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "user-agent", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -193,10 +194,10 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 }
 
 func TestHandler_User_Agent(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "user-agent", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -253,10 +254,10 @@ func TestHandler_User_Agent(t *testing.T) {
 }
 
 func TestHandler_Cookies(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "cookie", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -318,10 +319,10 @@ func TestHandler_Cookies(t *testing.T) {
 }
 
 func TestHandler_JsonPayload_POST(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "payload", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -382,10 +383,10 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 }
 
 func TestHandler_JsonPayload_PUT(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "payload", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -442,10 +443,10 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 }
 
 func TestHandler_JsonPayload_PATCH(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "payload", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -502,10 +503,10 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 }
 
 func TestHandler_FormData_POST(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "data", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -575,10 +576,10 @@ func TestHandler_FormData_POST(t *testing.T) {
 }
 
 func TestHandler_FormData_POST_Overwrite(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "data", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -648,10 +649,10 @@ func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 }
 
 func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "data", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -720,10 +721,10 @@ func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 }
 
 func TestHandler_FormData_PUT(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "data", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -792,10 +793,10 @@ func TestHandler_FormData_PUT(t *testing.T) {
 }
 
 func TestHandler_FormData_PATCH(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "data", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -864,10 +865,10 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 }
 
 func TestHandler_Multipart_POST(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "data", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -978,10 +979,10 @@ func TestHandler_Multipart_POST(t *testing.T) {
 }
 
 func TestHandler_Multipart_PUT(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "data", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1092,10 +1093,10 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 }
 
 func TestHandler_Multipart_PATCH(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "data", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1208,10 +1209,10 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 }
 
 func TestHandler_Error(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "error", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1254,10 +1255,10 @@ func TestHandler_Error(t *testing.T) {
 }
 
 func TestHandler_Error2(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "error2", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1300,10 +1301,10 @@ func TestHandler_Error2(t *testing.T) {
 }
 
 func TestHandler_Error3(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "pid", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1359,10 +1360,10 @@ func TestHandler_Error3(t *testing.T) {
 }
 
 func TestHandler_ResponseDuration(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "echo", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1420,10 +1421,10 @@ func TestHandler_ResponseDuration(t *testing.T) {
 }
 
 func TestHandler_ResponseDurationDelayed(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "echoDelay", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1480,10 +1481,10 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 }
 
 func TestHandler_ErrorDuration(t *testing.T) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "error", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1554,10 +1555,10 @@ func TestHandler_IP(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "ip", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1615,10 +1616,10 @@ func TestHandler_XRealIP(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "ip", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1681,10 +1682,10 @@ func TestHandler_XForwardedFor(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "ip", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1746,10 +1747,10 @@ func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "ip", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1794,10 +1795,10 @@ func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
 }
 
 func BenchmarkHandler_Listen_Echo(b *testing.B) {
-	pool, err := roadrunner.NewPool(context.Background(),
+	pool, err := poolImpl.NewPool(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../../tests/http/client.php", "echo", "pipes") },
-		roadrunner.NewPipeFactory(),
-		roadrunner.PoolConfig{
+		pipe.NewPipeFactory(),
+		poolImpl.Config{
 			NumWorkers:      int64(runtime.NumCPU()),
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
