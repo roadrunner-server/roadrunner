@@ -13,11 +13,9 @@ import (
 	"syscall"
 	"testing"
 	"time"
-
-	"github.com/golang/mock/gomock"
+	
 	"github.com/spiral/endure"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/mocks"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
