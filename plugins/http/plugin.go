@@ -296,7 +296,7 @@ func (s *Plugin) Reset() error {
 	s.Lock()
 	defer s.Unlock()
 	const op = errors.Op("http reset")
-	s.log.Info("Resetting http plugin")
+	s.log.Info("HTTP plugin got restart request. Restarting...")
 	s.pool.Destroy(context.Background())
 
 	// re-read the config
@@ -317,6 +317,7 @@ func (s *Plugin) Reset() error {
 		return errors.E(op, err)
 	}
 
+	s.log.Info("HTTP workers Pool successfully restarted")
 	s.handler, err = NewHandler(
 		s.cfg.MaxRequestSize,
 		*s.cfg.Uploads,
@@ -329,7 +330,9 @@ func (s *Plugin) Reset() error {
 
 	// restore original listeners
 	s.pool.AddListener(s.listener)
+	s.log.Info("HTTP listeners successfully re-added")
 
+	s.log.Info("HTTP plugin successfully restarted")
 	return nil
 }
 

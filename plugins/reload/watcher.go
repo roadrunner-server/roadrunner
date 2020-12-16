@@ -227,11 +227,11 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 			// this is not very effective way
 			// because we have to wait on Lock
 			// better is to listen files in parallel, but, since that would be used in debug... TODO
-			for serviceName, config := range w.watcherConfigs {
+			for serviceName := range w.watcherConfigs {
 				go func(sn string, c WatcherConfig) {
 					fileList, _ := w.retrieveFileList(sn, c)
 					w.pollEvents(c.ServiceName, fileList)
-				}(serviceName, config)
+				}(serviceName, w.watcherConfigs[serviceName])
 			}
 		}
 	}
@@ -244,9 +244,9 @@ func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (ma
 	fileList := make(map[string]os.FileInfo)
 	if config.Recursive {
 		// walk through directories recursively
-		for _, dir := range config.Directories {
+		for i := 0; i < len(config.Directories); i++ {
 			// full path is workdir/relative_path
-			fullPath, err := filepath.Abs(dir)
+			fullPath, err := filepath.Abs(config.Directories[i])
 			if err != nil {
 				return nil, err
 			}
@@ -255,16 +255,16 @@ func (w *Watcher) retrieveFileList(serviceName string, config WatcherConfig) (ma
 				return nil, err
 			}
 
-			for k, v := range list {
-				fileList[k] = v
+			for k := range list {
+				fileList[k] = list[k]
 			}
 		}
 		return fileList, nil
 	}
 
-	for _, dir := range config.Directories {
+	for i := 0; i < len(config.Directories); i++ {
 		// full path is workdir/relative_path
-		fullPath, err := filepath.Abs(dir)
+		fullPath, err := filepath.Abs(config.Directories[i])
 		if err != nil {
 			return nil, err
 		}
@@ -323,87 +323,90 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 	removes := make(map[string]os.FileInfo)
 
 	// Check for removed files.
-	for pth, info := range w.watcherConfigs[serviceName].Files {
+	for pth := range w.watcherConfigs[serviceName].Files {
 		if _, found := files[pth]; !found {
-			removes[pth] = info
-			w.log.Debug("file was removed", "path", pth, "name", info.Name(), "size", info.Size())
+			removes[pth] = w.watcherConfigs[serviceName].Files[pth]
+			w.log.Debug("file was removed", "path", pth, "name", w.watcherConfigs[serviceName].Files[pth].Name(), "size", w.watcherConfigs[serviceName].Files[pth].Size())
 		}
 	}
 
 	// Check for created files, writes and chmods.
-	for pth, info := range files {
-		if info.IsDir() {
+	for pth := range files {
+		if files[pth].IsDir() {
 			continue
 		}
 		oldInfo, found := w.watcherConfigs[serviceName].Files[pth]
 		if !found {
 			// A file was created.
-			creates[pth] = info
-			w.log.Debug("file was created", "path", pth, "name", info.Name(), "size", info.Size())
+			creates[pth] = files[pth]
+			w.log.Debug("file was created", "path", pth, "name", files[pth].Name(), "size", files[pth].Size())
 			continue
 		}
-		if oldInfo.ModTime() != info.ModTime() {
-			w.watcherConfigs[serviceName].Files[pth] = info
-			w.log.Debug("file was updated", "path", pth, "name", info.Name(), "size", info.Size())
+
+		if oldInfo.ModTime() != files[pth].ModTime() || oldInfo.Mode() != files[pth].Mode() {
+			w.watcherConfigs[serviceName].Files[pth] = files[pth]
+			w.log.Debug("file was updated", "path", pth, "name", files[pth].Name(), "size", files[pth].Size())
 			w.Event <- Event{
 				Path:    pth,
-				Info:    info,
-				service: serviceName,
-			}
-		}
-		if oldInfo.Mode() != info.Mode() {
-			w.watcherConfigs[serviceName].Files[pth] = info
-			w.log.Debug("file was updated", "path", pth, "name", info.Name(), "size", info.Size())
-			w.Event <- Event{
-				Path:    pth,
-				Info:    info,
+				Info:    files[pth],
 				service: serviceName,
 			}
 		}
 	}
 
 	// Check for renames and moves.
-	for path1, info1 := range removes {
-		for path2, info2 := range creates {
-			if sameFile(info1, info2) {
+	for path1 := range removes {
+		for path2 := range creates {
+			if sameFile(removes[path1], creates[path2]) {
 				e := Event{
 					Path:    path2,
-					Info:    info2,
+					Info:    creates[path2],
 					service: serviceName,
 				}
 
 				// remove initial path
 				delete(w.watcherConfigs[serviceName].Files, path1)
 				// update with new
-				w.watcherConfigs[serviceName].Files[path2] = info2
+				w.watcherConfigs[serviceName].Files[path2] = creates[path2]
 
-				w.log.Debug("file was renamed/moved", "old path", path1, "new path", path2, "name", info2.Name(), "size", info2.Size())
+				w.log.Debug("file was renamed/moved", "old path", path1, "new path", path2, "name", creates[path2].Name(), "size", creates[path2].Size())
 				w.Event <- e
 			}
 		}
 	}
 
-	// Send all the remaining create and remove events.
-	for pth, info := range creates {
-		w.watcherConfigs[serviceName].Files[pth] = info
-		w.log.Debug("file was created", "path", pth, "name", info.Name(), "size", info.Size())
+	wg := &sync.WaitGroup{}
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		// Send all the remaining create and remove events.
+		for pth := range creates {
+			w.watcherConfigs[serviceName].Files[pth] = creates[pth]
+			w.log.Debug("file was created", "path", pth, "name", creates[pth].Name(), "size", creates[pth].Size())
 
-		w.Event <- Event{
-			Path:    pth,
-			Info:    info,
-			service: serviceName,
+			w.Event <- Event{
+				Path:    pth,
+				Info:    creates[pth],
+				service: serviceName,
+			}
 		}
-	}
-	for pth, info := range removes {
-		delete(w.watcherConfigs[serviceName].Files, pth)
-		w.log.Debug("file was removed", "path", pth, "name", info.Name(), "size", info.Size())
+	}()
 
-		w.Event <- Event{
-			Path:    pth,
-			Info:    info,
-			service: serviceName,
+	go func() {
+		defer wg.Done()
+		for pth := range removes {
+			delete(w.watcherConfigs[serviceName].Files, pth)
+			w.log.Debug("file was removed", "path", pth, "name", removes[pth].Name(), "size", removes[pth].Size())
+
+			w.Event <- Event{
+				Path:    pth,
+				Info:    removes[pth],
+				service: serviceName,
+			}
 		}
-	}
+	}()
+
+	wg.Wait()
 }
 
 func (w *Watcher) Stop() {

@@ -13,6 +13,7 @@ import (
 
 // PluginName contains default plugin name.
 const PluginName string = "reload"
+const thresholdChanBuffer uint = 1000
 
 type Plugin struct {
 	cfg      *Config
@@ -86,10 +87,10 @@ func (s *Plugin) Serve() chan error {
 	treshholdc := make(chan struct {
 		serviceConfig ServiceConfig
 		service       string
-	}, 100)
+	}, thresholdChanBuffer)
 
 	// use the same interval
-	ticker := time.NewTicker(s.cfg.Interval)
+	timer := time.NewTimer(s.cfg.Interval)
 
 	go func() {
 		for e := range s.watcher.Event {
@@ -101,21 +102,22 @@ func (s *Plugin) Serve() chan error {
 	}()
 
 	// map with configs by services
-	updated := make(map[string]ServiceConfig, 100)
+	updated := make(map[string]ServiceConfig, len(s.cfg.Services))
 
 	go func() {
 		for {
 			select {
 			case cfg := <-treshholdc:
+				// logic is following:
+				// restart
+				timer.Stop()
 				// replace previous value in map by more recent without adding new one
 				updated[cfg.service] = cfg.serviceConfig
-				// restart
-				// logic is following:
 				// if we getting a lot of events, we shouldn't restart particular service on each of it (user doing batch move or very fast typing)
-				// instead, we are resetting the ticker and wait for Interval time
+				// instead, we are resetting the timer and wait for s.cfg.Interval time
 				// If there is no more events, we restart service only once
-				ticker.Reset(s.cfg.Interval)
-			case <-ticker.C:
+				timer.Reset(s.cfg.Interval)
+			case <-timer.C:
 				if len(updated) > 0 {
 					for name := range updated {
 						err := s.res.ResetByName(name)
@@ -125,10 +127,10 @@ func (s *Plugin) Serve() chan error {
 						}
 					}
 					// zero map
-					updated = make(map[string]ServiceConfig, 100)
+					updated = make(map[string]ServiceConfig, len(s.cfg.Services))
 				}
 			case <-s.stopc:
-				ticker.Stop()
+				timer.Stop()
 				return
 			}
 		}
