@@ -51,7 +51,7 @@ func TestReloadInit(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	tt := time.NewTimer(time.Second * 5)
+	tt := time.NewTimer(time.Second * 10)
 
 	go func() {
 		defer wg.Done()

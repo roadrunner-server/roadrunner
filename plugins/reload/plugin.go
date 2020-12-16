@@ -56,7 +56,7 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, res resetter.Resett
 						return nil
 					}
 				}
-				return errors.E(op, errors.Skip, err)
+				return errors.E(op, errors.Skip)
 			},
 			Files:        make(map[string]os.FileInfo),
 			Ignored:      ignored,
@@ -64,7 +64,7 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, res resetter.Resett
 		})
 	}
 
-	s.watcher, err = NewWatcher(configs)
+	s.watcher, err = NewWatcher(configs, s.log)
 	if err != nil {
 		return errors.E(op, err)
 	}
@@ -91,15 +91,6 @@ func (s *Plugin) Serve() chan error {
 	// use the same interval
 	ticker := time.NewTicker(s.cfg.Interval)
 
-	// drain channel in case of leaved messages
-	defer func() {
-		go func() {
-			for range treshholdc {
-
-			}
-		}()
-	}()
-
 	go func() {
 		for e := range s.watcher.Event {
 			treshholdc <- struct {
@@ -118,14 +109,12 @@ func (s *Plugin) Serve() chan error {
 			case cfg := <-treshholdc:
 				// replace previous value in map by more recent without adding new one
 				updated[cfg.service] = cfg.serviceConfig
-				// stop ticker
-				ticker.Stop()
 				// restart
 				// logic is following:
-				// if we getting a lot of events, we should't restart particular service on each of it (user doing bug move or very fast typing)
+				// if we getting a lot of events, we shouldn't restart particular service on each of it (user doing batch move or very fast typing)
 				// instead, we are resetting the ticker and wait for Interval time
 				// If there is no more events, we restart service only once
-				ticker = time.NewTicker(s.cfg.Interval)
+				ticker.Reset(s.cfg.Interval)
 			case <-ticker.C:
 				if len(updated) > 0 {
 					for name := range updated {
@@ -145,18 +134,21 @@ func (s *Plugin) Serve() chan error {
 		}
 	}()
 
-	err := s.watcher.StartPolling(s.cfg.Interval)
-	if err != nil {
-		errCh <- errors.E(op, err)
-		return errCh
-	}
+	go func() {
+		err := s.watcher.StartPolling(s.cfg.Interval)
+		if err != nil {
+			errCh <- errors.E(op, err)
+			return
+		}
+	}()
 
 	return errCh
 }
 
-func (s *Plugin) Stop() {
+func (s *Plugin) Stop() error {
 	s.watcher.Stop()
 	s.stopc <- struct{}{}
+	return nil
 }
 
 func (s *Plugin) Name() string {

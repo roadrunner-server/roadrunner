@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/interfaces/log"
 )
 
 // SimpleHook is used to filter by simple criteria, CONTAINS
@@ -60,16 +61,21 @@ type Watcher struct {
 	// config for each service
 	// need pointer here to assign files
 	watcherConfigs map[string]WatcherConfig
+
+	// logger
+	log log.Logger
 }
 
 // Options is used to set Watcher Options
 type Options func(*Watcher)
 
 // NewWatcher returns new instance of File Watcher
-func NewWatcher(configs []WatcherConfig, options ...Options) (*Watcher, error) {
+func NewWatcher(configs []WatcherConfig, log log.Logger, options ...Options) (*Watcher, error) {
 	w := &Watcher{
 		Event: make(chan Event),
 		mu:    &sync.Mutex{},
+
+		log: log,
 
 		close: make(chan struct{}),
 
@@ -320,6 +326,7 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 	for pth, info := range w.watcherConfigs[serviceName].Files {
 		if _, found := files[pth]; !found {
 			removes[pth] = info
+			w.log.Debug("file was removed", "path", pth, "name", info.Name(), "size", info.Size())
 		}
 	}
 
@@ -332,10 +339,12 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 		if !found {
 			// A file was created.
 			creates[pth] = info
+			w.log.Debug("file was created", "path", pth, "name", info.Name(), "size", info.Size())
 			continue
 		}
 		if oldInfo.ModTime() != info.ModTime() {
 			w.watcherConfigs[serviceName].Files[pth] = info
+			w.log.Debug("file was updated", "path", pth, "name", info.Name(), "size", info.Size())
 			w.Event <- Event{
 				Path:    pth,
 				Info:    info,
@@ -344,6 +353,7 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 		}
 		if oldInfo.Mode() != info.Mode() {
 			w.watcherConfigs[serviceName].Files[pth] = info
+			w.log.Debug("file was updated", "path", pth, "name", info.Name(), "size", info.Size())
 			w.Event <- Event{
 				Path:    pth,
 				Info:    info,
@@ -367,6 +377,7 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 				// update with new
 				w.watcherConfigs[serviceName].Files[path2] = info2
 
+				w.log.Debug("file was renamed/moved", "old path", path1, "new path", path2, "name", info2.Name(), "size", info2.Size())
 				w.Event <- e
 			}
 		}
@@ -375,6 +386,8 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 	// Send all the remaining create and remove events.
 	for pth, info := range creates {
 		w.watcherConfigs[serviceName].Files[pth] = info
+		w.log.Debug("file was created", "path", pth, "name", info.Name(), "size", info.Size())
+
 		w.Event <- Event{
 			Path:    pth,
 			Info:    info,
@@ -383,6 +396,8 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 	}
 	for pth, info := range removes {
 		delete(w.watcherConfigs[serviceName].Files, pth)
+		w.log.Debug("file was removed", "path", pth, "name", info.Name(), "size", info.Size())
+
 		w.Event <- Event{
 			Path:    pth,
 			Info:    info,

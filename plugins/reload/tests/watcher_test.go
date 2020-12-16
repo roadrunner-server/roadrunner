@@ -12,7 +12,9 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
+	logPlugin "github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/reload"
+	"go.uber.org/zap"
 )
 
 var testServiceName = "test"
@@ -46,7 +48,10 @@ func Test_Correct_Watcher_Init(t *testing.T) {
 		FilePatterns: nil,
 	}
 
-	w, err := reload.NewWatcher([]reload.WatcherConfig{wc})
+	logger, _ := zap.NewDevelopment()
+	lg := logPlugin.NewZapAdapter(logger)
+
+	w, err := reload.NewWatcher([]reload.WatcherConfig{wc}, lg)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -103,7 +108,10 @@ func Test_Get_FileEvent(t *testing.T) {
 		FilePatterns: []string{"aaa", "txt"},
 	}
 
-	w, err := reload.NewWatcher([]reload.WatcherConfig{wc})
+	logger, _ := zap.NewDevelopment()
+	lg := logPlugin.NewZapAdapter(logger)
+
+	w, err := reload.NewWatcher([]reload.WatcherConfig{wc}, lg)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -195,7 +203,10 @@ func Test_FileExtensionFilter(t *testing.T) {
 		FilePatterns: []string{"aaa", "bbb"},
 	}
 
-	w, err := reload.NewWatcher([]reload.WatcherConfig{wc})
+	logger, _ := zap.NewDevelopment()
+	lg := logPlugin.NewZapAdapter(logger)
+
+	w, err := reload.NewWatcher([]reload.WatcherConfig{wc}, lg)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -294,7 +305,10 @@ func Test_Recursive_Support(t *testing.T) {
 		FilePatterns: []string{"aaa", "bbb"},
 	}
 
-	w, err := reload.NewWatcher([]reload.WatcherConfig{wc})
+	logger, _ := zap.NewDevelopment()
+	lg := logPlugin.NewZapAdapter(logger)
+
+	w, err := reload.NewWatcher([]reload.WatcherConfig{wc}, lg)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -351,7 +365,10 @@ func Test_Wrong_Dir(t *testing.T) {
 		FilePatterns: []string{"aaa", "bbb"},
 	}
 
-	_, err := reload.NewWatcher([]reload.WatcherConfig{wc})
+	logger, _ := zap.NewDevelopment()
+	lg := logPlugin.NewZapAdapter(logger)
+
+	_, err := reload.NewWatcher([]reload.WatcherConfig{wc}, lg)
 	if err == nil {
 		t.Fatal(err)
 	}
@@ -420,7 +437,10 @@ func Test_Filter_Directory(t *testing.T) {
 		FilePatterns: []string{"aaa", "bbb", "txt"},
 	}
 
-	w, err := reload.NewWatcher([]reload.WatcherConfig{wc})
+	logger, _ := zap.NewDevelopment()
+	lg := logPlugin.NewZapAdapter(logger)
+
+	w, err := reload.NewWatcher([]reload.WatcherConfig{wc}, lg)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -522,7 +542,10 @@ func Test_Copy_Directory(t *testing.T) {
 		FilePatterns: []string{"aaa", "bbb", "txt"},
 	}
 
-	w, err := reload.NewWatcher([]reload.WatcherConfig{wc})
+	logger, _ := zap.NewDevelopment()
+	lg := logPlugin.NewZapAdapter(logger)
+
+	w, err := reload.NewWatcher([]reload.WatcherConfig{wc}, lg)
 	if err != nil {
 		t.Fatal(err)
 	}
