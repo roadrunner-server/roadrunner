@@ -361,38 +361,28 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 		}
 	}
 
-	wg := &sync.WaitGroup{}
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		// Send all the remaining create and remove events.
-		for pth := range creates {
-			w.watcherConfigs[serviceName].Files[pth] = creates[pth]
-			w.log.Debug("file was added to watcher", "path", pth, "name", creates[pth].Name(), "size", creates[pth].Size())
+	// Send all the remaining create and remove events.
+	for pth := range creates {
+		w.watcherConfigs[serviceName].Files[pth] = creates[pth]
+		w.log.Debug("file was added to watcher", "path", pth, "name", creates[pth].Name(), "size", creates[pth].Size())
 
-			w.Event <- Event{
-				Path:    pth,
-				Info:    creates[pth],
-				service: serviceName,
-			}
+		w.Event <- Event{
+			Path:    pth,
+			Info:    creates[pth],
+			service: serviceName,
 		}
-	}()
+	}
 
-	go func() {
-		defer wg.Done()
-		for pth := range removes {
-			delete(w.watcherConfigs[serviceName].Files, pth)
-			w.log.Debug("file was removed from watcher", "path", pth, "name", removes[pth].Name(), "size", removes[pth].Size())
+	for pth := range removes {
+		delete(w.watcherConfigs[serviceName].Files, pth)
+		w.log.Debug("file was removed from watcher", "path", pth, "name", removes[pth].Name(), "size", removes[pth].Size())
 
-			w.Event <- Event{
-				Path:    pth,
-				Info:    removes[pth],
-				service: serviceName,
-			}
+		w.Event <- Event{
+			Path:    pth,
+			Info:    removes[pth],
+			service: serviceName,
 		}
-	}()
-
-	wg.Wait()
+	}
 }
 
 func (w *Watcher) Stop() {
