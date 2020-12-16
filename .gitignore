@@ -22,3 +22,6 @@ vendor_php
 builds/
 tests/vendor/
 .rr-sample.yaml
+unit_tests
+unit_tests_copied
+dir1

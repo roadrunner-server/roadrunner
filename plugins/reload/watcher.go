@@ -133,17 +133,6 @@ func ConvertIgnored(ignored []string) (map[string]struct{}, error) {
 	return ign, nil
 }
 
-// GetAllFiles returns all files initialized for particular company
-func (w *Watcher) GetAllFiles(serviceName string) []os.FileInfo {
-	var ret []os.FileInfo
-
-	for _, v := range w.watcherConfigs[serviceName].Files {
-		ret = append(ret, v)
-	}
-
-	return ret
-}
-
 // https://en.wikipedia.org/wiki/Inotify
 // SetMaxFileEvents sets max file notify events for Watcher
 // In case of file watch errors, this value can be increased system-wide
@@ -326,7 +315,7 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 	for pth := range w.watcherConfigs[serviceName].Files {
 		if _, found := files[pth]; !found {
 			removes[pth] = w.watcherConfigs[serviceName].Files[pth]
-			w.log.Debug("file was removed", "path", pth, "name", w.watcherConfigs[serviceName].Files[pth].Name(), "size", w.watcherConfigs[serviceName].Files[pth].Size())
+			w.log.Debug("file added to the list of removed files", "path", pth, "name", w.watcherConfigs[serviceName].Files[pth].Name(), "size", w.watcherConfigs[serviceName].Files[pth].Size())
 		}
 	}
 
@@ -382,7 +371,7 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 		// Send all the remaining create and remove events.
 		for pth := range creates {
 			w.watcherConfigs[serviceName].Files[pth] = creates[pth]
-			w.log.Debug("file was created", "path", pth, "name", creates[pth].Name(), "size", creates[pth].Size())
+			w.log.Debug("file was added to watcher", "path", pth, "name", creates[pth].Name(), "size", creates[pth].Size())
 
 			w.Event <- Event{
 				Path:    pth,
@@ -396,7 +385,7 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 		defer wg.Done()
 		for pth := range removes {
 			delete(w.watcherConfigs[serviceName].Files, pth)
-			w.log.Debug("file was removed", "path", pth, "name", removes[pth].Name(), "size", removes[pth].Size())
+			w.log.Debug("file was removed from watcher", "path", pth, "name", removes[pth].Name(), "size", removes[pth].Size())
 
 			w.Event <- Event{
 				Path:    pth,
