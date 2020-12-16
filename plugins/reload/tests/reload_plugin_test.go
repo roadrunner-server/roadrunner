@@ -30,7 +30,7 @@ const testCopyToDir string = "unit_tests_copied"
 const hugeNumberOfFiles uint = 5000
 
 func TestReloadInit(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -113,7 +113,7 @@ func reloadTestInit(t *testing.T) {
 }
 
 func TestReloadHugeNumberOfFiles(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -219,7 +219,7 @@ func reloadHugeNumberOfFiles(t *testing.T) {
 
 // Should be events only about creating files with txt ext
 func TestReloadFilterFileExt(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -337,7 +337,7 @@ func reloadFilteredExt(t *testing.T) {
 
 // Should be events only about creating files with txt ext
 func TestReloadCopy3k(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
@@ -616,7 +616,7 @@ func reloadMake3kFiles(t *testing.T) {
 }
 
 func TestReloadNoRecursion(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
