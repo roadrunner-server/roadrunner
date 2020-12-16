@@ -667,7 +667,7 @@ func TestReloadNoRecursion(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	tt := time.NewTimer(time.Second * 20)
+	tt := time.NewTimer(time.Second * 30)
 
 	go func() {
 		defer wg.Done()
