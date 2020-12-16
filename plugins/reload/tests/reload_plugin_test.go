@@ -386,7 +386,7 @@ func TestReloadCopy3k(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	tt := time.NewTimer(time.Second * 160)
+	tt := time.NewTimer(time.Second * 180)
 
 	go func() {
 		defer wg.Done()
