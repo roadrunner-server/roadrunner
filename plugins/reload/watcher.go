@@ -147,6 +147,7 @@ func ConvertIgnored(ignored []string) (map[string]struct{}, error) {
 
 // pass map from outside
 func (w *Watcher) retrieveFilesSingle(serviceName, path string) (map[string]os.FileInfo, error) {
+	const op = errors.Op("retrieve")
 	stat, err := os.Stat(path)
 	if err != nil {
 		return nil, err
@@ -340,29 +341,9 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 		}
 	}
 
-	// Check for renames and moves.
-	for path1 := range removes {
-		for path2 := range creates {
-			if sameFile(removes[path1], creates[path2]) {
-				e := Event{
-					Path:    path2,
-					Info:    creates[path2],
-					service: serviceName,
-				}
-
-				// remove initial path
-				delete(w.watcherConfigs[serviceName].Files, path1)
-				// update with new
-				w.watcherConfigs[serviceName].Files[path2] = creates[path2]
-
-				w.log.Debug("file was renamed/moved", "old path", path1, "new path", path2, "name", creates[path2].Name(), "size", creates[path2].Size())
-				w.Event <- e
-			}
-		}
-	}
-
 	// Send all the remaining create and remove events.
 	for pth := range creates {
+		// add file to the plugin watch files
 		w.watcherConfigs[serviceName].Files[pth] = creates[pth]
 		w.log.Debug("file was added to watcher", "path", pth, "name", creates[pth].Name(), "size", creates[pth].Size())
 
@@ -374,6 +355,7 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 	}
 
 	for pth := range removes {
+		// delete path from the config
 		delete(w.watcherConfigs[serviceName].Files, pth)
 		w.log.Debug("file was removed from watcher", "path", pth, "name", removes[pth].Name(), "size", removes[pth].Size())
 

@@ -7,3 +7,6 @@ server:
     "RR_CONFIG2": "C138"
   relay: "unix://unix.sock"
   relayTimeout: "20s"
+logs:
+  mode: development
+  level: error

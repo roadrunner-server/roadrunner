@@ -14,7 +14,7 @@ import (
 )
 
 func TestAppPipes(t *testing.T) {
-	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.DebugLevel))
+	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -80,7 +80,7 @@ func TestAppPipes(t *testing.T) {
 }
 
 func TestAppSockets(t *testing.T) {
-	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.DebugLevel))
+	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -146,7 +146,7 @@ func TestAppSockets(t *testing.T) {
 }
 
 func TestAppTCP(t *testing.T) {
-	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.DebugLevel))
+	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -212,7 +212,7 @@ func TestAppTCP(t *testing.T) {
 }
 
 func TestAppWrongConfig(t *testing.T) {
-	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.DebugLevel))
+	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -244,7 +244,7 @@ func TestAppWrongConfig(t *testing.T) {
 }
 
 func TestAppWrongRelay(t *testing.T) {
-	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.DebugLevel))
+	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -280,7 +280,7 @@ func TestAppWrongRelay(t *testing.T) {
 }
 
 func TestAppWrongCommand(t *testing.T) {
-	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.DebugLevel))
+	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -318,7 +318,7 @@ func TestAppWrongCommand(t *testing.T) {
 }
 
 func TestAppNoAppSectionInConfig(t *testing.T) {
-	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.DebugLevel))
+	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -21,7 +21,7 @@ import (
 )
 
 func TestInformerInit(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -45,7 +45,7 @@ func get() (string, error) {
 }
 
 func TestMetricsInit(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -107,7 +107,7 @@ func TestMetricsInit(t *testing.T) {
 }
 
 func TestMetricsGaugeCollector(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -174,7 +174,7 @@ func TestMetricsGaugeCollector(t *testing.T) {
 }
 
 func TestMetricsDifferentRPCCalls(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
