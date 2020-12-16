@@ -39,8 +39,11 @@ func TestReloadInit(t *testing.T) {
 		Prefix: "rr",
 	}
 
+	// try to remove, skip error
+	assert.NoError(t, freeResources(testDir))
 	err = os.Mkdir(testDir, 0755)
 	assert.NoError(t, err)
+
 	defer func() {
 		assert.NoError(t, freeResources(testDir))
 	}()
@@ -49,7 +52,10 @@ func TestReloadInit(t *testing.T) {
 	mockLogger := mocks.NewMockLogger(controller)
 
 	mockLogger.EXPECT().Debug("file was created", "path", gomock.Any(), "name", "file.txt", "size", gomock.Any()).Times(2)
-	mockLogger.EXPECT().Info("Resetting http plugin").Times(1)
+	mockLogger.EXPECT().Info("HTTP plugin got restart request. Restarting...").Times(1)
+	mockLogger.EXPECT().Info("HTTP workers Pool successfully restarted").Times(1)
+	mockLogger.EXPECT().Info("HTTP listeners successfully re-added").Times(1)
+	mockLogger.EXPECT().Info("HTTP plugin successfully restarted").Times(1)
 
 	err = cont.RegisterAll(
 		cfg,
