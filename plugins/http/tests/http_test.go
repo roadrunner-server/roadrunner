@@ -822,7 +822,7 @@ func TestHttpMiddleware(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	tt := time.NewTimer(time.Second * 15)
+	tt := time.NewTimer(time.Second * 20)
 
 	go func() {
 		defer wg.Done()

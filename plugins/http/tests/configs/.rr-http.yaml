@@ -24,19 +24,6 @@ http:
     maxJobs: 0
     allocateTimeout: 60s
     destroyTimeout: 60s
-
-  ssl:
-    port: 8892
-    redirect: false
-    cert: fixtures/server.crt
-    key: fixtures/server.key
-  #    rootCa: root.crt
-  fcgi:
-    address: tcp://0.0.0.0:7921
-  http2:
-    enabled: false
-    h2c: false
-    maxConcurrentStreams: 128
 logs:
   mode: development
   level: error
