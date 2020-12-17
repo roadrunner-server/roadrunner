@@ -1,11 +1,17 @@
-package roadrunner
+package pool
 
 import (
 	"context"
 	"os/exec"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/util"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
+	"github.com/spiral/roadrunner/v2/interfaces/pool"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/internal"
+	events2 "github.com/spiral/roadrunner/v2/pkg/events"
+	syncWorker "github.com/spiral/roadrunner/v2/pkg/worker"
+	workerWatcher "github.com/spiral/roadrunner/v2/pkg/worker_watcher"
 )
 
 // StopRequest can be sent by worker to indicate that restart is required.
@@ -13,38 +19,35 @@ const StopRequest = "{\"stop\":true}"
 
 var bCtx = context.Background()
 
-// Allocator is responsible for worker allocation in the pool
-type Allocator func() (WorkerBase, error)
-
 // ErrorEncoder encode error or make a decision based on the error type
-type ErrorEncoder func(err error, w WorkerBase) (Payload, error)
+type ErrorEncoder func(err error, w worker.BaseProcess) (internal.Payload, error)
 
-// PoolBefore is set of functions that executes BEFORE Exec
-type Before func(req Payload) Payload
+// Before is set of functions that executes BEFORE Exec
+type Before func(req internal.Payload) internal.Payload
 
-// PoolAfter is set of functions that executes AFTER Exec
-type After func(req Payload, resp Payload) Payload
+// After is set of functions that executes AFTER Exec
+type After func(req internal.Payload, resp internal.Payload) internal.Payload
 
-type PoolOptions func(p *StaticPool)
+type Options func(p *StaticPool)
 
 // StaticPool controls worker creation, destruction and task routing. Pool uses fixed amount of stack.
 type StaticPool struct {
-	cfg PoolConfig
+	cfg Config
 
 	// worker command creator
 	cmd func() *exec.Cmd
 
 	// creates and connects to stack
-	factory Factory
+	factory worker.Factory
 
 	// distributes the events
-	events util.EventsHandler
+	events events.Handler
 
 	// manages worker states and TTLs
-	ww WorkerWatcher
+	ww worker.Watcher
 
 	// allocate new worker
-	allocator Allocator
+	allocator worker.Allocator
 
 	errEncoder ErrorEncoder
 	before     []Before
@@ -52,7 +55,7 @@ type StaticPool struct {
 }
 
 // NewPool creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
-func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg PoolConfig, options ...PoolOptions) (Pool, error) {
+func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory worker.Factory, cfg Config, options ...Options) (pool.Pool, error) {
 	const op = errors.Op("NewPool")
 	if factory == nil {
 		return nil, errors.E(op, errors.Str("no factory initialized"))
@@ -68,13 +71,13 @@ func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg Poo
 		cfg:     cfg,
 		cmd:     cmd,
 		factory: factory,
-		events:  util.NewEventsHandler(),
+		events:  events2.NewEventsHandler(),
 		after:   make([]After, 0, 0),
 		before:  make([]Before, 0, 0),
 	}
 
 	p.allocator = newPoolAllocator(factory, cmd)
-	p.ww = newWorkerWatcher(p.allocator, p.cfg.NumWorkers, p.events)
+	p.ww = workerWatcher.NewWorkerWatcher(p.allocator, p.cfg.NumWorkers, p.events)
 
 	workers, err := p.allocateWorkers(ctx, p.cfg.NumWorkers)
 	if err != nil {
@@ -105,38 +108,38 @@ func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory Factory, cfg Poo
 	return p, nil
 }
 
-func PoolBefore(before ...Before) PoolOptions {
+func ExecBefore(before ...Before) Options {
 	return func(p *StaticPool) {
 		p.before = append(p.before, before...)
 	}
 }
 
-func PoolAfter(after ...After) PoolOptions {
+func ExecAfter(after ...After) Options {
 	return func(p *StaticPool) {
 		p.after = append(p.after, after...)
 	}
 }
 
 // AddListener connects event listener to the pool.
-func (sp *StaticPool) AddListener(listener util.EventListener) {
+func (sp *StaticPool) AddListener(listener events.EventListener) {
 	sp.events.AddListener(listener)
 }
 
-// PoolConfig returns associated pool configuration. Immutable.
-func (sp *StaticPool) GetConfig() PoolConfig {
+// Config returns associated pool configuration. Immutable.
+func (sp *StaticPool) GetConfig() interface{} {
 	return sp.cfg
 }
 
 // Workers returns worker list associated with the pool.
-func (sp *StaticPool) Workers() (workers []WorkerBase) {
+func (sp *StaticPool) Workers() (workers []worker.BaseProcess) {
 	return sp.ww.WorkersList()
 }
 
-func (sp *StaticPool) RemoveWorker(wb WorkerBase) error {
+func (sp *StaticPool) RemoveWorker(wb worker.BaseProcess) error {
 	return sp.ww.RemoveWorker(wb)
 }
 
-func (sp *StaticPool) Exec(p Payload) (Payload, error) {
+func (sp *StaticPool) Exec(p internal.Payload) (internal.Payload, error) {
 	const op = errors.Op("exec")
 	if sp.cfg.Debug {
 		return sp.execDebug(p)
@@ -145,10 +148,10 @@ func (sp *StaticPool) Exec(p Payload) (Payload, error) {
 	defer cancel()
 	w, err := sp.getWorker(ctxGetFree, op)
 	if err != nil {
-		return EmptyPayload, errors.E(op, err)
+		return internal.Payload{}, errors.E(op, err)
 	}
 
-	sw := w.(SyncWorker)
+	sw := w.(worker.SyncWorker)
 
 	if len(sp.before) > 0 {
 		for i := 0; i < len(sp.before); i++ {
@@ -164,10 +167,10 @@ func (sp *StaticPool) Exec(p Payload) (Payload, error) {
 	// worker want's to be terminated
 	// TODO careful with string(rsp.Context)
 	if len(rsp.Body) == 0 && string(rsp.Context) == StopRequest {
-		sw.State().Set(StateInvalid)
+		sw.State().Set(internal.StateInvalid)
 		err = sw.Stop(bCtx)
 		if err != nil {
-			sp.events.Push(WorkerEvent{Event: EventWorkerError, Worker: sw, Payload: errors.E(op, err)})
+			sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: errors.E(op, err)})
 		}
 
 		return sp.Exec(p)
@@ -176,7 +179,7 @@ func (sp *StaticPool) Exec(p Payload) (Payload, error) {
 	if sp.cfg.MaxJobs != 0 && sw.State().NumExecs() >= sp.cfg.MaxJobs {
 		err = sp.ww.AllocateNew()
 		if err != nil {
-			return EmptyPayload, errors.E(op, err)
+			return internal.Payload{}, errors.E(op, err)
 		}
 	} else {
 		sp.ww.PushWorker(sw)
@@ -191,16 +194,16 @@ func (sp *StaticPool) Exec(p Payload) (Payload, error) {
 	return rsp, nil
 }
 
-func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload, error) {
+func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs internal.Payload) (internal.Payload, error) {
 	const op = errors.Op("exec with context")
 	ctxGetFree, cancel := context.WithTimeout(context.Background(), sp.cfg.AllocateTimeout)
 	defer cancel()
 	w, err := sp.getWorker(ctxGetFree, op)
 	if err != nil {
-		return EmptyPayload, errors.E(op, err)
+		return internal.Payload{}, errors.E(op, err)
 	}
 
-	sw := w.(SyncWorker)
+	sw := w.(worker.SyncWorker)
 
 	// apply all before function
 	if len(sp.before) > 0 {
@@ -216,10 +219,10 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload
 
 	// worker want's to be terminated
 	if rsp.Body == nil && rsp.Context != nil && string(rsp.Context) == StopRequest {
-		sw.State().Set(StateInvalid)
+		sw.State().Set(internal.StateInvalid)
 		err = sw.Stop(bCtx)
 		if err != nil {
-			sp.events.Push(WorkerEvent{Event: EventWorkerError, Worker: sw, Payload: errors.E(op, err)})
+			sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: errors.E(op, err)})
 		}
 
 		return sp.Exec(rqs)
@@ -228,7 +231,7 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload
 	if sp.cfg.MaxJobs != 0 && sw.State().NumExecs() >= sp.cfg.MaxJobs {
 		err = sp.ww.AllocateNew()
 		if err != nil {
-			return EmptyPayload, errors.E(op, err)
+			return internal.Payload{}, errors.E(op, err)
 		}
 	} else {
 		sp.ww.PushWorker(sw)
@@ -244,13 +247,13 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload
 	return rsp, nil
 }
 
-func (sp *StaticPool) getWorker(ctxGetFree context.Context, op errors.Op) (WorkerBase, error) {
+func (sp *StaticPool) getWorker(ctxGetFree context.Context, op errors.Op) (worker.BaseProcess, error) {
 	// GetFreeWorker function consumes context with timeout
 	w, err := sp.ww.GetFreeWorker(ctxGetFree)
 	if err != nil {
 		// if the error is of kind NoFreeWorkers, it means, that we can't get worker from the stack during the allocate timeout
 		if errors.Is(errors.NoFreeWorkers, err) {
-			sp.events.Push(PoolEvent{Event: EventNoFreeWorkers, Payload: errors.E(op, err)})
+			sp.events.Push(events.PoolEvent{Event: events.EventNoFreeWorkers, Payload: errors.E(op, err)})
 			return nil, errors.E(op, err)
 		}
 		// else if err not nil - return error
@@ -265,48 +268,48 @@ func (sp *StaticPool) Destroy(ctx context.Context) {
 }
 
 func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
-	return func(err error, w WorkerBase) (Payload, error) {
+	return func(err error, w worker.BaseProcess) (internal.Payload, error) {
 		const op = errors.Op("error encoder")
 		// soft job errors are allowed
 		if errors.Is(errors.ErrSoftJob, err) {
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
 				err = sp.ww.AllocateNew()
 				if err != nil {
-					sp.events.Push(PoolEvent{Event: EventWorkerConstruct, Payload: errors.E(op, err)})
+					sp.events.Push(events.PoolEvent{Event: events.EventWorkerConstruct, Payload: errors.E(op, err)})
 				}
 
-				w.State().Set(StateInvalid)
+				w.State().Set(internal.StateInvalid)
 				err = w.Stop(bCtx)
 				if err != nil {
-					sp.events.Push(WorkerEvent{Event: EventWorkerError, Worker: w, Payload: errors.E(op, err)})
+					sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: errors.E(op, err)})
 				}
 			} else {
 				sp.ww.PushWorker(w)
 			}
 
-			return EmptyPayload, errors.E(op, err)
+			return internal.Payload{}, errors.E(op, err)
 		}
 
-		w.State().Set(StateInvalid)
-		sp.events.Push(PoolEvent{Event: EventWorkerDestruct, Payload: w})
+		w.State().Set(internal.StateInvalid)
+		sp.events.Push(events.PoolEvent{Event: events.EventWorkerDestruct, Payload: w})
 		errS := w.Stop(bCtx)
 
 		if errS != nil {
-			return EmptyPayload, errors.E(op, errors.Errorf("%v, %v", err, errS))
+			return internal.Payload{}, errors.E(op, errors.Errorf("%v, %v", err, errS))
 		}
 
-		return EmptyPayload, errors.E(op, err)
+		return internal.Payload{}, errors.E(op, err)
 	}
 }
 
-func newPoolAllocator(factory Factory, cmd func() *exec.Cmd) Allocator {
-	return func() (WorkerBase, error) {
+func newPoolAllocator(factory worker.Factory, cmd func() *exec.Cmd) worker.Allocator {
+	return func() (worker.BaseProcess, error) {
 		w, err := factory.SpawnWorkerWithContext(bCtx, cmd())
 		if err != nil {
 			return nil, err
 		}
 
-		sw, err := NewSyncWorker(w)
+		sw, err := syncWorker.From(w)
 		if err != nil {
 			return nil, err
 		}
@@ -314,25 +317,25 @@ func newPoolAllocator(factory Factory, cmd func() *exec.Cmd) Allocator {
 	}
 }
 
-func (sp *StaticPool) execDebug(p Payload) (Payload, error) {
+func (sp *StaticPool) execDebug(p internal.Payload) (internal.Payload, error) {
 	sw, err := sp.allocator()
 	if err != nil {
-		return EmptyPayload, err
+		return internal.Payload{}, err
 	}
 
-	r, err := sw.(SyncWorker).Exec(p)
+	r, err := sw.(worker.SyncWorker).Exec(p)
 
 	if stopErr := sw.Stop(context.Background()); stopErr != nil {
-		sp.events.Push(WorkerEvent{Event: EventWorkerError, Worker: sw, Payload: err})
+		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: err})
 	}
 
 	return r, err
 }
 
 // allocate required number of stack
-func (sp *StaticPool) allocateWorkers(ctx context.Context, numWorkers int64) ([]WorkerBase, error) {
+func (sp *StaticPool) allocateWorkers(ctx context.Context, numWorkers int64) ([]worker.BaseProcess, error) {
 	const op = errors.Op("allocate workers")
-	var workers []WorkerBase
+	var workers []worker.BaseProcess
 
 	// constant number of stack simplify logic
 	for i := int64(0); i < numWorkers; i++ {

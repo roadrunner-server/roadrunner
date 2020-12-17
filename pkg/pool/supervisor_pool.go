@@ -1,4 +1,4 @@
-package roadrunner
+package pool
 
 import (
 	"context"
@@ -6,27 +6,31 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/util"
+	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
+	"github.com/spiral/roadrunner/v2/interfaces/pool"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/internal"
 )
 
 const MB = 1024 * 1024
 
-type SupervisedPool interface {
-	Pool
+type Supervised interface {
+	pool.Pool
 	// Start used to start watching process for all pool workers
 	Start()
 }
 
-type supervisedPool struct {
+type supervised struct {
 	cfg    *SupervisorConfig
-	events util.EventsHandler
-	pool   Pool
+	events events.Handler
+	pool   pool.Pool
 	stopCh chan struct{}
 	mu     *sync.RWMutex
 }
 
-func newPoolWatcher(pool Pool, events util.EventsHandler, cfg *SupervisorConfig) SupervisedPool {
-	sp := &supervisedPool{
+func newPoolWatcher(pool pool.Pool, events events.Handler, cfg *SupervisorConfig) Supervised {
+	sp := &supervised{
 		cfg:    cfg,
 		events: events,
 		pool:   pool,
@@ -38,10 +42,10 @@ func newPoolWatcher(pool Pool, events util.EventsHandler, cfg *SupervisorConfig)
 
 type ttlExec struct {
 	err error
-	p   Payload
+	p   internal.Payload
 }
 
-func (sp *supervisedPool) ExecWithContext(ctx context.Context, rqs Payload) (Payload, error) {
+func (sp *supervised) ExecWithContext(ctx context.Context, rqs internal.Payload) (internal.Payload, error) {
 	const op = errors.Op("exec_supervised")
 	if sp.cfg.ExecTTL == 0 {
 		return sp.pool.Exec(rqs)
@@ -55,7 +59,7 @@ func (sp *supervisedPool) ExecWithContext(ctx context.Context, rqs Payload) (Pay
 		if err != nil {
 			c <- ttlExec{
 				err: errors.E(op, err),
-				p:   EmptyPayload,
+				p:   internal.Payload{},
 			}
 		}
 
@@ -68,10 +72,10 @@ func (sp *supervisedPool) ExecWithContext(ctx context.Context, rqs Payload) (Pay
 	for {
 		select {
 		case <-ctx.Done():
-			return EmptyPayload, errors.E(op, errors.TimeOut, ctx.Err())
+			return internal.Payload{}, errors.E(op, errors.TimeOut, ctx.Err())
 		case res := <-c:
 			if res.err != nil {
-				return EmptyPayload, res.err
+				return internal.Payload{}, res.err
 			}
 
 			return res.p, nil
@@ -79,38 +83,38 @@ func (sp *supervisedPool) ExecWithContext(ctx context.Context, rqs Payload) (Pay
 	}
 }
 
-func (sp *supervisedPool) Exec(p Payload) (Payload, error) {
+func (sp *supervised) Exec(p internal.Payload) (internal.Payload, error) {
 	const op = errors.Op("supervised exec")
 	rsp, err := sp.pool.Exec(p)
 	if err != nil {
-		return EmptyPayload, errors.E(op, err)
+		return internal.Payload{}, errors.E(op, err)
 	}
 	return rsp, nil
 }
 
-func (sp *supervisedPool) AddListener(listener util.EventListener) {
+func (sp *supervised) AddListener(listener events.EventListener) {
 	sp.pool.AddListener(listener)
 }
 
-func (sp *supervisedPool) GetConfig() PoolConfig {
+func (sp *supervised) GetConfig() interface{} {
 	return sp.pool.GetConfig()
 }
 
-func (sp *supervisedPool) Workers() (workers []WorkerBase) {
+func (sp *supervised) Workers() (workers []worker.BaseProcess) {
 	sp.mu.Lock()
 	defer sp.mu.Unlock()
 	return sp.pool.Workers()
 }
 
-func (sp *supervisedPool) RemoveWorker(worker WorkerBase) error {
+func (sp *supervised) RemoveWorker(worker worker.BaseProcess) error {
 	return sp.pool.RemoveWorker(worker)
 }
 
-func (sp *supervisedPool) Destroy(ctx context.Context) {
+func (sp *supervised) Destroy(ctx context.Context) {
 	sp.pool.Destroy(ctx)
 }
 
-func (sp *supervisedPool) Start() {
+func (sp *supervised) Start() {
 	go func() {
 		watchTout := time.NewTicker(time.Second * time.Duration(sp.cfg.WatchTick))
 		for {
@@ -128,11 +132,11 @@ func (sp *supervisedPool) Start() {
 	}()
 }
 
-func (sp *supervisedPool) Stop() {
+func (sp *supervised) Stop() {
 	sp.stopCh <- struct{}{}
 }
 
-func (sp *supervisedPool) control() {
+func (sp *supervised) control() {
 	now := time.Now()
 	const op = errors.Op("supervised pool control tick")
 
@@ -140,11 +144,11 @@ func (sp *supervisedPool) control() {
 	workers := sp.pool.Workers()
 
 	for i := 0; i < len(workers); i++ {
-		if workers[i].State().Value() == StateInvalid {
+		if workers[i].State().Value() == internal.StateInvalid {
 			continue
 		}
 
-		s, err := WorkerProcessState(workers[i])
+		s, err := roadrunner.WorkerProcessState(workers[i])
 		if err != nil {
 			// worker not longer valid for supervision
 			continue
@@ -153,27 +157,27 @@ func (sp *supervisedPool) control() {
 		if sp.cfg.TTL != 0 && now.Sub(workers[i].Created()).Seconds() >= float64(sp.cfg.TTL) {
 			err = sp.pool.RemoveWorker(workers[i])
 			if err != nil {
-				sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
+				sp.events.Push(events.PoolEvent{Event: events.EventSupervisorError, Payload: errors.E(op, err)})
 				return
 			}
-			sp.events.Push(PoolEvent{Event: EventTTL, Payload: workers[i]})
+			sp.events.Push(events.PoolEvent{Event: events.EventTTL, Payload: workers[i]})
 			continue
 		}
 
 		if sp.cfg.MaxWorkerMemory != 0 && s.MemoryUsage >= sp.cfg.MaxWorkerMemory*MB {
 			err = sp.pool.RemoveWorker(workers[i])
 			if err != nil {
-				sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
+				sp.events.Push(events.PoolEvent{Event: events.EventSupervisorError, Payload: errors.E(op, err)})
 				return
 			}
-			sp.events.Push(PoolEvent{Event: EventMaxMemory, Payload: workers[i]})
+			sp.events.Push(events.PoolEvent{Event: events.EventMaxMemory, Payload: workers[i]})
 			continue
 		}
 
 		// firs we check maxWorker idle
 		if sp.cfg.IdleTTL != 0 {
 			// then check for the worker state
-			if workers[i].State().Value() != StateReady {
+			if workers[i].State().Value() != internal.StateReady {
 				continue
 			}
 
@@ -194,10 +198,10 @@ func (sp *supervisedPool) control() {
 			if sp.cfg.IdleTTL-uint64(res) <= 0 {
 				err = sp.pool.RemoveWorker(workers[i])
 				if err != nil {
-					sp.events.Push(PoolEvent{Event: EventSupervisorError, Payload: errors.E(op, err)})
+					sp.events.Push(events.PoolEvent{Event: events.EventSupervisorError, Payload: errors.E(op, err)})
 					return
 				}
-				sp.events.Push(PoolEvent{Event: EventIdleTTL, Payload: workers[i]})
+				sp.events.Push(events.PoolEvent{Event: events.EventIdleTTL, Payload: workers[i]})
 			}
 		}
 	}

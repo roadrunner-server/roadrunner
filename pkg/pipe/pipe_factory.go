@@ -1,4 +1,4 @@
-package roadrunner
+package pipe
 
 import (
 	"context"
@@ -6,33 +6,36 @@ import (
 
 	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v3"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/internal"
+	workerImpl "github.com/spiral/roadrunner/v2/pkg/worker"
 	"go.uber.org/multierr"
 )
 
-// PipeFactory connects to stack using standard
+// Factory connects to stack using standard
 // streams (STDIN, STDOUT pipes).
-type PipeFactory struct{}
+type Factory struct{}
 
 // NewPipeFactory returns new factory instance and starts
 // listening
 
 // todo: review tests
-func NewPipeFactory() Factory {
-	return &PipeFactory{}
+func NewPipeFactory() worker.Factory {
+	return &Factory{}
 }
 
 type SpawnResult struct {
-	w   WorkerBase
+	w   worker.BaseProcess
 	err error
 }
 
-// SpawnWorker creates new WorkerProcess and connects it to goridge relay,
+// SpawnWorker creates new Process and connects it to goridge relay,
 // method Wait() must be handled on level above.
-func (f *PipeFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd) (WorkerBase, error) {
+func (f *Factory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd) (worker.BaseProcess, error) {
 	c := make(chan SpawnResult)
 	const op = errors.Op("spawn worker with context")
 	go func() {
-		w, err := InitBaseWorker(cmd)
+		w, err := workerImpl.InitBaseWorker(cmd)
 		if err != nil {
 			c <- SpawnResult{
 				w:   nil,
@@ -76,7 +79,7 @@ func (f *PipeFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd)
 		}
 
 		// errors bundle
-		pid, err := fetchPID(relay)
+		pid, err := internal.FetchPID(relay)
 		if pid != w.Pid() || err != nil {
 			err = multierr.Combine(
 				err,
@@ -91,7 +94,7 @@ func (f *PipeFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd)
 		}
 
 		// everything ok, set ready state
-		w.State().Set(StateReady)
+		w.State().Set(internal.StateReady)
 
 		// return worker
 		c <- SpawnResult{
@@ -111,9 +114,9 @@ func (f *PipeFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd)
 	}
 }
 
-func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
+func (f *Factory) SpawnWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
 	const op = errors.Op("spawn worker")
-	w, err := InitBaseWorker(cmd)
+	w, err := workerImpl.InitBaseWorker(cmd)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
@@ -141,7 +144,7 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 	}
 
 	// errors bundle
-	if pid, err := fetchPID(relay); pid != w.Pid() {
+	if pid, err := internal.FetchPID(relay); pid != w.Pid() {
 		err = multierr.Combine(
 			err,
 			w.Kill(),
@@ -151,11 +154,11 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 	}
 
 	// everything ok, set ready state
-	w.State().Set(StateReady)
+	w.State().Set(internal.StateReady)
 	return w, nil
 }
 
 // Close the factory.
-func (f *PipeFactory) Close(ctx context.Context) error {
+func (f *Factory) Close(ctx context.Context) error {
 	return nil
 }

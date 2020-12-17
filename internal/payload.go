@@ -1,4 +1,4 @@
-package roadrunner
+package internal
 
 // Payload carries binary header and body to stack and
 // back to the server.

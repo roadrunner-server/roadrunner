@@ -386,7 +386,7 @@ func TestReloadCopy3k(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	tt := time.NewTimer(time.Second * 180)
+	tt := time.NewTimer(time.Second * 220)
 
 	go func() {
 		defer wg.Done()
@@ -429,7 +429,7 @@ func TestReloadCopy3k(t *testing.T) {
 	t.Run("ReloadMake3kFiles", reloadMake3kFiles)
 	ttt := time.Now()
 	t.Run("ReloadCopyFiles", reloadCopyFiles)
-	if time.Since(ttt).Seconds() > 100 {
+	if time.Since(ttt).Seconds() > 120 {
 		t.Fatal("spend too much time on copy")
 	}
 

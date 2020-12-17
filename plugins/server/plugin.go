@@ -8,9 +8,14 @@ import (
 	"strings"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
+	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/interfaces/server"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/pkg/pipe"
+	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
+	"github.com/spiral/roadrunner/v2/pkg/socket"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/util"
 )
@@ -21,7 +26,7 @@ const PluginName = "server"
 type Plugin struct {
 	cfg     Config
 	log     log.Logger
-	factory roadrunner.Factory
+	factory worker.Factory
 }
 
 // Init application provider.
@@ -93,7 +98,7 @@ func (server *Plugin) CmdFactory(env server.Env) (func() *exec.Cmd, error) {
 }
 
 // NewWorker issues new standalone worker.
-func (server *Plugin) NewWorker(ctx context.Context, env server.Env) (roadrunner.WorkerBase, error) {
+func (server *Plugin) NewWorker(ctx context.Context, env server.Env) (worker.BaseProcess, error) {
 	const op = errors.Op("new worker")
 	spawnCmd, err := server.CmdFactory(env)
 	if err != nil {
@@ -111,13 +116,13 @@ func (server *Plugin) NewWorker(ctx context.Context, env server.Env) (roadrunner
 }
 
 // NewWorkerPool issues new worker pool.
-func (server *Plugin) NewWorkerPool(ctx context.Context, opt roadrunner.PoolConfig, env server.Env) (roadrunner.Pool, error) {
+func (server *Plugin) NewWorkerPool(ctx context.Context, opt poolImpl.Config, env server.Env) (pool.Pool, error) {
 	spawnCmd, err := server.CmdFactory(env)
 	if err != nil {
 		return nil, err
 	}
 
-	p, err := roadrunner.NewPool(ctx, spawnCmd, server.factory, opt)
+	p, err := poolImpl.NewPool(ctx, spawnCmd, server.factory, opt)
 	if err != nil {
 		return nil, err
 	}
@@ -128,10 +133,10 @@ func (server *Plugin) NewWorkerPool(ctx context.Context, opt roadrunner.PoolConf
 }
 
 // creates relay and worker factory.
-func (server *Plugin) initFactory() (roadrunner.Factory, error) {
+func (server *Plugin) initFactory() (worker.Factory, error) {
 	const op = errors.Op("network factory init")
 	if server.cfg.Relay == "" || server.cfg.Relay == "pipes" {
-		return roadrunner.NewPipeFactory(), nil
+		return pipe.NewPipeFactory(), nil
 	}
 
 	dsn := strings.Split(server.cfg.Relay, "://")
@@ -147,9 +152,9 @@ func (server *Plugin) initFactory() (roadrunner.Factory, error) {
 	switch dsn[0] {
 	// sockets group
 	case "unix":
-		return roadrunner.NewSocketServer(lsn, server.cfg.RelayTimeout), nil
+		return socket.NewSocketServer(lsn, server.cfg.RelayTimeout), nil
 	case "tcp":
-		return roadrunner.NewSocketServer(lsn, server.cfg.RelayTimeout), nil
+		return socket.NewSocketServer(lsn, server.cfg.RelayTimeout), nil
 	default:
 		return nil, errors.E(op, errors.Network, errors.Str("invalid DSN (tcp://:6001, unix://file.sock)"))
 	}
@@ -165,12 +170,12 @@ func (server *Plugin) setEnv(e server.Env) []string {
 }
 
 func (server *Plugin) collectLogs(event interface{}) {
-	if we, ok := event.(roadrunner.WorkerEvent); ok {
+	if we, ok := event.(events.WorkerEvent); ok {
 		switch we.Event {
-		case roadrunner.EventWorkerError:
-			server.log.Error(we.Payload.(error).Error(), "pid", we.Worker.Pid())
-		case roadrunner.EventWorkerLog:
-			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.Pid())
+		case events.EventWorkerError:
+			server.log.Error(we.Payload.(error).Error(), "pid", we.Worker.(worker.BaseProcess).Pid())
+		case events.EventWorkerLog:
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.(worker.BaseProcess).Pid())
 		}
 	}
 }

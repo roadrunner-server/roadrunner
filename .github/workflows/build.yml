@@ -14,7 +14,7 @@ jobs:
   golang:
     name: Build (Go ${{ matrix.go }}, PHP ${{ matrix.php }}, OS ${{matrix.os}})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -65,7 +65,11 @@ jobs:
       - name: Run golang tests on Windows without codecov
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          go test -v -race -cover -tags=debug .
+          go test -v -race -cover -tags=debug ./pkg/pipe
+          go test -v -race -cover -tags=debug ./pkg/pool
+          go test -v -race -cover -tags=debug ./pkg/socket
+          go test -v -race -cover -tags=debug ./pkg/worker
+          go test -v -race -cover -tags=debug ./pkg/worker_watcher
           go test -v -race -cover -tags=debug ./plugins/rpc
           go test -v -race -cover -tags=debug ./plugins/rpc/tests
           go test -v -race -cover -tags=debug ./plugins/config/tests
@@ -86,7 +90,11 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
         run: |
           mkdir ./coverage-ci
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/lib.txt -covermode=atomic .
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/pipe
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pool.txt -covermode=atomic ./pkg/pool
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/socket
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/worker.txt -covermode=atomic ./pkg/worker
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/worker_watcher.txt -covermode=atomic ./pkg/worker_watcher
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/rpc_config.txt -covermode=atomic ./plugins/rpc
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/rpc.txt -covermode=atomic ./plugins/rpc/tests
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/plugin_config.txt -covermode=atomic ./plugins/config/tests

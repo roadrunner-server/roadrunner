@@ -1,76 +1,40 @@
-package roadrunner
+package pool
 
 import (
 	"context"
 	"runtime"
 	"time"
 
-	"github.com/spiral/roadrunner/v2/util"
-)
-
-// PoolEvent triggered by pool on different events. Pool as also trigger WorkerEvent in case of log.
-type PoolEvent struct {
-	// Event type, see below.
-	Event int64
-
-	// Payload depends on event type, typically it's worker or error.
-	Payload interface{}
-}
-
-const (
-	// EventWorkerConstruct thrown when new worker is spawned.
-	EventWorkerConstruct = iota + 7800
-
-	// EventWorkerDestruct thrown after worker destruction.
-	EventWorkerDestruct
-
-	// EventPoolError caused on pool wide errors.
-	EventPoolError
-
-	// EventSupervisorError triggered when supervisor can not complete work.
-	EventSupervisorError
-
-	// EventNoFreeWorkers triggered when there are no free workers in the stack and timeout for worker allocate elapsed
-	EventNoFreeWorkers
-
-	// todo: EventMaxMemory caused when worker consumes more memory than allowed.
-	EventMaxMemory
-
-	// todo: EventTTL thrown when worker is removed due TTL being reached. Context is rr.WorkerError
-	EventTTL
-
-	// todo: EventIdleTTL triggered when worker spends too much time at rest.
-	EventIdleTTL
-
-	// todo: EventExecTTL triggered when worker spends too much time doing the task (max_execution_time).
-	EventExecTTL
+	"github.com/spiral/roadrunner/v2/interfaces/events"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/internal"
 )
 
 // Pool managed set of inner worker processes.
 type Pool interface {
 	// AddListener connects event listener to the pool.
-	AddListener(listener util.EventListener)
+	AddListener(listener events.EventListener)
 
 	// GetConfig returns pool configuration.
-	GetConfig() PoolConfig
+	GetConfig() interface{}
 
 	// Exec
-	Exec(rqs Payload) (Payload, error)
+	Exec(rqs internal.Payload) (internal.Payload, error)
 
-	ExecWithContext(ctx context.Context, rqs Payload) (Payload, error)
+	ExecWithContext(ctx context.Context, rqs internal.Payload) (internal.Payload, error)
 
 	// Workers returns worker list associated with the pool.
-	Workers() (workers []WorkerBase)
+	Workers() (workers []worker.BaseProcess)
 
 	// Remove worker from the pool.
-	RemoveWorker(worker WorkerBase) error
+	RemoveWorker(worker worker.BaseProcess) error
 
 	// Destroy all underlying stack (but let them to complete the task).
 	Destroy(ctx context.Context)
 }
 
 // Configures the pool behaviour.
-type PoolConfig struct {
+type Config struct {
 	// Debug flag creates new fresh worker before every request.
 	Debug bool
 
@@ -96,7 +60,7 @@ type PoolConfig struct {
 }
 
 // InitDefaults enables default config values.
-func (cfg *PoolConfig) InitDefaults() {
+func (cfg *Config) InitDefaults() {
 	if cfg.NumWorkers == 0 {
 		cfg.NumWorkers = int64(runtime.NumCPU())
 	}

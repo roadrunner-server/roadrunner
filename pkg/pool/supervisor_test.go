@@ -1,4 +1,4 @@
-package roadrunner
+package pool
 
 import (
 	"context"
@@ -6,10 +6,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/pipe"
 	"github.com/stretchr/testify/assert"
 )
 
-var cfgSupervised = PoolConfig{
+var cfgSupervised = Config{
 	NumWorkers:      int64(1),
 	AllocateTimeout: time.Second,
 	DestroyTimeout:  time.Second,
@@ -26,8 +29,8 @@ func TestSupervisedPool_Exec(t *testing.T) {
 	ctx := context.Background()
 	p, err := NewPool(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "tests/memleak.php", "pipes") },
-		NewPipeFactory(),
+		func() *exec.Cmd { return exec.Command("php", "../../tests/memleak.php", "pipes") },
+		pipe.NewPipeFactory(),
 		cfgSupervised,
 	)
 
@@ -44,7 +47,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 			default:
 				workers := p.Workers()
 				if len(workers) > 0 {
-					s, err := WorkerProcessState(workers[0])
+					s, err := roadrunner.WorkerProcessState(workers[0])
 					assert.NoError(t, err)
 					assert.NotNil(t, s)
 					// since this is soft limit, double max memory limit watch
@@ -58,7 +61,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 
 	for i := 0; i < 100; i++ {
 		time.Sleep(time.Millisecond * 50)
-		_, err = p.Exec(Payload{
+		_, err = p.Exec(internal.Payload{
 			Context: []byte(""),
 			Body:    []byte("foo"),
 		})
@@ -69,7 +72,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 }
 
 func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
-	var cfgExecTTL = PoolConfig{
+	var cfgExecTTL = Config{
 		NumWorkers:      int64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
@@ -84,8 +87,8 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 	ctx := context.Background()
 	p, err := NewPool(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "tests/sleep.php", "pipes") },
-		NewPipeFactory(),
+		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep.php", "pipes") },
+		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)
 
@@ -95,7 +98,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 
 	pid := p.Workers()[0].Pid()
 
-	resp, err := p.ExecWithContext(context.Background(), Payload{
+	resp, err := p.ExecWithContext(context.Background(), internal.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -109,7 +112,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 }
 
 func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
-	var cfgExecTTL = PoolConfig{
+	var cfgExecTTL = Config{
 		NumWorkers:      int64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
@@ -124,8 +127,8 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	ctx := context.Background()
 	p, err := NewPool(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "tests/sleep.php", "pipes") },
-		NewPipeFactory(),
+		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep.php", "pipes") },
+		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)
 
@@ -136,7 +139,7 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	pid := p.Workers()[0].Pid()
 
 	time.Sleep(time.Millisecond * 100)
-	resp, err := p.Exec(Payload{
+	resp, err := p.Exec(internal.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})

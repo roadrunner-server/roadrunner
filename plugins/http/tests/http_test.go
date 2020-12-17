@@ -19,6 +19,7 @@ import (
 	"github.com/spiral/endure"
 	"github.com/spiral/goridge/v3"
 	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/mocks"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
@@ -821,7 +822,7 @@ func TestHttpMiddleware(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
-	tt := time.NewTimer(time.Second * 15)
+	tt := time.NewTimer(time.Second * 20)
 
 	go func() {
 		defer wg.Done()
@@ -900,7 +901,7 @@ func TestHttpEchoErr(t *testing.T) {
 
 	mockLogger.EXPECT().Debug("http handler response received", "elapsed", gomock.Any(), "remote address", "127.0.0.1")
 	mockLogger.EXPECT().Debug("WORLD", "pid", gomock.Any())
-	mockLogger.EXPECT().Debug("worker event received", "event", roadrunner.EventWorkerLog, "worker state", gomock.Any())
+	mockLogger.EXPECT().Debug("worker event received", "event", events.EventWorkerLog, "worker state", gomock.Any())
 
 	err = cont.RegisterAll(
 		cfg,

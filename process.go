@@ -3,6 +3,7 @@ package roadrunner
 import (
 	"github.com/shirou/gopsutil/process"
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
 )
 
 // ProcessState provides information about specific worker.
@@ -25,7 +26,7 @@ type ProcessState struct {
 }
 
 // WorkerProcessState creates new worker state definition.
-func WorkerProcessState(w WorkerBase) (ProcessState, error) {
+func WorkerProcessState(w worker.BaseProcess) (ProcessState, error) {
 	const op = errors.Op("worker_process state")
 	p, _ := process.NewProcess(int32(w.Pid()))
 	i, err := p.MemoryInfo()
@@ -40,19 +41,4 @@ func WorkerProcessState(w WorkerBase) (ProcessState, error) {
 		Created:     w.Created().UnixNano(),
 		MemoryUsage: i.RSS,
 	}, nil
-}
-
-// ServerState returns list of all worker states of a given rr server.
-func PoolState(pool Pool) ([]ProcessState, error) {
-	result := make([]ProcessState, 0)
-	for _, w := range pool.Workers() {
-		state, err := WorkerProcessState(w)
-		if err != nil {
-			return nil, err
-		}
-
-		result = append(result, state)
-	}
-
-	return result, nil
 }

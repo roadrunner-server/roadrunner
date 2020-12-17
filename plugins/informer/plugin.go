@@ -3,9 +3,9 @@ package informer
 import (
 	"github.com/spiral/endure"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/informer"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
 )
 
 const PluginName = "informer"
@@ -21,8 +21,8 @@ func (p *Plugin) Init(log log.Logger) error {
 	return nil
 }
 
-// Workers provides WorkerBase slice with workers for the requested plugin
-func (p *Plugin) Workers(name string) ([]roadrunner.WorkerBase, error) {
+// Workers provides BaseProcess slice with workers for the requested plugin
+func (p *Plugin) Workers(name string) ([]worker.BaseProcess, error) {
 	const op = errors.Op("get workers")
 	svc, ok := p.registry[name]
 	if !ok {

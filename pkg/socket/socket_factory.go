@@ -1,4 +1,4 @@
-package roadrunner
+package socket
 
 import (
 	"context"
@@ -9,14 +9,17 @@ import (
 
 	"github.com/shirou/gopsutil/process"
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/internal"
+	workerImpl "github.com/spiral/roadrunner/v2/pkg/worker"
 
 	"github.com/spiral/goridge/v3"
 	"go.uber.org/multierr"
 	"golang.org/x/sync/errgroup"
 )
 
-// SocketFactory connects to external stack using socket server.
-type SocketFactory struct {
+// Factory connects to external stack using socket server.
+type Factory struct {
 	// listens for incoming connections from underlying processes
 	ls net.Listener
 
@@ -32,10 +35,10 @@ type SocketFactory struct {
 
 // todo: review
 
-// NewSocketServer returns SocketFactory attached to a given socket listener.
+// NewSocketServer returns Factory attached to a given socket listener.
 // tout specifies for how long factory should serve for incoming relay connection
-func NewSocketServer(ls net.Listener, tout time.Duration) Factory {
-	f := &SocketFactory{
+func NewSocketServer(ls net.Listener, tout time.Duration) worker.Factory {
+	f := &Factory{
 		ls:     ls,
 		tout:   tout,
 		relays: sync.Map{},
@@ -53,7 +56,7 @@ func NewSocketServer(ls net.Listener, tout time.Duration) Factory {
 }
 
 // blocking operation, returns an error
-func (f *SocketFactory) listen() error {
+func (f *Factory) listen() error {
 	errGr := &errgroup.Group{}
 	errGr.Go(func() error {
 		for {
@@ -63,7 +66,7 @@ func (f *SocketFactory) listen() error {
 			}
 
 			rl := goridge.NewSocketRelay(conn)
-			pid, err := fetchPID(rl)
+			pid, err := internal.FetchPID(rl)
 			if err != nil {
 				return err
 			}
@@ -76,18 +79,18 @@ func (f *SocketFactory) listen() error {
 }
 
 type socketSpawn struct {
-	w   WorkerBase
+	w   worker.BaseProcess
 	err error
 }
 
-// SpawnWorker creates WorkerProcess and connects it to appropriate relay or returns error
-func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd) (WorkerBase, error) {
+// SpawnWorker creates Process and connects it to appropriate relay or returns error
+func (f *Factory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd) (worker.BaseProcess, error) {
 	const op = errors.Op("spawn_worker_with_context")
 	c := make(chan socketSpawn)
 	go func() {
 		ctx, cancel := context.WithTimeout(ctx, f.tout)
 		defer cancel()
-		w, err := InitBaseWorker(cmd)
+		w, err := workerImpl.InitBaseWorker(cmd)
 		if err != nil {
 			c <- socketSpawn{
 				w:   nil,
@@ -121,7 +124,7 @@ func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cm
 		}
 
 		w.AttachRelay(rl)
-		w.State().Set(StateReady)
+		w.State().Set(internal.StateReady)
 
 		c <- socketSpawn{
 			w:   w,
@@ -141,9 +144,9 @@ func (f *SocketFactory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cm
 	}
 }
 
-func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
+func (f *Factory) SpawnWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
 	const op = errors.Op("spawn_worker")
-	w, err := InitBaseWorker(cmd)
+	w, err := workerImpl.InitBaseWorker(cmd)
 	if err != nil {
 		return nil, err
 	}
@@ -164,18 +167,18 @@ func (f *SocketFactory) SpawnWorker(cmd *exec.Cmd) (WorkerBase, error) {
 	}
 
 	w.AttachRelay(rl)
-	w.State().Set(StateReady)
+	w.State().Set(internal.StateReady)
 
 	return w, nil
 }
 
 // Close socket factory and underlying socket connection.
-func (f *SocketFactory) Close(ctx context.Context) error {
+func (f *Factory) Close(ctx context.Context) error {
 	return f.ls.Close()
 }
 
-// waits for WorkerProcess to connect over socket and returns associated relay of timeout
-func (f *SocketFactory) findRelayWithContext(ctx context.Context, w WorkerBase) (*goridge.SocketRelay, error) {
+// waits for Process to connect over socket and returns associated relay of timeout
+func (f *Factory) findRelayWithContext(ctx context.Context, w worker.BaseProcess) (*goridge.SocketRelay, error) {
 	ticker := time.NewTicker(time.Millisecond * 100)
 	for {
 		select {
@@ -196,7 +199,7 @@ func (f *SocketFactory) findRelayWithContext(ctx context.Context, w WorkerBase) 
 	}
 }
 
-func (f *SocketFactory) findRelay(w WorkerBase) (*goridge.SocketRelay, error) {
+func (f *Factory) findRelay(w worker.BaseProcess) (*goridge.SocketRelay, error) {
 	const op = errors.Op("find_relay")
 	// poll every 1ms for the relay
 	pollDone := time.NewTimer(f.tout)
@@ -215,11 +218,11 @@ func (f *SocketFactory) findRelay(w WorkerBase) (*goridge.SocketRelay, error) {
 }
 
 // chan to store relay associated with specific pid
-func (f *SocketFactory) attachRelayToPid(pid int64, relay goridge.Relay) {
+func (f *Factory) attachRelayToPid(pid int64, relay goridge.Relay) {
 	f.relays.Store(pid, relay)
 }
 
 // deletes relay chan associated with specific pid
-func (f *SocketFactory) removeRelayFromPid(pid int64) {
+func (f *Factory) removeRelayFromPid(pid int64) {
 	f.relays.Delete(pid)
 }

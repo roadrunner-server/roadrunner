@@ -1,4 +1,4 @@
-package roadrunner
+package worker
 
 import (
 	"bytes"
@@ -6,110 +6,101 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/util"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/internal"
 	"go.uber.org/multierr"
 
 	"github.com/spiral/goridge/v3"
 )
 
-var EmptyPayload = Payload{}
-
-type SyncWorker interface {
-	// WorkerBase provides basic functionality for the SyncWorker
-	WorkerBase
-	// Exec used to execute payload on the SyncWorker, there is no TIMEOUTS
-	Exec(rqs Payload) (Payload, error)
-	// ExecWithContext used to handle Exec with TTL
-	ExecWithContext(ctx context.Context, p Payload) (Payload, error)
-}
-
 type syncWorker struct {
-	w WorkerBase
+	w worker.BaseProcess
 }
 
-// NewSyncWorker creates SyncWorker from WorkerBasa
-func NewSyncWorker(w WorkerBase) (SyncWorker, error) {
+// From creates SyncWorker from WorkerBasa
+func From(w worker.BaseProcess) (worker.SyncWorker, error) {
 	return &syncWorker{
 		w: w,
 	}, nil
 }
 
 // Exec payload without TTL timeout.
-func (tw *syncWorker) Exec(p Payload) (Payload, error) {
+func (tw *syncWorker) Exec(p internal.Payload) (internal.Payload, error) {
 	const op = errors.Op("sync worker Exec")
 	if len(p.Body) == 0 && len(p.Context) == 0 {
-		return EmptyPayload, errors.E(op, errors.Str("payload can not be empty"))
+		return internal.Payload{}, errors.E(op, errors.Str("payload can not be empty"))
 	}
 
-	if tw.w.State().Value() != StateReady {
-		return EmptyPayload, errors.E(op, errors.Errorf("WorkerProcess is not ready (%s)", tw.w.State().String()))
+	if tw.w.State().Value() != internal.StateReady {
+		return internal.Payload{}, errors.E(op, errors.Errorf("Process is not ready (%s)", tw.w.State().String()))
 	}
 
 	// set last used time
 	tw.w.State().SetLastUsed(uint64(time.Now().UnixNano()))
-	tw.w.State().Set(StateWorking)
+	tw.w.State().Set(internal.StateWorking)
 
 	rsp, err := tw.execPayload(p)
 	if err != nil {
 		// just to be more verbose
 		if errors.Is(errors.ErrSoftJob, err) == false {
-			tw.w.State().Set(StateErrored)
+			tw.w.State().Set(internal.StateErrored)
 			tw.w.State().RegisterExec()
 		}
-		return EmptyPayload, err
+		return internal.Payload{}, err
 	}
 
-	tw.w.State().Set(StateReady)
+	tw.w.State().Set(internal.StateReady)
 	tw.w.State().RegisterExec()
 
 	return rsp, nil
 }
 
 type wexec struct {
-	payload Payload
+	payload internal.Payload
 	err     error
 }
 
 // Exec payload without TTL timeout.
-func (tw *syncWorker) ExecWithContext(ctx context.Context, p Payload) (Payload, error) {
+func (tw *syncWorker) ExecWithContext(ctx context.Context, p internal.Payload) (internal.Payload, error) {
 	const op = errors.Op("ExecWithContext")
 	c := make(chan wexec, 1)
 	go func() {
 		if len(p.Body) == 0 && len(p.Context) == 0 {
 			c <- wexec{
-				payload: EmptyPayload,
+				payload: internal.Payload{},
 				err:     errors.E(op, errors.Str("payload can not be empty")),
 			}
 			return
 		}
 
-		if tw.w.State().Value() != StateReady {
+		if tw.w.State().Value() != internal.StateReady {
 			c <- wexec{
-				payload: EmptyPayload,
-				err:     errors.E(op, errors.Errorf("WorkerProcess is not ready (%s)", tw.w.State().String())),
+				payload: internal.Payload{},
+				err:     errors.E(op, errors.Errorf("Process is not ready (%s)", tw.w.State().String())),
 			}
 			return
 		}
 
 		// set last used time
 		tw.w.State().SetLastUsed(uint64(time.Now().UnixNano()))
-		tw.w.State().Set(StateWorking)
+		tw.w.State().Set(internal.StateWorking)
 
 		rsp, err := tw.execPayload(p)
 		if err != nil {
 			// just to be more verbose
 			if errors.Is(errors.ErrSoftJob, err) == false {
-				tw.w.State().Set(StateErrored)
+				tw.w.State().Set(internal.StateErrored)
 				tw.w.State().RegisterExec()
 			}
 			c <- wexec{
-				payload: EmptyPayload,
+				payload: internal.Payload{},
 				err:     errors.E(op, err),
 			}
 			return
 		}
 
-		tw.w.State().Set(StateReady)
+		tw.w.State().Set(internal.StateReady)
 		tw.w.State().RegisterExec()
 
 		c <- wexec{
@@ -122,18 +113,18 @@ func (tw *syncWorker) ExecWithContext(ctx context.Context, p Payload) (Payload, 
 	case <-ctx.Done():
 		err := multierr.Combine(tw.Kill())
 		if err != nil {
-			return EmptyPayload, multierr.Append(err, ctx.Err())
+			return internal.Payload{}, multierr.Append(err, ctx.Err())
 		}
-		return EmptyPayload, ctx.Err()
+		return internal.Payload{}, ctx.Err()
 	case res := <-c:
 		if res.err != nil {
-			return EmptyPayload, res.err
+			return internal.Payload{}, res.err
 		}
 		return res.payload, nil
 	}
 }
 
-func (tw *syncWorker) execPayload(p Payload) (Payload, error) {
+func (tw *syncWorker) execPayload(p internal.Payload) (internal.Payload, error) {
 	const op = errors.Op("exec payload")
 
 	frame := goridge.NewFrame()
@@ -156,35 +147,35 @@ func (tw *syncWorker) execPayload(p Payload) (Payload, error) {
 
 	err := tw.Relay().Send(frame)
 	if err != nil {
-		return EmptyPayload, err
+		return internal.Payload{}, err
 	}
 
 	frameR := goridge.NewFrame()
 
 	err = tw.w.Relay().Receive(frameR)
 	if err != nil {
-		return EmptyPayload, errors.E(op, err)
+		return internal.Payload{}, errors.E(op, err)
 	}
 	if frameR == nil {
-		return EmptyPayload, errors.E(op, errors.Str("nil frame received"))
+		return internal.Payload{}, errors.E(op, errors.Str("nil frame received"))
 	}
 
 	if !frameR.VerifyCRC() {
-		return EmptyPayload, errors.E(op, errors.Str("failed to verify CRC"))
+		return internal.Payload{}, errors.E(op, errors.Str("failed to verify CRC"))
 	}
 
 	flags := frameR.ReadFlags()
 
 	if flags&byte(goridge.ERROR) != byte(0) {
-		return EmptyPayload, errors.E(op, errors.ErrSoftJob, errors.Str(string(frameR.Payload())))
+		return internal.Payload{}, errors.E(op, errors.ErrSoftJob, errors.Str(string(frameR.Payload())))
 	}
 
 	options := frameR.ReadOptions()
 	if len(options) != 1 {
-		return EmptyPayload, errors.E(op, errors.Str("options length should be equal 1 (body offset)"))
+		return internal.Payload{}, errors.E(op, errors.Str("options length should be equal 1 (body offset)"))
 	}
 
-	payload := Payload{}
+	payload := internal.Payload{}
 	payload.Context = frameR.Payload()[:options[0]]
 	payload.Body = frameR.Payload()[options[0]:]
 
@@ -203,11 +194,11 @@ func (tw *syncWorker) Created() time.Time {
 	return tw.w.Created()
 }
 
-func (tw *syncWorker) AddListener(listener util.EventListener) {
+func (tw *syncWorker) AddListener(listener events.EventListener) {
 	tw.w.AddListener(listener)
 }
 
-func (tw *syncWorker) State() State {
+func (tw *syncWorker) State() internal.State {
 	return tw.w.State()
 }
 

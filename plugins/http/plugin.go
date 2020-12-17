@@ -15,10 +15,13 @@ import (
 	"github.com/hashicorp/go-multierror"
 	"github.com/spiral/endure"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
-	factory "github.com/spiral/roadrunner/v2/interfaces/server"
+	"github.com/spiral/roadrunner/v2/interfaces/pool"
+	"github.com/spiral/roadrunner/v2/interfaces/server"
 	"github.com/spiral/roadrunner/v2/interfaces/status"
+	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 	"github.com/spiral/roadrunner/v2/util"
@@ -47,17 +50,17 @@ type Plugin struct {
 	sync.Mutex
 
 	configurer config.Configurer
-	server     factory.Server
+	server     server.Server
 	log        log.Logger
 
 	cfg *Config
 	// middlewares to chain
 	mdwr middleware
-	// Event listener to stdout
-	listener util.EventListener
+	// WorkerEvent listener to stdout
+	listener events.EventListener
 
 	// Pool which attached to all servers
-	pool roadrunner.Pool
+	pool pool.Pool
 
 	// servers RR handler
 	handler Handle
@@ -69,7 +72,7 @@ type Plugin struct {
 }
 
 // AddListener attaches server event controller.
-func (s *Plugin) AddListener(listener util.EventListener) {
+func (s *Plugin) AddListener(listener events.EventListener) {
 	// save listeners for Reset
 	s.listener = listener
 	s.pool.AddListener(listener)
@@ -77,7 +80,7 @@ func (s *Plugin) AddListener(listener util.EventListener) {
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Server) error {
+func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server server.Server) error {
 	const op = errors.Op("http Init")
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
@@ -97,7 +100,7 @@ func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server factory.Serv
 		return errors.E(op, errors.Disabled)
 	}
 
-	s.pool, err = server.NewWorkerPool(context.Background(), roadrunner.PoolConfig{
+	s.pool, err = server.NewWorkerPool(context.Background(), poolImpl.Config{
 		Debug:           s.cfg.Pool.Debug,
 		NumWorkers:      s.cfg.Pool.NumWorkers,
 		MaxJobs:         s.cfg.Pool.MaxJobs,
@@ -122,8 +125,8 @@ func (s *Plugin) logCallback(event interface{}) {
 		s.log.Debug("http handler response received", "elapsed", ev.Elapsed().String(), "remote address", ev.Request.RemoteAddr)
 	case ErrorEvent:
 		s.log.Error("error event received", "elapsed", ev.Elapsed().String(), "error", ev.Error)
-	case roadrunner.WorkerEvent:
-		s.log.Debug("worker event received", "event", ev.Event, "worker state", ev.Worker.State())
+	case events.WorkerEvent:
+		s.log.Debug("worker event received", "event", ev.Event, "worker state", ev.Worker.(worker.BaseProcess).State())
 	default:
 		fmt.Println(event)
 	}
@@ -284,7 +287,7 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // Server returns associated pool workers
-func (s *Plugin) Workers() []roadrunner.WorkerBase {
+func (s *Plugin) Workers() []worker.BaseProcess {
 	return s.pool.Workers()
 }
 
@@ -305,7 +308,7 @@ func (s *Plugin) Reset() error {
 		return errors.E(op, err)
 	}
 
-	s.pool, err = s.server.NewWorkerPool(context.Background(), roadrunner.PoolConfig{
+	s.pool, err = s.server.NewWorkerPool(context.Background(), poolImpl.Config{
 		Debug:           s.cfg.Pool.Debug,
 		NumWorkers:      s.cfg.Pool.NumWorkers,
 		MaxJobs:         s.cfg.Pool.MaxJobs,
