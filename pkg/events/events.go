@@ -1,4 +1,4 @@
-package util
+package events
 
 import (
 	"sync"
@@ -30,6 +30,8 @@ func (eb *EventHandler) AddListener(listener events.EventListener) {
 
 // Push broadcast events across all event listeners.
 func (eb *EventHandler) Push(e interface{}) {
+	eb.Lock()
+	defer eb.Unlock()
 	for k := range eb.listeners {
 		eb.listeners[k](e)
 	}

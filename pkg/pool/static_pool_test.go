@@ -175,7 +175,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
-	block := make(chan struct{})
+	block := make(chan struct{}, 1)
 
 	p.AddListener(func(event interface{}) {
 		if wev, ok := event.(events.WorkerEvent); ok {

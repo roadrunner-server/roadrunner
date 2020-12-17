@@ -279,13 +279,11 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 	const op = errors.Op("process wait")
 	err := w.Wait()
 	if err != nil {
-		ww.mutex.Lock()
 		ww.events.Push(events.WorkerEvent{
 			Event:   events.EventWorkerError,
 			Worker:  w,
 			Payload: errors.E(op, err),
 		})
-		ww.mutex.Unlock()
 	}
 
 	if w.State().Value() == internal.StateDestroyed {
@@ -296,12 +294,10 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 	_ = ww.stack.FindAndRemoveByPid(w.Pid())
 	err = ww.AllocateNew()
 	if err != nil {
-		ww.mutex.Lock()
 		ww.events.Push(events.PoolEvent{
 			Event:   events.EventPoolError,
 			Payload: errors.E(op, err),
 		})
-		ww.mutex.Unlock()
 	}
 }
 

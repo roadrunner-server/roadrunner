@@ -13,12 +13,11 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
+	"github.com/spiral/goridge/v3"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
-	"github.com/spiral/roadrunner/v2/util"
-
-	"github.com/spiral/goridge/v3"
+	events2 "github.com/spiral/roadrunner/v2/pkg/events"
 	"go.uber.org/multierr"
 )
 
@@ -89,7 +88,7 @@ func InitBaseWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
 	}
 	w := &Process{
 		created: time.Now(),
-		events:  util.NewEventsHandler(),
+		events:  events2.NewEventsHandler(),
 		cmd:     cmd,
 		state:   internal.NewWorkerState(internal.StateInactive),
 		stderr:  new(bytes.Buffer),

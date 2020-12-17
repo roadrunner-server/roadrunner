@@ -9,9 +9,9 @@ import (
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
+	events2 "github.com/spiral/roadrunner/v2/pkg/events"
 	syncWorker "github.com/spiral/roadrunner/v2/pkg/worker"
 	workerWatcher "github.com/spiral/roadrunner/v2/pkg/worker_watcher"
-	"github.com/spiral/roadrunner/v2/util"
 )
 
 // StopRequest can be sent by worker to indicate that restart is required.
@@ -71,7 +71,7 @@ func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory worker.Factory, 
 		cfg:     cfg,
 		cmd:     cmd,
 		factory: factory,
-		events:  util.NewEventsHandler(),
+		events:  events2.NewEventsHandler(),
 		after:   make([]After, 0, 0),
 		before:  make([]Before, 0, 0),
 	}
