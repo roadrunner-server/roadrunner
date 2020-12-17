@@ -79,7 +79,7 @@ func NewPool(ctx context.Context, cmd func() *exec.Cmd, factory worker.Factory, 
 	p.allocator = newPoolAllocator(factory, cmd)
 	p.ww = workerWatcher.NewWorkerWatcher(p.allocator, p.cfg.NumWorkers, p.events)
 
-	workers, err := p.allocateWorkers(ctx, p.cfg.NumWorkers)
+	workers, err := p.allocateSyncWorkers(ctx, p.cfg.NumWorkers)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
@@ -333,11 +333,12 @@ func (sp *StaticPool) execDebug(p internal.Payload) (internal.Payload, error) {
 }
 
 // allocate required number of stack
-func (sp *StaticPool) allocateWorkers(ctx context.Context, numWorkers int64) ([]worker.BaseProcess, error) {
+func (sp *StaticPool) allocateSyncWorkers(ctx context.Context, numWorkers int64) ([]worker.BaseProcess, error) {
 	const op = errors.Op("allocate workers")
 	var workers []worker.BaseProcess
 
 	// constant number of stack simplify logic
+	// TODO do not allocate context on every loop cycle??
 	for i := int64(0); i < numWorkers; i++ {
 		ctx, cancel := context.WithTimeout(ctx, sp.cfg.AllocateTimeout)
 		w, err := sp.factory.SpawnWorkerWithContext(ctx, sp.cmd())
@@ -345,7 +346,12 @@ func (sp *StaticPool) allocateWorkers(ctx context.Context, numWorkers int64) ([]
 			cancel()
 			return nil, errors.E(op, errors.WorkerAllocate, err)
 		}
-		workers = append(workers, w)
+		sw, err := syncWorker.From(w)
+		if err != nil {
+			cancel()
+			return nil, errors.E(op, err)
+		}
+		workers = append(workers, sw)
 		cancel()
 	}
 	return workers, nil

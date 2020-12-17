@@ -11,7 +11,7 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/internal"
-	workerImpl "github.com/spiral/roadrunner/v2/pkg/worker"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -146,7 +146,7 @@ func Test_Pipe_Echo(t *testing.T) {
 		}
 	}()
 
-	sw, err := workerImpl.From(w)
+	sw, err := worker.From(w)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -174,7 +174,7 @@ func Test_Pipe_Broken(t *testing.T) {
 		assert.Error(t, err)
 	}()
 
-	sw, err := workerImpl.From(w)
+	sw, err := worker.From(w)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -208,7 +208,7 @@ func Benchmark_Pipe_Worker_ExecEcho(b *testing.B) {
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 
 	w, _ := NewPipeFactory().SpawnWorkerWithContext(context.Background(), cmd)
-	sw, err := workerImpl.From(w)
+	sw, err := worker.From(w)
 	if err != nil {
 		b.Fatal(err)
 	}
@@ -249,7 +249,7 @@ func Benchmark_Pipe_Worker_ExecEcho3(b *testing.B) {
 		}
 	}()
 
-	sw, err := workerImpl.From(w)
+	sw, err := worker.From(w)
 	if err != nil {
 		b.Fatal(err)
 	}
@@ -276,7 +276,7 @@ func Benchmark_Pipe_Worker_ExecEchoWithoutContext(b *testing.B) {
 		}
 	}()
 
-	sw, err := workerImpl.From(w)
+	sw, err := worker.From(w)
 	if err != nil {
 		b.Fatal(err)
 	}
@@ -297,7 +297,7 @@ func Test_Echo(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	syncWorker, err := workerImpl.From(w)
+	syncWorker, err := worker.From(w)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -327,7 +327,7 @@ func Test_BadPayload(t *testing.T) {
 
 	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
 
-	syncWorker, err := workerImpl.From(w)
+	syncWorker, err := worker.From(w)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -386,7 +386,7 @@ func Test_Echo_Slow(t *testing.T) {
 		}
 	}()
 
-	syncWorker, err := workerImpl.From(w)
+	syncWorker, err := worker.From(w)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -420,7 +420,7 @@ func Test_Broken(t *testing.T) {
 		}
 	})
 
-	syncWorker, err := workerImpl.From(w)
+	syncWorker, err := worker.From(w)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -455,7 +455,7 @@ func Test_Error(t *testing.T) {
 		}
 	}()
 
-	syncWorker, err := workerImpl.From(w)
+	syncWorker, err := worker.From(w)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -486,7 +486,7 @@ func Test_NumExecs(t *testing.T) {
 		}
 	}()
 
-	syncWorker, err := workerImpl.From(w)
+	syncWorker, err := worker.From(w)
 	if err != nil {
 		t.Fatal(err)
 	}

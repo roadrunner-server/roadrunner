@@ -65,6 +65,7 @@ jobs:
       - name: Run golang tests on Windows without codecov
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
+          go test -v -race -cover -tags=debug ./util
           go test -v -race -cover -tags=debug ./pkg/pipe
           go test -v -race -cover -tags=debug ./pkg/pool
           go test -v -race -cover -tags=debug ./pkg/socket
@@ -90,6 +91,7 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
         run: |
           mkdir ./coverage-ci
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/util.txt -covermode=atomic ./util
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/pipe
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pool.txt -covermode=atomic ./pkg/pool
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/socket

@@ -24,6 +24,7 @@ uninstall: ## Uninstall locally installed RR
 	rm -f /usr/local/bin/rr
 
 test: ## Run application tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./util
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/pipe
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/pool
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/socket
