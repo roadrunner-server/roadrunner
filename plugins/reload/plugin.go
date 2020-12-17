@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
+	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/interfaces/resetter"
-	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
 // PluginName contains default plugin name.
@@ -25,7 +25,7 @@ type Plugin struct {
 }
 
 // Init controller service
-func (s *Plugin) Init(cfg config.Configurer, log log.Logger, res resetter.Resetter) error {
+func (s *Plugin) Init(cfg config2.Configurer, log log.Logger, res resetter.Resetter) error {
 	const op = errors.Op("reload plugin init")
 	s.cfg = &Config{}
 	InitDefaults(s.cfg)

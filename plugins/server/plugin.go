@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/spiral/errors"
+	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
@@ -16,7 +17,6 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/pipe"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/socket"
-	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/util"
 )
 
@@ -30,7 +30,7 @@ type Plugin struct {
 }
 
 // Init application provider.
-func (server *Plugin) Init(cfg config.Configurer, log log.Logger) error {
+func (server *Plugin) Init(cfg config2.Configurer, log log.Logger) error {
 	const op = errors.Op("Init")
 	err := cfg.UnmarshalKey(PluginName, &server.cfg)
 	if err != nil {

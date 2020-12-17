@@ -7,6 +7,7 @@ require (
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/fatih/color v1.10.0
 	github.com/go-ole/go-ole v1.2.4 // indirect
+	github.com/go-redis/redis/v8 v8.4.4
 	github.com/gofiber/fiber/v2 v2.2.3
 	github.com/golang/mock v1.4.4
 	github.com/hashicorp/go-multierror v1.1.0

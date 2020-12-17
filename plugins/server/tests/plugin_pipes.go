@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
+	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/interfaces/server"
 	"github.com/spiral/roadrunner/v2/internal"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
-	"github.com/spiral/roadrunner/v2/plugins/config"
 	plugin "github.com/spiral/roadrunner/v2/plugins/server"
 )
 
@@ -32,12 +32,12 @@ var testPoolConfig = poolImpl.Config{
 }
 
 type Foo struct {
-	configProvider config.Configurer
+	configProvider config2.Configurer
 	wf             server.Server
 	pool           pool.Pool
 }
 
-func (f *Foo) Init(p config.Configurer, workerFactory server.Server) error {
+func (f *Foo) Init(p config2.Configurer, workerFactory server.Server) error {
 	f.configProvider = p
 	f.wf = workerFactory
 	return nil

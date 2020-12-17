@@ -8,9 +8,9 @@ import (
 	"github.com/spiral/endure"
 	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v3"
+	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	rpc_ "github.com/spiral/roadrunner/v2/interfaces/rpc"
-	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
 // PluginName contains default plugin name.
@@ -32,7 +32,7 @@ type Plugin struct {
 }
 
 // Init rpc service. Must return true if service is enabled.
-func (s *Plugin) Init(cfg config.Configurer, log log.Logger) error {
+func (s *Plugin) Init(cfg config2.Configurer, log log.Logger) error {
 	const op = errors.Op("RPC Init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)

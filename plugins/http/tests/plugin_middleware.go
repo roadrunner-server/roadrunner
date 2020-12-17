@@ -3,14 +3,14 @@ package tests
 import (
 	"net/http"
 
-	"github.com/spiral/roadrunner/v2/plugins/config"
+	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
 )
 
 type PluginMiddleware struct {
-	config config.Configurer
+	config config2.Configurer
 }
 
-func (p *PluginMiddleware) Init(cfg config.Configurer) error {
+func (p *PluginMiddleware) Init(cfg config2.Configurer) error {
 	p.config = cfg
 	return nil
 }
@@ -34,10 +34,10 @@ func (p *PluginMiddleware) Name() string {
 }
 
 type PluginMiddleware2 struct {
-	config config.Configurer
+	config config2.Configurer
 }
 
-func (p *PluginMiddleware2) Init(cfg config.Configurer) error {
+func (p *PluginMiddleware2) Init(cfg config2.Configurer) error {
 	p.config = cfg
 	return nil
 }
