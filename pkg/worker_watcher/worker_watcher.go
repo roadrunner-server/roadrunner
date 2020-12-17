@@ -172,7 +172,7 @@ func (ww *workerWatcher) AddToWatch(workers []worker.BaseProcess) error {
 
 		go func(swc worker.BaseProcess) {
 			ww.wait(swc)
-		}(workers[i])
+		}(sw)
 	}
 	return nil
 }
