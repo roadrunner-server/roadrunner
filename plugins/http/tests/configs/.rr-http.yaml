@@ -37,5 +37,8 @@ http:
     enabled: false
     h2c: false
     maxConcurrentStreams: 128
+logs:
+  mode: development
+  level: error
 
 

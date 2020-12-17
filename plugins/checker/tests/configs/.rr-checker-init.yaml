@@ -13,7 +13,9 @@ server:
 
 status:
   address: "127.0.0.1:34333"
-
+logs:
+  mode: development
+  level: error
 http:
   debug: true
   address: 127.0.0.1:11933

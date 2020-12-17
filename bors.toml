@@ -1,10 +1,18 @@
 status = [
-'Build (Go 1.14, PHP 7.4)',
-'Build (Go 1.15, PHP 7.4)',
-'Build (Go 1.14, PHP 8.0)',
-'Build (Go 1.15, PHP 8.0)',
-'Golang-CI (lint)',
-'Build docker image',
+    'Build (Go 1.14, PHP 7.4, OS ubuntu-latest)',
+    'Build (Go 1.14, PHP 7.4, OS windows-latest)',
+    'Build (Go 1.14, PHP 7.4, OS macos-latest)',
+    'Build (Go 1.15, PHP 7.4, OS ubuntu-latest)',
+    'Build (Go 1.15, PHP 7.4, OS windows-latest)',
+    'Build (Go 1.15, PHP 7.4, OS macos-latest)',
+    'Build (Go 1.14, PHP 8.0, OS ubuntu-latest)',
+    'Build (Go 1.14, PHP 8.0, OS windows-latest)',
+    'Build (Go 1.14, PHP 8.0, OS macos-latest)',
+    'Build (Go 1.15, PHP 8.0, OS ubuntu-latest)',
+    'Build (Go 1.15, PHP 8.0, OS windows-latest)',
+    'Build (Go 1.15, PHP 8.0, OS macos-latest)',
+    'Golang-CI (lint)',
+    'Build docker image',
 ]
 
 required_approvals = 1

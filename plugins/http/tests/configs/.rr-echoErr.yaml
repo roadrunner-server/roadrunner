@@ -24,5 +24,7 @@ http:
     maxJobs: 0
     allocateTimeout: 60s
     destroyTimeout: 60s
-
+logs:
+  mode: development
+  level: error
 
