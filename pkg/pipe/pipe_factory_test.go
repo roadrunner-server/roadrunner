@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/internal"
 	workerImpl "github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/stretchr/testify/assert"
@@ -413,7 +413,7 @@ func Test_Broken(t *testing.T) {
 	data := ""
 	mu := &sync.Mutex{}
 	w.AddListener(func(event interface{}) {
-		if wev, ok := event.(worker.Event); ok {
+		if wev, ok := event.(events.WorkerEvent); ok {
 			mu.Lock()
 			data = string(wev.Payload.([]byte))
 			mu.Unlock()

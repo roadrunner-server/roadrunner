@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/interfaces/server"
@@ -169,12 +170,12 @@ func (server *Plugin) setEnv(e server.Env) []string {
 }
 
 func (server *Plugin) collectLogs(event interface{}) {
-	if we, ok := event.(worker.Event); ok {
+	if we, ok := event.(events.WorkerEvent); ok {
 		switch we.Event {
-		case worker.EventWorkerError:
-			server.log.Error(we.Payload.(error).Error(), "pid", we.Worker.Pid())
-		case worker.EventWorkerLog:
-			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.Pid())
+		case events.EventWorkerError:
+			server.log.Error(we.Payload.(error).Error(), "pid", we.Worker.(worker.BaseProcess).Pid())
+		case events.EventWorkerLog:
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.(worker.BaseProcess).Pid())
 		}
 	}
 }

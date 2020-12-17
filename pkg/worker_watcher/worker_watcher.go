@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/pool"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
 	syncWorker "github.com/spiral/roadrunner/v2/pkg/worker"
@@ -140,7 +140,7 @@ func (stack *Stack) Destroy(ctx context.Context) {
 }
 
 // workerCreateFunc can be nil, but in that case, dead stack will not be replaced
-func NewWorkerWatcher(allocator worker.Allocator, numWorkers int64, events worker.EventsHandler) worker.Watcher {
+func NewWorkerWatcher(allocator worker.Allocator, numWorkers int64, events events.Handler) worker.Watcher {
 	ww := &workerWatcher{
 		stack:             NewWorkersStack(),
 		allocator:         allocator,
@@ -158,7 +158,7 @@ type workerWatcher struct {
 	allocator         worker.Allocator
 	initialNumWorkers int64
 	actualNumWorkers  int64
-	events            worker.EventsHandler
+	events            events.Handler
 }
 
 func (ww *workerWatcher) AddToWatch(workers []worker.BaseProcess) error {
@@ -229,8 +229,8 @@ func (ww *workerWatcher) AllocateNew() error {
 	ww.stack.mutex.Unlock()
 	ww.PushWorker(sw)
 
-	ww.events.Push(pool.Event{
-		Event:   pool.EventWorkerConstruct,
+	ww.events.Push(events.PoolEvent{
+		Event:   events.EventWorkerConstruct,
 		Payload: sw,
 	})
 
@@ -279,8 +279,8 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 	const op = errors.Op("process wait")
 	err := w.Wait()
 	if err != nil {
-		ww.events.Push(worker.Event{
-			Event:   worker.EventWorkerError,
+		ww.events.Push(events.WorkerEvent{
+			Event:   events.EventWorkerError,
 			Worker:  w,
 			Payload: errors.E(op, err),
 		})
@@ -294,8 +294,8 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 	_ = ww.stack.FindAndRemoveByPid(w.Pid())
 	err = ww.AllocateNew()
 	if err != nil {
-		ww.events.Push(pool.Event{
-			Event:   pool.EventPoolError,
+		ww.events.Push(events.PoolEvent{
+			Event:   events.EventPoolError,
 			Payload: errors.E(op, err),
 		})
 	}

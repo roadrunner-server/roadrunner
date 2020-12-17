@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/util"
@@ -43,7 +44,7 @@ type Process struct {
 	created time.Time
 
 	// updates parent supervisor or pool about Process events
-	events worker.EventsHandler
+	events events.Handler
 
 	// state holds information about current Process state,
 	// number of Process executions, buf status change time.
@@ -119,7 +120,7 @@ func (w *Process) Created() time.Time {
 }
 
 // AddListener registers new worker event listener.
-func (w *Process) AddListener(listener worker.EventListener) {
+func (w *Process) AddListener(listener events.EventListener) {
 	w.events.AddListener(listener)
 }
 
@@ -279,7 +280,7 @@ func (w *Process) watch() {
 				buf := w.get()
 				// read the last data
 				n, _ := w.rd.Read(*buf)
-				w.events.Push(worker.Event{Event: worker.EventWorkerLog, Worker: w, Payload: (*buf)[:n]})
+				w.events.Push(events.WorkerEvent{Event: events.EventWorkerLog, Worker: w, Payload: (*buf)[:n]})
 				w.mu.Lock()
 				// write new message
 				w.stderr.Write((*buf)[:n])
@@ -290,7 +291,7 @@ func (w *Process) watch() {
 				// read the max 10kb of stderr per one read
 				buf := w.get()
 				n, _ := w.rd.Read(*buf)
-				w.events.Push(worker.Event{Event: worker.EventWorkerLog, Worker: w, Payload: (*buf)[:n]})
+				w.events.Push(events.WorkerEvent{Event: events.EventWorkerLog, Worker: w, Payload: (*buf)[:n]})
 				w.mu.Lock()
 				// write new message
 				w.stderr.Write((*buf)[:n])

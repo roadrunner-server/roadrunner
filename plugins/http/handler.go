@@ -10,9 +10,9 @@ import (
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
 )
 
 const (
@@ -26,7 +26,7 @@ const (
 const MB = 1024 * 1024
 
 type Handle interface {
-	AddListener(l worker.EventListener)
+	AddListener(l events.EventListener)
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
@@ -75,7 +75,7 @@ type handler struct {
 	log            log.Logger
 	pool           pool.Pool
 	mul            sync.Mutex
-	lsn            worker.EventListener
+	lsn            events.EventListener
 }
 
 func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool pool.Pool) (Handle, error) {
@@ -91,7 +91,7 @@ func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool po
 }
 
 // Listen attaches handler event controller.
-func (h *handler) AddListener(l worker.EventListener) {
+func (h *handler) AddListener(l events.EventListener) {
 	h.mul.Lock()
 	defer h.mul.Unlock()
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
@@ -22,13 +23,13 @@ type Supervised interface {
 
 type supervised struct {
 	cfg    *SupervisorConfig
-	events worker.EventsHandler
+	events events.Handler
 	pool   pool.Pool
 	stopCh chan struct{}
 	mu     *sync.RWMutex
 }
 
-func newPoolWatcher(pool pool.Pool, events worker.EventsHandler, cfg *SupervisorConfig) Supervised {
+func newPoolWatcher(pool pool.Pool, events events.Handler, cfg *SupervisorConfig) Supervised {
 	sp := &supervised{
 		cfg:    cfg,
 		events: events,
@@ -91,7 +92,7 @@ func (sp *supervised) Exec(p internal.Payload) (internal.Payload, error) {
 	return rsp, nil
 }
 
-func (sp *supervised) AddListener(listener worker.EventListener) {
+func (sp *supervised) AddListener(listener events.EventListener) {
 	sp.pool.AddListener(listener)
 }
 
@@ -156,20 +157,20 @@ func (sp *supervised) control() {
 		if sp.cfg.TTL != 0 && now.Sub(workers[i].Created()).Seconds() >= float64(sp.cfg.TTL) {
 			err = sp.pool.RemoveWorker(workers[i])
 			if err != nil {
-				sp.events.Push(pool.Event{Event: pool.EventSupervisorError, Payload: errors.E(op, err)})
+				sp.events.Push(events.PoolEvent{Event: events.EventSupervisorError, Payload: errors.E(op, err)})
 				return
 			}
-			sp.events.Push(pool.Event{Event: pool.EventTTL, Payload: workers[i]})
+			sp.events.Push(events.PoolEvent{Event: events.EventTTL, Payload: workers[i]})
 			continue
 		}
 
 		if sp.cfg.MaxWorkerMemory != 0 && s.MemoryUsage >= sp.cfg.MaxWorkerMemory*MB {
 			err = sp.pool.RemoveWorker(workers[i])
 			if err != nil {
-				sp.events.Push(pool.Event{Event: pool.EventSupervisorError, Payload: errors.E(op, err)})
+				sp.events.Push(events.PoolEvent{Event: events.EventSupervisorError, Payload: errors.E(op, err)})
 				return
 			}
-			sp.events.Push(pool.Event{Event: pool.EventMaxMemory, Payload: workers[i]})
+			sp.events.Push(events.PoolEvent{Event: events.EventMaxMemory, Payload: workers[i]})
 			continue
 		}
 
@@ -197,10 +198,10 @@ func (sp *supervised) control() {
 			if sp.cfg.IdleTTL-uint64(res) <= 0 {
 				err = sp.pool.RemoveWorker(workers[i])
 				if err != nil {
-					sp.events.Push(pool.Event{Event: pool.EventSupervisorError, Payload: errors.E(op, err)})
+					sp.events.Push(events.PoolEvent{Event: events.EventSupervisorError, Payload: errors.E(op, err)})
 					return
 				}
-				sp.events.Push(pool.Event{Event: pool.EventIdleTTL, Payload: workers[i]})
+				sp.events.Push(events.PoolEvent{Event: events.EventIdleTTL, Payload: workers[i]})
 			}
 		}
 	}

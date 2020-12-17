@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
 	"go.uber.org/multierr"
@@ -193,7 +194,7 @@ func (tw *syncWorker) Created() time.Time {
 	return tw.w.Created()
 }
 
-func (tw *syncWorker) AddListener(listener worker.EventListener) {
+func (tw *syncWorker) AddListener(listener events.EventListener) {
 	tw.w.AddListener(listener)
 }
 

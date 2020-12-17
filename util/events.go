@@ -1,14 +1,16 @@
 package util
 
-import "github.com/spiral/roadrunner/v2/interfaces/worker"
+import (
+	"github.com/spiral/roadrunner/v2/interfaces/events"
+)
 
 // EventHandler helps to broadcast events to multiple listeners.
 type EventHandler struct {
-	listeners []worker.EventListener
+	listeners []events.EventListener
 }
 
-func NewEventsHandler() worker.EventsHandler {
-	return &EventHandler{listeners: make([]worker.EventListener, 0, 2)}
+func NewEventsHandler() events.Handler {
+	return &EventHandler{listeners: make([]events.EventListener, 0, 2)}
 }
 
 // NumListeners returns number of event listeners.
@@ -17,7 +19,7 @@ func (eb *EventHandler) NumListeners() int {
 }
 
 // AddListener registers new event listener.
-func (eb *EventHandler) AddListener(listener worker.EventListener) {
+func (eb *EventHandler) AddListener(listener events.EventListener) {
 	eb.listeners = append(eb.listeners, listener)
 }
 

@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/go-multierror"
 	"github.com/spiral/endure"
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/interfaces/server"
@@ -55,8 +56,8 @@ type Plugin struct {
 	cfg *Config
 	// middlewares to chain
 	mdwr middleware
-	// Event listener to stdout
-	listener worker.EventListener
+	// WorkerEvent listener to stdout
+	listener events.EventListener
 
 	// Pool which attached to all servers
 	pool pool.Pool
@@ -71,7 +72,7 @@ type Plugin struct {
 }
 
 // AddListener attaches server event controller.
-func (s *Plugin) AddListener(listener worker.EventListener) {
+func (s *Plugin) AddListener(listener events.EventListener) {
 	// save listeners for Reset
 	s.listener = listener
 	s.pool.AddListener(listener)
@@ -124,8 +125,8 @@ func (s *Plugin) logCallback(event interface{}) {
 		s.log.Debug("http handler response received", "elapsed", ev.Elapsed().String(), "remote address", ev.Request.RemoteAddr)
 	case ErrorEvent:
 		s.log.Error("error event received", "elapsed", ev.Elapsed().String(), "error", ev.Error)
-	case worker.Event:
-		s.log.Debug("worker event received", "event", ev.Event, "worker state", ev.Worker.State())
+	case events.WorkerEvent:
+		s.log.Debug("worker event received", "event", ev.Event, "worker state", ev.Worker.(worker.BaseProcess).State())
 	default:
 		fmt.Println(event)
 	}

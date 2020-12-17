@@ -12,8 +12,7 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/pool"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/pipe"
 	"github.com/stretchr/testify/assert"
@@ -179,8 +178,8 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	block := make(chan struct{})
 
 	p.AddListener(func(event interface{}) {
-		if wev, ok := event.(worker.Event); ok {
-			if wev.Event == worker.EventWorkerLog {
+		if wev, ok := event.(events.WorkerEvent); ok {
+			if wev.Event == events.EventWorkerLog {
 				e := string(wev.Payload.([]byte))
 				if strings.ContainsAny(e, "undefined_function()") {
 					block <- struct{}{}
@@ -227,8 +226,8 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	p.AddListener(func(event interface{}) {
-		if pe, ok := event.(pool.Event); ok {
-			if pe.Event == pool.EventWorkerConstruct {
+		if pe, ok := event.(events.PoolEvent); ok {
+			if pe.Event == events.EventWorkerConstruct {
 				wg.Done()
 			}
 		}
