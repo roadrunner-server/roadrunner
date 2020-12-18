@@ -11,6 +11,7 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/payload"
 	workerImpl "github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/stretchr/testify/assert"
 )
@@ -151,7 +152,7 @@ func Test_Pipe_Echo(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := sw.Exec(internal.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -179,7 +180,7 @@ func Test_Pipe_Broken(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := sw.Exec(internal.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
 	assert.Nil(t, res.Body)
@@ -228,7 +229,7 @@ func Benchmark_Pipe_Worker_ExecEcho(b *testing.B) {
 	}()
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(internal.Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.Exec(payload.Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}
@@ -255,7 +256,7 @@ func Benchmark_Pipe_Worker_ExecEcho3(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(internal.Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.Exec(payload.Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}
@@ -282,7 +283,7 @@ func Benchmark_Pipe_Worker_ExecEchoWithoutContext(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(internal.Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.Exec(payload.Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}
@@ -311,7 +312,7 @@ func Test_Echo(t *testing.T) {
 		}
 	}()
 
-	res, err := syncWorker.Exec(internal.Payload{Body: []byte("hello")})
+	res, err := syncWorker.Exec(payload.Payload{Body: []byte("hello")})
 
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -342,7 +343,7 @@ func Test_BadPayload(t *testing.T) {
 		}
 	}()
 
-	res, err := syncWorker.Exec(internal.Payload{})
+	res, err := syncWorker.Exec(payload.Payload{})
 
 	assert.Error(t, err)
 	assert.Nil(t, res.Body)
@@ -391,7 +392,7 @@ func Test_Echo_Slow(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := syncWorker.Exec(internal.Payload{Body: []byte("hello")})
+	res, err := syncWorker.Exec(payload.Payload{Body: []byte("hello")})
 
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -425,7 +426,7 @@ func Test_Broken(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := syncWorker.Exec(internal.Payload{Body: []byte("hello")})
+	res, err := syncWorker.Exec(payload.Payload{Body: []byte("hello")})
 	assert.NotNil(t, err)
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
@@ -460,7 +461,7 @@ func Test_Error(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := syncWorker.Exec(internal.Payload{Body: []byte("hello")})
+	res, err := syncWorker.Exec(payload.Payload{Body: []byte("hello")})
 	assert.NotNil(t, err)
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
@@ -491,19 +492,19 @@ func Test_NumExecs(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = syncWorker.Exec(internal.Payload{Body: []byte("hello")})
+	_, err = syncWorker.Exec(payload.Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}
 	assert.Equal(t, int64(1), w.State().NumExecs())
 
-	_, err = syncWorker.Exec(internal.Payload{Body: []byte("hello")})
+	_, err = syncWorker.Exec(payload.Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}
 	assert.Equal(t, int64(2), w.State().NumExecs())
 
-	_, err = syncWorker.Exec(internal.Payload{Body: []byte("hello")})
+	_, err = syncWorker.Exec(payload.Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}

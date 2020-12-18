@@ -6,7 +6,7 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/interfaces/server"
-	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	plugin "github.com/spiral/roadrunner/v2/plugins/server"
@@ -31,7 +31,7 @@ func (f *Foo2) Serve() chan error {
 	conf := &plugin.Config{}
 
 	// test payload for echo
-	r := internal.Payload{
+	r := payload.Payload{
 		Context: nil,
 		Body:    []byte(Response),
 	}

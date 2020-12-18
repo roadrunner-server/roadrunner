@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/spiral/roadrunner/v2"
-	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/pkg/pipe"
 	"github.com/stretchr/testify/assert"
 )
@@ -61,7 +61,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 
 	for i := 0; i < 100; i++ {
 		time.Sleep(time.Millisecond * 50)
-		_, err = p.Exec(internal.Payload{
+		_, err = p.Exec(payload.Payload{
 			Context: []byte(""),
 			Body:    []byte("foo"),
 		})
@@ -98,7 +98,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 
 	pid := p.Workers()[0].Pid()
 
-	resp, err := p.ExecWithContext(context.Background(), internal.Payload{
+	resp, err := p.ExecWithContext(context.Background(), payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -139,7 +139,7 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	pid := p.Workers()[0].Pid()
 
 	time.Sleep(time.Millisecond * 100)
-	resp, err := p.Exec(internal.Payload{
+	resp, err := p.Exec(payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})

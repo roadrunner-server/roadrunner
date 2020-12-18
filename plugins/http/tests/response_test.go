@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/payload"
 	http2 "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/stretchr/testify/assert"
 )
@@ -45,13 +45,13 @@ func (tw *testWriter) Push(target string, opts *http.PushOptions) error {
 }
 
 func TestNewResponse_Error(t *testing.T) {
-	r, err := http2.NewResponse(internal.Payload{Context: []byte(`invalid payload`)})
+	r, err := http2.NewResponse(payload.Payload{Context: []byte(`invalid payload`)})
 	assert.Error(t, err)
 	assert.Nil(t, r)
 }
 
 func TestNewResponse_Write(t *testing.T) {
-	r, err := http2.NewResponse(internal.Payload{
+	r, err := http2.NewResponse(payload.Payload{
 		Context: []byte(`{"headers":{"key":["value"]},"status": 301}`),
 		Body:    []byte(`sample body`),
 	})
@@ -68,7 +68,7 @@ func TestNewResponse_Write(t *testing.T) {
 }
 
 func TestNewResponse_Stream(t *testing.T) {
-	r, err := http2.NewResponse(internal.Payload{
+	r, err := http2.NewResponse(payload.Payload{
 		Context: []byte(`{"headers":{"key":["value"]},"status": 301}`),
 	})
 
@@ -92,7 +92,7 @@ func TestNewResponse_Stream(t *testing.T) {
 }
 
 func TestNewResponse_StreamError(t *testing.T) {
-	r, err := http2.NewResponse(internal.Payload{
+	r, err := http2.NewResponse(payload.Payload{
 		Context: []byte(`{"headers":{"key":["value"]},"status": 301}`),
 	})
 
@@ -112,7 +112,7 @@ func TestNewResponse_StreamError(t *testing.T) {
 }
 
 func TestWrite_HandlesPush(t *testing.T) {
-	r, err := http2.NewResponse(internal.Payload{
+	r, err := http2.NewResponse(payload.Payload{
 		Context: []byte(`{"headers":{"Http2-Push":["/test.js"],"content-type":["text/html"]},"status": 200}`),
 	})
 
@@ -127,7 +127,7 @@ func TestWrite_HandlesPush(t *testing.T) {
 }
 
 func TestWrite_HandlesTrailers(t *testing.T) {
-	r, err := http2.NewResponse(internal.Payload{
+	r, err := http2.NewResponse(payload.Payload{
 		Context: []byte(`{"headers":{"Trailer":["foo, bar", "baz"],"foo":["test"],"bar":["demo"]},"status": 200}`),
 	})
 
@@ -146,7 +146,7 @@ func TestWrite_HandlesTrailers(t *testing.T) {
 }
 
 func TestWrite_HandlesHandlesWhitespacesInTrailer(t *testing.T) {
-	r, err := http2.NewResponse(internal.Payload{
+	r, err := http2.NewResponse(payload.Payload{
 		Context: []byte(
 			`{"headers":{"Trailer":["foo\t,bar  ,    baz"],"foo":["a"],"bar":["b"],"baz":["c"]},"status": 200}`),
 	})

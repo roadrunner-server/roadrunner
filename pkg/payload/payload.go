@@ -1,4 +1,4 @@
-package internal
+package payload
 
 // Payload carries binary header and body to stack and
 // back to the server.
