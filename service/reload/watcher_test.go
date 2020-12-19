@@ -209,13 +209,10 @@ func Test_FileExtensionFilter(t *testing.T) {
 
 	go func() {
 		go func() {
-			err2 := ioutil.WriteFile(filepath.Join(tempDir, "file3.txt"),
+			time.Sleep(time.Second)
+			err := ioutil.WriteFile(filepath.Join(tempDir, "file3.txt"),
 				[]byte{1, 1, 1}, 0755)
-			if err2 != nil {
-				panic(err2)
-			}
-
-			runtime.Goexit()
+			assert.NoError(t, err)
 		}()
 
 		go func() {
@@ -224,8 +221,8 @@ func Test_FileExtensionFilter(t *testing.T) {
 				panic("handled event from filtered file")
 			}
 		}()
+		time.Sleep(time.Second)
 		w.Stop()
-		runtime.Goexit()
 	}()
 
 	err = w.StartPolling(time.Second)
