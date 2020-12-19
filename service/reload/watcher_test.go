@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -61,36 +60,21 @@ func Test_Correct_Watcher_Init(t *testing.T) {
 // change file and see, if event had come to handler
 func Test_Get_FileEvent(t *testing.T) {
 	tempDir, err := ioutil.TempDir(".", "")
-	c := make(chan struct{})
 	defer func(name string) {
 		err = freeResources(name)
-		if err != nil {
-			c <- struct{}{}
-			t.Fatal(err)
-		}
-		c <- struct{}{}
+		assert.NoError(t, err)
 	}(tempDir)
-
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file1.txt"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	assert.NoError(t, err)
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file2.txt"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file3.txt"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	wc := WatcherConfig{
 		ServiceName:  testServiceName,
@@ -103,42 +87,42 @@ func Test_Get_FileEvent(t *testing.T) {
 	}
 
 	w, err := NewWatcher([]WatcherConfig{wc})
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	// should be 3 files and directory
 	if len(w.GetAllFiles(testServiceName)) != 4 {
 		t.Fatal("incorrect directories len")
 	}
 
-	go limitTime(time.Second*10, t.Name(), c)
-
 	go func() {
+		stop := make(chan struct{}, 1)
 		go func() {
-			time.Sleep(time.Second)
-			err2 := ioutil.WriteFile(filepath.Join(tempDir, "file2.txt"),
+			time.Sleep(time.Second * 2)
+			err := ioutil.WriteFile(filepath.Join(tempDir, "file2.txt"),
 				[]byte{1, 1, 1}, 0755)
-			if err2 != nil {
-				panic(err2)
-			}
-			runtime.Goexit()
+			assert.NoError(t, err)
+			time.Sleep(time.Second)
+			stop <- struct{}{}
 		}()
 
 		go func() {
-			for e := range w.Event {
-				if e.Path != "file2.txt" {
-					panic("didn't handle event when write file2")
+			for {
+				select {
+				case e := <-w.Event:
+					if e.Path != "file2.txt" {
+						assert.Fail(t, "didn't handle event when write file2")
+					}
+					w.Stop()
+				case <-stop:
+					return
 				}
-				w.Stop()
 			}
+
 		}()
 	}()
 
 	err = w.StartPolling(time.Second)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 }
 
 // scenario
@@ -205,8 +189,6 @@ func Test_FileExtensionFilter(t *testing.T) {
 		t.Fatalf("incorrect directories len, len is: %d", dirLen)
 	}
 
-	go limitTime(time.Second*10, t.Name(), c)
-
 	go func() {
 		stop := make(chan struct{}, 1)
 		go func() {
@@ -220,7 +202,7 @@ func Test_FileExtensionFilter(t *testing.T) {
 		go func() {
 			select {
 			case <-w.Event:
-				panic("handled event from filtered file")
+				assert.Fail(t, "handled event from filtered file")
 			case <-stop:
 				return
 			}
@@ -290,21 +272,31 @@ func Test_Recursive_Support(t *testing.T) {
 	}
 
 	go func() {
+		stop := make(chan struct{}, 1)
 		// time sleep is used here because StartPolling is blocking operation
 		time.Sleep(time.Second * 5)
 		// change file in nested directory
 		err = ioutil.WriteFile(filepath.Join(nestedDir, "file4.aaa"),
 			[]byte{1, 1, 1}, 0755)
 		assert.NoError(t, err)
+
 		go func() {
 			time.Sleep(time.Second)
-			for e := range w.Event {
-				if e.Info.Name() != "file4.aaa" {
-					panic("wrong handled event from watcher in nested dir")
+			for {
+				select {
+				case e := <-w.Event:
+					if e.Info.Name() != "file4.aaa" {
+						assert.Fail(t, "wrong handled event from watcher in nested dir")
+					}
+				case <-stop:
+					w.Stop()
+					return
 				}
-				w.Stop()
 			}
 		}()
+
+		time.Sleep(time.Second)
+		stop <- struct{}{}
 	}()
 
 	err = w.StartPolling(time.Second)
@@ -338,17 +330,10 @@ func Test_Wrong_Dir(t *testing.T) {
 
 func Test_Filter_Directory(t *testing.T) {
 	tempDir, err := ioutil.TempDir(".", "")
-	c := make(chan struct{})
 	defer func(name string) {
 		err = freeResources(name)
-		if err != nil {
-			c <- struct{}{}
-			t.Fatal(err)
-		}
-		c <- struct{}{}
+		assert.NoError(t, err)
 	}(tempDir)
-
-	go limitTime(time.Second*10, t.Name(), c)
 
 	nestedDir, err := ioutil.TempDir(tempDir, "nested")
 	assert.NoError(t, err)
@@ -401,24 +386,28 @@ func Test_Filter_Directory(t *testing.T) {
 	}
 
 	go func() {
+		stop := make(chan struct{}, 1)
 		go func() {
+			time.Sleep(time.Second)
 			err := ioutil.WriteFile(filepath.Join(nestedDir, "file4.aaa"),
 				[]byte{1, 1, 1}, 0755)
 			assert.NoError(t, err)
 		}()
 
 		go func() {
-			time.Sleep(time.Second)
-			for e := range w.Event {
+			select {
+			case e := <-w.Event:
 				fmt.Println("file: " + e.Info.Name())
-				panic("handled event from watcher in nested dir")
+				assert.Fail(t, "handled event from watcher in nested dir")
+			case <-stop:
+				w.Stop()
+				return
 			}
 		}()
 
 		// time sleep is used here because StartPolling is blocking operation
 		time.Sleep(time.Second * 5)
-		w.Stop()
-
+		stop <- struct{}{}
 	}()
 
 	err = w.StartPolling(time.Second)
@@ -431,17 +420,11 @@ func Test_Filter_Directory(t *testing.T) {
 // should fire an event
 func Test_Copy_Directory(t *testing.T) {
 	tempDir, err := ioutil.TempDir(".", "")
-	c := make(chan struct{})
+
 	defer func() {
 		err = freeResources(tempDir)
-		if err != nil {
-			c <- struct{}{}
-			t.Fatal(err)
-		}
-		c <- struct{}{}
+		assert.NoError(t, err)
 	}()
-
-	go limitTime(time.Second*20, t.Name(), c)
 
 	nestedDir, err := ioutil.TempDir(tempDir, "nested")
 	assert.NoError(t, err)
@@ -492,7 +475,7 @@ func Test_Copy_Directory(t *testing.T) {
 
 	go func() {
 		go func() {
-			time.Sleep(time.Second)
+			time.Sleep(time.Second * 2)
 			err := copyDir(nestedDir, filepath.Join(tempDir, "copyTo"))
 			assert.NoError(t, err)
 		}()
@@ -506,25 +489,7 @@ func Test_Copy_Directory(t *testing.T) {
 	}()
 
 	err = w.StartPolling(time.Second)
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
-func limitTime(d time.Duration, name string, free chan struct{}) {
-	go func() {
-		ticket := time.NewTicker(d)
-		for {
-			select {
-			case <-ticket.C:
-				ticket.Stop()
-				panic("timeout exceed, test: " + name)
-			case <-free:
-				ticket.Stop()
-				return
-			}
-		}
-	}()
+	assert.NoError(t, err)
 }
 
 func copyFile(src, dst string) (err error) {
