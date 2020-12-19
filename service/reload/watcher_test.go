@@ -329,7 +329,7 @@ func Test_Wrong_Dir(t *testing.T) {
 	}
 
 	_, err := NewWatcher([]WatcherConfig{wc})
-	assert.NoError(t, err)
+	assert.Error(t, err)
 }
 
 func Test_Filter_Directory(t *testing.T) {
