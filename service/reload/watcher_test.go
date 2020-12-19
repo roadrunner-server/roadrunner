@@ -208,17 +208,21 @@ func Test_FileExtensionFilter(t *testing.T) {
 	go limitTime(time.Second*10, t.Name(), c)
 
 	go func() {
+		stop := make(chan struct{}, 1)
 		go func() {
 			time.Sleep(time.Second)
 			err := ioutil.WriteFile(filepath.Join(tempDir, "file3.txt"),
 				[]byte{1, 1, 1}, 0755)
 			assert.NoError(t, err)
+			stop <- struct{}{}
 		}()
 
 		go func() {
-			for e := range w.Event {
-				fmt.Println(e.Info.Name())
+			select {
+			case <-w.Event:
 				panic("handled event from filtered file")
+			case <-stop:
+				return
 			}
 		}()
 		time.Sleep(time.Second)
