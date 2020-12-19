@@ -2,10 +2,11 @@ package roadrunner
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/spiral/goridge/v2"
 	"io"
 	"os/exec"
+
+	"github.com/pkg/errors"
+	"github.com/spiral/goridge/v2"
 )
 
 // PipeFactory connects to workers using standard
@@ -50,7 +51,7 @@ func (f *PipeFactory) SpawnWorker(cmd *exec.Cmd) (w *Worker, err error) {
 			err := w.Kill()
 			if err != nil {
 				// there is no logger here, how to handle error in goroutines ?
-				fmt.Println(fmt.Sprintf("error killing the worker with PID number %d, Created: %s", w.Pid, w.Created))
+				fmt.Printf("error killing the worker with PID number %d, Created: %s", w.Pid, w.Created)
 			}
 		}(w)
 
