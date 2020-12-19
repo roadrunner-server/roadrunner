@@ -131,36 +131,24 @@ func Test_Get_FileEvent(t *testing.T) {
 // change file with txt extension, and see, if event had not come to handler because it was filtered
 func Test_FileExtensionFilter(t *testing.T) {
 	tempDir, err := ioutil.TempDir(".", "")
-	c := make(chan struct{})
+	assert.NoError(t, err)
+
 	defer func(name string) {
 		err = freeResources(name)
-		if err != nil {
-			c <- struct{}{}
-			t.Fatal(err)
-		}
-		c <- struct{}{}
+		assert.NoError(t, err)
 	}(tempDir)
 
-	if err != nil {
-		t.Fatal(err)
-	}
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file1.aaa"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file2.bbb"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file3.txt"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 	wc := WatcherConfig{
 		ServiceName: testServiceName,
 		Recursive:   false,
@@ -179,9 +167,7 @@ func Test_FileExtensionFilter(t *testing.T) {
 	}
 
 	w, err := NewWatcher([]WatcherConfig{wc})
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	dirLen := len(w.GetAllFiles(testServiceName))
 	// should be 2 files (one filtered) and directory
@@ -191,6 +177,7 @@ func Test_FileExtensionFilter(t *testing.T) {
 
 	go func() {
 		stop := make(chan struct{}, 1)
+
 		go func() {
 			time.Sleep(time.Second)
 			err := ioutil.WriteFile(filepath.Join(tempDir, "file3.txt"),
@@ -200,6 +187,7 @@ func Test_FileExtensionFilter(t *testing.T) {
 		}()
 
 		go func() {
+			time.Sleep(time.Second)
 			select {
 			case <-w.Event:
 				assert.Fail(t, "handled event from filtered file")
