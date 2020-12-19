@@ -10,6 +10,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var testServiceName = "test"
@@ -34,13 +36,13 @@ func Test_Correct_Watcher_Init(t *testing.T) {
 	}
 
 	wc := WatcherConfig{
-		serviceName:  testServiceName,
-		recursive:    false,
-		directories:  []string{tempDir},
-		filterHooks:  nil,
-		files:        make(map[string]os.FileInfo),
-		ignored:      nil,
-		filePatterns: nil,
+		ServiceName:  testServiceName,
+		Recursive:    false,
+		Directories:  []string{tempDir},
+		FilterHooks:  nil,
+		Files:        make(map[string]os.FileInfo),
+		Ignored:      nil,
+		FilePatterns: nil,
 	}
 
 	w, err := NewWatcher([]WatcherConfig{wc})
@@ -91,13 +93,13 @@ func Test_Get_FileEvent(t *testing.T) {
 	}
 
 	wc := WatcherConfig{
-		serviceName:  testServiceName,
-		recursive:    false,
-		directories:  []string{tempDir},
-		filterHooks:  nil,
-		files:        make(map[string]os.FileInfo),
-		ignored:      nil,
-		filePatterns: []string{"aaa", "txt"},
+		ServiceName:  testServiceName,
+		Recursive:    false,
+		Directories:  []string{tempDir},
+		FilterHooks:  nil,
+		Files:        make(map[string]os.FileInfo),
+		Ignored:      nil,
+		FilePatterns: []string{"aaa", "txt"},
 	}
 
 	w, err := NewWatcher([]WatcherConfig{wc})
@@ -110,7 +112,7 @@ func Test_Get_FileEvent(t *testing.T) {
 		t.Fatal("incorrect directories len")
 	}
 
-	go limitTime(time.Second * 10, t.Name(), c)
+	go limitTime(time.Second*10, t.Name(), c)
 
 	go func() {
 		go func() {
@@ -125,7 +127,7 @@ func Test_Get_FileEvent(t *testing.T) {
 
 		go func() {
 			for e := range w.Event {
-				if e.path != "file2.txt" {
+				if e.Path != "file2.txt" {
 					panic("didn't handle event when write file2")
 				}
 				w.Stop()
@@ -176,10 +178,10 @@ func Test_FileExtensionFilter(t *testing.T) {
 		t.Fatal(err)
 	}
 	wc := WatcherConfig{
-		serviceName: testServiceName,
-		recursive:   false,
-		directories: []string{tempDir},
-		filterHooks: func(filename string, patterns []string) error {
+		ServiceName: testServiceName,
+		Recursive:   false,
+		Directories: []string{tempDir},
+		FilterHooks: func(filename string, patterns []string) error {
 			for i := 0; i < len(patterns); i++ {
 				if strings.Contains(filename, patterns[i]) {
 					return nil
@@ -187,9 +189,9 @@ func Test_FileExtensionFilter(t *testing.T) {
 			}
 			return ErrorSkip
 		},
-		files:        make(map[string]os.FileInfo),
-		ignored:      nil,
-		filePatterns: []string{"aaa", "bbb"},
+		Files:        make(map[string]os.FileInfo),
+		Ignored:      nil,
+		FilePatterns: []string{"aaa", "bbb"},
 	}
 
 	w, err := NewWatcher([]WatcherConfig{wc})
@@ -203,7 +205,7 @@ func Test_FileExtensionFilter(t *testing.T) {
 		t.Fatalf("incorrect directories len, len is: %d", dirLen)
 	}
 
-	go limitTime(time.Second * 5, t.Name(), c)
+	go limitTime(time.Second*5, t.Name(), c)
 
 	go func() {
 		go func() {
@@ -218,7 +220,7 @@ func Test_FileExtensionFilter(t *testing.T) {
 
 		go func() {
 			for e := range w.Event {
-				fmt.Println(e.info.Name())
+				fmt.Println(e.Info.Name())
 				panic("handled event from filtered file")
 			}
 		}()
@@ -275,10 +277,10 @@ func Test_Recursive_Support(t *testing.T) {
 	}
 
 	wc := WatcherConfig{
-		serviceName: testServiceName,
-		recursive:   true,
-		directories: []string{tempDir},
-		filterHooks: func(filename string, patterns []string) error {
+		ServiceName: testServiceName,
+		Recursive:   true,
+		Directories: []string{tempDir},
+		FilterHooks: func(filename string, patterns []string) error {
 			for i := 0; i < len(patterns); i++ {
 				if strings.Contains(filename, patterns[i]) {
 					return nil
@@ -286,9 +288,9 @@ func Test_Recursive_Support(t *testing.T) {
 			}
 			return ErrorSkip
 		},
-		files:        make(map[string]os.FileInfo),
-		ignored:      nil,
-		filePatterns: []string{"aaa", "bbb"},
+		Files:        make(map[string]os.FileInfo),
+		Ignored:      nil,
+		FilePatterns: []string{"aaa", "bbb"},
 	}
 
 	w, err := NewWatcher([]WatcherConfig{wc})
@@ -313,7 +315,7 @@ func Test_Recursive_Support(t *testing.T) {
 		}
 		go func() {
 			for e := range w.Event {
-				if e.info.Name() != "file4.aaa" {
+				if e.Info.Name() != "file4.aaa" {
 					panic("wrong handled event from watcher in nested dir")
 				}
 				w.Stop()
@@ -332,10 +334,10 @@ func Test_Wrong_Dir(t *testing.T) {
 	wrongDir := "askdjfhaksdlfksdf"
 
 	wc := WatcherConfig{
-		serviceName: testServiceName,
-		recursive:   true,
-		directories: []string{wrongDir},
-		filterHooks: func(filename string, patterns []string) error {
+		ServiceName: testServiceName,
+		Recursive:   true,
+		Directories: []string{wrongDir},
+		FilterHooks: func(filename string, patterns []string) error {
 			for i := 0; i < len(patterns); i++ {
 				if strings.Contains(filename, patterns[i]) {
 					return nil
@@ -343,9 +345,9 @@ func Test_Wrong_Dir(t *testing.T) {
 			}
 			return ErrorSkip
 		},
-		files:        make(map[string]os.FileInfo),
-		ignored:      nil,
-		filePatterns: []string{"aaa", "bbb"},
+		Files:        make(map[string]os.FileInfo),
+		Ignored:      nil,
+		FilePatterns: []string{"aaa", "bbb"},
 	}
 
 	_, err := NewWatcher([]WatcherConfig{wc})
@@ -401,10 +403,10 @@ func Test_Filter_Directory(t *testing.T) {
 		t.Fatal(err)
 	}
 	wc := WatcherConfig{
-		serviceName: testServiceName,
-		recursive:   true,
-		directories: []string{tempDir},
-		filterHooks: func(filename string, patterns []string) error {
+		ServiceName: testServiceName,
+		Recursive:   true,
+		Directories: []string{tempDir},
+		FilterHooks: func(filename string, patterns []string) error {
 			for i := 0; i < len(patterns); i++ {
 				if strings.Contains(filename, patterns[i]) {
 					return nil
@@ -412,9 +414,9 @@ func Test_Filter_Directory(t *testing.T) {
 			}
 			return ErrorSkip
 		},
-		files:        make(map[string]os.FileInfo),
-		ignored:      ignored,
-		filePatterns: []string{"aaa", "bbb", "txt"},
+		Files:        make(map[string]os.FileInfo),
+		Ignored:      ignored,
+		FilePatterns: []string{"aaa", "bbb", "txt"},
 	}
 
 	w, err := NewWatcher([]WatcherConfig{wc})
@@ -439,7 +441,7 @@ func Test_Filter_Directory(t *testing.T) {
 
 		go func() {
 			for e := range w.Event {
-				fmt.Println("file: " + e.info.Name())
+				fmt.Println("file: " + e.Info.Name())
 				panic("handled event from watcher in nested dir")
 			}
 		}()
@@ -469,6 +471,8 @@ func Test_Copy_Directory(t *testing.T) {
 		}
 		c <- struct{}{}
 	}()
+
+	go limitTime(time.Second*20, t.Name(), c)
 
 	nestedDir, err := ioutil.TempDir(tempDir, "nested")
 	if err != nil {
@@ -504,10 +508,10 @@ func Test_Copy_Directory(t *testing.T) {
 	}
 
 	wc := WatcherConfig{
-		serviceName: testServiceName,
-		recursive:   true,
-		directories: []string{tempDir},
-		filterHooks: func(filename string, patterns []string) error {
+		ServiceName: testServiceName,
+		Recursive:   true,
+		Directories: []string{tempDir},
+		FilterHooks: func(filename string, patterns []string) error {
 			for i := 0; i < len(patterns); i++ {
 				if strings.Contains(filename, patterns[i]) {
 					return nil
@@ -515,9 +519,9 @@ func Test_Copy_Directory(t *testing.T) {
 			}
 			return ErrorSkip
 		},
-		files:        make(map[string]os.FileInfo),
-		ignored:      ignored,
-		filePatterns: []string{"aaa", "bbb", "txt"},
+		Files:        make(map[string]os.FileInfo),
+		Ignored:      ignored,
+		FilePatterns: []string{"aaa", "bbb", "txt"},
 	}
 
 	w, err := NewWatcher([]WatcherConfig{wc})
@@ -531,17 +535,11 @@ func Test_Copy_Directory(t *testing.T) {
 		t.Fatalf("incorrect directories len, len is: %d", dirLen)
 	}
 
-	go limitTime(time.Second*10, t.Name(), c)
-
 	go func() {
 		go func() {
+			time.Sleep(time.Second)
 			err2 := copyDir(nestedDir, filepath.Join(tempDir, "copyTo"))
-			if err2 != nil {
-				panic(err2)
-			}
-
-			// exit from current goroutine
-			runtime.Goexit()
+			assert.NoError(t, err2)
 		}()
 
 		go func() {
