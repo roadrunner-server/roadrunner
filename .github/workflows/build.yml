@@ -18,8 +18,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.3', '7.4', '8.0']
-        setup: [basic, lowest]
+        php: [ '7.3', '7.4', '8.0' ]
+        setup: [ basic, lowest ]
     steps:
       - name: Set up PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2 # action page: <https://github.com/shivammathur/setup-php>
@@ -65,8 +65,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.3', '7.4', '8.0']
-        go: ['1.14', '1.15']
+        php: [ '7.3', '7.4', '8.0' ]
+        go: [ '1.14', '1.15' ]
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
@@ -120,7 +120,8 @@ jobs:
           go test ./service/metrics -race -v -covermode=atomic -coverprofile=./coverage-ci/metrics.txt
           go test ./service/health  -race -v -covermode=atomic -coverprofile=./coverage-ci/health.txt
           go test ./service/gzip    -race -v -covermode=atomic -coverprofile=./coverage-ci/gzip.txt
-          go test ./service/reload  -race -v -covermode=atomic -coverprofile=./coverage-ci/reload.txt
+          # reload tests temporarily excluded from CI due to intensive work with the file system, and unpredictable GHA
+          # go test ./service/reload  -race -v -covermode=atomic -coverprofile=./coverage-ci/reload.txt
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>

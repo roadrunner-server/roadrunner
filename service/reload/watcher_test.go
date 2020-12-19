@@ -133,11 +133,6 @@ func Test_FileExtensionFilter(t *testing.T) {
 	tempDir, err := ioutil.TempDir(".", "")
 	assert.NoError(t, err)
 
-	defer func(name string) {
-		err = freeResources(name)
-		assert.NoError(t, err)
-	}(tempDir)
-
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file1.aaa"),
 		[]byte{}, 0755)
 	assert.NoError(t, err)
@@ -200,6 +195,8 @@ func Test_FileExtensionFilter(t *testing.T) {
 	}()
 
 	err = w.StartPolling(time.Second)
+	assert.NoError(t, err)
+	err = freeResources(tempDir)
 	assert.NoError(t, err)
 }
 
