@@ -2,12 +2,13 @@ package reload
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
-	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/service"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/sirupsen/logrus"
+	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service"
 )
 
 // ID contains default service name.
@@ -51,10 +52,10 @@ func (s *Service) Init(cfg *Config, log *logrus.Logger, c service.Container) (bo
 			return false, err
 		}
 		configs = append(configs, WatcherConfig{
-			serviceName: serviceName,
-			recursive:   config.Recursive,
-			directories: config.Dirs,
-			filterHooks: func(filename string, patterns []string) error {
+			ServiceName: serviceName,
+			Recursive:   config.Recursive,
+			Directories: config.Dirs,
+			FilterHooks: func(filename string, patterns []string) error {
 				for i := 0; i < len(patterns); i++ {
 					if strings.Contains(filename, patterns[i]) {
 						return nil
@@ -62,9 +63,9 @@ func (s *Service) Init(cfg *Config, log *logrus.Logger, c service.Container) (bo
 				}
 				return ErrorSkip
 			},
-			files:        make(map[string]os.FileInfo),
-			ignored:      ignored,
-			filePatterns: append(config.Patterns, cfg.Patterns...),
+			Files:        make(map[string]os.FileInfo),
+			Ignored:      ignored,
+			FilePatterns: append(config.Patterns, cfg.Patterns...),
 		})
 	}
 
@@ -91,7 +92,7 @@ func (s *Service) Serve() error {
 	}, 100)
 
 	// use the same interval
-	ticker := time.NewTicker(s.cfg.Interval)
+	timer := time.NewTimer(s.cfg.Interval)
 
 	// drain channel in case of leaved messages
 	defer func() {
@@ -120,15 +121,15 @@ func (s *Service) Serve() error {
 			case config := <-treshholdc:
 				// replace previous value in map by more recent without adding new one
 				updated[config.service] = config.serviceConfig
-				// stop ticker
-				ticker.Stop()
+				// stop timer
+				timer.Stop()
 				// restart
 				// logic is following:
 				// if we getting a lot of events, we should't restart particular service on each of it (user doing bug move or very fast typing)
-				// instead, we are resetting the ticker and wait for Interval time
+				// instead, we are resetting the timer and wait for Interval time
 				// If there is no more events, we restart service only once
-				ticker = time.NewTicker(s.cfg.Interval)
-			case <-ticker.C:
+				timer.Reset(s.cfg.Interval)
+			case <-timer.C:
 				if len(updated) > 0 {
 					for k, v := range updated {
 						sv := *v.service
@@ -142,7 +143,7 @@ func (s *Service) Serve() error {
 					updated = make(map[string]ServiceConfig, 100)
 				}
 			case <-s.stopc:
-				ticker.Stop()
+				timer.Stop()
 				return
 			}
 		}
