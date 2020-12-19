@@ -205,7 +205,7 @@ func Test_FileExtensionFilter(t *testing.T) {
 		t.Fatalf("incorrect directories len, len is: %d", dirLen)
 	}
 
-	go limitTime(time.Second*5, t.Name(), c)
+	go limitTime(time.Second*10, t.Name(), c)
 
 	go func() {
 		go func() {
@@ -226,9 +226,7 @@ func Test_FileExtensionFilter(t *testing.T) {
 	}()
 
 	err = w.StartPolling(time.Second)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 }
 
 // nested
@@ -240,38 +238,26 @@ func Test_Recursive_Support(t *testing.T) {
 	tempDir, err := ioutil.TempDir(".", "")
 	defer func() {
 		err = freeResources(tempDir)
-		if err != nil {
-			t.Fatal(err)
-		}
+		assert.NoError(t, err)
 	}()
 
 	nestedDir, err := ioutil.TempDir(tempDir, "nested")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file1.aaa"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file2.bbb"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(nestedDir, "file3.txt"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 	err = ioutil.WriteFile(filepath.Join(nestedDir, "file4.aaa"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	wc := WatcherConfig{
 		ServiceName: testServiceName,
@@ -291,9 +277,7 @@ func Test_Recursive_Support(t *testing.T) {
 	}
 
 	w, err := NewWatcher([]WatcherConfig{wc})
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	dirLen := len(w.GetAllFiles(testServiceName))
 	// should be 3 files (2 from root dir, and 1 from nested), filtered txt
@@ -307,10 +291,9 @@ func Test_Recursive_Support(t *testing.T) {
 		// change file in nested directory
 		err = ioutil.WriteFile(filepath.Join(nestedDir, "file4.aaa"),
 			[]byte{1, 1, 1}, 0755)
-		if err != nil {
-			panic(err)
-		}
+		assert.NoError(t, err)
 		go func() {
+			time.Sleep(time.Second)
 			for e := range w.Event {
 				if e.Info.Name() != "file4.aaa" {
 					panic("wrong handled event from watcher in nested dir")
@@ -321,9 +304,7 @@ func Test_Recursive_Support(t *testing.T) {
 	}()
 
 	err = w.StartPolling(time.Second)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 }
 
 func Test_Wrong_Dir(t *testing.T) {
@@ -348,9 +329,7 @@ func Test_Wrong_Dir(t *testing.T) {
 	}
 
 	_, err := NewWatcher([]WatcherConfig{wc})
-	if err == nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 }
 
 func Test_Filter_Directory(t *testing.T) {
@@ -368,32 +347,22 @@ func Test_Filter_Directory(t *testing.T) {
 	go limitTime(time.Second*10, t.Name(), c)
 
 	nestedDir, err := ioutil.TempDir(tempDir, "nested")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file1.aaa"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file2.bbb"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(nestedDir, "file3.txt"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 	err = ioutil.WriteFile(filepath.Join(nestedDir, "file4.aaa"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	ignored, err := ConvertIgnored([]string{nestedDir})
 	if err != nil {
@@ -429,14 +398,13 @@ func Test_Filter_Directory(t *testing.T) {
 
 	go func() {
 		go func() {
-			err2 := ioutil.WriteFile(filepath.Join(nestedDir, "file4.aaa"),
+			err := ioutil.WriteFile(filepath.Join(nestedDir, "file4.aaa"),
 				[]byte{1, 1, 1}, 0755)
-			if err2 != nil {
-				panic(err2)
-			}
+			assert.NoError(t, err)
 		}()
 
 		go func() {
+			time.Sleep(time.Second)
 			for e := range w.Event {
 				fmt.Println("file: " + e.Info.Name())
 				panic("handled event from watcher in nested dir")
@@ -472,37 +440,25 @@ func Test_Copy_Directory(t *testing.T) {
 	go limitTime(time.Second*20, t.Name(), c)
 
 	nestedDir, err := ioutil.TempDir(tempDir, "nested")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file1.aaa"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(tempDir, "file2.bbb"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	err = ioutil.WriteFile(filepath.Join(nestedDir, "file3.txt"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 	err = ioutil.WriteFile(filepath.Join(nestedDir, "file4.aaa"),
 		[]byte{}, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	ignored, err := ConvertIgnored([]string{nestedDir})
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	wc := WatcherConfig{
 		ServiceName: testServiceName,
@@ -522,9 +478,7 @@ func Test_Copy_Directory(t *testing.T) {
 	}
 
 	w, err := NewWatcher([]WatcherConfig{wc})
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	dirLen := len(w.GetAllFiles(testServiceName))
 	// should be 2 files (2 from root dir), filtered other
@@ -535,8 +489,8 @@ func Test_Copy_Directory(t *testing.T) {
 	go func() {
 		go func() {
 			time.Sleep(time.Second)
-			err2 := copyDir(nestedDir, filepath.Join(tempDir, "copyTo"))
-			assert.NoError(t, err2)
+			err := copyDir(nestedDir, filepath.Join(tempDir, "copyTo"))
+			assert.NoError(t, err)
 		}()
 
 		go func() {
@@ -574,7 +528,9 @@ func copyFile(src, dst string) (err error) {
 	if err != nil {
 		return
 	}
-	defer in.Close()
+	defer func() {
+		_ = in.Close()
+	}()
 
 	out, err := os.Create(dst)
 	if err != nil {
