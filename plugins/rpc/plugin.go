@@ -7,7 +7,7 @@ import (
 
 	"github.com/spiral/endure"
 	"github.com/spiral/errors"
-	"github.com/spiral/goridge/v3"
+	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	rpc_ "github.com/spiral/roadrunner/v2/interfaces/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/config"
@@ -100,7 +100,7 @@ func (s *Plugin) Serve() chan error {
 				return
 			}
 
-			go s.rpc.ServeCodec(goridge.NewCodec(conn))
+			go s.rpc.ServeCodec(goridgeRpc.NewCodec(conn))
 		}
 	}()
 
@@ -161,5 +161,5 @@ func (s *Plugin) Client() (*rpc.Client, error) {
 		return nil, err
 	}
 
-	return rpc.NewClientWithCodec(goridge.NewClientCodec(conn)), nil
+	return rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn)), nil
 }

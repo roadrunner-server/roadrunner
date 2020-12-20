@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
+	"github.com/spiral/goridge/v3/interfaces/relay"
+	"github.com/spiral/goridge/v3/pkg/frame"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"go.uber.org/multierr"
-
-	"github.com/spiral/goridge/v3"
 )
 
 type syncWorker struct {
@@ -126,10 +126,10 @@ func (tw *syncWorker) ExecWithContext(ctx context.Context, p payload.Payload) (p
 }
 
 func (tw *syncWorker) execPayload(p payload.Payload) (payload.Payload, error) {
-	const op = errors.Op("exec payload")
+	const op = errors.Op("exec pl")
 
-	frame := goridge.NewFrame()
-	frame.WriteVersion(goridge.VERSION_1)
+	fr := frame.NewFrame()
+	fr.WriteVersion(frame.VERSION_1)
 	// can be 0 here
 
 	buf := new(bytes.Buffer)
@@ -137,28 +137,28 @@ func (tw *syncWorker) execPayload(p payload.Payload) (payload.Payload, error) {
 	buf.Write(p.Body)
 
 	// Context offset
-	frame.WriteOptions(uint32(len(p.Context)))
-	frame.WritePayloadLen(uint32(buf.Len()))
-	frame.WritePayload(buf.Bytes())
+	fr.WriteOptions(uint32(len(p.Context)))
+	fr.WritePayloadLen(uint32(buf.Len()))
+	fr.WritePayload(buf.Bytes())
 
-	frame.WriteCRC()
+	fr.WriteCRC()
 
 	// empty and free the buffer
 	buf.Truncate(0)
 
-	err := tw.Relay().Send(frame)
+	err := tw.Relay().Send(fr)
 	if err != nil {
 		return payload.Payload{}, err
 	}
 
-	frameR := goridge.NewFrame()
+	frameR := frame.NewFrame()
 
 	err = tw.w.Relay().Receive(frameR)
 	if err != nil {
 		return payload.Payload{}, errors.E(op, err)
 	}
 	if frameR == nil {
-		return payload.Payload{}, errors.E(op, errors.Str("nil frame received"))
+		return payload.Payload{}, errors.E(op, errors.Str("nil fr received"))
 	}
 
 	if !frameR.VerifyCRC() {
@@ -167,7 +167,7 @@ func (tw *syncWorker) execPayload(p payload.Payload) (payload.Payload, error) {
 
 	flags := frameR.ReadFlags()
 
-	if flags&byte(goridge.ERROR) != byte(0) {
+	if flags&byte(frame.ERROR) != byte(0) {
 		return payload.Payload{}, errors.E(op, errors.ErrSoftJob, errors.Str(string(frameR.Payload())))
 	}
 
@@ -176,11 +176,11 @@ func (tw *syncWorker) execPayload(p payload.Payload) (payload.Payload, error) {
 		return payload.Payload{}, errors.E(op, errors.Str("options length should be equal 1 (body offset)"))
 	}
 
-	payload := payload.Payload{}
-	payload.Context = frameR.Payload()[:options[0]]
-	payload.Body = frameR.Payload()[options[0]:]
+	pl := payload.Payload{}
+	pl.Context = frameR.Payload()[:options[0]]
+	pl.Body = frameR.Payload()[options[0]:]
 
-	return payload, nil
+	return pl, nil
 }
 
 func (tw *syncWorker) String() string {
@@ -219,10 +219,10 @@ func (tw *syncWorker) Kill() error {
 	return tw.w.Kill()
 }
 
-func (tw *syncWorker) Relay() goridge.Relay {
+func (tw *syncWorker) Relay() relay.Relay {
 	return tw.w.Relay()
 }
 
-func (tw *syncWorker) AttachRelay(rl goridge.Relay) {
+func (tw *syncWorker) AttachRelay(rl relay.Relay) {
 	tw.w.AttachRelay(rl)
 }

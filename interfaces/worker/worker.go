@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/spiral/goridge/v3"
+	"github.com/spiral/goridge/v3/interfaces/relay"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
@@ -47,10 +47,10 @@ type BaseProcess interface {
 	Kill() error
 
 	// Relay returns attached to worker goridge relay
-	Relay() goridge.Relay
+	Relay() relay.Relay
 
 	// AttachRelay used to attach goridge relay to the worker process
-	AttachRelay(rl goridge.Relay)
+	AttachRelay(rl relay.Relay)
 }
 
 type SyncWorker interface {

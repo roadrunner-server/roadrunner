@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/spiral/endure"
-	"github.com/spiral/goridge/v3"
+	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
@@ -83,7 +83,7 @@ func TestResetterInit(t *testing.T) {
 func resetterRPCTest(t *testing.T) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	assert.NoError(t, err)
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	// WorkerList contains list of workers.
 
 	var ret bool
