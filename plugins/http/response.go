@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/payload"
 )
 
 // Response handles PSR7 response logic.
@@ -23,7 +23,7 @@ type Response struct {
 }
 
 // NewResponse creates new response based on given pool payload.
-func NewResponse(p internal.Payload) (*Response, error) {
+func NewResponse(p payload.Payload) (*Response, error) {
 	r := &Response{Body: p.Body}
 	if err := json.Unmarshal(p.Context, r); err != nil {
 		return nil, err

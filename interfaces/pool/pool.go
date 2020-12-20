@@ -7,7 +7,7 @@ import (
 
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
-	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/payload"
 )
 
 // Pool managed set of inner worker processes.
@@ -19,9 +19,9 @@ type Pool interface {
 	GetConfig() interface{}
 
 	// Exec
-	Exec(rqs internal.Payload) (internal.Payload, error)
+	Exec(rqs payload.Payload) (payload.Payload, error)
 
-	ExecWithContext(ctx context.Context, rqs internal.Payload) (internal.Payload, error)
+	ExecWithContext(ctx context.Context, rqs payload.Payload) (payload.Payload, error)
 
 	// Workers returns worker list associated with the pool.
 	Workers() (workers []worker.BaseProcess)

@@ -8,7 +8,7 @@ import (
 	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/interfaces/server"
-	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/payload"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	plugin "github.com/spiral/roadrunner/v2/plugins/server"
@@ -47,7 +47,7 @@ func (f *Foo) Serve() chan error {
 	const op = errors.Op("serve")
 
 	// test payload for echo
-	r := internal.Payload{
+	r := payload.Payload{
 		Context: nil,
 		Body:    []byte(Response),
 	}

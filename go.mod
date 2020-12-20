@@ -17,7 +17,7 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/spiral/endure v1.0.0-beta20
 	github.com/spiral/errors v1.0.6
-	github.com/spiral/goridge/v3 v3.0.0-beta7
+	github.com/spiral/goridge/v3 v3.0.0-beta8
 	github.com/stretchr/testify v1.6.1
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/yookoala/gofast v0.4.0

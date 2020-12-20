@@ -11,6 +11,7 @@ import (
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/payload"
 )
 
 const MB = 1024 * 1024
@@ -42,10 +43,10 @@ func newPoolWatcher(pool pool.Pool, events events.Handler, cfg *SupervisorConfig
 
 type ttlExec struct {
 	err error
-	p   internal.Payload
+	p   payload.Payload
 }
 
-func (sp *supervised) ExecWithContext(ctx context.Context, rqs internal.Payload) (internal.Payload, error) {
+func (sp *supervised) ExecWithContext(ctx context.Context, rqs payload.Payload) (payload.Payload, error) {
 	const op = errors.Op("exec_supervised")
 	if sp.cfg.ExecTTL == 0 {
 		return sp.pool.Exec(rqs)
@@ -59,7 +60,7 @@ func (sp *supervised) ExecWithContext(ctx context.Context, rqs internal.Payload)
 		if err != nil {
 			c <- ttlExec{
 				err: errors.E(op, err),
-				p:   internal.Payload{},
+				p:   payload.Payload{},
 			}
 		}
 
@@ -72,10 +73,10 @@ func (sp *supervised) ExecWithContext(ctx context.Context, rqs internal.Payload)
 	for {
 		select {
 		case <-ctx.Done():
-			return internal.Payload{}, errors.E(op, errors.TimeOut, ctx.Err())
+			return payload.Payload{}, errors.E(op, errors.TimeOut, ctx.Err())
 		case res := <-c:
 			if res.err != nil {
-				return internal.Payload{}, res.err
+				return payload.Payload{}, res.err
 			}
 
 			return res.p, nil
@@ -83,11 +84,11 @@ func (sp *supervised) ExecWithContext(ctx context.Context, rqs internal.Payload)
 	}
 }
 
-func (sp *supervised) Exec(p internal.Payload) (internal.Payload, error) {
+func (sp *supervised) Exec(p payload.Payload) (payload.Payload, error) {
 	const op = errors.Op("supervised exec")
 	rsp, err := sp.pool.Exec(p)
 	if err != nil {
-		return internal.Payload{}, errors.E(op, err)
+		return payload.Payload{}, errors.E(op, err)
 	}
 	return rsp, nil
 }

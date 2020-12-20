@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/goridge/v3"
+	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 )
 
 // plugin2 makes a call to the plugin1 via RPC
@@ -30,7 +30,7 @@ func (p2 *Plugin2) Serve() chan error {
 			errCh <- errors.E(errors.Serve, err)
 			return
 		}
-		client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+		client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 		var ret string
 		err = client.Call("rpc_test.plugin1.Hello", "Valery", &ret)
 		if err != nil {

@@ -13,11 +13,11 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/goridge/v3"
+	"github.com/spiral/goridge/v3/interfaces/relay"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
-	events2 "github.com/spiral/roadrunner/v2/pkg/events"
+	eventsPkg "github.com/spiral/roadrunner/v2/pkg/events"
 	"go.uber.org/multierr"
 )
 
@@ -67,7 +67,7 @@ type Process struct {
 	mu sync.RWMutex
 
 	// communication bus with underlying process.
-	relay goridge.Relay
+	relay relay.Relay
 	// rd in a second part of pipe to read from stderr
 	rd io.Reader
 	// stop signal terminates io.Pipe from reading from stderr
@@ -83,7 +83,7 @@ func InitBaseWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
 	}
 	w := &Process{
 		created: time.Now(),
-		events:  events2.NewEventsHandler(),
+		events:  eventsPkg.NewEventsHandler(),
 		cmd:     cmd,
 		state:   internal.NewWorkerState(internal.StateInactive),
 		stderr:  new(bytes.Buffer),
@@ -134,13 +134,13 @@ func (w *Process) State() internal.State {
 
 // State return receive-only Process state object, state can be used to safely access
 // Process status, time when status changed and number of Process executions.
-func (w *Process) AttachRelay(rl goridge.Relay) {
+func (w *Process) AttachRelay(rl relay.Relay) {
 	w.relay = rl
 }
 
 // State return receive-only Process state object, state can be used to safely access
 // Process status, time when status changed and number of Process executions.
-func (w *Process) Relay() goridge.Relay {
+func (w *Process) Relay() relay.Relay {
 	return w.relay
 }
 

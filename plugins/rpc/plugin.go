@@ -7,10 +7,10 @@ import (
 
 	"github.com/spiral/endure"
 	"github.com/spiral/errors"
-	"github.com/spiral/goridge/v3"
-	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
+	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	rpc_ "github.com/spiral/roadrunner/v2/interfaces/rpc"
+	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
 // PluginName contains default plugin name.
@@ -32,7 +32,7 @@ type Plugin struct {
 }
 
 // Init rpc service. Must return true if service is enabled.
-func (s *Plugin) Init(cfg config2.Configurer, log log.Logger) error {
+func (s *Plugin) Init(cfg config.Configurer, log log.Logger) error {
 	const op = errors.Op("RPC Init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
@@ -100,7 +100,7 @@ func (s *Plugin) Serve() chan error {
 				return
 			}
 
-			go s.rpc.ServeCodec(goridge.NewCodec(conn))
+			go s.rpc.ServeCodec(goridgeRpc.NewCodec(conn))
 		}
 	}()
 
@@ -161,5 +161,5 @@ func (s *Plugin) Client() (*rpc.Client, error) {
 		return nil, err
 	}
 
-	return rpc.NewClientWithCodec(goridge.NewClientCodec(conn)), nil
+	return rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn)), nil
 }

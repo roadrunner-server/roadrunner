@@ -4,7 +4,7 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,7 +27,7 @@ func Test_NotStarted_Exec(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	res, err := syncWorker.Exec(internal.Payload{Body: []byte("hello")})
+	res, err := syncWorker.Exec(payload.Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
 	assert.Nil(t, res.Body)

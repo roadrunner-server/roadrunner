@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/spiral/goridge/v3"
+	"github.com/spiral/goridge/v3/interfaces/relay"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/payload"
 )
 
 // Allocator is responsible for worker allocation in the pool
@@ -46,17 +47,17 @@ type BaseProcess interface {
 	Kill() error
 
 	// Relay returns attached to worker goridge relay
-	Relay() goridge.Relay
+	Relay() relay.Relay
 
 	// AttachRelay used to attach goridge relay to the worker process
-	AttachRelay(rl goridge.Relay)
+	AttachRelay(rl relay.Relay)
 }
 
 type SyncWorker interface {
 	// BaseProcess provides basic functionality for the SyncWorker
 	BaseProcess
 	// Exec used to execute payload on the SyncWorker, there is no TIMEOUTS
-	Exec(rqs internal.Payload) (internal.Payload, error)
+	Exec(rqs payload.Payload) (payload.Payload, error)
 	// ExecWithContext used to handle Exec with TTL
-	ExecWithContext(ctx context.Context, p internal.Payload) (internal.Payload, error)
+	ExecWithContext(ctx context.Context, p payload.Payload) (payload.Payload, error)
 }
