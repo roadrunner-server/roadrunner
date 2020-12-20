@@ -346,7 +346,13 @@ func (sp *StaticPool) allocateWorkers(ctx context.Context, numWorkers int64) ([]
 			cancel()
 			return nil, errors.E(op, errors.WorkerAllocate, err)
 		}
-		workers = append(workers, w)
+
+		sw, err := syncWorker.From(w)
+		if err != nil {
+			cancel()
+			return nil, errors.E(op, err)
+		}
+		workers = append(workers, sw)
 		cancel()
 	}
 	return workers, nil
