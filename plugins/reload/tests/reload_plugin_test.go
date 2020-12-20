@@ -4,7 +4,6 @@ import (
 	"io"
 	"io/ioutil"
 	"math/rand"
-	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -108,7 +107,6 @@ func TestReloadInit(t *testing.T) {
 	}()
 
 	t.Run("ReloadTestInit", reloadTestInit)
-	reloadHTTPLiveAfterReset(t, "22388")
 
 	wg.Wait()
 	assert.NoError(t, freeResources(testDir))
@@ -203,7 +201,6 @@ func TestReloadHugeNumberOfFiles(t *testing.T) {
 	t.Run("ReloadTestHugeNumberOfFiles", reloadHugeNumberOfFiles)
 	t.Run("ReloadRandomlyChangeFile", randomlyChangeFile)
 
-	reloadHTTPLiveAfterReset(t, "22388")
 	wg.Wait()
 
 	assert.NoError(t, freeResources(testDir))
@@ -308,7 +305,6 @@ func TestReloadFilterFileExt(t *testing.T) {
 
 	t.Run("ReloadMakeFiles", reloadMakeFiles)
 	t.Run("ReloadFilteredExt", reloadFilteredExt)
-	reloadHTTPLiveAfterReset(t, "27388")
 
 	wg.Wait()
 
@@ -451,8 +447,6 @@ func TestReloadCopy500(t *testing.T) {
 	t.Run("RandomChangesInRecursiveDirs", randomChangesInRecursiveDirs)
 	t.Run("RemoveFilesSupport", removeFilesSupport)
 	t.Run("ReloadMoveSupport", reloadMoveSupport)
-
-	reloadHTTPLiveAfterReset(t, "37388")
 
 	assert.NoError(t, freeResources(testDir))
 	assert.NoError(t, freeResources(testCopyToDir))
@@ -710,7 +704,6 @@ func TestReloadNoRecursion(t *testing.T) {
 	t.Run("ReloadMakeFiles", reloadMakeFiles) // make files in the testDir
 	t.Run("ReloadCopyFilesRecursive", reloadCopyFiles)
 
-	reloadHTTPLiveAfterReset(t, "22766")
 	wg.Wait()
 
 	assert.NoError(t, freeResources(testDir))
@@ -719,25 +712,6 @@ func TestReloadNoRecursion(t *testing.T) {
 }
 
 // ========================================================================
-
-func reloadHTTPLiveAfterReset(t *testing.T, port string) {
-	req, err := http.NewRequest("GET", "http://localhost:"+port, nil)
-	assert.NoError(t, err)
-
-	r, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	b, err := ioutil.ReadAll(r.Body)
-	assert.NoError(t, err)
-
-	assert.Equal(t, 200, r.StatusCode)
-	assert.Equal(t, "hello world", string(b))
-
-	err = r.Body.Close()
-	assert.NoError(t, err)
-}
 
 func freeResources(path string) error {
 	return os.RemoveAll(path)
