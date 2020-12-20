@@ -5,7 +5,7 @@ import (
 	"os/exec"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/goridge/v3"
+	"github.com/spiral/goridge/v3/pkg/pipe"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
 	workerImpl "github.com/spiral/roadrunner/v2/pkg/worker"
@@ -65,7 +65,7 @@ func (f *Factory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd) (wo
 		}
 
 		// Init new PIPE relay
-		relay := goridge.NewPipeRelay(in, out)
+		relay := pipe.NewPipeRelay(in, out)
 		w.AttachRelay(relay)
 
 		// Start the worker
@@ -134,7 +134,7 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
 	}
 
 	// Init new PIPE relay
-	relay := goridge.NewPipeRelay(in, out)
+	relay := pipe.NewPipeRelay(in, out)
 	w.AttachRelay(relay)
 
 	// Start the worker

@@ -5,7 +5,8 @@ import (
 
 	j "github.com/json-iterator/go"
 	"github.com/spiral/errors"
-	"github.com/spiral/goridge/v3"
+	"github.com/spiral/goridge/v3/interfaces/relay"
+	"github.com/spiral/goridge/v3/pkg/frame"
 )
 
 var json = j.ConfigCompatibleWithStandardLibrary
@@ -18,39 +19,39 @@ type pidCommand struct {
 	Pid int `json:"pid"`
 }
 
-func SendControl(rl goridge.Relay, v interface{}) error {
+func SendControl(rl relay.Relay, payload interface{}) error {
 	const op = errors.Op("send control frame")
-	frame := goridge.NewFrame()
-	frame.WriteVersion(goridge.VERSION_1)
-	frame.WriteFlags(goridge.CONTROL)
+	fr := frame.NewFrame()
+	fr.WriteVersion(frame.VERSION_1)
+	fr.WriteFlags(frame.CONTROL)
 
-	if data, ok := v.([]byte); ok {
+	if data, ok := payload.([]byte); ok {
 		// check if payload no more that 4Gb
 		if uint32(len(data)) > ^uint32(0) {
 			return errors.E(op, errors.Str("payload is more that 4gb"))
 		}
 
-		frame.WritePayloadLen(uint32(len(data)))
-		frame.WritePayload(data)
-		frame.WriteCRC()
+		fr.WritePayloadLen(uint32(len(data)))
+		fr.WritePayload(data)
+		fr.WriteCRC()
 
-		err := rl.Send(frame)
+		err := rl.Send(fr)
 		if err != nil {
 			return errors.E(op, err)
 		}
 		return nil
 	}
 
-	data, err := json.Marshal(v)
+	data, err := json.Marshal(payload)
 	if err != nil {
 		return errors.E(op, errors.Errorf("invalid payload: %s", err))
 	}
 
-	frame.WritePayloadLen(uint32(len(data)))
-	frame.WritePayload(data)
-	frame.WriteCRC()
+	fr.WritePayloadLen(uint32(len(data)))
+	fr.WritePayload(data)
+	fr.WriteCRC()
 
-	err = rl.Send(frame)
+	err = rl.Send(fr)
 	if err != nil {
 		return errors.E(op, err)
 	}
@@ -58,14 +59,14 @@ func SendControl(rl goridge.Relay, v interface{}) error {
 	return nil
 }
 
-func FetchPID(rl goridge.Relay) (int64, error) {
+func FetchPID(rl relay.Relay) (int64, error) {
 	const op = errors.Op("fetchPID")
 	err := SendControl(rl, pidCommand{Pid: os.Getpid()})
 	if err != nil {
 		return 0, errors.E(op, err)
 	}
 
-	frameR := goridge.NewFrame()
+	frameR := frame.NewFrame()
 	err = rl.Receive(frameR)
 	if !frameR.VerifyCRC() {
 		return 0, errors.E(op, errors.Str("CRC mismatch"))
@@ -79,7 +80,7 @@ func FetchPID(rl goridge.Relay) (int64, error) {
 
 	flags := frameR.ReadFlags()
 
-	if flags&(byte(goridge.CONTROL)) == 0 {
+	if flags&(byte(frame.CONTROL)) == 0 {
 		return 0, errors.E(op, errors.Str("unexpected response, header is missing, no CONTROL flag"))
 	}
 

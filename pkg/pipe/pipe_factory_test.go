@@ -469,7 +469,7 @@ func Test_Error(t *testing.T) {
 	if errors.Is(errors.ErrSoftJob, err) == false {
 		t.Fatal("error should be of type errors.ErrSoftJob")
 	}
-	assert.Contains(t, err.Error(), "exec payload: SoftJobError: hello")
+	assert.Contains(t, err.Error(), "hello")
 }
 
 func Test_NumExecs(t *testing.T) {

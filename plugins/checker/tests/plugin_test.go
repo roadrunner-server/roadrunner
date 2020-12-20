@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/spiral/endure"
-	"github.com/spiral/goridge/v3"
+	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/interfaces/status"
 	"github.com/spiral/roadrunner/v2/plugins/checker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
@@ -178,7 +178,7 @@ func TestStatusRPC(t *testing.T) {
 func checkRPCStatus(t *testing.T) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6005")
 	assert.NoError(t, err)
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	st := &status.Status{}
 

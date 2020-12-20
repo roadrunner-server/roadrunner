@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/spiral/endure"
-	"github.com/spiral/goridge/v3"
+	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/metrics"
@@ -298,7 +298,7 @@ func observeMetricNotEnoughLabels(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{
@@ -331,7 +331,7 @@ func observeMetric(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{
@@ -364,7 +364,7 @@ func counterMetric(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{
@@ -398,7 +398,7 @@ func registerHistogram(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{
@@ -434,7 +434,7 @@ func subVector(t *testing.T) {
 		_ = conn.Close()
 	}()
 
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{
@@ -480,7 +480,7 @@ func subMetric(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{
@@ -523,7 +523,7 @@ func setOnHistogram(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{
@@ -558,7 +558,7 @@ func setWithoutLabels(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{
@@ -593,7 +593,7 @@ func missingSection(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{
@@ -629,7 +629,7 @@ func vectorMetric(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{
@@ -665,7 +665,7 @@ func setMetric(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{
@@ -698,7 +698,7 @@ func addMetricsTest(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	m := metrics.Metric{
@@ -718,7 +718,7 @@ func declareMetricsTest(t *testing.T) {
 	defer func() {
 		_ = conn.Close()
 	}()
-	client := rpc.NewClientWithCodec(goridge.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	var ret bool
 
 	nc := metrics.NamedCollector{

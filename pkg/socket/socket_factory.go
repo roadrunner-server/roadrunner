@@ -9,11 +9,12 @@ import (
 
 	"github.com/shirou/gopsutil/process"
 	"github.com/spiral/errors"
+	"github.com/spiral/goridge/v3/interfaces/relay"
+	"github.com/spiral/goridge/v3/pkg/socket"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
 	workerImpl "github.com/spiral/roadrunner/v2/pkg/worker"
 
-	"github.com/spiral/goridge/v3"
 	"go.uber.org/multierr"
 	"golang.org/x/sync/errgroup"
 )
@@ -65,7 +66,7 @@ func (f *Factory) listen() error {
 				return err
 			}
 
-			rl := goridge.NewSocketRelay(conn)
+			rl := socket.NewSocketRelay(conn)
 			pid, err := internal.FetchPID(rl)
 			if err != nil {
 				return err
@@ -178,7 +179,7 @@ func (f *Factory) Close(ctx context.Context) error {
 }
 
 // waits for Process to connect over socket and returns associated relay of timeout
-func (f *Factory) findRelayWithContext(ctx context.Context, w worker.BaseProcess) (*goridge.SocketRelay, error) {
+func (f *Factory) findRelayWithContext(ctx context.Context, w worker.BaseProcess) (*socket.Relay, error) {
 	ticker := time.NewTicker(time.Millisecond * 100)
 	for {
 		select {
@@ -194,12 +195,12 @@ func (f *Factory) findRelayWithContext(ctx context.Context, w worker.BaseProcess
 			if !ok {
 				continue
 			}
-			return tmp.(*goridge.SocketRelay), nil
+			return tmp.(*socket.Relay), nil
 		}
 	}
 }
 
-func (f *Factory) findRelay(w worker.BaseProcess) (*goridge.SocketRelay, error) {
+func (f *Factory) findRelay(w worker.BaseProcess) (*socket.Relay, error) {
 	const op = errors.Op("find_relay")
 	// poll every 1ms for the relay
 	pollDone := time.NewTimer(f.tout)
@@ -212,13 +213,13 @@ func (f *Factory) findRelay(w worker.BaseProcess) (*goridge.SocketRelay, error) 
 			if !ok {
 				continue
 			}
-			return tmp.(*goridge.SocketRelay), nil
+			return tmp.(*socket.Relay), nil
 		}
 	}
 }
 
 // chan to store relay associated with specific pid
-func (f *Factory) attachRelayToPid(pid int64, relay goridge.Relay) {
+func (f *Factory) attachRelayToPid(pid int64, relay relay.Relay) {
 	f.relays.Store(pid, relay)
 }
 
