@@ -2,9 +2,8 @@ package redis
 
 import "github.com/go-redis/redis/v8"
 
+// Redis in the redis KV plugin interface
 type Redis interface {
-	GetClient() *redis.Client
-	GetUniversalClient() *redis.UniversalClient
-	GetClusterClient() *redis.ClusterClient
-	GetSentinelClient() *redis.SentinelClient
+	// GetClient
+	GetClient() redis.UniversalClient
 }

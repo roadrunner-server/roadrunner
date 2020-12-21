@@ -85,6 +85,7 @@ jobs:
           go test -v -race -cover -tags=debug ./plugins/static/tests
           go test -v -race -cover -tags=debug ./plugins/static
           go test -v -race -cover -tags=debug ./plugins/headers/tests
+          go test -v -race -cover -tags=debug ./plugins/redis/tests
           go test -v -race -cover -tags=debug ./plugins/checker/tests
 
       - name: Run golang tests on Linux and MacOS
@@ -112,6 +113,7 @@ jobs:
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/static_root.txt -covermode=atomic ./plugins/static
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/headers.txt -covermode=atomic ./plugins/headers/tests
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/checker.txt -covermode=atomic ./plugins/checker/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/redis.txt -covermode=atomic ./plugins/redis/tests
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/reload.txt -covermode=atomic ./plugins/reload/tests
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 

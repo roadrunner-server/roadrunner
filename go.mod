@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
+	github.com/alicebob/miniredis/v2 v2.14.1
 	github.com/fatih/color v1.10.0
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-redis/redis/v8 v8.4.4

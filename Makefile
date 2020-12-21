@@ -44,6 +44,7 @@ test: ## Run application tests
 	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/static/tests
 	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/headers/tests
 	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/checker/tests
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/redis/tests
 	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/reload/tests
 
 lint: ## Run application linters

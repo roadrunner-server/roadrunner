@@ -14,6 +14,9 @@ type Configurer interface {
 	// Get used to get config section
 	Get(name string) interface{}
 
+	// Overwrite used to overwrite particular values in the unmarshalled config
+	Overwrite(values map[string]interface{}) error
+
 	// Has checks if config section exists.
 	Has(name string) bool
 }

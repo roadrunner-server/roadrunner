@@ -15,7 +15,7 @@ http:
   debug: true
   address: 127.0.0.1:18903
   maxRequestSize: 1024
-  middleware: [ "" ]
+  middleware: [ "gzip", "headers" ]
   uploads:
     forbid: [ ".php", ".exe", ".bat" ]
   trustedSubnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
@@ -37,3 +37,73 @@ http:
     enabled: false
     h2c: false
     maxConcurrentStreams: 128
+
+redis:
+  # UniversalClient is an abstract client which - based on the provided options -
+  # can connect to either clusters, or sentinel-backed failover instances
+  # or simple single-instance servers. This can be useful for testing
+  # cluster-specific applications locally.
+  # if the number of addrs is 1 and master_name is empty, a single-node redis Client will be returned
+
+  # if the number of Addrs is two or more, a ClusterClient will be returned
+  addrs:
+    - 'localhost:6379'
+  # if a MasterName is passed a sentinel-backed FailoverClient will be returned
+  master_name: ''
+  username: ''
+  password: ''
+  db: 0
+  sentinel_password: ''
+  route_by_latency: false
+  route_randomly: false
+  dial_timeout: 0 # accepted values [1s, 5m, 3h]
+  max_retries: 1
+  min_retry_backoff: 0  # accepted values [1s, 5m, 3h]
+  max_retry_backoff: 0  # accepted values [1s, 5m, 3h]
+  pool_size: 0
+  min_idle_conns: 0
+  max_conn_age: 0  # accepted values [1s, 5m, 3h]
+  read_timeout: 0  # accepted values [1s, 5m, 3h]
+  write_timeout: 0  # accepted values [1s, 5m, 3h]
+  pool_timeout: 0  # accepted values [1s, 5m, 3h]
+  idle_timeout: 0  # accepted values [1s, 5m, 3h]
+  idle_check_freq: 0  # accepted values [1s, 5m, 3h]
+  read_only: false
+
+metrics:
+  # prometheus client address (path /metrics added automatically)
+  address: localhost:2112
+  collect:
+    app_metric:
+      type: histogram
+      help: "Custom application metric"
+      labels: [ "type" ]
+      buckets: [ 0.1, 0.2, 0.3, 1.0 ]
+      # objectives defines the quantile rank estimates with their respective
+      #	absolute error [ for summary only ]
+      objectives:
+        - 1.4: 2.3
+        - 2.0: 1.4
+
+reload:
+  # sync interval
+  interval: 1s
+  # global patterns to sync
+  patterns: [ ".php" ]
+  # list of included for sync services
+  services:
+    http:
+      # recursive search for file patterns to add
+      recursive: true
+      # ignored folders
+      ignore: [ "vendor" ]
+      # service specific file pattens to sync
+      patterns: [ ".php", ".go",".md", ]
+      # directories to sync. If recursive is set to true,
+      # recursive sync will be applied only to the directories in `dirs` section
+      dirs: [ "." ]
+    rpc:
+      recursive: true
+      patterns: [ ".json" ]
+      # to include all project directories from workdir, leave `dirs` empty or add a dot "."
+      dirs: [ "" ]
