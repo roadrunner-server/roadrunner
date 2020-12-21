@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/spiral/endure"
 	"github.com/spiral/errors"
-	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
+	"github.com/spiral/roadrunner/v2/interfaces/config"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/interfaces/status"
 )
@@ -26,7 +26,7 @@ type Plugin struct {
 	cfg      *Config
 }
 
-func (c *Plugin) Init(log log.Logger, cfg config2.Configurer) error {
+func (c *Plugin) Init(log log.Logger, cfg config.Configurer) error {
 	const op = errors.Op("status plugin init")
 	err := cfg.UnmarshalKey(PluginName, &c.cfg)
 	if err != nil {

@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/go-multierror"
 	"github.com/spiral/endure"
 	"github.com/spiral/errors"
-	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
+	"github.com/spiral/roadrunner/v2/interfaces/config"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
@@ -49,7 +49,7 @@ type middleware map[string]Middleware
 type Plugin struct {
 	sync.Mutex
 
-	configurer config2.Configurer
+	configurer config.Configurer
 	server     server.Server
 	log        log.Logger
 
@@ -80,7 +80,7 @@ func (s *Plugin) AddListener(listener events.EventListener) {
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Plugin) Init(cfg config2.Configurer, log log.Logger, server server.Server) error {
+func (s *Plugin) Init(cfg config.Configurer, log log.Logger, server server.Server) error {
 	const op = errors.Op("http Init")
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {

@@ -2,15 +2,15 @@ package tests
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
-	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
+	"github.com/spiral/roadrunner/v2/interfaces/config"
 )
 
 // Gauge //////////////
 type Plugin1 struct {
-	config config2.Configurer
+	config config.Configurer
 }
 
-func (p1 *Plugin1) Init(cfg config2.Configurer) error {
+func (p1 *Plugin1) Init(cfg config.Configurer) error {
 	p1.config = cfg
 	return nil
 }
