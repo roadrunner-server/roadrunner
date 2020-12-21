@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
+	"github.com/spiral/roadrunner/v2/interfaces/config"
 )
 
 // ReloadConfig is a Reload configuration point.
@@ -23,11 +23,11 @@ type ServiceConfig struct {
 }
 
 type Foo struct {
-	configProvider config2.Configurer
+	configProvider config.Configurer
 }
 
 // Depends on S2 and DB (S3 in the current case)
-func (f *Foo) Init(p config2.Configurer) error {
+func (f *Foo) Init(p config.Configurer) error {
 	f.configProvider = p
 	return nil
 }

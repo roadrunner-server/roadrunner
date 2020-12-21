@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
+	"github.com/spiral/roadrunner/v2/interfaces/config"
 	"github.com/spiral/roadrunner/v2/interfaces/server"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 )
@@ -25,11 +25,11 @@ var testPoolConfig = poolImpl.Config{
 
 // Gauge //////////////
 type Plugin1 struct {
-	config config2.Configurer
+	config config.Configurer
 	server server.Server
 }
 
-func (p1 *Plugin1) Init(cfg config2.Configurer, server server.Server) error {
+func (p1 *Plugin1) Init(cfg config.Configurer, server server.Server) error {
 	p1.config = cfg
 	p1.server = server
 	return nil

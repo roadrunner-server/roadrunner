@@ -2,16 +2,16 @@ package tests
 
 import (
 	"github.com/spiral/errors"
-	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
+	"github.com/spiral/roadrunner/v2/interfaces/config"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 )
 
 type Plugin struct {
-	config config2.Configurer
+	config config.Configurer
 	log    log.Logger
 }
 
-func (p1 *Plugin) Init(cfg config2.Configurer, log log.Logger) error {
+func (p1 *Plugin) Init(cfg config.Configurer, log log.Logger) error {
 	p1.config = cfg
 	p1.log = log
 	return nil

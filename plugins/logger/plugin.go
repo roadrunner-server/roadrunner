@@ -2,7 +2,7 @@ package logger
 
 import (
 	"github.com/spiral/endure"
-	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
+	"github.com/spiral/roadrunner/v2/interfaces/config"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"go.uber.org/zap"
 )
@@ -18,7 +18,7 @@ type ZapLogger struct {
 }
 
 // Init logger service.
-func (z *ZapLogger) Init(cfg config2.Configurer) error {
+func (z *ZapLogger) Init(cfg config.Configurer) error {
 	err := cfg.UnmarshalKey(PluginName, &z.cfg)
 	if err != nil {
 		return err
