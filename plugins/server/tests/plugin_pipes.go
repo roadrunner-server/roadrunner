@@ -99,7 +99,7 @@ func (f *Foo) Serve() chan error {
 	}
 
 	// should not be errors
-	err = sw.Stop(context.Background())
+	err = sw.Stop()
 	if err != nil {
 		errCh <- err
 		return errCh

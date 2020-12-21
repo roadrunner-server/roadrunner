@@ -63,9 +63,10 @@ type wexec struct {
 }
 
 // Exec payload without TTL timeout.
-func (tw *syncWorker) ExecWithContext(ctx context.Context, p payload.Payload) (payload.Payload, error) {
-	const op = errors.Op("ExecWithContext")
+func (tw *syncWorker) ExecWithTimeout(ctx context.Context, p payload.Payload) (payload.Payload, error) {
+	const op = errors.Op("ExecWithTimeout")
 	c := make(chan wexec, 1)
+
 	go func() {
 		if len(p.Body) == 0 && len(p.Context) == 0 {
 			c <- wexec{
@@ -211,8 +212,8 @@ func (tw *syncWorker) Wait() error {
 	return tw.w.Wait()
 }
 
-func (tw *syncWorker) Stop(ctx context.Context) error {
-	return tw.w.Stop(ctx)
+func (tw *syncWorker) Stop() error {
+	return tw.w.Stop()
 }
 
 func (tw *syncWorker) Kill() error {

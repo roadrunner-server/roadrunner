@@ -2,7 +2,6 @@ package worker
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"io"
 	"os"
@@ -220,30 +219,16 @@ func (w *Process) closeRelay() error {
 }
 
 // Stop sends soft termination command to the Process and waits for process completion.
-func (w *Process) Stop(ctx context.Context) error {
-	c := make(chan error)
-
-	go func() {
-		var err error
-		w.state.Set(internal.StateStopping)
-		err = multierr.Append(err, internal.SendControl(w.relay, &internal.StopCommand{Stop: true}))
-		if err != nil {
-			w.state.Set(internal.StateKilling)
-			c <- multierr.Append(err, w.cmd.Process.Kill())
-		}
-		w.state.Set(internal.StateStopped)
-		c <- nil
-	}()
-
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case err := <-c:
-		if err != nil {
-			return err
-		}
-		return nil
+func (w *Process) Stop() error {
+	var err error
+	w.state.Set(internal.StateStopping)
+	err = multierr.Append(err, internal.SendControl(w.relay, &internal.StopCommand{Stop: true}))
+	if err != nil {
+		w.state.Set(internal.StateKilling)
+		return multierr.Append(err, w.cmd.Process.Kill())
 	}
+	w.state.Set(internal.StateStopped)
+	return nil
 }
 
 // Kill kills underlying process, make sure to call Wait() func to gather

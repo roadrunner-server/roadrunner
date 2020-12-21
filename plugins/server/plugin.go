@@ -62,7 +62,7 @@ func (server *Plugin) Stop() error {
 		return nil
 	}
 
-	return server.factory.Close(context.Background())
+	return server.factory.Close()
 }
 
 // CmdFactory provides worker command factory assocated with given context.
@@ -105,7 +105,7 @@ func (server *Plugin) NewWorker(ctx context.Context, env server.Env) (worker.Bas
 		return nil, errors.E(op, err)
 	}
 
-	w, err := server.factory.SpawnWorkerWithContext(ctx, spawnCmd())
+	w, err := server.factory.SpawnWorkerWithTimeout(ctx, spawnCmd())
 	if err != nil {
 		return nil, errors.E(op, err)
 	}

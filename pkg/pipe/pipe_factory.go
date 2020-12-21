@@ -31,7 +31,7 @@ type SpawnResult struct {
 
 // SpawnWorker creates new Process and connects it to goridge relay,
 // method Wait() must be handled on level above.
-func (f *Factory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd) (worker.BaseProcess, error) {
+func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (worker.BaseProcess, error) {
 	c := make(chan SpawnResult)
 	const op = errors.Op("spawn worker with context")
 	go func() {
@@ -159,6 +159,6 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
 }
 
 // Close the factory.
-func (f *Factory) Close(ctx context.Context) error {
+func (f *Factory) Close() error {
 	return nil
 }

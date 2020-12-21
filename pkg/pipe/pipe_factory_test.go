@@ -20,7 +20,7 @@ func Test_GetState(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	go func() {
 		assert.NoError(t, w.Wait())
 		assert.Equal(t, internal.StateStopped, w.State().Value())
@@ -30,7 +30,7 @@ func Test_GetState(t *testing.T) {
 	assert.NotNil(t, w)
 
 	assert.Equal(t, internal.StateReady, w.State().Value())
-	err = w.Stop(ctx)
+	err = w.Stop()
 	if err != nil {
 		t.Errorf("error stopping the Process: error %v", err)
 	}
@@ -40,7 +40,7 @@ func Test_Kill(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
@@ -65,7 +65,7 @@ func Test_Pipe_Start(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	assert.NoError(t, err)
 	assert.NotNil(t, w)
 
@@ -73,7 +73,7 @@ func Test_Pipe_Start(t *testing.T) {
 		assert.NoError(t, w.Wait())
 	}()
 
-	assert.NoError(t, w.Stop(ctx))
+	assert.NoError(t, w.Stop())
 }
 
 func Test_Pipe_StartError(t *testing.T) {
@@ -84,7 +84,7 @@ func Test_Pipe_StartError(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Error(t, err)
 	assert.Nil(t, w)
 }
@@ -97,7 +97,7 @@ func Test_Pipe_PipeError(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Error(t, err)
 	assert.Nil(t, w)
 }
@@ -110,7 +110,7 @@ func Test_Pipe_PipeError2(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Error(t, err)
 	assert.Nil(t, w)
 }
@@ -118,7 +118,7 @@ func Test_Pipe_PipeError2(t *testing.T) {
 func Test_Pipe_Failboot(t *testing.T) {
 	cmd := exec.Command("php", "../../tests/failboot.php")
 	ctx := context.Background()
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 
 	assert.Nil(t, w)
 	assert.Error(t, err)
@@ -128,7 +128,7 @@ func Test_Pipe_Failboot(t *testing.T) {
 func Test_Pipe_Invalid(t *testing.T) {
 	cmd := exec.Command("php", "../../tests/invalid.php")
 	ctx := context.Background()
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Error(t, err)
 	assert.Nil(t, w)
 }
@@ -136,12 +136,12 @@ func Test_Pipe_Invalid(t *testing.T) {
 func Test_Pipe_Echo(t *testing.T) {
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 	ctx := context.Background()
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer func() {
-		err = w.Stop(ctx)
+		err = w.Stop()
 		if err != nil {
 			t.Errorf("error stopping the Process: error %v", err)
 		}
@@ -165,13 +165,13 @@ func Test_Pipe_Echo(t *testing.T) {
 func Test_Pipe_Broken(t *testing.T) {
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "pipes")
 	ctx := context.Background()
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer func() {
 		time.Sleep(time.Second)
-		err = w.Stop(ctx)
+		err = w.Stop()
 		assert.Error(t, err)
 	}()
 
@@ -191,14 +191,14 @@ func Benchmark_Pipe_SpawnWorker_Stop(b *testing.B) {
 	f := NewPipeFactory()
 	for n := 0; n < b.N; n++ {
 		cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
-		w, _ := f.SpawnWorkerWithContext(context.Background(), cmd)
+		w, _ := f.SpawnWorkerWithTimeout(context.Background(), cmd)
 		go func() {
 			if w.Wait() != nil {
 				b.Fail()
 			}
 		}()
 
-		err := w.Stop(context.Background())
+		err := w.Stop()
 		if err != nil {
 			b.Errorf("error stopping the worker: error %v", err)
 		}
@@ -208,7 +208,7 @@ func Benchmark_Pipe_SpawnWorker_Stop(b *testing.B) {
 func Benchmark_Pipe_Worker_ExecEcho(b *testing.B) {
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 
-	w, _ := NewPipeFactory().SpawnWorkerWithContext(context.Background(), cmd)
+	w, _ := NewPipeFactory().SpawnWorkerWithTimeout(context.Background(), cmd)
 	sw, err := workerImpl.From(w)
 	if err != nil {
 		b.Fatal(err)
@@ -222,7 +222,7 @@ func Benchmark_Pipe_Worker_ExecEcho(b *testing.B) {
 		}
 	}()
 	defer func() {
-		err := w.Stop(context.Background())
+		err := w.Stop()
 		if err != nil {
 			b.Errorf("error stopping the worker: error %v", err)
 		}
@@ -238,13 +238,13 @@ func Benchmark_Pipe_Worker_ExecEcho(b *testing.B) {
 func Benchmark_Pipe_Worker_ExecEcho3(b *testing.B) {
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 	ctx := context.Background()
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
 		b.Fatal(err)
 	}
 
 	defer func() {
-		err = w.Stop(ctx)
+		err = w.Stop()
 		if err != nil {
 			b.Errorf("error stopping the Process: error %v", err)
 		}
@@ -265,13 +265,13 @@ func Benchmark_Pipe_Worker_ExecEcho3(b *testing.B) {
 func Benchmark_Pipe_Worker_ExecEchoWithoutContext(b *testing.B) {
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 	ctx := context.Background()
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
 		b.Fatal(err)
 	}
 
 	defer func() {
-		err = w.Stop(ctx)
+		err = w.Stop()
 		if err != nil {
 			b.Errorf("error stopping the Process: error %v", err)
 		}
@@ -293,7 +293,7 @@ func Test_Echo(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -306,7 +306,7 @@ func Test_Echo(t *testing.T) {
 		assert.NoError(t, syncWorker.Wait())
 	}()
 	defer func() {
-		err := syncWorker.Stop(ctx)
+		err := syncWorker.Stop()
 		if err != nil {
 			t.Errorf("error stopping the Process: error %v", err)
 		}
@@ -326,7 +326,7 @@ func Test_BadPayload(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 
-	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, _ := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 
 	syncWorker, err := workerImpl.From(w)
 	if err != nil {
@@ -337,7 +337,7 @@ func Test_BadPayload(t *testing.T) {
 		assert.NoError(t, syncWorker.Wait())
 	}()
 	defer func() {
-		err := syncWorker.Stop(ctx)
+		err := syncWorker.Stop()
 		if err != nil {
 			t.Errorf("error stopping the Process: error %v", err)
 		}
@@ -356,12 +356,12 @@ func Test_String(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 
-	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, _ := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
-		err := w.Stop(ctx)
+		err := w.Stop()
 		if err != nil {
 			t.Errorf("error stopping the Process: error %v", err)
 		}
@@ -376,12 +376,12 @@ func Test_Echo_Slow(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/slow-client.php", "echo", "pipes", "10", "10")
 
-	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, _ := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
-		err := w.Stop(ctx)
+		err := w.Stop()
 		if err != nil {
 			t.Errorf("error stopping the Process: error %v", err)
 		}
@@ -406,7 +406,7 @@ func Test_Broken(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "pipes")
 
-	w, err := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -437,20 +437,20 @@ func Test_Broken(t *testing.T) {
 		t.Fail()
 	}
 	mu.Unlock()
-	assert.Error(t, w.Stop(ctx))
+	assert.Error(t, w.Stop())
 }
 
 func Test_Error(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "error", "pipes")
 
-	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, _ := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
 
 	defer func() {
-		err := w.Stop(ctx)
+		err := w.Stop()
 		if err != nil {
 			t.Errorf("error stopping the Process: error %v", err)
 		}
@@ -476,12 +476,12 @@ func Test_NumExecs(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 
-	w, _ := NewPipeFactory().SpawnWorkerWithContext(ctx, cmd)
+	w, _ := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	go func() {
 		assert.NoError(t, w.Wait())
 	}()
 	defer func() {
-		err := w.Stop(ctx)
+		err := w.Stop()
 		if err != nil {
 			t.Errorf("error stopping the Process: error %v", err)
 		}
