@@ -70,23 +70,6 @@ jobs:
           go test -v -race -cover -tags=debug ./pkg/pool
           go test -v -race -cover -tags=debug ./pkg/socket
           go test -v -race -cover -tags=debug ./pkg/worker
-          go test -v -race -cover -tags=debug ./pkg/worker_watcher
-          go test -v -race -cover -tags=debug ./plugins/rpc
-          go test -v -race -cover -tags=debug ./plugins/rpc/tests
-          go test -v -race -cover -tags=debug ./plugins/config/tests
-          go test -v -race -cover -tags=debug ./plugins/logger/tests
-          go test -v -race -cover -tags=debug ./plugins/server/tests
-          go test -v -race -cover -tags=debug ./plugins/metrics/tests
-          go test -v -race -cover -tags=debug ./plugins/informer/tests
-          go test -v -race -cover -tags=debug ./plugins/resetter/tests
-          go test -v -race -cover -tags=debug ./plugins/http/attributes
-          go test -v -race -cover -tags=debug ./plugins/http/tests
-          go test -v -race -cover -tags=debug ./plugins/gzip/tests
-          go test -v -race -cover -tags=debug ./plugins/static/tests
-          go test -v -race -cover -tags=debug ./plugins/static
-          go test -v -race -cover -tags=debug ./plugins/headers/tests
-          go test -v -race -cover -tags=debug ./plugins/redis/tests
-          go test -v -race -cover -tags=debug ./plugins/checker/tests
 
       - name: Run golang tests on Linux and MacOS
         if: ${{ matrix.os == 'ubuntu-20.04' || matrix.os == 'macos-latest' }}
@@ -97,24 +80,6 @@ jobs:
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pool.txt -covermode=atomic ./pkg/pool
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/socket
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/worker.txt -covermode=atomic ./pkg/worker
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/worker_watcher.txt -covermode=atomic ./pkg/worker_watcher
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/rpc_config.txt -covermode=atomic ./plugins/rpc
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/rpc.txt -covermode=atomic ./plugins/rpc/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/plugin_config.txt -covermode=atomic ./plugins/config/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/logger.txt -covermode=atomic ./plugins/logger/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/server.txt -covermode=atomic ./plugins/server/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/metrics.txt -covermode=atomic ./plugins/metrics/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/informer.txt -covermode=atomic ./plugins/informer/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/resetter.txt -covermode=atomic ./plugins/resetter/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/attributes.txt -covermode=atomic ./plugins/http/attributes
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/http_tests.txt -covermode=atomic ./plugins/http/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/gzip.txt -covermode=atomic ./plugins/gzip/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/static.txt -covermode=atomic ./plugins/static/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/static_root.txt -covermode=atomic ./plugins/static
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/headers.txt -covermode=atomic ./plugins/headers/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/checker.txt -covermode=atomic ./plugins/checker/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/redis.txt -covermode=atomic ./plugins/redis/tests
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/reload.txt -covermode=atomic ./plugins/reload/tests
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
