@@ -61,7 +61,7 @@ jobs:
   golang:
     name: Build (Go ${{ matrix.go }}, PHP ${{ matrix.php }})
     runs-on: ubuntu-20.04
-    timeout-minutes: 10
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
