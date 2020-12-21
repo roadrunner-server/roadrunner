@@ -3,7 +3,6 @@ package config
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -68,15 +67,4 @@ func (v *Viper) Get(name string) interface{} {
 // Has checks if config section exists.
 func (v *Viper) Has(name string) bool {
 	return v.viper.IsSet(name)
-}
-
-func parseValue(value string) string {
-	escape := []rune(value)[0]
-
-	if escape == '"' || escape == '\'' || escape == '`' {
-		value = strings.Trim(value, string(escape))
-		value = strings.ReplaceAll(value, fmt.Sprintf("\\%s", string(escape)), string(escape))
-	}
-
-	return value
 }
