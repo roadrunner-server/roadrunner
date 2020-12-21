@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/spiral/errors"
+	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/log"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
@@ -16,7 +17,6 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/pipe"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/socket"
-	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/util"
 )
 
@@ -30,7 +30,7 @@ type Plugin struct {
 }
 
 // Init application provider.
-func (server *Plugin) Init(cfg config.Configurer, log log.Logger) error {
+func (server *Plugin) Init(cfg config2.Configurer, log log.Logger) error {
 	const op = errors.Op("Init")
 	err := cfg.UnmarshalKey(PluginName, &server.cfg)
 	if err != nil {
@@ -62,7 +62,7 @@ func (server *Plugin) Stop() error {
 		return nil
 	}
 
-	return server.factory.Close(context.Background())
+	return server.factory.Close()
 }
 
 // CmdFactory provides worker command factory assocated with given context.
@@ -105,7 +105,7 @@ func (server *Plugin) NewWorker(ctx context.Context, env server.Env) (worker.Bas
 		return nil, errors.E(op, err)
 	}
 
-	w, err := server.factory.SpawnWorkerWithContext(ctx, spawnCmd())
+	w, err := server.factory.SpawnWorkerWithTimeout(ctx, spawnCmd())
 	if err != nil {
 		return nil, errors.E(op, err)
 	}

@@ -1,12 +1,14 @@
 package tests
 
-import "github.com/spiral/roadrunner/v2/plugins/config"
+import (
+	config2 "github.com/spiral/roadrunner/v2/interfaces/config"
+)
 
 type Plugin1 struct {
-	config config.Configurer
+	config config2.Configurer
 }
 
-func (p1 *Plugin1) Init(cfg config.Configurer) error {
+func (p1 *Plugin1) Init(cfg config2.Configurer) error {
 	p1.config = cfg
 	return nil
 }

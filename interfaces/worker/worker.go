@@ -40,7 +40,7 @@ type BaseProcess interface {
 	Wait() error
 
 	// Stop sends soft termination command to the WorkerProcess and waits for process completion.
-	Stop(ctx context.Context) error
+	Stop() error
 
 	// Kill kills underlying process, make sure to call Wait() func to gather
 	// error log from the stderr. Does not waits for process completion!
@@ -59,5 +59,5 @@ type SyncWorker interface {
 	// Exec used to execute payload on the SyncWorker, there is no TIMEOUTS
 	Exec(rqs payload.Payload) (payload.Payload, error)
 	// ExecWithContext used to handle Exec with TTL
-	ExecWithContext(ctx context.Context, p payload.Payload) (payload.Payload, error)
+	ExecWithTimeout(ctx context.Context, p payload.Payload) (payload.Payload, error)
 }

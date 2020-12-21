@@ -2,7 +2,6 @@ package worker
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"io"
 	"os"
@@ -29,13 +28,6 @@ const (
 	// ReadBufSize used to make a slice with specified length to read from stderr
 	ReadBufSize = 10240 // Kb
 )
-
-var syncPool = sync.Pool{
-	New: func() interface{} {
-		buf := make([]byte, ReadBufSize)
-		return &buf
-	},
-}
 
 // Process - supervised process with api over goridge.Relay.
 type Process struct {
@@ -79,6 +71,8 @@ type Process struct {
 	rd io.Reader
 	// stop signal terminates io.Pipe from reading from stderr
 	stop chan struct{}
+
+	syncPool sync.Pool
 }
 
 // InitBaseWorker creates new Process over given exec.cmd.
@@ -93,6 +87,14 @@ func InitBaseWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
 		state:   internal.NewWorkerState(internal.StateInactive),
 		stderr:  new(bytes.Buffer),
 		stop:    make(chan struct{}, 1),
+		// sync pool for STDERR
+		// All receivers are pointers
+		syncPool: sync.Pool{
+			New: func() interface{} {
+				buf := make([]byte, ReadBufSize)
+				return &buf
+			},
+		},
 	}
 
 	w.rd, w.cmd.Stderr = io.Pipe()
@@ -217,30 +219,16 @@ func (w *Process) closeRelay() error {
 }
 
 // Stop sends soft termination command to the Process and waits for process completion.
-func (w *Process) Stop(ctx context.Context) error {
-	c := make(chan error)
-
-	go func() {
-		var err error
-		w.state.Set(internal.StateStopping)
-		err = multierr.Append(err, internal.SendControl(w.relay, &internal.StopCommand{Stop: true}))
-		if err != nil {
-			w.state.Set(internal.StateKilling)
-			c <- multierr.Append(err, w.cmd.Process.Kill())
-		}
-		w.state.Set(internal.StateStopped)
-		c <- nil
-	}()
-
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case err := <-c:
-		if err != nil {
-			return err
-		}
-		return nil
+func (w *Process) Stop() error {
+	var err error
+	w.state.Set(internal.StateStopping)
+	err = multierr.Append(err, internal.SendControl(w.relay, &internal.StopCommand{Stop: true}))
+	if err != nil {
+		w.state.Set(internal.StateKilling)
+		return multierr.Append(err, w.cmd.Process.Kill())
 	}
+	w.state.Set(internal.StateStopped)
+	return nil
 }
 
 // Kill kills underlying process, make sure to call Wait() func to gather
@@ -258,15 +246,12 @@ func (w *Process) Kill() error {
 // put the pointer, to not allocate new slice
 // but erase it len and then return back
 func (w *Process) put(data *[]byte) {
-	*data = (*data)[:0]
-	*data = (*data)[:cap(*data)]
-
-	syncPool.Put(data)
+	w.syncPool.Put(data)
 }
 
 // get pointer to the byte slice
 func (w *Process) get() *[]byte {
-	return syncPool.Get().(*[]byte)
+	return w.syncPool.Get().(*[]byte)
 }
 
 // Write appends the contents of pool to the errBuffer, growing the errBuffer as
@@ -282,6 +267,7 @@ func (w *Process) watch() {
 				w.events.Push(events.WorkerEvent{Event: events.EventWorkerLog, Worker: w, Payload: (*buf)[:n]})
 				w.mu.Lock()
 				// write new message
+				// we are sending only n read bytes, without sending previously written message as bytes slice from syncPool
 				w.stderr.Write((*buf)[:n])
 				w.mu.Unlock()
 				w.put(buf)

@@ -85,7 +85,7 @@ type socketSpawn struct {
 }
 
 // SpawnWorker creates Process and connects it to appropriate relay or returns error
-func (f *Factory) SpawnWorkerWithContext(ctx context.Context, cmd *exec.Cmd) (worker.BaseProcess, error) {
+func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (worker.BaseProcess, error) {
 	const op = errors.Op("spawn_worker_with_context")
 	c := make(chan socketSpawn)
 	go func() {
@@ -174,7 +174,7 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
 }
 
 // Close socket factory and underlying socket connection.
-func (f *Factory) Close(ctx context.Context) error {
+func (f *Factory) Close() error {
 	return f.ls.Close()
 }
 

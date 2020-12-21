@@ -18,9 +18,10 @@ type Pool interface {
 	// GetConfig returns pool configuration.
 	GetConfig() interface{}
 
-	// Exec
+	// Exec executes task with payload
 	Exec(rqs payload.Payload) (payload.Payload, error)
 
+	// ExecWithContext executes task with context which is used with timeout
 	ExecWithContext(ctx context.Context, rqs payload.Payload) (payload.Payload, error)
 
 	// Workers returns worker list associated with the pool.

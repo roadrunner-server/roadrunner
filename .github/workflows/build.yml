@@ -65,6 +65,7 @@ jobs:
       - name: Run golang tests on Windows without codecov
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
+          go test -v -race -cover -tags=debug ./util
           go test -v -race -cover -tags=debug ./pkg/pipe
           go test -v -race -cover -tags=debug ./pkg/pool
           go test -v -race -cover -tags=debug ./pkg/socket
@@ -84,12 +85,14 @@ jobs:
           go test -v -race -cover -tags=debug ./plugins/static/tests
           go test -v -race -cover -tags=debug ./plugins/static
           go test -v -race -cover -tags=debug ./plugins/headers/tests
+          go test -v -race -cover -tags=debug ./plugins/redis/tests
           go test -v -race -cover -tags=debug ./plugins/checker/tests
 
       - name: Run golang tests on Linux and MacOS
         if: ${{ matrix.os == 'ubuntu-20.04' || matrix.os == 'macos-latest' }}
         run: |
           mkdir ./coverage-ci
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/util.txt -covermode=atomic ./util
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/pipe
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pool.txt -covermode=atomic ./pkg/pool
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/socket
@@ -110,6 +113,7 @@ jobs:
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/static_root.txt -covermode=atomic ./plugins/static
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/headers.txt -covermode=atomic ./plugins/headers/tests
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/checker.txt -covermode=atomic ./plugins/checker/tests
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/redis.txt -covermode=atomic ./plugins/redis/tests
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/reload.txt -covermode=atomic ./plugins/reload/tests
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 

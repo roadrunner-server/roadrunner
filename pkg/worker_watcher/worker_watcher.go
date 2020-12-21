@@ -10,7 +10,6 @@ import (
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
-	syncWorker "github.com/spiral/roadrunner/v2/pkg/worker"
 )
 
 type Stack struct {
@@ -163,16 +162,12 @@ type workerWatcher struct {
 
 func (ww *workerWatcher) AddToWatch(workers []worker.BaseProcess) error {
 	for i := 0; i < len(workers); i++ {
-		sw, err := syncWorker.From(workers[i])
-		if err != nil {
-			return err
-		}
-		ww.stack.Push(sw)
-		sw.AddListener(ww.events.Push)
+		ww.stack.Push(workers[i])
+		workers[i].AddListener(ww.events.Push)
 
 		go func(swc worker.BaseProcess) {
 			ww.wait(swc)
-		}(sw)
+		}(workers[i])
 	}
 	return nil
 }
