@@ -415,7 +415,7 @@ func Test_Broken(t *testing.T) {
 		}
 	}
 
-	w, err := NewPipeFactory(listener).SpawnWorkerWithTimeout(ctx, cmd)
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd, listener)
 	if err != nil {
 		t.Fatal(err)
 	}

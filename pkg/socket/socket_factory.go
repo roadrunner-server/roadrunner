@@ -25,14 +25,10 @@ type Factory struct {
 	// listens for incoming connections from underlying processes
 	ls net.Listener
 
-	// events listener
-	listeners []events.EventListener
-
 	// relay connection timeout
 	tout time.Duration
 
 	// sockets which are waiting for process association
-	// relays map[int64]*goridge.SocketRelay
 	relays sync.Map
 
 	ErrCh chan error
@@ -42,13 +38,12 @@ type Factory struct {
 
 // NewSocketServer returns Factory attached to a given socket listener.
 // tout specifies for how long factory should serve for incoming relay connection
-func NewSocketServer(ls net.Listener, tout time.Duration, listeners ...events.EventListener) worker.Factory {
+func NewSocketServer(ls net.Listener, tout time.Duration) worker.Factory {
 	f := &Factory{
-		ls:        ls,
-		tout:      tout,
-		relays:    sync.Map{},
-		listeners: listeners,
-		ErrCh:     make(chan error, 10),
+		ls:     ls,
+		tout:   tout,
+		relays: sync.Map{},
+		ErrCh:  make(chan error, 10),
 	}
 
 	// Be careful
@@ -90,13 +85,13 @@ type socketSpawn struct {
 }
 
 // SpawnWorker creates Process and connects it to appropriate relay or returns error
-func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (worker.BaseProcess, error) {
+func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.EventListener) (worker.BaseProcess, error) {
 	const op = errors.Op("spawn_worker_with_context")
 	c := make(chan socketSpawn)
 	go func() {
 		ctx, cancel := context.WithTimeout(ctx, f.tout)
 		defer cancel()
-		w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(f.listeners...))
+		w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(listeners...))
 		if err != nil {
 			c <- socketSpawn{
 				w:   nil,
@@ -150,9 +145,9 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (wo
 	}
 }
 
-func (f *Factory) SpawnWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
+func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.EventListener) (worker.BaseProcess, error) {
 	const op = errors.Op("spawn_worker")
-	w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(f.listeners...))
+	w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(listeners...))
 	if err != nil {
 		return nil, err
 	}

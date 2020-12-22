@@ -435,6 +435,7 @@ github.com/spiral/roadrunner-plugins/resetter v1.0.0 h1:Nx4mIzeoH/IcUfY4LM9xhY0y
 github.com/spiral/roadrunner-plugins/resetter v1.0.0/go.mod h1:DLFifJk1n3PWViXkT5+qAmzeRcPTowDRSbRqotf+WlE=
 github.com/spiral/roadrunner-plugins/rpc v1.0.0 h1:cC17yCNqQUNtedKefdeT2P6z7q52L0QakxS4qwB7n+g=
 github.com/spiral/roadrunner-plugins/rpc v1.0.0/go.mod h1:p+ClRf1ibW+xvekf+nGQtvipyrtPJP6WZ/J/DSp+Qck=
+github.com/spiral/roadrunner-plugins/server v1.0.1/go.mod h1:qedfnQFlK1+Jwv5M8mRXJCOWTvF/qfFyULK/0UMBeOk=
 github.com/spiral/roadrunner/v2 v2.0.0-alpha26/go.mod h1:r7ojuHm9qCVbg4fKcqr4Aqk7VXqZ9YPefr1LOv7HNys=
 github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94/go.mod h1:AZpEONHx3DKn8O/DFsRAY58/XVQiIPMTMB1SddzLXVw=
 github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271/go.mod h1:AZpEONHx3DKn8O/DFsRAY58/XVQiIPMTMB1SddzLXVw=

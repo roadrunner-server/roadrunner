@@ -15,18 +15,12 @@ import (
 
 // Factory connects to stack using standard
 // streams (STDIN, STDOUT pipes).
-type Factory struct {
-	listener []events.EventListener
-}
+type Factory struct{}
 
 // NewPipeFactory returns new factory instance and starts
 // listening
-
-// todo: review tests
-func NewPipeFactory(listeners ...events.EventListener) worker.Factory {
-	return &Factory{
-		listener: listeners,
-	}
+func NewPipeFactory() worker.Factory {
+	return &Factory{}
 }
 
 type SpawnResult struct {
@@ -36,11 +30,11 @@ type SpawnResult struct {
 
 // SpawnWorker creates new Process and connects it to goridge relay,
 // method Wait() must be handled on level above.
-func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (worker.BaseProcess, error) {
+func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.EventListener) (worker.BaseProcess, error) {
 	c := make(chan SpawnResult)
 	const op = errors.Op("spawn worker with context")
 	go func() {
-		w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(f.listener...))
+		w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(listeners...))
 		if err != nil {
 			c <- SpawnResult{
 				w:   nil,
@@ -119,9 +113,9 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (wo
 	}
 }
 
-func (f *Factory) SpawnWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
+func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.EventListener) (worker.BaseProcess, error) {
 	const op = errors.Op("spawn worker")
-	w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(f.listener...))
+	w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(listeners...))
 	if err != nil {
 		return nil, errors.E(op, err)
 	}

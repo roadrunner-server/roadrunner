@@ -30,7 +30,7 @@ func Test_NewPool(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "echo", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		cfg,
 	)
 	assert.NoError(t, err)
@@ -44,7 +44,7 @@ func Test_StaticPool_Invalid(t *testing.T) {
 	p, err := Initialize(
 		context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../tests/invalid.php") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		cfg,
 	)
 
@@ -56,7 +56,7 @@ func Test_ConfigNoErrorInitDefaults(t *testing.T) {
 	p, err := Initialize(
 		context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "echo", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		Config{
 			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
@@ -72,7 +72,7 @@ func Test_StaticPool_Echo(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "echo", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		cfg,
 	)
 	assert.NoError(t, err)
@@ -96,7 +96,7 @@ func Test_StaticPool_Echo_NilContext(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "echo", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		cfg,
 	)
 	assert.NoError(t, err)
@@ -120,7 +120,7 @@ func Test_StaticPool_Echo_Context(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "head", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		cfg,
 	)
 	assert.NoError(t, err)
@@ -144,7 +144,7 @@ func Test_StaticPool_JobError(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "error", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		cfg,
 	)
 	assert.NoError(t, err)
@@ -184,7 +184,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "broken", "pipes") },
-		pipe.NewPipeFactory(listener),
+		pipe.NewPipeFactory(),
 		cfg,
 		AddListeners(listener),
 	)
@@ -223,7 +223,7 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "echo", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		cfg,
 		AddListeners(listener),
 	)
@@ -263,7 +263,7 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 	p, err := Initialize(
 		context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "delay", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Nanosecond * 1,
@@ -282,7 +282,7 @@ func Test_StaticPool_Replace_Worker(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "pid", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
 			MaxJobs:         1,
@@ -319,7 +319,7 @@ func Test_StaticPool_Debug_Worker(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "pid", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		Config{
 			Debug:           true,
 			AllocateTimeout: time.Second,
@@ -359,7 +359,7 @@ func Test_StaticPool_Stop_Worker(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "stop", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second,
@@ -399,7 +399,7 @@ func Test_Static_Pool_Destroy_And_Close(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "delay", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second,
@@ -421,7 +421,7 @@ func Test_Static_Pool_Destroy_And_Close_While_Wait(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "delay", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second,
@@ -451,7 +451,7 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 	p, err := Initialize(
 		context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../tests/slow-destroy.php", "echo", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      5,
 			AllocateTimeout: time.Second,
@@ -476,7 +476,7 @@ func Test_Static_Pool_Slow_Destroy(t *testing.T) {
 	p, err := Initialize(
 		context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../tests/slow-destroy.php", "echo", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      5,
 			AllocateTimeout: time.Second,
@@ -495,7 +495,7 @@ func Benchmark_Pool_Echo(b *testing.B) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "echo", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		cfg,
 	)
 	if err != nil {
@@ -517,7 +517,7 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "echo", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      int64(runtime.NumCPU()),
 			AllocateTimeout: time.Second * 100,
@@ -548,7 +548,7 @@ func Benchmark_Pool_Echo_Replaced(b *testing.B) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "echo", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
 			MaxJobs:         1,

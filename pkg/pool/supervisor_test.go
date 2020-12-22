@@ -30,7 +30,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/memleak.php", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		cfgSupervised,
 	)
 
@@ -88,7 +88,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep.php", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)
 
@@ -129,7 +129,7 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep.php", "pipes") },
-		pipe.NewPipeFactory(nil),
+		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)
 

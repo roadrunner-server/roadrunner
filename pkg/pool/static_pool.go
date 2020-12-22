@@ -39,6 +39,9 @@ type StaticPool struct {
 	// distributes the events
 	events events.Handler
 
+	// saved list of event listeners
+	listeners []events.EventListener
+
 	// manages worker states and TTLs
 	ww worker.Watcher
 
@@ -103,6 +106,7 @@ func Initialize(ctx context.Context, cmd Command, factory worker.Factory, cfg Co
 
 func AddListeners(listeners ...events.EventListener) Options {
 	return func(p *StaticPool) {
+		p.listeners = listeners
 		for i := 0; i < len(listeners); i++ {
 			p.addListener(listeners[i])
 		}
@@ -265,7 +269,7 @@ func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duratio
 	return func() (worker.BaseProcess, error) {
 		ctx, cancel := context.WithTimeout(ctx, timeout)
 		defer cancel()
-		w, err := factory.SpawnWorkerWithTimeout(ctx, cmd())
+		w, err := factory.SpawnWorkerWithTimeout(ctx, cmd(), sp.listeners...)
 		if err != nil {
 			return nil, err
 		}
