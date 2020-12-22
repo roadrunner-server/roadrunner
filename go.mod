@@ -32,7 +32,7 @@ require (
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 )
 
-replace github.com/spiral/roadrunner-plugins/http v1.0.0 => ../roadrunner-plugins/http
-replace github.com/spiral/roadrunner-plugins/reload v1.0.0 => ../roadrunner-plugins/reload
-replace github.com/spiral/roadrunner-plugins/rpc v1.0.0 => ../roadrunner-plugins/rpc
-replace github.com/spiral/roadrunner-plugins/server v1.0.1 => ../roadrunner-plugins/server
+//replace github.com/spiral/roadrunner-plugins/http v1.0.0 => ../roadrunner-plugins/http
+//replace github.com/spiral/roadrunner-plugins/reload v1.0.0 => ../roadrunner-plugins/reload
+//replace github.com/spiral/roadrunner-plugins/rpc v1.0.0 => ../roadrunner-plugins/rpc
+//replace github.com/spiral/roadrunner-plugins/server v1.0.1 => ../roadrunner-plugins/server
