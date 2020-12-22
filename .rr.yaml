@@ -3,13 +3,17 @@ rpc:
   disabled: false
 
 server:
-  command: "php ../../../tests/http/client.php echo pipes"
+  command: "php tests/psr-worker-bench.php"
   user: ""
   group: ""
   env:
     "RR_HTTP": "true"
   relay: "pipes"
   relayTimeout: "20s"
+
+logs:
+  mode: development
+  level: debug
 
 http:
   debug: true
@@ -20,23 +24,23 @@ http:
     forbid: [ ".php", ".exe", ".bat" ]
   trustedSubnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
   pool:
-    numWorkers: 2
+    numWorkers: 10
     maxJobs: 0
     allocateTimeout: 60s
     destroyTimeout: 60s
 
-  ssl:
-    port: 8892
-    redirect: false
-    cert: fixtures/server.crt
-    key: fixtures/server.key
-  #    rootCa: root.crt
-  fcgi:
-    address: tcp://0.0.0.0:7921
-  http2:
-    enabled: false
-    h2c: false
-    maxConcurrentStreams: 128
+#  ssl:
+#    port: 8892
+#    redirect: false
+#    cert: fixtures/server.crt
+#    key: fixtures/server.key
+#  #    rootCa: root.crt
+#  fcgi:
+#    address: tcp://0.0.0.0:7921
+#  http2:
+#    enabled: false
+#    h2c: false
+#    maxConcurrentStreams: 128
 
 redis:
   # UniversalClient is an abstract client which - based on the provided options -
@@ -89,7 +93,7 @@ reload:
   # sync interval
   interval: 1s
   # global patterns to sync
-  patterns: [ ".php" ]
+  patterns: [ ".go" ]
   # list of included for sync services
   services:
     http:
@@ -104,6 +108,6 @@ reload:
       dirs: [ "." ]
     rpc:
       recursive: true
-      patterns: [ ".json" ]
+      patterns: [ ".go" ]
       # to include all project directories from workdir, leave `dirs` empty or add a dot "."
-      dirs: [ "" ]
+      dirs: [ "." ]

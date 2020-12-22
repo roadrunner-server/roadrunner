@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
+	"github.com/spiral/roadrunner/v2/tools"
 )
 
 const MB = 1024 * 1024
@@ -30,7 +30,7 @@ type supervised struct {
 	mu     *sync.RWMutex
 }
 
-func newPoolWatcher(pool pool.Pool, events events.Handler, cfg *SupervisorConfig) Supervised {
+func supervisorWrapper(pool pool.Pool, events events.Handler, cfg *SupervisorConfig) Supervised {
 	sp := &supervised{
 		cfg:    cfg,
 		events: events,
@@ -38,6 +38,7 @@ func newPoolWatcher(pool pool.Pool, events events.Handler, cfg *SupervisorConfig
 		mu:     &sync.RWMutex{},
 		stopCh: make(chan struct{}),
 	}
+
 	return sp
 }
 
@@ -93,10 +94,6 @@ func (sp *supervised) Exec(p payload.Payload) (payload.Payload, error) {
 	return rsp, nil
 }
 
-func (sp *supervised) AddListener(listener events.EventListener) {
-	sp.pool.AddListener(listener)
-}
-
 func (sp *supervised) GetConfig() interface{} {
 	return sp.pool.GetConfig()
 }
@@ -149,7 +146,7 @@ func (sp *supervised) control() {
 			continue
 		}
 
-		s, err := roadrunner.WorkerProcessState(workers[i])
+		s, err := tools.WorkerProcessState(workers[i])
 		if err != nil {
 			// worker not longer valid for supervision
 			continue

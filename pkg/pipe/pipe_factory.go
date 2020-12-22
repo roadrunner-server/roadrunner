@@ -6,6 +6,7 @@ import (
 
 	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v3/pkg/pipe"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
 	workerImpl "github.com/spiral/roadrunner/v2/pkg/worker"
@@ -14,14 +15,18 @@ import (
 
 // Factory connects to stack using standard
 // streams (STDIN, STDOUT pipes).
-type Factory struct{}
+type Factory struct {
+	listener []events.EventListener
+}
 
 // NewPipeFactory returns new factory instance and starts
 // listening
 
 // todo: review tests
-func NewPipeFactory() worker.Factory {
-	return &Factory{}
+func NewPipeFactory(listeners ...events.EventListener) worker.Factory {
+	return &Factory{
+		listener: listeners,
+	}
 }
 
 type SpawnResult struct {
@@ -35,7 +40,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (wo
 	c := make(chan SpawnResult)
 	const op = errors.Op("spawn worker with context")
 	go func() {
-		w, err := workerImpl.InitBaseWorker(cmd)
+		w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(f.listener...))
 		if err != nil {
 			c <- SpawnResult{
 				w:   nil,
@@ -116,7 +121,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (wo
 
 func (f *Factory) SpawnWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
 	const op = errors.Op("spawn worker")
-	w, err := workerImpl.InitBaseWorker(cmd)
+	w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(f.listener...))
 	if err != nil {
 		return nil, errors.E(op, err)
 	}

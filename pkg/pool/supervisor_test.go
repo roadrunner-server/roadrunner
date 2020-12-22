@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiral/roadrunner/v2"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/pkg/pipe"
+	"github.com/spiral/roadrunner/v2/tools"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,10 +27,10 @@ var cfgSupervised = Config{
 
 func TestSupervisedPool_Exec(t *testing.T) {
 	ctx := context.Background()
-	p, err := NewPool(
+	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/memleak.php", "pipes") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(nil),
 		cfgSupervised,
 	)
 
@@ -47,7 +47,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 			default:
 				workers := p.Workers()
 				if len(workers) > 0 {
-					s, err := roadrunner.WorkerProcessState(workers[0])
+					s, err := tools.WorkerProcessState(workers[0])
 					assert.NoError(t, err)
 					assert.NotNil(t, s)
 					// since this is soft limit, double max memory limit watch
@@ -85,10 +85,10 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 		},
 	}
 	ctx := context.Background()
-	p, err := NewPool(
+	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep.php", "pipes") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(nil),
 		cfgExecTTL,
 	)
 
@@ -104,7 +104,8 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 	})
 
 	assert.Error(t, err)
-	assert.Empty(t, resp)
+	assert.Empty(t, resp.Body)
+	assert.Empty(t, resp.Context)
 
 	time.Sleep(time.Second * 1)
 	// should be new worker with new pid
@@ -125,10 +126,10 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 		},
 	}
 	ctx := context.Background()
-	p, err := NewPool(
+	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep.php", "pipes") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(nil),
 		cfgExecTTL,
 	)
 

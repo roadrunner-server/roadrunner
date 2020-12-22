@@ -29,6 +29,8 @@ const (
 	ReadBufSize = 10240 // Kb
 )
 
+type Options func(p *Process)
+
 // Process - supervised process with api over goridge.Relay.
 type Process struct {
 	// created indicates at what time Process has been created.
@@ -76,7 +78,7 @@ type Process struct {
 }
 
 // InitBaseWorker creates new Process over given exec.cmd.
-func InitBaseWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
+func InitBaseWorker(cmd *exec.Cmd, options ...Options) (worker.BaseProcess, error) {
 	if cmd.Process != nil {
 		return nil, fmt.Errorf("can't attach to running process")
 	}
@@ -103,11 +105,24 @@ func InitBaseWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
 	// at this point we know, that stderr will contain huge messages
 	w.stderr.Grow(ReadBufSize)
 
+	// add options
+	for i := 0; i < len(options); i++ {
+		options[i](w)
+	}
+
 	go func() {
 		w.watch()
 	}()
 
 	return w, nil
+}
+
+func AddListeners(listeners ...events.EventListener) Options {
+	return func(p *Process) {
+		for i := 0; i < len(listeners); i++ {
+			p.addListener(listeners[i])
+		}
+	}
 }
 
 // Pid returns worker pid.
@@ -121,7 +136,7 @@ func (w *Process) Created() time.Time {
 }
 
 // AddListener registers new worker event listener.
-func (w *Process) AddListener(listener events.EventListener) {
+func (w *Process) addListener(listener events.EventListener) {
 	w.events.AddListener(listener)
 }
 

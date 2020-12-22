@@ -405,21 +405,20 @@ func Test_Echo_Slow(t *testing.T) {
 func Test_Broken(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "pipes")
-
-	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	data := ""
 	mu := &sync.Mutex{}
-	w.AddListener(func(event interface{}) {
+	listener := func(event interface{}) {
 		if wev, ok := event.(events.WorkerEvent); ok {
 			mu.Lock()
 			data = string(wev.Payload.([]byte))
 			mu.Unlock()
 		}
-	})
+	}
+
+	w, err := NewPipeFactory(listener).SpawnWorkerWithTimeout(ctx, cmd)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	syncWorker, err := workerImpl.From(w)
 	if err != nil {

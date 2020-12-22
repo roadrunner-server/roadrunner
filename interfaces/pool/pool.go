@@ -5,16 +5,12 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 )
 
 // Pool managed set of inner worker processes.
 type Pool interface {
-	// AddListener connects event listener to the pool.
-	AddListener(listener events.EventListener)
-
 	// GetConfig returns pool configuration.
 	GetConfig() interface{}
 

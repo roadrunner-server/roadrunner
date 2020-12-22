@@ -163,7 +163,6 @@ type workerWatcher struct {
 func (ww *workerWatcher) AddToWatch(workers []worker.BaseProcess) error {
 	for i := 0; i < len(workers); i++ {
 		ww.stack.Push(workers[i])
-		workers[i].AddListener(ww.events.Push)
 
 		go func(swc worker.BaseProcess) {
 			ww.wait(swc)
