@@ -45,7 +45,7 @@ func init() {
 
 	// todo: properly handle debug level
 	Logger = initLogger()
-	//endureLogger := logger.NewZapAdapter(Logger)
+	// endureLogger := logger.NewZapAdapter(Logger)
 
 	cobra.OnInitialize(func() {
 		if CfgFile != "" {

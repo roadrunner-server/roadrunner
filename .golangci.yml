@@ -17,7 +17,7 @@ linters:
     - errcheck
     - exhaustive
     #    - funlen
-    - gochecknoinits
+    #    - gochecknoinits
     #    - goconst
     - gocritic
     - gocyclo

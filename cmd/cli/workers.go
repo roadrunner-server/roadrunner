@@ -9,7 +9,9 @@ import (
 	"time"
 
 	tm "github.com/buger/goterm"
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/tools"
+	"go.uber.org/zap"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -43,6 +45,7 @@ func init() {
 }
 
 func workersHandler(cmd *cobra.Command, args []string) error {
+	const op = errors.Op("workers handler")
 	client, err := RPCClient()
 	if err != nil {
 		return err
@@ -50,7 +53,7 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 	defer func() {
 		err := client.Close()
 		if err != nil {
-			Logger.Error(err.Error())
+			Logger.Error("error when closing RPCClient", zap.Error(err))
 		}
 	}()
 
@@ -75,7 +78,10 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 			return nil
 		case <-time.NewTicker(time.Second).C:
 			tm.MoveCursor(1, 1)
-			showWorkers(plugins, client)
+			err := showWorkers(plugins, client)
+			if err != nil {
+				return errors.E(op, err)
+			}
 			tm.Flush()
 		}
 	}
@@ -97,12 +103,10 @@ func showWorkers(plugins []string, client *rpc.Client) error {
 			ps[i].MemoryUsage = list.Workers[i].MemoryUsage
 			ps[i].Pid = list.Workers[i].Pid
 			ps[i].Status = list.Workers[i].Status
-
 		}
 
 		fmt.Printf("Workers of [%s]:\n", color.HiYellowString(plugin))
 		tools.WorkerTable(os.Stdout, ps).Render()
 	}
-
 	return nil
 }
