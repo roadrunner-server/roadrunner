@@ -14,11 +14,11 @@ jobs:
   php:
     name: Build (PHP ${{ matrix.php }}, ${{ matrix.setup }} setup)
     runs-on: ubuntu-20.04
-    timeout-minutes: 6
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        php: [ '7.3', '7.4', '8.0' ]
+        php: [ '7.2', '7.3', '7.4', '8.0' ]
         setup: [ basic, lowest ]
     steps:
       - name: Set up PHP ${{ matrix.php }}
@@ -61,11 +61,11 @@ jobs:
   golang:
     name: Build (Go ${{ matrix.go }}, PHP ${{ matrix.php }})
     runs-on: ubuntu-20.04
-    timeout-minutes: 10
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        php: [ '7.3', '7.4', '8.0' ]
+        php: [ '7.2', '7.3', '7.4', '8.0' ]
         go: [ '1.14', '1.15' ]
     steps:
       - name: Set up Go ${{ matrix.go }}

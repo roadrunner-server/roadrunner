@@ -1,9 +1,12 @@
 CHANGELOG
 =========
 
-UNRELEASED
+v1.9.1 (21.12.2020)
 ----------
-- Add `rr --version` flag support
+- Add `rr --version` flag support (thanks @tarampampam)
+- Update `reload` plugin, remove unnecessary goroutines and locks.
+- Add objectives to the metrics summary.
+- Automated releases build.
 
 v1.9.0 (02.12.2020)
 -------------------
