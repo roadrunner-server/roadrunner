@@ -2,26 +2,24 @@ package cli
 
 import (
 	"fmt"
+	"log"
 	"net/rpc"
 	"os"
-	"os/signal"
-	"syscall"
 	"time"
 
 	tm "github.com/buger/goterm"
-	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/tools"
-	"go.uber.org/zap"
-
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner-plugins/informer"
+	"github.com/spiral/roadrunner/v2/tools"
 )
 
 var (
 	interactive bool
-	stopSignal  = make(chan os.Signal, 1)
 )
+
+const InformerList string = "informer.List"
 
 func init() {
 	workersCommand := &cobra.Command{
@@ -39,13 +37,11 @@ func init() {
 	)
 
 	root.AddCommand(workersCommand)
-
-	signal.Notify(stopSignal, syscall.SIGTERM)
-	signal.Notify(stopSignal, syscall.SIGINT)
 }
 
 func workersHandler(cmd *cobra.Command, args []string) error {
 	const op = errors.Op("workers handler")
+	// get RPC client
 	client, err := RPCClient()
 	if err != nil {
 		return err
@@ -53,17 +49,18 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 	defer func() {
 		err := client.Close()
 		if err != nil {
-			Logger.Error("error when closing RPCClient", zap.Error(err))
+			log.Printf("error when closing RPCClient: error %v", err)
 		}
 	}()
 
 	var plugins []string
+	// assume user wants to show workers from particular plugin
 	if len(args) != 0 {
 		plugins = args
 	} else {
-		err = client.Call("informer.List", true, &plugins)
+		err = client.Call(InformerList, true, &plugins)
 		if err != nil {
-			return err
+			return errors.E(op, err)
 		}
 	}
 
@@ -72,11 +69,11 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 	}
 
 	tm.Clear()
+	tt := time.NewTicker(time.Second)
+	defer tt.Stop()
 	for {
 		select {
-		case <-stopSignal:
-			return nil
-		case <-time.NewTicker(time.Second).C:
+		case <-tt.C:
 			tm.MoveCursor(1, 1)
 			err := showWorkers(plugins, client)
 			if err != nil {

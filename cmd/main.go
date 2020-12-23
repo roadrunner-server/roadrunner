@@ -6,6 +6,7 @@ import (
 	"github.com/spiral/endure"
 	"github.com/spiral/roadrunner-plugins/http"
 	"github.com/spiral/roadrunner-plugins/informer"
+	"github.com/spiral/roadrunner-plugins/logger"
 	"github.com/spiral/roadrunner-plugins/metrics"
 	"github.com/spiral/roadrunner-plugins/redis"
 	"github.com/spiral/roadrunner-plugins/reload"
@@ -23,13 +24,23 @@ func main() {
 	}
 
 	err = cli.Container.RegisterAll(
+		// logger plugin
+		&logger.ZapLogger{},
+		// metrics plugin
 		&metrics.Plugin{},
+		// redis plugin (internal)
 		&redis.Plugin{},
+		// http server plugin
 		&http.Plugin{},
+		// reload plugin
 		&reload.Plugin{},
+		// informer plugin (./rr workers)
 		&informer.Plugin{},
+		// resetter plugin (./rr reset)
 		&resetter.Plugin{},
+		// rpc plugin (workers, reset)
 		&rpc.Plugin{},
+		// server plugin (NewWorker, NewWorkerPool)
 		&server.Plugin{},
 	)
 	if err != nil {

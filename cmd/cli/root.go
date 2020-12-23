@@ -8,12 +8,9 @@ import (
 
 	"github.com/spiral/errors"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
-	"github.com/spiral/roadrunner-plugins/logger"
 	rpcPlugin "github.com/spiral/roadrunner-plugins/rpc"
 
 	"github.com/spiral/roadrunner-plugins/config"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 
 	"github.com/spf13/cobra"
 	"github.com/spiral/endure"
@@ -23,7 +20,6 @@ var (
 	WorkDir   string
 	CfgFile   string
 	Container *endure.Endure
-	Logger    *zap.Logger
 	cfg       *config.Viper
 	root      = &cobra.Command{
 		Use:           "rr",
@@ -43,10 +39,6 @@ func init() {
 	root.PersistentFlags().StringVarP(&CfgFile, "config", "c", ".rr.yaml", "config file (default is .rr.yaml)")
 	root.PersistentFlags().StringVarP(&WorkDir, "WorkDir", "w", "", "work directory")
 
-	// todo: properly handle debug level
-	Logger = initLogger()
-	// endureLogger := logger.NewZapAdapter(Logger)
-
 	cobra.OnInitialize(func() {
 		if CfgFile != "" {
 			if absPath, err := filepath.Abs(CfgFile); err == nil {
@@ -65,24 +57,19 @@ func init() {
 			}
 		}
 
-		// todo: config is global, not only for serve
 		cfg = &config.Viper{}
 		cfg.Path = CfgFile
 		cfg.Prefix = "rr"
 
+		// register config
 		err := Container.Register(cfg)
-		if err != nil {
-			panic(err)
-		}
-
-		err = Container.Register(&logger.ZapLogger{})
 		if err != nil {
 			panic(err)
 		}
 	})
 }
 
-// todo: improve
+// RPCClient is using to make a requests to the ./rr reset, ./rr workers
 func RPCClient() (*rpc.Client, error) {
 	rpcConfig := &rpcPlugin.Config{}
 
@@ -107,32 +94,4 @@ func RPCClient() (*rpc.Client, error) {
 	}
 
 	return rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn)), nil
-}
-
-func initLogger() *zap.Logger {
-	// todo: we do not need it
-	cfg := zap.Config{
-		Level:    zap.NewAtomicLevelAt(zap.ErrorLevel),
-		Encoding: "console",
-		EncoderConfig: zapcore.EncoderConfig{
-			MessageKey:    "message",
-			LevelKey:      "level",
-			TimeKey:       "time",
-			CallerKey:     "caller",
-			NameKey:       "name",
-			StacktraceKey: "stack",
-			EncodeLevel:   zapcore.CapitalLevelEncoder,
-			EncodeTime:    zapcore.ISO8601TimeEncoder,
-			EncodeCaller:  zapcore.ShortCallerEncoder,
-		},
-		OutputPaths:      []string{"stderr"},
-		ErrorOutputPaths: []string{"stderr"},
-	}
-
-	l, err := cfg.Build(zap.AddCaller())
-	if err != nil {
-		panic(err)
-	}
-
-	return l
 }

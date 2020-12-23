@@ -1,20 +1,20 @@
 package cli
 
 import (
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/spiral/errors"
-	"go.uber.org/zap"
-
 	"github.com/spf13/cobra"
+	"github.com/spiral/errors"
+	"go.uber.org/multierr"
 )
 
 func init() {
 	root.AddCommand(&cobra.Command{
 		Use:   "serve",
-		Short: "Start RoadRunner Temporal service(s)",
+		Short: "Start RoadRunner server",
 		RunE:  handler,
 	})
 }
@@ -25,6 +25,7 @@ func handler(cmd *cobra.Command, args []string) error {
 		We need to have path to the config at the RegisterTarget stage
 		But after cobra.Execute, because cobra fills up cli variables on this stage
 	*/
+
 	err := Container.Init()
 	if err != nil {
 		return errors.E(op, err)
@@ -43,14 +44,14 @@ func handler(cmd *cobra.Command, args []string) error {
 	for {
 		select {
 		case e := <-errCh:
-			Logger.Error(e.Error.Error(), zap.String("service", e.VertexID))
+			err = multierr.Append(err, e.Error)
+			log.Printf("error occurred: %v, service: %s", e.Error.Error(), e.VertexID)
 			er := Container.Stop()
 			if er != nil {
-				Logger.Error(e.Error.Error(), zap.String("service", e.VertexID))
-				if er != nil {
-					return errors.E(op, er)
-				}
+				err = multierr.Append(err, er)
+				return errors.E(op, err)
 			}
+			return errors.E(op, err)
 		case <-c:
 			err = Container.Stop()
 			if err != nil {

@@ -191,6 +191,10 @@ func (w *Process) Wait() error {
 	const op = errors.Op("worker process wait")
 	err := multierr.Combine(w.cmd.Wait())
 
+	if w.State().Value() == internal.StateDestroyed {
+		return errors.E(op, err)
+	}
+
 	// at this point according to the documentation (see cmd.Wait comment)
 	// if worker finishes with an error, message will be written to the stderr first
 	// and then w.cmd.Wait return an error
@@ -249,6 +253,14 @@ func (w *Process) Stop() error {
 // Kill kills underlying process, make sure to call Wait() func to gather
 // error log from the stderr. Does not waits for process completion!
 func (w *Process) Kill() error {
+	if w.State().Value() == internal.StateDestroyed {
+		err := w.cmd.Process.Signal(os.Kill)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
 	w.state.Set(internal.StateKilling)
 	err := w.cmd.Process.Signal(os.Kill)
 	if err != nil {

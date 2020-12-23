@@ -421,8 +421,8 @@ github.com/spiral/roadrunner-plugins/config v1.0.0 h1:RPYB8Ha/UeuBGRwtcqNb0uU8R5
 github.com/spiral/roadrunner-plugins/config v1.0.0/go.mod h1:XcVJLFDUlYPvZ3kVzssmP4fJbEzUvVJf534+eZaotAo=
 github.com/spiral/roadrunner-plugins/http v1.0.0 h1:8WGAuZOrkYZQWo6n13ip+ZtzhKugZZ+b5W+ivVr7FjI=
 github.com/spiral/roadrunner-plugins/http v1.0.0/go.mod h1:37ReUuAKJDtXH3GjMjRH5q3plBXq5r5lUfltRTVZzDE=
-github.com/spiral/roadrunner-plugins/http v1.0.1 h1:5pK7390tTcW+LZXCiyH7KowZvcj4Gum/hfAGl8BALDY=
-github.com/spiral/roadrunner-plugins/http v1.0.1/go.mod h1:JRgVSgJRh6wDmVs1rFJHQ9PM0xtCpzX9vBtVDItXZ/E=
+github.com/spiral/roadrunner-plugins/http v1.0.2 h1:BRmdbx0DYlgYTkvmd1IDZJewC1y30GqBCKRjbTn3OLc=
+github.com/spiral/roadrunner-plugins/http v1.0.2/go.mod h1:JRgVSgJRh6wDmVs1rFJHQ9PM0xtCpzX9vBtVDItXZ/E=
 github.com/spiral/roadrunner-plugins/informer v1.0.3 h1:6DXs8IRDjBvAr2mGKXVlhx1KLLfVqpXgvP2va79kR1s=
 github.com/spiral/roadrunner-plugins/informer v1.0.3/go.mod h1:OPEJNADBbNQyx0/KuXQbY3Mqemo30vZh6duf6YpRf7M=
 github.com/spiral/roadrunner-plugins/informer v1.0.4 h1:J2DXrQkRRyYDGw/6TIo7qF74Zn3AOHQe+9g0Hj5BwR4=

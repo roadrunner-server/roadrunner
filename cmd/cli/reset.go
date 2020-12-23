@@ -7,9 +7,13 @@ import (
 	"github.com/fatih/color"
 	"github.com/mattn/go-runewidth"
 	"github.com/spf13/cobra"
+	"github.com/spiral/errors"
 	"github.com/vbauerster/mpb/v5"
 	"github.com/vbauerster/mpb/v5/decor"
 )
+
+const List string = "resetter.List"
+const Reset string = "resetter.Reset"
 
 func init() {
 	root.AddCommand(&cobra.Command{
@@ -20,19 +24,22 @@ func init() {
 }
 
 func resetHandler(cmd *cobra.Command, args []string) error {
+	const op = errors.Op("reset handler")
 	client, err := RPCClient()
 	if err != nil {
 		return err
 	}
-	defer client.Close()
+	defer func() {
+		_ = client.Close()
+	}()
 
 	var services []string
 	if len(args) != 0 {
 		services = args
 	} else {
-		err = client.Call("resetter.List", true, &services)
+		err = client.Call(List, true, &services)
 		if err != nil {
-			return err
+			return errors.E(op, err)
 		}
 	}
 
@@ -43,7 +50,7 @@ func resetHandler(cmd *cobra.Command, args []string) error {
 	for _, service := range services {
 		var (
 			bar    *mpb.Bar
-			name   = runewidth.FillRight(fmt.Sprintf("Reset [%s]", color.HiYellowString(service)), 27)
+			name   = runewidth.FillRight(fmt.Sprintf("Resetting plugin: [%s]", color.HiYellowString(service)), 27)
 			result = make(chan interface{})
 		)
 
@@ -61,9 +68,9 @@ func resetHandler(cmd *cobra.Command, args []string) error {
 			defer bar.Increment()
 
 			var done bool
-			err = client.Call("resetter.Reset", service, &done)
+			err = client.Call(Reset, service, &done)
 			if err != nil {
-				result <- err
+				result <- errors.E(op, err)
 				return
 			}
 			result <- nil
