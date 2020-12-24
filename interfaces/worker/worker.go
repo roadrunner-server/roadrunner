@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/spiral/goridge/v3/interfaces/relay"
-	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 )
@@ -22,9 +21,6 @@ type BaseProcess interface {
 
 	// Created returns time worker was created at.
 	Created() time.Time
-
-	// AddListener attaches listener to consume worker events.
-	AddListener(listener events.EventListener)
 
 	// State return receive-only WorkerProcess state object, state can be used to safely access
 	// WorkerProcess status, time when status changed and number of WorkerProcess executions.

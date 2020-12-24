@@ -128,6 +128,8 @@ func (stack *Stack) Destroy(ctx context.Context) {
 			for i := 0; i < len(stack.workers); i++ {
 				// set state for the stack in the stack (unused at the moment)
 				stack.workers[i].State().Set(internal.StateDestroyed)
+				// kill the worker
+				_ = stack.workers[i].Kill()
 			}
 			stack.mutex.Unlock()
 			tt.Stop()
@@ -163,7 +165,6 @@ type workerWatcher struct {
 func (ww *workerWatcher) AddToWatch(workers []worker.BaseProcess) error {
 	for i := 0; i < len(workers); i++ {
 		ww.stack.Push(workers[i])
-		workers[i].AddListener(ww.events.Push)
 
 		go func(swc worker.BaseProcess) {
 			ww.wait(swc)
@@ -224,11 +225,6 @@ func (ww *workerWatcher) AllocateNew() error {
 	ww.stack.mutex.Unlock()
 	ww.PushWorker(sw)
 
-	ww.events.Push(events.PoolEvent{
-		Event:   events.EventWorkerConstruct,
-		Payload: sw,
-	})
-
 	return nil
 }
 
@@ -283,6 +279,7 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 
 	if w.State().Value() == internal.StateDestroyed {
 		// worker was manually destroyed, no need to replace
+		ww.events.Push(events.PoolEvent{Event: events.EventWorkerDestruct, Payload: w})
 		return
 	}
 

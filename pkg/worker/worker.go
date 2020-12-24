@@ -29,6 +29,8 @@ const (
 	ReadBufSize = 10240 // Kb
 )
 
+type Options func(p *Process)
+
 // Process - supervised process with api over goridge.Relay.
 type Process struct {
 	// created indicates at what time Process has been created.
@@ -76,7 +78,7 @@ type Process struct {
 }
 
 // InitBaseWorker creates new Process over given exec.cmd.
-func InitBaseWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
+func InitBaseWorker(cmd *exec.Cmd, options ...Options) (worker.BaseProcess, error) {
 	if cmd.Process != nil {
 		return nil, fmt.Errorf("can't attach to running process")
 	}
@@ -103,11 +105,24 @@ func InitBaseWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
 	// at this point we know, that stderr will contain huge messages
 	w.stderr.Grow(ReadBufSize)
 
+	// add options
+	for i := 0; i < len(options); i++ {
+		options[i](w)
+	}
+
 	go func() {
 		w.watch()
 	}()
 
 	return w, nil
+}
+
+func AddListeners(listeners ...events.EventListener) Options {
+	return func(p *Process) {
+		for i := 0; i < len(listeners); i++ {
+			p.addListener(listeners[i])
+		}
+	}
 }
 
 // Pid returns worker pid.
@@ -121,7 +136,7 @@ func (w *Process) Created() time.Time {
 }
 
 // AddListener registers new worker event listener.
-func (w *Process) AddListener(listener events.EventListener) {
+func (w *Process) addListener(listener events.EventListener) {
 	w.events.AddListener(listener)
 }
 
@@ -175,6 +190,10 @@ func (w *Process) Start() error {
 func (w *Process) Wait() error {
 	const op = errors.Op("worker process wait")
 	err := multierr.Combine(w.cmd.Wait())
+
+	if w.State().Value() == internal.StateDestroyed {
+		return errors.E(op, err)
+	}
 
 	// at this point according to the documentation (see cmd.Wait comment)
 	// if worker finishes with an error, message will be written to the stderr first
@@ -234,6 +253,14 @@ func (w *Process) Stop() error {
 // Kill kills underlying process, make sure to call Wait() func to gather
 // error log from the stderr. Does not waits for process completion!
 func (w *Process) Kill() error {
+	if w.State().Value() == internal.StateDestroyed {
+		err := w.cmd.Process.Signal(os.Kill)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
 	w.state.Set(internal.StateKilling)
 	err := w.cmd.Process.Signal(os.Kill)
 	if err != nil {

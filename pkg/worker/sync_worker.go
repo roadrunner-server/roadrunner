@@ -8,7 +8,6 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v3/interfaces/relay"
 	"github.com/spiral/goridge/v3/pkg/frame"
-	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
@@ -19,7 +18,7 @@ type syncWorker struct {
 	w worker.BaseProcess
 }
 
-// From creates SyncWorker from WorkerBasa
+// From creates SyncWorker from BaseProcess
 func From(w worker.BaseProcess) (worker.SyncWorker, error) {
 	return &syncWorker{
 		w: w,
@@ -194,10 +193,6 @@ func (tw *syncWorker) Pid() int64 {
 
 func (tw *syncWorker) Created() time.Time {
 	return tw.w.Created()
-}
-
-func (tw *syncWorker) AddListener(listener events.EventListener) {
-	tw.w.AddListener(listener)
 }
 
 func (tw *syncWorker) State() internal.State {

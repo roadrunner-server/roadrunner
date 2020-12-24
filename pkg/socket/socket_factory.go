@@ -11,6 +11,7 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v3/interfaces/relay"
 	"github.com/spiral/goridge/v3/pkg/socket"
+	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
 	workerImpl "github.com/spiral/roadrunner/v2/pkg/worker"
@@ -28,7 +29,6 @@ type Factory struct {
 	tout time.Duration
 
 	// sockets which are waiting for process association
-	// relays map[int64]*goridge.SocketRelay
 	relays sync.Map
 
 	ErrCh chan error
@@ -85,13 +85,13 @@ type socketSpawn struct {
 }
 
 // SpawnWorker creates Process and connects it to appropriate relay or returns error
-func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (worker.BaseProcess, error) {
+func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.EventListener) (worker.BaseProcess, error) {
 	const op = errors.Op("spawn_worker_with_context")
 	c := make(chan socketSpawn)
 	go func() {
 		ctx, cancel := context.WithTimeout(ctx, f.tout)
 		defer cancel()
-		w, err := workerImpl.InitBaseWorker(cmd)
+		w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(listeners...))
 		if err != nil {
 			c <- socketSpawn{
 				w:   nil,
@@ -145,9 +145,9 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (wo
 	}
 }
 
-func (f *Factory) SpawnWorker(cmd *exec.Cmd) (worker.BaseProcess, error) {
+func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.EventListener) (worker.BaseProcess, error) {
 	const op = errors.Op("spawn_worker")
-	w, err := workerImpl.InitBaseWorker(cmd)
+	w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(listeners...))
 	if err != nil {
 		return nil, err
 	}
