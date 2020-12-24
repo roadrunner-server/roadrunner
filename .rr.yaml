@@ -16,7 +16,6 @@ logs:
   level: error
 
 http:
-  debug: true
   address: 127.0.0.1:44933
   maxRequestSize: 1024
   middleware: [ "gzip", "headers" ]
