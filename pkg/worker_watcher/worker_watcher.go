@@ -294,8 +294,6 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 }
 
 func (ww *workerWatcher) addToWatch(wb worker.BaseProcess) {
-	ww.mutex.Lock()
-	defer ww.mutex.Unlock()
 	go func() {
 		ww.wait(wb)
 	}()
