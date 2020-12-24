@@ -18,9 +18,9 @@ import (
 
 func main() {
 	var err error
-	cli.Container, err = endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.RetryOnFail(false))
+	cli.Container, err = endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel), endure.RetryOnFail(false))
 	if err != nil {
-		return
+		log.Fatal(err)
 	}
 
 	err = cli.Container.RegisterAll(

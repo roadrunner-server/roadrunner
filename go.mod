@@ -23,16 +23,15 @@ require (
 	github.com/spiral/roadrunner-plugins/reload v1.0.1
 	github.com/spiral/roadrunner-plugins/resetter v1.0.0
 	github.com/spiral/roadrunner-plugins/rpc v1.0.1
-	github.com/spiral/roadrunner-plugins/server v1.0.3
+	github.com/spiral/roadrunner-plugins/server v1.0.4
 	github.com/stretchr/testify v1.6.1
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/vbauerster/mpb/v5 v5.4.0
 	go.uber.org/multierr v1.6.0
-	go.uber.org/zap v1.16.0
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 )
 
-replace github.com/spiral/roadrunner-plugins/http v1.0.2 => ../roadrunner-plugins/http
+//replace github.com/spiral/roadrunner-plugins/http v1.0.2 => ../roadrunner-plugins/http
 //replace github.com/spiral/roadrunner-plugins/reload v1.0.0 => ../roadrunner-plugins/reload
 //replace github.com/spiral/roadrunner-plugins/rpc v1.0.0 => ../roadrunner-plugins/rpc
-replace github.com/spiral/roadrunner-plugins/server v1.0.3 => ../roadrunner-plugins/server
+//replace github.com/spiral/roadrunner-plugins/server v1.0.3 => ../roadrunner-plugins/server

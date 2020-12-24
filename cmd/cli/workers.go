@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/rpc"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	tm "github.com/buger/goterm"
@@ -68,11 +70,18 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 		return showWorkers(plugins, client)
 	}
 
+	// https://golang.org/pkg/os/signal/#Notify
+	// should be of buffer size at least 1
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+
 	tm.Clear()
 	tt := time.NewTicker(time.Second)
 	defer tt.Stop()
 	for {
 		select {
+		case <-c:
+			return nil
 		case <-tt.C:
 			tm.MoveCursor(1, 1)
 			err := showWorkers(plugins, client)
