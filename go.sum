@@ -415,6 +415,9 @@ github.com/spiral/errors v1.0.6 h1:berk5ShEILSw6DplUVv9Ea1wGdk2WlVKQpuvDngll0U=
 github.com/spiral/errors v1.0.6/go.mod h1:SwMSZVdZkkJVgXNNafccqOaxWg0XPzVU/dEdUEInE0o=
 github.com/spiral/goridge/v3 v3.0.0-beta8 h1:x8uXCdhY49U1LEvmehnTaD2El6J9ZHAefRdh/QIZ6A4=
 github.com/spiral/goridge/v3 v3.0.0-beta8/go.mod h1:XFQGc42KNzo/hPIXPki7mEkFTf9v/T7qFk/TYJjMtzE=
+github.com/spiral/roadrunner-plugins v0.0.0-20201224162001-79cb05174578 h1:zFQuyy/RMMVsQtD6y2RAPO4eBsWwGvsB04BuEmXOVD4=
+github.com/spiral/roadrunner-plugins/a_plugin_tests v0.0.0-20201224162001-79cb05174578 h1:E4cenNwBMi0F9327C7WMKx484MwFs5etbRcYKs1+EgY=
+github.com/spiral/roadrunner-plugins/a_plugin_tests v0.0.0-20201224162001-79cb05174578/go.mod h1:0aZijFwgc35Px78nXqOZNjJjd1jaHGxejGJrd8dJnuc=
 github.com/spiral/roadrunner-plugins/checker v1.0.1 h1:UVMX9zUF0R3ScRFUQg89e5+CLn3I2e5uAKsD4A52iDU=
 github.com/spiral/roadrunner-plugins/checker v1.0.1/go.mod h1:/gnVybeKye5uq/8hgjI7YDoK/ntPd0ej6tWkxlYdiz8=
 github.com/spiral/roadrunner-plugins/checker v1.0.3 h1:fnWX2PBXlNhYp8UERgFx/eMM1Qf4pDJCeUY4NoiWwbo=
@@ -423,6 +426,8 @@ github.com/spiral/roadrunner-plugins/config v1.0.0 h1:RPYB8Ha/UeuBGRwtcqNb0uU8R5
 github.com/spiral/roadrunner-plugins/config v1.0.0/go.mod h1:XcVJLFDUlYPvZ3kVzssmP4fJbEzUvVJf534+eZaotAo=
 github.com/spiral/roadrunner-plugins/config v1.0.1 h1:6n9mFqvy+Fk3LaOWfNSA7lb5o2vJOnGJivNFP7Fg8QA=
 github.com/spiral/roadrunner-plugins/config v1.0.1/go.mod h1:MQGXiAP8Sr6/LjFVcr+AeUElNMKJXnwVEKXn1I5ztXk=
+github.com/spiral/roadrunner-plugins/gzip v1.0.0/go.mod h1:gQSyvp7u8udOwZac5o2vcfrGANIaozyrIU1Q+xXq328=
+github.com/spiral/roadrunner-plugins/headers v1.0.0/go.mod h1:bZAGI0wo465MlYNx0Urpss0GyQDJQY5tcY9YrgiUElE=
 github.com/spiral/roadrunner-plugins/http v1.0.0 h1:8WGAuZOrkYZQWo6n13ip+ZtzhKugZZ+b5W+ivVr7FjI=
 github.com/spiral/roadrunner-plugins/http v1.0.0/go.mod h1:37ReUuAKJDtXH3GjMjRH5q3plBXq5r5lUfltRTVZzDE=
 github.com/spiral/roadrunner-plugins/http v1.0.2 h1:BRmdbx0DYlgYTkvmd1IDZJewC1y30GqBCKRjbTn3OLc=
@@ -469,6 +474,7 @@ github.com/spiral/roadrunner-plugins/server v1.0.4 h1:i6QWbVM/gLnM3Tb/DDFSFpRnxc
 github.com/spiral/roadrunner-plugins/server v1.0.4/go.mod h1:XHfOZwvITuKyUwU79KaeMm8gU5AqzKQg0MCHJ7eBU5c=
 github.com/spiral/roadrunner-plugins/server v1.0.6 h1:JOrA/O/DJjuqKE1YTxLSyYh+/FLsJHY9biZkLwZk+LE=
 github.com/spiral/roadrunner-plugins/server v1.0.6/go.mod h1:FyUujaAfNNdXCJHDkWD5pcRolNQ4cOMb6N+KapIMVpk=
+github.com/spiral/roadrunner-plugins/static v1.0.0/go.mod h1:lipuYhoSoZR95DR6hO7MOdaJKQq4JibCPC2V2BDzNXg=
 github.com/spiral/roadrunner/v2 v2.0.0-alpha26/go.mod h1:r7ojuHm9qCVbg4fKcqr4Aqk7VXqZ9YPefr1LOv7HNys=
 github.com/spiral/roadrunner/v2 v2.0.0-alpha28/go.mod h1:Uqtk/47S+qweVjSl4R9XVImEVZc3nMWku4yg3A+f18Q=
 github.com/spiral/roadrunner/v2 v2.0.0-alpha30/go.mod h1:fKmPelVQxWql3cpjt/hYsf/Y2zDKb+DbZXgxdwj2nTc=
@@ -499,6 +505,7 @@ github.com/vbauerster/mpb/v5 v5.4.0/go.mod h1:fi4wVo7BVQ22QcvFObm+VwliQXlV1eBT8J
 github.com/vmihailenco/msgpack v4.0.4+incompatible h1:dSLoQfGFAo3F6OoNhwUmLwVgaUXK79GlxNBwueZn0xI=
 github.com/vmihailenco/msgpack v4.0.4+incompatible/go.mod h1:fy3FlTQTDXWkZ7Bh6AcGMlsjHatGryHQYUTf1ShIgkk=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
+github.com/yookoala/gofast v0.4.0 h1:dLBjghcsbbZNOEHN8N1X/gh9S6srmJed4WQfG7DlKwo=
 github.com/yookoala/gofast v0.4.0/go.mod h1:rfbkoKaQG1bnuTUZcmV3vAlnfpF4FTq8WbQJf2vcpg8=
 github.com/yuin/gopher-lua v0.0.0-20191220021717-ab39c6098bdb/go.mod h1:gqRgreBUhTSL0GeU64rtZ3Uq3wtjOa/TB2YfrtkCbVQ=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

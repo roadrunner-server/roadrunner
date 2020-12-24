@@ -4,15 +4,16 @@ import (
 	"log"
 
 	"github.com/spiral/endure"
-	"github.com/spiral/roadrunner-plugins/http"
-	"github.com/spiral/roadrunner-plugins/informer"
+	"github.com/spiral/roadrunner/v2/plugins/http"
+	"github.com/spiral/roadrunner/v2/plugins/informer"
+	"github.com/spiral/roadrunner/v2/plugins/server"
+
 	"github.com/spiral/roadrunner-plugins/logger"
 	"github.com/spiral/roadrunner-plugins/metrics"
 	"github.com/spiral/roadrunner-plugins/redis"
 	"github.com/spiral/roadrunner-plugins/reload"
 	"github.com/spiral/roadrunner-plugins/resetter"
 	"github.com/spiral/roadrunner-plugins/rpc"
-	"github.com/spiral/roadrunner-plugins/server"
 	"github.com/spiral/roadrunner/v2/cmd/cli"
 )
 
