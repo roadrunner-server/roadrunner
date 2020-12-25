@@ -4,6 +4,8 @@ import (
 	"errors"
 	"net"
 	"strings"
+
+	"github.com/spiral/roadrunner/v2/util"
 )
 
 // Config defines RPC service config.
@@ -33,7 +35,7 @@ func (c *Config) Valid() error {
 
 // Listener creates new rpc socket Listener.
 func (c *Config) Listener() (net.Listener, error) {
-	return CreateListener(c.Listen)
+	return util.CreateListener(c.Listen)
 }
 
 // Dialer creates rpc socket Dialer.
