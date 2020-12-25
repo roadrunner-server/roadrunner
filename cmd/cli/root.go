@@ -25,6 +25,7 @@ var (
 		Use:           "rr",
 		SilenceErrors: true,
 		SilenceUsage:  true,
+		Version:       Version,
 	}
 )
 

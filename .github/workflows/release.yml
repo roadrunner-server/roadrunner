@@ -55,8 +55,8 @@ jobs:
           CGO_ENABLED: 0
           LDFLAGS: >-
             -s
-            -X github.com/spiral/roadrunner/cmd/main.Version=${{ steps.values.outputs.version }}
-            -X github.com/spiral/roadrunner/cmd/main.BuildTime=${{ steps.values.outputs.timestamp }}
+            -X github.com/spiral/roadrunner/cmd/cli.Version=${{ steps.values.outputs.version }}
+            -X github.com/spiral/roadrunner/cmd/cli.BuildTime=${{ steps.values.outputs.timestamp }}
         run: |
           go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/main.go
           stat "./${{ steps.values.outputs.binary-name }}"
