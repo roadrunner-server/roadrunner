@@ -17,6 +17,14 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/rpc"
 )
 
+var (
+	// Version - defines build version.
+	Version = "local"
+
+	// BuildTime - defined build time.
+	BuildTime = "development"
+)
+
 func main() {
 	var err error
 	cli.Container, err = endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel), endure.RetryOnFail(false))
