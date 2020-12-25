@@ -13,7 +13,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner-plugins/informer"
+	"github.com/spiral/roadrunner/v2/plugins/informer"
 	"github.com/spiral/roadrunner/v2/tools"
 )
 
@@ -22,6 +22,7 @@ var (
 )
 
 const InformerList string = "informer.List"
+const InformerWorkers string = "informer.Workers"
 
 func init() {
 	workersCommand := &cobra.Command{
@@ -42,7 +43,7 @@ func init() {
 }
 
 func workersHandler(cmd *cobra.Command, args []string) error {
-	const op = errors.Op("workers handler")
+	const op = errors.Op("workers cobra handler")
 	// get RPC client
 	client, err := RPCClient()
 	if err != nil {
@@ -94,25 +95,16 @@ func workersHandler(cmd *cobra.Command, args []string) error {
 }
 
 func showWorkers(plugins []string, client *rpc.Client) error {
+	const op = errors.Op("show workers")
 	for _, plugin := range plugins {
 		list := &informer.WorkerList{}
-		err := client.Call("informer.Workers", plugin, &list)
+		err := client.Call(InformerWorkers, plugin, &list)
 		if err != nil {
-			return err
-		}
-
-		// it's a golang :)
-		ps := make([]tools.ProcessState, len(list.Workers))
-		for i := 0; i < len(list.Workers); i++ {
-			ps[i].Created = list.Workers[i].Created
-			ps[i].NumJobs = list.Workers[i].NumJobs
-			ps[i].MemoryUsage = list.Workers[i].MemoryUsage
-			ps[i].Pid = list.Workers[i].Pid
-			ps[i].Status = list.Workers[i].Status
+			return errors.E(op, err)
 		}
 
 		fmt.Printf("Workers of [%s]:\n", color.HiYellowString(plugin))
-		tools.WorkerTable(os.Stdout, ps).Render()
+		tools.WorkerTable(os.Stdout, list.Workers).Render()
 	}
 	return nil
 }

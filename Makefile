@@ -24,12 +24,26 @@ uninstall: ## Uninstall locally installed RR
 	rm -f /usr/local/bin/rr
 
 test: ## Run application tests
-	go clean -testcache
+	#go clean -testcache
 	go test -v -race -cover -tags=debug -covermode=atomic ./util
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/pipe
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/pool
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/socket
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/worker
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/http
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/informer
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/reload
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/server
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/checker
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/config
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/gzip
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/headers
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/logger
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/metrics
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/redis
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/resetter
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/rpc
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/static
 
 lint: ## Run application linters
 	go fmt ./...

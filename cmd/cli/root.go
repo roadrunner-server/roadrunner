@@ -8,9 +8,9 @@ import (
 
 	"github.com/spiral/errors"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
-	rpcPlugin "github.com/spiral/roadrunner-plugins/rpc"
+	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 
-	"github.com/spiral/roadrunner-plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/config"
 
 	"github.com/spf13/cobra"
 	"github.com/spiral/endure"

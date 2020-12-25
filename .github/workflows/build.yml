@@ -80,6 +80,9 @@ jobs:
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pool.txt -covermode=atomic ./pkg/pool
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/socket
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/worker.txt -covermode=atomic ./pkg/worker
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/http.txt -covermode=atomic ./tests/plugins/http
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/informer.txt -covermode=atomic ./tests/plugins/informer
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/server.txt -covermode=atomic ./tests/plugins/server
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
