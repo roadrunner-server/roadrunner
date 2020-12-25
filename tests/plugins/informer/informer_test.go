@@ -14,8 +14,8 @@ import (
 	"github.com/spiral/roadrunner-plugins/config"
 	"github.com/spiral/roadrunner-plugins/logger"
 	rpcPlugin "github.com/spiral/roadrunner-plugins/rpc"
-	"github.com/spiral/roadrunner/v2/plugins/informer"
-	"github.com/spiral/roadrunner/v2/plugins/server"
+	"github.com/spiral/roadrunner/v2/pkg/plugins/informer"
+	"github.com/spiral/roadrunner/v2/pkg/plugins/server"
 	"github.com/spiral/roadrunner/v2/tools"
 	"github.com/stretchr/testify/assert"
 )

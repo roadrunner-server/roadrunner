@@ -6,8 +6,8 @@ import (
 
 	"github.com/spiral/roadrunner-plugins/config"
 	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/pkg/plugins/server"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
-	"github.com/spiral/roadrunner/v2/plugins/server"
 )
 
 var testPoolConfig = poolImpl.Config{

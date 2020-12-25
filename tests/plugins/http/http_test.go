@@ -23,14 +23,14 @@ import (
 	"github.com/spiral/roadrunner-plugins/logger"
 	"github.com/spiral/roadrunner-plugins/resetter"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
-	"github.com/spiral/roadrunner/v2/mocks"
-	"github.com/spiral/roadrunner/v2/plugins/informer"
-	"github.com/spiral/roadrunner/v2/plugins/server"
+	"github.com/spiral/roadrunner/v2/pkg/plugins/informer"
+	"github.com/spiral/roadrunner/v2/pkg/plugins/server"
+	"github.com/spiral/roadrunner/v2/tests/mocks"
 	"github.com/spiral/roadrunner/v2/tools"
 	"github.com/yookoala/gofast"
 
 	rpcPlugin "github.com/spiral/roadrunner-plugins/rpc"
-	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
+	httpPlugin "github.com/spiral/roadrunner/v2/pkg/plugins/http"
 	"github.com/stretchr/testify/assert"
 )
 

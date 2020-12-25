@@ -11,7 +11,7 @@ import (
 	j "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner-plugins/logger"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
-	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
+	"github.com/spiral/roadrunner/v2/pkg/plugins/http/attributes"
 )
 
 var json = j.ConfigCompatibleWithStandardLibrary

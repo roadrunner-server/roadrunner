@@ -4,9 +4,9 @@ import (
 	"log"
 
 	"github.com/spiral/endure"
-	"github.com/spiral/roadrunner/v2/plugins/http"
-	"github.com/spiral/roadrunner/v2/plugins/informer"
-	"github.com/spiral/roadrunner/v2/plugins/server"
+	"github.com/spiral/roadrunner/v2/pkg/plugins/http"
+	"github.com/spiral/roadrunner/v2/pkg/plugins/informer"
+	"github.com/spiral/roadrunner/v2/pkg/plugins/server"
 
 	"github.com/spiral/roadrunner-plugins/logger"
 	"github.com/spiral/roadrunner-plugins/metrics"

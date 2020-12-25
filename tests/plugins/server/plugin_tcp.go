@@ -7,8 +7,8 @@ import (
 	"github.com/spiral/roadrunner-plugins/config"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
+	"github.com/spiral/roadrunner/v2/pkg/plugins/server"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
-	"github.com/spiral/roadrunner/v2/plugins/server"
 )
 
 type Foo3 struct {
