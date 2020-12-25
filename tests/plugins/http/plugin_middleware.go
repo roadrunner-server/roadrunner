@@ -3,7 +3,7 @@ package http
 import (
 	"net/http"
 
-	"github.com/spiral/roadrunner-plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
 type PluginMiddleware struct {

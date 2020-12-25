@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/spiral/roadrunner/v2/pkg/pipe"
-	httpPlugin "github.com/spiral/roadrunner/v2/pkg/plugins/http"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
+	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/stretchr/testify/assert"
 
 	"net/http"

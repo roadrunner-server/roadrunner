@@ -1,0 +1,6 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+  disabled: false
+logs:
+  mode: development
+  level: error

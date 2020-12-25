@@ -3,7 +3,7 @@ package http
 import (
 	"testing"
 
-	"github.com/spiral/roadrunner/v2/pkg/plugins/http"
+	"github.com/spiral/roadrunner/v2/plugins/http"
 )
 
 var samples = []struct {

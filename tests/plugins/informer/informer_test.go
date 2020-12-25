@@ -5,17 +5,18 @@ import (
 	"net/rpc"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"testing"
 	"time"
 
 	"github.com/spiral/endure"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
-	"github.com/spiral/roadrunner-plugins/config"
-	"github.com/spiral/roadrunner-plugins/logger"
-	rpcPlugin "github.com/spiral/roadrunner-plugins/rpc"
-	"github.com/spiral/roadrunner/v2/pkg/plugins/informer"
-	"github.com/spiral/roadrunner/v2/pkg/plugins/server"
+	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/informer"
+	"github.com/spiral/roadrunner/v2/plugins/logger"
+	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
+	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/tools"
 	"github.com/stretchr/testify/assert"
 )
@@ -52,33 +53,43 @@ func TestInformerInit(t *testing.T) {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	tt := time.NewTimer(time.Second * 15)
+	stopCh := make(chan struct{}, 1)
 
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second)
 	t.Run("InformerRpcTest", informerRPCTest)
 
-	for {
-		select {
-		case e := <-ch:
-			assert.Fail(t, "error", e.Error.Error())
-			err = cont.Stop()
-			if err != nil {
-				assert.FailNow(t, "error", err.Error())
-			}
-		case <-sig:
-			err = cont.Stop()
-			if err != nil {
-				assert.FailNow(t, "error", err.Error())
-			}
-			return
-		case <-tt.C:
-			// timeout
-			err = cont.Stop()
-			if err != nil {
-				assert.FailNow(t, "error", err.Error())
-			}
-			return
-		}
-	}
+	stopCh <- struct{}{}
+	wg.Wait()
 }
 
 func informerRPCTest(t *testing.T) {
