@@ -19,10 +19,10 @@ import (
 
 var (
 	// Version - defines build version.
-	Version = "local"
+	Version string = "local" //nolint:deadcode
 
 	// BuildTime - defined build time.
-	BuildTime = "development"
+	BuildTime string = "development" //nolint:deadcode
 )
 
 func main() {
