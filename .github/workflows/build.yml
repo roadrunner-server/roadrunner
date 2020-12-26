@@ -65,24 +65,49 @@ jobs:
       - name: Run golang tests on Windows without codecov
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          go test -v -race -cover -tags=debug ./util
+          go test -v -race -cover -tags=debug ./utils
           go test -v -race -cover -tags=debug ./pkg/pipe
           go test -v -race -cover -tags=debug ./pkg/pool
           go test -v -race -cover -tags=debug ./pkg/socket
           go test -v -race -cover -tags=debug ./pkg/worker
+          go test -v -race -cover -tags=debug ./tests/plugins/http
+          go test -v -race -cover -tags=debug ./tests/plugins/informer
+          go test -v -race -cover -tags=debug ./tests/plugins/reload
+          go test -v -race -cover -tags=debug ./tests/plugins/server
+          go test -v -race -cover -tags=debug ./tests/plugins/checker
+          go test -v -race -cover -tags=debug ./tests/plugins/config
+          go test -v -race -cover -tags=debug ./tests/plugins/gzip
+          go test -v -race -cover -tags=debug ./tests/plugins/headers
+          go test -v -race -cover -tags=debug ./tests/plugins/logger
+          go test -v -race -cover -tags=debug ./tests/plugins/metrics
+          go test -v -race -cover -tags=debug ./tests/plugins/redis
+          go test -v -race -cover -tags=debug ./tests/plugins/resetter
+          go test -v -race -cover -tags=debug ./tests/plugins/rpc
+          go test -v -race -cover -tags=debug ./tests/plugins/static
 
       - name: Run golang tests on Linux and MacOS
         if: ${{ matrix.os == 'ubuntu-20.04' || matrix.os == 'macos-latest' }}
         run: |
           mkdir ./coverage-ci
-          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/util.txt -covermode=atomic ./util
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/utils.txt -covermode=atomic ./utils
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/pipe
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pool.txt -covermode=atomic ./pkg/pool
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/socket
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/worker.txt -covermode=atomic ./pkg/worker
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/http.txt -covermode=atomic ./tests/plugins/http
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/informer.txt -covermode=atomic ./tests/plugins/informer
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/reload.txt -covermode=atomic ./tests/plugins/reload
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/server.txt -covermode=atomic ./tests/plugins/server
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/checker.txt -covermode=atomic ./tests/plugins/checker
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/config.txt -covermode=atomic ./tests/plugins/config
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/gzip.txt -covermode=atomic ./tests/plugins/gzip
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/headers.txt -covermode=atomic ./tests/plugins/headers
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/logger.txt -covermode=atomic ./tests/plugins/logger
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/metrics.txt -covermode=atomic ./tests/plugins/metrics
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/redis.txt -covermode=atomic ./tests/plugins/redis
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/resetter.txt -covermode=atomic ./tests/plugins/resetter
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/rpc.txt -covermode=atomic ./tests/plugins/rpc
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/static.txt -covermode=atomic ./tests/plugins/static
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
@@ -104,21 +129,3 @@ jobs:
         with:
           version: v1.33 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
-
-#   image:
-#     name: Build docker image
-#     runs-on: ubuntu-20.04
-#     timeout-minutes: 10
-#     steps:
-#       - name: Check out code
-#         uses: actions/checkout@v2
-
-#       - name: Build image
-#         run: docker build -t roadrunner:local -f Dockerfile .
-
-#       - name: Scan image
-#         uses: anchore/scan-action@v2 # action page: <https://github.com/anchore/scan-action>
-#         with:
-#           image: roadrunner:local
-#           fail-build: true
-#           severity-cutoff: low # negligible, low, medium, high or critical
