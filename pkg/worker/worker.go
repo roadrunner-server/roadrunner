@@ -117,7 +117,7 @@ func InitBaseWorker(cmd *exec.Cmd, options ...Options) (worker.BaseProcess, erro
 	return w, nil
 }
 
-func AddListeners(listeners ...events.EventListener) Options {
+func AddListeners(listeners ...events.Listener) Options {
 	return func(p *Process) {
 		for i := 0; i < len(listeners); i++ {
 			p.addListener(listeners[i])
@@ -136,7 +136,7 @@ func (w *Process) Created() time.Time {
 }
 
 // AddListener registers new worker event listener.
-func (w *Process) addListener(listener events.EventListener) {
+func (w *Process) addListener(listener events.Listener) {
 	w.events.AddListener(listener)
 }
 

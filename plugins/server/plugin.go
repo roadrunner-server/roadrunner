@@ -104,10 +104,10 @@ func (server *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 }
 
 // NewWorker issues new standalone worker.
-func (server *Plugin) NewWorker(ctx context.Context, env Env, listeners ...events.EventListener) (worker.BaseProcess, error) {
+func (server *Plugin) NewWorker(ctx context.Context, env Env, listeners ...events.Listener) (worker.BaseProcess, error) {
 	const op = errors.Op("new worker")
 
-	list := make([]events.EventListener, 0, len(listeners))
+	list := make([]events.Listener, 0, len(listeners))
 	list = append(list, server.collectWorkerLogs)
 
 	spawnCmd, err := server.CmdFactory(env)
@@ -124,14 +124,14 @@ func (server *Plugin) NewWorker(ctx context.Context, env Env, listeners ...event
 }
 
 // NewWorkerPool issues new worker pool.
-func (server *Plugin) NewWorkerPool(ctx context.Context, opt poolImpl.Config, env Env, listeners ...events.EventListener) (pool.Pool, error) {
+func (server *Plugin) NewWorkerPool(ctx context.Context, opt poolImpl.Config, env Env, listeners ...events.Listener) (pool.Pool, error) {
 	const op = errors.Op("server plugins new worker pool")
 	spawnCmd, err := server.CmdFactory(env)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
 
-	list := make([]events.EventListener, 0, len(listeners))
+	list := make([]events.Listener, 0, len(listeners))
 	list = append(list, server.collectPoolLogs)
 
 	p, err := poolImpl.Initialize(ctx, spawnCmd, server.factory, opt, poolImpl.AddListeners(list...))

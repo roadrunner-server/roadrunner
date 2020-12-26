@@ -16,16 +16,16 @@ const (
 	// EventNoFreeWorkers triggered when there are no free workers in the stack and timeout for worker allocate elapsed
 	EventNoFreeWorkers
 
-	// todo: EventMaxMemory caused when worker consumes more memory than allowed.
+	// EventMaxMemory caused when worker consumes more memory than allowed.
 	EventMaxMemory
 
-	// todo: EventTTL thrown when worker is removed due TTL being reached. Context is rr.WorkerError
+	// EventTTL thrown when worker is removed due TTL being reached. Context is rr.WorkerError
 	EventTTL
 
-	// todo: EventIdleTTL triggered when worker spends too much time at rest.
+	// EventIdleTTL triggered when worker spends too much time at rest.
 	EventIdleTTL
 
-	// todo: EventExecTTL triggered when worker spends too much time doing the task (max_execution_time).
+	// EventExecTTL triggered when worker spends too much time doing the task (max_execution_time).
 	EventExecTTL
 )
 

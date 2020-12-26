@@ -26,7 +26,7 @@ const (
 const MB = 1024 * 1024
 
 type Handle interface {
-	AddListener(l events.EventListener)
+	AddListener(l events.Listener)
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
@@ -75,7 +75,7 @@ type handler struct {
 	log            logger.Logger
 	pool           pool.Pool
 	mul            sync.Mutex
-	lsn            events.EventListener
+	lsn            events.Listener
 }
 
 func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool pool.Pool) (Handle, error) {
@@ -91,7 +91,7 @@ func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool po
 }
 
 // Listen attaches handler event controller.
-func (h *handler) AddListener(l events.EventListener) {
+func (h *handler) AddListener(l events.Listener) {
 	h.mul.Lock()
 	defer h.mul.Unlock()
 

@@ -40,7 +40,7 @@ type StaticPool struct {
 	events events.Handler
 
 	// saved list of event listeners
-	listeners []events.EventListener
+	listeners []events.Listener
 
 	// manages worker states and TTLs
 	ww worker.Watcher
@@ -104,7 +104,7 @@ func Initialize(ctx context.Context, cmd Command, factory worker.Factory, cfg Co
 	return p, nil
 }
 
-func AddListeners(listeners ...events.EventListener) Options {
+func AddListeners(listeners ...events.Listener) Options {
 	return func(p *StaticPool) {
 		p.listeners = listeners
 		for i := 0; i < len(listeners); i++ {
@@ -114,7 +114,7 @@ func AddListeners(listeners ...events.EventListener) Options {
 }
 
 // AddListener connects event listener to the pool.
-func (sp *StaticPool) addListener(listener events.EventListener) {
+func (sp *StaticPool) addListener(listener events.Listener) {
 	sp.events.AddListener(listener)
 }
 

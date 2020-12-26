@@ -15,6 +15,6 @@ type Env map[string]string
 // Server creates workers for the application.
 type Server interface {
 	CmdFactory(env Env) (func() *exec.Cmd, error)
-	NewWorker(ctx context.Context, env Env, listeners ...events.EventListener) (worker.BaseProcess, error)
-	NewWorkerPool(ctx context.Context, opt poolImpl.Config, env Env, listeners ...events.EventListener) (pool.Pool, error)
+	NewWorker(ctx context.Context, env Env, listeners ...events.Listener) (worker.BaseProcess, error)
+	NewWorkerPool(ctx context.Context, opt poolImpl.Config, env Env, listeners ...events.Listener) (pool.Pool, error)
 }

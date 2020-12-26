@@ -1,17 +1,16 @@
 package events
 
-// EventWorkerKill thrown after WorkerProcess is being forcefully killed.
 const (
 	// EventWorkerError triggered after WorkerProcess. Except payload to be error.
-	EventWorkerError E = iota + 200
+	EventWorkerError W = iota + 200
 
 	// EventWorkerLog triggered on every write to WorkerProcess StdErr pipe (batched). Except payload to be []byte string.
 	EventWorkerLog
 )
 
-type E int64
+type W int64
 
-func (ev E) String() string {
+func (ev W) String() string {
 	switch ev {
 	case EventWorkerError:
 		return "EventWorkerError"
@@ -24,7 +23,7 @@ func (ev E) String() string {
 // WorkerEvent wraps worker events.
 type WorkerEvent struct {
 	// Event id, see below.
-	Event E
+	Event W
 
 	// Worker triggered the event.
 	Worker interface{}

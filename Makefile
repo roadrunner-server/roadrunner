@@ -12,7 +12,7 @@ help: ## Show this help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "  \033[32m%-14s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 build: ## Build RR binary file for local os/arch
-	CGO_ENABLED=0 go build -trimpath -ldflags "-s" -o ./rr ./cmd/rr/main.go
+	CGO_ENABLED=0 go build -trimpath -ldflags "-s" -o ./rr ./cmd/main.go
 
 clean: ## Make some clean
 	rm ./rr
@@ -46,5 +46,4 @@ test: ## Run application tests
 	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/static
 
 lint: ## Run application linters
-	go fmt ./...
-	golint ./...
+	golangci-lint run
