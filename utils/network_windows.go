@@ -1,6 +1,6 @@
 // +build windows
 
-package util
+package utils
 
 import (
 	"errors"

@@ -23,7 +23,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/server"
-	"github.com/spiral/roadrunner/v2/util"
+	"github.com/spiral/roadrunner/v2/utils"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"golang.org/x/sys/cpu"
@@ -479,7 +479,7 @@ func (s *Plugin) initHTTP2() error {
 
 // serveFCGI starts FastCGI server.
 func (s *Plugin) serveFCGI() error {
-	l, err := util.CreateListener(s.cfg.FCGI.Address)
+	l, err := utils.CreateListener(s.cfg.FCGI.Address)
 	if err != nil {
 		return err
 	}

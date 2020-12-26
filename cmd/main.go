@@ -4,17 +4,16 @@ import (
 	"log"
 
 	"github.com/spiral/endure"
+	"github.com/spiral/roadrunner/v2/cmd/cli"
 	"github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
-	"github.com/spiral/roadrunner/v2/plugins/server"
-
-	"github.com/spiral/roadrunner/v2/cmd/cli"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/metrics"
 	"github.com/spiral/roadrunner/v2/plugins/redis"
 	"github.com/spiral/roadrunner/v2/plugins/reload"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
 	"github.com/spiral/roadrunner/v2/plugins/rpc"
+	"github.com/spiral/roadrunner/v2/plugins/server"
 )
 
 func main() {
@@ -35,7 +34,7 @@ func main() {
 		&http.Plugin{},
 		// reload plugin
 		&reload.Plugin{},
-		// informer plugin (./rr workers)
+		// informer plugin (./rr workers, ./rr workers -i)
 		&informer.Plugin{},
 		// resetter plugin (./rr reset)
 		&resetter.Plugin{},

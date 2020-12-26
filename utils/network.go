@@ -1,6 +1,6 @@
 // +build linux darwin freebsd
 
-package util
+package utils
 
 import (
 	"errors"

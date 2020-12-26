@@ -18,7 +18,7 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/pipe"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/socket"
-	"github.com/spiral/roadrunner/v2/util"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 const PluginName = "server"
@@ -86,12 +86,12 @@ func (server *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 	}
 	return func() *exec.Cmd {
 		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...) //nolint:gosec
-		util.IsolateProcess(cmd)
+		utils.IsolateProcess(cmd)
 
 		// if user is not empty, and OS is linux or macos
 		// execute php worker from that particular user
 		if server.cfg.User != "" {
-			err := util.ExecuteFromUser(cmd, server.cfg.User)
+			err := utils.ExecuteFromUser(cmd, server.cfg.User)
 			if err != nil {
 				return nil
 			}
@@ -154,7 +154,7 @@ func (server *Plugin) initFactory() (worker.Factory, error) {
 		return nil, errors.E(op, errors.Network, errors.Str("invalid DSN (tcp://:6001, unix://file.sock)"))
 	}
 
-	lsn, err := util.CreateListener(server.cfg.Relay)
+	lsn, err := utils.CreateListener(server.cfg.Relay)
 	if err != nil {
 		return nil, errors.E(op, errors.Network, err)
 	}
