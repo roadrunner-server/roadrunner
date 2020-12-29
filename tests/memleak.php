@@ -10,6 +10,6 @@ require __DIR__ . "/vendor/autoload.php";
 $rr = new RoadRunner(new StreamRelay(\STDIN, \STDOUT));
 $mem = '';
 while($rr->waitPayload()){
-    $mem .= str_repeat(" ", 1024*1024);
+    $mem .= str_repeat("a", 1024*1024);
     $rr->send("");
 }

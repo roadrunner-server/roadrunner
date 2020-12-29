@@ -25,7 +25,7 @@ uninstall: ## Uninstall locally installed RR
 
 test: ## Run application tests
 	#go clean -testcache
-	go test -v -race -cover -tags=debug -covermode=atomic ./util
+	go test -v -race -cover -tags=debug -covermode=atomic ./utils
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/pipe
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/pool
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/socket
