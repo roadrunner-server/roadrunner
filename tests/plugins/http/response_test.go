@@ -138,8 +138,8 @@ func TestWrite_HandlesTrailers(t *testing.T) {
 	assert.NoError(t, r.Write(w))
 
 	assert.Nil(t, w.h[httpPlugin.TrailerHeaderKey])
-	assert.Nil(t, w.h["foo"]) //nolint:golint,staticcheck
-	assert.Nil(t, w.h["baz"]) //nolint:golint,staticcheck
+	assert.Nil(t, w.h["foo"]) //nolint:staticcheck
+	assert.Nil(t, w.h["baz"]) //nolint:staticcheck
 
 	assert.Equal(t, "test", w.h.Get("Trailer:foo"))
 	assert.Equal(t, "demo", w.h.Get("Trailer:bar"))

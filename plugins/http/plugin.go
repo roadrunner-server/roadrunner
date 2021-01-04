@@ -44,7 +44,7 @@ type Middleware interface {
 
 type middleware map[string]Middleware
 
-// Service manages pool, http servers.
+// Plugin manages pool, http servers. The main http plugin structure
 type Plugin struct {
 	sync.RWMutex
 
@@ -60,7 +60,7 @@ type Plugin struct {
 	pool pool.Pool
 
 	// servers RR handler
-	handler Handle
+	handler *Handler
 
 	// servers
 	http  *http.Server
@@ -267,15 +267,17 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.RUnlock()
 }
 
-// Server returns associated pool workers
+// Workers returns associated pool workers
 func (s *Plugin) Workers() []worker.BaseProcess {
 	return s.pool.Workers()
 }
 
+// Name returns endure.Named interface implementation
 func (s *Plugin) Name() string {
 	return PluginName
 }
 
+// Reset destroys the old pool and replaces it with new one, waiting for old pool to die
 func (s *Plugin) Reset() error {
 	s.Lock()
 	defer s.Unlock()
@@ -319,12 +321,14 @@ func (s *Plugin) Reset() error {
 	return nil
 }
 
+// Collects collecting http middlewares
 func (s *Plugin) Collects() []interface{} {
 	return []interface{}{
 		s.AddMiddleware,
 	}
 }
 
+// AddMiddleware is base requirement for the middleware (name and Middleware)
 func (s *Plugin) AddMiddleware(name endure.Named, m Middleware) {
 	s.mdwr[name.Name()] = m
 }
@@ -414,7 +418,7 @@ func (s *Plugin) initSSL() *http.Server {
 	hasGCMAsm := hasGCMAsmAMD64 || hasGCMAsmARM64 || hasGCMAsmS390X
 
 	if hasGCMAsm {
-		// If AES-GCM hardware is provided then prioritise AES-GCM
+		// If AES-GCM hardware is provided then priorities AES-GCM
 		// cipher suites.
 		topCipherSuites = []uint16{
 			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,

@@ -11,8 +11,10 @@ import (
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 )
 
+// Cidrs is a slice of IPNet addresses
 type Cidrs []*net.IPNet
 
+// IsTrusted checks if the ip address exists in the provided in the config addresses
 func (c *Cidrs) IsTrusted(ip string) bool {
 	if len(*c) == 0 {
 		return false
@@ -137,7 +139,7 @@ func (c *Config) EnableFCGI() bool {
 	return c.FCGI.Address != ""
 }
 
-// Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
+// InitDefaults must populate Config values using given Config source. Must return error if Config is not valid.
 func (c *Config) InitDefaults() error {
 	if c.Pool == nil {
 		// default pool
@@ -202,6 +204,7 @@ func (c *Config) InitDefaults() error {
 	return c.Valid()
 }
 
+// ParseCIDRs parse IPNet addresses and return slice of its
 func ParseCIDRs(subnets []string) (Cidrs, error) {
 	c := make(Cidrs, 0, len(subnets))
 	for _, cidr := range subnets {
