@@ -1,5 +1,5 @@
 [roadrunner]
 fqdn                    = ppa.launchpad.net
 method                  = ftp
-incoming               = 48d90782/ubuntu/roadrunner
+incoming                = 48d90782/ubuntu/roadrunner
 login                   = anonymous

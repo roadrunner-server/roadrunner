@@ -179,7 +179,7 @@ outer:
 		// if filename does not contain pattern --> ignore that file
 		if w.watcherConfigs[serviceName].FilePatterns != nil && w.watcherConfigs[serviceName].FilterHooks != nil {
 			err = w.watcherConfigs[serviceName].FilterHooks(fileInfoList[i].Name(), w.watcherConfigs[serviceName].FilePatterns)
-			if errors.Is(errors.Skip, err) {
+			if errors.Is(errors.SkipFile, err) {
 				continue outer
 			}
 		}
@@ -293,7 +293,7 @@ func (w *Watcher) retrieveFilesRecursive(serviceName, root string) (map[string]o
 
 		// if filename does not contain pattern --> ignore that file
 		err = w.watcherConfigs[serviceName].FilterHooks(info.Name(), w.watcherConfigs[serviceName].FilePatterns)
-		if errors.Is(errors.Skip, err) {
+		if errors.Is(errors.SkipFile, err) {
 			return nil
 		}
 

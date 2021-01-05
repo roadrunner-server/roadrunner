@@ -44,6 +44,10 @@ test: ## Run application tests
 	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/resetter
 	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/rpc
 	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/static
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/kv/boltdb
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/kv/memory
 
 lint: ## Run application linters
 	golangci-lint run
+kv:
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/kv/boltdb

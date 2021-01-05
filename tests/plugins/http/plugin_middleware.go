@@ -6,15 +6,18 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 )
 
+// PluginMiddleware test
 type PluginMiddleware struct {
 	config config.Configurer
 }
 
+// Init test
 func (p *PluginMiddleware) Init(cfg config.Configurer) error {
 	p.config = cfg
 	return nil
 }
 
+// Middleware test
 func (p *PluginMiddleware) Middleware(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/halt" {
@@ -29,19 +32,23 @@ func (p *PluginMiddleware) Middleware(next http.Handler) http.HandlerFunc {
 	}
 }
 
+// Name test
 func (p *PluginMiddleware) Name() string {
 	return "pluginMiddleware"
 }
 
+// PluginMiddleware2 test
 type PluginMiddleware2 struct {
 	config config.Configurer
 }
 
+// Init test
 func (p *PluginMiddleware2) Init(cfg config.Configurer) error {
 	p.config = cfg
 	return nil
 }
 
+// Middleware test
 func (p *PluginMiddleware2) Middleware(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/boom" {
@@ -56,6 +63,7 @@ func (p *PluginMiddleware2) Middleware(next http.Handler) http.HandlerFunc {
 	}
 }
 
+// Name test
 func (p *PluginMiddleware2) Name() string {
 	return "pluginMiddleware2"
 }

@@ -234,7 +234,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 	return func(err error, w worker.BaseProcess) (payload.Payload, error) {
 		const op = errors.Op("error encoder")
 		// soft job errors are allowed
-		if errors.Is(errors.ErrSoftJob, err) {
+		if errors.Is(errors.SoftJob, err) {
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
 				err = sp.ww.AllocateNew()
 				if err != nil {

@@ -158,7 +158,7 @@ func Test_StaticPool_JobError(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	if errors.Is(errors.ErrSoftJob, err) == false {
+	if errors.Is(errors.SoftJob, err) == false {
 		t.Fatal("error should be of type errors.Exec")
 	}
 

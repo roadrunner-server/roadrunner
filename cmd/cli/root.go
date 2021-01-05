@@ -46,6 +46,7 @@ func init() {
 	cobra.OnInitialize(func() {
 		if CfgFile != "" {
 			if absPath, err := filepath.Abs(CfgFile); err == nil {
+				println(absPath)
 				CfgFile = absPath
 
 				// force working absPath related to config file
