@@ -65,18 +65,18 @@ func (s Plugin) Has(ctx context.Context, keys ...string) (map[string]bool, error
 		return nil, errors.E(op, errors.NoKeys)
 	}
 	m := make(map[string]bool, len(keys))
-	for _, key := range keys {
-		keyTrimmed := strings.TrimSpace(key)
+	for i := range keys {
+		keyTrimmed := strings.TrimSpace(keys[i])
 		if keyTrimmed == "" {
 			return nil, errors.E(op, errors.EmptyKey)
 		}
-		exist, err := s.client.Get(key)
+		exist, err := s.client.Get(keys[i])
 		// ErrCacheMiss means that a Get failed because the item wasn't present.
 		if err != nil && err != memcache.ErrCacheMiss {
 			return nil, err
 		}
 		if exist != nil {
-			m[key] = true
+			m[keys[i]] = true
 		}
 	}
 	return m, nil
@@ -113,23 +113,23 @@ func (s Plugin) MGet(ctx context.Context, keys ...string) (map[string]interface{
 	}
 
 	// should not be empty keys
-	for _, key := range keys {
-		keyTrimmed := strings.TrimSpace(key)
+	for i := range keys {
+		keyTrimmed := strings.TrimSpace(keys[i])
 		if keyTrimmed == "" {
 			return nil, errors.E(op, errors.EmptyKey)
 		}
 	}
 
 	m := make(map[string]interface{}, len(keys))
-	for _, key := range keys {
+	for i := range keys {
 		// Here also MultiGet
-		data, err := s.client.Get(key)
+		data, err := s.client.Get(keys[i])
 		// ErrCacheMiss means that a Get failed because the item wasn't present.
 		if err != nil && err != memcache.ErrCacheMiss {
 			return nil, err
 		}
 		if data != nil {
-			m[key] = data.Value
+			m[keys[i]] = data.Value
 		}
 	}
 
@@ -184,13 +184,13 @@ func (s Plugin) Set(ctx context.Context, items ...kv.Item) error {
 // Zero means the Item has no expiration time.
 func (s Plugin) MExpire(ctx context.Context, items ...kv.Item) error {
 	const op = errors.Op("memcached MExpire")
-	for _, item := range items {
-		if item.TTL == "" || strings.TrimSpace(item.Key) == "" {
+	for i := range items {
+		if items[i].TTL == "" || strings.TrimSpace(items[i].Key) == "" {
 			return errors.E(op, errors.Str("should set timeout and at least one key"))
 		}
 
 		// verify provided TTL
-		t, err := time.Parse(time.RFC3339, item.TTL)
+		t, err := time.Parse(time.RFC3339, items[i].TTL)
 		if err != nil {
 			return err
 		}
@@ -200,7 +200,7 @@ func (s Plugin) MExpire(ctx context.Context, items ...kv.Item) error {
 		// into the future at which time the item will expire. Zero means the item has
 		// no expiration time. ErrCacheMiss is returned if the key is not in the cache.
 		// The key must be at most 250 bytes in length.
-		err = s.client.Touch(item.Key, int32(t.Unix()))
+		err = s.client.Touch(items[i].Key, int32(t.Unix()))
 		if err != nil {
 			return err
 		}
@@ -221,15 +221,15 @@ func (s Plugin) Delete(ctx context.Context, keys ...string) error {
 	}
 
 	// should not be empty keys
-	for _, key := range keys {
-		keyTrimmed := strings.TrimSpace(key)
+	for i := range keys {
+		keyTrimmed := strings.TrimSpace(keys[i])
 		if keyTrimmed == "" {
 			return errors.E(op, errors.EmptyKey)
 		}
 	}
 
-	for _, key := range keys {
-		err := s.client.Delete(key)
+	for i := range keys {
+		err := s.client.Delete(keys[i])
 		// ErrCacheMiss means that a Get failed because the item wasn't present.
 		if err != nil && err != memcache.ErrCacheMiss {
 			return err

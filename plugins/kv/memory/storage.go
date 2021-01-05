@@ -72,14 +72,14 @@ func (s Plugin) Has(ctx context.Context, keys ...string) (map[string]bool, error
 		return nil, errors.E(op, errors.NoKeys)
 	}
 	m := make(map[string]bool)
-	for _, key := range keys {
-		keyTrimmed := strings.TrimSpace(key)
+	for i := range keys {
+		keyTrimmed := strings.TrimSpace(keys[i])
 		if keyTrimmed == "" {
 			return nil, errors.E(op, errors.EmptyKey)
 		}
 
-		if _, ok := s.heap.Load(key); ok {
-			m[key] = true
+		if _, ok := s.heap.Load(keys[i]); ok {
+			m[keys[i]] = true
 		}
 	}
 
@@ -109,8 +109,8 @@ func (s Plugin) MGet(ctx context.Context, keys ...string) (map[string]interface{
 	}
 
 	// should not be empty keys
-	for _, key := range keys {
-		keyTrimmed := strings.TrimSpace(key)
+	for i := range keys {
+		keyTrimmed := strings.TrimSpace(keys[i])
 		if keyTrimmed == "" {
 			return nil, errors.E(op, errors.EmptyKey)
 		}
@@ -118,9 +118,9 @@ func (s Plugin) MGet(ctx context.Context, keys ...string) (map[string]interface{
 
 	m := make(map[string]interface{}, len(keys))
 
-	for _, key := range keys {
-		if value, ok := s.heap.Load(key); ok {
-			m[key] = value
+	for i := range keys {
+		if value, ok := s.heap.Load(keys[i]); ok {
+			m[keys[i]] = value
 		}
 	}
 
@@ -133,17 +133,17 @@ func (s Plugin) Set(ctx context.Context, items ...kv.Item) error {
 		return errors.E(op, errors.NoKeys)
 	}
 
-	for _, item := range items {
+	for i := range items {
 		// TTL is set
-		if item.TTL != "" {
+		if items[i].TTL != "" {
 			// check the TTL in the item
-			_, err := time.Parse(time.RFC3339, item.TTL)
+			_, err := time.Parse(time.RFC3339, items[i].TTL)
 			if err != nil {
 				return err
 			}
 		}
 
-		s.heap.Store(item.Key, item)
+		s.heap.Store(items[i].Key, items[i])
 	}
 	return nil
 }
@@ -152,15 +152,15 @@ func (s Plugin) Set(ctx context.Context, items ...kv.Item) error {
 // If key already has the expiration time, it will be overwritten
 func (s Plugin) MExpire(ctx context.Context, items ...kv.Item) error {
 	const op = errors.Op("in-memory storage MExpire")
-	for _, item := range items {
-		if item.TTL == "" || strings.TrimSpace(item.Key) == "" {
+	for i := range items {
+		if items[i].TTL == "" || strings.TrimSpace(items[i].Key) == "" {
 			return errors.E(op, errors.Str("should set timeout and at least one key"))
 		}
 
 		// if key exist, overwrite it value
-		if pItem, ok := s.heap.Load(item.Key); ok {
+		if pItem, ok := s.heap.Load(items[i].Key); ok {
 			// check that time is correct
-			_, err := time.Parse(time.RFC3339, item.TTL)
+			_, err := time.Parse(time.RFC3339, items[i].TTL)
 			if err != nil {
 				return errors.E(op, err)
 			}
@@ -168,10 +168,10 @@ func (s Plugin) MExpire(ctx context.Context, items ...kv.Item) error {
 			// guess that t is in the future
 			// in memory is just FOR TESTING PURPOSES
 			// LOGIC ISN'T IDEAL
-			s.heap.Store(item.Key, kv.Item{
-				Key:   item.Key,
+			s.heap.Store(items[i].Key, kv.Item{
+				Key:   items[i].Key,
 				Value: tmp.Value,
-				TTL:   item.TTL,
+				TTL:   items[i].TTL,
 			})
 		}
 	}
@@ -186,8 +186,8 @@ func (s Plugin) TTL(ctx context.Context, keys ...string) (map[string]interface{}
 	}
 
 	// should not be empty keys
-	for _, key := range keys {
-		keyTrimmed := strings.TrimSpace(key)
+	for i := range keys {
+		keyTrimmed := strings.TrimSpace(keys[i])
 		if keyTrimmed == "" {
 			return nil, errors.E(op, errors.EmptyKey)
 		}
@@ -195,9 +195,9 @@ func (s Plugin) TTL(ctx context.Context, keys ...string) (map[string]interface{}
 
 	m := make(map[string]interface{}, len(keys))
 
-	for _, key := range keys {
-		if item, ok := s.heap.Load(key); ok {
-			m[key] = item.(kv.Item).TTL
+	for i := range keys {
+		if item, ok := s.heap.Load(keys[i]); ok {
+			m[keys[i]] = item.(kv.Item).TTL
 		}
 	}
 	return m, nil
@@ -210,22 +210,21 @@ func (s Plugin) Delete(ctx context.Context, keys ...string) error {
 	}
 
 	// should not be empty keys
-	for _, key := range keys {
-		keyTrimmed := strings.TrimSpace(key)
+	for i := range keys {
+		keyTrimmed := strings.TrimSpace(keys[i])
 		if keyTrimmed == "" {
 			return errors.E(op, errors.EmptyKey)
 		}
 	}
 
-	for _, key := range keys {
-		s.heap.Delete(key)
+	for i := range keys {
+		s.heap.Delete(keys[i])
 	}
 	return nil
 }
 
 // Close clears the in-memory storage
 func (s Plugin) Close() error {
-	s.heap = &sync.Map{}
 	s.stop <- struct{}{}
 	return nil
 }
