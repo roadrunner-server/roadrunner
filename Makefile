@@ -51,3 +51,4 @@ lint: ## Run application linters
 	golangci-lint run
 kv:
 	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/kv/boltdb
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/kv/memory
