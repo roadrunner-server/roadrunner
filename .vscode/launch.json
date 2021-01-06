@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch test file",
+            "type": "go",
+            "request": "launch",
+            "mode": "test",
+            "program": "${file}"
+        },
+        {
             "name": "Launch main debug, race",
             "type": "go",
             "request": "launch",
@@ -13,13 +20,6 @@
             "buildFlags": "-race",
             "args": ["serve", "-c", "../.rr.yaml"],
             "program": "${workspaceFolder}/cmd/main.go"
-        },
-        {
-            "name": "Launch file",
-            "type": "go",
-            "request": "launch",
-            "mode": "debug",
-            "program": "${file}"
-        },
+        }
     ]
 }

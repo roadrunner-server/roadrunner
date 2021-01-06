@@ -1,7 +1,6 @@
 package memory
 
 import (
-	"context"
 	"strconv"
 	"sync"
 	"testing"
@@ -16,7 +15,7 @@ func initStorage() kv.Storage {
 }
 
 func cleanup(t *testing.T, s kv.Storage, keys ...string) {
-	err := s.Delete(context.Background(), keys...)
+	err := s.Delete(keys...)
 	if err != nil {
 		t.Fatalf("error during cleanup: %s", err.Error())
 	}
@@ -25,9 +24,7 @@ func cleanup(t *testing.T, s kv.Storage, keys ...string) {
 func TestStorage_Has(t *testing.T) {
 	s := initStorage()
 
-	ctx := context.Background()
-
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 }
@@ -41,13 +38,12 @@ func TestStorage_Has_Set_Has(t *testing.T) {
 		}
 	}()
 
-	ctx := context.Background()
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	// no such key
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "value",
 		TTL:   "",
@@ -58,7 +54,7 @@ func TestStorage_Has_Set_Has(t *testing.T) {
 			TTL:   "",
 		}))
 
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	// no such key
 	assert.True(t, v["key"])
@@ -74,13 +70,12 @@ func TestStorage_Has_Set_MGet(t *testing.T) {
 		}
 	}()
 
-	ctx := context.Background()
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	// no such key
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "value",
 		TTL:   "",
@@ -91,13 +86,13 @@ func TestStorage_Has_Set_MGet(t *testing.T) {
 			TTL:   "",
 		}))
 
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	// no such key
 	assert.True(t, v["key"])
 	assert.True(t, v["key2"])
 
-	res, err := s.MGet(ctx, "key", "key2")
+	res, err := s.MGet("key", "key2")
 	assert.NoError(t, err)
 	assert.Len(t, res, 2)
 }
@@ -111,13 +106,12 @@ func TestStorage_Has_Set_Get(t *testing.T) {
 		}
 	}()
 
-	ctx := context.Background()
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	// no such key
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "value",
 		TTL:   "",
@@ -128,13 +122,13 @@ func TestStorage_Has_Set_Get(t *testing.T) {
 			TTL:   "",
 		}))
 
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	// no such key
 	assert.True(t, v["key"])
 	assert.True(t, v["key2"])
 
-	res, err := s.Get(ctx, "key")
+	res, err := s.Get("key")
 	assert.NoError(t, err)
 
 	if string(res) != "value" {
@@ -151,13 +145,12 @@ func TestStorage_Set_Del_Get(t *testing.T) {
 		}
 	}()
 
-	ctx := context.Background()
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	// no such key
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "value",
 		TTL:   "",
@@ -168,27 +161,26 @@ func TestStorage_Set_Del_Get(t *testing.T) {
 			TTL:   "",
 		}))
 
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	// no such key
 	assert.True(t, v["key"])
 	assert.True(t, v["key2"])
 
 	// check that keys are present
-	res, err := s.MGet(ctx, "key", "key2")
+	res, err := s.MGet("key", "key2")
 	assert.NoError(t, err)
 	assert.Len(t, res, 2)
 
-	assert.NoError(t, s.Delete(ctx, "key", "key2"))
-	// check that keys are not presentps -eo state,uid,pid,ppid,rtprio,time,comm
-	res, err = s.MGet(ctx, "key", "key2")
+	assert.NoError(t, s.Delete("key", "key2"))
+	// check that keys are not presents -eo state,uid,pid,ppid,rtprio,time,comm
+	res, err = s.MGet("key", "key2")
 	assert.NoError(t, err)
 	assert.Len(t, res, 0)
 }
 
 func TestStorage_Set_GetM(t *testing.T) {
 	s := initStorage()
-	ctx := context.Background()
 
 	defer func() {
 		cleanup(t, s, "key", "key2")
@@ -198,11 +190,11 @@ func TestStorage_Set_GetM(t *testing.T) {
 		}
 	}()
 
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "value",
 		TTL:   "",
@@ -213,14 +205,13 @@ func TestStorage_Set_GetM(t *testing.T) {
 			TTL:   "",
 		}))
 
-	res, err := s.MGet(ctx, "key", "key2")
+	res, err := s.MGet("key", "key2")
 	assert.NoError(t, err)
 	assert.Len(t, res, 2)
 }
 
 func TestStorage_MExpire_TTL(t *testing.T) {
 	s := initStorage()
-	ctx := context.Background()
 	defer func() {
 		cleanup(t, s, "key", "key2")
 
@@ -230,12 +221,12 @@ func TestStorage_MExpire_TTL(t *testing.T) {
 	}()
 
 	// ensure that storage is clean
-	v, err := s.Has(ctx, "key", "key2")
+	v, err := s.Has("key", "key2")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 	assert.False(t, v["key2"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
@@ -258,12 +249,12 @@ func TestStorage_MExpire_TTL(t *testing.T) {
 		Value: "",
 		TTL:   nowPlusFive,
 	}
-	assert.NoError(t, s.MExpire(ctx, i1, i2))
+	assert.NoError(t, s.MExpire(i1, i2))
 
 	time.Sleep(time.Second * 6)
 
 	// ensure that storage is clean
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 	assert.False(t, v["key2"])
@@ -271,7 +262,6 @@ func TestStorage_MExpire_TTL(t *testing.T) {
 
 func TestNilAndWrongArgs(t *testing.T) {
 	s := initStorage()
-	ctx := context.Background()
 	defer func() {
 		if err := s.Close(); err != nil {
 			panic(err)
@@ -279,48 +269,47 @@ func TestNilAndWrongArgs(t *testing.T) {
 	}()
 
 	// check
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 
-	_, err = s.Has(ctx, "")
+	_, err = s.Has("")
 	assert.Error(t, err)
 
-	_, err = s.Get(ctx, "")
+	_, err = s.Get("")
 	assert.Error(t, err)
 
-	_, err = s.Get(ctx, " ")
+	_, err = s.Get(" ")
 	assert.Error(t, err)
 
-	_, err = s.Get(ctx, "                 ")
+	_, err = s.Get("                 ")
 	assert.Error(t, err)
 
-	_, err = s.MGet(ctx, "key", "key2", "")
+	_, err = s.MGet("key", "key2", "")
 	assert.Error(t, err)
 
-	_, err = s.MGet(ctx, "key", "key2", "   ")
+	_, err = s.MGet("key", "key2", "   ")
 	assert.Error(t, err)
 
-	assert.NoError(t, s.Set(ctx, kv.Item{}))
-	_, err = s.Has(ctx, "key")
+	assert.NoError(t, s.Set(kv.Item{}))
+	_, err = s.Has("key")
 	assert.NoError(t, err)
 
-	err = s.Delete(ctx, "")
+	err = s.Delete("")
 	assert.Error(t, err)
 
-	err = s.Delete(ctx, "key", "")
+	err = s.Delete("key", "")
 	assert.Error(t, err)
 
-	err = s.Delete(ctx, "key", "     ")
+	err = s.Delete("key", "     ")
 	assert.Error(t, err)
 
-	err = s.Delete(ctx, "key")
+	err = s.Delete("key")
 	assert.NoError(t, err)
 }
 
 func TestStorage_SetExpire_TTL(t *testing.T) {
 	s := initStorage()
-	ctx := context.Background()
 	defer func() {
 		cleanup(t, s, "key", "key2")
 		if err := s.Close(); err != nil {
@@ -329,12 +318,12 @@ func TestStorage_SetExpire_TTL(t *testing.T) {
 	}()
 
 	// ensure that storage is clean
-	v, err := s.Has(ctx, "key", "key2")
+	v, err := s.Has("key", "key2")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 	assert.False(t, v["key2"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
@@ -348,7 +337,7 @@ func TestStorage_SetExpire_TTL(t *testing.T) {
 	nowPlusFive := time.Now().Add(time.Second * 5).Format(time.RFC3339)
 
 	// set timeout to 5 sec
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "value",
 		TTL:   nowPlusFive,
@@ -360,7 +349,7 @@ func TestStorage_SetExpire_TTL(t *testing.T) {
 		}))
 
 	time.Sleep(time.Second * 2)
-	m, err := s.TTL(ctx, "key", "key2")
+	m, err := s.TTL("key", "key2")
 	assert.NoError(t, err)
 
 	// remove a precision 4.02342342 -> 4
@@ -381,7 +370,7 @@ func TestStorage_SetExpire_TTL(t *testing.T) {
 	time.Sleep(time.Second * 4)
 
 	// ensure that storage is clean
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 	assert.False(t, v["key2"])
@@ -396,13 +385,12 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 		}
 	}()
 
-	ctx := context.Background()
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	// no such key
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
@@ -412,7 +400,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 		TTL:   "",
 	}))
 
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	// no such key
 	assert.True(t, v["key"])
@@ -429,7 +417,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 			m.Lock()
 			// set is writable transaction
 			// it should stop readable
-			assert.NoError(t, s.Set(ctx, kv.Item{
+			assert.NoError(t, s.Set(kv.Item{
 				Key:   "key" + strconv.Itoa(i),
 				Value: "hello world" + strconv.Itoa(i),
 				TTL:   "",
@@ -447,7 +435,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 		defer wg.Done()
 		for i := 0; i <= 1000; i++ {
 			m.RLock()
-			v, err = s.Has(ctx, "key")
+			v, err = s.Has("key")
 			assert.NoError(t, err)
 			// no such key
 			assert.True(t, v["key"])
@@ -460,7 +448,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 		defer wg.Done()
 		for i := 0; i <= 1000; i++ {
 			m.Lock()
-			err = s.Delete(ctx, "key"+strconv.Itoa(i))
+			err = s.Delete("key" + strconv.Itoa(i))
 			assert.NoError(t, err)
 			m.Unlock()
 		}

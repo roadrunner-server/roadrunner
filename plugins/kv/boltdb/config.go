@@ -8,16 +8,17 @@ type Config struct {
 	File string
 	// Bucket to store data in boltDB
 	Bucket string
-
+	// db file permissions
 	Permissions int
-	TTL         int
+	// timeout
+	Interval uint `yaml:"interval"`
 }
 
-func (s *Config) InitDefaults() error {
+// InitDefaults initializes default values for the boltdb
+func (s *Config) InitDefaults() {
 	s.Dir = "."          // current dir
 	s.Bucket = "rr"      // default bucket name
 	s.File = "rr.db"     // default file name
 	s.Permissions = 0777 // free for all
-	s.TTL = 60           // 60 seconds is default TTL
-	return nil
+	s.Interval = 60      // default is 60 seconds timeout
 }

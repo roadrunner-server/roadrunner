@@ -1,19 +1,74 @@
 package boltdb
 
 import (
-	"context"
 	"os"
 	"strconv"
 	"sync"
 	"testing"
 	"time"
 
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
+	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/stretchr/testify/assert"
+	bolt "go.etcd.io/bbolt"
+	"go.uber.org/zap"
 )
 
+// NewBoltClient instantiate new BOLTDB client
+// The parameters are:
+// path string 			 -- path to database file (can be placed anywhere), if file is not exist, it will be created
+// perm os.FileMode 	 -- file permissions, for example 0777
+// options *bolt.Options -- boltDB options, such as timeouts, noGrows options and other
+// bucket string 		 -- name of the bucket to use, should be UTF-8
+func newBoltClient(path string, perm os.FileMode, options *bolt.Options, bucket string, ttl time.Duration) (kv.Storage, error) {
+	const op = errors.Op("newBoltClient")
+	db, err := bolt.Open(path, perm, options)
+	if err != nil {
+		return nil, errors.E(op, err)
+	}
+
+	// bucket should be SET
+	if bucket == "" {
+		return nil, errors.E(op, errors.Str("bucket should be set"))
+	}
+
+	// create bucket if it does not exist
+	// tx.Commit invokes via the db.Update
+	err = db.Update(func(tx *bolt.Tx) error {
+		_, err = tx.CreateBucketIfNotExists([]byte(bucket))
+		if err != nil {
+			return errors.E(op, err)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, errors.E(op, err)
+	}
+
+	// if TTL is not set, make it default
+	if ttl == 0 {
+		ttl = time.Minute
+	}
+
+	l, _ := zap.NewDevelopment()
+	s := &Plugin{
+		DB:      db,
+		bucket:  []byte(bucket),
+		stop:    make(chan struct{}),
+		timeout: ttl,
+		gc:      &sync.Map{},
+		log:     logger.NewZapAdapter(l),
+	}
+
+	// start the TTL gc
+	go s.gcPhase()
+
+	return s, nil
+}
+
 func initStorage() kv.Storage {
-	storage, err := NewBoltClient("rr.db", 0777, nil, "rr", time.Second)
+	storage, err := newBoltClient("rr.db", 0777, nil, "rr", time.Second)
 	if err != nil {
 		panic(err)
 	}
@@ -36,7 +91,7 @@ func TestStorage_Has(t *testing.T) {
 		cleanup(t, "rr.db")
 	}()
 
-	v, err := s.Has(context.Background(), "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 }
@@ -50,13 +105,12 @@ func TestStorage_Has_Set_Has(t *testing.T) {
 		cleanup(t, "rr.db")
 	}()
 
-	ctx := context.Background()
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	// no such key
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
@@ -66,7 +120,7 @@ func TestStorage_Has_Set_Has(t *testing.T) {
 		TTL:   "",
 	}))
 
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	// no such key
 	assert.True(t, v["key"])
@@ -82,13 +136,12 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 		cleanup(t, "rr.db")
 	}()
 
-	ctx := context.Background()
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	// no such key
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
@@ -98,7 +151,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 		TTL:   "",
 	}))
 
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	// no such key
 	assert.True(t, v["key"])
@@ -115,7 +168,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 			m.Lock()
 			// set is writable transaction
 			// it should stop readable
-			assert.NoError(t, s.Set(ctx, kv.Item{
+			assert.NoError(t, s.Set(kv.Item{
 				Key:   "key" + strconv.Itoa(i),
 				Value: "hello world" + strconv.Itoa(i),
 				TTL:   "",
@@ -133,7 +186,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 		defer wg.Done()
 		for i := 0; i <= 1000; i++ {
 			m.RLock()
-			v, err = s.Has(ctx, "key")
+			v, err = s.Has("key")
 			assert.NoError(t, err)
 			// no such key
 			assert.True(t, v["key"])
@@ -146,7 +199,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 		defer wg.Done()
 		for i := 0; i <= 1000; i++ {
 			m.Lock()
-			err = s.Delete(ctx, "key"+strconv.Itoa(i))
+			err = s.Delete("key" + strconv.Itoa(i))
 			assert.NoError(t, err)
 			m.Unlock()
 		}
@@ -164,13 +217,12 @@ func TestStorage_Has_Set_MGet(t *testing.T) {
 		cleanup(t, "rr.db")
 	}()
 
-	ctx := context.Background()
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	// no such key
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
@@ -180,13 +232,13 @@ func TestStorage_Has_Set_MGet(t *testing.T) {
 		TTL:   "",
 	}))
 
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	// no such key
 	assert.True(t, v["key"])
 	assert.True(t, v["key2"])
 
-	res, err := s.MGet(ctx, "key", "key2")
+	res, err := s.MGet("key", "key2")
 	assert.NoError(t, err)
 	assert.Len(t, res, 2)
 }
@@ -200,13 +252,12 @@ func TestStorage_Has_Set_Get(t *testing.T) {
 		cleanup(t, "rr.db")
 	}()
 
-	ctx := context.Background()
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	// no such key
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
@@ -216,13 +267,13 @@ func TestStorage_Has_Set_Get(t *testing.T) {
 		TTL:   "",
 	}))
 
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
-	// no such key
+
 	assert.True(t, v["key"])
 	assert.True(t, v["key2"])
 
-	res, err := s.Get(ctx, "key")
+	res, err := s.Get("key")
 	assert.NoError(t, err)
 
 	if string(res) != "hello world" {
@@ -239,13 +290,12 @@ func TestStorage_Set_Del_Get(t *testing.T) {
 		cleanup(t, "rr.db")
 	}()
 
-	ctx := context.Background()
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	// no such key
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
@@ -255,20 +305,20 @@ func TestStorage_Set_Del_Get(t *testing.T) {
 		TTL:   "",
 	}))
 
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	// no such key
 	assert.True(t, v["key"])
 	assert.True(t, v["key2"])
 
 	// check that keys are present
-	res, err := s.MGet(ctx, "key", "key2")
+	res, err := s.MGet("key", "key2")
 	assert.NoError(t, err)
 	assert.Len(t, res, 2)
 
-	assert.NoError(t, s.Delete(ctx, "key", "key2"))
+	assert.NoError(t, s.Delete("key", "key2"))
 	// check that keys are not present
-	res, err = s.MGet(ctx, "key", "key2")
+	res, err = s.MGet("key", "key2")
 	assert.NoError(t, err)
 	assert.Len(t, res, 0)
 }
@@ -281,13 +331,12 @@ func TestStorage_Set_GetM(t *testing.T) {
 		}
 		cleanup(t, "rr.db")
 	}()
-	ctx := context.Background()
 
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
@@ -297,14 +346,13 @@ func TestStorage_Set_GetM(t *testing.T) {
 		TTL:   "",
 	}))
 
-	res, err := s.MGet(ctx, "key", "key2")
+	res, err := s.MGet("key", "key2")
 	assert.NoError(t, err)
 	assert.Len(t, res, 2)
 }
 
 func TestNilAndWrongArgs(t *testing.T) {
 	s := initStorage()
-	ctx := context.Background()
 	defer func() {
 		if err := s.Close(); err != nil {
 			panic(err)
@@ -313,61 +361,60 @@ func TestNilAndWrongArgs(t *testing.T) {
 	}()
 
 	// check
-	v, err := s.Has(ctx, "key")
+	v, err := s.Has("key")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 
-	_, err = s.Has(ctx, "")
+	_, err = s.Has("")
 	assert.Error(t, err)
 
-	_, err = s.Get(ctx, "")
+	_, err = s.Get("")
 	assert.Error(t, err)
 
-	_, err = s.Get(ctx, " ")
+	_, err = s.Get(" ")
 	assert.Error(t, err)
 
-	_, err = s.Get(ctx, "                 ")
+	_, err = s.Get("                 ")
 	assert.Error(t, err)
 
-	_, err = s.MGet(ctx, "key", "key2", "")
+	_, err = s.MGet("key", "key2", "")
 	assert.Error(t, err)
 
-	_, err = s.MGet(ctx, "key", "key2", "   ")
+	_, err = s.MGet("key", "key2", "   ")
 	assert.Error(t, err)
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
 	}))
 
-	assert.Error(t, s.Set(ctx, kv.Item{
+	assert.Error(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "asdf",
 	}))
 
-	_, err = s.Has(ctx, "key")
+	_, err = s.Has("key")
 	assert.NoError(t, err)
 
-	assert.Error(t, s.Set(ctx, kv.Item{}))
+	assert.Error(t, s.Set(kv.Item{}))
 
-	err = s.Delete(ctx, "")
+	err = s.Delete("")
 	assert.Error(t, err)
 
-	err = s.Delete(ctx, "key", "")
+	err = s.Delete("key", "")
 	assert.Error(t, err)
 
-	err = s.Delete(ctx, "key", "     ")
+	err = s.Delete("key", "     ")
 	assert.Error(t, err)
 
-	err = s.Delete(ctx, "key")
+	err = s.Delete("key")
 	assert.NoError(t, err)
 }
 
 func TestStorage_MExpire_TTL(t *testing.T) {
 	s := initStorage()
-	ctx := context.Background()
 	defer func() {
 		if err := s.Close(); err != nil {
 			panic(err)
@@ -376,12 +423,12 @@ func TestStorage_MExpire_TTL(t *testing.T) {
 	}()
 
 	// ensure that storage is clean
-	v, err := s.Has(ctx, "key", "key2")
+	v, err := s.Has("key", "key2")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 	assert.False(t, v["key2"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
@@ -404,12 +451,12 @@ func TestStorage_MExpire_TTL(t *testing.T) {
 		Value: "",
 		TTL:   nowPlusFive,
 	}
-	assert.NoError(t, s.MExpire(ctx, i1, i2))
+	assert.NoError(t, s.MExpire(i1, i2))
 
 	time.Sleep(time.Second * 6)
 
 	// ensure that storage is clean
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 	assert.False(t, v["key2"])
@@ -417,7 +464,6 @@ func TestStorage_MExpire_TTL(t *testing.T) {
 
 func TestStorage_SetExpire_TTL(t *testing.T) {
 	s := initStorage()
-	ctx := context.Background()
 	defer func() {
 		if err := s.Close(); err != nil {
 			panic(err)
@@ -426,12 +472,12 @@ func TestStorage_SetExpire_TTL(t *testing.T) {
 	}()
 
 	// ensure that storage is clean
-	v, err := s.Has(ctx, "key", "key2")
+	v, err := s.Has("key", "key2")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 	assert.False(t, v["key2"])
 
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "hello world",
 		TTL:   "",
@@ -445,7 +491,7 @@ func TestStorage_SetExpire_TTL(t *testing.T) {
 	nowPlusFive := time.Now().Add(time.Second * 5).Format(time.RFC3339)
 
 	// set timeout to 5 sec
-	assert.NoError(t, s.Set(ctx, kv.Item{
+	assert.NoError(t, s.Set(kv.Item{
 		Key:   "key",
 		Value: "value",
 		TTL:   nowPlusFive,
@@ -457,7 +503,7 @@ func TestStorage_SetExpire_TTL(t *testing.T) {
 		}))
 
 	time.Sleep(time.Second * 2)
-	m, err := s.TTL(ctx, "key", "key2")
+	m, err := s.TTL("key", "key2")
 	assert.NoError(t, err)
 
 	// remove a precision 4.02342342 -> 4
@@ -478,7 +524,7 @@ func TestStorage_SetExpire_TTL(t *testing.T) {
 	time.Sleep(time.Second * 4)
 
 	// ensure that storage is clean
-	v, err = s.Has(ctx, "key", "key2")
+	v, err = s.Has("key", "key2")
 	assert.NoError(t, err)
 	assert.False(t, v["key"])
 	assert.False(t, v["key2"])

@@ -65,6 +65,7 @@ jobs:
       - name: Run golang tests on Windows without codecov
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
+          docker-compose -f ./tests/docker-compose.yaml up -d
           go test -v -race -cover -tags=debug ./utils
           go test -v -race -cover -tags=debug ./pkg/pipe
           go test -v -race -cover -tags=debug ./pkg/pool
@@ -88,6 +89,7 @@ jobs:
       - name: Run golang tests on Linux and MacOS
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
+          docker-compose -f ./tests/docker-compose.yaml up -d
           mkdir ./coverage-ci
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/utils.txt -covermode=atomic ./utils
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/pipe
