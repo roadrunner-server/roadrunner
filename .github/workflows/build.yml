@@ -20,7 +20,7 @@ jobs:
       matrix:
         php: ["7.4", "8.0"]
         go: ["1.14", "1.15"]
-        os: [ubuntu-20.04, windows-latest, macos-10.15]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
@@ -93,8 +93,8 @@ jobs:
           go test -v -race -cover -tags=debug ./tests/plugins/kv/memcached
           docker-compose -f ./tests/docker-compose.yaml down
 
-      - name: Run golang tests on Linux and MacOS
-        if: ${{ matrix.os != 'windows-latest' }}
+      - name: Run golang tests on Linux
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
           docker-compose -f ./tests/docker-compose.yaml up -d
           mkdir ./coverage-ci
@@ -126,8 +126,35 @@ jobs:
           docker-compose -f ./tests/docker-compose.yaml down
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
+      - name: Run golang tests on MacOS without docker
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: |
+          go test -v -race -cover -tags=debug ./utils
+          go test -v -race -cover -tags=debug ./pkg/pipe
+          go test -v -race -cover -tags=debug ./pkg/pool
+          go test -v -race -cover -tags=debug ./pkg/socket
+          go test -v -race -cover -tags=debug ./pkg/worker
+          go test -v -race -cover -tags=debug ./tests/plugins/http
+          go test -v -race -cover -tags=debug ./tests/plugins/informer
+          go test -v -race -cover -tags=debug ./tests/plugins/reload
+          go test -v -race -cover -tags=debug ./tests/plugins/server
+          go test -v -race -cover -tags=debug ./tests/plugins/checker
+          go test -v -race -cover -tags=debug ./tests/plugins/config
+          go test -v -race -cover -tags=debug ./tests/plugins/gzip
+          go test -v -race -cover -tags=debug ./tests/plugins/headers
+          go test -v -race -cover -tags=debug ./tests/plugins/logger
+          go test -v -race -cover -tags=debug ./tests/plugins/metrics
+          go test -v -race -cover -tags=debug ./tests/plugins/redis
+          go test -v -race -cover -tags=debug ./tests/plugins/resetter
+          go test -v -race -cover -tags=debug ./tests/plugins/rpc
+          go test -v -race -cover -tags=debug ./tests/plugins/static
+          go test -v -race -cover -tags=debug ./plugins/kv/boltdb
+          go test -v -race -cover -tags=debug ./plugins/kv/memory
+          go test -v -race -cover -tags=debug ./tests/plugins/kv/boltdb
+          go test -v -race -cover -tags=debug ./tests/plugins/kv/memory
+
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
-        if: ${{ matrix.os != 'windows-latest' }}
+        if: ${{ matrix.os == 'ubuntu-latest' }} # codecov only from linux
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage-ci/summary.txt
@@ -135,7 +162,7 @@ jobs:
 
   golangci-lint:
     name: Golang-CI (lint)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -143,5 +170,5 @@ jobs:
       - name: Run linter
         uses: golangci/golangci-lint-action@v2 # Action page: <https://github.com/golangci/golangci-lint-action>
         with:
-          version: v1.33 # without patch version
+          version: v1.34 # without patch version
           only-new-issues: false # show only new issues if it's a pull request

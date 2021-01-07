@@ -7,7 +7,7 @@ import (
 	"github.com/spiral/roadrunner/v2/cmd/cli"
 	"github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
-	//"github.com/spiral/roadrunner/v2/plugins/kv/boltdb"
+
 	"github.com/spiral/roadrunner/v2/plugins/kv/memcached"
 	"github.com/spiral/roadrunner/v2/plugins/kv/memory"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -45,8 +45,6 @@ func main() {
 		&rpc.Plugin{},
 		// server plugin (NewWorker, NewWorkerPool)
 		&server.Plugin{},
-		// boltdb kv plugin
-		// &boltdb.Plugin{},
 		// memcached kv plugin
 		&memcached.Plugin{},
 		// in-memory kv plugin
