@@ -24,8 +24,8 @@ uninstall: ## Uninstall locally installed RR
 	rm -f /usr/local/bin/rr
 
 test: ## Run application tests
-	#go clean -testcache
-	docker-compose -f docker-compose.yaml up -d
+	go clean -testcache
+	docker-compose -f tests/docker-compose.yaml up -d
 	go test -v -race -cover -tags=debug -covermode=atomic ./utils
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/pipe
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/pool
@@ -47,7 +47,11 @@ test: ## Run application tests
 	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/static
 	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/kv/boltdb
 	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/kv/memory
-	docker-compose down
+	go test -v -race -cover -tags=debug -covermode=atomic ./plugins/kv/memcached
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/kv/boltdb
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/kv/memory
+	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/kv/memcached
+	docker-compose -f tests/docker-compose.yaml down
 
 lint: ## Run application linters
 	golangci-lint run
@@ -59,4 +63,4 @@ kv:
 	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/kv/boltdb
 	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/kv/memory
 	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/kv/memcached
-	docker-compose down
+	docker-compose -f tests/docker-compose.yaml down

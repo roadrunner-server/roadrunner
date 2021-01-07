@@ -39,4 +39,7 @@ http:
 
 # in memory KV driver
 memory:
-  enabled: true
+  enabled:
+    true
+    # keys ttl check interval
+  interval: 1

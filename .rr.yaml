@@ -88,6 +88,7 @@ boltdb:
   file: "rr"
   bucket: "test"
   permissions: 0777
+  # keys ttl check interval
   TTL: 60 # seconds
 
   # memcached driver
@@ -98,6 +99,8 @@ memcached:
 # in memory KV driver
 memory:
   enabled: true
+  # keys ttl check interval
+  interval: 60
 
 metrics:
   # prometheus client address (path /metrics added automatically)

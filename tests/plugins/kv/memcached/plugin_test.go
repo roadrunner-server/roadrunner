@@ -149,8 +149,8 @@ func testRPCMethods(t *testing.T) {
 	err = client.Call("memcached.MGet", keys, &mGet)
 	assert.NoError(t, err)
 	assert.Len(t, mGet, 2) // c is expired
-	assert.Equal(t, string("aa"), mGet["a"].(string))
-	assert.Equal(t, string("bb"), mGet["b"].(string))
+	assert.Equal(t, string("aa"), string(mGet["a"].([]byte)))
+	assert.Equal(t, string("bb"), string(mGet["b"].([]byte)))
 
 	mExpKeys := make([]kv.Item, 0, 2)
 	tt2 := time.Now().Add(time.Second * 10).Format(time.RFC3339)
@@ -164,12 +164,12 @@ func testRPCMethods(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, mExpRes)
 
-	// TTL
+	// TTL call is not supported for the memcached driver
 	keys = []string{"a", "b", "d"}
 	ttlRes := make(map[string]interface{})
 	err = client.Call("memcached.TTL", keys, &ttlRes)
-	assert.NoError(t, err)
-	assert.Len(t, ttlRes, 3)
+	assert.Error(t, err)
+	assert.Len(t, ttlRes, 0)
 
 	// HAS AFTER TTL
 	time.Sleep(time.Second * 11)

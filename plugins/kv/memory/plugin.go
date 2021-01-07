@@ -11,25 +11,16 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
+// PluginName is user friendly name for the plugin
 const PluginName = "memory"
 
 type Plugin struct {
-	heap *sync.Map
+	// heap is user map for the key-value pairs
+	heap sync.Map
 	stop chan struct{}
 
 	log logger.Logger
 	cfg *Config
-}
-
-func NewInMemoryStorage() kv.Storage {
-	p := &Plugin{
-		heap: &sync.Map{},
-		stop: make(chan struct{}),
-	}
-
-	go p.gc()
-
-	return p
 }
 
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
@@ -42,8 +33,7 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 		return errors.E(op, err)
 	}
 	s.log = log
-	// init in-memory
-	s.heap = &sync.Map{}
+
 	s.stop = make(chan struct{}, 1)
 	return nil
 }
@@ -119,7 +109,7 @@ func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
 
 	for i := range keys {
 		if value, ok := s.heap.Load(keys[i]); ok {
-			m[keys[i]] = value
+			m[keys[i]] = value.(kv.Item).Value
 		}
 	}
 
@@ -242,7 +232,7 @@ func (s *Plugin) Name() string {
 
 func (s *Plugin) gc() {
 	// TODO check
-	ticker := time.NewTicker(time.Millisecond * 500)
+	ticker := time.NewTicker(time.Duration(s.cfg.Interval) * time.Second)
 	for {
 		select {
 		case <-s.stop:
@@ -262,6 +252,7 @@ func (s *Plugin) gc() {
 				}
 
 				if now.After(t) {
+					s.log.Debug("key deleted", "key", key)
 					s.heap.Delete(key)
 				}
 				return true

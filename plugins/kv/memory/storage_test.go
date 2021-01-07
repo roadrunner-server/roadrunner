@@ -7,11 +7,26 @@ import (
 	"time"
 
 	"github.com/spiral/roadrunner/v2/plugins/kv"
+	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
 )
 
 func initStorage() kv.Storage {
-	return NewInMemoryStorage()
+	p := &Plugin{
+		stop: make(chan struct{}),
+	}
+	p.cfg = &Config{
+		Enabled:  true,
+		Interval: 1,
+	}
+
+	l, _ := zap.NewDevelopment()
+	p.log = logger.NewZapAdapter(l)
+
+	go p.gc()
+
+	return p
 }
 
 func cleanup(t *testing.T, s kv.Storage, keys ...string) {
