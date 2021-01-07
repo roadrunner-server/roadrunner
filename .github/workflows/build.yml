@@ -20,7 +20,7 @@ jobs:
       matrix:
         php: ["7.4", "8.0"]
         go: ["1.14", "1.15"]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
@@ -125,33 +125,6 @@ jobs:
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/memcached.txt -covermode=atomic ./tests/plugins/kv/memcached
           docker-compose -f ./tests/docker-compose.yaml down
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
-
-      - name: Run golang tests on MacOS without docker
-        if: ${{ matrix.os == 'macos-latest' }}
-        run: |
-          go test -v -race -cover -tags=debug ./utils
-          go test -v -race -cover -tags=debug ./pkg/pipe
-          go test -v -race -cover -tags=debug ./pkg/pool
-          go test -v -race -cover -tags=debug ./pkg/socket
-          go test -v -race -cover -tags=debug ./pkg/worker
-          go test -v -race -cover -tags=debug ./tests/plugins/http
-          go test -v -race -cover -tags=debug ./tests/plugins/informer
-          go test -v -race -cover -tags=debug ./tests/plugins/reload
-          go test -v -race -cover -tags=debug ./tests/plugins/server
-          go test -v -race -cover -tags=debug ./tests/plugins/checker
-          go test -v -race -cover -tags=debug ./tests/plugins/config
-          go test -v -race -cover -tags=debug ./tests/plugins/gzip
-          go test -v -race -cover -tags=debug ./tests/plugins/headers
-          go test -v -race -cover -tags=debug ./tests/plugins/logger
-          go test -v -race -cover -tags=debug ./tests/plugins/metrics
-          go test -v -race -cover -tags=debug ./tests/plugins/redis
-          go test -v -race -cover -tags=debug ./tests/plugins/resetter
-          go test -v -race -cover -tags=debug ./tests/plugins/rpc
-          go test -v -race -cover -tags=debug ./tests/plugins/static
-          go test -v -race -cover -tags=debug ./plugins/kv/boltdb
-          go test -v -race -cover -tags=debug ./plugins/kv/memory
-          go test -v -race -cover -tags=debug ./tests/plugins/kv/boltdb
-          go test -v -race -cover -tags=debug ./tests/plugins/kv/memory
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
         if: ${{ matrix.os == 'ubuntu-latest' }} # codecov only from linux
