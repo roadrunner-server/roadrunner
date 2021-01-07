@@ -134,8 +134,11 @@ func (server *Plugin) NewWorkerPool(ctx context.Context, opt poolImpl.Config, en
 		return nil, errors.E(op, err)
 	}
 
-	list := make([]events.Listener, 0, len(listeners))
+	list := make([]events.Listener, 0, 1)
 	list = append(list, server.collectPoolLogs)
+	if len(listeners) != 0 {
+		list = append(list, listeners...)
+	}
 
 	p, err := poolImpl.Initialize(ctx, spawnCmd, server.factory, opt, poolImpl.AddListeners(list...))
 	if err != nil {
