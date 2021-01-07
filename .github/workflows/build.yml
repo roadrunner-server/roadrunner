@@ -128,6 +128,7 @@ jobs:
 
       - name: Run golang tests on MacOS without docker
         if: ${{ matrix.os == 'macos-latest' }}
+        uses: niden/actions-memcached@v7
         run: |
           go test -v -race -cover -tags=debug ./utils
           go test -v -race -cover -tags=debug ./pkg/pipe
@@ -152,6 +153,8 @@ jobs:
           go test -v -race -cover -tags=debug ./plugins/kv/memory
           go test -v -race -cover -tags=debug ./tests/plugins/kv/boltdb
           go test -v -race -cover -tags=debug ./tests/plugins/kv/memory
+          go test -v -race -cover -tags=debug ./tests/plugins/kv/memcached
+          go test -v -race -cover -tags=debug ./plugins/kv/memcached
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
         if: ${{ matrix.os == 'ubuntu-latest' }} # codecov only from linux
