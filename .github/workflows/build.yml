@@ -62,12 +62,10 @@ jobs:
       - name: Install Go dependencies
         run: go mod download
 
-      - name: Run memcached
-        uses: niden/actions-memcached@v7
-
       - name: Run golang tests on Windows without codecov
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
+          docker-compose -f ./tests/docker-compose.yaml up -d
           go test -v -race -cover -tags=debug ./utils
           go test -v -race -cover -tags=debug ./pkg/pipe
           go test -v -race -cover -tags=debug ./pkg/pool
@@ -93,10 +91,12 @@ jobs:
           go test -v -race -cover -tags=debug ./tests/plugins/kv/boltdb
           go test -v -race -cover -tags=debug ./tests/plugins/kv/memory
           go test -v -race -cover -tags=debug ./tests/plugins/kv/memcached
+          docker-compose -f ./tests/docker-compose.yaml down
 
       - name: Run golang tests on Linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
+          docker-compose -f ./tests/docker-compose.yaml up -d
           mkdir ./coverage-ci
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/utils.txt -covermode=atomic ./utils
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/pipe
@@ -123,6 +123,7 @@ jobs:
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/boltdb.txt -covermode=atomic ./tests/plugins/kv/boltdb
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/memory.txt -covermode=atomic ./tests/plugins/kv/memory
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/memcached.txt -covermode=atomic ./tests/plugins/kv/memcached
+          docker-compose -f ./tests/docker-compose.yaml down
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
       - name: Run golang tests on MacOS without docker
@@ -151,8 +152,6 @@ jobs:
           go test -v -race -cover -tags=debug ./plugins/kv/memory
           go test -v -race -cover -tags=debug ./tests/plugins/kv/boltdb
           go test -v -race -cover -tags=debug ./tests/plugins/kv/memory
-          go test -v -race -cover -tags=debug ./tests/plugins/kv/memcached
-          go test -v -race -cover -tags=debug ./plugins/kv/memcached
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
         if: ${{ matrix.os == 'ubuntu-latest' }} # codecov only from linux
