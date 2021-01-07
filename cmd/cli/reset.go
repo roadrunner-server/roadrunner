@@ -12,7 +12,10 @@ import (
 	"github.com/vbauerster/mpb/v5/decor"
 )
 
+// List is the resetter.List RPC method
 const List string = "resetter.List"
+
+// Reset is the resetter.Reset RPC method
 const Reset string = "resetter.Reset"
 
 func init() {

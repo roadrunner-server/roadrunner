@@ -178,7 +178,7 @@ func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (worker.BaseProcess,
 	// thread safe operation
 	w, stop := ww.stack.Pop()
 	if stop {
-		return nil, errors.E(op, errors.ErrWatcherStopped)
+		return nil, errors.E(op, errors.WatcherStopped)
 	}
 
 	// handle worker remove state
@@ -198,7 +198,7 @@ func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (worker.BaseProcess,
 			default:
 				w, stop = ww.stack.Pop()
 				if stop {
-					return nil, errors.E(op, errors.ErrWatcherStopped)
+					return nil, errors.E(op, errors.WatcherStopped)
 				}
 				if w == nil {
 					continue

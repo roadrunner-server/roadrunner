@@ -46,7 +46,6 @@ func Test_Kill(t *testing.T) {
 	go func() {
 		defer wg.Done()
 		assert.Error(t, w.Wait())
-		// TODO changed from stopped, discuss
 		assert.Equal(t, internal.StateErrored, w.State().Value())
 	}()
 
@@ -465,7 +464,7 @@ func Test_Error(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 
-	if errors.Is(errors.ErrSoftJob, err) == false {
+	if errors.Is(errors.SoftJob, err) == false {
 		t.Fatal("error should be of type errors.ErrSoftJob")
 	}
 	assert.Contains(t, err.Error(), "hello")

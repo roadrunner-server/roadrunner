@@ -21,6 +21,7 @@ import (
 	"github.com/spiral/roadrunner/v2/utils"
 )
 
+// PluginName for the server
 const PluginName = "server"
 
 // Plugin manages worker
@@ -53,11 +54,13 @@ func (server *Plugin) Name() string {
 	return PluginName
 }
 
+// Serve (Start) server plugin (just a mock here to satisfy interface)
 func (server *Plugin) Serve() chan error {
 	errCh := make(chan error, 1)
 	return errCh
 }
 
+// Stop used to close chosen in config factory
 func (server *Plugin) Stop() error {
 	if server.factory == nil {
 		return nil

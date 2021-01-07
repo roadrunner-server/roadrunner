@@ -1,0 +1,15 @@
+{
+  "workbench.editor.enablePreview": false,
+  "go.testFlags": ["-v", "-tags=debug", "-race"],
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": [
+    "--fast"
+  ],
+  "cSpell.words": [
+    "asdf",
+    "bbolt",
+    "gofiber",
+    "stopc",
+    "treshholdc"
+  ]
+}

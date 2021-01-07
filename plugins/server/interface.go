@@ -10,6 +10,7 @@ import (
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 )
 
+// Env variables type alias
 type Env map[string]string
 
 // Server creates workers for the application.

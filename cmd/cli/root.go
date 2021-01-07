@@ -17,8 +17,11 @@ import (
 )
 
 var (
-	WorkDir   string
-	CfgFile   string
+	// WorkDir is working directory
+	WorkDir string
+	// CfgFile is path to the .rr.yaml
+	CfgFile string
+	// Container is the pointer to the Endure container
 	Container *endure.Endure
 	cfg       *config.Viper
 	root      = &cobra.Command{

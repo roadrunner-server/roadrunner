@@ -7,6 +7,9 @@ import (
 	"github.com/spiral/roadrunner/v2/cmd/cli"
 	"github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
+
+	"github.com/spiral/roadrunner/v2/plugins/kv/memcached"
+	"github.com/spiral/roadrunner/v2/plugins/kv/memory"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/metrics"
 	"github.com/spiral/roadrunner/v2/plugins/redis"
@@ -42,6 +45,10 @@ func main() {
 		&rpc.Plugin{},
 		// server plugin (NewWorker, NewWorkerPool)
 		&server.Plugin{},
+		// memcached kv plugin
+		&memcached.Plugin{},
+		// in-memory kv plugin
+		&memory.Plugin{},
 	)
 	if err != nil {
 		log.Fatal(err)

@@ -23,12 +23,8 @@ const (
 	EventError
 )
 
+// MB is 1024 bytes
 const MB = 1024 * 1024
-
-type Handle interface {
-	AddListener(l events.Listener)
-	ServeHTTP(w http.ResponseWriter, r *http.Request)
-}
 
 // ErrorEvent represents singular http error event.
 type ErrorEvent struct {
@@ -68,7 +64,7 @@ func (e *ResponseEvent) Elapsed() time.Duration {
 
 // Handler serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
-type handler struct {
+type Handler struct {
 	maxRequestSize uint64
 	uploads        UploadsConfig
 	trusted        Cidrs
@@ -78,11 +74,12 @@ type handler struct {
 	lsn            events.Listener
 }
 
-func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool pool.Pool) (Handle, error) {
+// NewHandler return handle interface implementation
+func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool pool.Pool) (*Handler, error) {
 	if pool == nil {
 		return nil, errors.E(errors.Str("pool should be initialized"))
 	}
-	return &handler{
+	return &Handler{
 		maxRequestSize: maxReqSize * MB,
 		uploads:        uploads,
 		pool:           pool,
@@ -90,8 +87,8 @@ func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool po
 	}, nil
 }
 
-// Listen attaches handler event controller.
-func (h *handler) AddListener(l events.Listener) {
+// AddListener attaches handler event controller.
+func (h *Handler) AddListener(l events.Listener) {
 	h.mul.Lock()
 	defer h.mul.Unlock()
 
@@ -99,7 +96,7 @@ func (h *handler) AddListener(l events.Listener) {
 }
 
 // mdwr serve using PSR-7 requests passed to underlying application. Attempts to serve static files first if enabled.
-func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	const op = errors.Op("ServeHTTP")
 	start := time.Now()
 
@@ -148,7 +145,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *handler) maxSize(w http.ResponseWriter, r *http.Request, start time.Time, op errors.Op) error {
+func (h *Handler) maxSize(w http.ResponseWriter, r *http.Request, start time.Time, op errors.Op) error {
 	if length := r.Header.Get("content-length"); length != "" {
 		if size, err := strconv.ParseInt(length, 10, 64); err != nil {
 			h.handleError(w, r, err, start)
@@ -162,7 +159,7 @@ func (h *handler) maxSize(w http.ResponseWriter, r *http.Request, start time.Tim
 }
 
 // handleError sends error.
-func (h *handler) handleError(w http.ResponseWriter, r *http.Request, err error, start time.Time) {
+func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error, start time.Time) {
 	h.mul.Lock()
 	defer h.mul.Unlock()
 	// if pipe is broken, there is no sense to write the header
@@ -186,19 +183,19 @@ func (h *handler) handleError(w http.ResponseWriter, r *http.Request, err error,
 }
 
 // handleResponse triggers response event.
-func (h *handler) handleResponse(req *Request, resp *Response, start time.Time) {
+func (h *Handler) handleResponse(req *Request, resp *Response, start time.Time) {
 	h.throw(ResponseEvent{Request: req, Response: resp, start: start, elapsed: time.Since(start)})
 }
 
 // throw invokes event handler if any.
-func (h *handler) throw(event interface{}) {
+func (h *Handler) throw(event interface{}) {
 	if h.lsn != nil {
 		h.lsn(event)
 	}
 }
 
 // get real ip passing multiple proxy
-func (h *handler) resolveIP(r *Request) {
+func (h *Handler) resolveIP(r *Request) {
 	if h.trusted.IsTrusted(r.RemoteAddr) == false {
 		return
 	}

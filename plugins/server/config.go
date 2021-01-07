@@ -28,6 +28,7 @@ type Config struct {
 	RelayTimeout time.Duration
 }
 
+// InitDefaults for the server config
 func (cfg *Config) InitDefaults() {
 	if cfg.Relay == "" {
 		cfg.Relay = "pipes"

@@ -43,7 +43,7 @@ func (tw *syncWorker) Exec(p payload.Payload) (payload.Payload, error) {
 	rsp, err := tw.execPayload(p)
 	if err != nil {
 		// just to be more verbose
-		if errors.Is(errors.ErrSoftJob, err) == false {
+		if errors.Is(errors.SoftJob, err) == false {
 			tw.w.State().Set(internal.StateErrored)
 			tw.w.State().RegisterExec()
 		}
@@ -90,7 +90,7 @@ func (tw *syncWorker) ExecWithTimeout(ctx context.Context, p payload.Payload) (p
 		rsp, err := tw.execPayload(p)
 		if err != nil {
 			// just to be more verbose
-			if errors.Is(errors.ErrSoftJob, err) == false {
+			if errors.Is(errors.SoftJob, err) == false {
 				tw.w.State().Set(internal.StateErrored)
 				tw.w.State().RegisterExec()
 			}
@@ -168,7 +168,7 @@ func (tw *syncWorker) execPayload(p payload.Payload) (payload.Payload, error) {
 	flags := frameR.ReadFlags()
 
 	if flags&byte(frame.ERROR) != byte(0) {
-		return payload.Payload{}, errors.E(op, errors.ErrSoftJob, errors.Str(string(frameR.Payload())))
+		return payload.Payload{}, errors.E(op, errors.SoftJob, errors.Str(string(frameR.Payload())))
 	}
 
 	options := frameR.ReadOptions()

@@ -1,0 +1,43 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+  disabled: false
+
+server:
+  command: "php ../../../psr-worker-bench.php"
+  user: ""
+  group: ""
+  env:
+    "RR_HTTP": "true"
+  relay: "pipes"
+  relayTimeout: "20s"
+
+logs:
+  mode: development
+  level: debug
+
+http:
+  address: 127.0.0.1:44933
+  maxRequestSize: 1024
+  middleware: ["gzip", "headers"]
+  uploads:
+    forbid: [".php", ".exe", ".bat"]
+  trustedSubnets:
+    [
+      "10.0.0.0/8",
+      "127.0.0.0/8",
+      "172.16.0.0/12",
+      "192.168.0.0/16",
+      "::1/128",
+      "fc00::/7",
+      "fe80::/10",
+    ]
+  pool:
+    numWorkers: 6
+    maxJobs: 0
+    allocateTimeout: 60s
+    destroyTimeout: 60s
+
+# boltdb simple driver
+memcached:
+  addr:
+    - "localhost:11211"

@@ -57,7 +57,7 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, res resetter.Res
 						return nil
 					}
 				}
-				return errors.E(op, errors.Skip)
+				return errors.E(op, errors.SkipFile)
 			},
 			Files:        make(map[string]os.FileInfo),
 			Ignored:      ignored,
