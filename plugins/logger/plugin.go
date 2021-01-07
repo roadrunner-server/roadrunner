@@ -63,7 +63,7 @@ func (z *ZapLogger) ServiceLogger(n endure.Named) (Logger, error) {
 // Provides declares factory methods.
 func (z *ZapLogger) Provides() []interface{} {
 	return []interface{}{
+		//z.DefaultLogger,
 		z.ServiceLogger,
-		z.DefaultLogger,
 	}
 }
