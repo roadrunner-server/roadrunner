@@ -41,15 +41,14 @@ linters:
     - staticcheck
     - structcheck
     - stylecheck
-    - typecheck
     - unconvert
     #    - unparam
     #    - unused
     - varcheck
     - whitespace
 
-  # don't enable:
-  # - asciicheck
+  #  don't enable:
+  #    - typecheck
   # - gochecknoglobals
   # - gocognit
   # - godot
