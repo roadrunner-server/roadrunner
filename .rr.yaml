@@ -46,11 +46,18 @@ http:
   # override http error code for the internal RR errors (default 500)
   internalErrorCode: 505
 
+  ssl:
+    # custom https port (default 443)
+    port:     443
+    # force redirect to https connection
+    redirect: true
+    # ssl cert
+    cert:     server.crt
     # ssl private key
-    key: server.key
-
+    key:      server.key
     # rootCA certificate
-    rootCa: root.crt
+    rootCa:   root.crt
+
 
   # HTTP service provides FastCGI as frontend
   fcgi:
@@ -156,20 +163,20 @@ limit:
       execTTL: 60
 
 # static file serving. remove this section to disable static file serving.
-#static:
-#  # root directory for static file (http would not serve .php and .htaccess files).
-#  dir: "public"
-#
-#  # list of extensions for forbid for serving.
-#  forbid: [ ".php", ".htaccess" ]
-#
-#  # Automatically add headers to every request.
-#  request:
-#    "Example-Request-Header": "Value"
-#
-#  # Automatically add headers to every response.
-#  response:
-#    "X-Powered-By": "RoadRunner"
+static:
+  # root directory for static file (http would not serve .php and .htaccess files).
+  dir: "public"
+
+  # list of extensions for forbid for serving.
+  forbid: [ ".php", ".htaccess" ]
+
+  # Automatically add headers to every request.
+  request:
+    "Example-Request-Header": "Value"
+
+  # Automatically add headers to every response.
+  response:
+    "X-Powered-By": "RoadRunner"
 
 # health service configuration
 health:
