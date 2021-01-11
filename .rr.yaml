@@ -41,16 +41,10 @@ metrics:
 http:
   # http host to listen.
   address: 0.0.0.0:8080
-
-  ssl:
-    # custom https port (default 443)
-    port: 443
-
-    # force redirect to https connection
-    redirect: true
-
-    # ssl cert
-    cert: server.crt
+  # override http error code for the application errors (default 500)
+  appErrorCode: 505
+  # override http error code for the internal RR errors (default 500)
+  internalErrorCode: 505
 
     # ssl private key
     key: server.key
@@ -98,10 +92,6 @@ http:
 
     # worker pool configuration.
     pool:
-      # override http error code for the application errors (default 500)
-      appErrorCode: 500
-      # override http error code for the internal RR errors (default 500)
-      internalErrorCode: 500
       # number of workers to be serving.
       numWorkers: 4
 
@@ -166,20 +156,20 @@ limit:
       execTTL: 60
 
 # static file serving. remove this section to disable static file serving.
-static:
-  # root directory for static file (http would not serve .php and .htaccess files).
-  dir: "public"
-
-  # list of extensions for forbid for serving.
-  forbid: [ ".php", ".htaccess" ]
-
-  # Automatically add headers to every request.
-  request:
-    "Example-Request-Header": "Value"
-
-  # Automatically add headers to every response.
-  response:
-    "X-Powered-By": "RoadRunner"
+#static:
+#  # root directory for static file (http would not serve .php and .htaccess files).
+#  dir: "public"
+#
+#  # list of extensions for forbid for serving.
+#  forbid: [ ".php", ".htaccess" ]
+#
+#  # Automatically add headers to every request.
+#  request:
+#    "Example-Request-Header": "Value"
+#
+#  # Automatically add headers to every response.
+#  response:
+#    "X-Powered-By": "RoadRunner"
 
 # health service configuration
 health:
