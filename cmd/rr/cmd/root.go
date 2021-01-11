@@ -21,15 +21,16 @@
 package cmd
 
 import (
+	"log"
+	"net/http"
+	"net/http/pprof"
+	"os"
+
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spiral/roadrunner/cmd/util"
 	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/limit"
-	"log"
-	"net/http"
-	"net/http/pprof"
-	"os"
 )
 
 // Services bus for all the commands.

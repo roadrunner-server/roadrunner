@@ -2,10 +2,11 @@ package service
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"reflect"
 	"sync"
+
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 var errNoConfig = fmt.Errorf("no config has been provided")

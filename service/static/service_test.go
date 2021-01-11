@@ -2,18 +2,19 @@ package static
 
 import (
 	"bytes"
-	json "github.com/json-iterator/go"
-	"github.com/sirupsen/logrus"
-	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiral/roadrunner/service"
-	rrhttp "github.com/spiral/roadrunner/service/http"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
 	"time"
+
+	json "github.com/json-iterator/go"
+	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
+	"github.com/spiral/roadrunner/service"
+	rrhttp "github.com/spiral/roadrunner/service/http"
+	"github.com/stretchr/testify/assert"
 )
 
 type testCfg struct {
@@ -74,7 +75,6 @@ func Test_Files(t *testing.T) {
 	}()
 
 	time.Sleep(time.Second)
-
 
 	b, _, _ := get("http://localhost:8029/sample.txt")
 	assert.Equal(t, "sample", b)
@@ -474,7 +474,6 @@ func TestStatic_Headers(t *testing.T) {
 	if resp.Header.Get("Output") != "output-header" {
 		t.Fatal("can't find output header in response")
 	}
-
 
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

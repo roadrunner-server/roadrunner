@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"strings"
 
-	json "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service/http/attributes"
@@ -136,13 +135,12 @@ func (r *Request) Close(log *logrus.Logger) {
 func (r *Request) Payload() (p *roadrunner.Payload, err error) {
 	p = &roadrunner.Payload{}
 
-	j := json.ConfigCompatibleWithStandardLibrary
-	if p.Context, err = j.Marshal(r); err != nil {
+	if p.Context, err = json.Marshal(r); err != nil {
 		return nil, err
 	}
 
 	if r.Parsed {
-		if p.Body, err = j.Marshal(r.body); err != nil {
+		if p.Body, err = json.Marshal(r.body); err != nil {
 			return nil, err
 		}
 	} else if r.body != nil {

@@ -1,10 +1,11 @@
 package roadrunner
 
 import (
-	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_GetState(t *testing.T) {
@@ -112,7 +113,7 @@ func Test_NotStarted_Exec(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, res)
 
-	assert.Equal(t, "worker is not ready (inactive)", err.Error())
+	assert.Equal(t, "worker is not ready", err.Error())
 }
 
 func Test_String(t *testing.T) {

@@ -1,10 +1,11 @@
 package roadrunner
 
 import (
-	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_Pipe_Start(t *testing.T) {

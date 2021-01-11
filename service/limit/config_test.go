@@ -1,11 +1,12 @@
 package limit
 
 import (
+	"testing"
+	"time"
+
 	json "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"time"
 )
 
 type mockCfg struct{ cfg string }

@@ -2,13 +2,15 @@ package gzip
 
 import (
 	"errors"
+	"net/http"
+
 	"github.com/NYTimes/gziphandler"
 	rrhttp "github.com/spiral/roadrunner/service/http"
-	"net/http"
 )
 
 // ID contains default service name.
 const ID = "gzip"
+
 var httpNotInitialized = errors.New("http service should be defined properly in config to use gzip")
 
 type Service struct {

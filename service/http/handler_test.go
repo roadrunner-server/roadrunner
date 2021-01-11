@@ -3,8 +3,6 @@ package http
 import (
 	"bytes"
 	"context"
-	"github.com/spiral/roadrunner"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -15,6 +13,9 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/spiral/roadrunner"
+	"github.com/stretchr/testify/assert"
 )
 
 // get request and return body
@@ -110,6 +111,7 @@ func TestHandler_Echo(t *testing.T) {
 
 func Test_HandlerErrors(t *testing.T) {
 	h := &Handler{
+		internalErrorCode: 500,
 		cfg: &Config{
 			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{
@@ -135,8 +137,38 @@ func Test_HandlerErrors(t *testing.T) {
 	assert.Equal(t, 500, wr.Code)
 }
 
+func Test_HandlerErrorsPoolErrorCode(t *testing.T) {
+	h := &Handler{
+		internalErrorCode: 777,
+		cfg: &Config{
+			MaxRequestSize: 1024,
+			Uploads: &UploadsConfig{
+				Dir:    os.TempDir(),
+				Forbid: []string{},
+			},
+		},
+		rr: roadrunner.NewServer(&roadrunner.ServerConfig{
+			Command: "php ../../tests/http/client.php echo pipes",
+			Relay:   "pipes",
+			Pool: &roadrunner.Config{
+				NumWorkers:      1,
+				AllocateTimeout: 10000000,
+				DestroyTimeout:  10000000,
+			},
+		}),
+	}
+
+	wr := httptest.NewRecorder()
+	rq := httptest.NewRequest("POST", "/", bytes.NewBuffer([]byte("data")))
+
+	h.ServeHTTP(wr, rq)
+	assert.Equal(t, 777, wr.Code)
+}
+
 func Test_Handler_JSON_error(t *testing.T) {
 	h := &Handler{
+		appErrorCode:      500,
+		internalErrorCode: 500,
 		cfg: &Config{
 			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{
@@ -1329,6 +1361,8 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 
 func TestHandler_Error(t *testing.T) {
 	h := &Handler{
+		appErrorCode:      http.StatusInternalServerError,
+		internalErrorCode: http.StatusInternalServerError,
 		cfg: &Config{
 			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{
@@ -1373,6 +1407,8 @@ func TestHandler_Error(t *testing.T) {
 
 func TestHandler_Error2(t *testing.T) {
 	h := &Handler{
+		appErrorCode:      http.StatusInternalServerError,
+		internalErrorCode: http.StatusInternalServerError,
 		cfg: &Config{
 			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{
@@ -1417,6 +1453,8 @@ func TestHandler_Error2(t *testing.T) {
 
 func TestHandler_Error3(t *testing.T) {
 	h := &Handler{
+		appErrorCode:      http.StatusInternalServerError,
+		internalErrorCode: http.StatusInternalServerError,
 		cfg: &Config{
 			MaxRequestSize: 1,
 			Uploads: &UploadsConfig{
@@ -1478,6 +1516,8 @@ func TestHandler_Error3(t *testing.T) {
 
 func TestHandler_ResponseDuration(t *testing.T) {
 	h := &Handler{
+		appErrorCode:      http.StatusInternalServerError,
+		internalErrorCode: http.StatusInternalServerError,
 		cfg: &Config{
 			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{
@@ -1596,6 +1636,7 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 
 func TestHandler_ErrorDuration(t *testing.T) {
 	h := &Handler{
+		appErrorCode: http.StatusInternalServerError,
 		cfg: &Config{
 			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{
@@ -1654,6 +1695,7 @@ func TestHandler_ErrorDuration(t *testing.T) {
 
 func TestHandler_IP(t *testing.T) {
 	h := &Handler{
+		appErrorCode: http.StatusInternalServerError,
 		cfg: &Config{
 			MaxRequestSize: 1024,
 			Uploads: &UploadsConfig{

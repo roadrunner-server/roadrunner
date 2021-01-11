@@ -2,11 +2,12 @@ package rpc
 
 import (
 	"errors"
+	"net/rpc"
+	"sync"
+
 	"github.com/spiral/goridge/v2"
 	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/env"
-	"net/rpc"
-	"sync"
 )
 
 // ID contains default service name.

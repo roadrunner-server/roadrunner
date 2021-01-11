@@ -3,11 +3,12 @@ package util
 import (
 	"bytes"
 	"fmt"
-	"github.com/spf13/viper"
-	"github.com/spiral/roadrunner/service"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/spf13/viper"
+	"github.com/spiral/roadrunner/service"
 )
 
 // ConfigWrapper provides interface bridge between v configs and service.Config.

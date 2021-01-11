@@ -1,8 +1,9 @@
 package limit
 
 import (
-	"github.com/spiral/roadrunner"
 	"time"
+
+	"github.com/spiral/roadrunner"
 )
 
 type stateFilter struct {

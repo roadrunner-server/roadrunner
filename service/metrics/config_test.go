@@ -11,7 +11,7 @@ import (
 
 type mockCfg struct{ cfg string }
 
-func (cfg *mockCfg) Get(name string) service.Config  { return nil }
+func (cfg *mockCfg) Get(name string) service.Config { return nil }
 func (cfg *mockCfg) Unmarshal(out interface{}) error {
 	j := json.ConfigCompatibleWithStandardLibrary
 	return j.Unmarshal([]byte(cfg.cfg), out)

@@ -1,9 +1,10 @@
 package static
 
 import (
-	rrhttp "github.com/spiral/roadrunner/service/http"
 	"net/http"
 	"path"
+
+	rrhttp "github.com/spiral/roadrunner/service/http"
 )
 
 // ID contains default service name.

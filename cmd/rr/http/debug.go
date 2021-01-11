@@ -2,16 +2,17 @@ package http
 
 import (
 	"fmt"
+	"net"
+	"net/http"
+	"strings"
+	"time"
+
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spiral/roadrunner"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 	"github.com/spiral/roadrunner/cmd/util"
 	rrhttp "github.com/spiral/roadrunner/service/http"
-	"net"
-	"net/http"
-	"strings"
-	"time"
 )
 
 func init() {

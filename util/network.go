@@ -5,11 +5,12 @@ package util
 import (
 	"errors"
 	"fmt"
-	"github.com/valyala/tcplisten"
 	"net"
 	"os"
 	"strings"
 	"syscall"
+
+	"github.com/valyala/tcplisten"
 )
 
 // CreateListener crates socket listener based on DSN definition.

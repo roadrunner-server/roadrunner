@@ -1,11 +1,12 @@
 package util
 
 import (
-	"github.com/spiral/roadrunner"
-	"github.com/stretchr/testify/assert"
 	"runtime"
 	"testing"
 	"time"
+
+	"github.com/spiral/roadrunner"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestServerState(t *testing.T) {

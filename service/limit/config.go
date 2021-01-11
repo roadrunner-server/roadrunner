@@ -1,9 +1,10 @@
 package limit
 
 import (
+	"time"
+
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
-	"time"
 )
 
 // Config of Limit service.

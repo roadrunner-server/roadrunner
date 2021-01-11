@@ -1,12 +1,13 @@
 package util
 
 import (
-	"github.com/dustin/go-humanize"
-	"github.com/olekukonko/tablewriter"
-	rrutil "github.com/spiral/roadrunner/util"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/dustin/go-humanize"
+	"github.com/olekukonko/tablewriter"
+	rrutil "github.com/spiral/roadrunner/util"
 )
 
 // WorkerTable renders table with information about rr server workers.

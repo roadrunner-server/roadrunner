@@ -3,10 +3,11 @@ package health
 import (
 	"context"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/sirupsen/logrus"
 
 	rrhttp "github.com/spiral/roadrunner/service/http"
 )
@@ -45,8 +46,8 @@ func (s *Service) Serve() error {
 	// Configure and start the http server
 	s.mu.Lock()
 	s.http = &http.Server{
-		Addr: s.cfg.Address,
-		Handler: s,
+		Addr:              s.cfg.Address,
+		Handler:           s,
 		IdleTimeout:       time.Hour * 24,
 		ReadTimeout:       time.Minute * 60,
 		MaxHeaderBytes:    maxHeaderSize,

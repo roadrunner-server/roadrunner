@@ -1,9 +1,10 @@
 package reload
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_Config_Valid(t *testing.T) {

@@ -5,11 +5,12 @@ import (
 	"net/http"
 	"strings"
 
-	json "github.com/json-iterator/go"
+	j "github.com/json-iterator/go"
 
 	"github.com/spiral/roadrunner"
 )
 
+var json = j.ConfigCompatibleWithStandardLibrary
 
 // Response handles PSR7 response logic.
 type Response struct {
@@ -26,8 +27,8 @@ type Response struct {
 // NewResponse creates new response based on given rr payload.
 func NewResponse(p *roadrunner.Payload) (*Response, error) {
 	r := &Response{body: p.Body}
-	j := json.ConfigCompatibleWithStandardLibrary
-	if err := j.Unmarshal(p.Context, r); err != nil {
+
+	if err := json.Unmarshal(p.Context, r); err != nil {
 		return nil, err
 	}
 

@@ -118,7 +118,12 @@ func (s *Service) Serve() error {
 		s.rr.Attach(s.controller)
 	}
 
-	s.handler = &Handler{cfg: s.cfg, rr: s.rr}
+	s.handler = &Handler{
+		cfg:               s.cfg,
+		rr:                s.rr,
+		internalErrorCode: s.cfg.InternalErrorCode,
+		appErrorCode:      s.cfg.AppErrorCode,
+	}
 	s.handler.Listen(s.throw)
 
 	if s.cfg.EnableHTTP() {

@@ -61,11 +61,13 @@ func (e *ResponseEvent) Elapsed() time.Duration {
 // Handler serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Handler struct {
-	cfg *Config
-	log *logrus.Logger
-	rr  *roadrunner.Server
-	mul sync.Mutex
-	lsn func(event int, ctx interface{})
+	cfg               *Config
+	log               *logrus.Logger
+	rr                *roadrunner.Server
+	mul               sync.Mutex
+	lsn               func(event int, ctx interface{})
+	internalErrorCode uint64
+	appErrorCode      uint64
 }
 
 // Listen attaches handler event controller.
@@ -131,6 +133,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleError sends error.
+/*
+handleError distinct RR errors and App errors
+You can set return distinct error codes for the App and for the RR
+*/
 func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error, start time.Time) {
 	// if pipe is broken, there is no sense to write the header
 	// in this case we just report about error
@@ -138,8 +144,20 @@ func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error,
 		h.throw(EventError, &ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
 		return
 	}
-	// ResponseWriter is ok, write the error code
-	w.WriteHeader(500)
+	if errors.Is(err, roadrunner.ErrNoAssociatedPool) ||
+		errors.Is(err, roadrunner.ErrAllocateWorker) ||
+		errors.Is(err, roadrunner.ErrWorkerNotReady) ||
+		errors.Is(err, roadrunner.ErrEmptyPayload) ||
+		errors.Is(err, roadrunner.ErrPoolStopped) ||
+		errors.Is(err, roadrunner.ErrWorkerAllocateTimeout) ||
+		errors.Is(err, roadrunner.ErrAllWorkersAreDead) {
+		// for the RR errors, write custom error code
+		w.WriteHeader(int(h.internalErrorCode))
+	} else {
+		// ResponseWriter is ok, write the error code
+		w.WriteHeader(int(h.appErrorCode))
+	}
+
 	_, err2 := w.Write([]byte(err.Error()))
 	// error during the writing to the ResponseWriter
 	if err2 != nil {

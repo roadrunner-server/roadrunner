@@ -1,10 +1,11 @@
 package roadrunner
 
 import (
+	"testing"
+
 	"github.com/pkg/errors"
 	"github.com/spiral/goridge/v2"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 type relayMock struct {

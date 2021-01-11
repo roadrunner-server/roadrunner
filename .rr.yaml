@@ -98,6 +98,10 @@ http:
 
     # worker pool configuration.
     pool:
+      # override http error code for the application errors (default 500)
+      appErrorCode: 500
+      # override http error code for the internal RR errors (default 500)
+      internalErrorCode: 500
       # number of workers to be serving.
       numWorkers: 4
 
