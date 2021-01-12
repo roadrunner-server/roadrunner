@@ -24,6 +24,9 @@ import (
 // PluginName for the server
 const PluginName = "server"
 
+// RR_RELAY env variable key
+const RR_RELAY = "RR_RELAY" //nolint:golint,stylecheck
+
 // Plugin manages worker
 type Plugin struct {
 	cfg     Config
@@ -177,7 +180,7 @@ func (server *Plugin) initFactory() (worker.Factory, error) {
 }
 
 func (server *Plugin) setEnv(e Env) []string {
-	env := append(os.Environ(), fmt.Sprintf("RR_RELAY=%s", server.cfg.Relay))
+	env := append(os.Environ(), fmt.Sprintf(RR_RELAY+"=%s", server.cfg.Relay))
 	for k, v := range e {
 		env = append(env, fmt.Sprintf("%s=%s", strings.ToUpper(k), v))
 	}
@@ -195,7 +198,7 @@ func (server *Plugin) collectPoolLogs(event interface{}) {
 		case events.EventPoolError:
 			server.log.Info("pool error", "error", we.Payload.(error).Error())
 		case events.EventSupervisorError:
-			server.log.Info("pool supervizor error", "error", we.Payload.(error).Error())
+			server.log.Info("pool supervisor error", "error", we.Payload.(error).Error())
 		case events.EventTTL:
 			server.log.Info("worker TTL reached", "pid", we.Payload.(worker.BaseProcess).Pid())
 		case events.EventWorkerConstruct:

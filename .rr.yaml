@@ -8,6 +8,7 @@ server:
   group: ""
   env:
     "RR_HTTP": "true"
+    "RR_RPC": "tcp://127.0.0.1:6001"
   relay: "pipes"
   relayTimeout: "20s"
 
