@@ -10,7 +10,7 @@ coverage:
         target: auto
         threshold: 0%
         informational: true
-        
+
 # do not include tests folders
 ignore:
   - "tests"

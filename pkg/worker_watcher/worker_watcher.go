@@ -236,7 +236,7 @@ func (ww *workerWatcher) RemoveWorker(wb worker.BaseProcess) error {
 	pid := wb.Pid()
 
 	if ww.stack.FindAndRemoveByPid(pid) {
-		wb.State().Set(internal.StateInvalid)
+		wb.State().Set(internal.StateRemove)
 		err := wb.Kill()
 		if err != nil {
 			return errors.E(op, err)
@@ -244,7 +244,6 @@ func (ww *workerWatcher) RemoveWorker(wb worker.BaseProcess) error {
 		return nil
 	}
 
-	wb.State().Set(internal.StateRemove)
 	return nil
 }
 

@@ -16,6 +16,9 @@ import (
 
 const MB = 1024 * 1024
 
+// NSEC_IN_SEC nanoseconds in second
+const NSEC_IN_SEC int64 = 1000000000 //nolint:golint,stylecheck
+
 type Supervised interface {
 	pool.Pool
 	// Start used to start watching process for all pool workers
@@ -186,14 +189,28 @@ func (sp *supervised) control() {
 				we are guessing that worker overlap idle time and has to be killed
 			*/
 
+			// 1610530005534416045 lu
+			// lu - now = -7811150814 - nanoseconds
+			// 7.8 seconds
 			// get last used unix nano
 			lu := workers[i].State().LastUsed()
+			// worker not used, skip
+			if lu == 0 {
+				continue
+			}
 
-			// convert last used to unixNano and sub time.now
-			res := int64(lu) - now.UnixNano()
+			// convert last used to unixNano and sub time.now to seconds
+			// negative number, because lu always in the past, except for the `back to the future` :)
+			res := ((int64(lu) - now.UnixNano()) / NSEC_IN_SEC) * -1
 
 			// maxWorkerIdle more than diff between now and last used
-			if sp.cfg.IdleTTL-uint64(res) <= 0 {
+			// for example:
+			// After exec worker goes to the rest
+			// And resting for the 5 seconds
+			// IdleTTL is 1 second.
+			// After the control check, res will be 5, idle is 1
+			// 5 - 1 = 4, more than 0, YOU ARE FIRED (removed). Done.
+			if int64(sp.cfg.IdleTTL)-res <= 0 {
 				err = sp.pool.RemoveWorker(workers[i])
 				if err != nil {
 					sp.events.Push(events.PoolEvent{Event: events.EventSupervisorError, Payload: errors.E(op, err)})
