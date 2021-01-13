@@ -44,6 +44,7 @@ func TestViperProvider_Init(t *testing.T) {
 	signal.Notify(c, os.Interrupt)
 
 	tt := time.NewTicker(time.Second * 2)
+	defer tt.Stop()
 
 	for {
 		select {
@@ -53,12 +54,9 @@ func TestViperProvider_Init(t *testing.T) {
 			return
 		case <-c:
 			er := container.Stop()
-			if er != nil {
-				panic(er)
-			}
+			assert.NoError(t, er)
 			return
 		case <-tt.C:
-			tt.Stop()
 			assert.NoError(t, container.Stop())
 			return
 		}

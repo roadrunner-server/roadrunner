@@ -22,17 +22,18 @@ type pluggable struct {
 
 // Plugin is RPC service.
 type Plugin struct {
-	cfg      Config
-	log      logger.Logger
-	rpc      *rpc.Server
-	services []pluggable
+	cfg Config
+	log logger.Logger
+	rpc *rpc.Server
+	// set of the plugins, which are implement RPCer interface and can be plugged into the RR via RPC
+	plugins  []pluggable
 	listener net.Listener
 	closed   *uint32
 }
 
 // Init rpc service. Must return true if service is enabled.
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
-	const op = errors.Op("RPC plugin init")
+	const op = errors.Op("rpc plugin init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
 	}
@@ -42,10 +43,6 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 		return errors.E(op, errors.Disabled, err)
 	}
 	s.cfg.InitDefaults()
-
-	if s.cfg.Disabled {
-		return errors.E(op, errors.Disabled)
-	}
 
 	s.log = log
 	state := uint32(0)
@@ -57,22 +54,22 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 
 // Serve serves the service.
 func (s *Plugin) Serve() chan error {
-	const op = errors.Op("register service")
+	const op = errors.Op("serve rpc plugin")
 	errCh := make(chan error, 1)
 
 	s.rpc = rpc.NewServer()
 
-	services := make([]string, 0, len(s.services))
+	services := make([]string, 0, len(s.plugins))
 
 	// Attach all services
-	for i := 0; i < len(s.services); i++ {
-		err := s.Register(s.services[i].name, s.services[i].service.RPC())
+	for i := 0; i < len(s.plugins); i++ {
+		err := s.Register(s.plugins[i].name, s.plugins[i].service.RPC())
 		if err != nil {
 			errCh <- errors.E(op, err)
 			return errCh
 		}
 
-		services = append(services, s.services[i].name)
+		services = append(services, s.plugins[i].name)
 	}
 
 	var err error
@@ -131,7 +128,7 @@ func (s *Plugin) Collects() []interface{} {
 
 // RegisterPlugin registers RPC service plugin.
 func (s *Plugin) RegisterPlugin(name endure.Named, p RPCer) {
-	s.services = append(s.services, pluggable{
+	s.plugins = append(s.plugins, pluggable{
 		service: p,
 		name:    name.Name(),
 	})

@@ -24,6 +24,13 @@ import (
 // PluginName for the server
 const PluginName = "server"
 
+// RR_RELAY env variable key (internal)
+const RR_RELAY = "RR_RELAY" //nolint:golint,stylecheck
+// RR_RPC env variable key (internal) if the RPC presents
+const RR_RPC = "" //nolint:golint,stylecheck
+// RR_HTTP env variable key (internal) if the HTTP presents
+const RR_HTTP = "false" //nolint:golint,stylecheck
+
 // Plugin manages worker
 type Plugin struct {
 	cfg     Config
@@ -34,7 +41,7 @@ type Plugin struct {
 // Init application provider.
 func (server *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	const op = errors.Op("Init")
-	err := cfg.UnmarshalKey(PluginName, &server.cfg)
+	err := cfg.Unmarshal(&server.cfg)
 	if err != nil {
 		return errors.E(op, errors.Init, err)
 	}
@@ -43,7 +50,7 @@ func (server *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 
 	server.factory, err = server.initFactory()
 	if err != nil {
-		return errors.E(errors.Op("Init factory"), err)
+		return errors.E(err)
 	}
 
 	return nil
@@ -75,7 +82,7 @@ func (server *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 	var cmdArgs []string
 
 	// create command according to the config
-	cmdArgs = append(cmdArgs, strings.Split(server.cfg.Command, " ")...)
+	cmdArgs = append(cmdArgs, strings.Split(server.cfg.Server.Command, " ")...)
 	if len(cmdArgs) < 2 {
 		return nil, errors.E(op, errors.Str("should be in form of `php <script>"))
 	}
@@ -93,8 +100,8 @@ func (server *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 
 		// if user is not empty, and OS is linux or macos
 		// execute php worker from that particular user
-		if server.cfg.User != "" {
-			err := utils.ExecuteFromUser(cmd, server.cfg.User)
+		if server.cfg.Server.User != "" {
+			err := utils.ExecuteFromUser(cmd, server.cfg.Server.User)
 			if err != nil {
 				return nil
 			}
@@ -150,17 +157,17 @@ func (server *Plugin) NewWorkerPool(ctx context.Context, opt poolImpl.Config, en
 
 // creates relay and worker factory.
 func (server *Plugin) initFactory() (worker.Factory, error) {
-	const op = errors.Op("network factory init")
-	if server.cfg.Relay == "" || server.cfg.Relay == "pipes" {
+	const op = errors.Op("server factory init")
+	if server.cfg.Server.Relay == "" || server.cfg.Server.Relay == "pipes" {
 		return pipe.NewPipeFactory(), nil
 	}
 
-	dsn := strings.Split(server.cfg.Relay, "://")
+	dsn := strings.Split(server.cfg.Server.Relay, "://")
 	if len(dsn) != 2 {
 		return nil, errors.E(op, errors.Network, errors.Str("invalid DSN (tcp://:6001, unix://file.sock)"))
 	}
 
-	lsn, err := utils.CreateListener(server.cfg.Relay)
+	lsn, err := utils.CreateListener(server.cfg.Server.Relay)
 	if err != nil {
 		return nil, errors.E(op, errors.Network, err)
 	}
@@ -168,18 +175,33 @@ func (server *Plugin) initFactory() (worker.Factory, error) {
 	switch dsn[0] {
 	// sockets group
 	case "unix":
-		return socket.NewSocketServer(lsn, server.cfg.RelayTimeout), nil
+		return socket.NewSocketServer(lsn, server.cfg.Server.RelayTimeout), nil
 	case "tcp":
-		return socket.NewSocketServer(lsn, server.cfg.RelayTimeout), nil
+		return socket.NewSocketServer(lsn, server.cfg.Server.RelayTimeout), nil
 	default:
 		return nil, errors.E(op, errors.Network, errors.Str("invalid DSN (tcp://:6001, unix://file.sock)"))
 	}
 }
 
 func (server *Plugin) setEnv(e Env) []string {
-	env := append(os.Environ(), fmt.Sprintf("RR_RELAY=%s", server.cfg.Relay))
+	env := append(os.Environ(), fmt.Sprintf(RR_RELAY+"=%s", server.cfg.Server.Relay))
 	for k, v := range e {
 		env = append(env, fmt.Sprintf("%s=%s", strings.ToUpper(k), v))
+	}
+
+	// set internal env variables
+	if server.cfg.HTTP != nil {
+		env = append(env, fmt.Sprintf("%s=%s", RR_HTTP, "true"))
+	}
+	if server.cfg.RPC != nil && server.cfg.RPC.Listen != "" {
+		env = append(env, fmt.Sprintf("%s=%s", RR_RPC, server.cfg.RPC.Listen))
+	}
+
+	// set env variables from the config
+	if len(server.cfg.Server.Env) > 0 {
+		for k, v := range server.cfg.Server.Env {
+			env = append(env, fmt.Sprintf("%s=%s", strings.ToUpper(k), v))
+		}
 	}
 
 	return env
@@ -195,7 +217,7 @@ func (server *Plugin) collectPoolLogs(event interface{}) {
 		case events.EventPoolError:
 			server.log.Info("pool error", "error", we.Payload.(error).Error())
 		case events.EventSupervisorError:
-			server.log.Info("pool supervizor error", "error", we.Payload.(error).Error())
+			server.log.Info("pool supervisor error", "error", we.Payload.(error).Error())
 		case events.EventTTL:
 			server.log.Info("worker TTL reached", "pid", we.Payload.(worker.BaseProcess).Pid())
 		case events.EventWorkerConstruct:

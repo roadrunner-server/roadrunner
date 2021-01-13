@@ -112,6 +112,47 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 	assert.NotEqual(t, pid, p.Workers()[0].Pid())
 }
 
+func TestSupervisedPool_Idle(t *testing.T) {
+	var cfgExecTTL = Config{
+		NumWorkers:      int64(1),
+		AllocateTimeout: time.Second,
+		DestroyTimeout:  time.Second,
+		Supervisor: &SupervisorConfig{
+			WatchTick:       1,
+			TTL:             100,
+			IdleTTL:         1,
+			ExecTTL:         100,
+			MaxWorkerMemory: 100,
+		},
+	}
+	ctx := context.Background()
+	p, err := Initialize(
+		ctx,
+		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep.php", "pipes") },
+		pipe.NewPipeFactory(),
+		cfgExecTTL,
+	)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, p)
+	defer p.Destroy(context.Background())
+
+	pid := p.Workers()[0].Pid()
+
+	resp, err := p.ExecWithContext(context.Background(), payload.Payload{
+		Context: []byte(""),
+		Body:    []byte("foo"),
+	})
+
+	assert.Nil(t, err)
+	assert.Empty(t, resp.Body)
+	assert.Empty(t, resp.Context)
+
+	time.Sleep(time.Second * 5)
+	// should be new worker with new pid
+	assert.NotEqual(t, pid, p.Workers()[0].Pid())
+}
+
 func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	var cfgExecTTL = Config{
 		NumWorkers:      int64(1),

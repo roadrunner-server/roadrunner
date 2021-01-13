@@ -1,3 +1,6 @@
+rpc:
+  listen: tcp://localhost:6060
+
 reload:
   enabled: true
   interval: 1s

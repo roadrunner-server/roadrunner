@@ -12,23 +12,23 @@ type Config struct {
 
 	// NumWorkers defines how many sub-processes can be run at once. This value
 	// might be doubled by Swapper while hot-swap. Defaults to number of CPU cores.
-	NumWorkers int64
+	NumWorkers int64 `yaml:"num_workers"`
 
 	// MaxJobs defines how many executions is allowed for the worker until
 	// it's destruction. set 1 to create new process for each new task, 0 to let
 	// worker handle as many tasks as it can.
-	MaxJobs int64
+	MaxJobs int64 `yaml:"max_jobs"`
 
 	// AllocateTimeout defines for how long pool will be waiting for a worker to
 	// be freed to handle the task. Defaults to 60s.
-	AllocateTimeout time.Duration
+	AllocateTimeout time.Duration `yaml:"allocate_timeout"`
 
 	// DestroyTimeout defines for how long pool should be waiting for worker to
 	// properly destroy, if timeout reached worker will be killed. Defaults to 60s.
-	DestroyTimeout time.Duration
+	DestroyTimeout time.Duration `yaml:"destroy_timeout"`
 
 	// Supervision config to limit worker and pool memory usage.
-	Supervisor *SupervisorConfig
+	Supervisor *SupervisorConfig `yaml:"supervisor"`
 }
 
 // InitDefaults enables default config values.
@@ -52,19 +52,19 @@ func (cfg *Config) InitDefaults() {
 
 type SupervisorConfig struct {
 	// WatchTick defines how often to check the state of worker.
-	WatchTick uint64
+	WatchTick uint64 `yaml:"watch_tick"`
 
 	// TTL defines maximum time worker is allowed to live.
-	TTL uint64
+	TTL uint64 `yaml:"ttl"`
 
 	// IdleTTL defines maximum duration worker can spend in idle mode. Disabled when 0.
-	IdleTTL uint64
+	IdleTTL uint64 `yaml:"idle_ttl"`
 
 	// ExecTTL defines maximum lifetime per job.
-	ExecTTL uint64
+	ExecTTL uint64 `yaml:"exec_ttl"`
 
 	// MaxWorkerMemory limits memory per worker.
-	MaxWorkerMemory uint64
+	MaxWorkerMemory uint64 `yaml:"max_worker_memory"`
 }
 
 // InitDefaults enables default config values.

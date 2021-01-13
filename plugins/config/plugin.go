@@ -64,6 +64,15 @@ func (v *Viper) UnmarshalKey(name string, out interface{}) error {
 	return nil
 }
 
+func (v *Viper) Unmarshal(out interface{}) error {
+	const op = errors.Op("config unmarshal")
+	err := v.viper.Unmarshal(&out)
+	if err != nil {
+		return errors.E(op, err)
+	}
+	return nil
+}
+
 // Get raw config in a form of config section.
 func (v *Viper) Get(name string) interface{} {
 	return v.viper.Get(name)
