@@ -12,9 +12,6 @@ import (
 type Config struct {
 	// Listen string
 	Listen string
-
-	// Disabled disables RPC service.
-	Disabled bool
 }
 
 // InitDefaults allows to init blank config with pre-defined set of default values.

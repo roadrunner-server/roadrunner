@@ -54,7 +54,7 @@ func (sp *supervised) ExecWithContext(ctx context.Context, rqs payload.Payload) 
 	}
 
 	c := make(chan ttlExec, 1)
-	ctx, cancel := context.WithTimeout(ctx, time.Second*time.Duration(sp.cfg.ExecTTL))
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(sp.cfg.ExecTTL)*time.Second)
 	defer cancel()
 	go func() {
 		res, err := sp.pool.ExecWithContext(ctx, rqs)
@@ -114,7 +114,7 @@ func (sp *supervised) Destroy(ctx context.Context) {
 
 func (sp *supervised) Start() {
 	go func() {
-		watchTout := time.NewTicker(time.Second * time.Duration(sp.cfg.WatchTick))
+		watchTout := time.NewTicker(time.Duration(sp.cfg.WatchTick) * time.Second)
 		for {
 			select {
 			case <-sp.stopCh:
