@@ -1,11 +1,12 @@
 package roadrunner
 
 import (
-	"github.com/stretchr/testify/assert"
 	"net"
 	"os/exec"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_Tcp_Start(t *testing.T) {

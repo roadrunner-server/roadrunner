@@ -1,8 +1,13 @@
 package http
 
 import (
+	"io/ioutil"
+	"net/http"
+	"os"
+	"testing"
+	"time"
+
 	"github.com/cenkalti/backoff/v4"
-	json "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner"
@@ -10,11 +15,6 @@ import (
 	"github.com/spiral/roadrunner/service/env"
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/stretchr/testify/assert"
-	"io/ioutil"
-	"net/http"
-	"os"
-	"testing"
-	"time"
 )
 
 type testCfg struct {
@@ -44,8 +44,7 @@ func (cfg *testCfg) Get(name string) service.Config {
 	return nil
 }
 func (cfg *testCfg) Unmarshal(out interface{}) error {
-	j := json.ConfigCompatibleWithStandardLibrary
-	return j.Unmarshal([]byte(cfg.target), out)
+	return json.Unmarshal([]byte(cfg.target), out)
 }
 
 func Test_Service_NoConfig(t *testing.T) {
@@ -752,8 +751,7 @@ func Test_Service_Error4(t *testing.T) {
 
 func tmpDir() string {
 	p := os.TempDir()
-	j := json.ConfigCompatibleWithStandardLibrary
-	r, _ := j.Marshal(p)
+	r, _ := json.Marshal(p)
 
 	return string(r)
 }

@@ -1,15 +1,16 @@
 package metrics
 
 import (
+	rpc2 "net/rpc"
+	"strconv"
+	"testing"
+	"time"
+
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/stretchr/testify/assert"
-	rpc2 "net/rpc"
-	"strconv"
-	"testing"
-	"time"
 )
 
 var port = 5004

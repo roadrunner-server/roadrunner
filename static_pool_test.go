@@ -1,7 +1,6 @@
 package roadrunner
 
 import (
-	"github.com/stretchr/testify/assert"
 	"log"
 	"os/exec"
 	"runtime"
@@ -10,6 +9,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var cfg = Config{
@@ -172,7 +173,6 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	p.Destroy()
 }
 
-
 func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	p, err := NewPool(
 		func() *exec.Cmd { return exec.Command("php", "tests/client.php", "echo", "pipes") },
@@ -238,7 +238,6 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 		}
 	}()
 
-
 	// to ensure that worker is already busy
 	time.Sleep(time.Millisecond * 10)
 
@@ -246,7 +245,7 @@ func Test_StaticPool_AllocateTimeout(t *testing.T) {
 	if err == nil {
 		t.Fatal("Test_StaticPool_AllocateTimeout exec should raise error")
 	}
-	assert.Contains(t, err.Error(), "worker timeout")
+	assert.Contains(t, err.Error(), "unable to allocate worker")
 
 	<-done
 	p.Destroy()

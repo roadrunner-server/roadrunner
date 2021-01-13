@@ -1,16 +1,16 @@
 package http
 
 import (
-	json "github.com/json-iterator/go"
+	"os"
+	"strconv"
+	"testing"
+	"time"
+
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/stretchr/testify/assert"
-	"os"
-	"strconv"
-	"testing"
-	"time"
 )
 
 func Test_RPC(t *testing.T) {
@@ -88,8 +88,7 @@ func Test_RPC_Unix(t *testing.T) {
 	c.Register(ID, &Service{})
 
 	sock := `unix://` + os.TempDir() + `/rpc.unix`
-	j := json.ConfigCompatibleWithStandardLibrary
-	data, _ := j.Marshal(sock)
+	data, _ := json.Marshal(sock)
 
 	assert.NoError(t, c.Init(&testCfg{
 		rpcCfg: `{"enable":true, "listen":` + string(data) + `}`,

@@ -8,6 +8,9 @@ import (
 
 // Config defines basic behaviour of worker creation and handling process.
 type Config struct {
+	// Error code for pool errors in the http handler (default 500)
+	PoolErrorCode uint64
+
 	// NumWorkers defines how many sub-processes can be run at once. This value
 	// might be doubled by Swapper while hot-swap.
 	NumWorkers int64

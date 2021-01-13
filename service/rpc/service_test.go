@@ -1,11 +1,12 @@
 package rpc
 
 import (
+	"testing"
+	"time"
+
 	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/env"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"time"
 )
 
 type testService struct{}

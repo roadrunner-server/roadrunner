@@ -3,15 +3,21 @@ package http
 import (
 	"errors"
 	"fmt"
-	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/service"
 	"net"
+	"net/http"
 	"os"
 	"strings"
+
+	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service"
 )
 
 // Config configures RoadRunner HTTP server.
 type Config struct {
+	// AppErrorCode is error code for the application errors (default 500)
+	AppErrorCode uint64
+	// Error code for the RR pool or worker errors
+	InternalErrorCode uint64
 	// Port and port to handle as http server.
 	Address string
 
@@ -60,7 +66,6 @@ type HTTP2Config struct {
 func (cfg *HTTP2Config) InitDefaults() error {
 	cfg.Enabled = true
 	cfg.MaxConcurrentStreams = 128
-
 	return nil
 }
 
@@ -109,6 +114,14 @@ func (c *Config) EnableFCGI() bool {
 
 // Hydrate must populate Config values using given Config source. Must return error if Config is not valid.
 func (c *Config) Hydrate(cfg service.Config) error {
+	if c.AppErrorCode == 0 {
+		// set default behaviour - 500 error code
+		c.AppErrorCode = http.StatusInternalServerError
+	}
+	if c.InternalErrorCode == 0 {
+		// set default behaviour - 500 error code
+		c.InternalErrorCode = http.StatusInternalServerError
+	}
 	if c.Workers == nil {
 		c.Workers = &roadrunner.ServerConfig{}
 	}

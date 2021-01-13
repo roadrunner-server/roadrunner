@@ -1,6 +1,11 @@
 package headers
 
 import (
+	"io/ioutil"
+	"net/http"
+	"testing"
+	"time"
+
 	"github.com/cenkalti/backoff/v4"
 	json "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
@@ -8,10 +13,6 @@ import (
 	"github.com/spiral/roadrunner/service"
 	rrhttp "github.com/spiral/roadrunner/service/http"
 	"github.com/stretchr/testify/assert"
-	"io/ioutil"
-	"net/http"
-	"testing"
-	"time"
 )
 
 type testCfg struct {

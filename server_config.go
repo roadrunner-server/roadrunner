@@ -3,7 +3,6 @@ package roadrunner
 import (
 	"errors"
 	"fmt"
-	"github.com/spiral/roadrunner/osutil"
 	"net"
 	"os"
 	"os/exec"
@@ -11,6 +10,8 @@ import (
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/spiral/roadrunner/osutil"
 )
 
 // CommandProducer can produce commands.

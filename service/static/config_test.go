@@ -1,10 +1,11 @@
 package static
 
 import (
+	"testing"
+
 	json "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 type mockCfg struct{ cfg string }

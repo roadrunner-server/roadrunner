@@ -1,6 +1,11 @@
 package metrics
 
 import (
+	"io/ioutil"
+	"net/http"
+	"testing"
+	"time"
+
 	json "github.com/json-iterator/go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
@@ -8,10 +13,6 @@ import (
 	"github.com/spiral/roadrunner/service"
 	"github.com/spiral/roadrunner/service/rpc"
 	"github.com/stretchr/testify/assert"
-	"io/ioutil"
-	"net/http"
-	"testing"
-	"time"
 )
 
 type testCfg struct {

@@ -1,11 +1,12 @@
 package health
 
 import (
-	json "github.com/json-iterator/go"
 	"io/ioutil"
 	"net/http"
 	"testing"
 	"time"
+
+	json "github.com/json-iterator/go"
 
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"

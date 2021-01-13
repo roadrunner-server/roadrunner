@@ -153,6 +153,9 @@ func (w *Worker) Kill() error {
 	}
 }
 
+var ErrEmptyPayload = errors.New("payload can not be empty")
+var ErrWorkerNotReady = errors.New("worker is not ready")
+
 // Exec sends payload to worker, executes it and returns result or
 // error. Make sure to handle worker.Wait() to gather worker level
 // errors. Method might return JobError indicating issue with payload.
@@ -161,12 +164,12 @@ func (w *Worker) Exec(rqs *Payload) (rsp *Payload, err error) {
 
 	if rqs == nil {
 		w.mu.Unlock()
-		return nil, fmt.Errorf("payload can not be empty")
+		return nil, ErrEmptyPayload
 	}
 
 	if w.state.Value() != StateReady {
 		w.mu.Unlock()
-		return nil, fmt.Errorf("worker is not ready (%s)", w.state.String())
+		return nil, ErrWorkerNotReady
 	}
 
 	w.state.set(StateWorking)

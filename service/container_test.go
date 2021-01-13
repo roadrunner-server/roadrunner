@@ -2,13 +2,14 @@ package service
 
 import (
 	"errors"
+	"sync"
+	"testing"
+	"time"
+
 	json "github.com/json-iterator/go"
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
-	"sync"
-	"testing"
-	"time"
 )
 
 type testService struct {

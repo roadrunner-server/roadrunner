@@ -1,15 +1,16 @@
 package http
 
 import (
+	"io/ioutil"
+	"net/http/httptest"
+	"testing"
+	"time"
+
 	"github.com/sirupsen/logrus"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/spiral/roadrunner/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/yookoala/gofast"
-	"io/ioutil"
-	"net/http/httptest"
-	"testing"
-	"time"
 )
 
 func Test_FCGI_Service_Echo(t *testing.T) {

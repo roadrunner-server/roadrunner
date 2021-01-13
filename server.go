@@ -1,9 +1,9 @@
 package roadrunner
 
 import (
-	"fmt"
-	"github.com/pkg/errors"
 	"sync"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -133,11 +133,13 @@ func (s *Server) Stop() {
 	s.throw(EventServerStop, s)
 }
 
+var ErrNoAssociatedPool = errors.New("no associared pool")
+
 // Exec one task with given payload and context, returns result or error.
 func (s *Server) Exec(rqs *Payload) (rsp *Payload, err error) {
 	pool := s.Pool()
 	if pool == nil {
-		return nil, fmt.Errorf("no associared pool")
+		return nil, ErrNoAssociatedPool
 	}
 
 	return pool.Exec(rqs)

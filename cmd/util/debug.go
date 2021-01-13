@@ -1,9 +1,10 @@
 package util
 
 import (
+	"strings"
+
 	"github.com/sirupsen/logrus"
 	"github.com/spiral/roadrunner"
-	"strings"
 )
 
 // LogEvent outputs rr event into given logger and return false if event was not handled.

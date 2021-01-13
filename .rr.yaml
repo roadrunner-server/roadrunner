@@ -41,22 +41,23 @@ metrics:
 http:
   # http host to listen.
   address: 0.0.0.0:8080
+  # override http error code for the application errors (default 500)
+  appErrorCode: 505
+  # override http error code for the internal RR errors (default 500)
+  internalErrorCode: 505
 
   ssl:
     # custom https port (default 443)
-    port: 443
-
+    port:     443
     # force redirect to https connection
     redirect: true
-
     # ssl cert
-    cert: server.crt
-
+    cert:     server.crt
     # ssl private key
-    key: server.key
-
+    key:      server.key
     # rootCA certificate
-    rootCa: root.crt
+    rootCa:   root.crt
+
 
   # HTTP service provides FastCGI as frontend
   fcgi:

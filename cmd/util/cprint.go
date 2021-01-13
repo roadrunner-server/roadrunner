@@ -2,10 +2,11 @@ package util
 
 import (
 	"fmt"
-	"github.com/mgutz/ansi"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/mgutz/ansi"
 )
 
 var (

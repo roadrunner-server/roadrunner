@@ -1,14 +1,15 @@
 package http
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cobra"
 	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
 	rrhttp "github.com/spiral/roadrunner/service/http"
 	"github.com/spiral/roadrunner/service/metrics"
 	"github.com/spiral/roadrunner/util"
-	"strconv"
-	"time"
 )
 
 func init() {

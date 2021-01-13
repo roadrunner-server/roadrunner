@@ -21,16 +21,17 @@
 package http
 
 import (
-	tm "github.com/buger/goterm"
-	"github.com/spf13/cobra"
-	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
-	"github.com/spiral/roadrunner/cmd/util"
-	"github.com/spiral/roadrunner/service/http"
 	"net/rpc"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	tm "github.com/buger/goterm"
+	"github.com/spf13/cobra"
+	rr "github.com/spiral/roadrunner/cmd/rr/cmd"
+	"github.com/spiral/roadrunner/cmd/util"
+	"github.com/spiral/roadrunner/service/http"
 )
 
 var (

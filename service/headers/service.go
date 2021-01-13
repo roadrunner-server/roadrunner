@@ -1,9 +1,10 @@
 package headers
 
 import (
-	rrhttp "github.com/spiral/roadrunner/service/http"
 	"net/http"
 	"strconv"
+
+	rrhttp "github.com/spiral/roadrunner/service/http"
 )
 
 // ID contains default service name.

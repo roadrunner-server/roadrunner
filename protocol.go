@@ -2,9 +2,10 @@ package roadrunner
 
 import (
 	"fmt"
+	"os"
+
 	json "github.com/json-iterator/go"
 	"github.com/spiral/goridge/v2"
-	"os"
 )
 
 type stopCommand struct {

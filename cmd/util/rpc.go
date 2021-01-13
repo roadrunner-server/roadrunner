@@ -2,9 +2,10 @@ package util
 
 import (
 	"errors"
+	"net/rpc"
+
 	"github.com/spiral/roadrunner/service"
 	rrpc "github.com/spiral/roadrunner/service/rpc"
-	"net/rpc"
 )
 
 // RPCClient returns RPC client associated with given rr service container.

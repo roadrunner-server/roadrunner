@@ -2,9 +2,10 @@ package reload
 
 import (
 	"errors"
+	"time"
+
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/service"
-	"time"
 )
 
 // Config is a Reload configuration point.

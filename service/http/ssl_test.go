@@ -2,14 +2,15 @@ package http
 
 import (
 	"crypto/tls"
-	"github.com/sirupsen/logrus"
-	"github.com/sirupsen/logrus/hooks/test"
-	"github.com/spiral/roadrunner/service"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http"
 	"testing"
 	"time"
+
+	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
+	"github.com/spiral/roadrunner/service"
+	"github.com/stretchr/testify/assert"
 )
 
 var sslClient = &http.Client{
@@ -244,7 +245,6 @@ func Test_SSL_Service_Push(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
 	assert.Equal(t, "WORLD", string(b))
-
 
 	err2 := r.Body.Close()
 	if err2 != nil {

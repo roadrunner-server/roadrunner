@@ -2,9 +2,10 @@ package limit
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/spiral/roadrunner"
 	"github.com/spiral/roadrunner/util"
-	"time"
 )
 
 const (

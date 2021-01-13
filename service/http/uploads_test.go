@@ -6,9 +6,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	json "github.com/json-iterator/go"
-	"github.com/spiral/roadrunner"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -16,6 +13,9 @@ import (
 	"os"
 	"testing"
 	"time"
+
+	"github.com/spiral/roadrunner"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHandler_Upload_File(t *testing.T) {
@@ -424,8 +424,7 @@ func fileString(f string, errNo int, mime string) string {
 		v.Size = 0
 	}
 
-	j := json.ConfigCompatibleWithStandardLibrary
-	r, err := j.Marshal(v)
+	r, err := json.Marshal(v)
 	if err != nil {
 		fmt.Println(fmt.Errorf("error marshalling fInfo, error: %v", err))
 	}
