@@ -172,7 +172,7 @@ func testRPCMethods(t *testing.T) {
 	assert.Len(t, ttlRes, 3)
 
 	// HAS AFTER TTL
-	time.Sleep(time.Second * 11)
+	time.Sleep(time.Second * 15)
 	ret = make(map[string]bool)
 	keys = []string{"a", "b", "d"}
 	err = client.Call("boltdb.Has", keys, &ret)
