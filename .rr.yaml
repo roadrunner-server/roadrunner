@@ -42,9 +42,9 @@ http:
   # http host to listen.
   address: 0.0.0.0:8080
   # override http error code for the application errors (default 500)
-  appErrorCode: 505
+  appErrorCode: 500
   # override http error code for the internal RR errors (default 500)
-  internalErrorCode: 505
+  internalErrorCode: 500
 
   ssl:
     # custom https port (default 443)
