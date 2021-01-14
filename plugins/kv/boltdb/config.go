@@ -11,7 +11,7 @@ type Config struct {
 	// db file permissions
 	Permissions int
 	// timeout
-	Interval uint `yaml:"interval"`
+	Interval uint `mapstructure:"interval"`
 }
 
 // InitDefaults initializes default values for the boltdb

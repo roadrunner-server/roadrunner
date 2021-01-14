@@ -10,26 +10,26 @@ import (
 // ChannelConfig configures loggers per channel.
 type ChannelConfig struct {
 	// Dedicated channels per logger. By default logger allocated via named logger.
-	Channels map[string]Config `json:"channels" yaml:"channels"`
+	Channels map[string]Config `json:"channels" mapstructure:"channels"`
 }
 
 type Config struct {
 	// Mode configures logger based on some default template (development, production, off).
-	Mode string `json:"mode" yaml:"mode"`
+	Mode string `json:"mode" mapstructure:"mode"`
 
 	// Level is the minimum enabled logging level. Note that this is a dynamic
 	// level, so calling ChannelConfig.Level.SetLevel will atomically change the log
 	// level of all loggers descended from this config.
-	Level string `json:"level" yaml:"level"`
+	Level string `json:"level" mapstructure:"level"`
 
 	// Encoding sets the logger's encoding. Valid values are "json" and
 	// "console", as well as any third-party encodings registered via
 	// RegisterEncoder.
-	Encoding string `json:"encoding" yaml:"encoding"`
+	Encoding string `json:"encoding" mapstructure:"encoding"`
 
 	// Output is a list of URLs or file paths to write logging output to.
 	// See Open for details.
-	Output []string `json:"output" yaml:"output"`
+	Output []string `json:"output" mapstructure:"output"`
 
 	// ErrorOutput is a list of URLs to write internal logger errors to.
 	// The default is standard error.
@@ -37,7 +37,7 @@ type Config struct {
 	// Note that this setting only affects internal errors; for sample code that
 	// sends error-level logs to a different location from info- and debug-level
 	// logs, see the package-level AdvancedConfiguration example.
-	ErrorOutput []string `json:"errorOutput" yaml:"errorOutput"`
+	ErrorOutput []string `json:"errorOutput" mapstructure:"errorOutput"`
 }
 
 // ZapConfig converts config into Zap configuration.

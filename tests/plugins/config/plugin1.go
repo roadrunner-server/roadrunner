@@ -9,31 +9,31 @@ import (
 
 type AllConfig struct {
 	RPC struct {
-		Listen string `yaml:"listen"`
-	} `yaml:"rpc"`
+		Listen string `mapstructure:"listen"`
+	} `mapstructure:"rpc"`
 	Reload struct {
-		Enabled  bool     `yaml:"enabled"`
-		Interval string   `yaml:"interval"`
-		Patterns []string `yaml:"patterns"`
+		Enabled  bool     `mapstructure:"enabled"`
+		Interval string   `mapstructure:"interval"`
+		Patterns []string `mapstructure:"patterns"`
 		Services struct {
 			HTTP struct {
-				Recursive bool     `yaml:"recursive"`
-				Ignore    []string `yaml:"ignore"`
-				Patterns  []string `yaml:"patterns"`
-				Dirs      []string `yaml:"dirs"`
-			} `yaml:"http"`
+				Recursive bool     `mapstructure:"recursive"`
+				Ignore    []string `mapstructure:"ignore"`
+				Patterns  []string `mapstructure:"patterns"`
+				Dirs      []string `mapstructure:"dirs"`
+			} `mapstructure:"http"`
 			Jobs struct {
-				Recursive bool     `yaml:"recursive"`
-				Ignore    []string `yaml:"ignore"`
-				Dirs      []string `yaml:"dirs"`
-			} `yaml:"jobs"`
+				Recursive bool     `mapstructure:"recursive"`
+				Ignore    []string `mapstructure:"ignore"`
+				Dirs      []string `mapstructure:"dirs"`
+			} `mapstructure:"jobs"`
 			RPC struct {
-				Recursive bool     `yaml:"recursive"`
-				Patterns  []string `yaml:"patterns"`
-				Dirs      []string `yaml:"dirs"`
-			} `yaml:"rpc"`
-		} `yaml:"services"`
-	} `yaml:"reload"`
+				Recursive bool     `mapstructure:"recursive"`
+				Patterns  []string `mapstructure:"patterns"`
+				Dirs      []string `mapstructure:"dirs"`
+			} `mapstructure:"rpc"`
+		} `mapstructure:"services"`
+	} `mapstructure:"reload"`
 }
 
 // ReloadConfig is a Reload configuration point.

@@ -13,23 +13,23 @@ server:
 
 logs:
   mode: development
-  level: error
+  level: debug
 
 http:
   address: 127.0.0.1:44933
   max_request_size: 1024
-  middleware: ["gzip", "headers"]
+  middleware: [ "gzip", "headers" ]
   uploads:
-    forbid: [".php", ".exe", ".bat"]
+    forbid: [ ".php", ".exe", ".bat" ]
   trusted_subnets:
     [
-      "10.0.0.0/8",
-      "127.0.0.0/8",
-      "172.16.0.0/12",
-      "192.168.0.0/16",
-      "::1/128",
-      "fc00::/7",
-      "fe80::/10",
+        "10.0.0.0/8",
+        "127.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16",
+        "::1/128",
+        "fc00::/7",
+        "fe80::/10",
     ]
   pool:
     num_workers: 6
@@ -38,21 +38,21 @@ http:
     destroy_timeout: 60s
     supervisor:
       # WatchTick defines how often to check the state of worker (seconds)
-      watch_tick: 10
+      watch_tick: 1
       # TTL defines maximum time worker is allowed to live (seconds)
-      ttl: 10
+      ttl: 0
       # IdleTTL defines maximum duration worker can spend in idle mode. Disabled when 0 (seconds)
-      idle_ttl: 10
+      idle_ttl: 100
       # ExecTTL defines maximum lifetime per job (seconds)
       exec_ttl: 10
       # MaxWorkerMemory limits memory per worker (MB)
       max_worker_memory: 100
 
-  ssl:
-    port: 8892
-    redirect: false
-    cert: fixtures/server.crt
-    key: fixtures/server.key
+  #  ssl:
+  #    port: 8892
+  #    redirect: false
+  #    cert: fixtures/server.crt
+  #    key: fixtures/server.key
   #    rootCa: root.crt
   fcgi:
     address: tcp://0.0.0.0:7921
@@ -68,7 +68,7 @@ redis:
   # cluster-specific applications locally.
   # if the number of addrs is 1 and master_name is empty, a single-node redis Client will be returned
 
-  # if the number of Addrs is two or more, a ClusterClient will be returned
+  # if the number of addrs is two or more, a ClusterClient will be returned
   addrs:
     - "localhost:6379"
   # if a MasterName is passed a sentinel-backed FailoverClient will be returned
@@ -120,8 +120,8 @@ metrics:
     app_metric:
       type: histogram
       help: "Custom application metric"
-      labels: ["type"]
-      buckets: [0.1, 0.2, 0.3, 1.0]
+      labels: [ "type" ]
+      buckets: [ 0.1, 0.2, 0.3, 1.0 ]
       # objectives defines the quantile rank estimates with their respective
       #	absolute error [ for summary only ]
       objectives:
@@ -132,16 +132,16 @@ reload:
   # sync interval
   interval: 1s
   # global patterns to sync
-  patterns: [".go"]
+  patterns: [ ".go" ]
   # list of included for sync services
   services:
     http:
       # recursive search for file patterns to add
       recursive: true
       # ignored folders
-      ignore: ["vendor"]
+      ignore: [ "vendor" ]
       # service specific file pattens to sync
-      patterns: [".php", ".go", ".md"]
+      patterns: [ ".php", ".go", ".md" ]
       # directories to sync. If recursive is set to true,
       # recursive sync will be applied only to the directories in `dirs` section
-      dirs: ["."]
+      dirs: [ "." ]
