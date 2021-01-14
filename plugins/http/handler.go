@@ -24,7 +24,7 @@ const (
 )
 
 // MB is 1024 bytes
-const MB = 1024 * 1024
+const MB uint64 = 1024 * 1024
 
 // ErrorEvent represents singular http error event.
 type ErrorEvent struct {

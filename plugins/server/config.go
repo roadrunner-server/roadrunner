@@ -10,129 +10,129 @@ type Config struct {
 	// Server config section
 	Server struct {
 		// Command to run as application.
-		Command string `yaml:"command"`
+		Command string `mapstructure:"command"`
 		// User to run application under.
-		User string `yaml:"user"`
+		User string `mapstructure:"user"`
 		// Group to run application under.
-		Group string `yaml:"group"`
+		Group string `mapstructure:"group"`
 		// Env represents application environment.
-		Env Env `yaml:"env"`
+		Env Env `mapstructure:"env"`
 		// Relay defines connection method and factory to be used to connect to workers:
 		// "pipes", "tcp://:6001", "unix://rr.sock"
 		// This config section must not change on re-configuration.
-		Relay string `yaml:"relay"`
+		Relay string `mapstructure:"relay"`
 		// RelayTimeout defines for how long socket factory will be waiting for worker connection. This config section
 		// must not change on re-configuration. Defaults to 60s.
-		RelayTimeout time.Duration `yaml:"relayTimeout"`
-	} `yaml:"server"`
+		RelayTimeout time.Duration `mapstructure:"relayTimeout"`
+	} `mapstructure:"server"`
 
 	RPC *struct {
-		Listen string `yaml:"listen"`
-	} `yaml:"rpc"`
+		Listen string `mapstructure:"listen"`
+	} `mapstructure:"rpc"`
 	Logs *struct {
-		Mode  string `yaml:"mode"`
-		Level string `yaml:"level"`
-	} `yaml:"logs"`
+		Mode  string `mapstructure:"mode"`
+		Level string `mapstructure:"level"`
+	} `mapstructure:"logs"`
 	HTTP *struct {
-		Address        string   `yaml:"address"`
-		MaxRequestSize int      `yaml:"max_request_size"`
-		Middleware     []string `yaml:"middleware"`
+		Address        string   `mapstructure:"address"`
+		MaxRequestSize int      `mapstructure:"max_request_size"`
+		Middleware     []string `mapstructure:"middleware"`
 		Uploads        struct {
-			Forbid []string `yaml:"forbid"`
-		} `yaml:"uploads"`
-		TrustedSubnets []string `yaml:"trusted_subnets"`
+			Forbid []string `mapstructure:"forbid"`
+		} `mapstructure:"uploads"`
+		TrustedSubnets []string `mapstructure:"trusted_subnets"`
 		Pool           struct {
-			NumWorkers      int    `yaml:"num_workers"`
-			MaxJobs         int    `yaml:"max_jobs"`
-			AllocateTimeout string `yaml:"allocate_timeout"`
-			DestroyTimeout  string `yaml:"destroy_timeout"`
+			NumWorkers      int    `mapstructure:"num_workers"`
+			MaxJobs         int    `mapstructure:"max_jobs"`
+			AllocateTimeout string `mapstructure:"allocate_timeout"`
+			DestroyTimeout  string `mapstructure:"destroy_timeout"`
 			Supervisor      struct {
-				WatchTick       int `yaml:"watch_tick"`
-				TTL             int `yaml:"ttl"`
-				IdleTTL         int `yaml:"idle_ttl"`
-				ExecTTL         int `yaml:"exec_ttl"`
-				MaxWorkerMemory int `yaml:"max_worker_memory"`
-			} `yaml:"supervisor"`
-		} `yaml:"pool"`
+				WatchTick       int `mapstructure:"watch_tick"`
+				TTL             int `mapstructure:"ttl"`
+				IdleTTL         int `mapstructure:"idle_ttl"`
+				ExecTTL         int `mapstructure:"exec_ttl"`
+				MaxWorkerMemory int `mapstructure:"max_worker_memory"`
+			} `mapstructure:"supervisor"`
+		} `mapstructure:"pool"`
 		Ssl struct {
-			Port     int    `yaml:"port"`
-			Redirect bool   `yaml:"redirect"`
-			Cert     string `yaml:"cert"`
-			Key      string `yaml:"key"`
-		} `yaml:"ssl"`
+			Port     int    `mapstructure:"port"`
+			Redirect bool   `mapstructure:"redirect"`
+			Cert     string `mapstructure:"cert"`
+			Key      string `mapstructure:"key"`
+		} `mapstructure:"ssl"`
 		Fcgi struct {
-			Address string `yaml:"address"`
-		} `yaml:"fcgi"`
+			Address string `mapstructure:"address"`
+		} `mapstructure:"fcgi"`
 		HTTP2 struct {
-			Enabled              bool `yaml:"enabled"`
-			H2C                  bool `yaml:"h2c"`
-			MaxConcurrentStreams int  `yaml:"max_concurrent_streams"`
-		} `yaml:"http2"`
-	} `yaml:"http"`
+			Enabled              bool `mapstructure:"enabled"`
+			H2C                  bool `mapstructure:"h2c"`
+			MaxConcurrentStreams int  `mapstructure:"max_concurrent_streams"`
+		} `mapstructure:"http2"`
+	} `mapstructure:"http"`
 	Redis *struct {
-		Addrs            []string `yaml:"addrs"`
-		MasterName       string   `yaml:"master_name"`
-		Username         string   `yaml:"username"`
-		Password         string   `yaml:"password"`
-		DB               int      `yaml:"db"`
-		SentinelPassword string   `yaml:"sentinel_password"`
-		RouteByLatency   bool     `yaml:"route_by_latency"`
-		RouteRandomly    bool     `yaml:"route_randomly"`
-		DialTimeout      int      `yaml:"dial_timeout"`
-		MaxRetries       int      `yaml:"max_retries"`
-		MinRetryBackoff  int      `yaml:"min_retry_backoff"`
-		MaxRetryBackoff  int      `yaml:"max_retry_backoff"`
-		PoolSize         int      `yaml:"pool_size"`
-		MinIdleConns     int      `yaml:"min_idle_conns"`
-		MaxConnAge       int      `yaml:"max_conn_age"`
-		ReadTimeout      int      `yaml:"read_timeout"`
-		WriteTimeout     int      `yaml:"write_timeout"`
-		PoolTimeout      int      `yaml:"pool_timeout"`
-		IdleTimeout      int      `yaml:"idle_timeout"`
-		IdleCheckFreq    int      `yaml:"idle_check_freq"`
-		ReadOnly         bool     `yaml:"read_only"`
-	} `yaml:"redis"`
+		Addrs            []string `mapstructure:"addrs"`
+		MasterName       string   `mapstructure:"master_name"`
+		Username         string   `mapstructure:"username"`
+		Password         string   `mapstructure:"password"`
+		DB               int      `mapstructure:"db"`
+		SentinelPassword string   `mapstructure:"sentinel_password"`
+		RouteByLatency   bool     `mapstructure:"route_by_latency"`
+		RouteRandomly    bool     `mapstructure:"route_randomly"`
+		DialTimeout      int      `mapstructure:"dial_timeout"`
+		MaxRetries       int      `mapstructure:"max_retries"`
+		MinRetryBackoff  int      `mapstructure:"min_retry_backoff"`
+		MaxRetryBackoff  int      `mapstructure:"max_retry_backoff"`
+		PoolSize         int      `mapstructure:"pool_size"`
+		MinIdleConns     int      `mapstructure:"min_idle_conns"`
+		MaxConnAge       int      `mapstructure:"max_conn_age"`
+		ReadTimeout      int      `mapstructure:"read_timeout"`
+		WriteTimeout     int      `mapstructure:"write_timeout"`
+		PoolTimeout      int      `mapstructure:"pool_timeout"`
+		IdleTimeout      int      `mapstructure:"idle_timeout"`
+		IdleCheckFreq    int      `mapstructure:"idle_check_freq"`
+		ReadOnly         bool     `mapstructure:"read_only"`
+	} `mapstructure:"redis"`
 	Boltdb *struct {
-		Dir         string `yaml:"dir"`
-		File        string `yaml:"file"`
-		Bucket      string `yaml:"bucket"`
-		Permissions int    `yaml:"permissions"`
-		TTL         int    `yaml:"TTL"`
-	} `yaml:"boltdb"`
+		Dir         string `mapstructure:"dir"`
+		File        string `mapstructure:"file"`
+		Bucket      string `mapstructure:"bucket"`
+		Permissions int    `mapstructure:"permissions"`
+		TTL         int    `mapstructure:"TTL"`
+	} `mapstructure:"boltdb"`
 	Memcached *struct {
-		Addr []string `yaml:"addr"`
-	} `yaml:"memcached"`
+		Addr []string `mapstructure:"addr"`
+	} `mapstructure:"memcached"`
 	Memory *struct {
-		Enabled  bool `yaml:"enabled"`
-		Interval int  `yaml:"interval"`
-	} `yaml:"memory"`
+		Enabled  bool `mapstructure:"enabled"`
+		Interval int  `mapstructure:"interval"`
+	} `mapstructure:"memory"`
 	Metrics *struct {
-		Address string `yaml:"address"`
+		Address string `mapstructure:"address"`
 		Collect struct {
 			AppMetric struct {
-				Type       string    `yaml:"type"`
-				Help       string    `yaml:"help"`
-				Labels     []string  `yaml:"labels"`
-				Buckets    []float64 `yaml:"buckets"`
+				Type       string    `mapstructure:"type"`
+				Help       string    `mapstructure:"help"`
+				Labels     []string  `mapstructure:"labels"`
+				Buckets    []float64 `mapstructure:"buckets"`
 				Objectives []struct {
-					Num2 float64 `yaml:"2,omitempty"`
-					One4 float64 `yaml:"1.4,omitempty"`
-				} `yaml:"objectives"`
-			} `yaml:"app_metric"`
-		} `yaml:"collect"`
-	} `yaml:"metrics"`
+					Num2 float64 `mapstructure:"2,omitempty"`
+					One4 float64 `mapstructure:"1.4,omitempty"`
+				} `mapstructure:"objectives"`
+			} `mapstructure:"app_metric"`
+		} `mapstructure:"collect"`
+	} `mapstructure:"metrics"`
 	Reload *struct {
-		Interval string   `yaml:"interval"`
-		Patterns []string `yaml:"patterns"`
+		Interval string   `mapstructure:"interval"`
+		Patterns []string `mapstructure:"patterns"`
 		Services struct {
 			HTTP struct {
-				Recursive bool     `yaml:"recursive"`
-				Ignore    []string `yaml:"ignore"`
-				Patterns  []string `yaml:"patterns"`
-				Dirs      []string `yaml:"dirs"`
-			} `yaml:"http"`
-		} `yaml:"services"`
-	} `yaml:"reload"`
+				Recursive bool     `mapstructure:"recursive"`
+				Ignore    []string `mapstructure:"ignore"`
+				Patterns  []string `mapstructure:"patterns"`
+				Dirs      []string `mapstructure:"dirs"`
+			} `mapstructure:"http"`
+		} `mapstructure:"services"`
+	} `mapstructure:"reload"`
 }
 
 // InitDefaults for the server config

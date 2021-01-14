@@ -49,16 +49,16 @@ type Config struct {
 	HTTP2 *HTTP2Config
 
 	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
-	MaxRequestSize uint64 `yaml:"max_request_size"`
+	MaxRequestSize uint64 `mapstructure:"max_request_size"`
 
 	// TrustedSubnets declare IP subnets which are allowed to set ip using X-Real-Ip and X-Forwarded-For
-	TrustedSubnets []string `yaml:"trusted_subnets"`
+	TrustedSubnets []string `mapstructure:"trusted_subnets"`
 
 	// Uploads configures uploads configuration.
 	Uploads *UploadsConfig
 
 	// Pool configures worker pool.
-	Pool *poolImpl.Config
+	Pool *poolImpl.Config `mapstructure:"pool"`
 
 	// Env is environment variables passed to the  http pool
 	Env map[string]string
@@ -85,7 +85,7 @@ type HTTP2Config struct {
 	H2C bool
 
 	// MaxConcurrentStreams defaults to 128.
-	MaxConcurrentStreams uint32 `yaml:"max_concurrent_streams"`
+	MaxConcurrentStreams uint32 `mapstructure:"max_concurrent_streams"`
 }
 
 // InitDefaults sets default values for HTTP/2 configuration.

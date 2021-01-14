@@ -54,7 +54,7 @@ type StaticPool struct {
 
 // Initialize creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
 func Initialize(ctx context.Context, cmd Command, factory worker.Factory, cfg Config, options ...Options) (pool.Pool, error) {
-	const op = errors.Op("Initialize")
+	const op = errors.Op("static pool initialize")
 	if factory == nil {
 		return nil, errors.E(op, errors.Str("no factory initialized"))
 	}

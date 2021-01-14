@@ -48,11 +48,11 @@ type middleware map[string]Middleware
 type Plugin struct {
 	sync.RWMutex
 
-	configurer config.Configurer
-	server     server.Server
-	log        logger.Logger
+	// plugins
+	server server.Server
+	log    logger.Logger
 
-	cfg *Config
+	cfg *Config `mapstructure:"http"`
 	// middlewares to chain
 	mdwr middleware
 
@@ -71,7 +71,7 @@ type Plugin struct {
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Server) error {
-	const op = errors.Op("http Init")
+	const op = errors.Op("http plugin init")
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
 		return errors.E(op, err)
@@ -82,7 +82,6 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 		return errors.E(op, err)
 	}
 
-	s.configurer = cfg
 	s.log = log
 	s.mdwr = make(map[string]Middleware)
 
@@ -286,12 +285,7 @@ func (s *Plugin) Reset() error {
 	s.pool.Destroy(context.Background())
 	s.pool = nil
 
-	// re-read the config
-	err := s.configurer.UnmarshalKey(PluginName, &s.cfg)
-	if err != nil {
-		return errors.E(op, err)
-	}
-
+	var err error
 	s.pool, err = s.server.NewWorkerPool(context.Background(), poolImpl.Config{
 		Debug:           s.cfg.Pool.Debug,
 		NumWorkers:      s.cfg.Pool.NumWorkers,
