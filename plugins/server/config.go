@@ -23,7 +23,7 @@ type Config struct {
 		Relay string `mapstructure:"relay"`
 		// RelayTimeout defines for how long socket factory will be waiting for worker connection. This config section
 		// must not change on re-configuration. Defaults to 60s.
-		RelayTimeout time.Duration `mapstructure:"relayTimeout"`
+		RelayTimeout time.Duration `mapstructure:"relay_timeout"`
 	} `mapstructure:"server"`
 
 	RPC *struct {

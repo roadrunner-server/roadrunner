@@ -6,7 +6,7 @@ server:
     "RR_CONFIG": "/some/place/on/the/C134"
     "RR_CONFIG2": "C138"
   relay: "pipes"
-  relayTimeout: "20s"
+  relay_timeout: "20s"
 
 rpc:
   listen: tcp://127.0.0.1:6001

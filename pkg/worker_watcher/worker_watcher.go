@@ -13,23 +13,19 @@ import (
 // workerCreateFunc can be nil, but in that case, dead stack will not be replaced
 func NewWorkerWatcher(allocator worker.Allocator, numWorkers int64, events events.Handler) worker.Watcher {
 	ww := &workerWatcher{
-		stack:             NewWorkersStack(),
-		allocator:         allocator,
-		initialNumWorkers: numWorkers,
-		actualNumWorkers:  numWorkers,
-		events:            events,
+		stack:     NewWorkersStack(uint64(numWorkers)),
+		allocator: allocator,
+		events:    events,
 	}
 
 	return ww
 }
 
 type workerWatcher struct {
-	mutex             sync.RWMutex
-	stack             *Stack
-	allocator         worker.Allocator
-	initialNumWorkers int64
-	actualNumWorkers  int64
-	events            events.Handler
+	mutex     sync.RWMutex
+	stack     *Stack
+	allocator worker.Allocator
+	events    events.Handler
 }
 
 func (ww *workerWatcher) AddToWatch(workers []worker.BaseProcess) error {
