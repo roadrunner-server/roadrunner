@@ -428,7 +428,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 	// concurrently set the keys
 	go func(s kv.Storage) {
 		defer wg.Done()
-		for i := 0; i <= 1000; i++ {
+		for i := 0; i <= 100; i++ {
 			m.Lock()
 			// set is writable transaction
 			// it should stop readable
@@ -448,7 +448,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 	// should be no errors
 	go func(s kv.Storage) {
 		defer wg.Done()
-		for i := 0; i <= 1000; i++ {
+		for i := 0; i <= 100; i++ {
 			m.RLock()
 			v, err = s.Has("key")
 			assert.NoError(t, err)
@@ -461,7 +461,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 	// should be no errors
 	go func(s kv.Storage) {
 		defer wg.Done()
-		for i := 0; i <= 1000; i++ {
+		for i := 0; i <= 100; i++ {
 			m.Lock()
 			err = s.Delete("key" + strconv.Itoa(i))
 			assert.NoError(t, err)
