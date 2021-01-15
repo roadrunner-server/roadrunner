@@ -10,17 +10,19 @@ import (
 )
 
 type Stack struct {
-	workers            []worker.BaseProcess
-	mutex              sync.RWMutex
-	destroy            bool
-	actualNumOfWorkers int64
+	workers             []worker.BaseProcess
+	mutex               sync.RWMutex
+	destroy             bool
+	actualNumOfWorkers  uint64
+	initialNumOfWorkers uint64
 }
 
-func NewWorkersStack() *Stack {
+func NewWorkersStack(initialNumOfWorkers uint64) *Stack {
 	w := runtime.NumCPU()
 	return &Stack{
-		workers:            make([]worker.BaseProcess, 0, w),
-		actualNumOfWorkers: 0,
+		workers:             make([]worker.BaseProcess, 0, w),
+		actualNumOfWorkers:  0,
+		initialNumOfWorkers: initialNumOfWorkers,
 	}
 }
 
@@ -113,7 +115,7 @@ func (stack *Stack) Destroy(ctx context.Context) {
 		case <-tt.C:
 			stack.mutex.Lock()
 			// that might be one of the workers is working
-			if len(stack.workers) != int(stack.actualNumOfWorkers) {
+			if stack.initialNumOfWorkers != stack.actualNumOfWorkers {
 				stack.mutex.Unlock()
 				continue
 			}

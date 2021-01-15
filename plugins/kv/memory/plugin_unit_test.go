@@ -266,7 +266,7 @@ func TestStorage_MExpire_TTL(t *testing.T) {
 	}
 	assert.NoError(t, s.MExpire(i1, i2))
 
-	time.Sleep(time.Second * 6)
+	time.Sleep(time.Second * 7)
 
 	// ensure that storage is clean
 	v, err = s.Has("key", "key2")
@@ -428,7 +428,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 	// concurrently set the keys
 	go func(s kv.Storage) {
 		defer wg.Done()
-		for i := 0; i <= 1000; i++ {
+		for i := 0; i <= 100; i++ {
 			m.Lock()
 			// set is writable transaction
 			// it should stop readable
@@ -448,7 +448,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 	// should be no errors
 	go func(s kv.Storage) {
 		defer wg.Done()
-		for i := 0; i <= 1000; i++ {
+		for i := 0; i <= 100; i++ {
 			m.RLock()
 			v, err = s.Has("key")
 			assert.NoError(t, err)
@@ -461,7 +461,7 @@ func TestConcurrentReadWriteTransactions(t *testing.T) {
 	// should be no errors
 	go func(s kv.Storage) {
 		defer wg.Done()
-		for i := 0; i <= 1000; i++ {
+		for i := 0; i <= 100; i++ {
 			m.Lock()
 			err = s.Delete("key" + strconv.Itoa(i))
 			assert.NoError(t, err)
