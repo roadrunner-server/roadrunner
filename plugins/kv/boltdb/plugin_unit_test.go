@@ -453,7 +453,7 @@ func TestStorage_MExpire_TTL(t *testing.T) {
 	}
 	assert.NoError(t, s.MExpire(i1, i2))
 
-	time.Sleep(time.Second * 6)
+	time.Sleep(time.Second * 7)
 
 	// ensure that storage is clean
 	v, err = s.Has("key", "key2")
