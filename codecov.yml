@@ -17,3 +17,4 @@ ignore:
   - "plugins/kv/boltdb/plugin_unit_test.go"
   - "plugins/kv/memcached/plugin_unit_test.go"
   - "plugins/kv/memory/plugin_unit_test.go"
+  - "interfaces"

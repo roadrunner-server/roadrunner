@@ -25,3 +25,4 @@ tests/vendor/
 unit_tests
 unit_tests_copied
 dir1
+coverage
