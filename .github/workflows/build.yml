@@ -18,9 +18,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ["7.4", "8.0"]
-        go: ["1.14", "1.15"]
-        os: [ubuntu-latest, windows-latest]
+        php: [ "7.4", "8.0" ]
+        go: [ "1.14", "1.15" ]
+        os: [ ubuntu-latest, windows-latest ]
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
@@ -71,6 +71,7 @@ jobs:
           go test -v -race -cover -tags=debug ./pkg/pool
           go test -v -race -cover -tags=debug ./pkg/socket
           go test -v -race -cover -tags=debug ./pkg/worker
+          go test -v -race -cover -tags=debug ./pkg/worker_watcher
           go test -v -race -cover -tags=debug ./tests/plugins/http
           go test -v -race -cover -tags=debug ./tests/plugins/informer
           go test -v -race -cover -tags=debug ./tests/plugins/reload
@@ -103,6 +104,7 @@ jobs:
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/pool.txt -covermode=atomic ./pkg/pool
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/socket
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/worker.txt -covermode=atomic ./pkg/worker
+          go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/worker_stack.txt -covermode=atomic ./pkg/worker_watcher
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/http.txt -covermode=atomic ./tests/plugins/http
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/informer.txt -covermode=atomic ./tests/plugins/informer
           go test -v -race -cover -tags=debug -coverprofile=./coverage-ci/reload.txt -covermode=atomic ./tests/plugins/reload

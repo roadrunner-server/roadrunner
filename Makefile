@@ -31,6 +31,7 @@ test: ## Run application tests
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/pool
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/socket
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/worker
+	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/worker_watcher
 	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/http
 	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/informer
 	go test -v -race -cover -tags=debug -covermode=atomic ./tests/plugins/reload
