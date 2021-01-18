@@ -27,9 +27,7 @@ const PluginName = "server"
 // RR_RELAY env variable key (internal)
 const RR_RELAY = "RR_RELAY" //nolint:golint,stylecheck
 // RR_RPC env variable key (internal) if the RPC presents
-const RR_RPC = "" //nolint:golint,stylecheck
-// RR_HTTP env variable key (internal) if the HTTP presents
-const RR_HTTP = "false" //nolint:golint,stylecheck
+const RR_RPC = "RR_RPC" //nolint:golint,stylecheck
 
 // Plugin manages worker
 type Plugin struct {
@@ -189,10 +187,6 @@ func (server *Plugin) setEnv(e Env) []string {
 		env = append(env, fmt.Sprintf("%s=%s", strings.ToUpper(k), v))
 	}
 
-	// set internal env variables
-	if server.cfg.HTTP != nil {
-		env = append(env, fmt.Sprintf("%s=%s", RR_HTTP, "true"))
-	}
 	if server.cfg.RPC != nil && server.cfg.RPC.Listen != "" {
 		env = append(env, fmt.Sprintf("%s=%s", RR_RPC, server.cfg.RPC.Listen))
 	}

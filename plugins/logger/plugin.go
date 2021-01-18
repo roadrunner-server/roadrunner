@@ -64,6 +64,5 @@ func (z *ZapLogger) ServiceLogger(n endure.Named) (Logger, error) {
 func (z *ZapLogger) Provides() []interface{} {
 	return []interface{}{
 		z.ServiceLogger,
-		z.DefaultLogger,
 	}
 }

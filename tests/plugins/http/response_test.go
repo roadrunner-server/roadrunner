@@ -75,9 +75,10 @@ func TestNewResponse_Stream(t *testing.T) {
 	// r is pointer, so, it might be nil
 	if r == nil {
 		t.Fatal("response is nil")
+		return
 	}
 
-	r.Body = &bytes.Buffer{}
+	r.Body = new(bytes.Buffer)
 	r.Body.(*bytes.Buffer).WriteString("hello world")
 
 	assert.NoError(t, err)
@@ -99,6 +100,7 @@ func TestNewResponse_StreamError(t *testing.T) {
 	// r is pointer, so, it might be nil
 	if r == nil {
 		t.Fatal("response is nil")
+		return
 	}
 
 	r.Body = &bytes.Buffer{}
