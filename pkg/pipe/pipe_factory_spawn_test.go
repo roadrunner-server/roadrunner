@@ -116,7 +116,7 @@ func Test_Pipe_Failboot2(t *testing.T) {
 	assert.Contains(t, err.Error(), "failboot")
 }
 
-func Test_Pipe_Invalid2t(t *testing.T) {
+func Test_Pipe_Invalid2(t *testing.T) {
 	cmd := exec.Command("php", "../../tests/invalid.php")
 	w, err := NewPipeFactory().SpawnWorker(cmd)
 	assert.Error(t, err)

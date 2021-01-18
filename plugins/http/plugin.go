@@ -33,8 +33,8 @@ const (
 	// PluginName declares plugin name.
 	PluginName = "http"
 
-	// EventInitSSL thrown at moment of https initialization. SSL server passed as context.
-	EventInitSSL = 750
+	// RR_HTTP env variable key (internal) if the HTTP presents
+	RR_HTTP = "RR_HTTP" //nolint:golint,stylecheck
 )
 
 // Middleware interface
@@ -88,6 +88,13 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	if !s.cfg.EnableHTTP() && !s.cfg.EnableTLS() && !s.cfg.EnableFCGI() {
 		return errors.E(op, errors.Disabled)
 	}
+
+	// init if nil
+	if s.cfg.Env == nil {
+		s.cfg.Env = make(map[string]string)
+	}
+
+	s.cfg.Env[RR_HTTP] = "true"
 
 	s.pool, err = server.NewWorkerPool(context.Background(), poolImpl.Config{
 		Debug:           s.cfg.Pool.Debug,
