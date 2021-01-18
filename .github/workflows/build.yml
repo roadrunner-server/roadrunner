@@ -95,7 +95,7 @@ jobs:
           docker-compose -f ./tests/docker-compose.yaml down
 
       - name: Run golang tests on MacOS without codecov
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ matrix.os == 'macos-latest' }}
         run: |
           go test -v -race -tags=debug ./utils
           go test -v -race -tags=debug ./pkg/pipe
