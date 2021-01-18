@@ -119,10 +119,8 @@ jobs:
           go test -v -race -tags=debug ./tests/plugins/static
           go test -v -race -tags=debug ./plugins/kv/boltdb
           go test -v -race -tags=debug ./plugins/kv/memory
-#          go test -v -race -tags=debug ./plugins/kv/memcached
           go test -v -race -tags=debug ./tests/plugins/kv/boltdb
           go test -v -race -tags=debug ./tests/plugins/kv/memory
-#          go test -v -race -tags=debug ./tests/plugins/kv/memcached
 
       - name: Run golang tests on Linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
