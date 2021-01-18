@@ -139,7 +139,6 @@ func TestHTTPNoConfigSection(t *testing.T) {
 	wg.Add(1)
 
 	stopCh := make(chan struct{}, 1)
-
 	go func() {
 		defer wg.Done()
 		for {
@@ -167,6 +166,7 @@ func TestHTTPNoConfigSection(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 2)
 	stopCh <- struct{}{}
 	wg.Wait()
 }
