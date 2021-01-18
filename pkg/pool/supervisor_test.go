@@ -135,7 +135,6 @@ func TestSupervisedPool_Idle(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
-	defer p.Destroy(context.Background())
 
 	pid := p.Workers()[0].Pid()
 
@@ -151,6 +150,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 	time.Sleep(time.Second * 5)
 	// should be new worker with new pid
 	assert.NotEqual(t, pid, p.Workers()[0].Pid())
+	p.Destroy(context.Background())
 }
 
 func TestSupervisedPool_ExecTTL_OK(t *testing.T) {

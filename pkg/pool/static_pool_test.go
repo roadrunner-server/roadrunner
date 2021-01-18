@@ -459,16 +459,15 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 		},
 	)
 	assert.NoError(t, err)
-	defer p.Destroy(ctx)
-
 	assert.NotNil(t, p)
 
-	for _, w := range p.Workers() {
-		w.State().Set(internal.StateErrored)
+	for i := range p.Workers() {
+		p.Workers()[i].State().Set(internal.StateErrored)
 	}
 
 	_, err = p.Exec(payload.Payload{Body: []byte("hello")})
 	assert.Error(t, err)
+	p.Destroy(ctx)
 }
 
 // identical to replace but controlled on worker side

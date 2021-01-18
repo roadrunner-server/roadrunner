@@ -77,6 +77,11 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 		return errors.E(op, err)
 	}
 
+	// if no HTTP section in config - disable HTTP
+	if s.cfg == nil {
+		return errors.E(op, errors.Disabled)
+	}
+
 	err = s.cfg.InitDefaults()
 	if err != nil {
 		return errors.E(op, err)

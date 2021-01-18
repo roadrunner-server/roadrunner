@@ -109,7 +109,8 @@ func (stack *Stack) Destroy(ctx context.Context) {
 	stack.destroy = true
 	stack.mutex.Unlock()
 
-	tt := time.NewTicker(time.Millisecond * 100)
+	tt := time.NewTicker(time.Millisecond * 500)
+	defer tt.Stop()
 	for {
 		select {
 		case <-tt.C:
@@ -131,7 +132,6 @@ func (stack *Stack) Destroy(ctx context.Context) {
 				_ = stack.workers[i].Kill()
 			}
 			stack.mutex.Unlock()
-			tt.Stop()
 			// clear
 			stack.Reset()
 			return

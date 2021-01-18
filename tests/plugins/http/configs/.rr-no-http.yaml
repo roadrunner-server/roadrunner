@@ -1,0 +1,17 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+  disabled: false
+
+server:
+  command: "php ../../http/client.php echo pipes"
+  user: ""
+  group: ""
+  env:
+    "RR_HTTP": "true"
+  relay: "pipes"
+  relay_timeout: "20s"
+
+logs:
+  mode: development
+  level: error
+

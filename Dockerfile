@@ -29,7 +29,7 @@ COPY . .
 RUN CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/main.go
 
 # Image page: <https://hub.docker.com/_/alpine>
-FROM alpine:3.12
+FROM alpine:3.13
 
 # use same build arguments for image labels
 ARG APP_VERSION
