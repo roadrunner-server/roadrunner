@@ -26,8 +26,8 @@ func init() {
 	})
 }
 
-func resetHandler(cmd *cobra.Command, args []string) error {
-	const op = errors.Op("reset handler")
+func resetHandler(_ *cobra.Command, args []string) error {
+	const op = errors.Op("reset_handler")
 	client, err := RPCClient()
 	if err != nil {
 		return err

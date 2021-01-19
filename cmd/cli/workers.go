@@ -42,7 +42,7 @@ func init() {
 }
 
 func workersHandler(_ *cobra.Command, args []string) error {
-	const op = errors.Op("workers cobra handler")
+	const op = errors.Op("handle_workers_command")
 	// get RPC client
 	client, err := RPCClient()
 	if err != nil {
@@ -94,7 +94,7 @@ func workersHandler(_ *cobra.Command, args []string) error {
 }
 
 func showWorkers(plugins []string, client *rpc.Client) error {
-	const op = errors.Op("show workers")
+	const op = errors.Op("show_workers")
 	for _, plugin := range plugins {
 		list := &informer.WorkerList{}
 		err := client.Call(InformerWorkers, plugin, &list)

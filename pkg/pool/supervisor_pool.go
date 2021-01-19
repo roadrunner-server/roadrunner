@@ -51,7 +51,7 @@ type ttlExec struct {
 }
 
 func (sp *supervised) ExecWithContext(ctx context.Context, rqs payload.Payload) (payload.Payload, error) {
-	const op = errors.Op("exec_supervised")
+	const op = errors.Op("supervised_exec_with_context")
 	if sp.cfg.ExecTTL == 0 {
 		return sp.pool.Exec(rqs)
 	}
@@ -89,7 +89,7 @@ func (sp *supervised) ExecWithContext(ctx context.Context, rqs payload.Payload) 
 }
 
 func (sp *supervised) Exec(p payload.Payload) (payload.Payload, error) {
-	const op = errors.Op("supervised exec")
+	const op = errors.Op("supervised_exec")
 	rsp, err := sp.pool.Exec(p)
 	if err != nil {
 		return payload.Payload{}, errors.E(op, err)
@@ -139,7 +139,7 @@ func (sp *supervised) Stop() {
 
 func (sp *supervised) control() {
 	now := time.Now()
-	const op = errors.Op("supervised pool control tick")
+	const op = errors.Op("supervised_pool_control_tick")
 
 	// THIS IS A COPY OF WORKERS
 	workers := sp.pool.Workers()

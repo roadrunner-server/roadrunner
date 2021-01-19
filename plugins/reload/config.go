@@ -43,7 +43,7 @@ func InitDefaults(c *Config) {
 
 // Valid validates the configuration.
 func (c *Config) Valid() error {
-	const op = errors.Op("config validation [reload plugin]")
+	const op = errors.Op("reload_plugin_valid")
 	if c.Interval < time.Second {
 		return errors.E(op, errors.Str("too short interval"))
 	}

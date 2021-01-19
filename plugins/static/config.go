@@ -32,7 +32,7 @@ type Config struct {
 
 // Valid returns nil if config is valid.
 func (c *Config) Valid() error {
-	const op = errors.Op("static plugin validation")
+	const op = errors.Op("static_plugin_valid")
 	st, err := os.Stat(c.Static.Dir)
 	if err != nil {
 		if os.IsNotExist(err) {

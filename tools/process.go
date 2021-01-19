@@ -27,7 +27,7 @@ type ProcessState struct {
 
 // WorkerProcessState creates new worker state definition.
 func WorkerProcessState(w worker.BaseProcess) (ProcessState, error) {
-	const op = errors.Op("worker_process state")
+	const op = errors.Op("worker_process_state")
 	p, _ := process.NewProcess(int32(w.Pid()))
 	i, err := p.MemoryInfo()
 	if err != nil {

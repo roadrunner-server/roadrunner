@@ -40,7 +40,7 @@ func (ww *workerWatcher) AddToWatch(workers []worker.BaseProcess) error {
 }
 
 func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (worker.BaseProcess, error) {
-	const op = errors.Op("GetFreeWorker")
+	const op = errors.Op("worker_watcher_get_free_worker")
 	// thread safe operation
 	w, stop := ww.stack.Pop()
 	if stop {
@@ -81,7 +81,7 @@ func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (worker.BaseProcess,
 
 func (ww *workerWatcher) AllocateNew() error {
 	ww.stack.mutex.Lock()
-	const op = errors.Op("allocate new worker")
+	const op = errors.Op("worker_watcher_allocate_new")
 	sw, err := ww.allocator()
 	if err != nil {
 		return errors.E(op, errors.WorkerAllocate, err)
@@ -98,7 +98,7 @@ func (ww *workerWatcher) RemoveWorker(wb worker.BaseProcess) error {
 	ww.mutex.Lock()
 	defer ww.mutex.Unlock()
 
-	const op = errors.Op("remove worker")
+	const op = errors.Op("worker_watcher_remove_worker")
 	pid := wb.Pid()
 
 	if ww.stack.FindAndRemoveByPid(pid) {
@@ -132,7 +132,7 @@ func (ww *workerWatcher) WorkersList() []worker.BaseProcess {
 }
 
 func (ww *workerWatcher) wait(w worker.BaseProcess) {
-	const op = errors.Op("process wait")
+	const op = errors.Op("worker_watcher_wait")
 	err := w.Wait()
 	if err != nil {
 		ww.events.Push(events.WorkerEvent{

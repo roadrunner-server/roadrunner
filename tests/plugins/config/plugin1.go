@@ -62,7 +62,7 @@ func (f *Foo) Init(p config.Configurer) error {
 }
 
 func (f *Foo) Serve() chan error {
-	const op = errors.Op("foo serve")
+	const op = errors.Op("foo_plugin_serve")
 	errCh := make(chan error, 1)
 
 	r := &ReloadConfig{}

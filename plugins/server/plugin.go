@@ -38,7 +38,7 @@ type Plugin struct {
 
 // Init application provider.
 func (server *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
-	const op = errors.Op("server plugin init")
+	const op = errors.Op("server_plugin_init")
 	err := cfg.Unmarshal(&server.cfg)
 	if err != nil {
 		return errors.E(op, errors.Init, err)
@@ -76,7 +76,7 @@ func (server *Plugin) Stop() error {
 
 // CmdFactory provides worker command factory associated with given context.
 func (server *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
-	const op = errors.Op("cmd factory")
+	const op = errors.Op("server_plugin_cmd_factory")
 	var cmdArgs []string
 
 	// create command according to the config
@@ -113,7 +113,7 @@ func (server *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 
 // NewWorker issues new standalone worker.
 func (server *Plugin) NewWorker(ctx context.Context, env Env, listeners ...events.Listener) (worker.BaseProcess, error) {
-	const op = errors.Op("new worker")
+	const op = errors.Op("server_plugin_new_worker")
 
 	list := make([]events.Listener, 0, len(listeners))
 	list = append(list, server.collectWorkerLogs)
@@ -133,7 +133,7 @@ func (server *Plugin) NewWorker(ctx context.Context, env Env, listeners ...event
 
 // NewWorkerPool issues new worker pool.
 func (server *Plugin) NewWorkerPool(ctx context.Context, opt poolImpl.Config, env Env, listeners ...events.Listener) (pool.Pool, error) {
-	const op = errors.Op("server plugins new worker pool")
+	const op = errors.Op("server_plugin_new_worker_pool")
 	spawnCmd, err := server.CmdFactory(env)
 	if err != nil {
 		return nil, errors.E(op, err)
@@ -155,7 +155,7 @@ func (server *Plugin) NewWorkerPool(ctx context.Context, opt poolImpl.Config, en
 
 // creates relay and worker factory.
 func (server *Plugin) initFactory() (worker.Factory, error) {
-	const op = errors.Op("server factory init")
+	const op = errors.Op("server_plugin_init_factory")
 	if server.cfg.Server.Relay == "" || server.cfg.Server.Relay == "pipes" {
 		return pipe.NewPipeFactory(), nil
 	}
@@ -205,36 +205,36 @@ func (server *Plugin) collectPoolLogs(event interface{}) {
 	if we, ok := event.(events.PoolEvent); ok {
 		switch we.Event {
 		case events.EventMaxMemory:
-			server.log.Info("worker max memory reached", "pid", we.Payload.(worker.BaseProcess).Pid())
+			server.log.Warn("worker max memory reached", "pid", we.Payload.(worker.BaseProcess).Pid())
 		case events.EventNoFreeWorkers:
-			server.log.Info("no free workers in pool", "error", we.Payload.(error).Error())
+			server.log.Warn("no free workers in pool", "error", we.Payload.(error).Error())
 		case events.EventPoolError:
-			server.log.Info("pool error", "error", we.Payload.(error).Error())
+			server.log.Error("pool error", "error", we.Payload.(error).Error())
 		case events.EventSupervisorError:
-			server.log.Info("pool supervisor error", "error", we.Payload.(error).Error())
+			server.log.Error("pool supervisor error", "error", we.Payload.(error).Error())
 		case events.EventTTL:
-			server.log.Info("worker TTL reached", "pid", we.Payload.(worker.BaseProcess).Pid())
+			server.log.Warn("worker TTL reached", "pid", we.Payload.(worker.BaseProcess).Pid())
 		case events.EventWorkerConstruct:
 			if _, ok := we.Payload.(error); ok {
 				server.log.Error("worker construction error", "error", we.Payload.(error).Error())
 				return
 			}
-			server.log.Info("worker constructed", "pid", we.Payload.(worker.BaseProcess).Pid())
+			server.log.Debug("worker constructed", "pid", we.Payload.(worker.BaseProcess).Pid())
 		case events.EventWorkerDestruct:
-			server.log.Info("worker destructed", "pid", we.Payload.(worker.BaseProcess).Pid())
+			server.log.Debug("worker destructed", "pid", we.Payload.(worker.BaseProcess).Pid())
 		case events.EventExecTTL:
-			server.log.Info("EVENT EXEC TTL PLACEHOLDER")
+			server.log.Warn("worker exec timeout reached", "error", we.Payload.(error).Error())
 		case events.EventIdleTTL:
-			server.log.Info("worker IDLE timeout reached", "pid", we.Payload.(worker.BaseProcess).Pid())
+			server.log.Warn("worker idle timeout reached", "pid", we.Payload.(worker.BaseProcess).Pid())
 		}
 	}
 
 	if we, ok := event.(events.WorkerEvent); ok {
 		switch we.Event {
 		case events.EventWorkerError:
-			server.log.Info(we.Payload.(error).Error(), "pid", we.Worker.(worker.BaseProcess).Pid())
+			server.log.Error(we.Payload.(error).Error(), "pid", we.Worker.(worker.BaseProcess).Pid())
 		case events.EventWorkerLog:
-			server.log.Info(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.(worker.BaseProcess).Pid())
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.(worker.BaseProcess).Pid())
 		}
 	}
 }
@@ -245,7 +245,7 @@ func (server *Plugin) collectWorkerLogs(event interface{}) {
 		case events.EventWorkerError:
 			server.log.Error(we.Payload.(error).Error(), "pid", we.Worker.(worker.BaseProcess).Pid())
 		case events.EventWorkerLog:
-			server.log.Info(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.(worker.BaseProcess).Pid())
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.(worker.BaseProcess).Pid())
 		}
 	}
 }

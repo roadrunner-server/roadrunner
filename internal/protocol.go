@@ -20,7 +20,7 @@ type pidCommand struct {
 }
 
 func SendControl(rl relay.Relay, payload interface{}) error {
-	const op = errors.Op("send control frame")
+	const op = errors.Op("send_control")
 	fr := frame.NewFrame()
 	fr.WriteVersion(frame.VERSION_1)
 	fr.WriteFlags(frame.CONTROL)
@@ -60,7 +60,7 @@ func SendControl(rl relay.Relay, payload interface{}) error {
 }
 
 func FetchPID(rl relay.Relay) (int64, error) {
-	const op = errors.Op("fetchPID")
+	const op = errors.Op("fetch_pid")
 	err := SendControl(rl, pidCommand{Pid: os.Getpid()})
 	if err != nil {
 		return 0, errors.E(op, err)

@@ -102,7 +102,7 @@ func NewWatcher(configs []WatcherConfig, log logger.Logger, options ...Options) 
 
 // initFs makes initial map with files
 func (w *Watcher) initFs() error {
-	const op = errors.Op("init fs")
+	const op = errors.Op("watcher_init_fs")
 	for srvName, config := range w.watcherConfigs {
 		fileList, err := w.retrieveFileList(srvName, config)
 		if err != nil {
@@ -148,7 +148,7 @@ func ConvertIgnored(ignored []string) (map[string]struct{}, error) {
 
 // pass map from outside
 func (w *Watcher) retrieveFilesSingle(serviceName, path string) (map[string]os.FileInfo, error) {
-	const op = errors.Op("retrieve")
+	const op = errors.Op("watcher_retrieve_files_single")
 	stat, err := os.Stat(path)
 	if err != nil {
 		return nil, err
@@ -192,7 +192,7 @@ outer:
 
 func (w *Watcher) StartPolling(duration time.Duration) error {
 	w.mu.Lock()
-	const op = errors.Op("start polling")
+	const op = errors.Op("watcher_start_polling")
 	if w.started {
 		w.mu.Unlock()
 		return errors.E(op, errors.Str("already started"))

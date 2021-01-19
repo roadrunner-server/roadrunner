@@ -21,7 +21,7 @@ type Plugin struct {
 // Init must return configure service and return true if service hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Plugin) Init(cfg config.Configurer) error {
-	const op = errors.Op("headers plugin init")
+	const op = errors.Op("headers_plugin_init")
 	err := cfg.UnmarshalKey(RootPluginName, &s.cfg)
 	if err != nil {
 		return errors.E(op, errors.Disabled, err)

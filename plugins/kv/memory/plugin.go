@@ -24,7 +24,7 @@ type Plugin struct {
 }
 
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
-	const op = errors.Op("in-memory storage init")
+	const op = errors.Op("in_memory_plugin_init")
 	s.cfg = &Config{}
 	s.cfg.InitDefaults()
 
@@ -47,7 +47,7 @@ func (s *Plugin) Serve() chan error {
 }
 
 func (s *Plugin) Stop() error {
-	const op = errors.Op("in-memory storage stop")
+	const op = errors.Op("in_memory_plugin_stop")
 	err := s.Close()
 	if err != nil {
 		return errors.E(op, err)
@@ -56,7 +56,7 @@ func (s *Plugin) Stop() error {
 }
 
 func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
-	const op = errors.Op("in-memory storage Has")
+	const op = errors.Op("in_memory_plugin_has")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
 	}
@@ -76,7 +76,7 @@ func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
 }
 
 func (s *Plugin) Get(key string) ([]byte, error) {
-	const op = errors.Op("in-memory storage Get")
+	const op = errors.Op("in_memory_plugin_get")
 	// to get cases like "  "
 	keyTrimmed := strings.TrimSpace(key)
 	if keyTrimmed == "" {
@@ -92,7 +92,7 @@ func (s *Plugin) Get(key string) ([]byte, error) {
 }
 
 func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
-	const op = errors.Op("in-memory storage MGet")
+	const op = errors.Op("in_memory_plugin_mget")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
 	}
@@ -117,7 +117,7 @@ func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
 }
 
 func (s *Plugin) Set(items ...kv.Item) error {
-	const op = errors.Op("in-memory storage Set")
+	const op = errors.Op("in_memory_plugin_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
 	}
@@ -140,7 +140,7 @@ func (s *Plugin) Set(items ...kv.Item) error {
 // MExpire sets the expiration time to the key
 // If key already has the expiration time, it will be overwritten
 func (s *Plugin) MExpire(items ...kv.Item) error {
-	const op = errors.Op("in-memory storage MExpire")
+	const op = errors.Op("in_memory_plugin_mexpire")
 	for i := range items {
 		if items[i].TTL == "" || strings.TrimSpace(items[i].Key) == "" {
 			return errors.E(op, errors.Str("should set timeout and at least one key"))
@@ -169,7 +169,7 @@ func (s *Plugin) MExpire(items ...kv.Item) error {
 }
 
 func (s *Plugin) TTL(keys ...string) (map[string]interface{}, error) {
-	const op = errors.Op("in-memory storage TTL")
+	const op = errors.Op("in_memory_plugin_ttl")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
 	}
@@ -193,7 +193,7 @@ func (s *Plugin) TTL(keys ...string) (map[string]interface{}, error) {
 }
 
 func (s *Plugin) Delete(keys ...string) error {
-	const op = errors.Op("in-memory storage Delete")
+	const op = errors.Op("in_memory_plugin_delete")
 	if keys == nil {
 		return errors.E(op, errors.NoKeys)
 	}

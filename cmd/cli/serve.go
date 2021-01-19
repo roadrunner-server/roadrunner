@@ -19,8 +19,8 @@ func init() {
 	})
 }
 
-func handler(cmd *cobra.Command, args []string) error {
-	const op = errors.Op("handle serve command")
+func handler(_ *cobra.Command, _ []string) error {
+	const op = errors.Op("handle_serve_command")
 	/*
 		We need to have path to the config at the RegisterTarget stage
 		But after cobra.Execute, because cobra fills up cli variables on this stage
