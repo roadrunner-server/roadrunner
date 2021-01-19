@@ -26,5 +26,5 @@ http:
     destroy_timeout: 60s
 logs:
   mode: development
-  level: debug
+  level: error
 
