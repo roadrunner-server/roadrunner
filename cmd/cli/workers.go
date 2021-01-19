@@ -17,9 +17,8 @@ import (
 	"github.com/spiral/roadrunner/v2/tools"
 )
 
-var (
-	interactive bool
-)
+// use interactive mode
+var interactive bool
 
 const InformerList string = "informer.List"
 const InformerWorkers string = "informer.Workers"
@@ -42,7 +41,7 @@ func init() {
 	root.AddCommand(workersCommand)
 }
 
-func workersHandler(cmd *cobra.Command, args []string) error {
+func workersHandler(_ *cobra.Command, args []string) error {
 	const op = errors.Op("workers cobra handler")
 	// get RPC client
 	client, err := RPCClient()

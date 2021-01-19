@@ -24,7 +24,6 @@ uninstall: ## Uninstall locally installed RR
 	rm -f /usr/local/bin/rr
 
 test_coverage:
-	go clean -testcache
 	docker-compose -f tests/docker-compose.yaml up -d
 	rm -rf coverage
 	mkdir coverage
@@ -58,7 +57,6 @@ test_coverage:
 	docker-compose -f tests/docker-compose.yaml down
 
 test: ## Run application tests
-	go clean -testcache
 	docker-compose -f tests/docker-compose.yaml up -d
 	go test -v -race -cover -tags=debug -covermode=atomic ./utils
 	go test -v -race -cover -tags=debug -covermode=atomic ./pkg/pipe

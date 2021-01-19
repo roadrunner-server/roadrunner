@@ -963,7 +963,7 @@ logs:
 
 	mockLogger.EXPECT().Info("worker destructed", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("worker constructed", "pid", gomock.Any()).MinTimes(1)
-	mockLogger.EXPECT().Debug("http handler response received", "elapsed", gomock.Any(), "remote address", "127.0.0.1").MinTimes(1)
+	mockLogger.EXPECT().Debug("", "remote", gomock.Any(), "ts", gomock.Any(), "resp.status", gomock.Any(), "method", gomock.Any(), "uri", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("WORLD", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("worker event received", "event", events.EventWorkerLog, "worker state", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes() // placeholder for the workerlogerror

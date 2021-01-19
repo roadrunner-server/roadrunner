@@ -115,7 +115,13 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 
 func (s *Plugin) logCallback(event interface{}) {
 	if ev, ok := event.(ResponseEvent); ok {
-		s.log.Debug("http handler response received", "elapsed", ev.Elapsed().String(), "remote address", ev.Request.RemoteAddr)
+		s.log.Debug("",
+			"remote", ev.Request.RemoteAddr,
+			"ts", ev.Elapsed().String(),
+			"resp.status", ev.Response.Status,
+			"method", ev.Request.Method,
+			"uri", ev.Request.URI,
+		)
 	}
 }
 
