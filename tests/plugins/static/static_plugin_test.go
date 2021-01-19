@@ -303,6 +303,7 @@ func TestStaticFilesForbid(t *testing.T) {
 	controller := gomock.NewController(t)
 	mockLogger := mocks.NewMockLogger(controller)
 
+	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("", "remote", gomock.Any(), "ts", gomock.Any(), "resp.status", gomock.Any(), "method", gomock.Any(), "uri", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Error("file open error", "error", gomock.Any()).AnyTimes()
