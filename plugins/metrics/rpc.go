@@ -25,7 +25,7 @@ type Metric struct {
 
 // Add new metric to the designated collector.
 func (rpc *rpcServer) Add(m *Metric, ok *bool) error {
-	const op = errors.Op("Add metric")
+	const op = errors.Op("metrics_plugin_add")
 	rpc.log.Info("Adding metric", "name", m.Name, "value", m.Value, "labels", m.Labels)
 	c, exist := rpc.svc.collectors.Load(m.Name)
 	if !exist {
@@ -76,7 +76,7 @@ func (rpc *rpcServer) Add(m *Metric, ok *bool) error {
 
 // Sub subtract the value from the specific metric (gauge only).
 func (rpc *rpcServer) Sub(m *Metric, ok *bool) error {
-	const op = errors.Op("Subtracting metric")
+	const op = errors.Op("metrics_plugin_sub")
 	rpc.log.Info("Subtracting value from metric", "name", m.Name, "value", m.Value, "labels", m.Labels)
 	c, exist := rpc.svc.collectors.Load(m.Name)
 	if !exist {
@@ -115,7 +115,7 @@ func (rpc *rpcServer) Sub(m *Metric, ok *bool) error {
 
 // Observe the value (histogram and summary only).
 func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
-	const op = errors.Op("Observe metrics")
+	const op = errors.Op("metrics_plugin_observe")
 	rpc.log.Info("Observing metric", "name", m.Name, "value", m.Value, "labels", m.Labels)
 
 	c, exist := rpc.svc.collectors.Load(m.Name)
@@ -170,7 +170,7 @@ func (rpc *rpcServer) Observe(m *Metric, ok *bool) error {
 // RETURNS:
 // 	error
 func (rpc *rpcServer) Declare(nc *NamedCollector, ok *bool) error {
-	const op = errors.Op("Declare metric")
+	const op = errors.Op("metrics_plugin_declare")
 	rpc.log.Info("Declaring new metric", "name", nc.Name, "type", nc.Type, "namespace", nc.Namespace)
 	_, exist := rpc.svc.collectors.Load(nc.Name)
 	if exist {
@@ -255,7 +255,7 @@ func (rpc *rpcServer) Declare(nc *NamedCollector, ok *bool) error {
 
 // Set the metric value (only for gaude).
 func (rpc *rpcServer) Set(m *Metric, ok *bool) (err error) {
-	const op = errors.Op("Set metric")
+	const op = errors.Op("metrics_plugin_set")
 	rpc.log.Info("Observing metric", "name", m.Name, "value", m.Value, "labels", m.Labels)
 
 	c, exist := rpc.svc.collectors.Load(m.Name)

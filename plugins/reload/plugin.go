@@ -26,7 +26,7 @@ type Plugin struct {
 
 // Init controller service
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, res resetter.Resetter) error {
-	const op = errors.Op("reload plugin init")
+	const op = errors.Op("reload_plugin_init")
 	s.cfg = &Config{}
 	InitDefaults(s.cfg)
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
@@ -74,7 +74,7 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, res resetter.Res
 }
 
 func (s *Plugin) Serve() chan error {
-	const op = errors.Op("reload plugin serve")
+	const op = errors.Op("reload_plugin_serve")
 	errCh := make(chan error, 1)
 	if s.cfg.Interval < time.Second {
 		errCh <- errors.E(op, errors.Str("reload interval is too fast"))

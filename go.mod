@@ -23,8 +23,8 @@ require (
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/viper v1.7.1
 	github.com/spiral/endure v1.0.0-beta20
-	github.com/spiral/errors v1.0.7
-	github.com/spiral/goridge/v3 v3.0.0-beta8
+	github.com/spiral/errors v1.0.9
+	github.com/spiral/goridge/v3 v3.0.0
 	github.com/stretchr/testify v1.6.1
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/vbauerster/mpb/v5 v5.4.0

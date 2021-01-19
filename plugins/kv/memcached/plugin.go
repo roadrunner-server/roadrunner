@@ -35,7 +35,7 @@ func NewMemcachedClient(url string) kv.Storage {
 }
 
 func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
-	const op = errors.Op("memcached init")
+	const op = errors.Op("memcached_plugin_init")
 	s.cfg = &Config{}
 	s.cfg.InitDefaults()
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
@@ -69,7 +69,7 @@ func (s *Plugin) Name() string {
 
 // Has checks the key for existence
 func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
-	const op = errors.Op("memcached Has")
+	const op = errors.Op("memcached_plugin_has")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
 	}
@@ -94,7 +94,7 @@ func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
 // Get gets the item for the given key. ErrCacheMiss is returned for a
 // memcache cache miss. The key must be at most 250 bytes in length.
 func (s *Plugin) Get(key string) ([]byte, error) {
-	const op = errors.Op("memcached Get")
+	const op = errors.Op("memcached_plugin_get")
 	// to get cases like "  "
 	keyTrimmed := strings.TrimSpace(key)
 	if keyTrimmed == "" {
@@ -116,7 +116,7 @@ func (s *Plugin) Get(key string) ([]byte, error) {
 // return map with key -- string
 // and map value as value -- []byte
 func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
-	const op = errors.Op("memcached MGet")
+	const op = errors.Op("memcached_plugin_mget")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
 	}
@@ -151,7 +151,7 @@ func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
 // time from now (up to 1 month), or an absolute Unix epoch time.
 // Zero means the Item has no expiration time.
 func (s *Plugin) Set(items ...kv.Item) error {
-	const op = errors.Op("memcached Set")
+	const op = errors.Op("memcached_plugin_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
 	}
@@ -192,7 +192,7 @@ func (s *Plugin) Set(items ...kv.Item) error {
 // time from now (up to 1 month), or an absolute Unix epoch time.
 // Zero means the Item has no expiration time.
 func (s *Plugin) MExpire(items ...kv.Item) error {
-	const op = errors.Op("memcached MExpire")
+	const op = errors.Op("memcached_plugin_mexpire")
 	for i := range items {
 		if items[i].TTL == "" || strings.TrimSpace(items[i].Key) == "" {
 			return errors.E(op, errors.Str("should set timeout and at least one key"))
@@ -219,12 +219,12 @@ func (s *Plugin) MExpire(items ...kv.Item) error {
 
 // return time in seconds (int32) for a given keys
 func (s *Plugin) TTL(keys ...string) (map[string]interface{}, error) {
-	const op = errors.Op("memcached HTTLas")
+	const op = errors.Op("memcached_plugin_ttl")
 	return nil, errors.E(op, errors.Str("not valid request for memcached, see https://github.com/memcached/memcached/issues/239"))
 }
 
 func (s *Plugin) Delete(keys ...string) error {
-	const op = errors.Op("memcached Has")
+	const op = errors.Op("memcached_plugin_has")
 	if keys == nil {
 		return errors.E(op, errors.NoKeys)
 	}

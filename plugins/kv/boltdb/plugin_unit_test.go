@@ -22,7 +22,7 @@ import (
 // options *bolt.Options -- boltDB options, such as timeouts, noGrows options and other
 // bucket string 		 -- name of the bucket to use, should be UTF-8
 func newBoltClient(path string, perm os.FileMode, options *bolt.Options, bucket string, ttl time.Duration) (kv.Storage, error) {
-	const op = errors.Op("newBoltClient")
+	const op = errors.Op("boltdb_plugin_new_bolt_client")
 	db, err := bolt.Open(path, perm, options)
 	if err != nil {
 		return nil, errors.E(op, err)

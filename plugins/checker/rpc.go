@@ -12,7 +12,7 @@ type rpc struct {
 
 // Status return current status of the provided plugin
 func (rpc *rpc) Status(service string, status *Status) error {
-	const op = errors.Op("status")
+	const op = errors.Op("checker_rpc_status")
 	rpc.log.Debug("started Status method", "service", service)
 	st, err := rpc.srv.Status(service)
 	if err != nil {

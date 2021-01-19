@@ -26,7 +26,7 @@ type Plugin struct {
 }
 
 func (c *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
-	const op = errors.Op("status plugin init")
+	const op = errors.Op("checker_plugin_init")
 	err := cfg.UnmarshalKey(PluginName, &c.cfg)
 	if err != nil {
 		return errors.E(op, errors.Disabled, err)
@@ -63,7 +63,7 @@ func (c *Plugin) Serve() chan error {
 }
 
 func (c *Plugin) Stop() error {
-	const op = errors.Op("checker stop")
+	const op = errors.Op("checker_plugin_stop")
 	err := c.server.Shutdown()
 	if err != nil {
 		return errors.E(op, err)
@@ -73,7 +73,7 @@ func (c *Plugin) Stop() error {
 
 // Reset named service.
 func (c *Plugin) Status(name string) (Status, error) {
-	const op = errors.Op("get status")
+	const op = errors.Op("checker_plugin_status")
 	svc, ok := c.registry[name]
 	if !ok {
 		return Status{}, errors.E(op, errors.Errorf("no such service: %s", name))
@@ -112,7 +112,7 @@ type Plugins struct {
 const template string = "Service: %s: Status: %d\n"
 
 func (c *Plugin) healthHandler(ctx *fiber.Ctx) error {
-	const op = errors.Op("health_handler")
+	const op = errors.Op("checker_plugin_health_handler")
 	plugins := &Plugins{}
 	err := ctx.QueryParser(plugins)
 	if err != nil {

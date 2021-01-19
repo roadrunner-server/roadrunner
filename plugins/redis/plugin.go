@@ -23,7 +23,7 @@ func (s *Plugin) GetClient() redis.UniversalClient {
 }
 
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
-	const op = errors.Op("redis plugin init")
+	const op = errors.Op("redis_plugin_init")
 	s.cfg = &Config{}
 	s.cfg.InitDefaults()
 

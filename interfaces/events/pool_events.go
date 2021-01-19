@@ -19,7 +19,7 @@ const (
 	// EventMaxMemory caused when worker consumes more memory than allowed.
 	EventMaxMemory
 
-	// EventTTL thrown when worker is removed due TTL being reached. Context is rr.WorkerError
+	// EventTTL thrown when worker is removed due TTL being reached. TTL defines maximum time worker is allowed to live (seconds)
 	EventTTL
 
 	// EventIdleTTL triggered when worker spends too much time at rest.

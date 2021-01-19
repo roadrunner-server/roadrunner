@@ -14,7 +14,7 @@ type Plugin struct {
 }
 
 func (p *Plugin) ResetAll() error {
-	const op = errors.Op("reset all")
+	const op = errors.Op("resetter_plugin_reset_all")
 	for name := range p.registry {
 		err := p.registry[name].Reset()
 		if err != nil {
@@ -25,7 +25,7 @@ func (p *Plugin) ResetAll() error {
 }
 
 func (p *Plugin) ResetByName(plugin string) error {
-	const op = errors.Op("reset by name")
+	const op = errors.Op("resetter_plugin_reset_by_name")
 	if plugin, ok := p.registry[plugin]; ok {
 		return plugin.Reset()
 	}

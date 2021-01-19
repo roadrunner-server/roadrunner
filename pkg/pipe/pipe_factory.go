@@ -32,7 +32,7 @@ type SpawnResult struct {
 // method Wait() must be handled on level above.
 func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.Listener) (worker.BaseProcess, error) {
 	c := make(chan SpawnResult)
-	const op = errors.Op("spawn worker with context")
+	const op = errors.Op("factory_spawn_worker_with_timeout")
 	go func() {
 		w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(listeners...))
 		if err != nil {
@@ -114,7 +114,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 }
 
 func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (worker.BaseProcess, error) {
-	const op = errors.Op("spawn worker")
+	const op = errors.Op("factory_spawn_worker")
 	w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(listeners...))
 	if err != nil {
 		return nil, errors.E(op, err)

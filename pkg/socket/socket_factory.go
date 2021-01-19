@@ -86,7 +86,7 @@ type socketSpawn struct {
 
 // SpawnWorker creates Process and connects it to appropriate relay or returns error
 func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.Listener) (worker.BaseProcess, error) {
-	const op = errors.Op("spawn_worker_with_context")
+	const op = errors.Op("factory_spawn_worker_with_timeout")
 	c := make(chan socketSpawn)
 	go func() {
 		ctx, cancel := context.WithTimeout(ctx, f.tout)
@@ -146,7 +146,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 }
 
 func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (worker.BaseProcess, error) {
-	const op = errors.Op("spawn_worker")
+	const op = errors.Op("factory_spawn_worker")
 	w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(listeners...))
 	if err != nil {
 		return nil, err
@@ -201,7 +201,7 @@ func (f *Factory) findRelayWithContext(ctx context.Context, w worker.BaseProcess
 }
 
 func (f *Factory) findRelay(w worker.BaseProcess) (*socket.Relay, error) {
-	const op = errors.Op("find_relay")
+	const op = errors.Op("factory_find_relay")
 	// poll every 1ms for the relay
 	pollDone := time.NewTimer(f.tout)
 	for {

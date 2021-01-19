@@ -54,7 +54,7 @@ type StaticPool struct {
 
 // Initialize creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
 func Initialize(ctx context.Context, cmd Command, factory worker.Factory, cfg Config, options ...Options) (pool.Pool, error) {
-	const op = errors.Op("static pool initialize")
+	const op = errors.Op("static_pool_initialize")
 	if factory == nil {
 		return nil, errors.E(op, errors.Str("no factory initialized"))
 	}
@@ -174,7 +174,7 @@ func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 }
 
 func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs payload.Payload) (payload.Payload, error) {
-	const op = errors.Op("exec with context")
+	const op = errors.Op("static_pool_exec_with_context")
 	ctxGetFree, cancel := context.WithTimeout(ctx, sp.cfg.AllocateTimeout)
 	defer cancel()
 	w, err := sp.getWorker(ctxGetFree, op)
@@ -233,6 +233,10 @@ func (sp *StaticPool) Destroy(ctx context.Context) {
 func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 	return func(err error, w worker.BaseProcess) (payload.Payload, error) {
 		const op = errors.Op("error encoder")
+		// just push event if on any stage was timeout error
+		if errors.Is(errors.ExecTTL, err) {
+			sp.events.Push(events.PoolEvent{Event: events.EventExecTTL, Payload: errors.E(op, err)})
+		}
 		// soft job errors are allowed
 		if errors.Is(errors.SoftJob, err) {
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {

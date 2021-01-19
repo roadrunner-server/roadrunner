@@ -18,7 +18,7 @@ type Viper struct {
 
 // Inits config provider.
 func (v *Viper) Init() error {
-	const op = errors.Op("viper plugin init")
+	const op = errors.Op("config_plugin_init")
 	v.viper = viper.New()
 	// If user provided []byte data with config, read it and ignore Path and Prefix
 	if v.ReadInCfg != nil && v.Type != "" {
@@ -56,7 +56,7 @@ func (v *Viper) Overwrite(values map[string]interface{}) error {
 
 // UnmarshalKey reads configuration section into configuration object.
 func (v *Viper) UnmarshalKey(name string, out interface{}) error {
-	const op = errors.Op("unmarshal key")
+	const op = errors.Op("config_plugin_unmarshal_key")
 	err := v.viper.UnmarshalKey(name, &out)
 	if err != nil {
 		return errors.E(op, err)
@@ -65,7 +65,7 @@ func (v *Viper) UnmarshalKey(name string, out interface{}) error {
 }
 
 func (v *Viper) Unmarshal(out interface{}) error {
-	const op = errors.Op("config unmarshal")
+	const op = errors.Op("config_plugin_unmarshal")
 	err := v.viper.Unmarshal(&out)
 	if err != nil {
 		return errors.E(op, err)

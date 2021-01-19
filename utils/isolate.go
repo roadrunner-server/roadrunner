@@ -20,7 +20,7 @@ func IsolateProcess(cmd *exec.Cmd) {
 
 // ExecuteFromUser may work only if run RR under root user
 func ExecuteFromUser(cmd *exec.Cmd, u string) error {
-	const op = errors.Op("execute from user")
+	const op = errors.Op("execute_from_user")
 	usr, err := user.Lookup(u)
 	if err != nil {
 		return errors.E(op, err)

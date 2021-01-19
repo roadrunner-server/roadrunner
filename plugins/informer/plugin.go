@@ -22,7 +22,7 @@ func (p *Plugin) Init(log logger.Logger) error {
 
 // Workers provides BaseProcess slice with workers for the requested plugin
 func (p *Plugin) Workers(name string) ([]worker.BaseProcess, error) {
-	const op = errors.Op("get workers")
+	const op = errors.Op("informer_plugin_workers")
 	svc, ok := p.registry[name]
 	if !ok {
 		return nil, errors.E(op, errors.Errorf("no such service: %s", name))

@@ -71,7 +71,7 @@ type Plugin struct {
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Server) error {
-	const op = errors.Op("http plugin init")
+	const op = errors.Op("http_plugin_init")
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
 		return errors.E(op, err)
@@ -135,7 +135,7 @@ func (s *Plugin) Serve() chan error {
 	s.Lock()
 	defer s.Unlock()
 
-	const op = errors.Op("serve http")
+	const op = errors.Op("http_plugin_serve")
 	errCh := make(chan error, 2)
 
 	var err error
@@ -298,7 +298,7 @@ func (s *Plugin) Name() string {
 func (s *Plugin) Reset() error {
 	s.Lock()
 	defer s.Unlock()
-	const op = errors.Op("http reset")
+	const op = errors.Op("http_plugin_reset")
 	s.log.Info("HTTP plugin got restart request. Restarting...")
 	s.pool.Destroy(context.Background())
 	s.pool = nil
@@ -387,7 +387,7 @@ func headerContainsUpgrade(r *http.Request, s *Plugin) bool {
 
 // append RootCA to the https server TLS config
 func (s *Plugin) appendRootCa() error {
-	const op = errors.Op("append root CA")
+	const op = errors.Op("http_plugin_append_root_ca")
 	rootCAs, err := x509.SystemCertPool()
 	if err != nil {
 		return nil

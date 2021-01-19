@@ -41,7 +41,7 @@ type Plugin struct {
 }
 
 func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
-	const op = errors.Op("boltdb plugin init")
+	const op = errors.Op("boltdb_plugin_init")
 	s.cfg = &Config{}
 
 	s.cfg.InitDefaults()
@@ -62,7 +62,7 @@ func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
 	// create bucket if it does not exist
 	// tx.Commit invokes via the db.Update
 	err = db.Update(func(tx *bolt.Tx) error {
-		const upOp = errors.Op("boltdb Update")
+		const upOp = errors.Op("boltdb_plugin_update")
 		_, err = tx.CreateBucketIfNotExists([]byte(s.cfg.Bucket))
 		if err != nil {
 			return errors.E(op, upOp)
@@ -92,7 +92,7 @@ func (s *Plugin) Serve() chan error {
 }
 
 func (s *Plugin) Stop() error {
-	const op = errors.Op("boltdb stop")
+	const op = errors.Op("boltdb_plugin_stop")
 	err := s.Close()
 	if err != nil {
 		return errors.E(op, err)
@@ -101,7 +101,7 @@ func (s *Plugin) Stop() error {
 }
 
 func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
-	const op = errors.Op("boltdb Has")
+	const op = errors.Op("boltdb_plugin_has")
 	s.log.Debug("boltdb HAS method called", "args", keys)
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -142,7 +142,7 @@ func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
 // Returns a nil value if the key does not exist or if the key is a nested bucket.
 // The returned value is only valid for the life of the transaction.
 func (s *Plugin) Get(key string) ([]byte, error) {
-	const op = errors.Op("boltdb Get")
+	const op = errors.Op("boltdb_plugin_get")
 	// to get cases like "  "
 	keyTrimmed := strings.TrimSpace(key)
 	if keyTrimmed == "" {
@@ -182,7 +182,7 @@ func (s *Plugin) Get(key string) ([]byte, error) {
 }
 
 func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
-	const op = errors.Op("boltdb MGet")
+	const op = errors.Op("boltdb_plugin_mget")
 	// defence
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -234,7 +234,7 @@ func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
 
 // Set puts the K/V to the bolt
 func (s *Plugin) Set(items ...kv.Item) error {
-	const op = errors.Op("boltdb Set")
+	const op = errors.Op("boltdb_plugin_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
 	}
@@ -297,7 +297,7 @@ func (s *Plugin) Set(items ...kv.Item) error {
 
 // Delete all keys from DB
 func (s *Plugin) Delete(keys ...string) error {
-	const op = errors.Op("boltdb Delete")
+	const op = errors.Op("boltdb_plugin_delete")
 	if keys == nil {
 		return errors.E(op, errors.NoKeys)
 	}
@@ -344,7 +344,7 @@ func (s *Plugin) Delete(keys ...string) error {
 // MExpire sets the expiration time to the key
 // If key already has the expiration time, it will be overwritten
 func (s *Plugin) MExpire(items ...kv.Item) error {
-	const op = errors.Op("boltdb MExpire")
+	const op = errors.Op("boltdb_plugin_mexpire")
 	for i := range items {
 		if items[i].TTL == "" || strings.TrimSpace(items[i].Key) == "" {
 			return errors.E(op, errors.Str("should set timeout and at least one key"))
@@ -362,7 +362,7 @@ func (s *Plugin) MExpire(items ...kv.Item) error {
 }
 
 func (s *Plugin) TTL(keys ...string) (map[string]interface{}, error) {
-	const op = errors.Op("boltdb TTL")
+	const op = errors.Op("boltdb_plugin_ttl")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
 	}
@@ -414,7 +414,7 @@ func (s *Plugin) gcPhase() {
 			// calculate current time before loop started to be fair
 			now := time.Now()
 			s.gc.Range(func(key, value interface{}) bool {
-				const op = errors.Op("gcPhase")
+				const op = errors.Op("boltdb_plugin_gc")
 				k := key.(string)
 				v, err := time.Parse(time.RFC3339, value.(string))
 				if err != nil {

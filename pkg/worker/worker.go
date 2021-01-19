@@ -188,7 +188,7 @@ func (w *Process) Start() error {
 // will be wrapped as WorkerError. Method will return error code if php process fails
 // to find or Start the script.
 func (w *Process) Wait() error {
-	const op = errors.Op("worker process wait")
+	const op = errors.Op("process_wait")
 	err := multierr.Combine(w.cmd.Wait())
 
 	if w.State().Value() == internal.StateDestroyed {
