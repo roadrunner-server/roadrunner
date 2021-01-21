@@ -2,7 +2,6 @@ package config
 
 import (
 	"net"
-	"os"
 	"runtime"
 	"strings"
 	"time"
@@ -13,7 +12,7 @@ import (
 
 // HTTP configures RoadRunner HTTP server.
 type HTTP struct {
-	// Port and port to handle as http server.
+	// Host and port to handle as http server.
 	Address string
 
 	// SSLConfig defines https server options.
@@ -97,8 +96,8 @@ func (c *HTTP) InitDefaults() error {
 		c.SSLConfig = &SSL{}
 	}
 
-	if c.SSLConfig.Port == 0 {
-		c.SSLConfig.Port = 443
+	if c.SSLConfig.Address == "" {
+		c.SSLConfig.Address = ":443"
 	}
 
 	err := c.HTTP2Config.InitDefaults()
@@ -191,30 +190,9 @@ func (c *HTTP) Valid() error {
 	}
 
 	if c.EnableTLS() {
-		if _, err := os.Stat(c.SSLConfig.Key); err != nil {
-			if os.IsNotExist(err) {
-				return errors.E(op, errors.Errorf("key file '%s' does not exists", c.SSLConfig.Key))
-			}
-
-			return err
-		}
-
-		if _, err := os.Stat(c.SSLConfig.Cert); err != nil {
-			if os.IsNotExist(err) {
-				return errors.E(op, errors.Errorf("cert file '%s' does not exists", c.SSLConfig.Cert))
-			}
-
-			return err
-		}
-
-		// RootCA is optional, but if provided - check it
-		if c.SSLConfig.RootCA != "" {
-			if _, err := os.Stat(c.SSLConfig.RootCA); err != nil {
-				if os.IsNotExist(err) {
-					return errors.E(op, errors.Errorf("root ca path provided, but path '%s' does not exists", c.SSLConfig.RootCA))
-				}
-				return err
-			}
+		err := c.SSLConfig.Valid()
+		if err != nil {
+			return errors.E(op, err)
 		}
 	}
 

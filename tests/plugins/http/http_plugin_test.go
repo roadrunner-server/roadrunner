@@ -46,7 +46,7 @@ func TestHTTPInit(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
-	rIn := makeConfig("6001", "15395", "7921", "8892", "false", "false", "php ../../http/client.php echo pipes")
+	rIn := makeConfig("6001", "15395", "7921", ":8892", "false", "false", "php ../../http/client.php echo pipes")
 	cfg := &config.Viper{
 		ReadInCfg: rIn,
 		Type:      "yaml",
@@ -1264,7 +1264,7 @@ func getHeader(url string, h map[string]string) (string, *http.Response, error) 
 	return string(b), r, err
 }
 
-func makeConfig(rpcPort, httpPort, fcgiPort, sslPort, redirect, http2Enabled, command string) []byte {
+func makeConfig(rpcPort, httpPort, fcgiPort, sslAddress, redirect, http2Enabled, command string) []byte {
 	return []byte(fmt.Sprintf(`
 rpc:
   listen: tcp://127.0.0.1:%s
@@ -1293,7 +1293,7 @@ http:
     destroyTimeout: 60s
 
   ssl:
-    port: %s
+    address: %s
     redirect: %s
     cert: fixtures/server.crt
     key: fixtures/server.key
@@ -1307,5 +1307,5 @@ http:
 logs:
   mode: development
   level: error
-`, rpcPort, command, httpPort, sslPort, redirect, fcgiPort, http2Enabled))
+`, rpcPort, command, httpPort, sslAddress, redirect, fcgiPort, http2Enabled))
 }

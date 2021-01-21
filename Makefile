@@ -49,6 +49,7 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/static.out -covermode=atomic ./tests/plugins/static
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/boltdb_unit.out -covermode=atomic ./plugins/kv/boltdb
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/kv_unit.out -covermode=atomic ./plugins/kv/memory
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/http_config.out -covermode=atomic ./plugins/http/config
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/memcached_unit.out -covermode=atomic ./plugins/kv/memcached
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/boltdb.out -covermode=atomic ./tests/plugins/kv/boltdb
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/memory.out -covermode=atomic ./tests/plugins/kv/memory
@@ -65,6 +66,7 @@ test: ## Run application tests
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker_watcher
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/http
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/http/config
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/informer
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/reload
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/server

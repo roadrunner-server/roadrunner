@@ -36,6 +36,9 @@ const (
 
 	// RR_HTTP env variable key (internal) if the HTTP presents
 	RR_HTTP = "RR_HTTP" //nolint:golint,stylecheck
+
+	// HTTPS_SCHEME
+	HTTPS_SCHEME = "https" //nolint:golint,stylecheck
 )
 
 // Middleware interface
@@ -154,9 +157,9 @@ func (s *Plugin) Serve() chan error {
 
 	if s.cfg.EnableHTTP() {
 		if s.cfg.EnableH2C() {
-			s.http = &http.Server{Addr: s.cfg.Address, Handler: h2c.NewHandler(s, &http2.Server{})}
+			s.http = &http.Server{Handler: h2c.NewHandler(s, &http2.Server{})}
 		} else {
-			s.http = &http.Server{Addr: s.cfg.Address, Handler: s}
+			s.http = &http.Server{Handler: s}
 		}
 	}
 
@@ -190,9 +193,15 @@ func (s *Plugin) Serve() chan error {
 
 	if s.http != nil {
 		go func() {
-			httpErr := s.http.ListenAndServe()
-			if httpErr != nil && httpErr != http.ErrServerClosed {
-				errCh <- errors.E(op, httpErr)
+			l, err := utils.CreateListener(s.cfg.Address)
+			if err != nil {
+				errCh <- errors.E(op, err)
+				return
+			}
+
+			err = s.http.Serve(l)
+			if err != nil && err != http.ErrServerClosed {
+				errCh <- errors.E(op, err)
 				return
 			}
 		}()
@@ -200,13 +209,20 @@ func (s *Plugin) Serve() chan error {
 
 	if s.https != nil {
 		go func() {
-			httpErr := s.https.ListenAndServeTLS(
+			l, err := utils.CreateListener(s.cfg.SSLConfig.Address)
+			if err != nil {
+				errCh <- errors.E(op, err)
+				return
+			}
+
+			err = s.https.ServeTLS(
+				l,
 				s.cfg.SSLConfig.Cert,
 				s.cfg.SSLConfig.Key,
 			)
 
-			if httpErr != nil && httpErr != http.ErrServerClosed {
-				errCh <- errors.E(op, httpErr)
+			if err != nil && err != http.ErrServerClosed {
+				errCh <- errors.E(op, err)
 				return
 			}
 		}()
@@ -270,7 +286,8 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if s.redirect(w, r) {
+	if s.https != nil && r.TLS == nil && s.cfg.SSLConfig.Redirect {
+		s.redirect(w, r)
 		return
 	}
 
@@ -362,21 +379,19 @@ func (s *Plugin) Status() checker.Status {
 	}
 }
 
-func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) bool {
-	if s.https != nil && r.TLS == nil && s.cfg.SSLConfig.Redirect {
-		target := &url.URL{
-			Scheme:   "https",
-			Host:     s.tlsAddr(r.Host, false),
-			Path:     r.URL.Path,
-			RawQuery: r.URL.RawQuery,
-		}
-
-		http.Redirect(w, r, target.String(), http.StatusTemporaryRedirect)
-		return true
+func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) {
+	target := &url.URL{
+		Scheme: HTTPS_SCHEME,
+		// host or host:port
+		Host:     s.tlsAddr(r.Host, false),
+		Path:     r.URL.Path,
+		RawQuery: r.URL.RawQuery,
 	}
-	return false
+
+	http.Redirect(w, r, target.String(), http.StatusTemporaryRedirect)
 }
 
+//go:inline
 func headerContainsUpgrade(r *http.Request, s *Plugin) bool {
 	if _, ok := r.Header["Upgrade"]; ok {
 		// https://golang.org/pkg/net/http/#Hijacker
@@ -468,7 +483,7 @@ func (s *Plugin) initSSL() *http.Server {
 	DefaultCipherSuites = append(DefaultCipherSuites, topCipherSuites...)
 	DefaultCipherSuites = append(DefaultCipherSuites, defaultCipherSuitesTLS13...)
 
-	server := &http.Server{
+	sslServer := &http.Server{
 		Addr:    s.tlsAddr(s.cfg.Address, true),
 		Handler: s,
 		TLSConfig: &tls.Config{
@@ -484,7 +499,7 @@ func (s *Plugin) initSSL() *http.Server {
 		},
 	}
 
-	return server
+	return sslServer
 }
 
 // init http/2 server

@@ -22,7 +22,7 @@ http:
     destroy_timeout: 60s
 
   ssl:
-    port: 8890
+    address: :8890
     redirect: false
     cert: fixtures/server.crt
     key: fixtures/server.key

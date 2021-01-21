@@ -16,6 +16,7 @@ logs:
   level: debug
 
 http:
+  # host and port separated by semicolon
   address: 127.0.0.1:44933
   max_request_size: 1024
   middleware: [ "gzip", "headers" ]
@@ -70,7 +71,8 @@ http:
       max_worker_memory: 100
 
   #  ssl:
-  #    port: 8892
+  #    host and port separated by semicolon (default :443)
+  #    address: :8892
   #    redirect: false
   #    cert: fixtures/server.crt
   #    key: fixtures/server.key
