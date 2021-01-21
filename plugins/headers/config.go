@@ -2,7 +2,7 @@ package headers
 
 // Config declares headers service configuration.
 type Config struct {
-	Headers struct {
+	Headers *struct {
 		// CORS settings.
 		CORS *CORSConfig
 
@@ -17,20 +17,20 @@ type Config struct {
 // CORSConfig headers configuration.
 type CORSConfig struct {
 	// AllowedOrigin: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
-	AllowedOrigin string
+	AllowedOrigin string `mapstructure:"allowed_origin"`
 
 	// AllowedHeaders: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
-	AllowedHeaders string
+	AllowedHeaders string `mapstructure:"allowed_headers"`
 
 	// AllowedMethods: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods
-	AllowedMethods string
+	AllowedMethods string `mapstructure:"allowed_methods"`
 
 	// AllowCredentials https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
-	AllowCredentials *bool
+	AllowCredentials *bool `mapstructure:"allow_credentials"`
 
 	// ExposeHeaders:  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
-	ExposedHeaders string
+	ExposedHeaders string `mapstructure:"exposed_headers"`
 
 	// MaxAge of CORS headers in seconds/
-	MaxAge int
+	MaxAge int `mapstructure:"max_age"`
 }

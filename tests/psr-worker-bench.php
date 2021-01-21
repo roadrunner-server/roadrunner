@@ -17,7 +17,6 @@ while ($req = $worker->waitRequest()) {
     try {
         $rsp = new \Nyholm\Psr7\Response();
         $rsp->getBody()->write("hello world");
-        error_log("hello");
         $worker->respond($rsp);
     } catch (\Throwable $e) {
         $worker->getWorker()->error((string)$e);

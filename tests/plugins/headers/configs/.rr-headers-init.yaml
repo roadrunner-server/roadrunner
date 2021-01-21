@@ -17,16 +17,16 @@ http:
   # Additional HTTP headers and CORS control.
   headers:
     cors:
-      allowedOrigin: "*"
-      allowedHeaders: "*"
-      allowedMethods: "GET,POST,PUT,DELETE"
-      allowCredentials: true
-      exposedHeaders: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
-      maxAge: 600
+      allowed_origin: "*"
+      allowed_headers: "*"
+      allowed_methods: "GET,POST,PUT,DELETE"
+      allow_credentials: true
+      exposed_headers: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
+      max_age: 600
     request:
-      "Example-Request-Header": "Value"
+      Example-Request-Header: "Value"
     response:
-      "X-Powered-By": "RoadRunner"
+      X-Powered-By: "RoadRunner"
   pool:
     num_workers: 2
     max_jobs: 0

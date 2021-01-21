@@ -79,6 +79,7 @@ type Process struct {
 
 // InitBaseWorker creates new Process over given exec.cmd.
 func InitBaseWorker(cmd *exec.Cmd, options ...Options) (worker.BaseProcess, error) {
+	const op = errors.Op("init_base_worker")
 	if cmd.Process != nil {
 		return nil, fmt.Errorf("can't attach to running process")
 	}
@@ -307,9 +308,10 @@ func (w *Process) watch() {
 				n, _ := w.rd.Read(*buf)
 				w.events.Push(events.WorkerEvent{Event: events.EventWorkerLog, Worker: w, Payload: (*buf)[:n]})
 				w.mu.Lock()
+				// delete all prev messages
+				w.stderr.Reset()
 				// write new message
 				w.stderr.Write((*buf)[:n])
-				w.stderr.Reset()
 				w.mu.Unlock()
 				w.put(buf)
 			}
