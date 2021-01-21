@@ -1,0 +1,24 @@
+{
+  "name": "spiral/roadrunner",
+  "type": "server",
+  "description": "RoadRunner: High-performance PHP application server, load-balancer and process manager written in Golang",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Anton Titov / Wolfy-J",
+      "email": "wolfy.jd@gmail.com"
+    },
+    {
+      "name": "RoadRunner Community",
+      "homepage": "https://github.com/spiral/roadrunner/graphs/contributors"
+    }
+  ],
+  "require": {
+    "spiral/roadrunner-worker": ">=2.0",
+    "symfony/console": "^2.5.0 || ^3.0.0 || ^4.0.0 || ^5.0.0",
+    "composer/package-versions-deprecated": "^1.8"
+  },
+  "bin": [
+    "bin/rr"
+  ]
+}
