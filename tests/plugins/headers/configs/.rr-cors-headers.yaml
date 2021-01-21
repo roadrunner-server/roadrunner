@@ -8,7 +8,6 @@ server:
   relay_timeout: "20s"
 
 http:
-  debug: true
   address: 127.0.0.1:22855
   max_request_size: 1024
   middleware: [ "headers" ]
@@ -18,16 +17,16 @@ http:
   # Additional HTTP headers and CORS control.
   headers:
     cors:
-      allowedOrigin: "*"
-      allowedHeaders: "*"
-      allowedMethods: "GET,POST,PUT,DELETE"
-      allowCredentials: true
-      exposedHeaders: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
-      maxAge: 600
+      allowed_origin: "*"
+      allowed_headers: "*"
+      allowed_methods: "GET,POST,PUT,DELETE"
+      allow_credentials: true
+      exposed_headers: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
+      max_age: 600
     request:
-      "input": "custom-header"
+      input: "custom-header"
     response:
-      "output": "output-header"
+      output: "output-header"
   pool:
     num_workers: 2
     max_jobs: 0

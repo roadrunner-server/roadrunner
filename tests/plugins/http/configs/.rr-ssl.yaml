@@ -8,7 +8,6 @@ server:
   relay_timeout: "20s"
 
 http:
-  debug: true
   address: :8085
   max_request_size: 1024
   middleware: [ "" ]
@@ -26,13 +25,8 @@ http:
     redirect: false
     cert: fixtures/server.crt
     key: fixtures/server.key
-  #    rootCa: root.crt
   fcgi:
     address: tcp://0.0.0.0:16920
-  http2:
-    enabled: false
-    h2c: false
-    maxConcurrentStreams: 128
 logs:
   mode: development
   level: error

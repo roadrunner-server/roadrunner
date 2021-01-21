@@ -39,6 +39,9 @@ type Plugin struct {
 // Init application provider.
 func (server *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	const op = errors.Op("server_plugin_init")
+	if !cfg.Has(PluginName) {
+		return errors.E(op, errors.Disabled)
+	}
 	err := cfg.Unmarshal(&server.cfg)
 	if err != nil {
 		return errors.E(op, errors.Init, err)

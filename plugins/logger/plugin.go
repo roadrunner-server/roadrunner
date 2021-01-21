@@ -13,13 +13,17 @@ const PluginName = "logs"
 // ZapLogger manages zap logger.
 type ZapLogger struct {
 	base     *zap.Logger
-	cfg      Config
+	cfg      *Config
 	channels ChannelConfig
 }
 
 // Init logger service.
 func (z *ZapLogger) Init(cfg config.Configurer) error {
-	const op = errors.Op("zap logger init")
+	const op = errors.Op("config_plugin_init")
+	if !cfg.Has(PluginName) {
+		return errors.E(op, errors.Disabled)
+	}
+
 	err := cfg.UnmarshalKey(PluginName, &z.cfg)
 	if err != nil {
 		return errors.E(op, errors.Disabled, err)

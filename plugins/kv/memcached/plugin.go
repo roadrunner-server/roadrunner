@@ -36,12 +36,16 @@ func NewMemcachedClient(url string) kv.Storage {
 
 func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
 	const op = errors.Op("memcached_plugin_init")
-	s.cfg = &Config{}
-	s.cfg.InitDefaults()
+	if !cfg.Has(PluginName) {
+		return errors.E(op, errors.Disabled)
+	}
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
 		return errors.E(op, err)
 	}
+
+	s.cfg.InitDefaults()
+
 	s.log = log
 	return nil
 }

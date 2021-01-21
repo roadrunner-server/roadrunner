@@ -33,7 +33,7 @@ type Plugin struct {
 
 // Init rpc service. Must return true if service is enabled.
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
-	const op = errors.Op("rpc plugin init")
+	const op = errors.Op("rpc_plugin_init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
 	}
@@ -54,7 +54,7 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 
 // Serve serves the service.
 func (s *Plugin) Serve() chan error {
-	const op = errors.Op("serve rpc plugin")
+	const op = errors.Op("rpc_plugin_serve")
 	errCh := make(chan error, 1)
 
 	s.rpc = rpc.NewServer()
@@ -105,11 +105,12 @@ func (s *Plugin) Serve() chan error {
 
 // Stop stops the service.
 func (s *Plugin) Stop() error {
+	const op = errors.Op("rpc_plugin_stop")
 	// store closed state
 	atomic.StoreUint32(s.closed, 1)
 	err := s.listener.Close()
 	if err != nil {
-		return errors.E(errors.Op("stop RPC socket"), err)
+		return errors.E(op, err)
 	}
 	return nil
 }

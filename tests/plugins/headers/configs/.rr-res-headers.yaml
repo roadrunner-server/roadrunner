@@ -8,7 +8,6 @@ server:
   relay_timeout: "20s"
 
 http:
-  debug: true
   address: 127.0.0.1:22455
   max_request_size: 1024
   middleware: [ "headers" ]
@@ -18,9 +17,9 @@ http:
   # Additional HTTP headers and CORS control.
   headers:
     request:
-      "input": "custom-header"
+      input: "custom-header"
     response:
-      "output": "output-header"
+      output: "output-header"
   pool:
     num_workers: 2
     max_jobs: 0

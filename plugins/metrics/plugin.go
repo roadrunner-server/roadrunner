@@ -30,7 +30,7 @@ type statsProvider struct {
 
 // Plugin to manage application metrics using Prometheus.
 type Plugin struct {
-	cfg        Config
+	cfg        *Config
 	log        logger.Logger
 	mu         sync.Mutex // all receivers are pointers
 	http       *http.Server
@@ -41,12 +41,15 @@ type Plugin struct {
 // Init service.
 func (m *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	const op = errors.Op("metrics_plugin_init")
+	if !cfg.Has(PluginName) {
+		return errors.E(op, errors.Disabled)
+	}
+
 	err := cfg.UnmarshalKey(PluginName, &m.cfg)
 	if err != nil {
 		return errors.E(op, errors.Disabled, err)
 	}
 
-	// TODO figure out what is Init
 	m.cfg.InitDefaults()
 
 	m.log = log

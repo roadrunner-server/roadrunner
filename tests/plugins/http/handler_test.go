@@ -13,6 +13,7 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/pipe"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
+	"github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/stretchr/testify/assert"
 
 	"net/http"
@@ -34,7 +35,7 @@ func TestHandler_Echo(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -65,7 +66,7 @@ func TestHandler_Echo(t *testing.T) {
 }
 
 func Test_HandlerErrors(t *testing.T) {
-	_, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	_, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, nil)
@@ -88,7 +89,7 @@ func TestHandler_Headers(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -149,7 +150,7 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -209,7 +210,7 @@ func TestHandler_User_Agent(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -269,7 +270,7 @@ func TestHandler_Cookies(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -334,7 +335,7 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -398,7 +399,7 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -458,7 +459,7 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -518,7 +519,7 @@ func TestHandler_FormData_POST(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -591,7 +592,7 @@ func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -664,7 +665,7 @@ func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -736,7 +737,7 @@ func TestHandler_FormData_PUT(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -808,7 +809,7 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -880,7 +881,7 @@ func TestHandler_Multipart_POST(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -994,7 +995,7 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -1108,7 +1109,7 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -1224,7 +1225,7 @@ func TestHandler_Error(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -1270,7 +1271,7 @@ func TestHandler_Error2(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -1316,7 +1317,7 @@ func TestHandler_Error3(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -1375,7 +1376,7 @@ func TestHandler_ResponseDuration(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -1436,7 +1437,7 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -1496,7 +1497,7 @@ func TestHandler_ErrorDuration(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -1551,7 +1552,7 @@ func TestHandler_IP(t *testing.T) {
 		"fe80::/10",
 	}
 
-	cidrs, err := httpPlugin.ParseCIDRs(trusted)
+	cidrs, err := config.ParseCIDRs(trusted)
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
@@ -1570,7 +1571,7 @@ func TestHandler_IP(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, cidrs, pool)
@@ -1612,7 +1613,7 @@ func TestHandler_XRealIP(t *testing.T) {
 		"fe80::/10",
 	}
 
-	cidrs, err := httpPlugin.ParseCIDRs(trusted)
+	cidrs, err := config.ParseCIDRs(trusted)
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
@@ -1631,7 +1632,7 @@ func TestHandler_XRealIP(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, cidrs, pool)
@@ -1678,7 +1679,7 @@ func TestHandler_XForwardedFor(t *testing.T) {
 		"fe80::/10",
 	}
 
-	cidrs, err := httpPlugin.ParseCIDRs(trusted)
+	cidrs, err := config.ParseCIDRs(trusted)
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
@@ -1697,7 +1698,7 @@ func TestHandler_XForwardedFor(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, cidrs, pool)
@@ -1743,7 +1744,7 @@ func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
 		"10.0.0.0/8",
 	}
 
-	cidrs, err := httpPlugin.ParseCIDRs(trusted)
+	cidrs, err := config.ParseCIDRs(trusted)
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
@@ -1762,7 +1763,7 @@ func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, cidrs, pool)
@@ -1810,7 +1811,7 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 		pool.Destroy(context.Background())
 	}()
 
-	h, err := httpPlugin.NewHandler(1024, httpPlugin.UploadsConfig{
+	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)

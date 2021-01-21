@@ -5,9 +5,10 @@ import (
 
 	"github.com/spiral/endure"
 	"github.com/spiral/roadrunner/v2/cmd/cli"
-	"github.com/spiral/roadrunner/v2/plugins/http"
+	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
 
+	"github.com/spiral/roadrunner/v2/plugins/kv/boltdb"
 	"github.com/spiral/roadrunner/v2/plugins/kv/memcached"
 	"github.com/spiral/roadrunner/v2/plugins/kv/memory"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -21,7 +22,7 @@ import (
 
 func main() {
 	var err error
-	cli.Container, err = endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel), endure.RetryOnFail(false))
+	cli.Container, err = endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.RetryOnFail(false))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +35,7 @@ func main() {
 		// redis plugin (internal)
 		&redis.Plugin{},
 		// http server plugin
-		&http.Plugin{},
+		&httpPlugin.Plugin{},
 		// reload plugin
 		&reload.Plugin{},
 		// informer plugin (./rr workers, ./rr workers -i)
@@ -49,6 +50,8 @@ func main() {
 		&memcached.Plugin{},
 		// in-memory kv plugin
 		&memory.Plugin{},
+		// boltdb driver
+		&boltdb.Plugin{},
 	)
 	if err != nil {
 		log.Fatal(err)

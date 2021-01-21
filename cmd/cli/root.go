@@ -2,6 +2,7 @@ package cli
 
 import (
 	"log"
+	"net/http/pprof"
 	"net/rpc"
 	"os"
 	"path/filepath"
@@ -12,6 +13,8 @@ import (
 
 	"github.com/spiral/roadrunner/v2/plugins/config"
 
+	"net/http"
+
 	"github.com/spf13/cobra"
 	"github.com/spiral/endure"
 )
@@ -21,6 +24,8 @@ var (
 	WorkDir string
 	// CfgFile is path to the .rr.yaml
 	CfgFile string
+	// Debug mode
+	Debug bool
 	// Container is the pointer to the Endure container
 	Container *endure.Endure
 	cfg       *config.Viper
@@ -42,7 +47,7 @@ func Execute() {
 func init() {
 	root.PersistentFlags().StringVarP(&CfgFile, "config", "c", ".rr.yaml", "config file (default is .rr.yaml)")
 	root.PersistentFlags().StringVarP(&WorkDir, "WorkDir", "w", "", "work directory")
-
+	root.PersistentFlags().BoolVarP(&Debug, "debug", "d", false, "debug mode")
 	cobra.OnInitialize(func() {
 		if CfgFile != "" {
 			if absPath, err := filepath.Abs(CfgFile); err == nil {
@@ -69,6 +74,11 @@ func init() {
 		err := Container.Register(cfg)
 		if err != nil {
 			panic(err)
+		}
+
+		// if debug mode is on - run debug server
+		if Debug {
+			runDebugServer()
 		}
 	})
 }
@@ -98,4 +108,22 @@ func RPCClient() (*rpc.Client, error) {
 	}
 
 	return rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn)), nil
+}
+
+// debug server
+func runDebugServer() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/debug/pprof/", pprof.Index)
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+	srv := http.Server{
+		Addr:    ":6061",
+		Handler: mux,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
+		log.Fatal(err)
+	}
 }

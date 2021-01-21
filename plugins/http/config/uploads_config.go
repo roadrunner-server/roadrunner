@@ -1,4 +1,4 @@
-package http
+package config
 
 import (
 	"os"
@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-// UploadsConfig describes file location and controls access to them.
-type UploadsConfig struct {
+// Uploads describes file location and controls access to them.
+type Uploads struct {
 	// Dir contains name of directory to control access to.
 	Dir string
 
@@ -17,14 +17,14 @@ type UploadsConfig struct {
 }
 
 // InitDefaults sets missing values to their default values.
-func (cfg *UploadsConfig) InitDefaults() error {
+func (cfg *Uploads) InitDefaults() error {
 	cfg.Forbid = []string{".php", ".exe", ".bat"}
 	cfg.Dir = os.TempDir()
 	return nil
 }
 
 // TmpDir returns temporary directory.
-func (cfg *UploadsConfig) TmpDir() string {
+func (cfg *Uploads) TmpDir() string {
 	if cfg.Dir != "" {
 		return cfg.Dir
 	}
@@ -33,7 +33,7 @@ func (cfg *UploadsConfig) TmpDir() string {
 }
 
 // Forbids must return true if file extension is not allowed for the upload.
-func (cfg *UploadsConfig) Forbids(filename string) bool {
+func (cfg *Uploads) Forbids(filename string) bool {
 	ext := strings.ToLower(path.Ext(filename))
 
 	for _, v := range cfg.Forbid {

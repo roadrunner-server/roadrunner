@@ -17,7 +17,6 @@ func initStorage() kv.Storage {
 		stop: make(chan struct{}),
 	}
 	p.cfg = &Config{
-		Enabled:  true,
 		Interval: 1,
 	}
 

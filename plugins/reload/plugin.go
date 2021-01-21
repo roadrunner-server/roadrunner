@@ -27,13 +27,17 @@ type Plugin struct {
 // Init controller service
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, res resetter.Resetter) error {
 	const op = errors.Op("reload_plugin_init")
-	s.cfg = &Config{}
-	InitDefaults(s.cfg)
+	if !cfg.Has(PluginName) {
+		return errors.E(op, errors.Disabled)
+	}
+
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
 		// disable plugin in case of error
 		return errors.E(op, errors.Disabled, err)
 	}
+
+	s.cfg.InitDefaults()
 
 	s.log = log
 	s.res = res
@@ -101,7 +105,7 @@ func (s *Plugin) Serve() chan error {
 		}
 	}()
 
-	// map with configs by services
+	// map with config by services
 	updated := make(map[string]ServiceConfig, len(s.cfg.Services))
 
 	go func() {

@@ -24,14 +24,17 @@ func (s *Plugin) GetClient() redis.UniversalClient {
 
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	const op = errors.Op("redis_plugin_init")
-	s.cfg = &Config{}
-	s.cfg.InitDefaults()
+
+	if !cfg.Has(PluginName) {
+		return errors.E(op, errors.Disabled)
+	}
 
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
 		return errors.E(op, errors.Disabled, err)
 	}
 
+	s.cfg.InitDefaults()
 	s.log = log
 
 	s.universalClient = redis.NewUniversalClient(&redis.UniversalOptions{

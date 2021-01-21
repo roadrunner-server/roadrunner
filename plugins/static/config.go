@@ -10,7 +10,7 @@ import (
 
 // Config describes file location and controls access to them.
 type Config struct {
-	Static struct {
+	Static *struct {
 		// Dir contains name of directory to control access to.
 		Dir string
 

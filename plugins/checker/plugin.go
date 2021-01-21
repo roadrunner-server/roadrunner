@@ -27,13 +27,12 @@ type Plugin struct {
 
 func (c *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
 	const op = errors.Op("checker_plugin_init")
+	if !cfg.Has(PluginName) {
+		return errors.E(op, errors.Disabled)
+	}
 	err := cfg.UnmarshalKey(PluginName, &c.cfg)
 	if err != nil {
 		return errors.E(op, errors.Disabled, err)
-	}
-
-	if c.cfg == nil {
-		return errors.E(errors.Disabled)
 	}
 
 	c.registry = make(map[string]Checker)

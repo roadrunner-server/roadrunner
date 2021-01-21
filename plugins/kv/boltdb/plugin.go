@@ -42,14 +42,18 @@ type Plugin struct {
 
 func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
 	const op = errors.Op("boltdb_plugin_init")
-	s.cfg = &Config{}
 
-	s.cfg.InitDefaults()
+	if !cfg.Has(PluginName) {
+		return errors.E(op, errors.Disabled)
+	}
 
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
 		return errors.E(op, errors.Disabled, err)
 	}
+
+	// add default values
+	s.cfg.InitDefaults()
 
 	// set the logger
 	s.log = log
