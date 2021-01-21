@@ -31,6 +31,14 @@ http:
         "fc00::/7",
         "fe80::/10",
     ]
+  static:
+    dir: "tests"
+    forbid: [ "" ]
+    request:
+      "input": "custom-header"
+    response:
+      "output": "output-header"
+
   pool:
     num_workers: 6
     max_jobs: 0
@@ -42,7 +50,7 @@ http:
       # TTL defines maximum time worker is allowed to live (seconds)
       ttl: 0
       # IdleTTL defines maximum duration worker can spend in idle mode. Disabled when 0 (seconds)
-      idle_ttl: 100
+      idle_ttl: 10
       # ExecTTL defines maximum lifetime per job (seconds)
       exec_ttl: 10
       # MaxWorkerMemory limits memory per worker (MB)
@@ -57,7 +65,6 @@ http:
   fcgi:
     address: tcp://0.0.0.0:7921
   http2:
-    enabled: false
     h2c: false
     max_concurrent_streams: 128
 
@@ -109,7 +116,6 @@ memcached:
 
 # in memory KV driver
 memory:
-  enabled: true
   # keys ttl check interval
   interval: 60
 

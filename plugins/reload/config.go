@@ -36,9 +36,13 @@ type ServiceConfig struct {
 }
 
 // InitDefaults sets missing values to their default values.
-func InitDefaults(c *Config) {
-	c.Interval = time.Second
-	c.Patterns = []string{".php"}
+func (c *Config) InitDefaults() {
+	if c.Interval == 0 {
+		c.Interval = time.Second
+	}
+	if c.Patterns == nil {
+		c.Patterns = []string{".php"}
+	}
 }
 
 // Valid validates the configuration.

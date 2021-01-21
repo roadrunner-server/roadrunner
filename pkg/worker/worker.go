@@ -224,6 +224,8 @@ func (w *Process) Wait() error {
 		w.state.Set(internal.StateStopped)
 	}
 
+	w.stderr.Reset()
+
 	return nil
 }
 
@@ -307,6 +309,7 @@ func (w *Process) watch() {
 				w.mu.Lock()
 				// write new message
 				w.stderr.Write((*buf)[:n])
+				w.stderr.Reset()
 				w.mu.Unlock()
 				w.put(buf)
 			}

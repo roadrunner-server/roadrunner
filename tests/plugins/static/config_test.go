@@ -8,7 +8,7 @@ import (
 )
 
 func TestConfig_Forbids(t *testing.T) {
-	cfg := static.Config{Static: struct {
+	cfg := static.Config{Static: &struct {
 		Dir      string
 		Forbid   []string
 		Always   []string
@@ -23,7 +23,7 @@ func TestConfig_Forbids(t *testing.T) {
 }
 
 func TestConfig_Valid(t *testing.T) {
-	assert.NoError(t, (&static.Config{Static: struct {
+	assert.NoError(t, (&static.Config{Static: &struct {
 		Dir      string
 		Forbid   []string
 		Always   []string
@@ -31,15 +31,15 @@ func TestConfig_Valid(t *testing.T) {
 		Response map[string]string
 	}{Dir: "./"}}).Valid())
 
-	assert.Error(t, (&static.Config{Static: struct {
+	assert.Error(t, (&static.Config{Static: &struct {
 		Dir      string
 		Forbid   []string
 		Always   []string
 		Request  map[string]string
 		Response map[string]string
-	}{Dir: "./config.go"}}).Valid())
+	}{Dir: "./http.go"}}).Valid())
 
-	assert.Error(t, (&static.Config{Static: struct {
+	assert.Error(t, (&static.Config{Static: &struct {
 		Dir      string
 		Forbid   []string
 		Always   []string

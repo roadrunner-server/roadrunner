@@ -11,6 +11,7 @@ import (
 	j "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
+	"github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
@@ -70,7 +71,7 @@ func fetchIP(pair string) string {
 }
 
 // NewRequest creates new PSR7 compatible request using net/http request.
-func NewRequest(r *http.Request, cfg UploadsConfig) (*Request, error) {
+func NewRequest(r *http.Request, cfg config.Uploads) (*Request, error) {
 	req := &Request{
 		RemoteAddr: fetchIP(r.RemoteAddr),
 		Protocol:   r.Proto,

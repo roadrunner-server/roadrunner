@@ -1,28 +1,25 @@
 <?php
-/**
- * @var Goridge\RelayInterface $relay
- */
-use Spiral\Goridge;
+
 use Spiral\RoadRunner;
+use Nyholm\Psr7\Factory;
 
 ini_set('display_errors', 'stderr');
-require __DIR__ . "/vendor/autoload.php";
+include "vendor/autoload.php";
 
-$worker = new RoadRunner\Worker(new Goridge\StreamRelay(STDIN, STDOUT));
-$psr7 = new RoadRunner\Http\PSR7Worker(
-    $worker,
-    new \Nyholm\Psr7\Factory\Psr17Factory(),
-    new \Nyholm\Psr7\Factory\Psr17Factory(),
-    new \Nyholm\Psr7\Factory\Psr17Factory()
+$worker = new RoadRunner\Http\PSR7Worker(
+    RoadRunner\Worker::create(),
+    new Factory\Psr17Factory(),
+    new Factory\Psr17Factory(),
+    new Factory\Psr17Factory()
 );
 
-while ($req = $psr7->waitRequest()) {
+while ($req = $worker->waitRequest()) {
     try {
-        $resp = new \Nyholm\Psr7\Response();
-        $resp->getBody()->write("hello world");
-
-        $psr7->respond($resp);
+        $rsp = new \Nyholm\Psr7\Response();
+        $rsp->getBody()->write("hello world");
+        error_log("hello");
+        $worker->respond($rsp);
     } catch (\Throwable $e) {
-        $psr7->getWorker()->error((string)$e);
+        $worker->getWorker()->error((string)$e);
     }
 }

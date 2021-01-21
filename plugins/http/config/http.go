@@ -1,4 +1,4 @@
-package http
+package config
 
 import (
 	"net"
@@ -11,42 +11,19 @@ import (
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 )
 
-// Cidrs is a slice of IPNet addresses
-type Cidrs []*net.IPNet
-
-// IsTrusted checks if the ip address exists in the provided in the config addresses
-func (c *Cidrs) IsTrusted(ip string) bool {
-	if len(*c) == 0 {
-		return false
-	}
-
-	i := net.ParseIP(ip)
-	if i == nil {
-		return false
-	}
-
-	for _, cird := range *c {
-		if cird.Contains(i) {
-			return true
-		}
-	}
-
-	return false
-}
-
-// Config configures RoadRunner HTTP server.
-type Config struct {
+// HTTP configures RoadRunner HTTP server.
+type HTTP struct {
 	// Port and port to handle as http server.
 	Address string
 
-	// SSL defines https server options.
-	SSL *SSLConfig
+	// SSLConfig defines https server options.
+	SSLConfig *SSL `mapstructure:"ssl"`
 
-	// FCGI configuration. You can use FastCGI without HTTP server.
-	FCGI *FCGIConfig
+	// FCGIConfig configuration. You can use FastCGI without HTTP server.
+	FCGIConfig *FCGI `mapstructure:"fcgi"`
 
-	// HTTP2 configuration
-	HTTP2 *HTTP2Config
+	// HTTP2Config configuration
+	HTTP2Config *HTTP2 `mapstructure:"http2"`
 
 	// MaxRequestSize specified max size for payload body in megabytes, set 0 to unlimited.
 	MaxRequestSize uint64 `mapstructure:"max_request_size"`
@@ -55,7 +32,7 @@ type Config struct {
 	TrustedSubnets []string `mapstructure:"trusted_subnets"`
 
 	// Uploads configures uploads configuration.
-	Uploads *UploadsConfig
+	Uploads *Uploads `mapstructure:"uploads"`
 
 	// Pool configures worker pool.
 	Pool *poolImpl.Config `mapstructure:"pool"`
@@ -67,80 +44,31 @@ type Config struct {
 	Middleware []string
 
 	// slice of net.IPNet
-	cidrs Cidrs
-}
-
-// FCGIConfig for FastCGI server.
-type FCGIConfig struct {
-	// Address and port to handle as http server.
-	Address string
-}
-
-// HTTP2Config HTTP/2 server customizations.
-type HTTP2Config struct {
-	// Enable or disable HTTP/2 extension, default enable.
-	Enabled bool
-
-	// H2C enables HTTP/2 over TCP
-	H2C bool
-
-	// MaxConcurrentStreams defaults to 128.
-	MaxConcurrentStreams uint32 `mapstructure:"max_concurrent_streams"`
-}
-
-// InitDefaults sets default values for HTTP/2 configuration.
-func (cfg *HTTP2Config) InitDefaults() error {
-	cfg.Enabled = true
-	cfg.MaxConcurrentStreams = 128
-
-	return nil
-}
-
-// SSLConfig defines https server configuration.
-type SSLConfig struct {
-	// Port to listen as HTTPS server, defaults to 443.
-	Port int
-
-	// Redirect when enabled forces all http connections to switch to https.
-	Redirect bool
-
-	// Key defined private server key.
-	Key string
-
-	// Cert is https certificate.
-	Cert string
-
-	// Root CA file
-	RootCA string
+	Cidrs Cidrs
 }
 
 // EnableHTTP is true when http server must run.
-func (c *Config) EnableHTTP() bool {
+func (c *HTTP) EnableHTTP() bool {
 	return c.Address != ""
 }
 
 // EnableTLS returns true if pool must listen TLS connections.
-func (c *Config) EnableTLS() bool {
-	return c.SSL.Key != "" || c.SSL.Cert != "" || c.SSL.RootCA != ""
-}
-
-// EnableHTTP2 when HTTP/2 extension must be enabled (only with TSL).
-func (c *Config) EnableHTTP2() bool {
-	return c.HTTP2.Enabled
+func (c *HTTP) EnableTLS() bool {
+	return c.SSLConfig.Key != "" || c.SSLConfig.Cert != "" || c.SSLConfig.RootCA != ""
 }
 
 // EnableH2C when HTTP/2 extension must be enabled on TCP.
-func (c *Config) EnableH2C() bool {
-	return c.HTTP2.H2C
+func (c *HTTP) EnableH2C() bool {
+	return c.HTTP2Config.H2C
 }
 
 // EnableFCGI is true when FastCGI server must be enabled.
-func (c *Config) EnableFCGI() bool {
-	return c.FCGI.Address != ""
+func (c *HTTP) EnableFCGI() bool {
+	return c.FCGIConfig.Address != ""
 }
 
-// InitDefaults must populate Config values using given Config source. Must return error if Config is not valid.
-func (c *Config) InitDefaults() error {
+// InitDefaults must populate HTTP values using given HTTP source. Must return error if HTTP is not valid.
+func (c *HTTP) InitDefaults() error {
 	if c.Pool == nil {
 		// default pool
 		c.Pool = &poolImpl.Config{
@@ -153,27 +81,27 @@ func (c *Config) InitDefaults() error {
 		}
 	}
 
-	if c.HTTP2 == nil {
-		c.HTTP2 = &HTTP2Config{}
+	if c.HTTP2Config == nil {
+		c.HTTP2Config = &HTTP2{}
 	}
 
-	if c.FCGI == nil {
-		c.FCGI = &FCGIConfig{}
+	if c.FCGIConfig == nil {
+		c.FCGIConfig = &FCGI{}
 	}
 
 	if c.Uploads == nil {
-		c.Uploads = &UploadsConfig{}
+		c.Uploads = &Uploads{}
 	}
 
-	if c.SSL == nil {
-		c.SSL = &SSLConfig{}
+	if c.SSLConfig == nil {
+		c.SSLConfig = &SSL{}
 	}
 
-	if c.SSL.Port == 0 {
-		c.SSL.Port = 443
+	if c.SSLConfig.Port == 0 {
+		c.SSLConfig.Port = 443
 	}
 
-	err := c.HTTP2.InitDefaults()
+	err := c.HTTP2Config.InitDefaults()
 	if err != nil {
 		return err
 	}
@@ -199,7 +127,7 @@ func (c *Config) InitDefaults() error {
 	if err != nil {
 		return err
 	}
-	c.cidrs = cidrs
+	c.Cidrs = cidrs
 
 	return c.Valid()
 }
@@ -220,8 +148,8 @@ func ParseCIDRs(subnets []string) (Cidrs, error) {
 }
 
 // IsTrusted if api can be trusted to use X-Real-Ip, X-Forwarded-For
-func (c *Config) IsTrusted(ip string) bool {
-	if c.cidrs == nil {
+func (c *HTTP) IsTrusted(ip string) bool {
+	if c.Cidrs == nil {
 		return false
 	}
 
@@ -230,7 +158,7 @@ func (c *Config) IsTrusted(ip string) bool {
 		return false
 	}
 
-	for _, cird := range c.cidrs {
+	for _, cird := range c.Cidrs {
 		if cird.Contains(i) {
 			return true
 		}
@@ -240,13 +168,13 @@ func (c *Config) IsTrusted(ip string) bool {
 }
 
 // Valid validates the configuration.
-func (c *Config) Valid() error {
+func (c *HTTP) Valid() error {
 	const op = errors.Op("validation")
 	if c.Uploads == nil {
 		return errors.E(op, errors.Str("malformed uploads config"))
 	}
 
-	if c.HTTP2 == nil {
+	if c.HTTP2Config == nil {
 		return errors.E(op, errors.Str("malformed http2 config"))
 	}
 
@@ -263,27 +191,27 @@ func (c *Config) Valid() error {
 	}
 
 	if c.EnableTLS() {
-		if _, err := os.Stat(c.SSL.Key); err != nil {
+		if _, err := os.Stat(c.SSLConfig.Key); err != nil {
 			if os.IsNotExist(err) {
-				return errors.E(op, errors.Errorf("key file '%s' does not exists", c.SSL.Key))
+				return errors.E(op, errors.Errorf("key file '%s' does not exists", c.SSLConfig.Key))
 			}
 
 			return err
 		}
 
-		if _, err := os.Stat(c.SSL.Cert); err != nil {
+		if _, err := os.Stat(c.SSLConfig.Cert); err != nil {
 			if os.IsNotExist(err) {
-				return errors.E(op, errors.Errorf("cert file '%s' does not exists", c.SSL.Cert))
+				return errors.E(op, errors.Errorf("cert file '%s' does not exists", c.SSLConfig.Cert))
 			}
 
 			return err
 		}
 
 		// RootCA is optional, but if provided - check it
-		if c.SSL.RootCA != "" {
-			if _, err := os.Stat(c.SSL.RootCA); err != nil {
+		if c.SSLConfig.RootCA != "" {
+			if _, err := os.Stat(c.SSLConfig.RootCA); err != nil {
 				if os.IsNotExist(err) {
-					return errors.E(op, errors.Errorf("root ca path provided, but path '%s' does not exists", c.SSL.RootCA))
+					return errors.E(op, errors.Errorf("root ca path provided, but path '%s' does not exists", c.SSLConfig.RootCA))
 				}
 				return err
 			}

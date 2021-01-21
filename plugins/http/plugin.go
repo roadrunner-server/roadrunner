@@ -21,6 +21,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/checker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
+	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/utils"
@@ -52,7 +53,7 @@ type Plugin struct {
 	server server.Server
 	log    logger.Logger
 
-	cfg *Config `mapstructure:"http"`
+	cfg *httpConfig.HTTP `mapstructure:"http"`
 	// middlewares to chain
 	mdwr middleware
 
@@ -72,14 +73,13 @@ type Plugin struct {
 // misconfiguration. Services must not be used without proper configuration pushed first.
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Server) error {
 	const op = errors.Op("http_plugin_init")
+	if !cfg.Has(PluginName) {
+		return errors.E(op, errors.Disabled)
+	}
+
 	err := cfg.UnmarshalKey(PluginName, &s.cfg)
 	if err != nil {
 		return errors.E(op, err)
-	}
-
-	// if no HTTP section in config - disable HTTP
-	if s.cfg == nil {
-		return errors.E(op, errors.Disabled)
 	}
 
 	err = s.cfg.InitDefaults()
@@ -142,7 +142,7 @@ func (s *Plugin) Serve() chan error {
 	s.handler, err = NewHandler(
 		s.cfg.MaxRequestSize,
 		*s.cfg.Uploads,
-		s.cfg.cidrs,
+		s.cfg.Cidrs,
 		s.pool,
 	)
 	if err != nil {
@@ -162,7 +162,7 @@ func (s *Plugin) Serve() chan error {
 
 	if s.cfg.EnableTLS() {
 		s.https = s.initSSL()
-		if s.cfg.SSL.RootCA != "" {
+		if s.cfg.SSLConfig.RootCA != "" {
 			err = s.appendRootCa()
 			if err != nil {
 				errCh <- errors.E(op, err)
@@ -170,7 +170,8 @@ func (s *Plugin) Serve() chan error {
 			}
 		}
 
-		if s.cfg.EnableHTTP2() {
+		// if HTTP2Config not nil
+		if s.cfg.HTTP2Config != nil {
 			if err := s.initHTTP2(); err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -200,8 +201,8 @@ func (s *Plugin) Serve() chan error {
 	if s.https != nil {
 		go func() {
 			httpErr := s.https.ListenAndServeTLS(
-				s.cfg.SSL.Cert,
-				s.cfg.SSL.Key,
+				s.cfg.SSLConfig.Cert,
+				s.cfg.SSLConfig.Key,
 			)
 
 			if httpErr != nil && httpErr != http.ErrServerClosed {
@@ -322,7 +323,7 @@ func (s *Plugin) Reset() error {
 	s.handler, err = NewHandler(
 		s.cfg.MaxRequestSize,
 		*s.cfg.Uploads,
-		s.cfg.cidrs,
+		s.cfg.Cidrs,
 		s.pool,
 	)
 	if err != nil {
@@ -362,7 +363,7 @@ func (s *Plugin) Status() checker.Status {
 }
 
 func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) bool {
-	if s.https != nil && r.TLS == nil && s.cfg.SSL.Redirect {
+	if s.https != nil && r.TLS == nil && s.cfg.SSLConfig.Redirect {
 		target := &url.URL{
 			Scheme:   "https",
 			Host:     s.tlsAddr(r.Host, false),
@@ -396,7 +397,7 @@ func (s *Plugin) appendRootCa() error {
 		rootCAs = x509.NewCertPool()
 	}
 
-	CA, err := ioutil.ReadFile(s.cfg.SSL.RootCA)
+	CA, err := ioutil.ReadFile(s.cfg.SSLConfig.RootCA)
 	if err != nil {
 		return err
 	}
@@ -489,13 +490,13 @@ func (s *Plugin) initSSL() *http.Server {
 // init http/2 server
 func (s *Plugin) initHTTP2() error {
 	return http2.ConfigureServer(s.https, &http2.Server{
-		MaxConcurrentStreams: s.cfg.HTTP2.MaxConcurrentStreams,
+		MaxConcurrentStreams: s.cfg.HTTP2Config.MaxConcurrentStreams,
 	})
 }
 
 // serveFCGI starts FastCGI server.
 func (s *Plugin) serveFCGI() error {
-	l, err := utils.CreateListener(s.cfg.FCGI.Address)
+	l, err := utils.CreateListener(s.cfg.FCGIConfig.Address)
 	if err != nil {
 		return err
 	}
@@ -508,13 +509,13 @@ func (s *Plugin) serveFCGI() error {
 	return nil
 }
 
-// tlsAddr replaces listen or host port with port configured by SSL config.
+// tlsAddr replaces listen or host port with port configured by SSLConfig config.
 func (s *Plugin) tlsAddr(host string, forcePort bool) string {
 	// remove current forcePort first
 	host = strings.Split(host, ":")[0]
 
-	if forcePort || s.cfg.SSL.Port != 443 {
-		host = fmt.Sprintf("%s:%v", host, s.cfg.SSL.Port)
+	if forcePort || s.cfg.SSLConfig.Port != 443 {
+		host = fmt.Sprintf("%s:%v", host, s.cfg.SSLConfig.Port)
 	}
 
 	return host

@@ -16,9 +16,22 @@ type Config struct {
 
 // InitDefaults initializes default values for the boltdb
 func (s *Config) InitDefaults() {
-	s.Dir = "."          // current dir
-	s.Bucket = "rr"      // default bucket name
-	s.File = "rr.db"     // default file name
-	s.Permissions = 0777 // free for all
-	s.Interval = 60      // default is 60 seconds timeout
+	if s.Dir == "" {
+		s.Dir = "." // current dir
+	}
+	if s.Bucket == "" {
+		s.Bucket = "rr" // default bucket name
+	}
+
+	if s.File == "" {
+		s.File = "rr.db" // default file name
+	}
+
+	if s.Permissions == 0 {
+		s.Permissions = 777 // free for all
+	}
+
+	if s.Interval == 0 {
+		s.Interval = 60 // default is 60 seconds timeout
+	}
 }

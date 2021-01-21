@@ -12,15 +12,8 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/interfaces/pool"
+	"github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
-)
-
-const (
-	// EventResponse thrown after the request been processed. See ErrorEvent as payload.
-	EventResponse = iota + 500
-
-	// EventError thrown on any non job error provided by road runner server.
-	EventError
 )
 
 // MB is 1024 bytes
@@ -66,8 +59,8 @@ func (e *ResponseEvent) Elapsed() time.Duration {
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Handler struct {
 	maxRequestSize uint64
-	uploads        UploadsConfig
-	trusted        Cidrs
+	uploads        config.Uploads
+	trusted        config.Cidrs
 	log            logger.Logger
 	pool           pool.Pool
 	mul            sync.Mutex
@@ -75,7 +68,7 @@ type Handler struct {
 }
 
 // NewHandler return handle interface implementation
-func NewHandler(maxReqSize uint64, uploads UploadsConfig, trusted Cidrs, pool pool.Pool) (*Handler, error) {
+func NewHandler(maxReqSize uint64, uploads config.Uploads, trusted config.Cidrs, pool pool.Pool) (*Handler, error) {
 	if pool == nil {
 		return nil, errors.E(errors.Str("pool should be initialized"))
 	}
