@@ -63,15 +63,6 @@ $ ./vendor/bin/rr get-binary
 
 > For getting roadrunner binary file you can use our docker image: `spiralscout/roadrunner:X.X.X` (more information about image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/))
 
-Extensions:
---------
-| Extension | Current Status        
-| ---       | ---
-spiral/jobs | [![Latest Stable Version](https://poser.pugx.org/spiral/jobs/version)](https://packagist.org/packages/spiral/jobs) [![Build Status](https://travis-ci.org/spiral/jobs.svg?branch=master)](https://travis-ci.org/spiral/jobs) [![Codecov](https://codecov.io/gh/spiral/jobs/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/jobs/)
-spiral/php-grpc | [![Latest Stable Version](https://poser.pugx.org/spiral/php-grpc/version)](https://packagist.org/packages/spiral/php-grpc) [![Build Status](https://travis-ci.org/spiral/php-grpc.svg?branch=master)](https://travis-ci.org/spiral/php-grpc) [![Codecov](https://codecov.io/gh/spiral/php-grpc/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/php-grpc/)
-spiral/broadcast | [![Latest Stable Version](https://poser.pugx.org/spiral/broadcast/version)](https://packagist.org/packages/spiral/broadcast) [![Build Status](https://travis-ci.org/spiral/broadcast.svg?branch=master)](https://travis-ci.org/spiral/broadcast) [![Codecov](https://codecov.io/gh/spiral/broadcast/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/broadcast/)
-spiral/broadcast-ws | [![Latest Stable Version](https://poser.pugx.org/spiral/broadcast-ws/version)](https://packagist.org/packages/spiral/broadcast-ws) [![Build Status](https://travis-ci.org/spiral/broadcast-ws.svg?branch=master)](https://travis-ci.org/spiral/broadcast-ws) [![Codecov](https://codecov.io/gh/spiral/broadcast-ws/branch/master/graph/badge.svg)](https://codecov.io/gh/spiral/broadcast-ws/)
-
 Example:
 --------
 
