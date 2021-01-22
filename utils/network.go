@@ -3,7 +3,6 @@
 package utils
 
 import (
-	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -16,36 +15,49 @@ import (
 // CreateListener crates socket listener based on DSN definition.
 func CreateListener(address string) (net.Listener, error) {
 	dsn := strings.Split(address, "://")
-	if len(dsn) != 2 {
-		return nil, errors.New("invalid DSN (tcp://:6001, unix://file.sock)")
-	}
 
-	if dsn[0] != "unix" && dsn[0] != "tcp" {
-		return nil, errors.New("invalid Protocol (tcp://:6001, unix://file.sock)")
-	}
-
-	// create unix listener
-	if dsn[0] == "unix" {
-		// check if the file exist
-		if fileExists(dsn[1]) {
-			err := syscall.Unlink(dsn[1])
-			if err != nil {
-				return nil, fmt.Errorf("error during the unlink syscall: error %v", err)
+	switch len(dsn) {
+	case 1:
+		// assume, that there is no prefix here [127.0.0.1:8000]
+		return createTCPListener(dsn[0])
+	case 2:
+		// we got two part here, first part is the transport, second - address
+		// [tcp://127.0.0.1:8000] OR [unix:///path/to/unix.socket] OR [error://path]
+		// where error is wrong transport name
+		switch dsn[0] {
+		case "unix":
+			// check of file exist. If exist, unlink
+			if fileExists(dsn[1]) {
+				err := syscall.Unlink(dsn[1])
+				if err != nil {
+					return nil, fmt.Errorf("error during the unlink syscall: error %v", err)
+				}
 			}
+			return net.Listen(dsn[0], dsn[1])
+		case "tcp":
+			return createTCPListener(dsn[1])
+			// not an tcp or unix
+		default:
+			return nil, fmt.Errorf("invalid Protocol ([tcp://]:6001, unix://file.sock), address: %s", address)
 		}
-		return net.Listen(dsn[0], dsn[1])
+		// wrong number of split parts
+	default:
+		return nil, fmt.Errorf("wrong number of parsed protocol parts, address: %s", address)
 	}
+}
 
-	// configure and create tcp4 listener
+func createTCPListener(addr string) (net.Listener, error) {
 	cfg := tcplisten.Config{
 		ReusePort:   true,
 		DeferAccept: true,
 		FastOpen:    true,
 		Backlog:     0,
 	}
-
-	// only tcp4 is currently supported
-	return cfg.NewListener("tcp4", dsn[1])
+	listener, err := cfg.NewListener("tcp4", addr)
+	if err != nil {
+		return nil, err
+	}
+	return listener, nil
 }
 
 // fileExists checks if a file exists and is not a directory before we
