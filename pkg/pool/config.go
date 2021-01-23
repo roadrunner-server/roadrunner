@@ -52,19 +52,19 @@ func (cfg *Config) InitDefaults() {
 
 type SupervisorConfig struct {
 	// WatchTick defines how often to check the state of worker.
-	WatchTick uint64 `mapstructure:"watch_tick"`
+	WatchTick uint64
 
 	// TTL defines maximum time worker is allowed to live.
-	TTL uint64 `mapstructure:"ttl"`
+	TTL uint64
 
 	// IdleTTL defines maximum duration worker can spend in idle mode. Disabled when 0.
-	IdleTTL uint64 `mapstructure:"idle_ttl"`
+	IdleTTL uint64
 
 	// ExecTTL defines maximum lifetime per job.
-	ExecTTL uint64 `mapstructure:"exec_ttl"`
+	ExecTTL uint64
 
 	// MaxWorkerMemory limits memory per worker.
-	MaxWorkerMemory uint64 `mapstructure:"max_worker_memory"`
+	MaxWorkerMemory uint64
 }
 
 // InitDefaults enables default config values.

@@ -8,16 +8,17 @@ import (
 	"strings"
 
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/pkg/transport"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 
 	// core imports
-	"github.com/spiral/roadrunner/v2/interfaces/events"
-	"github.com/spiral/roadrunner/v2/interfaces/pool"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
-	"github.com/spiral/roadrunner/v2/pkg/pipe"
+	"github.com/spiral/roadrunner/v2/pkg/events"
+	"github.com/spiral/roadrunner/v2/pkg/pool"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
-	"github.com/spiral/roadrunner/v2/pkg/socket"
+	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
+	"github.com/spiral/roadrunner/v2/pkg/transport/socket"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/utils"
 )
 
@@ -33,7 +34,7 @@ const RR_RPC = "RR_RPC" //nolint:golint,stylecheck
 type Plugin struct {
 	cfg     Config
 	log     logger.Logger
-	factory worker.Factory
+	factory transport.Factory
 }
 
 // Init application provider.
@@ -115,7 +116,7 @@ func (server *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 }
 
 // NewWorker issues new standalone worker.
-func (server *Plugin) NewWorker(ctx context.Context, env Env, listeners ...events.Listener) (worker.BaseProcess, error) {
+func (server *Plugin) NewWorker(ctx context.Context, env Env, listeners ...events.Listener) (*worker.Process, error) {
 	const op = errors.Op("server_plugin_new_worker")
 
 	list := make([]events.Listener, 0, len(listeners))
@@ -157,7 +158,7 @@ func (server *Plugin) NewWorkerPool(ctx context.Context, opt poolImpl.Config, en
 }
 
 // creates relay and worker factory.
-func (server *Plugin) initFactory() (worker.Factory, error) {
+func (server *Plugin) initFactory() (transport.Factory, error) {
 	const op = errors.Op("server_plugin_init_factory")
 	if server.cfg.Server.Relay == "" || server.cfg.Server.Relay == "pipes" {
 		return pipe.NewPipeFactory(), nil

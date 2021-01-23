@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/pool"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
+	"github.com/spiral/roadrunner/v2/pkg/pool"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
@@ -80,11 +80,7 @@ func (f *Foo) Serve() chan error {
 	}
 
 	// test that our worker is functional
-	sw, err := worker.From(w)
-	if err != nil {
-		errCh <- err
-		return errCh
-	}
+	sw := worker.From(w)
 
 	rsp, err := sw.Exec(r)
 	if err != nil {

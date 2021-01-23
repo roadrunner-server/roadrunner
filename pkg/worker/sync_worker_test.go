@@ -22,12 +22,9 @@ func Test_NotStarted_Exec(t *testing.T) {
 
 	w, _ := InitBaseWorker(cmd)
 
-	syncWorker, err := From(w)
-	if err != nil {
-		t.Fatal(err)
-	}
+	sw := From(w)
 
-	res, err := syncWorker.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
 	assert.Nil(t, res.Body)

@@ -16,8 +16,8 @@ import (
 	"time"
 
 	j "github.com/json-iterator/go"
-	"github.com/spiral/roadrunner/v2/pkg/pipe"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
+	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/stretchr/testify/assert"

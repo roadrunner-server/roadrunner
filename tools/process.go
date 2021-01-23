@@ -3,7 +3,7 @@ package tools
 import (
 	"github.com/shirou/gopsutil/process"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 )
 
 // ProcessState provides information about specific worker.

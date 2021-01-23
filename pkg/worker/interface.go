@@ -10,9 +10,6 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 )
 
-// Allocator is responsible for worker allocation in the pool
-type Allocator func() (BaseProcess, error)
-
 type BaseProcess interface {
 	fmt.Stringer
 

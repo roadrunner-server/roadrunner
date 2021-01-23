@@ -5,12 +5,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 )
 
 type Stack struct {
-	workers             []worker.BaseProcess
+	workers             []*worker.SyncWorkerImpl
 	mutex               sync.RWMutex
 	destroy             bool
 	actualNumOfWorkers  uint64
@@ -20,7 +20,7 @@ type Stack struct {
 func NewWorkersStack(initialNumOfWorkers uint64) *Stack {
 	w := runtime.NumCPU()
 	return &Stack{
-		workers:             make([]worker.BaseProcess, 0, w),
+		workers:             make([]*worker.SyncWorkerImpl, 0, w),
 		actualNumOfWorkers:  0,
 		initialNumOfWorkers: initialNumOfWorkers,
 	}
@@ -39,7 +39,7 @@ func (stack *Stack) Push(w worker.BaseProcess) {
 	stack.mutex.Lock()
 	defer stack.mutex.Unlock()
 	stack.actualNumOfWorkers++
-	stack.workers = append(stack.workers, w)
+	stack.workers = append(stack.workers, w.(*worker.SyncWorkerImpl))
 }
 
 func (stack *Stack) IsEmpty() bool {
@@ -48,7 +48,7 @@ func (stack *Stack) IsEmpty() bool {
 	return len(stack.workers) == 0
 }
 
-func (stack *Stack) Pop() (worker.BaseProcess, bool) {
+func (stack *Stack) Pop() (*worker.SyncWorkerImpl, bool) {
 	stack.mutex.Lock()
 	defer stack.mutex.Unlock()
 
@@ -85,13 +85,15 @@ func (stack *Stack) FindAndRemoveByPid(pid int64) bool {
 }
 
 // Workers return copy of the workers in the stack
-func (stack *Stack) Workers() []worker.BaseProcess {
+func (stack *Stack) Workers() []*worker.SyncWorkerImpl {
 	stack.mutex.Lock()
 	defer stack.mutex.Unlock()
-	workersCopy := make([]worker.BaseProcess, 0, 1)
+	workersCopy := make([]*worker.SyncWorkerImpl, 0, 1)
 	// copy
 	for _, v := range stack.workers {
-		workersCopy = append(workersCopy, v)
+		if v != nil {
+			workersCopy = append(workersCopy, v)
+		}
 	}
 
 	return workersCopy

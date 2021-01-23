@@ -12,10 +12,10 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
-	"github.com/spiral/roadrunner/v2/pkg/pipe"
+	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
 	"github.com/stretchr/testify/assert"
 )
 

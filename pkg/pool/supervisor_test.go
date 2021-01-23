@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/spiral/roadrunner/v2/pkg/payload"
-	"github.com/spiral/roadrunner/v2/pkg/pipe"
+	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
 	"github.com/spiral/roadrunner/v2/tools"
 	"github.com/stretchr/testify/assert"
 )

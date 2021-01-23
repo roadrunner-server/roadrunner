@@ -6,11 +6,10 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/events"
-	"github.com/spiral/roadrunner/v2/interfaces/pool"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/tools"
 )
 
@@ -20,7 +19,7 @@ const MB = 1024 * 1024
 const NSEC_IN_SEC int64 = 1000000000 //nolint:golint,stylecheck
 
 type Supervised interface {
-	pool.Pool
+	Pool
 	// Start used to start watching process for all pool workers
 	Start()
 }
@@ -28,12 +27,12 @@ type Supervised interface {
 type supervised struct {
 	cfg    *SupervisorConfig
 	events events.Handler
-	pool   pool.Pool
+	pool   Pool
 	stopCh chan struct{}
 	mu     *sync.RWMutex
 }
 
-func supervisorWrapper(pool pool.Pool, events events.Handler, cfg *SupervisorConfig) Supervised {
+func supervisorWrapper(pool Pool, events events.Handler, cfg *SupervisorConfig) Supervised {
 	sp := &supervised{
 		cfg:    cfg,
 		events: events,
@@ -101,13 +100,13 @@ func (sp *supervised) GetConfig() interface{} {
 	return sp.pool.GetConfig()
 }
 
-func (sp *supervised) Workers() (workers []worker.BaseProcess) {
+func (sp *supervised) Workers() (workers []*worker.SyncWorkerImpl) {
 	sp.mu.Lock()
 	defer sp.mu.Unlock()
 	return sp.pool.Workers()
 }
 
-func (sp *supervised) RemoveWorker(worker worker.BaseProcess) error {
+func (sp *supervised) RemoveWorker(worker worker.SyncWorker) error {
 	return sp.pool.RemoveWorker(worker)
 }
 

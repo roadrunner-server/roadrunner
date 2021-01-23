@@ -27,9 +27,9 @@ test_coverage:
 	docker-compose -f tests/docker-compose.yaml up -d
 	rm -rf coverage
 	mkdir coverage
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pipe.out -covermode=atomic ./pkg/pipe
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pipe.out -covermode=atomic ./pkg/transport/pipe
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/socket.out -covermode=atomic ./pkg/transport/socket
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pool.out -covermode=atomic ./pkg/pool
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/socket.out -covermode=atomic ./pkg/socket
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/worker.out -covermode=atomic ./pkg/worker
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/worker_stack.out -covermode=atomic ./pkg/worker_watcher
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/http.out -covermode=atomic ./tests/plugins/http
@@ -58,9 +58,9 @@ test_coverage:
 
 test: ## Run application tests
 	docker-compose -f tests/docker-compose.yaml up -d
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/pipe
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/pipe
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/socket
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/pool
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/socket
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker_watcher
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/http
@@ -88,9 +88,9 @@ test: ## Run application tests
 
 test_1.14: ## Run application tests
 	docker-compose -f tests/docker-compose.yaml up -d
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/pipe
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/pipe
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/socket
 	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/pool
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/socket
 	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker
 	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker_watcher
 	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/http

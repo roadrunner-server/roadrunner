@@ -13,10 +13,8 @@ import (
 
 	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v3/interfaces/relay"
-	"github.com/spiral/roadrunner/v2/interfaces/events"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
-	eventsPkg "github.com/spiral/roadrunner/v2/pkg/events"
+	"github.com/spiral/roadrunner/v2/pkg/events"
 	"go.uber.org/multierr"
 )
 
@@ -78,14 +76,14 @@ type Process struct {
 }
 
 // InitBaseWorker creates new Process over given exec.cmd.
-func InitBaseWorker(cmd *exec.Cmd, options ...Options) (worker.BaseProcess, error) {
+func InitBaseWorker(cmd *exec.Cmd, options ...Options) (*Process, error) {
 	const op = errors.Op("init_base_worker")
 	if cmd.Process != nil {
 		return nil, fmt.Errorf("can't attach to running process")
 	}
 	w := &Process{
 		created: time.Now(),
-		events:  eventsPkg.NewEventsHandler(),
+		events:  events.NewEventsHandler(),
 		cmd:     cmd,
 		state:   internal.NewWorkerState(internal.StateInactive),
 		stderr:  new(bytes.Buffer),
@@ -198,7 +196,7 @@ func (w *Process) Wait() error {
 
 	// at this point according to the documentation (see cmd.Wait comment)
 	// if worker finishes with an error, message will be written to the stderr first
-	// and then w.cmd.Wait return an error
+	// and then process.cmd.Wait return an error
 	w.endState = w.cmd.ProcessState
 	if err != nil {
 		w.state.Set(internal.StateErrored)
