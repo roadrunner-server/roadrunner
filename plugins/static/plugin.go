@@ -30,7 +30,6 @@ type Plugin struct {
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	const op = errors.Op("static_plugin_init")
 	if !cfg.Has(RootPluginName) {
-
 		return errors.E(op, errors.Disabled)
 	}
 
@@ -38,10 +37,6 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	if err != nil {
 		return errors.E(op, errors.Disabled, err)
 	}
-
-	m := make(map[string]interface{})
-	m["http:static"] = nil
-	cfg.Overwrite(m)
 
 	if s.cfg.Static == nil {
 		return errors.E(op, errors.Disabled)
