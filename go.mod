@@ -4,13 +4,11 @@ go 1.15
 
 require (
 	github.com/NYTimes/gziphandler v1.1.1
-	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/alicebob/miniredis/v2 v2.14.1
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
 	github.com/buger/goterm v0.0.0-20200322175922-2f3e71b85129
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.10.0
-	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-redis/redis/v8 v8.4.4
 	github.com/gofiber/fiber/v2 v2.3.0
 	github.com/golang/mock v1.4.4
@@ -22,7 +20,7 @@ require (
 	github.com/shirou/gopsutil v3.20.11+incompatible
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/viper v1.7.1
-	github.com/spiral/endure v1.0.0-beta20
+	github.com/spiral/endure v1.0.0-beta21
 	github.com/spiral/errors v1.0.9
 	github.com/spiral/goridge/v3 v3.0.0
 	github.com/stretchr/testify v1.6.1
@@ -36,5 +34,3 @@ require (
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/sys v0.0.0-20201221093633-bc327ba9c2f0
 )
-
-replace github.com/spiral/endure => ../endure
