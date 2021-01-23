@@ -66,9 +66,9 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           docker-compose -f ./tests/docker-compose.yaml up -d
-          go test -v -race -tags=debug ./pkg/pipe
+          go test -v -race -tags=debug ./pkg/transport/pipe
+          go test -v -race -tags=debug ./pkg/transport/socket
           go test -v -race -tags=debug ./pkg/pool
-          go test -v -race -tags=debug ./pkg/socket
           go test -v -race -tags=debug ./pkg/worker
           go test -v -race -tags=debug ./pkg/worker_watcher
           go test -v -race -tags=debug ./tests/plugins/http
@@ -97,9 +97,9 @@ jobs:
       - name: Run golang tests on MacOS without codecov
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
-          go test -v -race -tags=debug ./pkg/pipe
+          go test -v -race -tags=debug ./pkg/transport/pipe
+          go test -v -race -tags=debug ./pkg/transport/socket
           go test -v -race -tags=debug ./pkg/pool
-          go test -v -race -tags=debug ./pkg/socket
           go test -v -race -tags=debug ./pkg/worker
           go test -v -race -tags=debug ./pkg/worker_watcher
           go test -v -race -tags=debug ./plugins/http/config
@@ -127,9 +127,9 @@ jobs:
         run: |
           docker-compose -f ./tests/docker-compose.yaml up -d
           mkdir ./coverage-ci
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/pipe
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/transport/pipe
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/transport/socket
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pool.txt -covermode=atomic ./pkg/pool
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/socket
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker.txt -covermode=atomic ./pkg/worker
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker_stack.txt -covermode=atomic ./pkg/worker_watcher
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/http_config.txt -covermode=atomic ./plugins/http/config
