@@ -66,7 +66,6 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           docker-compose -f ./tests/docker-compose.yaml up -d
-          go test -v -race -tags=debug ./utils
           go test -v -race -tags=debug ./pkg/pipe
           go test -v -race -tags=debug ./pkg/pool
           go test -v -race -tags=debug ./pkg/socket
@@ -98,7 +97,6 @@ jobs:
       - name: Run golang tests on MacOS without codecov
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
-          go test -v -race -tags=debug ./utils
           go test -v -race -tags=debug ./pkg/pipe
           go test -v -race -tags=debug ./pkg/pool
           go test -v -race -tags=debug ./pkg/socket
@@ -129,7 +127,6 @@ jobs:
         run: |
           docker-compose -f ./tests/docker-compose.yaml up -d
           mkdir ./coverage-ci
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/utils.txt -covermode=atomic ./utils
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/pipe
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pool.txt -covermode=atomic ./pkg/pool
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/socket

@@ -27,7 +27,6 @@ test_coverage:
 	docker-compose -f tests/docker-compose.yaml up -d
 	rm -rf coverage
 	mkdir coverage
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/utils.out -covermode=atomic ./utils
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pipe.out -covermode=atomic ./pkg/pipe
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pool.out -covermode=atomic ./pkg/pool
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/socket.out -covermode=atomic ./pkg/socket
@@ -59,7 +58,6 @@ test_coverage:
 
 test: ## Run application tests
 	docker-compose -f tests/docker-compose.yaml up -d
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./utils
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/pipe
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/pool
 	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/socket
