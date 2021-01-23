@@ -8,8 +8,6 @@ import (
 	"os"
 	"strings"
 	"syscall"
-
-	"github.com/valyala/tcplisten"
 )
 
 // CreateListener crates socket listener based on DSN definition.
@@ -47,13 +45,7 @@ func CreateListener(address string) (net.Listener, error) {
 }
 
 func createTCPListener(addr string) (net.Listener, error) {
-	cfg := tcplisten.Config{
-		ReusePort:   true,
-		DeferAccept: true,
-		FastOpen:    true,
-		Backlog:     0,
-	}
-	listener, err := cfg.NewListener("tcp4", addr)
+	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		return nil, err
 	}
