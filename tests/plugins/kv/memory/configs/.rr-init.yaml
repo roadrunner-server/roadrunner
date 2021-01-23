@@ -13,7 +13,7 @@ server:
 
 logs:
   mode: development
-  level: debug
+  level: error
 
 http:
   address: 127.0.0.1:44933

@@ -17,7 +17,7 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/interfaces/events"
 	"github.com/spiral/roadrunner/v2/plugins/config"

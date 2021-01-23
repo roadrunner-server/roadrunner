@@ -194,3 +194,48 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	// should be the same pid
 	assert.Equal(t, pid, p.Workers()[0].Pid())
 }
+
+func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
+	var cfgExecTTL = Config{
+		NumWorkers:      int64(1),
+		AllocateTimeout: time.Second,
+		DestroyTimeout:  time.Second,
+		Supervisor: &SupervisorConfig{
+			WatchTick:       1,
+			TTL:             100,
+			IdleTTL:         100,
+			ExecTTL:         4,
+			MaxWorkerMemory: 1,
+		},
+	}
+
+	// constructed
+	// max memory
+	// constructed
+	ctx := context.Background()
+	p, err := Initialize(
+		ctx,
+		func() *exec.Cmd { return exec.Command("php", "../../tests/memleak.php", "pipes") },
+		pipe.NewPipeFactory(),
+		cfgExecTTL,
+	)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, p)
+	defer p.Destroy(context.Background())
+
+	pid := p.Workers()[0].Pid()
+
+	time.Sleep(time.Millisecond * 100)
+	resp, err := p.Exec(payload.Payload{
+		Context: []byte(""),
+		Body:    []byte("foo"),
+	})
+
+	assert.NoError(t, err)
+	assert.Empty(t, resp.Body)
+	assert.Empty(t, resp.Context)
+
+	time.Sleep(time.Second * 2)
+	assert.NotEqual(t, pid, p.Workers()[0].Pid())
+}

@@ -489,6 +489,84 @@ func Test_Static_Pool_Slow_Destroy(t *testing.T) {
 	p.Destroy(context.Background())
 }
 
+func Test_StaticPool_NoFreeWorkers(t *testing.T) {
+	ctx := context.Background()
+	block := make(chan struct{}, 1)
+
+	listener := func(event interface{}) {
+		if ev, ok := event.(events.PoolEvent); ok {
+			if ev.Event == events.EventNoFreeWorkers {
+				block <- struct{}{}
+			}
+		}
+	}
+
+	p, err := Initialize(
+		ctx,
+		// sleep for the 3 seconds
+		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep.php", "pipes") },
+		pipe.NewPipeFactory(),
+		Config{
+			Debug:           false,
+			NumWorkers:      1,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+			Supervisor:      nil,
+		},
+		AddListeners(listener),
+	)
+	assert.NoError(t, err)
+	assert.NotNil(t, p)
+
+	go func() {
+		_, _ = p.ExecWithContext(ctx, payload.Payload{Body: []byte("hello")})
+	}()
+
+	time.Sleep(time.Second)
+	res, err := p.ExecWithContext(ctx, payload.Payload{Body: []byte("hello")})
+	assert.Error(t, err)
+	assert.Nil(t, res.Context)
+	assert.Nil(t, res.Body)
+
+	<-block
+
+	p.Destroy(ctx)
+}
+
+// identical to replace but controlled on worker side
+func Test_Static_Pool_WrongCommand1(t *testing.T) {
+	p, err := Initialize(
+		context.Background(),
+		func() *exec.Cmd { return exec.Command("phg", "../../tests/slow-destroy.php", "echo", "pipes") },
+		pipe.NewPipeFactory(),
+		Config{
+			NumWorkers:      5,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	)
+
+	assert.Error(t, err)
+	assert.Nil(t, p)
+}
+
+// identical to replace but controlled on worker side
+func Test_Static_Pool_WrongCommand2(t *testing.T) {
+	p, err := Initialize(
+		context.Background(),
+		func() *exec.Cmd { return exec.Command("php", "", "echo", "pipes") },
+		pipe.NewPipeFactory(),
+		Config{
+			NumWorkers:      5,
+			AllocateTimeout: time.Second,
+			DestroyTimeout:  time.Second,
+		},
+	)
+
+	assert.Error(t, err)
+	assert.Nil(t, p)
+}
+
 func Benchmark_Pool_Echo(b *testing.B) {
 	ctx := context.Background()
 	p, err := Initialize(

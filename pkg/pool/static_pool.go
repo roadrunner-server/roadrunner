@@ -132,8 +132,9 @@ func (sp *StaticPool) RemoveWorker(wb worker.BaseProcess) error {
 	return sp.ww.RemoveWorker(wb)
 }
 
+// Be careful, sync Exec with ExecWithContext
 func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
-	const op = errors.Op("exec")
+	const op = errors.Op("static_pool_exec")
 	if sp.cfg.Debug {
 		return sp.execDebug(p)
 	}
@@ -152,28 +153,21 @@ func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 	// worker want's to be terminated
 	// TODO careful with string(rsp.Context)
 	if len(rsp.Body) == 0 && string(rsp.Context) == StopRequest {
-		w.State().Set(internal.StateInvalid)
-		err = w.Stop()
-		if err != nil {
-			sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: errors.E(op, err)})
-		}
+		sp.stopWorker(&w)
 
 		return sp.Exec(p)
 	}
 
-	if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
-		err = sp.ww.AllocateNew()
-		if err != nil {
-			return payload.Payload{}, errors.E(op, err)
-		}
-	} else {
-		sp.ww.PushWorker(w)
+	err = sp.checkMaxJobs(&w)
+	if err != nil {
+		return payload.Payload{}, errors.E(op, err)
 	}
 
 	return rsp, nil
 }
 
-func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs payload.Payload) (payload.Payload, error) {
+// Be careful, sync with pool.Exec method
+func (sp *StaticPool) ExecWithContext(ctx context.Context, p payload.Payload) (payload.Payload, error) {
 	const op = errors.Op("static_pool_exec_with_context")
 	ctxGetFree, cancel := context.WithTimeout(ctx, sp.cfg.AllocateTimeout)
 	defer cancel()
@@ -182,32 +176,46 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, rqs payload.Payload) 
 		return payload.Payload{}, errors.E(op, err)
 	}
 
-	rsp, err := w.ExecWithTimeout(ctx, rqs)
+	rsp, err := w.ExecWithTimeout(ctx, p)
 	if err != nil {
 		return sp.errEncoder(err, w)
 	}
 
 	// worker want's to be terminated
-	if rsp.Body == nil && rsp.Context != nil && string(rsp.Context) == StopRequest {
-		w.State().Set(internal.StateInvalid)
-		err = w.Stop()
-		if err != nil {
-			sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: errors.E(op, err)})
-		}
-
-		return sp.ExecWithContext(ctx, rqs)
+	if len(rsp.Body) == 0 && string(rsp.Context) == StopRequest {
+		sp.stopWorker(&w)
+		return sp.ExecWithContext(ctx, p)
 	}
 
-	if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
-		err = sp.ww.AllocateNew()
-		if err != nil {
-			return payload.Payload{}, errors.E(op, err)
-		}
-	} else {
-		sp.ww.PushWorker(w)
+	err = sp.checkMaxJobs(&w)
+	if err != nil {
+		return payload.Payload{}, errors.E(op, err)
 	}
 
 	return rsp, nil
+}
+
+func (sp *StaticPool) stopWorker(w *worker.SyncWorker) {
+	const op = errors.Op("static_pool_stop_worker")
+	(*w).State().Set(internal.StateInvalid)
+	err := (*w).Stop()
+	if err != nil {
+		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: *w, Payload: errors.E(op, err)})
+	}
+}
+
+// checkMaxJobs check for worker number of executions and kill workers if that number more than sp.cfg.MaxJobs
+func (sp *StaticPool) checkMaxJobs(w *worker.SyncWorker) error {
+	const op = errors.Op("static_pool_check_max_jobs")
+	if sp.cfg.MaxJobs != 0 && (*w).State().NumExecs() >= sp.cfg.MaxJobs {
+		err := sp.ww.AllocateNew()
+		if err != nil {
+			return errors.E(op, err)
+		}
+	} else {
+		sp.ww.PushWorker(*w)
+	}
+	return nil
 }
 
 func (sp *StaticPool) getWorker(ctxGetFree context.Context, op errors.Op) (worker.SyncWorker, error) {

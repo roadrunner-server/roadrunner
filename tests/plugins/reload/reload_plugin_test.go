@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"

@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/roadrunner/v2/cmd/cli"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
@@ -22,7 +22,7 @@ import (
 
 func main() {
 	var err error
-	cli.Container, err = endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel), endure.RetryOnFail(false))
+	cli.Container, err = endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel), endure.RetryOnFail(false))
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -13,7 +13,7 @@ server:
 
 logs:
   mode: development
-  level: debug
+  level: error
 
 http:
   # host and port separated by semicolon
@@ -70,13 +70,13 @@ http:
       # MaxWorkerMemory limits memory per worker (MB)
       max_worker_memory: 100
 
-  #  ssl:
-  #    host and port separated by semicolon (default :443)
-  #    address: :8892
-  #    redirect: false
-  #    cert: fixtures/server.crt
-  #    key: fixtures/server.key
-  #    rootCa: root.crt
+  ssl:
+    # host and port separated by semicolon (default :443)
+    address: :8892
+    redirect: false
+    cert: fixtures/server.crt
+    key: fixtures/server.key
+    rootCa: root.crt
   fcgi:
     address: tcp://0.0.0.0:7921
   http2:

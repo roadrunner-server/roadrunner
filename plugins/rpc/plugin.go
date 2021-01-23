@@ -5,7 +5,7 @@ import (
 	"net/rpc"
 	"sync/atomic"
 
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/config"
