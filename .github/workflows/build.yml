@@ -20,7 +20,7 @@ jobs:
       matrix:
         php: [ "7.4", "8.0" ]
         go: [ "1.14", "1.15" ]
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ ubuntu-20.04, windows-latest, macos-latest ]
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
@@ -123,7 +123,7 @@ jobs:
           go test -v -race -tags=debug ./tests/plugins/kv/memory
 
       - name: Run golang tests on Linux
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
           docker-compose -f ./tests/docker-compose.yaml up -d
           mkdir ./coverage-ci
@@ -157,7 +157,7 @@ jobs:
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
-        if: ${{ matrix.os == 'ubuntu-latest' }} # codecov only from linux
+        if: ${{ matrix.os == 'ubuntu-20.04' }} # codecov only from linux
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage-ci/summary.txt
@@ -165,7 +165,7 @@ jobs:
 
   golangci-lint:
     name: Golang-CI (lint)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out code
         uses: actions/checkout@v2
