@@ -39,7 +39,7 @@ func (ww *workerWatcher) AddToWatch(workers []worker.SyncWorker) error {
 	return nil
 }
 
-func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (*worker.SyncWorkerImpl, error) {
+func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (worker.SyncWorker, error) {
 	const op = errors.Op("worker_watcher_get_free_worker")
 	// thread safe operation
 	w, stop := ww.stack.Pop()
@@ -127,11 +127,11 @@ func (ww *workerWatcher) Destroy(ctx context.Context) {
 }
 
 // Warning, this is O(n) operation, and it will return copy of the actual workers
-func (ww *workerWatcher) WorkersList() []*worker.SyncWorkerImpl {
+func (ww *workerWatcher) WorkersList() []worker.SyncWorker {
 	return ww.stack.Workers()
 }
 
-func (ww *workerWatcher) wait(w worker.SyncWorker) {
+func (ww *workerWatcher) wait(w worker.BaseProcess) {
 	const op = errors.Op("worker_watcher_wait")
 	err := w.Wait()
 	if err != nil {

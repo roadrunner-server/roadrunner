@@ -85,10 +85,10 @@ func (stack *Stack) FindAndRemoveByPid(pid int64) bool {
 }
 
 // Workers return copy of the workers in the stack
-func (stack *Stack) Workers() []*worker.SyncWorkerImpl {
+func (stack *Stack) Workers() []worker.SyncWorker {
 	stack.mutex.Lock()
 	defer stack.mutex.Unlock()
-	workersCopy := make([]*worker.SyncWorkerImpl, 0, 1)
+	workersCopy := make([]worker.SyncWorker, 0, 1)
 	// copy
 	for _, v := range stack.workers {
 		if v != nil {

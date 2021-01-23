@@ -306,7 +306,7 @@ func (s *Plugin) Workers() []worker.BaseProcess {
 	workers := s.pool.Workers()
 	baseWorkers := make([]worker.BaseProcess, 0, len(workers))
 	for i := 0; i < len(workers); i++ {
-		baseWorkers = append(baseWorkers, worker.FromSync(workers[i]))
+		baseWorkers = append(baseWorkers, worker.FromSync(workers[i].(*worker.SyncWorkerImpl)))
 	}
 	return baseWorkers
 }

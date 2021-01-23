@@ -11,7 +11,7 @@ type Watcher interface {
 	AddToWatch(workers []worker.SyncWorker) error
 
 	// GetFreeWorker provide first free worker
-	GetFreeWorker(ctx context.Context) (*worker.SyncWorkerImpl, error)
+	GetFreeWorker(ctx context.Context) (worker.SyncWorker, error)
 
 	// PutWorker enqueues worker back
 	PushWorker(w worker.SyncWorker)
@@ -23,7 +23,7 @@ type Watcher interface {
 	Destroy(ctx context.Context)
 
 	// WorkersList return all stack w/o removing it from internal storage
-	WorkersList() []*worker.SyncWorkerImpl
+	WorkersList() []worker.SyncWorker
 
 	// RemoveWorker remove worker from the stack
 	RemoveWorker(wb worker.SyncWorker) error

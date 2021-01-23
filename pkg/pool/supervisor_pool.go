@@ -100,7 +100,7 @@ func (sp *supervised) GetConfig() interface{} {
 	return sp.pool.GetConfig()
 }
 
-func (sp *supervised) Workers() (workers []*worker.SyncWorkerImpl) {
+func (sp *supervised) Workers() (workers []worker.SyncWorker) {
 	sp.mu.Lock()
 	defer sp.mu.Unlock()
 	return sp.pool.Workers()

@@ -122,7 +122,7 @@ func (sp *StaticPool) GetConfig() interface{} {
 }
 
 // Workers returns worker list associated with the pool.
-func (sp *StaticPool) Workers() (workers []*worker.SyncWorkerImpl) {
+func (sp *StaticPool) Workers() (workers []worker.SyncWorker) {
 	return sp.ww.WorkersList()
 }
 
@@ -216,7 +216,7 @@ func (sp *StaticPool) checkMaxJobs(w worker.SyncWorker) error {
 	return nil
 }
 
-func (sp *StaticPool) getWorker(ctxGetFree context.Context, op errors.Op) (*worker.SyncWorkerImpl, error) {
+func (sp *StaticPool) getWorker(ctxGetFree context.Context, op errors.Op) (worker.SyncWorker, error) {
 	// GetFreeWorker function consumes context with timeout
 	w, err := sp.ww.GetFreeWorker(ctxGetFree)
 	if err != nil {
