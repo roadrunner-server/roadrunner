@@ -521,7 +521,7 @@ func TestStorage_SetExpire_TTL(t *testing.T) {
 	assert.True(t, keyTTL < 5)
 	assert.True(t, key2TTL < 5)
 
-	time.Sleep(time.Second * 4)
+	time.Sleep(time.Second * 7)
 
 	// ensure that storage is clean
 	v, err = s.Has("key", "key2")
