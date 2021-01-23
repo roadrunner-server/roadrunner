@@ -6,7 +6,6 @@ import (
 
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/pool"
-	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 )
 
@@ -17,5 +16,5 @@ type Env map[string]string
 type Server interface {
 	CmdFactory(env Env) (func() *exec.Cmd, error)
 	NewWorker(ctx context.Context, env Env, listeners ...events.Listener) (*worker.Process, error)
-	NewWorkerPool(ctx context.Context, opt poolImpl.Config, env Env, listeners ...events.Listener) (pool.Pool, error)
+	NewWorkerPool(ctx context.Context, opt pool.Config, env Env, listeners ...events.Listener) (pool.Pool, error)
 }

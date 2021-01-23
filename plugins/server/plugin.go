@@ -15,7 +15,6 @@ import (
 	// core imports
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/pool"
-	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
 	"github.com/spiral/roadrunner/v2/pkg/transport/socket"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
@@ -136,7 +135,7 @@ func (server *Plugin) NewWorker(ctx context.Context, env Env, listeners ...event
 }
 
 // NewWorkerPool issues new worker pool.
-func (server *Plugin) NewWorkerPool(ctx context.Context, opt poolImpl.Config, env Env, listeners ...events.Listener) (pool.Pool, error) {
+func (server *Plugin) NewWorkerPool(ctx context.Context, opt pool.Config, env Env, listeners ...events.Listener) (pool.Pool, error) {
 	const op = errors.Op("server_plugin_new_worker_pool")
 	spawnCmd, err := server.CmdFactory(env)
 	if err != nil {
@@ -149,7 +148,7 @@ func (server *Plugin) NewWorkerPool(ctx context.Context, opt poolImpl.Config, en
 		list = append(list, listeners...)
 	}
 
-	p, err := poolImpl.Initialize(ctx, spawnCmd, server.factory, opt, poolImpl.AddListeners(list...))
+	p, err := pool.Initialize(ctx, spawnCmd, server.factory, opt, pool.AddListeners(list...))
 	if err != nil {
 		return nil, errors.E(op, err)
 	}

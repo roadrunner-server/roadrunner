@@ -7,7 +7,6 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/pkg/pool"
-	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/server"
@@ -16,12 +15,12 @@ import (
 const ConfigSection = "server"
 const Response = "test"
 
-var testPoolConfig = poolImpl.Config{
+var testPoolConfig = pool.Config{
 	NumWorkers:      10,
 	MaxJobs:         100,
 	AllocateTimeout: time.Second * 10,
 	DestroyTimeout:  time.Second * 10,
-	Supervisor: &poolImpl.SupervisorConfig{
+	Supervisor: &pool.SupervisorConfig{
 		WatchTick:       60,
 		TTL:             1000,
 		IdleTTL:         10,
