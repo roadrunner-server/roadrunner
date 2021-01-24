@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
 	"github.com/spiral/roadrunner/v2/tools"
@@ -209,6 +210,15 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 		},
 	}
 
+	block := make(chan struct{}, 1)
+	listener := func(event interface{}) {
+		if ev, ok := event.(events.PoolEvent); ok {
+			if ev.Event == events.EventMaxMemory {
+				block <- struct{}{}
+			}
+		}
+	}
+
 	// constructed
 	// max memory
 	// constructed
@@ -218,15 +228,12 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 		func() *exec.Cmd { return exec.Command("php", "../../tests/memleak.php", "pipes") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
+		AddListeners(listener),
 	)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
-	defer p.Destroy(context.Background())
 
-	pid := p.Workers()[0].Pid()
-
-	time.Sleep(time.Millisecond * 100)
 	resp, err := p.Exec(payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
@@ -236,6 +243,6 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 	assert.Empty(t, resp.Body)
 	assert.Empty(t, resp.Context)
 
-	time.Sleep(time.Second * 5)
-	assert.NotEqual(t, pid, p.Workers()[0].Pid())
+	<-block
+	p.Destroy(context.Background())
 }
