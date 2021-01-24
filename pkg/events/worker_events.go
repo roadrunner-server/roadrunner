@@ -2,7 +2,7 @@ package events
 
 const (
 	// EventWorkerError triggered after WorkerProcess. Except payload to be error.
-	EventWorkerError W = iota + 200
+	EventWorkerError W = iota + 11000
 
 	// EventWorkerLog triggered on every write to WorkerProcess StdErr pipe (batched). Except payload to be []byte string.
 	EventWorkerLog
