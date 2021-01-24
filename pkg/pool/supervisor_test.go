@@ -236,6 +236,6 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 	assert.Empty(t, resp.Body)
 	assert.Empty(t, resp.Context)
 
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 5)
 	assert.NotEqual(t, pid, p.Workers()[0].Pid())
 }
