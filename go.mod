@@ -12,11 +12,11 @@ require (
 	github.com/fatih/color v1.10.0
 	github.com/go-ole/go-ole v1.2.5 // indirect
 	github.com/go-redis/redis/v8 v8.4.10
-	github.com/gofiber/fiber/v2 v2.3.0
+	github.com/gofiber/fiber/v2 v2.3.3
 	github.com/golang/mock v1.4.4
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/json-iterator/go v1.1.10
-	github.com/mattn/go-runewidth v0.0.9
+	github.com/mattn/go-runewidth v0.0.10
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/prometheus/client_golang v1.7.1
 	github.com/shirou/gopsutil v3.20.11+incompatible
@@ -25,7 +25,7 @@ require (
 	github.com/spiral/endure v1.0.0-beta21
 	github.com/spiral/errors v1.0.9
 	github.com/spiral/goridge/v3 v3.0.0
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/vbauerster/mpb/v5 v5.4.0
 	github.com/yookoala/gofast v0.4.0
