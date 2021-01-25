@@ -22,28 +22,20 @@ func (mq *messageQueue) flush() {
 	mq.queue = mq.queue[0:0]
 }
 
-func (mq *messageQueue) allocateMessage(
-	cmd interface{},
-	payloads *common.Payloads,
-) (id uint64, msg rrt.Message, err error) {
-	msg = rrt.Message{
+func (mq *messageQueue) allocateMessage(cmd interface{}, payloads *common.Payloads) (uint64, rrt.Message) {
+	msg := rrt.Message{
 		ID:       mq.seqID(),
 		Command:  cmd,
 		Payloads: payloads,
 	}
 
-	return msg.ID, msg, nil
+	return msg.ID, msg
 }
 
-func (mq *messageQueue) pushCommand(cmd interface{}, payloads *common.Payloads) (id uint64, err error) {
-	id, msg, err := mq.allocateMessage(cmd, payloads)
-	if err != nil {
-		return 0, err
-	}
-
+func (mq *messageQueue) pushCommand(cmd interface{}, payloads *common.Payloads) uint64 {
+	id, msg := mq.allocateMessage(cmd, payloads)
 	mq.queue = append(mq.queue, msg)
-
-	return id, nil
+	return id
 }
 
 func (mq *messageQueue) pushResponse(id uint64, payloads *common.Payloads) {

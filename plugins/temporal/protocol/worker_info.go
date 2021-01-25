@@ -47,7 +47,7 @@ func FetchWorkerInfo(c Codec, e Endpoint, dc converter.DataConverter) ([]WorkerI
 
 	result, err := c.Execute(e, Context{}, Message{ID: 0, Command: GetWorkerInfo{}})
 	if err != nil {
-		return nil, err
+		return nil, errors.E(op, err)
 	}
 
 	if len(result) != 1 {

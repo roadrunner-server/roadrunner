@@ -39,9 +39,10 @@ type Plugin struct {
 
 // Init configures activity service.
 func (p *Plugin) Init(temporal client.Temporal, server server.Server, log logger.Logger) error {
+	const op = errors.Op("activity_plugin_init")
 	if temporal.GetConfig().Activities == nil {
 		// no need to serve activities
-		return errors.E(errors.Disabled)
+		return errors.E(op, errors.Disabled)
 	}
 
 	p.temporal = temporal
@@ -55,11 +56,12 @@ func (p *Plugin) Init(temporal client.Temporal, server server.Server, log logger
 
 // Serve activities with underlying workers.
 func (p *Plugin) Serve() chan error {
-	errCh := make(chan error, 1)
+	const op = errors.Op("activity_plugin_serve")
 
+	errCh := make(chan error, 1)
 	pool, err := p.startPool()
 	if err != nil {
-		errCh <- errors.E("startPool", err)
+		errCh <- errors.E(op, err)
 		return errCh
 	}
 
@@ -83,7 +85,7 @@ func (p *Plugin) Serve() chan error {
 
 				err = backoff.Retry(p.replacePool, bkoff)
 				if err != nil {
-					errCh <- errors.E("deadPool", err)
+					errCh <- errors.E(op, err)
 				}
 			}
 		}
@@ -95,11 +97,16 @@ func (p *Plugin) Serve() chan error {
 // Stop stops the serving plugin.
 func (p *Plugin) Stop() error {
 	atomic.StoreInt64(&p.closing, 1)
+	const op = errors.Op("activity_plugin_stop")
 
 	pool := p.getPool()
 	if pool != nil {
 		p.pool = nil
-		return pool.Destroy(context.Background())
+		err := pool.Destroy(context.Background())
+		if err != nil {
+			return errors.E(op, err)
+		}
+		return nil
 	}
 
 	return nil
@@ -112,9 +119,7 @@ func (p *Plugin) Name() string {
 
 // RPC returns associated rpc service.
 func (p *Plugin) RPC() interface{} {
-	client, _ := p.temporal.GetClient()
-
-	return &rpc{srv: p, client: client}
+	return &rpc{srv: p, client: p.temporal.GetClient()}
 }
 
 // Workers returns pool workers.

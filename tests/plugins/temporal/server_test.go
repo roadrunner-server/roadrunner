@@ -98,12 +98,7 @@ func NewTestServer(opt ...ConfigOption) *TestServer {
 }
 
 func (s *TestServer) Client() temporalClient.Client {
-	c, err := s.temporal.GetClient()
-	if err != nil {
-		panic(err)
-	}
-
-	return c
+	return s.temporal.GetClient()
 }
 
 func (s *TestServer) MustClose() {

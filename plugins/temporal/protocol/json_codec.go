@@ -2,7 +2,7 @@ package protocol
 
 import (
 	"github.com/fatih/color"
-	jsoniter "github.com/json-iterator/go"
+	j "github.com/json-iterator/go"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -10,34 +10,34 @@ import (
 	"go.temporal.io/api/failure/v1"
 )
 
-type (
-	// JSONCodec can be used for debugging and log capturing reasons.
-	JSONCodec struct {
-		// level enables verbose logging or all incoming and outcoming messages.
-		level DebugLevel
+var json = j.ConfigCompatibleWithStandardLibrary
 
-		// logger renders messages when debug enabled.
-		logger logger.Logger
-	}
+// JSONCodec can be used for debugging and log capturing reasons.
+type JSONCodec struct {
+	// level enables verbose logging or all incoming and outcoming messages.
+	level DebugLevel
 
-	// jsonFrame contains message command in binary form.
-	jsonFrame struct {
-		// ID contains ID of the command, response or error.
-		ID uint64 `json:"id"`
+	// logger renders messages when debug enabled.
+	logger logger.Logger
+}
 
-		// Command name. Optional.
-		Command string `json:"command,omitempty"`
+// jsonFrame contains message command in binary form.
+type jsonFrame struct {
+	// ID contains ID of the command, response or error.
+	ID uint64 `json:"id"`
 
-		// Options to be unmarshalled to body (raw payload).
-		Options jsoniter.RawMessage `json:"options,omitempty"`
+	// Command name. Optional.
+	Command string `json:"command,omitempty"`
 
-		// Failure associated with command id.
-		Failure []byte `json:"failure,omitempty"`
+	// Options to be unmarshalled to body (raw payload).
+	Options j.RawMessage `json:"options,omitempty"`
 
-		// Payloads specific to the command or result.
-		Payloads []byte `json:"payloads,omitempty"`
-	}
-)
+	// Failure associated with command id.
+	Failure []byte `json:"failure,omitempty"`
+
+	// Payloads specific to the command or result.
+	Payloads []byte `json:"payloads,omitempty"`
+}
 
 // NewJSONCodec creates new Json communication codec.
 func NewJSONCodec(level DebugLevel, logger logger.Logger) Codec {
@@ -62,21 +62,20 @@ func (c *JSONCodec) GetName() string {
 
 // Execute exchanges commands with worker.
 func (c *JSONCodec) Execute(e Endpoint, ctx Context, msg ...Message) ([]Message, error) {
+	const op = errors.Op("json_codec_execute")
 	if len(msg) == 0 {
 		return nil, nil
 	}
 
-	var (
-		response = make([]jsonFrame, 0, 5)
-		result   = make([]Message, 0, 5)
-		err      error
-	)
+	var response = make([]jsonFrame, 0, 5)
+	var result = make([]Message, 0, 5)
+	var err error
 
 	frames := make([]jsonFrame, 0, len(msg))
 	for _, m := range msg {
 		frame, err := c.packFrame(m)
 		if err != nil {
-			return nil, err
+			return nil, errors.E(op, err)
 		}
 
 		frames = append(frames, frame)
@@ -88,14 +87,14 @@ func (c *JSONCodec) Execute(e Endpoint, ctx Context, msg ...Message) ([]Message,
 		p.Context = []byte("null")
 	}
 
-	p.Context, err = jsoniter.Marshal(ctx)
+	p.Context, err = json.Marshal(ctx)
 	if err != nil {
-		return nil, errors.E(errors.Op("encodeContext"), err)
+		return nil, errors.E(op, err)
 	}
 
-	p.Body, err = jsoniter.Marshal(frames)
+	p.Body, err = json.Marshal(frames)
 	if err != nil {
-		return nil, errors.E(errors.Op("encodePayload"), err)
+		return nil, errors.E(op, err)
 	}
 
 	if c.level >= DebugNormal {
@@ -109,7 +108,7 @@ func (c *JSONCodec) Execute(e Endpoint, ctx Context, msg ...Message) ([]Message,
 
 	out, err := e.Exec(p)
 	if err != nil {
-		return nil, errors.E(errors.Op("execute"), err)
+		return nil, errors.E(op, err)
 	}
 
 	if len(out.Body) == 0 {
@@ -126,15 +125,15 @@ func (c *JSONCodec) Execute(e Endpoint, ctx Context, msg ...Message) ([]Message,
 		c.logger.Debug(logMessage, "receive", true)
 	}
 
-	err = jsoniter.Unmarshal(out.Body, &response)
+	err = json.Unmarshal(out.Body, &response)
 	if err != nil {
-		return nil, errors.E(errors.Op("parseResponse"), err)
+		return nil, errors.E(op, err)
 	}
 
 	for _, f := range response {
 		msg, err := c.parseFrame(f)
 		if err != nil {
-			return nil, err
+			return nil, errors.E(op, err)
 		}
 
 		result = append(result, msg)
@@ -174,7 +173,7 @@ func (c *JSONCodec) packFrame(msg Message) (jsonFrame, error) {
 		return jsonFrame{}, err
 	}
 
-	frame.Options, err = jsoniter.Marshal(msg.Command)
+	frame.Options, err = json.Marshal(msg.Command)
 	if err != nil {
 		return jsonFrame{}, err
 	}
@@ -214,7 +213,7 @@ func (c *JSONCodec) parseFrame(frame jsonFrame) (Message, error) {
 			return Message{}, err
 		}
 
-		err = jsoniter.Unmarshal(frame.Options, &cmd)
+		err = json.Unmarshal(frame.Options, &cmd)
 		if err != nil {
 			return Message{}, err
 		}

@@ -39,8 +39,7 @@ const (
 )
 
 // GetWorkerInfo reads worker information.
-type GetWorkerInfo struct {
-}
+type GetWorkerInfo struct{}
 
 // InvokeActivity invokes activity.
 type InvokeActivity struct {
@@ -218,6 +217,7 @@ func (cmd NewTimer) ToDuration() time.Duration {
 
 // returns command name (only for the commands sent to the worker)
 func commandName(cmd interface{}) (string, error) {
+	const op = errors.Op("command_name")
 	switch cmd.(type) {
 	case GetWorkerInfo, *GetWorkerInfo:
 		return getWorkerInfoCommand, nil
@@ -260,12 +260,13 @@ func commandName(cmd interface{}) (string, error) {
 	case Panic, *Panic:
 		return panicCommand, nil
 	default:
-		return "", errors.E(errors.Op("commandName"), "undefined command type", cmd)
+		return "", errors.E(op, errors.Errorf("undefined command type: %s", cmd))
 	}
 }
 
 // reads command from binary payload
 func initCommand(name string) (interface{}, error) {
+	const op = errors.Op("init_command")
 	switch name {
 	case getWorkerInfoCommand:
 		return &GetWorkerInfo{}, nil
@@ -328,6 +329,6 @@ func initCommand(name string) (interface{}, error) {
 		return &Panic{}, nil
 
 	default:
-		return nil, errors.E(errors.Op("initCommand"), "undefined command type", name)
+		return nil, errors.E(op, errors.Errorf("undefined command name: %s", name))
 	}
 }

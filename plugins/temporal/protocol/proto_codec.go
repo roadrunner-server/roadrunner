@@ -120,6 +120,7 @@ func (c *ProtoCodec) packMessage(msg Message) (*internal.Message, error) {
 }
 
 func (c *ProtoCodec) parseMessage(frame *internal.Message) (Message, error) {
+	const op = errors.Op("proto_codec_parse_message")
 	var err error
 
 	msg := Message{
@@ -131,12 +132,12 @@ func (c *ProtoCodec) parseMessage(frame *internal.Message) (Message, error) {
 	if frame.Command != "" {
 		msg.Command, err = initCommand(frame.Command)
 		if err != nil {
-			return Message{}, err
+			return Message{}, errors.E(op, err)
 		}
 
 		err = jsoniter.Unmarshal(frame.Options, &msg.Command)
 		if err != nil {
-			return Message{}, err
+			return Message{}, errors.E(op, err)
 		}
 	}
 
