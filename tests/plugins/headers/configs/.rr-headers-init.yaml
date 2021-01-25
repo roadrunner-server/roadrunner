@@ -1,0 +1,38 @@
+server:
+  command: "php ../../http/client.php echo pipes"
+  user: ""
+  group: ""
+  env:
+    "RR_HTTP": "true"
+  relay: "pipes"
+  relay_timeout: "20s"
+
+http:
+  address: 127.0.0.1:33453
+  max_request_size: 1024
+  middleware: [ "headers" ]
+  uploads:
+    forbid: [ ".php", ".exe", ".bat" ]
+  trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
+  # Additional HTTP headers and CORS control.
+  headers:
+    cors:
+      allowed_origin: "*"
+      allowed_headers: "*"
+      allowed_methods: "GET,POST,PUT,DELETE"
+      allow_credentials: true
+      exposed_headers: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
+      max_age: 600
+    request:
+      Example-Request-Header: "Value"
+    response:
+      X-Powered-By: "RoadRunner"
+  pool:
+    num_workers: 2
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+logs:
+  mode: development
+  level: error
+

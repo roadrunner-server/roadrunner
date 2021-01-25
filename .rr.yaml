@@ -1,201 +1,167 @@
-# defines environment variables for all underlying php processes
-env:
-  key: value
-
-# rpc bus allows php application and external clients to talk to rr services.
 rpc:
-  # enable rpc server
-  enable: true
-
-  # rpc connection DSN. Supported TCP and Unix sockets.
   listen: tcp://127.0.0.1:6001
+
+server:
+  command: "php tests/psr-worker-bench.php"
+  user: ""
+  group: ""
+  env:
+    "RR_HTTP": "true"
+    "RR_RPC": "tcp://127.0.0.1:6001"
+  relay: "pipes"
+  relay_timeout: 20s
+
+logs:
+  mode: development
+  level: error
+
+http:
+  # host and port separated by semicolon
+  address: 127.0.0.1:44933
+  max_request_size: 1024
+  middleware: [ "gzip", "headers" ]
+  uploads:
+    forbid: [ ".php", ".exe", ".bat" ]
+  trusted_subnets:
+    [
+        "10.0.0.0/8",
+        "127.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16",
+        "::1/128",
+        "fc00::/7",
+        "fe80::/10",
+    ]
+  headers:
+    cors:
+      allowed_origin: "*"
+      allowed_headers: "*"
+      allowed_methods: "GET,POST,PUT,DELETE"
+      allow_credentials: true
+      exposed_headers: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
+      max_age: 600
+    request:
+      input: "custom-header"
+    response:
+      output: "output-header"
+  static:
+    dir: "tests"
+    forbid: [ "" ]
+    request:
+      "input": "custom-header"
+    response:
+      "output": "output-header"
+
+  pool:
+    num_workers: 6
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+    supervisor:
+      # watch_tick defines how often to check the state of the workers (seconds)
+      watch_tick: 1s
+      # ttl defines maximum time worker is allowed to live (seconds)
+      ttl: 0
+      # idle_ttl defines maximum duration worker can spend in idle mode after first use. Disabled when 0 (seconds)
+      idle_ttl: 10s
+      # exec_ttl defines maximum lifetime per job (seconds)
+      exec_ttl: 10s
+      # max_worker_memory limits memory usage per worker (MB)
+      max_worker_memory: 100
+
+  ssl:
+    # host and port separated by semicolon (default :443)
+    address: :8892
+    redirect: false
+    cert: fixtures/server.crt
+    key: fixtures/server.key
+    root_ca: root.crt
+  fcgi:
+    address: tcp://0.0.0.0:7921
+  http2:
+    h2c: false
+    max_concurrent_streams: 128
+
+redis:
+  # UniversalClient is an abstract client which - based on the provided options -
+  # can connect to either clusters, or sentinel-backed failover instances
+  # or simple single-instance servers. This can be useful for testing
+  # cluster-specific applications locally.
+  # if the number of addrs is 1 and master_name is empty, a single-node redis Client will be returned
+
+  # if the number of addrs is two or more, a ClusterClient will be returned
+  addrs:
+    - "localhost:6379"
+  # if a MasterName is passed a sentinel-backed FailoverClient will be returned
+  master_name: ""
+  username: ""
+  password: ""
+  db: 0
+  sentinel_password: ""
+  route_by_latency: false
+  route_randomly: false
+  dial_timeout: 0 # accepted values [1s, 5m, 3h]
+  max_retries: 1
+  min_retry_backoff: 0 # accepted values [1s, 5m, 3h]
+  max_retry_backoff: 0 # accepted values [1s, 5m, 3h]
+  pool_size: 0
+  min_idle_conns: 0
+  max_conn_age: 0 # accepted values [1s, 5m, 3h]
+  read_timeout: 0 # accepted values [1s, 5m, 3h]
+  write_timeout: 0 # accepted values [1s, 5m, 3h]
+  pool_timeout: 0 # accepted values [1s, 5m, 3h]
+  idle_timeout: 0 # accepted values [1s, 5m, 3h]
+  idle_check_freq: 0 # accepted values [1s, 5m, 3h]
+  read_only: false
+
+# boltdb simple driver
+boltdb:
+  dir: "."
+  file: "rr"
+  bucket: "test"
+  permissions: 0777
+  # keys ttl check interval
+  TTL: 60 # seconds
+
+  # memcached driver
+memcached:
+  addr:
+    - "localhost:11211"
+
+# in memory KV driver
+memory:
+  # keys ttl check interval
+  interval: 60
 
 metrics:
   # prometheus client address (path /metrics added automatically)
   address: localhost:2112
-
-  # list of metrics to collect from application
   collect:
-    # metric name
     app_metric:
-      # type [gauge, counter, histogram, summary]
       type: histogram
-
-      # short description
       help: "Custom application metric"
-
-      # metric groups/tags
       labels: [ "type" ]
-
-      # for histogram only
       buckets: [ 0.1, 0.2, 0.3, 1.0 ]
-
       # objectives defines the quantile rank estimates with their respective
       #	absolute error [ for summary only ]
       objectives:
         - 1.4: 2.3
         - 2.0: 1.4
 
-
-# http service configuration.
-http:
-  # http host to listen.
-  address: 0.0.0.0:8080
-  # override http error code for the application errors (default 500)
-  appErrorCode: 500
-  # override http error code for the internal RR errors (default 500)
-  internalErrorCode: 500
-
-  ssl:
-    # custom https port (default 443)
-    port:     443
-    # force redirect to https connection
-    redirect: true
-    # ssl cert
-    cert:     server.crt
-    # ssl private key
-    key:      server.key
-    # rootCA certificate
-    rootCa:   root.crt
-
-
-  # HTTP service provides FastCGI as frontend
-  fcgi:
-    # FastCGI connection DSN. Supported TCP and Unix sockets.
-    address: tcp://0.0.0.0:6920
-
-  # HTTP service provides HTTP2 transport
-  http2:
-    # enable HTTP/2, only with TSL
-    enabled: true
-
-    # enable H2C on TCP connections
-    h2c: true
-
-    # max transfer channels
-    maxConcurrentStreams: 128
-
-  # max POST request size, including file uploads in MB.
-  maxRequestSize: 200
-
-  # file upload configuration.
-  uploads:
-    # list of file extensions which are forbidden for uploading.
-    forbid: [ ".php", ".exe", ".bat" ]
-
-  # cidr blocks which can set ip using X-Real-Ip or X-Forwarded-For
-  trustedSubnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
-
-  # http worker pool configuration.
-  workers:
-    # php worker command.
-    command: "php psr-worker.php pipes"
-
-    # connection method (pipes, tcp://:9000, unix://socket.unix). default "pipes"
-    relay: "pipes"
-
-    # user under which process will be started
-    user: ""
-
-    # worker pool configuration.
-    pool:
-      # number of workers to be serving.
-      numWorkers: 4
-
-      # maximum jobs per worker, 0 - unlimited.
-      maxJobs: 0
-
-      # for how long worker is allowed to be bootstrapped.
-      allocateTimeout: 60
-
-      # amount of time given to worker to gracefully destruct itself.
-      destroyTimeout: 60
-
-# Additional HTTP headers and CORS control.
-headers:
-  # Middleware to handle CORS requests, https://www.w3.org/TR/cors/
-  cors:
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
-    allowedOrigin: "*"
-
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
-    allowedHeaders: "*"
-
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods
-    allowedMethods: "GET,POST,PUT,DELETE"
-
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
-    allowCredentials: true
-
-    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
-    exposedHeaders: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
-
-    # Max allowed age in seconds
-    maxAge: 600
-
-  # Automatically add headers to every request passed to PHP.
-  request:
-    "Example-Request-Header": "Value"
-
-  # Automatically add headers to every response.
-  response:
-    "X-Powered-By": "RoadRunner"
-
-# monitors rr server(s)
-limit:
-  # check worker state each second
-  interval: 1
-
-  # custom watch configuration for each service
-  services:
-    # monitor http workers
-    http:
-      # maximum allowed memory consumption per worker (soft)
-      maxMemory: 100
-
-      # maximum time to live for the worker (soft)
-      TTL: 0
-
-      # maximum allowed amount of time worker can spend in idle before being removed (for weak db connections, soft)
-      idleTTL: 0
-
-      # max_execution_time (brutal)
-      execTTL: 60
-
-# static file serving. remove this section to disable static file serving.
-static:
-  # root directory for static file (http would not serve .php and .htaccess files).
-  dir: "public"
-
-  # list of extensions for forbid for serving.
-  forbid: [ ".php", ".htaccess" ]
-
-  # Automatically add headers to every request.
-  request:
-    "Example-Request-Header": "Value"
-
-  # Automatically add headers to every response.
-  response:
-    "X-Powered-By": "RoadRunner"
-
-# health service configuration
-health:
-  # http host to serve health requests.
-  address: localhost:2113
-
-# reload can reset rr servers when files change
 reload:
-  # refresh internval (default 1s)
+  # sync interval
   interval: 1s
-
-  # file extensions to watch, defaults to [.php]
-  patterns: [ ".php" ]
-
-  # list of services to watch
+  # global patterns to sync
+  patterns: [ ".go" ]
+  # list of included for sync services
   services:
     http:
-      # list of dirs, "" root
-      dirs: [ "" ]
-
-      # include sub directories
+      # recursive search for file patterns to add
       recursive: true
+      # ignored folders
+      ignore: [ "vendor" ]
+      # service specific file pattens to sync
+      patterns: [ ".php", ".go", ".md" ]
+      # directories to sync. If recursive is set to true,
+      # recursive sync will be applied only to the directories in `dirs` section
+      dirs: [ "." ]

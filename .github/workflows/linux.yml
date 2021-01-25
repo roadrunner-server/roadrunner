@@ -1,0 +1,113 @@
+name: Linux
+
+on:
+  push:
+  pull_request:
+    branches:
+      # Branches from forks have the form 'user:branch-name' so we only run
+      # this job on pull_request events for branches that look like fork
+      # branches. Without this we would end up running this job twice for non
+      # forked PRs, once for the push and then once for opening the PR.
+      - "**:**"
+
+jobs:
+  golang:
+    name: Build (Go ${{ matrix.go }}, PHP ${{ matrix.php }}, OS ${{matrix.os}})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ "7.4", "8.0" ]
+        go: [ "1.14", "1.15" ]
+        os: [ ubuntu-20.04 ]
+    steps:
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2 # action page: <https://github.com/shivammathur/setup-php>
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: sockets
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Init Composer Cache # Docs: <https://git.io/JfAKn#php---composer>
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: cd tests && composer update --prefer-dist --no-progress --ansi
+
+      - name: Init Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Install Go dependencies
+        run: go mod download
+
+      - name: Run golang tests on Linux
+        run: |
+          docker-compose -f ./tests/docker-compose.yaml up -d
+          mkdir ./coverage-ci
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/transport/pipe
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/transport/socket
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pool.txt -covermode=atomic ./pkg/pool
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker.txt -covermode=atomic ./pkg/worker
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker_stack.txt -covermode=atomic ./pkg/worker_watcher
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/http_config.txt -covermode=atomic ./plugins/http/config
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/http.txt -covermode=atomic ./tests/plugins/http
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/informer.txt -covermode=atomic ./tests/plugins/informer
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/reload.txt -covermode=atomic ./tests/plugins/reload
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/server.txt -covermode=atomic ./tests/plugins/server
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/checker.txt -covermode=atomic ./tests/plugins/checker
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/config.txt -covermode=atomic ./tests/plugins/config
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/gzip.txt -covermode=atomic ./tests/plugins/gzip
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/headers.txt -covermode=atomic ./tests/plugins/headers
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/logger.txt -covermode=atomic ./tests/plugins/logger
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/metrics.txt -covermode=atomic ./tests/plugins/metrics
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/redis.txt -covermode=atomic ./tests/plugins/redis
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/resetter.txt -covermode=atomic ./tests/plugins/resetter
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/rpc.txt -covermode=atomic ./tests/plugins/rpc
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/static.txt -covermode=atomic ./tests/plugins/static
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/boltdb_unit.txt -covermode=atomic ./plugins/kv/boltdb
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/kv_unit.txt -covermode=atomic ./plugins/kv/memory
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memcached_unit.txt -covermode=atomic ./plugins/kv/memcached
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/boltdb.txt -covermode=atomic ./tests/plugins/kv/boltdb
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memory.txt -covermode=atomic ./tests/plugins/kv/memory
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memcached.txt -covermode=atomic ./tests/plugins/kv/memcached
+          docker-compose -f ./tests/docker-compose.yaml down
+          cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
+
+      - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage-ci/summary.txt
+          fail_ci_if_error: false
+
+  golangci-lint:
+    name: Golang-CI (lint)
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v2 # Action page: <https://github.com/golangci/golangci-lint-action>
+        with:
+          version: v1.35 # without patch version
+          only-new-issues: false # show only new issues if it's a pull request

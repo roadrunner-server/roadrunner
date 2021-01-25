@@ -28,7 +28,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.5
+          go-version: 1.15.6
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -55,10 +55,10 @@ jobs:
           CGO_ENABLED: 0
           LDFLAGS: >-
             -s
-            -X github.com/spiral/roadrunner/cmd/rr/cmd.Version=${{ steps.values.outputs.version }}
-            -X github.com/spiral/roadrunner/cmd/rr/cmd.BuildTime=${{ steps.values.outputs.timestamp }}
+            -X github.com/spiral/roadrunner/cmd/cli.Version=${{ steps.values.outputs.version }}
+            -X github.com/spiral/roadrunner/cmd/cli.BuildTime=${{ steps.values.outputs.timestamp }}
         run: |
-          go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr/main.go
+          go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/main.go
           stat "./${{ steps.values.outputs.binary-name }}"
 
       - name: Generate distributive directory name

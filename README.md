@@ -1,10 +1,13 @@
+[WIP]
+
 <p align="center">
  <img src="https://user-images.githubusercontent.com/796136/50286124-6f7f3780-046f-11e9-9f45-e8fedd4f786d.png" height="75px" alt="RoadRunner">
 </p>
 <p align="center">
  <a href="https://packagist.org/packages/spiral/roadrunner"><img src="https://poser.pugx.org/spiral/roadrunner/version"></a>
 	<a href="https://pkg.go.dev/github.com/spiral/roadrunner?tab=doc"><img src="https://godoc.org/github.com/spiral/roadrunner?status.svg"></a>
-	<a href="https://github.com/spiral/roadrunner/actions"><img src="https://github.com/spiral/roadrunner/workflows/CI/badge.svg" alt=""></a>
+	<a href="https://github.com/spiral/roadrunner/actions"><img src="https://github.com/spiral/roadrunner/workflows/Linux/badge.svg" alt=""></a>
+	<a href="https://github.com/spiral/roadrunner/actions"><img src="https://github.com/spiral/roadrunner/workflows/macOS/badge.svg" alt=""></a>
 	<a href="https://goreportcard.com/report/github.com/spiral/roadrunner"><img src="https://goreportcard.com/badge/github.com/spiral/roadrunner"></a>
 	<a href="https://scrutinizer-ci.com/g/spiral/roadrunner/?branch=master"><img src="https://scrutinizer-ci.com/g/spiral/roadrunner/badges/quality-score.png"></a>
 	<a href="https://codecov.io/gh/spiral/roadrunner/"><img src="https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg"></a>
@@ -14,9 +17,10 @@
 </p>
 
 RoadRunner is an open-source (MIT licensed) high-performance PHP application server, load balancer, and process manager.
-It supports running as a service with the ability to extend its functionality on a per-project basis. 
+It supports running as a service with the ability to extend its functionality on a per-project basis.
 
-RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP/2 server and can be used to replace classic Nginx+FPM setup with much greater performance and flexibility.
+RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP/2 server and can be used to replace classic Nginx+FPM setup
+with much greater performance and flexibility.
 
 <p align="center">
 	<a href="https://roadrunner.dev/"><b>Official Website</b></a> | 
@@ -25,11 +29,12 @@ RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP/2 server and can be us
 
 Features:
 --------
+
 - Production-ready
 - PCI DSS compliant
 - PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middlewares, event listeners)
 - HTTPS and HTTP/2 support (including HTTP/2 Push, H2C)
-- Fully customizable server, FastCGI support
+- A Fully customizable server, FastCGI support
 - Flexible environment configuration
 - No external PHP dependencies (64bit version required), drop-in (based on [Goridge](https://github.com/spiral/goridge))
 - Load balancer, process manager and task pipeline
@@ -39,11 +44,11 @@ Features:
 - Automatic worker replacement and safe PHP process destruction
 - Worker create/allocate/destroy timeouts
 - Max jobs per worker
-- Worker lifecycle management (controller) 
+- Worker lifecycle management (controller)
     - maxMemory (graceful stop)
     - TTL (graceful stop)
     - idleTTL (graceful stop)
-    - execTTL (brute, max_execution_time)   
+    - execTTL (brute, max_execution_time)
 - Payload context and body
 - Protocol, worker and job level error management (including PHP errors)
 - Very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
@@ -54,44 +59,19 @@ Features:
 
 Installation:
 --------
-To install:
 
 ```
-$ composer require spiral/roadrunner
-$ ./vendor/bin/rr get-binary
+go get -u github.com/spiral/roadrunner/v2
 ```
 
 > For getting roadrunner binary file you can use our docker image: `spiralscout/roadrunner:X.X.X` (more information about image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/))
 
-Example:
---------
-
-```php
-<?php
-// worker.php
-ini_set('display_errors', 'stderr');
-include "vendor/autoload.php";
-
-$relay = new Spiral\Goridge\StreamRelay(STDIN, STDOUT);
-$psr7 = new Spiral\RoadRunner\PSR7Client(new Spiral\RoadRunner\Worker($relay));
-
-while ($req = $psr7->acceptRequest()) {
-    try {
-        $resp = new \Zend\Diactoros\Response();
-        $resp->getBody()->write("hello world");
-
-        $psr7->respond($resp);
-    } catch (\Throwable $e) {
-        $psr7->getWorker()->error((string)$e);
-    }
-}
-```
-
-Configuration can be located in `.rr.yaml` file ([full sample](https://github.com/spiral/roadrunner/blob/master/.rr.yaml)):
+Configuration can be located in `.rr.yaml`
+file ([full sample](https://github.com/spiral/roadrunner/blob/master/.rr.yaml)):
 
 ```yaml
 http:
-  address:         0.0.0.0:8080
+  address: 0.0.0.0:8080
   workers.command: "php worker.php"
 ```
 
@@ -107,4 +87,5 @@ $ ./rr serve -v -d
 
 License:
 --------
-The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [Spiral Scout](https://spiralscout.com).
+The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained
+by [Spiral Scout](https://spiralscout.com).

@@ -1,0 +1,61 @@
+run:
+  skip-files:
+    - plugins/http/tests/http_test.go
+    - plugins/http/tests/plugin_test_old.go
+    - plugins/http/tests/rpc_test_old.go
+    - plugins/http/tests/config_test.go
+    - plugins/static/tests/static_plugin_test.go
+    - plugins/headers/tests/old.go
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    #    - dupl
+    - errcheck
+    - exhaustive
+    #    - funlen
+    #    - gochecknoinits
+    #    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - golint
+    #    - gomnd
+    - goprintffuncname
+    - gosec
+    #    - gosimple
+    - govet
+    - ineffassign
+    - interfacer
+    #    - lll
+    - misspell
+    - nakedret
+    #    - noctx
+    - nolintlint
+    - rowserrcheck
+    - scopelint
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - unconvert
+    #    - unparam
+    #    - unused
+    - varcheck
+    - whitespace
+
+  #  don't enable:
+  #    - typecheck
+  # - gochecknoglobals
+  # - gocognit
+  # - godot
+  # - godox
+  # - goerr113
+  # - maligned
+  # - nestif
+  # - prealloc
+  # - testpackage
+  # - wsl

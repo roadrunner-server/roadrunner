@@ -1,0 +1,3 @@
+logs:
+  mode: development
+  level: error

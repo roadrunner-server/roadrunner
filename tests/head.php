@@ -8,9 +8,9 @@ use Spiral\RoadRunner;
 
 $rr = new RoadRunner\Worker($relay);
 
-while ($in = $rr->receive($ctx)) {
+while ($in = $rr->waitPayload()) {
     try {
-        $rr->send("", (string)$ctx);
+        $rr->send("", (string)$in->header);
     } catch (\Throwable $e) {
         $rr->error((string)$e);
     }

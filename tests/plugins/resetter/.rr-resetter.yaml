@@ -1,0 +1,15 @@
+server:
+  command: "php ../../http/client.php echo pipes"
+  user: ""
+  group: ""
+  env:
+    "RR_CONFIG": "/some/place/on/the/C134"
+    "RR_CONFIG2": "C138"
+  relay: "pipes"
+  relay_timeout: "20s"
+
+rpc:
+  listen: tcp://127.0.0.1:6001
+logs:
+  mode: development
+  level: debug

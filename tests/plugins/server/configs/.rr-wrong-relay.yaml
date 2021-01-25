@@ -1,0 +1,12 @@
+server:
+  command: "php ../../client.php echo pipes"
+  user: ""
+  group: ""
+  env:
+    "RR_CONFIG": "/some/place/on/the/C134"
+    "RR_CONFIG2": "C138"
+  relay: "pupes"
+  relay_timeout: "20s"
+logs:
+  mode: development
+  level: error

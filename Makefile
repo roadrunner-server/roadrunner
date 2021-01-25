@@ -12,7 +12,7 @@ help: ## Show this help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "  \033[32m%-14s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 build: ## Build RR binary file for local os/arch
-	CGO_ENABLED=0 go build -trimpath -ldflags "-s" -o ./rr ./cmd/rr/main.go
+	CGO_ENABLED=0 go build -trimpath -ldflags "-s" -o ./rr ./cmd/main.go
 
 clean: ## Make some clean
 	rm ./rr
@@ -23,22 +23,97 @@ install: build ## Build and install RR locally
 uninstall: ## Uninstall locally installed RR
 	rm -f /usr/local/bin/rr
 
-test: ## Run application tests
-	test -d ./vendor_php || composer update --prefer-dist --ansi
-	go test -v -race -cover
-	go test -v -race -cover ./util
-	go test -v -race -cover ./service
-	go test -v -race -cover ./service/env
-	go test -v -race -cover ./service/rpc
-	go test -v -race -cover ./service/http
-	go test -v -race -cover ./service/static
-	go test -v -race -cover ./service/limit
-	go test -v -race -cover ./service/headers
-	go test -v -race -cover ./service/metrics
-	go test -v -race -cover ./service/health
-	go test -v -race -cover ./service/gzip
-	go test -v -race -cover ./service/reload
+test_coverage:
+	docker-compose -f tests/docker-compose.yaml up -d
+	rm -rf coverage
+	mkdir coverage
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pipe.out -covermode=atomic ./pkg/transport/pipe
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/socket.out -covermode=atomic ./pkg/transport/socket
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pool.out -covermode=atomic ./pkg/pool
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/worker.out -covermode=atomic ./pkg/worker
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/worker_stack.out -covermode=atomic ./pkg/worker_watcher
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/http.out -covermode=atomic ./tests/plugins/http
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/informer.out -covermode=atomic ./tests/plugins/informer
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/reload.out -covermode=atomic ./tests/plugins/reload
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/server.out -covermode=atomic ./tests/plugins/server
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/checker.out -covermode=atomic ./tests/plugins/checker
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/config.out -covermode=atomic ./tests/plugins/config
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/gzip.out -covermode=atomic ./tests/plugins/gzip
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/headers.out -covermode=atomic ./tests/plugins/headers
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/logger.out -covermode=atomic ./tests/plugins/logger
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/metrics.out -covermode=atomic ./tests/plugins/metrics
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/redis.out -covermode=atomic ./tests/plugins/redis
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/resetter.out -covermode=atomic ./tests/plugins/resetter
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/rpc.out -covermode=atomic ./tests/plugins/rpc
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/static.out -covermode=atomic ./tests/plugins/static
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/boltdb_unit.out -covermode=atomic ./plugins/kv/boltdb
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/kv_unit.out -covermode=atomic ./plugins/kv/memory
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/http_config.out -covermode=atomic ./plugins/http/config
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/memcached_unit.out -covermode=atomic ./plugins/kv/memcached
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/boltdb.out -covermode=atomic ./tests/plugins/kv/boltdb
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/memory.out -covermode=atomic ./tests/plugins/kv/memory
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/memcached.out -covermode=atomic ./tests/plugins/kv/memcached
+	cat ./coverage/*.out > ./coverage/summary.out
+	docker-compose -f tests/docker-compose.yaml down
 
-lint: ## Run application linters
-	go fmt ./...
-	golint ./...
+test: ## Run application tests
+	docker-compose -f tests/docker-compose.yaml up -d
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/pipe
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/socket
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/pool
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker_watcher
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/http
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/http/config
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/informer
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/reload
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/server
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/checker
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/config
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/gzip
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/headers
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/logger
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/metrics
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/redis
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/resetter
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/rpc
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/static
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/boltdb
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/memory
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/memcached
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/boltdb
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/memory
+	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/memcached
+	docker-compose -f tests/docker-compose.yaml down
+
+test_1.14: ## Run application tests
+	docker-compose -f tests/docker-compose.yaml up -d
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/pipe
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/socket
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/pool
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker_watcher
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/http
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/http/config
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/informer
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/reload
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/server
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/checker
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/config
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/gzip
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/headers
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/logger
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/metrics
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/redis
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/resetter
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/rpc
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/static
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/boltdb
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/memory
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/memcached
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/boltdb
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/memory
+	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/memcached
+	docker-compose -f tests/docker-compose.yaml down
+
+test_pipeline: test_1.14 test

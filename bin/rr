@@ -52,7 +52,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use function Couchbase\defaultDecoder;
 
 class RRHelper
 {
@@ -266,6 +265,7 @@ class RRHelper
                 $progressBar->setFormat('[%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% ' . intval($download_size / 1024) . 'KB');
                 $progressBar->setProgress($downloaded);
             });
+
         curl_setopt($curlResource, CURLOPT_NOPROGRESS, false); // needed to make progress function work
         curl_setopt($curlResource, CURLOPT_HEADER, 0);
         curl_exec($curlResource);

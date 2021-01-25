@@ -8,6 +8,6 @@ use Spiral\RoadRunner;
 
 $rr = new RoadRunner\Worker($relay);
 
-while ($in = $rr->receive($ctx)) {
-    $rr->error((string)$in);
+while ($in = $rr->waitPayload()) {
+    $rr->error((string)$in->body);
 }

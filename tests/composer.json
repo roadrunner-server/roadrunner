@@ -1,0 +1,14 @@
+{
+  "minimum-stability": "beta",
+  "prefer-stable": true,
+  "require": {
+    "nyholm/psr7": "^1.3",
+    "spiral/roadrunner": "^2.0",
+    "spiral/roadrunner-http": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Spiral\\RoadRunner\\": "src/"
+    }
+  }
+}

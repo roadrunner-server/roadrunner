@@ -10,3 +10,14 @@ coverage:
         target: auto
         threshold: 0%
         informational: true
+
+# do not include tests folders
+ignore:
+  - "tests"
+  - "plugins/kv/boltdb/plugin_unit_test.go"
+  - "plugins/kv/memcached/plugin_unit_test.go"
+  - "plugins/kv/memory/plugin_unit_test.go"
+  - "pkg/events/pool_events.go"
+  - "pkg/events/worker_events.go"
+  - "interfaces"
+  - "systemd"
