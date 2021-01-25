@@ -16,10 +16,10 @@ var testPoolConfig = pool.Config{
 	AllocateTimeout: time.Second * 10,
 	DestroyTimeout:  time.Second * 10,
 	Supervisor: &pool.SupervisorConfig{
-		WatchTick:       60,
-		TTL:             1000,
-		IdleTTL:         10,
-		ExecTTL:         10,
+		WatchTick:       60 * time.Second,
+		TTL:             1000 * time.Second,
+		IdleTTL:         10 * time.Second,
+		ExecTTL:         10 * time.Second,
 		MaxWorkerMemory: 1000,
 	},
 }

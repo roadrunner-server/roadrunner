@@ -13,7 +13,7 @@ type State interface {
 	// Set sets the WorkerState
 	Set(value int64)
 	// NumJobs shows how many times WorkerProcess was invoked
-	NumExecs() int64
+	NumExecs() uint64
 	// IsActive returns true if WorkerProcess not Inactive or Stopped
 	IsActive() bool
 	// RegisterExec using to registering php executions
@@ -56,7 +56,7 @@ const (
 
 type WorkerState struct {
 	value    int64
-	numExecs int64
+	numExecs uint64
 	// to be lightweight, use UnixNano
 	lastUsed uint64
 }
@@ -87,8 +87,8 @@ func (s *WorkerState) String() string {
 }
 
 // NumExecs returns number of registered WorkerProcess execs.
-func (s *WorkerState) NumExecs() int64 {
-	return atomic.LoadInt64(&s.numExecs)
+func (s *WorkerState) NumExecs() uint64 {
+	return atomic.LoadUint64(&s.numExecs)
 }
 
 // Value WorkerState returns WorkerState value
@@ -109,7 +109,7 @@ func (s *WorkerState) Set(value int64) {
 
 // register new execution atomically
 func (s *WorkerState) RegisterExec() {
-	atomic.AddInt64(&s.numExecs, 1)
+	atomic.AddUint64(&s.numExecs, 1)
 }
 
 // Update last used time

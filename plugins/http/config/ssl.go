@@ -23,7 +23,7 @@ type SSL struct {
 	Cert string
 
 	// Root CA file
-	RootCA string
+	RootCA string `mapstructure:"root_ca"`
 
 	// internal
 	host string

@@ -20,7 +20,7 @@ import (
 )
 
 var cfg = Config{
-	NumWorkers:      int64(runtime.NumCPU()),
+	NumWorkers:      uint64(runtime.NumCPU()),
 	AllocateTimeout: time.Second * 5,
 	DestroyTimeout:  time.Second * 5,
 }
@@ -596,7 +596,7 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "echo", "pipes") },
 		pipe.NewPipeFactory(),
 		Config{
-			NumWorkers:      int64(runtime.NumCPU()),
+			NumWorkers:      uint64(runtime.NumCPU()),
 			AllocateTimeout: time.Second * 100,
 			DestroyTimeout:  time.Second,
 		},

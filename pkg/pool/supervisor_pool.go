@@ -56,7 +56,7 @@ func (sp *supervised) ExecWithContext(ctx context.Context, rqs payload.Payload) 
 	}
 
 	c := make(chan ttlExec, 1)
-	ctx, cancel := context.WithTimeout(ctx, time.Duration(sp.cfg.ExecTTL)*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, sp.cfg.ExecTTL)
 	defer cancel()
 	go func() {
 		res, err := sp.pool.ExecWithContext(ctx, rqs)
@@ -116,7 +116,7 @@ func (sp *supervised) Destroy(ctx context.Context) {
 
 func (sp *supervised) Start() {
 	go func() {
-		watchTout := time.NewTicker(time.Duration(sp.cfg.WatchTick) * time.Second)
+		watchTout := time.NewTicker(sp.cfg.WatchTick)
 		for {
 			select {
 			case <-sp.stopCh:
@@ -154,7 +154,7 @@ func (sp *supervised) control() {
 			continue
 		}
 
-		if sp.cfg.TTL != 0 && now.Sub(workers[i].Created()).Seconds() >= float64(sp.cfg.TTL) {
+		if sp.cfg.TTL != 0 && now.Sub(workers[i].Created()).Seconds() >= sp.cfg.TTL.Seconds() {
 			err = sp.pool.RemoveWorker(workers[i])
 			if err != nil {
 				sp.events.Push(events.PoolEvent{Event: events.EventSupervisorError, Payload: errors.E(op, err)})
@@ -209,7 +209,7 @@ func (sp *supervised) control() {
 			// IdleTTL is 1 second.
 			// After the control check, res will be 5, idle is 1
 			// 5 - 1 = 4, more than 0, YOU ARE FIRED (removed). Done.
-			if int64(sp.cfg.IdleTTL)-res <= 0 {
+			if int64(sp.cfg.IdleTTL.Seconds())-res <= 0 {
 				err = sp.pool.RemoveWorker(workers[i])
 				if err != nil {
 					sp.events.Push(events.PoolEvent{Event: events.EventSupervisorError, Payload: errors.E(op, err)})

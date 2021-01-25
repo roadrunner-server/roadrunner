@@ -310,12 +310,12 @@ func (sp *StaticPool) execDebug(p payload.Payload) (payload.Payload, error) {
 }
 
 // allocate required number of stack
-func (sp *StaticPool) allocateWorkers(numWorkers int64) ([]worker.SyncWorker, error) {
+func (sp *StaticPool) allocateWorkers(numWorkers uint64) ([]worker.SyncWorker, error) {
 	const op = errors.Op("allocate workers")
 	var workers []worker.SyncWorker
 
 	// constant number of stack simplify logic
-	for i := int64(0); i < numWorkers; i++ {
+	for i := uint64(0); i < numWorkers; i++ {
 		w, err := sp.allocator()
 		if err != nil {
 			return nil, errors.E(op, errors.WorkerAllocate, err)

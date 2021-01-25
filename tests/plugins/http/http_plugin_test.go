@@ -1221,6 +1221,125 @@ func TestHttpBrokenPipes(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestHTTPSupervisedPool(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-http-supervised-pool.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+		&informer.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	stopCh := make(chan struct{}, 1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second * 1)
+	t.Run("HTTPEchoTest", echoHTTP2)
+	// worker should be destructed (idle_ttl)
+	t.Run("HTTPInformerCompareWorkersTest", informerTest2)
+
+	stopCh <- struct{}{}
+	wg.Wait()
+}
+
+func echoHTTP2(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://localhost:18888?hello=world", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Equal(t, 201, r.StatusCode)
+	assert.Equal(t, "WORLD", string(b))
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
+}
+
+// get worker
+// sleep
+// supervisor destroy worker
+// compare pid's
+func informerTest2(t *testing.T) {
+	conn, err := net.Dial("tcp", "127.0.0.1:15432")
+	assert.NoError(t, err)
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+	pid := 0
+	// WorkerList contains list of workers.
+	list := struct {
+		// Workers is list of workers.
+		Workers []tools.ProcessState `json:"workers"`
+	}{}
+
+	err = client.Call("informer.Workers", "http", &list)
+	assert.NoError(t, err)
+	assert.Len(t, list.Workers, 1)
+	// save the pid
+	pid = list.Workers[0].Pid
+	time.Sleep(time.Second * 10)
+
+	list = struct {
+		// Workers is list of workers.
+		Workers []tools.ProcessState `json:"workers"`
+	}{}
+
+	err = client.Call("informer.Workers", "http", &list)
+	assert.NoError(t, err)
+	assert.Len(t, list.Workers, 1)
+	assert.NotEqual(t, list.Workers[0].Pid, pid)
+}
+
 func get(url string) (string, *http.Response, error) {
 	r, err := http.Get(url) //nolint:gosec
 	if err != nil {

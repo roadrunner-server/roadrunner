@@ -11,9 +11,9 @@ import (
 )
 
 // workerCreateFunc can be nil, but in that case, dead stack will not be replaced
-func NewSyncWorkerWatcher(allocator worker.Allocator, numWorkers int64, events events.Handler) Watcher {
+func NewSyncWorkerWatcher(allocator worker.Allocator, numWorkers uint64, events events.Handler) Watcher {
 	ww := &workerWatcher{
-		stack:     NewWorkersStack(uint64(numWorkers)),
+		stack:     NewWorkersStack(numWorkers),
 		allocator: allocator,
 		events:    events,
 	}

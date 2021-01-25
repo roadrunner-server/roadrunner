@@ -1800,7 +1800,7 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "echo", "pipes") },
 		pipe.NewPipeFactory(),
 		pool.Config{
-			NumWorkers:      int64(runtime.NumCPU()),
+			NumWorkers:      uint64(runtime.NumCPU()),
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
 		})

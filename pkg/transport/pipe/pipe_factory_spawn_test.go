@@ -440,17 +440,17 @@ func Test_NumExecs2(t *testing.T) {
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}
-	assert.Equal(t, int64(1), w.State().NumExecs())
+	assert.Equal(t, uint64(1), w.State().NumExecs())
 
 	_, err = sw.Exec(payload.Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}
-	assert.Equal(t, int64(2), w.State().NumExecs())
+	assert.Equal(t, uint64(2), w.State().NumExecs())
 
 	_, err = sw.Exec(payload.Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}
-	assert.Equal(t, int64(3), w.State().NumExecs())
+	assert.Equal(t, uint64(3), w.State().NumExecs())
 }

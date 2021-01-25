@@ -14,14 +14,14 @@ import (
 )
 
 var cfgSupervised = Config{
-	NumWorkers:      int64(1),
+	NumWorkers:      uint64(1),
 	AllocateTimeout: time.Second,
 	DestroyTimeout:  time.Second,
 	Supervisor: &SupervisorConfig{
-		WatchTick:       1,
-		TTL:             100,
-		IdleTTL:         100,
-		ExecTTL:         100,
+		WatchTick:       1 * time.Second,
+		TTL:             100 * time.Second,
+		IdleTTL:         100 * time.Second,
+		ExecTTL:         100 * time.Second,
 		MaxWorkerMemory: 100,
 	},
 }
@@ -74,14 +74,14 @@ func TestSupervisedPool_Exec(t *testing.T) {
 
 func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 	var cfgExecTTL = Config{
-		NumWorkers:      int64(1),
+		NumWorkers:      uint64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
 		Supervisor: &SupervisorConfig{
-			WatchTick:       1,
-			TTL:             100,
-			IdleTTL:         100,
-			ExecTTL:         1,
+			WatchTick:       1 * time.Second,
+			TTL:             100 * time.Second,
+			IdleTTL:         100 * time.Second,
+			ExecTTL:         1 * time.Second,
 			MaxWorkerMemory: 100,
 		},
 	}
@@ -115,14 +115,14 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 
 func TestSupervisedPool_Idle(t *testing.T) {
 	var cfgExecTTL = Config{
-		NumWorkers:      int64(1),
+		NumWorkers:      uint64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
 		Supervisor: &SupervisorConfig{
-			WatchTick:       1,
-			TTL:             100,
-			IdleTTL:         1,
-			ExecTTL:         100,
+			WatchTick:       1 * time.Second,
+			TTL:             100 * time.Second,
+			IdleTTL:         1 * time.Second,
+			ExecTTL:         100 * time.Second,
 			MaxWorkerMemory: 100,
 		},
 	}
@@ -156,14 +156,14 @@ func TestSupervisedPool_Idle(t *testing.T) {
 
 func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	var cfgExecTTL = Config{
-		NumWorkers:      int64(1),
+		NumWorkers:      uint64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
 		Supervisor: &SupervisorConfig{
-			WatchTick:       1,
-			TTL:             100,
-			IdleTTL:         100,
-			ExecTTL:         4,
+			WatchTick:       1 * time.Second,
+			TTL:             100 * time.Second,
+			IdleTTL:         100 * time.Second,
+			ExecTTL:         4 * time.Second,
 			MaxWorkerMemory: 100,
 		},
 	}
@@ -198,14 +198,14 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 
 func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 	var cfgExecTTL = Config{
-		NumWorkers:      int64(1),
+		NumWorkers:      uint64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
 		Supervisor: &SupervisorConfig{
-			WatchTick:       1,
-			TTL:             100,
-			IdleTTL:         100,
-			ExecTTL:         4,
+			WatchTick:       1 * time.Second,
+			TTL:             100 * time.Second,
+			IdleTTL:         100 * time.Second,
+			ExecTTL:         4 * time.Second,
 			MaxWorkerMemory: 1,
 		},
 	}
