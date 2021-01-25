@@ -1,5 +1,6 @@
 {
   "minimum-stability": "beta",
+  "prefer-stable": true,
   "require": {
     "nyholm/psr7": "^1.3",
     "spiral/roadrunner": "^2.0",

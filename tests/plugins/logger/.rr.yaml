@@ -1,3 +1,3 @@
 logs:
   mode: development
-  level: debug
+  level: error

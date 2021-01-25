@@ -3,7 +3,7 @@ package tools
 import (
 	"github.com/shirou/gopsutil/process"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 )
 
 // ProcessState provides information about specific worker.
@@ -15,7 +15,7 @@ type ProcessState struct {
 	Status string `json:"status"`
 
 	// Number of worker executions.
-	NumJobs int64 `json:"numExecs"`
+	NumJobs uint64 `json:"numExecs"`
 
 	// Created is unix nano timestamp of worker creation time.
 	Created int64 `json:"created"`

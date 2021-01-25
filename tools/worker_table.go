@@ -52,8 +52,9 @@ func renderStatus(status string) string {
 	return status
 }
 
-func renderJobs(number int64) string {
-	return humanize.Comma(number)
+func renderJobs(number uint64) string {
+	// TODO overflow
+	return humanize.Comma(int64(number))
 }
 
 func renderAlive(t time.Time) string {

@@ -1,7 +1,7 @@
 package informer
 
 import (
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/tools"
 )

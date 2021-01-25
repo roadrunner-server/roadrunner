@@ -1,0 +1,88 @@
+name: macOS
+
+on:
+  push:
+  pull_request:
+    branches:
+      # Branches from forks have the form 'user:branch-name' so we only run
+      # this job on pull_request events for branches that look like fork
+      # branches. Without this we would end up running this job twice for non
+      # forked PRs, once for the push and then once for opening the PR.
+      - "**:**"
+
+jobs:
+  golang:
+    name: Build (Go ${{ matrix.go }}, PHP ${{ matrix.php }}, OS ${{matrix.os}})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ "7.4", "8.0" ]
+        go: [ "1.14", "1.15" ]
+        os: [ macos-latest ]
+    steps:
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2 # action page: <https://github.com/shivammathur/setup-php>
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: sockets
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Init Composer Cache # Docs: <https://git.io/JfAKn#php---composer>
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: cd tests && composer update --prefer-dist --no-progress --ansi
+
+      - name: Init Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Install Go dependencies
+        run: go mod download
+
+      - name: Run golang tests
+        run: |
+          go test -v -race -tags=debug ./pkg/transport/pipe
+          go test -v -race -tags=debug ./pkg/transport/socket
+          go test -v -race -tags=debug ./pkg/pool
+          go test -v -race -tags=debug ./pkg/worker
+          go test -v -race -tags=debug ./pkg/worker_watcher
+          go test -v -race -tags=debug ./plugins/http/config
+          go test -v -race -tags=debug ./tests/plugins/http
+          go test -v -race -tags=debug ./tests/plugins/informer
+          go test -v -race -tags=debug ./tests/plugins/reload
+          go test -v -race -tags=debug ./tests/plugins/server
+          go test -v -race -tags=debug ./tests/plugins/checker
+          go test -v -race -tags=debug ./tests/plugins/config
+          go test -v -race -tags=debug ./tests/plugins/gzip
+          go test -v -race -tags=debug ./tests/plugins/headers
+          go test -v -race -tags=debug ./tests/plugins/logger
+          go test -v -race -tags=debug ./tests/plugins/metrics
+          go test -v -race -tags=debug ./tests/plugins/redis
+          go test -v -race -tags=debug ./tests/plugins/resetter
+          go test -v -race -tags=debug ./tests/plugins/rpc
+          go test -v -race -tags=debug ./tests/plugins/static
+          go test -v -race -tags=debug ./plugins/kv/boltdb
+          go test -v -race -tags=debug ./plugins/kv/memory
+          go test -v -race -tags=debug ./tests/plugins/kv/boltdb
+          go test -v -race -tags=debug ./tests/plugins/kv/memory

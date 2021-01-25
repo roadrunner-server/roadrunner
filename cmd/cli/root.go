@@ -16,7 +16,7 @@ import (
 	"net/http"
 
 	"github.com/spf13/cobra"
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 )
 
 var (

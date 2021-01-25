@@ -12,12 +12,12 @@ type Config struct {
 
 	// NumWorkers defines how many sub-processes can be run at once. This value
 	// might be doubled by Swapper while hot-swap. Defaults to number of CPU cores.
-	NumWorkers int64 `mapstructure:"num_workers"`
+	NumWorkers uint64 `mapstructure:"num_workers"`
 
 	// MaxJobs defines how many executions is allowed for the worker until
 	// it's destruction. set 1 to create new process for each new task, 0 to let
 	// worker handle as many tasks as it can.
-	MaxJobs int64 `mapstructure:"max_jobs"`
+	MaxJobs uint64 `mapstructure:"max_jobs"`
 
 	// AllocateTimeout defines for how long pool will be waiting for a worker to
 	// be freed to handle the task. Defaults to 60s.
@@ -34,7 +34,7 @@ type Config struct {
 // InitDefaults enables default config values.
 func (cfg *Config) InitDefaults() {
 	if cfg.NumWorkers == 0 {
-		cfg.NumWorkers = int64(runtime.NumCPU())
+		cfg.NumWorkers = uint64(runtime.NumCPU())
 	}
 
 	if cfg.AllocateTimeout == 0 {
@@ -52,16 +52,16 @@ func (cfg *Config) InitDefaults() {
 
 type SupervisorConfig struct {
 	// WatchTick defines how often to check the state of worker.
-	WatchTick uint64 `mapstructure:"watch_tick"`
+	WatchTick time.Duration `mapstructure:"watch_tick"`
 
 	// TTL defines maximum time worker is allowed to live.
-	TTL uint64 `mapstructure:"ttl"`
+	TTL time.Duration `mapstructure:"ttl"`
 
 	// IdleTTL defines maximum duration worker can spend in idle mode. Disabled when 0.
-	IdleTTL uint64 `mapstructure:"idle_ttl"`
+	IdleTTL time.Duration `mapstructure:"idle_ttl"`
 
 	// ExecTTL defines maximum lifetime per job.
-	ExecTTL uint64 `mapstructure:"exec_ttl"`
+	ExecTTL time.Duration `mapstructure:"exec_ttl"`
 
 	// MaxWorkerMemory limits memory per worker.
 	MaxWorkerMemory uint64 `mapstructure:"max_worker_memory"`
@@ -70,6 +70,6 @@ type SupervisorConfig struct {
 // InitDefaults enables default config values.
 func (cfg *SupervisorConfig) InitDefaults() {
 	if cfg.WatchTick == 0 {
-		cfg.WatchTick = 1
+		cfg.WatchTick = time.Second
 	}
 }

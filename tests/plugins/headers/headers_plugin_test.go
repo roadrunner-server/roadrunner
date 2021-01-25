@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/headers"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
@@ -80,6 +80,7 @@ func TestHeadersInit(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second)
 	stopCh <- struct{}{}
 	wg.Wait()
 }

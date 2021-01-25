@@ -72,7 +72,7 @@ func (c *HTTP) InitDefaults() error {
 		// default pool
 		c.Pool = &poolImpl.Config{
 			Debug:           false,
-			NumWorkers:      int64(runtime.NumCPU()),
+			NumWorkers:      uint64(runtime.NumCPU()),
 			MaxJobs:         1000,
 			AllocateTimeout: time.Second * 60,
 			DestroyTimeout:  time.Second * 60,
@@ -144,26 +144,6 @@ func ParseCIDRs(subnets []string) (Cidrs, error) {
 	}
 
 	return c, nil
-}
-
-// IsTrusted if api can be trusted to use X-Real-Ip, X-Forwarded-For
-func (c *HTTP) IsTrusted(ip string) bool {
-	if c.Cidrs == nil {
-		return false
-	}
-
-	i := net.ParseIP(ip)
-	if i == nil {
-		return false
-	}
-
-	for _, cird := range c.Cidrs {
-		if cird.Contains(i) {
-			return true
-		}
-	}
-
-	return false
 }
 
 // Valid validates the configuration.

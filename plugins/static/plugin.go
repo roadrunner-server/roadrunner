@@ -32,6 +32,7 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	if !cfg.Has(RootPluginName) {
 		return errors.E(op, errors.Disabled)
 	}
+
 	err := cfg.UnmarshalKey(RootPluginName, &s.cfg)
 	if err != nil {
 		return errors.E(op, errors.Disabled, err)

@@ -5,7 +5,7 @@ import (
 	"net/rpc"
 	"sync/atomic"
 
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/config"
@@ -86,8 +86,7 @@ func (s *Plugin) Serve() chan error {
 			conn, err := s.listener.Accept()
 			if err != nil {
 				if atomic.LoadUint32(s.closed) == 1 {
-					// just log and continue, this is not a critical issue, we just called Stop
-					s.log.Warn("listener accept error, connection closed", "error", err)
+					// just continue, this is not a critical issue, we just called Stop
 					return
 				}
 

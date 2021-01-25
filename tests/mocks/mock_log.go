@@ -2,6 +2,7 @@ package mocks
 
 import (
 	"reflect"
+	"sync"
 
 	"github.com/golang/mock/gomock"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -9,6 +10,7 @@ import (
 
 // MockLogger is a mock of Logger interface.
 type MockLogger struct {
+	sync.Mutex
 	ctrl     *gomock.Controller
 	recorder *MockLoggerMockRecorder
 }
@@ -38,6 +40,8 @@ func (m *MockLogger) Init() error {
 
 // Debug mocks base method.
 func (m *MockLogger) Debug(msg string, keyvals ...interface{}) {
+	m.Lock()
+	defer m.Unlock()
 	m.ctrl.T.Helper()
 	varargs := []interface{}{msg}
 	for _, a := range keyvals {
@@ -48,6 +52,8 @@ func (m *MockLogger) Debug(msg string, keyvals ...interface{}) {
 
 // Warn mocks base method.
 func (m *MockLogger) Warn(msg string, keyvals ...interface{}) {
+	m.Lock()
+	defer m.Unlock()
 	m.ctrl.T.Helper()
 	varargs := []interface{}{msg}
 	for _, a := range keyvals {
@@ -58,6 +64,8 @@ func (m *MockLogger) Warn(msg string, keyvals ...interface{}) {
 
 // Info mocks base method.
 func (m *MockLogger) Info(msg string, keyvals ...interface{}) {
+	m.Lock()
+	defer m.Unlock()
 	m.ctrl.T.Helper()
 	varargs := []interface{}{msg}
 	for _, a := range keyvals {
@@ -68,6 +76,8 @@ func (m *MockLogger) Info(msg string, keyvals ...interface{}) {
 
 // Error mocks base method.
 func (m *MockLogger) Error(msg string, keyvals ...interface{}) {
+	m.Lock()
+	defer m.Unlock()
 	m.ctrl.T.Helper()
 	varargs := []interface{}{msg}
 	for _, a := range keyvals {

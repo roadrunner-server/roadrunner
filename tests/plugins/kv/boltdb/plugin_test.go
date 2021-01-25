@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
@@ -23,7 +23,7 @@ import (
 )
 
 func TestBoltDb(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{

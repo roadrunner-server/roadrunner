@@ -10,7 +10,7 @@ import (
 
 	"github.com/alicebob/miniredis/v2"
 	"github.com/golang/mock/gomock"
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/redis"
 	"github.com/spiral/roadrunner/v2/tests/mocks"

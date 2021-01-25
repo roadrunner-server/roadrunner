@@ -6,10 +6,9 @@ import (
 
 	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v3/pkg/pipe"
-	"github.com/spiral/roadrunner/v2/interfaces/events"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
-	workerImpl "github.com/spiral/roadrunner/v2/pkg/worker"
+	"github.com/spiral/roadrunner/v2/pkg/events"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"go.uber.org/multierr"
 )
 
@@ -19,22 +18,22 @@ type Factory struct{}
 
 // NewPipeFactory returns new factory instance and starts
 // listening
-func NewPipeFactory() worker.Factory {
+func NewPipeFactory() *Factory {
 	return &Factory{}
 }
 
 type SpawnResult struct {
-	w   worker.BaseProcess
+	w   *worker.Process
 	err error
 }
 
 // SpawnWorker creates new Process and connects it to goridge relay,
 // method Wait() must be handled on level above.
-func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.Listener) (worker.BaseProcess, error) {
+func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.Listener) (*worker.Process, error) {
 	c := make(chan SpawnResult)
 	const op = errors.Op("factory_spawn_worker_with_timeout")
 	go func() {
-		w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(listeners...))
+		w, err := worker.InitBaseWorker(cmd, worker.AddListeners(listeners...))
 		if err != nil {
 			c <- SpawnResult{
 				w:   nil,
@@ -113,9 +112,9 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 	}
 }
 
-func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (worker.BaseProcess, error) {
+func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*worker.Process, error) {
 	const op = errors.Op("factory_spawn_worker")
-	w, err := workerImpl.InitBaseWorker(cmd, workerImpl.AddListeners(listeners...))
+	w, err := worker.InitBaseWorker(cmd, worker.AddListeners(listeners...))
 	if err != nil {
 		return nil, errors.E(op, err)
 	}

@@ -1,9 +1,9 @@
 package informer
 
 import (
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 

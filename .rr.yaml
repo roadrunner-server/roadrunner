@@ -9,11 +9,11 @@ server:
     "RR_HTTP": "true"
     "RR_RPC": "tcp://127.0.0.1:6001"
   relay: "pipes"
-  relay_timeout: "20s"
+  relay_timeout: 20s
 
 logs:
   mode: development
-  level: debug
+  level: error
 
 http:
   # host and port separated by semicolon
@@ -44,7 +44,6 @@ http:
       input: "custom-header"
     response:
       output: "output-header"
-
   static:
     dir: "tests"
     forbid: [ "" ]
@@ -59,24 +58,24 @@ http:
     allocate_timeout: 60s
     destroy_timeout: 60s
     supervisor:
-      # WatchTick defines how often to check the state of worker (seconds)
-      watch_tick: 1
-      # TTL defines maximum time worker is allowed to live (seconds)
+      # watch_tick defines how often to check the state of the workers (seconds)
+      watch_tick: 1s
+      # ttl defines maximum time worker is allowed to live (seconds)
       ttl: 0
-      # IdleTTL defines maximum duration worker can spend in idle mode. Disabled when 0 (seconds)
-      idle_ttl: 10
-      # ExecTTL defines maximum lifetime per job (seconds)
-      exec_ttl: 10
-      # MaxWorkerMemory limits memory per worker (MB)
+      # idle_ttl defines maximum duration worker can spend in idle mode after first use. Disabled when 0 (seconds)
+      idle_ttl: 10s
+      # exec_ttl defines maximum lifetime per job (seconds)
+      exec_ttl: 10s
+      # max_worker_memory limits memory usage per worker (MB)
       max_worker_memory: 100
 
-  #  ssl:
-  #    host and port separated by semicolon (default :443)
-  #    address: :8892
-  #    redirect: false
-  #    cert: fixtures/server.crt
-  #    key: fixtures/server.key
-  #    rootCa: root.crt
+  ssl:
+    # host and port separated by semicolon (default :443)
+    address: :8892
+    redirect: false
+    cert: fixtures/server.crt
+    key: fixtures/server.key
+    root_ca: root.crt
   fcgi:
     address: tcp://0.0.0.0:7921
   http2:

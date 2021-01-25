@@ -10,8 +10,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/spiral/roadrunner/v2/pkg/pipe"
-	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
+	"github.com/spiral/roadrunner/v2/pkg/pool"
+	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/stretchr/testify/assert"
@@ -23,10 +23,10 @@ import (
 )
 
 func TestHandler_Echo(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "echo", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -38,7 +38,7 @@ func TestHandler_Echo(t *testing.T) {
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
@@ -74,10 +74,10 @@ func Test_HandlerErrors(t *testing.T) {
 }
 
 func TestHandler_Headers(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "header", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -86,13 +86,13 @@ func TestHandler_Headers(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8078", Handler: h}
@@ -135,10 +135,10 @@ func TestHandler_Headers(t *testing.T) {
 }
 
 func TestHandler_Empty_User_Agent(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "user-agent", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -147,13 +147,13 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8088", Handler: h}
@@ -195,10 +195,10 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 }
 
 func TestHandler_User_Agent(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "user-agent", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -207,13 +207,13 @@ func TestHandler_User_Agent(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8088", Handler: h}
@@ -255,10 +255,10 @@ func TestHandler_User_Agent(t *testing.T) {
 }
 
 func TestHandler_Cookies(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "cookie", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -267,13 +267,13 @@ func TestHandler_Cookies(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8079", Handler: h}
@@ -320,10 +320,10 @@ func TestHandler_Cookies(t *testing.T) {
 }
 
 func TestHandler_JsonPayload_POST(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "payload", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -332,13 +332,13 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8090", Handler: h}
@@ -384,10 +384,10 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 }
 
 func TestHandler_JsonPayload_PUT(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "payload", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -396,13 +396,13 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8081", Handler: h}
@@ -444,10 +444,10 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 }
 
 func TestHandler_JsonPayload_PATCH(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "payload", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -456,13 +456,13 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8082", Handler: h}
@@ -504,10 +504,10 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 }
 
 func TestHandler_FormData_POST(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "data", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -516,13 +516,13 @@ func TestHandler_FormData_POST(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8083", Handler: h}
@@ -577,10 +577,10 @@ func TestHandler_FormData_POST(t *testing.T) {
 }
 
 func TestHandler_FormData_POST_Overwrite(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "data", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -589,13 +589,13 @@ func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8083", Handler: h}
@@ -650,10 +650,10 @@ func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 }
 
 func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "data", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -662,13 +662,13 @@ func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8083", Handler: h}
@@ -722,10 +722,10 @@ func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 }
 
 func TestHandler_FormData_PUT(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "data", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -734,13 +734,13 @@ func TestHandler_FormData_PUT(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":17834", Handler: h}
@@ -794,10 +794,10 @@ func TestHandler_FormData_PUT(t *testing.T) {
 }
 
 func TestHandler_FormData_PATCH(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "data", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -806,13 +806,13 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8085", Handler: h}
@@ -866,10 +866,10 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 }
 
 func TestHandler_Multipart_POST(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "data", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -878,13 +878,13 @@ func TestHandler_Multipart_POST(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8019", Handler: h}
@@ -980,10 +980,10 @@ func TestHandler_Multipart_POST(t *testing.T) {
 }
 
 func TestHandler_Multipart_PUT(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "data", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -992,13 +992,13 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8020", Handler: h}
@@ -1094,10 +1094,10 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 }
 
 func TestHandler_Multipart_PATCH(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "data", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1106,13 +1106,13 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8021", Handler: h}
@@ -1210,10 +1210,10 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 }
 
 func TestHandler_Error(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "error", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1222,13 +1222,13 @@ func TestHandler_Error(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
@@ -1256,10 +1256,10 @@ func TestHandler_Error(t *testing.T) {
 }
 
 func TestHandler_Error2(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "error2", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1268,13 +1268,13 @@ func TestHandler_Error2(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
@@ -1302,10 +1302,10 @@ func TestHandler_Error2(t *testing.T) {
 }
 
 func TestHandler_Error3(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "pid", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1314,13 +1314,13 @@ func TestHandler_Error3(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
@@ -1361,10 +1361,10 @@ func TestHandler_Error3(t *testing.T) {
 }
 
 func TestHandler_ResponseDuration(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "echo", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1373,13 +1373,13 @@ func TestHandler_ResponseDuration(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
@@ -1422,10 +1422,10 @@ func TestHandler_ResponseDuration(t *testing.T) {
 }
 
 func TestHandler_ResponseDurationDelayed(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "echoDelay", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1434,13 +1434,13 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
@@ -1482,10 +1482,10 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 }
 
 func TestHandler_ErrorDuration(t *testing.T) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "error", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1494,13 +1494,13 @@ func TestHandler_ErrorDuration(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
@@ -1556,10 +1556,10 @@ func TestHandler_IP(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "ip", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1568,13 +1568,13 @@ func TestHandler_IP(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, cidrs, pool)
+	}, cidrs, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
@@ -1617,10 +1617,10 @@ func TestHandler_XRealIP(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "ip", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1629,13 +1629,13 @@ func TestHandler_XRealIP(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, cidrs, pool)
+	}, cidrs, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: "127.0.0.1:8179", Handler: h}
@@ -1683,10 +1683,10 @@ func TestHandler_XForwardedFor(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "ip", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1695,13 +1695,13 @@ func TestHandler_XForwardedFor(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, cidrs, pool)
+	}, cidrs, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
@@ -1748,10 +1748,10 @@ func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, cidrs)
 
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "ip", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		pool.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -1760,13 +1760,13 @@ func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, cidrs, pool)
+	}, cidrs, p)
 	assert.NoError(t, err)
 
 	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
@@ -1796,11 +1796,11 @@ func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
 }
 
 func BenchmarkHandler_Listen_Echo(b *testing.B) {
-	pool, err := poolImpl.Initialize(context.Background(),
+	p, err := pool.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "echo", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
-			NumWorkers:      int64(runtime.NumCPU()),
+		pool.Config{
+			NumWorkers:      uint64(runtime.NumCPU()),
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
 		})
@@ -1808,13 +1808,13 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 		b.Fatal(err)
 	}
 	defer func() {
-		pool.Destroy(context.Background())
+		p.Destroy(context.Background())
 	}()
 
 	h, err := httpPlugin.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
-	}, nil, pool)
+	}, nil, p)
 	assert.NoError(b, err)
 
 	hs := &http.Server{Addr: ":8177", Handler: h}

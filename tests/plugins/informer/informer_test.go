@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
@@ -86,13 +86,14 @@ func TestInformerInit(t *testing.T) {
 	}()
 
 	time.Sleep(time.Second)
-	t.Run("InformerRpcTest", informerRPCTest)
+	t.Run("InformerWorkersRpcTest", informerWorkersRPCTest)
+	t.Run("InformerListRpcTest", informerListRPCTest)
 
 	stopCh <- struct{}{}
 	wg.Wait()
 }
 
-func informerRPCTest(t *testing.T) {
+func informerWorkersRPCTest(t *testing.T) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
@@ -105,4 +106,16 @@ func informerRPCTest(t *testing.T) {
 	err = client.Call("informer.Workers", "informer.plugin1", &list)
 	assert.NoError(t, err)
 	assert.Len(t, list.Workers, 10)
+}
+
+func informerListRPCTest(t *testing.T) {
+	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	assert.NoError(t, err)
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+	// WorkerList contains list of workers.
+	list := make([]string, 0, 0)
+
+	err = client.Call("informer.List", true, &list)
+	assert.NoError(t, err)
+	assert.Equal(t, "informer.plugin1", list[0])
 }

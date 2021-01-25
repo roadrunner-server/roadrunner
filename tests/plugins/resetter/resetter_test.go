@@ -10,13 +10,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiral/endure"
+	"github.com/golang/mock/gomock"
+	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/server"
+	"github.com/spiral/roadrunner/v2/tests/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -31,10 +32,26 @@ func TestResetterInit(t *testing.T) {
 		Prefix: "rr",
 	}
 
+	controller := gomock.NewController(t)
+	mockLogger := mocks.NewMockLogger(controller)
+
+	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "services", []string{"resetter"}).MinTimes(1)
+
+	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
+
+	mockLogger.EXPECT().Debug("started List method").MinTimes(1)
+	mockLogger.EXPECT().Debug("services list", "services", []string{"resetter.plugin1"}).MinTimes(1)
+	mockLogger.EXPECT().Debug("finished List method").MinTimes(1)
+	mockLogger.EXPECT().Debug("started Reset method for the service", "service", "resetter.plugin1").MinTimes(1)
+	mockLogger.EXPECT().Debug("finished Reset method for the service", "service", "resetter.plugin1").MinTimes(1)
+	mockLogger.EXPECT().Warn("listener accept error, connection closed", "error", gomock.Any()).AnyTimes()
+
 	err = cont.RegisterAll(
 		cfg,
 		&server.Plugin{},
-		&logger.ZapLogger{},
+		mockLogger,
 		&resetter.Plugin{},
 		&rpcPlugin.Plugin{},
 		&Plugin1{},

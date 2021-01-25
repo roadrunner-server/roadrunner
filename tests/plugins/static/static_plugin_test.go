@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/gzip"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
@@ -209,8 +209,9 @@ func TestStaticDisabled(t *testing.T) {
 
 func staticDisabled(t *testing.T) {
 	_, r, err := get("http://localhost:21234/sample.txt") //nolint:bodyclose
-	assert.Error(t, err)
-	assert.Nil(t, r)
+	assert.NoError(t, err)
+	assert.NotNil(t, r)
+	assert.Empty(t, r.Header.Get("X-Powered-By"))
 }
 
 func TestStaticFilesDisabled(t *testing.T) {

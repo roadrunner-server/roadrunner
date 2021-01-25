@@ -4,22 +4,22 @@ import (
 	"context"
 	"time"
 
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
-	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
+	"github.com/spiral/roadrunner/v2/pkg/pool"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/server"
 )
 
-var testPoolConfig = poolImpl.Config{
+var testPoolConfig = pool.Config{
 	NumWorkers:      10,
 	MaxJobs:         100,
 	AllocateTimeout: time.Second * 10,
 	DestroyTimeout:  time.Second * 10,
-	Supervisor: &poolImpl.SupervisorConfig{
-		WatchTick:       60,
-		TTL:             1000,
-		IdleTTL:         10,
-		ExecTTL:         10,
+	Supervisor: &pool.SupervisorConfig{
+		WatchTick:       60 * time.Second,
+		TTL:             1000 * time.Second,
+		IdleTTL:         10 * time.Second,
+		ExecTTL:         10 * time.Second,
 		MaxWorkerMemory: 1000,
 	},
 }
@@ -50,10 +50,16 @@ func (p1 *Plugin1) Name() string {
 }
 
 func (p1 *Plugin1) Workers() []worker.BaseProcess {
-	pool, err := p1.server.NewWorkerPool(context.Background(), testPoolConfig, nil)
+	p, err := p1.server.NewWorkerPool(context.Background(), testPoolConfig, nil)
 	if err != nil {
 		panic(err)
 	}
 
-	return pool.Workers()
+	workers := p.Workers()
+	baseWorkers := make([]worker.BaseProcess, 0, len(workers))
+	for i := 0; i < len(workers); i++ {
+		baseWorkers = append(baseWorkers, worker.FromSync(workers[i].(*worker.SyncWorkerImpl)))
+	}
+
+	return baseWorkers
 }

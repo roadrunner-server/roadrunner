@@ -13,11 +13,10 @@ import (
 	"sync"
 
 	"github.com/hashicorp/go-multierror"
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/pool"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
-	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
+	"github.com/spiral/roadrunner/v2/pkg/pool"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/plugins/checker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
@@ -104,7 +103,7 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 
 	s.cfg.Env[RR_HTTP] = "true"
 
-	s.pool, err = server.NewWorkerPool(context.Background(), poolImpl.Config{
+	s.pool, err = server.NewWorkerPool(context.Background(), pool.Config{
 		Debug:           s.cfg.Pool.Debug,
 		NumWorkers:      s.cfg.Pool.NumWorkers,
 		MaxJobs:         s.cfg.Pool.MaxJobs,
@@ -304,7 +303,12 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Workers returns associated pool workers
 func (s *Plugin) Workers() []worker.BaseProcess {
-	return s.pool.Workers()
+	workers := s.pool.Workers()
+	baseWorkers := make([]worker.BaseProcess, 0, len(workers))
+	for i := 0; i < len(workers); i++ {
+		baseWorkers = append(baseWorkers, worker.FromSync(workers[i].(*worker.SyncWorkerImpl)))
+	}
+	return baseWorkers
 }
 
 // Name returns endure.Named interface implementation
@@ -322,7 +326,7 @@ func (s *Plugin) Reset() error {
 	s.pool = nil
 
 	var err error
-	s.pool, err = s.server.NewWorkerPool(context.Background(), poolImpl.Config{
+	s.pool, err = s.server.NewWorkerPool(context.Background(), pool.Config{
 		Debug:           s.cfg.Pool.Debug,
 		NumWorkers:      s.cfg.Pool.NumWorkers,
 		MaxJobs:         s.cfg.Pool.MaxJobs,

@@ -26,11 +26,10 @@ http:
     redirect: false
     cert: fixtures/server.crt
     key: fixtures/server.key
-  #    rootCa: root.crt
+  #    root_ca: root.crt
   fcgi:
     address: tcp://0.0.0.0:6920
   http2:
-    enabled: false
     h2c: false
     maxConcurrentStreams: 128
 logs:

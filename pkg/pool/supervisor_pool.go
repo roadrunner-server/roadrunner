@@ -6,11 +6,10 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/events"
-	"github.com/spiral/roadrunner/v2/interfaces/pool"
-	"github.com/spiral/roadrunner/v2/interfaces/worker"
 	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/tools"
 )
 
@@ -20,7 +19,7 @@ const MB = 1024 * 1024
 const NSEC_IN_SEC int64 = 1000000000 //nolint:golint,stylecheck
 
 type Supervised interface {
-	pool.Pool
+	Pool
 	// Start used to start watching process for all pool workers
 	Start()
 }
@@ -28,12 +27,12 @@ type Supervised interface {
 type supervised struct {
 	cfg    *SupervisorConfig
 	events events.Handler
-	pool   pool.Pool
+	pool   Pool
 	stopCh chan struct{}
 	mu     *sync.RWMutex
 }
 
-func supervisorWrapper(pool pool.Pool, events events.Handler, cfg *SupervisorConfig) Supervised {
+func supervisorWrapper(pool Pool, events events.Handler, cfg *SupervisorConfig) Supervised {
 	sp := &supervised{
 		cfg:    cfg,
 		events: events,
@@ -57,7 +56,7 @@ func (sp *supervised) ExecWithContext(ctx context.Context, rqs payload.Payload) 
 	}
 
 	c := make(chan ttlExec, 1)
-	ctx, cancel := context.WithTimeout(ctx, time.Duration(sp.cfg.ExecTTL)*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, sp.cfg.ExecTTL)
 	defer cancel()
 	go func() {
 		res, err := sp.pool.ExecWithContext(ctx, rqs)
@@ -101,13 +100,13 @@ func (sp *supervised) GetConfig() interface{} {
 	return sp.pool.GetConfig()
 }
 
-func (sp *supervised) Workers() (workers []worker.BaseProcess) {
+func (sp *supervised) Workers() (workers []worker.SyncWorker) {
 	sp.mu.Lock()
 	defer sp.mu.Unlock()
 	return sp.pool.Workers()
 }
 
-func (sp *supervised) RemoveWorker(worker worker.BaseProcess) error {
+func (sp *supervised) RemoveWorker(worker worker.SyncWorker) error {
 	return sp.pool.RemoveWorker(worker)
 }
 
@@ -117,7 +116,7 @@ func (sp *supervised) Destroy(ctx context.Context) {
 
 func (sp *supervised) Start() {
 	go func() {
-		watchTout := time.NewTicker(time.Duration(sp.cfg.WatchTick) * time.Second)
+		watchTout := time.NewTicker(sp.cfg.WatchTick)
 		for {
 			select {
 			case <-sp.stopCh:
@@ -155,7 +154,7 @@ func (sp *supervised) control() {
 			continue
 		}
 
-		if sp.cfg.TTL != 0 && now.Sub(workers[i].Created()).Seconds() >= float64(sp.cfg.TTL) {
+		if sp.cfg.TTL != 0 && now.Sub(workers[i].Created()).Seconds() >= sp.cfg.TTL.Seconds() {
 			err = sp.pool.RemoveWorker(workers[i])
 			if err != nil {
 				sp.events.Push(events.PoolEvent{Event: events.EventSupervisorError, Payload: errors.E(op, err)})
@@ -210,7 +209,7 @@ func (sp *supervised) control() {
 			// IdleTTL is 1 second.
 			// After the control check, res will be 5, idle is 1
 			// 5 - 1 = 4, more than 0, YOU ARE FIRED (removed). Done.
-			if int64(sp.cfg.IdleTTL)-res <= 0 {
+			if int64(sp.cfg.IdleTTL.Seconds())-res <= 0 {
 				err = sp.pool.RemoveWorker(workers[i])
 				if err != nil {
 					sp.events.Push(events.PoolEvent{Event: events.EventSupervisorError, Payload: errors.E(op, err)})

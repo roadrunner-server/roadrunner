@@ -3,7 +3,7 @@ package events
 // TODO event numbers
 const (
 	// EventWorkerConstruct thrown when new worker is spawned.
-	EventWorkerConstruct P = iota + 7800
+	EventWorkerConstruct P = iota + 10000
 
 	// EventWorkerDestruct thrown after worker destruction.
 	EventWorkerDestruct

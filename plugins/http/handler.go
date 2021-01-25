@@ -10,8 +10,8 @@ import (
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/interfaces/events"
-	"github.com/spiral/roadrunner/v2/interfaces/pool"
+	"github.com/spiral/roadrunner/v2/pkg/events"
+	"github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )

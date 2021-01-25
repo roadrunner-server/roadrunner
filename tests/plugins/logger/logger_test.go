@@ -6,7 +6,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/spiral/endure"
+	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/stretchr/testify/assert"
