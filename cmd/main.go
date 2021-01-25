@@ -7,6 +7,9 @@ import (
 	"github.com/spiral/roadrunner/v2/cmd/cli"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
+	"github.com/spiral/roadrunner/v2/plugins/temporal/activity"
+	temporalClient "github.com/spiral/roadrunner/v2/plugins/temporal/client"
+	"github.com/spiral/roadrunner/v2/plugins/temporal/workflow"
 
 	"github.com/spiral/roadrunner/v2/plugins/kv/boltdb"
 	"github.com/spiral/roadrunner/v2/plugins/kv/memcached"
@@ -52,6 +55,11 @@ func main() {
 		&memory.Plugin{},
 		// boltdb driver
 		&boltdb.Plugin{},
+
+		// temporal plugins
+		&temporalClient.Plugin{},
+		&activity.Plugin{},
+		&workflow.Plugin{},
 	)
 	if err != nil {
 		log.Fatal(err)

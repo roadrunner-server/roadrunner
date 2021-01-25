@@ -15,6 +15,14 @@ logs:
   mode: development
   level: error
 
+# Workflow and activity mesh service
+temporal:
+  address: localhost:7233
+  activities:
+    num_workers: 4
+  codec: json
+  debug_level: 2
+
 http:
   # host and port separated by semicolon
   address: 127.0.0.1:44933
