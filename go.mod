@@ -11,7 +11,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.10.0
 	github.com/go-ole/go-ole v1.2.5 // indirect
-	github.com/go-redis/redis/v8 v8.4.4
+	github.com/go-redis/redis/v8 v8.4.10
 	github.com/gofiber/fiber/v2 v2.3.3
 	github.com/golang/mock v1.4.4
 	github.com/hashicorp/go-multierror v1.1.0
