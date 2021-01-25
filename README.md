@@ -1,4 +1,4 @@
-[WIP]
+## [RR2-BETA]
 
 <p align="center">
  <img src="https://user-images.githubusercontent.com/796136/50286124-6f7f3780-046f-11e9-9f45-e8fedd4f786d.png" height="75px" alt="RoadRunner">
