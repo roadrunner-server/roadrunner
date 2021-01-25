@@ -1,6 +1,5 @@
 rpc:
   listen: tcp://127.0.0.1:6001
-  disabled: false
 
 server:
   command: "php ../../http/client.php echo pipes"
@@ -34,7 +33,6 @@ http:
   fcgi:
     address: tcp://0.0.0.0:7921
   http2:
-    enabled: false
     h2c: false
     maxConcurrentStreams: 128
 logs:

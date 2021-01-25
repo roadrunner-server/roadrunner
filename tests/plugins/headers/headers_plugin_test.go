@@ -80,6 +80,7 @@ func TestHeadersInit(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second)
 	stopCh <- struct{}{}
 	wg.Wait()
 }

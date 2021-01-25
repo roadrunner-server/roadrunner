@@ -7,6 +7,7 @@ import (
 	"sync"
 	"syscall"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	endure "github.com/spiral/endure/pkg/container"
@@ -172,6 +173,7 @@ func TestMiddlewareNotExist(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second)
 	stopCh <- struct{}{}
 	wg.Wait()
 }

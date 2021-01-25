@@ -30,7 +30,6 @@ http:
   fcgi:
     address: tcp://0.0.0.0:6920
   http2:
-    enabled: false
     h2c: false
     maxConcurrentStreams: 128
 logs:

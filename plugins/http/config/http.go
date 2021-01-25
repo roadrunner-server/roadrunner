@@ -146,26 +146,6 @@ func ParseCIDRs(subnets []string) (Cidrs, error) {
 	return c, nil
 }
 
-// IsTrusted if api can be trusted to use X-Real-Ip, X-Forwarded-For
-func (c *HTTP) IsTrusted(ip string) bool {
-	if c.Cidrs == nil {
-		return false
-	}
-
-	i := net.ParseIP(ip)
-	if i == nil {
-		return false
-	}
-
-	for _, cird := range c.Cidrs {
-		if cird.Contains(i) {
-			return true
-		}
-	}
-
-	return false
-}
-
 // Valid validates the configuration.
 func (c *HTTP) Valid() error {
 	const op = errors.Op("validation")

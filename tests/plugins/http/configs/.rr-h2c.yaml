@@ -21,7 +21,6 @@ http:
     allocate_timeout: 60s
     destroy_timeout: 60s
   http2:
-    enabled: true
     h2c: true
     maxConcurrentStreams: 128
 logs:
