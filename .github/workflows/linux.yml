@@ -1,4 +1,4 @@
-name: build
+name: Linux
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
       matrix:
         php: [ "7.4", "8.0" ]
         go: [ "1.14", "1.15" ]
-        os: [ ubuntu-20.04, windows-latest, macos-latest ]
+        os: [ ubuntu-20.04 ]
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
@@ -37,12 +37,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get Composer Cache Directory
-        if: ${{ matrix.os != 'windows-latest' }}
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Init Composer Cache # Docs: <https://git.io/JfAKn#php---composer>
-        if: ${{ matrix.os != 'windows-latest' }}
         uses: actions/cache@v2
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
@@ -62,68 +60,7 @@ jobs:
       - name: Install Go dependencies
         run: go mod download
 
-      - name: Run golang tests on Windows without codecov
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          docker-compose -f ./tests/docker-compose.yaml up -d
-          go test -v -race -tags=debug ./pkg/transport/pipe
-          go test -v -race -tags=debug ./pkg/transport/socket
-          go test -v -race -tags=debug ./pkg/pool
-          go test -v -race -tags=debug ./pkg/worker
-          go test -v -race -tags=debug ./pkg/worker_watcher
-          go test -v -race -tags=debug ./tests/plugins/http
-          go test -v -race -tags=debug ./plugins/http/config
-          go test -v -race -tags=debug ./tests/plugins/informer
-          go test -v -race -tags=debug ./tests/plugins/reload
-          go test -v -race -tags=debug ./tests/plugins/server
-          go test -v -race -tags=debug ./tests/plugins/checker
-          go test -v -race -tags=debug ./tests/plugins/config
-          go test -v -race -tags=debug ./tests/plugins/gzip
-          go test -v -race -tags=debug ./tests/plugins/headers
-          go test -v -race -tags=debug ./tests/plugins/logger
-          go test -v -race -tags=debug ./tests/plugins/metrics
-          go test -v -race -tags=debug ./tests/plugins/redis
-          go test -v -race -tags=debug ./tests/plugins/resetter
-          go test -v -race -tags=debug ./tests/plugins/rpc
-          go test -v -race -tags=debug ./tests/plugins/static
-          go test -v -race -tags=debug ./plugins/kv/boltdb
-          go test -v -race -tags=debug ./plugins/kv/memory
-          go test -v -race -tags=debug ./plugins/kv/memcached
-          go test -v -race -tags=debug ./tests/plugins/kv/boltdb
-          go test -v -race -tags=debug ./tests/plugins/kv/memory
-          go test -v -race -tags=debug ./tests/plugins/kv/memcached
-          docker-compose -f ./tests/docker-compose.yaml down
-
-      - name: Run golang tests on MacOS without codecov
-        if: ${{ matrix.os == 'macos-latest' }}
-        run: |
-          go test -v -race -tags=debug ./pkg/transport/pipe
-          go test -v -race -tags=debug ./pkg/transport/socket
-          go test -v -race -tags=debug ./pkg/pool
-          go test -v -race -tags=debug ./pkg/worker
-          go test -v -race -tags=debug ./pkg/worker_watcher
-          go test -v -race -tags=debug ./plugins/http/config
-          go test -v -race -tags=debug ./tests/plugins/http
-          go test -v -race -tags=debug ./tests/plugins/informer
-          go test -v -race -tags=debug ./tests/plugins/reload
-          go test -v -race -tags=debug ./tests/plugins/server
-          go test -v -race -tags=debug ./tests/plugins/checker
-          go test -v -race -tags=debug ./tests/plugins/config
-          go test -v -race -tags=debug ./tests/plugins/gzip
-          go test -v -race -tags=debug ./tests/plugins/headers
-          go test -v -race -tags=debug ./tests/plugins/logger
-          go test -v -race -tags=debug ./tests/plugins/metrics
-          go test -v -race -tags=debug ./tests/plugins/redis
-          go test -v -race -tags=debug ./tests/plugins/resetter
-          go test -v -race -tags=debug ./tests/plugins/rpc
-          go test -v -race -tags=debug ./tests/plugins/static
-          go test -v -race -tags=debug ./plugins/kv/boltdb
-          go test -v -race -tags=debug ./plugins/kv/memory
-          go test -v -race -tags=debug ./tests/plugins/kv/boltdb
-          go test -v -race -tags=debug ./tests/plugins/kv/memory
-
       - name: Run golang tests on Linux
-        if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
           docker-compose -f ./tests/docker-compose.yaml up -d
           mkdir ./coverage-ci
@@ -157,7 +94,6 @@ jobs:
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
-        if: ${{ matrix.os == 'ubuntu-20.04' }} # codecov only from linux
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage-ci/summary.txt
