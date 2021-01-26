@@ -111,6 +111,8 @@ func (p *Plugin) Name() string {
 
 // Workers returns list of available workflow workers.
 func (p *Plugin) Workers() []worker.BaseProcess {
+	p.mu.Lock()
+	defer p.mu.Unlock()
 	return p.pool.Workers()
 }
 
