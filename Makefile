@@ -32,6 +32,9 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pool.out -covermode=atomic ./pkg/pool
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/worker.out -covermode=atomic ./pkg/worker
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/worker_stack.out -covermode=atomic ./pkg/worker_watcher
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/temporal.out -covermode=atomic ./tests/plugins/temporal
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/temporal_protocol.out -covermode=atomic ./plugins/temporal/protocol
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/temporal_workflow.out -covermode=atomic ./plugins/temporal/workflow
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/http.out -covermode=atomic ./tests/plugins/http
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/informer.out -covermode=atomic ./tests/plugins/informer
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/reload.out -covermode=atomic ./tests/plugins/reload
@@ -58,62 +61,68 @@ test_coverage:
 
 test: ## Run application tests
 	docker-compose -f tests/docker-compose.yaml up -d
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/pipe
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/socket
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/pool
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker_watcher
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/http
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/http/config
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/informer
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/reload
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/server
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/checker
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/config
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/gzip
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/headers
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/logger
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/metrics
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/redis
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/resetter
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/rpc
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/static
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/boltdb
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/memory
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/memcached
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/boltdb
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/memory
-	go test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/memcached
+	go test -v -race -tags=debug ./pkg/transport/pipe
+	go test -v -race -tags=debug ./pkg/transport/socket
+	go test -v -race -tags=debug ./pkg/pool
+	go test -v -race -tags=debug ./pkg/worker
+	go test -v -race -tags=debug ./pkg/worker_watcher
+	go test -v -race -tags=debug ./tests/plugins/temporal
+	go test -v -race -tags=debug ./plugins/temporal/protocol
+	go test -v -race -tags=debug ./plugins/temporal/workflow
+	go test -v -race -tags=debug ./tests/plugins/http
+	go test -v -race -tags=debug ./plugins/http/config
+	go test -v -race -tags=debug ./tests/plugins/informer
+	go test -v -race -tags=debug ./tests/plugins/reload
+	go test -v -race -tags=debug ./tests/plugins/server
+	go test -v -race -tags=debug ./tests/plugins/checker
+	go test -v -race -tags=debug ./tests/plugins/config
+	go test -v -race -tags=debug ./tests/plugins/gzip
+	go test -v -race -tags=debug ./tests/plugins/headers
+	go test -v -race -tags=debug ./tests/plugins/logger
+	go test -v -race -tags=debug ./tests/plugins/metrics
+	go test -v -race -tags=debug ./tests/plugins/redis
+	go test -v -race -tags=debug ./tests/plugins/resetter
+	go test -v -race -tags=debug ./tests/plugins/rpc
+	go test -v -race -tags=debug ./tests/plugins/static
+	go test -v -race -tags=debug ./plugins/kv/boltdb
+	go test -v -race -tags=debug ./plugins/kv/memory
+	go test -v -race -tags=debug ./plugins/kv/memcached
+	go test -v -race -tags=debug ./tests/plugins/kv/boltdb
+	go test -v -race -tags=debug ./tests/plugins/kv/memory
+	go test -v -race -tags=debug ./tests/plugins/kv/memcached
 	docker-compose -f tests/docker-compose.yaml down
 
 test_1.14: ## Run application tests
 	docker-compose -f tests/docker-compose.yaml up -d
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/pipe
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/transport/socket
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/pool
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./pkg/worker_watcher
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/http
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/http/config
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/informer
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/reload
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/server
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/checker
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/config
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/gzip
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/headers
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/logger
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/metrics
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/redis
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/resetter
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/rpc
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/static
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/boltdb
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/memory
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./plugins/kv/memcached
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/boltdb
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/memory
-	go1.14.14 test -v -race -cover -tags=debug -coverpkg=./... -covermode=atomic ./tests/plugins/kv/memcached
+	go1.14.14 test -v -race -tags=debug ./pkg/transport/pipe
+	go1.14.14 test -v -race -tags=debug ./pkg/transport/socket
+	go1.14.14 test -v -race -tags=debug ./pkg/pool
+	go1.14.14 test -v -race -tags=debug ./pkg/worker
+	go1.14.14 test -v -race -tags=debug ./pkg/worker_watcher
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/temporal
+	go1.14.14 test -v -race -tags=debug ./plugins/temporal/protocol
+	go1.14.14 test -v -race -tags=debug ./plugins/temporal/workflow
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/http
+	go1.14.14 test -v -race -tags=debug ./plugins/http/config
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/informer
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/reload
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/server
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/checker
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/config
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/gzip
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/headers
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/logger
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/metrics
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/redis
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/resetter
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/rpc
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/static
+	go1.14.14 test -v -race -tags=debug ./plugins/kv/boltdb
+	go1.14.14 test -v -race -tags=debug ./plugins/kv/memory
+	go1.14.14 test -v -race -tags=debug ./plugins/kv/memcached
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/kv/boltdb
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/kv/memory
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/kv/memcached
 	docker-compose -f tests/docker-compose.yaml down
 
 test_pipeline: test_1.14 test

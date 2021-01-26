@@ -34,7 +34,7 @@ const (
 	PluginName = "http"
 
 	// RR_HTTP env variable key (internal) if the HTTP presents
-	RR_HTTP = "RR_HTTP" //nolint:golint,stylecheck
+	RR_MODE = "RR_MODE" //nolint:golint,stylecheck
 
 	// HTTPS_SCHEME
 	HTTPS_SCHEME = "https" //nolint:golint,stylecheck
@@ -101,7 +101,7 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 		s.cfg.Env = make(map[string]string)
 	}
 
-	s.cfg.Env[RR_HTTP] = "true"
+	s.cfg.Env[RR_MODE] = "http"
 
 	s.pool, err = server.NewWorkerPool(context.Background(), pool.Config{
 		Debug:           s.cfg.Pool.Debug,

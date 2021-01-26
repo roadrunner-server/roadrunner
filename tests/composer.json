@@ -1,14 +1,15 @@
 {
-  "minimum-stability": "beta",
+  "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
     "nyholm/psr7": "^1.3",
     "spiral/roadrunner": "^2.0",
-    "spiral/roadrunner-http": "^2.0"
+    "spiral/roadrunner-http": "^2.0",
+    "temporal/sdk": "dev-master"
   },
   "autoload": {
     "psr-4": {
-      "Spiral\\RoadRunner\\": "src/"
+      "Temporal\\Tests\\": "temporal"
     }
   }
 }

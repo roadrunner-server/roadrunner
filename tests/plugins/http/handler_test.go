@@ -156,7 +156,7 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 	}, nil, p)
 	assert.NoError(t, err)
 
-	hs := &http.Server{Addr: ":8088", Handler: h}
+	hs := &http.Server{Addr: ":19658", Handler: h}
 	defer func() {
 		err := hs.Shutdown(context.Background())
 		if err != nil {
@@ -172,7 +172,7 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 	}()
 	time.Sleep(time.Millisecond * 10)
 
-	req, err := http.NewRequest("GET", "http://localhost:8088?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://localhost:19658?hello=world", nil)
 	assert.NoError(t, err)
 
 	req.Header.Add("user-agent", "")
@@ -216,7 +216,7 @@ func TestHandler_User_Agent(t *testing.T) {
 	}, nil, p)
 	assert.NoError(t, err)
 
-	hs := &http.Server{Addr: ":8088", Handler: h}
+	hs := &http.Server{Addr: ":25688", Handler: h}
 	defer func() {
 		err := hs.Shutdown(context.Background())
 		if err != nil {
@@ -232,7 +232,7 @@ func TestHandler_User_Agent(t *testing.T) {
 	}()
 	time.Sleep(time.Millisecond * 10)
 
-	req, err := http.NewRequest("GET", "http://localhost:8088?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://localhost:25688?hello=world", nil)
 	assert.NoError(t, err)
 
 	req.Header.Add("User-Agent", "go-agent")
