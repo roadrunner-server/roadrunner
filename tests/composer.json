@@ -6,10 +6,5 @@
     "spiral/roadrunner": "^2.0",
     "spiral/roadrunner-http": "^2.0",
     "temporal/sdk": "dev-master"
-  },
-  "autoload": {
-    "psr-4": {
-      "Temporal\\Tests\\": "temporal"
-    }
   }
 }
