@@ -20,7 +20,7 @@ jobs:
       matrix:
         php: [ "7.4", "8.0" ]
         go: [ "1.14", "1.15" ]
-        os: [ self-hosted ]
+        os: [ ubuntu-20.04 ]
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
