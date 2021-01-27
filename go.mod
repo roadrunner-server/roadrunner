@@ -34,7 +34,7 @@ require (
 	github.com/yookoala/gofast v0.4.0
 	go.etcd.io/bbolt v1.3.5
 	go.temporal.io/api v1.4.0
-	go.temporal.io/sdk v1.4.0
+	go.temporal.io/sdk v1.4.1
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20201224014010-6772e930b67b
