@@ -1,5 +1,5 @@
 # Image page: <https://hub.docker.com/_/golang>
-FROM golang:1.15.6 as builder
+FROM golang:1.15.7 as builder
 
 # app version and build date must be passed during image building (version without any prefix).
 # e.g.: `docker build --build-arg "APP_VERSION=1.2.3" --build-arg "BUILD_TIME=$(date +%FT%T%z)" .`
@@ -8,14 +8,19 @@ ARG BUILD_TIME="undefined"
 
 # arguments to pass on each go tool link invocation
 ENV LDFLAGS="-s \
--X github.com/spiral/roadrunner/cmd/rr/cmd.Version=$APP_VERSION \
--X github.com/spiral/roadrunner/cmd/rr/cmd.BuildTime=$BUILD_TIME"
+-X github.com/spiral/roadrunner/v2/cmd/cli.Version=$APP_VERSION \
+-X github.com/spiral/roadrunner/v2/cmd/cli.BuildTime=$BUILD_TIME"
 
 RUN mkdir /src
 
 WORKDIR /src
+RUN mkdir -p /src/cli
 
-COPY ./go.mod ./go.sum ./
+COPY cmd/go.mod ./
+COPY cmd/go.sum ./
+COPY cmd/main.go ./
+COPY cmd/cli/* /src/cli/
+COPY .rr.yaml ./
 
 # Burn modules cache
 RUN set -x \
@@ -23,10 +28,8 @@ RUN set -x \
     && go mod download \
     && go mod verify
 
-COPY . .
-
 # compile binary file
-RUN CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/main.go
+RUN CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o rr main.go
 
 # Image page: <https://hub.docker.com/_/alpine>
 FROM alpine:3.13
