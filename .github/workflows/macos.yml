@@ -67,8 +67,6 @@ jobs:
           go test -v -race -tags=debug ./pkg/pool
           go test -v -race -tags=debug ./pkg/worker
           go test -v -race -tags=debug ./pkg/worker_watcher
-          go test -v -race -tags=debug ./plugins/temporal/protocol
-          go test -v -race -tags=debug ./plugins/temporal/workflow
           go test -v -race -tags=debug ./plugins/http/config
           go test -v -race -tags=debug ./tests/plugins/http
           go test -v -race -tags=debug ./tests/plugins/informer
