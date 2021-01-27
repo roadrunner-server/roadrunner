@@ -2,7 +2,7 @@ name: release
 
 on:
   release: # Docs: <https://help.github.com/en/articles/events-that-trigger-workflows#release-event-release>
-    types: [published]
+    types: [ published ]
 
 jobs:
   build:
@@ -11,10 +11,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows, freebsd, darwin] # linux, freebsd, darwin, windows
-        compiler: [gcc] # gcc, musl-gcc
-        archiver: [zip] # tar, zip
-        arch: [amd64]   # amd64, 386
+        os: [ windows, freebsd, darwin ] # linux, freebsd, darwin, windows
+        compiler: [ gcc ] # gcc, musl-gcc
+        archiver: [ zip ] # tar, zip
+        arch: [ amd64 ]   # amd64, 386
         include:
           - os: linux
             compiler: gcc
@@ -28,7 +28,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.6
+          go-version: 1.15.7
 
       - name: Check out code
         uses: actions/checkout@v2
@@ -38,7 +38,7 @@ jobs:
         run: sudo apt-get install -y musl-tools
 
       - name: Download dependencies
-        run: go mod download # `-x` means "verbose" mode
+        run: cd cmd && go mod download # `-x` means "verbose" mode
 
       - name: Generate builder values
         id: values
