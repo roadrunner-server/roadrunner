@@ -85,10 +85,7 @@ func (server *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 	// create command according to the config
 	cmdArgs = append(cmdArgs, strings.Split(server.cfg.Server.Command, " ")...)
 	if len(cmdArgs) < 2 {
-		return nil, errors.E(op, errors.Str("should be in form of `php <script>"))
-	}
-	if cmdArgs[0] != "php" {
-		return nil, errors.E(op, errors.Str("first arg in command should be `php`"))
+		return nil, errors.E(op, errors.Str("minimum command should be `php <script>"))
 	}
 
 	_, err := os.Stat(cmdArgs[1])
