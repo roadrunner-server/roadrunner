@@ -15,18 +15,13 @@ import (
 // PluginName contains default plugin name.
 const PluginName = "RPC"
 
-type pluggable struct {
-	service RPCer
-	name    string
-}
-
 // Plugin is RPC service.
 type Plugin struct {
 	cfg Config
 	log logger.Logger
 	rpc *rpc.Server
 	// set of the plugins, which are implement RPCer interface and can be plugged into the RR via RPC
-	plugins  []pluggable
+	plugins  map[string]RPCer
 	listener net.Listener
 	closed   *uint32
 }
@@ -42,14 +37,23 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	if err != nil {
 		return errors.E(op, errors.Disabled, err)
 	}
+	// Init defaults
 	s.cfg.InitDefaults()
-
+	// Init pluggable plugins map
+	s.plugins = make(map[string]RPCer)
+	// init logs
 	s.log = log
+	// set up state
 	state := uint32(0)
 	s.closed = &state
 	atomic.StoreUint32(s.closed, 0)
 
-	return s.cfg.Valid()
+	// validate config
+	err = s.cfg.Valid()
+	if err != nil {
+		return errors.E(op, err)
+	}
+	return nil
 }
 
 // Serve serves the service.
@@ -62,14 +66,14 @@ func (s *Plugin) Serve() chan error {
 	services := make([]string, 0, len(s.plugins))
 
 	// Attach all services
-	for i := 0; i < len(s.plugins); i++ {
-		err := s.Register(s.plugins[i].name, s.plugins[i].service.RPC())
+	for name := range s.plugins {
+		err := s.Register(name, s.plugins[name].RPC())
 		if err != nil {
 			errCh <- errors.E(op, err)
 			return errCh
 		}
 
-		services = append(services, s.plugins[i].name)
+		services = append(services, name)
 	}
 
 	var err error
@@ -128,10 +132,7 @@ func (s *Plugin) Collects() []interface{} {
 
 // RegisterPlugin registers RPC service plugin.
 func (s *Plugin) RegisterPlugin(name endure.Named, p RPCer) {
-	s.plugins = append(s.plugins, pluggable{
-		service: p,
-		name:    name.Name(),
-	})
+	s.plugins[name.Name()] = p
 }
 
 // Register publishes in the server the set of methods of the
