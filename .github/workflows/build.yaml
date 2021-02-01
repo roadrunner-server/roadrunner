@@ -1,0 +1,57 @@
+name: Linux
+
+on:
+  push:
+  pull_request:
+    branches:
+      # Branches from forks have the form 'user:branch-name' so we only run
+      # this job on pull_request events for branches that look like fork
+      # branches. Without this we would end up running this job twice for non
+      # forked PRs, once for the push and then once for opening the PR.
+      - "**:**"
+
+jobs:
+  golang:
+    name: Build (Go ${{ matrix.go }}, OS ${{matrix.os}})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        go: [ "1.14", "1.15" ]
+        os: [ ubuntu-20.04 ]
+    steps:
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Init Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Install Go dependencies
+        run: cd cmd && go mod download && go mod verify
+
+      - name: Build
+        run: cd cmd && go build
+
+
+  golangci-lint:
+    name: Golang-CI (lint)
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v2 # Action page: <https://github.com/golangci/golangci-lint-action>
+        with:
+          version: v1.35 # without patch version
+          only-new-issues: false # show only new issues if it's a pull request
