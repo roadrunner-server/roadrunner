@@ -15,6 +15,7 @@ import (
 	"github.com/spiral/goridge/v3/interfaces/relay"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/events"
+	"github.com/spiral/roadrunner/v2/pkg/states"
 	"go.uber.org/multierr"
 )
 
@@ -85,7 +86,7 @@ func InitBaseWorker(cmd *exec.Cmd, options ...Options) (*Process, error) {
 		created: time.Now(),
 		events:  events.NewEventsHandler(),
 		cmd:     cmd,
-		state:   internal.NewWorkerState(internal.StateInactive),
+		state:   internal.NewWorkerState(states.StateInactive),
 		stderr:  new(bytes.Buffer),
 		stop:    make(chan struct{}, 1),
 		// sync pool for STDERR
@@ -190,7 +191,7 @@ func (w *Process) Wait() error {
 	const op = errors.Op("process_wait")
 	err := multierr.Combine(w.cmd.Wait())
 
-	if w.State().Value() == internal.StateDestroyed {
+	if w.State().Value() == states.StateDestroyed {
 		return errors.E(op, err)
 	}
 
@@ -199,7 +200,7 @@ func (w *Process) Wait() error {
 	// and then process.cmd.Wait return an error
 	w.endState = w.cmd.ProcessState
 	if err != nil {
-		w.state.Set(internal.StateErrored)
+		w.state.Set(states.StateErrored)
 
 		w.mu.RLock()
 		// if process return code > 0, here will be an error from stderr (if presents)
@@ -215,12 +216,12 @@ func (w *Process) Wait() error {
 
 	err = multierr.Append(err, w.closeRelay())
 	if err != nil {
-		w.state.Set(internal.StateErrored)
+		w.state.Set(states.StateErrored)
 		return err
 	}
 
 	if w.endState.Success() {
-		w.state.Set(internal.StateStopped)
+		w.state.Set(states.StateStopped)
 	}
 
 	w.stderr.Reset()
@@ -241,20 +242,20 @@ func (w *Process) closeRelay() error {
 // Stop sends soft termination command to the Process and waits for process completion.
 func (w *Process) Stop() error {
 	var err error
-	w.state.Set(internal.StateStopping)
+	w.state.Set(states.StateStopping)
 	err = multierr.Append(err, internal.SendControl(w.relay, &internal.StopCommand{Stop: true}))
 	if err != nil {
-		w.state.Set(internal.StateKilling)
+		w.state.Set(states.StateKilling)
 		return multierr.Append(err, w.cmd.Process.Kill())
 	}
-	w.state.Set(internal.StateStopped)
+	w.state.Set(states.StateStopped)
 	return nil
 }
 
 // Kill kills underlying process, make sure to call Wait() func to gather
 // error log from the stderr. Does not waits for process completion!
 func (w *Process) Kill() error {
-	if w.State().Value() == internal.StateDestroyed {
+	if w.State().Value() == states.StateDestroyed {
 		err := w.cmd.Process.Signal(os.Kill)
 		if err != nil {
 			return err
@@ -262,12 +263,12 @@ func (w *Process) Kill() error {
 		return nil
 	}
 
-	w.state.Set(internal.StateKilling)
+	w.state.Set(states.StateKilling)
 	err := w.cmd.Process.Signal(os.Kill)
 	if err != nil {
 		return err
 	}
-	w.state.Set(internal.StateStopped)
+	w.state.Set(states.StateStopped)
 	return nil
 }
 

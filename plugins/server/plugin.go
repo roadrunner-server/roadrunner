@@ -226,6 +226,8 @@ func (server *Plugin) collectPoolLogs(event interface{}) {
 			server.log.Warn("worker exec timeout reached", "error", we.Payload.(error).Error())
 		case events.EventIdleTTL:
 			server.log.Warn("worker idle timeout reached", "pid", we.Payload.(worker.BaseProcess).Pid())
+		case events.EventPoolRestart:
+			server.log.Warn("requested pool restart")
 		}
 	}
 

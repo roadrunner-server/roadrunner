@@ -12,9 +12,9 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
+	"github.com/spiral/roadrunner/v2/pkg/states"
 	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
 	"github.com/stretchr/testify/assert"
 )
@@ -255,7 +255,7 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 
 	list := p.Workers()
 	for _, w := range list {
-		assert.Equal(t, internal.StateReady, w.State().Value())
+		assert.Equal(t, states.StateReady, w.State().Value())
 	}
 }
 
@@ -462,7 +462,7 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 	assert.NotNil(t, p)
 
 	for i := range p.Workers() {
-		p.Workers()[i].State().Set(internal.StateErrored)
+		p.Workers()[i].State().Set(states.StateErrored)
 	}
 
 	_, err = p.Exec(payload.Payload{Body: []byte("hello")})

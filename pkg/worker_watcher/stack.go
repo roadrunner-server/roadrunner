@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/roadrunner/v2/pkg/states"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 )
 
@@ -129,7 +129,7 @@ func (stack *Stack) Destroy(ctx context.Context) {
 			stack.mutex.Lock()
 			for i := 0; i < len(stack.workers); i++ {
 				// set state for the stack in the stack (unused at the moment)
-				stack.workers[i].State().Set(internal.StateDestroyed)
+				stack.workers[i].State().Set(states.StateDestroyed)
 				// kill the worker
 				_ = stack.workers[i].Kill()
 			}

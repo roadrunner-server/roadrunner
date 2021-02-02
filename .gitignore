@@ -9,6 +9,10 @@
 
 # Test binary, built with `go test -c`
 *.test
+unit_tests
+unit_tests_copied
+dir1
+coverage
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
@@ -18,12 +22,7 @@
 .idea
 composer.lock
 vendor
-vendor_php
 builds/
 tests/vendor/
 .rr-sample.yaml
-unit_tests
-unit_tests_copied
-dir1
-coverage
-rr
+cmd

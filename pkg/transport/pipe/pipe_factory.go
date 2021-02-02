@@ -8,6 +8,7 @@ import (
 	"github.com/spiral/goridge/v3/pkg/pipe"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/events"
+	"github.com/spiral/roadrunner/v2/pkg/states"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"go.uber.org/multierr"
 )
@@ -92,7 +93,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 		}
 
 		// everything ok, set ready state
-		w.State().Set(internal.StateReady)
+		w.State().Set(states.StateReady)
 
 		// return worker
 		c <- SpawnResult{
@@ -152,7 +153,7 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*wor
 	}
 
 	// everything ok, set ready state
-	w.State().Set(internal.StateReady)
+	w.State().Set(states.StateReady)
 	return w, nil
 }
 

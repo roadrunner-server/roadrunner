@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
+	"github.com/spiral/roadrunner/v2/pkg/states"
 	"github.com/spiral/roadrunner/v2/pkg/transport"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	workerWatcher "github.com/spiral/roadrunner/v2/pkg/worker_watcher"
@@ -195,7 +195,7 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, p payload.Payload) (p
 
 func (sp *StaticPool) stopWorker(w worker.SyncWorker) {
 	const op = errors.Op("static_pool_stop_worker")
-	w.State().Set(internal.StateInvalid)
+	w.State().Set(states.StateInvalid)
 	err := w.Stop()
 	if err != nil {
 		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: errors.E(op, err)})
@@ -251,7 +251,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 					sp.events.Push(events.PoolEvent{Event: events.EventWorkerConstruct, Payload: errors.E(op, err)})
 				}
 
-				w.State().Set(internal.StateInvalid)
+				w.State().Set(states.StateInvalid)
 				err = w.Stop()
 				if err != nil {
 					sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: errors.E(op, err)})
@@ -263,7 +263,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 			return payload.Payload{}, errors.E(op, err)
 		}
 
-		w.State().Set(internal.StateInvalid)
+		w.State().Set(states.StateInvalid)
 		sp.events.Push(events.PoolEvent{Event: events.EventWorkerDestruct, Payload: w})
 		errS := w.Stop()
 

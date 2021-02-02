@@ -19,7 +19,7 @@ require (
 	github.com/prometheus/client_golang v1.9.0
 	github.com/shirou/gopsutil v3.21.1+incompatible
 	github.com/spf13/viper v1.7.1
-	github.com/spiral/endure v1.0.0-beta21
+	github.com/spiral/endure v1.0.0-beta.22
 	github.com/spiral/errors v1.0.9
 	github.com/spiral/goridge/v3 v3.0.0
 	github.com/stretchr/testify v1.7.0

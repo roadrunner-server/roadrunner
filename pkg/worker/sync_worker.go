@@ -10,6 +10,7 @@ import (
 	"github.com/spiral/goridge/v3/pkg/frame"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
+	"github.com/spiral/roadrunner/v2/pkg/states"
 	"go.uber.org/multierr"
 )
 
@@ -49,25 +50,25 @@ func (tw *SyncWorkerImpl) Exec(p payload.Payload) (payload.Payload, error) {
 		return payload.Payload{}, errors.E(op, errors.Str("payload can not be empty"))
 	}
 
-	if tw.process.State().Value() != internal.StateReady {
+	if tw.process.State().Value() != states.StateReady {
 		return payload.Payload{}, errors.E(op, errors.Errorf("Process is not ready (%s)", tw.process.State().String()))
 	}
 
 	// set last used time
 	tw.process.State().SetLastUsed(uint64(time.Now().UnixNano()))
-	tw.process.State().Set(internal.StateWorking)
+	tw.process.State().Set(states.StateWorking)
 
 	rsp, err := tw.execPayload(p)
 	if err != nil {
 		// just to be more verbose
 		if errors.Is(errors.SoftJob, err) == false {
-			tw.process.State().Set(internal.StateErrored)
+			tw.process.State().Set(states.StateErrored)
 			tw.process.State().RegisterExec()
 		}
 		return payload.Payload{}, err
 	}
 
-	tw.process.State().Set(internal.StateReady)
+	tw.process.State().Set(states.StateReady)
 	tw.process.State().RegisterExec()
 
 	return rsp, nil
@@ -92,7 +93,7 @@ func (tw *SyncWorkerImpl) ExecWithTimeout(ctx context.Context, p payload.Payload
 			return
 		}
 
-		if tw.process.State().Value() != internal.StateReady {
+		if tw.process.State().Value() != states.StateReady {
 			c <- wexec{
 				payload: payload.Payload{},
 				err:     errors.E(op, errors.Errorf("Process is not ready (%s)", tw.process.State().String())),
@@ -102,13 +103,13 @@ func (tw *SyncWorkerImpl) ExecWithTimeout(ctx context.Context, p payload.Payload
 
 		// set last used time
 		tw.process.State().SetLastUsed(uint64(time.Now().UnixNano()))
-		tw.process.State().Set(internal.StateWorking)
+		tw.process.State().Set(states.StateWorking)
 
 		rsp, err := tw.execPayload(p)
 		if err != nil {
 			// just to be more verbose
 			if errors.Is(errors.SoftJob, err) == false {
-				tw.process.State().Set(internal.StateErrored)
+				tw.process.State().Set(states.StateErrored)
 				tw.process.State().RegisterExec()
 			}
 			c <- wexec{
@@ -118,7 +119,7 @@ func (tw *SyncWorkerImpl) ExecWithTimeout(ctx context.Context, p payload.Payload
 			return
 		}
 
-		tw.process.State().Set(internal.StateReady)
+		tw.process.State().Set(states.StateReady)
 		tw.process.State().RegisterExec()
 
 		c <- wexec{

@@ -53,7 +53,7 @@ func (z *ZapLogger) NamedLogger(name string) (Logger, error) {
 		if err != nil {
 			return nil, err
 		}
-		return NewZapAdapter(l), nil
+		return NewZapAdapter(l.Named(name)), nil
 	}
 
 	return NewZapAdapter(z.base.Named(name)), nil
