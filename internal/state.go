@@ -3,6 +3,8 @@ package internal
 import (
 	"fmt"
 	"sync/atomic"
+
+	"github.com/spiral/roadrunner/v2/pkg/states"
 )
 
 // State represents WorkerProcess status and updated time.
@@ -24,36 +26,6 @@ type State interface {
 	LastUsed() uint64
 }
 
-const (
-	// StateInactive - no associated process
-	StateInactive int64 = iota
-
-	// StateReady - ready for job.
-	StateReady
-
-	// StateWorking - working on given payload.
-	StateWorking
-
-	// StateInvalid - indicates that WorkerProcess is being disabled and will be removed.
-	StateInvalid
-
-	// StateStopping - process is being softly stopped.
-	StateStopping
-
-	StateKilling
-
-	// State of worker, when no need to allocate new one
-	StateDestroyed
-
-	// StateStopped - process has been terminated.
-	StateStopped
-
-	// StateErrored - error WorkerState (can't be used).
-	StateErrored
-
-	StateRemove
-)
-
 type WorkerState struct {
 	value    int64
 	numExecs uint64
@@ -69,17 +41,17 @@ func NewWorkerState(value int64) *WorkerState {
 // String returns current WorkerState as string.
 func (s *WorkerState) String() string {
 	switch s.Value() {
-	case StateInactive:
+	case states.StateInactive:
 		return "inactive"
-	case StateReady:
+	case states.StateReady:
 		return "ready"
-	case StateWorking:
+	case states.StateWorking:
 		return "working"
-	case StateInvalid:
+	case states.StateInvalid:
 		return "invalid"
-	case StateStopped:
+	case states.StateStopped:
 		return "stopped"
-	case StateErrored:
+	case states.StateErrored:
 		return "errored"
 	}
 
@@ -99,7 +71,7 @@ func (s *WorkerState) Value() int64 {
 // IsActive returns true if WorkerProcess not Inactive or Stopped
 func (s *WorkerState) IsActive() bool {
 	val := s.Value()
-	return val == StateWorking || val == StateReady
+	return val == states.StateWorking || val == states.StateReady
 }
 
 // change WorkerState value (status)

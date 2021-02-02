@@ -13,6 +13,7 @@ import (
 	"github.com/spiral/goridge/v3/pkg/socket"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/events"
+	"github.com/spiral/roadrunner/v2/pkg/states"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 
 	"go.uber.org/multierr"
@@ -124,7 +125,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 		}
 
 		w.AttachRelay(rl)
-		w.State().Set(internal.StateReady)
+		w.State().Set(states.StateReady)
 
 		c <- socketSpawn{
 			w:   w,
@@ -167,7 +168,7 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*wor
 	}
 
 	w.AttachRelay(rl)
-	w.State().Set(internal.StateReady)
+	w.State().Set(states.StateReady)
 
 	return w, nil
 }

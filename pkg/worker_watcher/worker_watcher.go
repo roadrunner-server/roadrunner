@@ -5,8 +5,8 @@ import (
 	"sync"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/events"
+	"github.com/spiral/roadrunner/v2/pkg/states"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 )
 
@@ -49,7 +49,7 @@ func (ww *workerWatcher) GetFreeWorker(ctx context.Context) (worker.SyncWorker, 
 
 	// handle worker remove state
 	// in this state worker is destroyed by supervisor
-	if w != nil && w.State().Value() == internal.StateRemove {
+	if w != nil && w.State().Value() == states.StateRemove {
 		err := ww.RemoveWorker(w)
 		if err != nil {
 			return nil, err
@@ -102,7 +102,7 @@ func (ww *workerWatcher) RemoveWorker(wb worker.SyncWorker) error {
 	pid := wb.Pid()
 
 	if ww.stack.FindAndRemoveByPid(pid) {
-		wb.State().Set(internal.StateRemove)
+		wb.State().Set(states.StateRemove)
 		err := wb.Kill()
 		if err != nil {
 			return errors.E(op, err)
@@ -142,7 +142,7 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 		})
 	}
 
-	if w.State().Value() == internal.StateDestroyed {
+	if w.State().Value() == states.StateDestroyed {
 		// worker was manually destroyed, no need to replace
 		ww.events.Push(events.PoolEvent{Event: events.EventWorkerDestruct, Payload: w})
 		return

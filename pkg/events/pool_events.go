@@ -28,6 +28,9 @@ const (
 
 	// EventExecTTL triggered when worker spends too much time doing the task (max_execution_time).
 	EventExecTTL
+
+	// EventPoolRestart triggered when pool restart is needed
+	EventPoolRestart
 )
 
 type P int64
@@ -52,6 +55,8 @@ func (ev P) String() string {
 		return "EventIdleTTL"
 	case EventExecTTL:
 		return "EventExecTTL"
+	case EventPoolRestart:
+		return "EventPoolRestart"
 	}
 	return "Unknown event type"
 }

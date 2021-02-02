@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
+	"github.com/spiral/roadrunner/v2/pkg/states"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/tools"
 )
@@ -144,7 +144,7 @@ func (sp *supervised) control() {
 	workers := sp.pool.Workers()
 
 	for i := 0; i < len(workers); i++ {
-		if workers[i].State().Value() == internal.StateInvalid {
+		if workers[i].State().Value() == states.StateInvalid {
 			continue
 		}
 
@@ -177,7 +177,7 @@ func (sp *supervised) control() {
 		// firs we check maxWorker idle
 		if sp.cfg.IdleTTL != 0 {
 			// then check for the worker state
-			if workers[i].State().Value() != internal.StateReady {
+			if workers[i].State().Value() != states.StateReady {
 				continue
 			}
 
