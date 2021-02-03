@@ -1025,6 +1025,7 @@ logs:
 	controller := gomock.NewController(t)
 	mockLogger := mocks.NewMockLogger(controller)
 
+	mockLogger.EXPECT().Debug("worker stderr", "pid", gomock.Any(), "message", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("", "remote", gomock.Any(), "ts", gomock.Any(), "resp.status", gomock.Any(), "method", gomock.Any(), "uri", gomock.Any()).MinTimes(1)
