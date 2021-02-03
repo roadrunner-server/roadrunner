@@ -234,12 +234,12 @@ func (server *Plugin) collectEvents(event interface{}) {
 	if we, ok := event.(events.WorkerEvent); ok {
 		switch we.Event {
 		case events.EventWorkerError:
-			server.log.Error(we.Payload.(error).Error(), "pid", we.Worker.(worker.BaseProcess).Pid())
-		case events.EventWorkerStderr:
-			// TODO unsafe byte to string convertation
-			server.log.Debug("worker stderr", "pid", we.Worker.(worker.BaseProcess).Pid(), "message", string(we.Payload.([]byte)))
+			server.log.Error(strings.TrimRight(we.Payload.(error).Error(), " \n\t"))
 		case events.EventWorkerLog:
-			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.(worker.BaseProcess).Pid())
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"))
+		case events.EventWorkerStderr:
+			// TODO unsafe byte to string convert
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"))
 		}
 	}
 }
@@ -248,12 +248,12 @@ func (server *Plugin) collectWorkerLogs(event interface{}) {
 	if we, ok := event.(events.WorkerEvent); ok {
 		switch we.Event {
 		case events.EventWorkerError:
-			server.log.Error(we.Payload.(error).Error(), "pid", we.Worker.(worker.BaseProcess).Pid())
+			server.log.Error(strings.TrimRight(we.Payload.(error).Error(), " \n\t"))
 		case events.EventWorkerLog:
-			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.(worker.BaseProcess).Pid())
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"))
 		case events.EventWorkerStderr:
-			// TODO unsafe byte to string convertation
-			server.log.Debug("worker stderr", "pid", we.Worker.(worker.BaseProcess).Pid(), "message", string(we.Payload.([]byte)))
+			// TODO unsafe byte to string convert
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"))
 		}
 	}
 }
