@@ -26,7 +26,6 @@ func (rpc *rpc) List(_ bool, list *[]string) error {
 		*list = append(*list, name)
 	}
 	rpc.log.Debug("list of services", "list", *list)
-
 	rpc.log.Debug("successfully finished List method")
 	return nil
 }

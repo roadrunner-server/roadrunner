@@ -171,7 +171,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 
 	listener := func(event interface{}) {
 		if wev, ok := event.(events.WorkerEvent); ok {
-			if wev.Event == events.EventWorkerLog {
+			if wev.Event == events.EventWorkerStderr {
 				e := string(wev.Payload.([]byte))
 				if strings.ContainsAny(e, "undefined_function()") {
 					block <- struct{}{}
