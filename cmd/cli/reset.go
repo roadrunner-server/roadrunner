@@ -71,7 +71,8 @@ func resetHandler(_ *cobra.Command, args []string) error {
 			defer bar.Increment()
 
 			var done bool
-			err = client.Call(Reset, service, &done)
+			cl := client.Go(Reset, service, &done, nil)
+			<-cl.Done
 			if err != nil {
 				result <- errors.E(op, err)
 				return

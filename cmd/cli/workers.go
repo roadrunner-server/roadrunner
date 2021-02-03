@@ -84,11 +84,11 @@ func workersHandler(_ *cobra.Command, args []string) error {
 			return nil
 		case <-tt.C:
 			tm.MoveCursor(1, 1)
+			tm.Flush()
 			err := showWorkers(plugins, client)
 			if err != nil {
 				return errors.E(op, err)
 			}
-			tm.Flush()
 		}
 	}
 }
