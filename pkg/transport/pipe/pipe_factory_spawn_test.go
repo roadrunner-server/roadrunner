@@ -106,7 +106,7 @@ func Test_Pipe_PipeError4(t *testing.T) {
 
 func Test_Pipe_Failboot2(t *testing.T) {
 	cmd := exec.Command("php", "../../../tests/failboot.php")
-	finish := make(chan struct{}, 1)
+	finish := make(chan struct{}, 10)
 	listener := func(event interface{}) {
 		if ev, ok := event.(events.WorkerEvent); ok {
 			if ev.Event == events.EventWorkerStderr {

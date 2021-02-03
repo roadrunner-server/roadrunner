@@ -118,7 +118,7 @@ func Test_Pipe_Failboot(t *testing.T) {
 	cmd := exec.Command("php", "../../../tests/failboot.php")
 	ctx := context.Background()
 
-	finish := make(chan struct{}, 1)
+	finish := make(chan struct{}, 10)
 	listener := func(event interface{}) {
 		if ev, ok := event.(events.WorkerEvent); ok {
 			if ev.Event == events.EventWorkerStderr {

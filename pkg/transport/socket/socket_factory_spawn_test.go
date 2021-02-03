@@ -110,7 +110,7 @@ func Test_Tcp_Failboot2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../../tests/failboot.php")
 
-	finish := make(chan struct{}, 1)
+	finish := make(chan struct{}, 10)
 	listener := func(event interface{}) {
 		if ev, ok := event.(events.WorkerEvent); ok {
 			if ev.Event == events.EventWorkerStderr {
@@ -162,7 +162,7 @@ func Test_Tcp_Broken2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../../tests/client.php", "broken", "tcp")
 
-	finish := make(chan struct{}, 1)
+	finish := make(chan struct{}, 10)
 	listener := func(event interface{}) {
 		if ev, ok := event.(events.WorkerEvent); ok {
 			if ev.Event == events.EventWorkerStderr {
@@ -274,7 +274,7 @@ func Test_Unix_Failboot2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../../tests/failboot.php")
 
-	finish := make(chan struct{}, 1)
+	finish := make(chan struct{}, 10)
 	listener := func(event interface{}) {
 		if ev, ok := event.(events.WorkerEvent); ok {
 			if ev.Event == events.EventWorkerStderr {
@@ -332,7 +332,7 @@ func Test_Unix_Broken2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../../tests/client.php", "broken", "unix")
 
-	finish := make(chan struct{}, 1)
+	finish := make(chan struct{}, 10)
 	listener := func(event interface{}) {
 		if ev, ok := event.(events.WorkerEvent); ok {
 			if ev.Event == events.EventWorkerStderr {

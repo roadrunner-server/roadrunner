@@ -210,7 +210,7 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 		},
 	}
 
-	block := make(chan struct{}, 1)
+	block := make(chan struct{}, 10)
 	listener := func(event interface{}) {
 		if ev, ok := event.(events.PoolEvent); ok {
 			if ev.Event == events.EventMaxMemory {
