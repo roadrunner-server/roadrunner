@@ -78,7 +78,7 @@ func init() {
 
 		// if debug mode is on - run debug server
 		if Debug {
-			runDebugServer()
+			go runDebugServer()
 		}
 	})
 }
