@@ -167,11 +167,11 @@ func Test_StaticPool_JobError(t *testing.T) {
 
 func Test_StaticPool_Broken_Replace(t *testing.T) {
 	ctx := context.Background()
-	block := make(chan struct{}, 1)
+	block := make(chan struct{}, 10)
 
 	listener := func(event interface{}) {
 		if wev, ok := event.(events.WorkerEvent); ok {
-			if wev.Event == events.EventWorkerLog {
+			if wev.Event == events.EventWorkerStderr {
 				e := string(wev.Payload.([]byte))
 				if strings.ContainsAny(e, "undefined_function()") {
 					block <- struct{}{}
@@ -491,7 +491,7 @@ func Test_Static_Pool_Slow_Destroy(t *testing.T) {
 
 func Test_StaticPool_NoFreeWorkers(t *testing.T) {
 	ctx := context.Background()
-	block := make(chan struct{}, 1)
+	block := make(chan struct{}, 10)
 
 	listener := func(event interface{}) {
 		if ev, ok := event.(events.PoolEvent); ok {

@@ -36,10 +36,8 @@ func FromSync(w *SyncWorkerImpl) BaseProcess {
 		state:    w.process.state,
 		cmd:      w.process.cmd,
 		pid:      w.process.pid,
-		stderr:   w.process.stderr,
 		endState: w.process.endState,
 		relay:    w.process.relay,
-		rd:       w.process.rd,
 	}
 }
 

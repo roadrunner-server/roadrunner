@@ -358,7 +358,7 @@ func reloadFilteredExt(t *testing.T) {
 }
 
 // Should be events only about creating files with txt ext
-func TestReloadCopy500(t *testing.T) {
+func TestReloadCopy100(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
@@ -447,16 +447,16 @@ func TestReloadCopy500(t *testing.T) {
 
 	// Scenario
 	// 1
-	// Create 3k files with txt, abc, def extensions
+	// Create 100 files with txt, abc, def extensions
 	// Copy files to the unit_tests_copy dir
 	// 2
 	// Delete both dirs, recreate
-	// Create 3k files with txt, abc, def extensions
+	// Create 100 files with txt, abc, def extensions
 	// Move files to the unit_tests_copy dir
 	// 3
 	// Recursive
 
-	t.Run("ReloadMake300Files", reloadMake300Files)
+	t.Run("ReloadMake100Files", reloadMake100Files)
 	t.Run("ReloadCopyFiles", reloadCopyFiles)
 	t.Run("ReloadRecursiveDirsSupport", copyFilesRecursive)
 	t.Run("RandomChangesInRecursiveDirs", randomChangesInRecursiveDirs)
@@ -478,9 +478,9 @@ func reloadMoveSupport(t *testing.T) {
 		// rand sleep
 		rSleep := rand.Int63n(500) // nolint:gosec
 		time.Sleep(time.Millisecond * time.Duration(rSleep))
-		rNum := rand.Int63n(int64(100)) // nolint:gosec
-		rDir := rand.Int63n(9)          // nolint:gosec
-		rExt := rand.Int63n(3)          // nolint:gosec
+		rNum := rand.Int63n(int64(33)) // nolint:gosec
+		rDir := rand.Int63n(9)         // nolint:gosec
+		rExt := rand.Int63n(3)         // nolint:gosec
 
 		ext := []string{
 			".txt",
@@ -570,7 +570,7 @@ func randomChangesInRecursiveDirs(t *testing.T) {
 	}
 	for i := 0; i < 10; i++ {
 		// rand sleep
-		rSleep := rand.Int63n(500) // nolint:gosec
+		rSleep := rand.Int63n(100) // nolint:gosec
 		time.Sleep(time.Millisecond * time.Duration(rSleep))
 		rNum := rand.Int63n(int64(100)) // nolint:gosec
 		rDir := rand.Int63n(10)         // nolint:gosec
@@ -616,13 +616,13 @@ func reloadCopyFiles(t *testing.T) {
 	assert.NoError(t, os.Mkdir(testCopyToDir, 0755))
 
 	// recreate files
-	for i := uint(0); i < 100; i++ {
+	for i := uint(0); i < 33; i++ {
 		assert.NoError(t, makeFile("file_"+strconv.Itoa(int(i))+".txt"))
 	}
-	for i := uint(0); i < 100; i++ {
+	for i := uint(0); i < 33; i++ {
 		assert.NoError(t, makeFile("file_"+strconv.Itoa(int(i))+".abc"))
 	}
-	for i := uint(0); i < 100; i++ {
+	for i := uint(0); i < 34; i++ {
 		assert.NoError(t, makeFile("file_"+strconv.Itoa(int(i))+".def"))
 	}
 
@@ -630,14 +630,14 @@ func reloadCopyFiles(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func reloadMake300Files(t *testing.T) {
-	for i := uint(0); i < 100; i++ {
+func reloadMake100Files(t *testing.T) {
+	for i := uint(0); i < 33; i++ {
 		assert.NoError(t, makeFile("file_"+strconv.Itoa(int(i))+".txt"))
 	}
-	for i := uint(0); i < 100; i++ {
+	for i := uint(0); i < 33; i++ {
 		assert.NoError(t, makeFile("file_"+strconv.Itoa(int(i))+".abc"))
 	}
-	for i := uint(0); i < 100; i++ {
+	for i := uint(0); i < 34; i++ {
 		assert.NoError(t, makeFile("file_"+strconv.Itoa(int(i))+".def"))
 	}
 }

@@ -140,7 +140,7 @@ func (server *Plugin) NewWorkerPool(ctx context.Context, opt pool.Config, env En
 	}
 
 	list := make([]events.Listener, 0, 1)
-	list = append(list, server.collectPoolLogs)
+	list = append(list, server.collectEvents)
 	if len(listeners) != 0 {
 		list = append(list, listeners...)
 	}
@@ -201,7 +201,7 @@ func (server *Plugin) setEnv(e Env) []string {
 	return env
 }
 
-func (server *Plugin) collectPoolLogs(event interface{}) {
+func (server *Plugin) collectEvents(event interface{}) {
 	if we, ok := event.(events.PoolEvent); ok {
 		switch we.Event {
 		case events.EventMaxMemory:
@@ -234,9 +234,12 @@ func (server *Plugin) collectPoolLogs(event interface{}) {
 	if we, ok := event.(events.WorkerEvent); ok {
 		switch we.Event {
 		case events.EventWorkerError:
-			server.log.Error(we.Payload.(error).Error(), "pid", we.Worker.(worker.BaseProcess).Pid())
+			server.log.Error(strings.TrimRight(we.Payload.(error).Error(), " \n\t"))
 		case events.EventWorkerLog:
-			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.(worker.BaseProcess).Pid())
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"))
+		case events.EventWorkerStderr:
+			// TODO unsafe byte to string convert
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"))
 		}
 	}
 }
@@ -245,9 +248,12 @@ func (server *Plugin) collectWorkerLogs(event interface{}) {
 	if we, ok := event.(events.WorkerEvent); ok {
 		switch we.Event {
 		case events.EventWorkerError:
-			server.log.Error(we.Payload.(error).Error(), "pid", we.Worker.(worker.BaseProcess).Pid())
+			server.log.Error(strings.TrimRight(we.Payload.(error).Error(), " \n\t"))
 		case events.EventWorkerLog:
-			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"), "pid", we.Worker.(worker.BaseProcess).Pid())
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"))
+		case events.EventWorkerStderr:
+			// TODO unsafe byte to string convert
+			server.log.Debug(strings.TrimRight(string(we.Payload.([]byte)), " \n\t"))
 		}
 	}
 }

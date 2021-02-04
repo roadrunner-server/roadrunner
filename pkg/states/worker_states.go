@@ -16,6 +16,7 @@ const (
 	// StateStopping - process is being softly stopped.
 	StateStopping
 
+	// StateKilling - process is being forcibly stopped
 	StateKilling
 
 	// State of worker, when no need to allocate new one
@@ -27,5 +28,6 @@ const (
 	// StateErrored - error WorkerState (can't be used).
 	StateErrored
 
+	// StateRemove - worker is killed and removed from the stack
 	StateRemove
 )

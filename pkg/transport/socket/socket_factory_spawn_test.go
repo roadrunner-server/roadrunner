@@ -3,11 +3,13 @@ package socket
 import (
 	"net"
 	"os/exec"
+	"strings"
 	"sync"
 	"syscall"
 	"testing"
 	"time"
 
+	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/stretchr/testify/assert"
@@ -108,10 +110,21 @@ func Test_Tcp_Failboot2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../../tests/failboot.php")
 
-	w, err2 := NewSocketServer(ls, time.Second*5).SpawnWorker(cmd)
+	finish := make(chan struct{}, 10)
+	listener := func(event interface{}) {
+		if ev, ok := event.(events.WorkerEvent); ok {
+			if ev.Event == events.EventWorkerStderr {
+				if strings.Contains(string(ev.Payload.([]byte)), "failboot") {
+					finish <- struct{}{}
+				}
+			}
+		}
+	}
+
+	w, err2 := NewSocketServer(ls, time.Second*5).SpawnWorker(cmd, listener)
 	assert.Nil(t, w)
 	assert.Error(t, err2)
-	assert.Contains(t, err2.Error(), "failboot")
+	<-finish
 }
 
 func Test_Tcp_Invalid2(t *testing.T) {
@@ -149,7 +162,18 @@ func Test_Tcp_Broken2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../../tests/client.php", "broken", "tcp")
 
-	w, err := NewSocketServer(ls, time.Minute).SpawnWorker(cmd)
+	finish := make(chan struct{}, 10)
+	listener := func(event interface{}) {
+		if ev, ok := event.(events.WorkerEvent); ok {
+			if ev.Event == events.EventWorkerStderr {
+				if strings.Contains(string(ev.Payload.([]byte)), "undefined_function()") {
+					finish <- struct{}{}
+				}
+			}
+		}
+	}
+
+	w, err := NewSocketServer(ls, time.Minute).SpawnWorker(cmd, listener)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -159,7 +183,6 @@ func Test_Tcp_Broken2(t *testing.T) {
 		defer wg.Done()
 		err := w.Wait()
 		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "undefined_function()")
 	}()
 
 	defer func() {
@@ -176,6 +199,7 @@ func Test_Tcp_Broken2(t *testing.T) {
 	assert.Nil(t, res.Body)
 	assert.Nil(t, res.Context)
 	wg.Wait()
+	<-finish
 }
 
 func Test_Tcp_Echo2(t *testing.T) {
@@ -250,10 +274,21 @@ func Test_Unix_Failboot2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../../tests/failboot.php")
 
-	w, err := NewSocketServer(ls, time.Second*5).SpawnWorker(cmd)
+	finish := make(chan struct{}, 10)
+	listener := func(event interface{}) {
+		if ev, ok := event.(events.WorkerEvent); ok {
+			if ev.Event == events.EventWorkerStderr {
+				if strings.Contains(string(ev.Payload.([]byte)), "failboot") {
+					finish <- struct{}{}
+				}
+			}
+		}
+	}
+
+	w, err := NewSocketServer(ls, time.Second*5).SpawnWorker(cmd, listener)
 	assert.Nil(t, w)
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "failboot")
+	<-finish
 }
 
 func Test_Unix_Timeout2(t *testing.T) {
@@ -297,7 +332,18 @@ func Test_Unix_Broken2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../../tests/client.php", "broken", "unix")
 
-	w, err := NewSocketServer(ls, time.Minute).SpawnWorker(cmd)
+	finish := make(chan struct{}, 10)
+	listener := func(event interface{}) {
+		if ev, ok := event.(events.WorkerEvent); ok {
+			if ev.Event == events.EventWorkerStderr {
+				if strings.Contains(string(ev.Payload.([]byte)), "undefined_function()") {
+					finish <- struct{}{}
+				}
+			}
+		}
+	}
+
+	w, err := NewSocketServer(ls, time.Minute).SpawnWorker(cmd, listener)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -307,7 +353,6 @@ func Test_Unix_Broken2(t *testing.T) {
 		defer wg.Done()
 		err := w.Wait()
 		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "undefined_function()")
 	}()
 
 	defer func() {
@@ -324,6 +369,7 @@ func Test_Unix_Broken2(t *testing.T) {
 	assert.Nil(t, res.Context)
 	assert.Nil(t, res.Body)
 	wg.Wait()
+	<-finish
 }
 
 func Test_Unix_Echo2(t *testing.T) {

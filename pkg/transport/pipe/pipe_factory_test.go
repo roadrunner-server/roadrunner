@@ -117,11 +117,23 @@ func Test_Pipe_PipeError2(t *testing.T) {
 func Test_Pipe_Failboot(t *testing.T) {
 	cmd := exec.Command("php", "../../../tests/failboot.php")
 	ctx := context.Background()
-	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
+
+	finish := make(chan struct{}, 10)
+	listener := func(event interface{}) {
+		if ev, ok := event.(events.WorkerEvent); ok {
+			if ev.Event == events.EventWorkerStderr {
+				if strings.Contains(string(ev.Payload.([]byte)), "failboot") {
+					finish <- struct{}{}
+				}
+			}
+		}
+	}
+
+	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd, listener)
 
 	assert.Nil(t, w)
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "failboot")
+	<-finish
 }
 
 func Test_Pipe_Invalid(t *testing.T) {

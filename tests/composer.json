@@ -1,10 +1,11 @@
 {
-  "minimum-stability": "dev",
+  "minimum-stability": "beta",
   "prefer-stable": true,
   "require": {
     "nyholm/psr7": "^1.3",
     "spiral/roadrunner": "^2.0",
     "spiral/roadrunner-http": "^2.0",
-    "temporal/sdk": "dev-master"
+    "temporal/sdk": ">=1.0",
+    "spiral/tokenizer": ">=2.7"
   }
 }

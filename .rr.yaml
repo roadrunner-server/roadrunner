@@ -61,9 +61,13 @@ http:
       "output": "output-header"
 
   pool:
+    # default - num of logical CPUs
     num_workers: 6
+    # default 0
     max_jobs: 0
+    # default 1 minute
     allocate_timeout: 60s
+    # default 1 minute
     destroy_timeout: 60s
     supervisor:
       # watch_tick defines how often to check the state of the workers (seconds)
