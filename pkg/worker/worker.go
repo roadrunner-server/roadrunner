@@ -15,15 +15,6 @@ import (
 	"go.uber.org/multierr"
 )
 
-const (
-	// WaitDuration - for how long error buffer should attempt to aggregate error messages
-	// before merging output together since lastError update (required to keep error update together).
-	WaitDuration = 25 * time.Millisecond
-
-	// ReadBufSize used to make a slice with specified length to read from stderr
-	ReadBufSize = 10240 // Kb
-)
-
 type Options func(p *Process)
 
 // Process - supervised process with api over goridge.Relay.
@@ -201,7 +192,7 @@ func (w *Process) Stop() error {
 	err = multierr.Append(err, internal.SendControl(w.relay, &internal.StopCommand{Stop: true}))
 	if err != nil {
 		w.state.Set(StateKilling)
-		return multierr.Append(err, w.cmd.Process.Kill())
+		return multierr.Append(err, w.cmd.Process.Signal(os.Kill))
 	}
 	w.state.Set(StateStopped)
 	return nil

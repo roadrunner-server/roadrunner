@@ -48,26 +48,37 @@ func (ww *workerWatcher) Get(ctx context.Context) (worker.SyncWorker, error) {
 
 	// handle worker remove state
 	// in this state worker is destroyed by supervisor
-	if w != nil && w.State().Value() == worker.StateRemove {
-		err := ww.Remove(w)
-		if err != nil {
-			return nil, err
+	if w != nil {
+		switch w.State().Value() {
+		case worker.StateRemove:
+			err := ww.Remove(w)
+			if err != nil {
+				return nil, err
+			}
+			// try to get next
+			return ww.Get(ctx)
+		case
+			// all the possible wrong states
+			worker.StateInactive,
+			worker.StateDestroyed,
+			worker.StateErrored,
+			worker.StateStopped,
+			worker.StateInvalid,
+			worker.StateKilling,
+			worker.StateWorking, // ??? how
+			worker.StateStopping:
+			// worker doing no work because it in the stack
+			// so we can safely kill it (inconsistent state)
+			_ = w.Kill()
+			// and recursively try to get the next worker
+			return ww.Get(ctx)
+			// return only workers in the Ready state
+		case worker.StateReady:
+			return w, nil
 		}
-		// try to get next
-		return ww.Get(ctx)
 	}
 
-	// if worker not in the ready state it possibly corrupted
-	if w != nil && w.State().Value() != worker.StateReady {
-		err := ww.Remove(w)
-		if err != nil {
-			return nil, err
-		}
-		// try to get next
-		return ww.Get(ctx)
-	}
-
-	// no free stack
+	// no free workers in the stack
 	if w == nil {
 		for {
 			select {
@@ -104,15 +115,15 @@ func (ww *workerWatcher) Allocate() error {
 	return nil
 }
 
+// Remove
 func (ww *workerWatcher) Remove(wb worker.SyncWorker) error {
 	ww.mutex.Lock()
 	defer ww.mutex.Unlock()
 
 	const op = errors.Op("worker_watcher_remove_worker")
-	pid := wb.Pid()
-
-	if ww.stack.FindAndRemoveByPid(pid) {
-		wb.State().Set(worker.StateRemove)
+	// set remove state
+	wb.State().Set(worker.StateRemove)
+	if ww.stack.FindAndRemoveByPid(wb.Pid()) {
 		err := wb.Kill()
 		if err != nil {
 			return errors.E(op, err)

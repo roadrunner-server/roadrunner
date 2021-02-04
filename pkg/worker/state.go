@@ -4,6 +4,7 @@ import (
 	"sync/atomic"
 )
 
+// SYNC WITH worker_watcher.GET
 const (
 	// StateInactive - no associated process
 	StateInactive int64 = iota
@@ -59,10 +60,18 @@ func (s *StateImpl) String() string {
 		return "working"
 	case StateInvalid:
 		return "invalid"
+	case StateStopping:
+		return "stopping"
 	case StateStopped:
 		return "stopped"
+	case StateKilling:
+		return "killing"
 	case StateErrored:
 		return "errored"
+	case StateDestroyed:
+		return "destroyed"
+	case StateRemove:
+		return "remove"
 	}
 
 	return "undefined"

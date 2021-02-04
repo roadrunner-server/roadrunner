@@ -466,7 +466,7 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 	}
 
 	_, err = p.Exec(payload.Payload{Body: []byte("hello")})
-	assert.Error(t, err)
+	assert.NoError(t, err)
 	p.Destroy(ctx)
 }
 

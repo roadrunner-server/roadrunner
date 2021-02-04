@@ -45,8 +45,8 @@ type StaticPool struct {
 	// allocate new worker
 	allocator worker.Allocator
 
-	// errEncoder is the default Exec error encoder
-	errEncoder ErrorEncoder
+	// err_encoder is the default Exec error encoder
+	err_encoder ErrorEncoder //nolint
 }
 
 // Initialize creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
@@ -88,7 +88,7 @@ func Initialize(ctx context.Context, cmd Command, factory transport.Factory, cfg
 		return nil, errors.E(op, err)
 	}
 
-	p.errEncoder = defaultErrEncoder(p)
+	p.err_encoder = defaultErrEncoder(p)
 
 	// if supervised config not nil, guess, that pool wanted to be supervised
 	if cfg.Supervisor != nil {
@@ -144,14 +144,13 @@ func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 
 	rsp, err := w.Exec(p)
 	if err != nil {
-		return sp.errEncoder(err, w)
+		return sp.err_encoder(err, w)
 	}
 
 	// worker want's to be terminated
 	// TODO careful with string(rsp.Context)
 	if len(rsp.Body) == 0 && string(rsp.Context) == StopRequest {
 		sp.stopWorker(w)
-
 		return sp.Exec(p)
 	}
 
@@ -175,7 +174,7 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, p payload.Payload) (p
 
 	rsp, err := w.ExecWithTimeout(ctx, p)
 	if err != nil {
-		return sp.errEncoder(err, w)
+		return sp.err_encoder(err, w)
 	}
 
 	// worker want's to be terminated
