@@ -10,8 +10,8 @@ require (
 	github.com/spiral/endure v1.0.0-beta.22
 	github.com/spiral/errors v1.0.9
 	github.com/spiral/goridge/v3 v3.0.0
-	github.com/spiral/roadrunner/v2 v2.0.0-beta.22
-	github.com/temporalio/roadrunner-temporal v1.0.0-beta.4
+	github.com/spiral/roadrunner/v2 v2.0.0-beta.24
+	github.com/temporalio/roadrunner-temporal v1.0.0-beta.5
 	github.com/vbauerster/mpb/v5 v5.4.0
 	go.uber.org/multierr v1.6.0
 )
