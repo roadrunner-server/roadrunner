@@ -7,17 +7,17 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [master]
+    branches: [roadrunner-core, roadrunner-binary]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [master]
+    branches: [roadrunner-core, roadrunner-binary]
   schedule:
     - cron: '0 15 * * 6'
 
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       fail-fast: false
