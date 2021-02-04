@@ -10,7 +10,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.10.0
 	github.com/go-ole/go-ole v1.2.5 // indirect
-	github.com/go-redis/redis/v8 v8.4.11
+	github.com/go-redis/redis/v8 v8.5.0
 	github.com/gofiber/fiber/v2 v2.4.1
 	github.com/golang/mock v1.4.4
 	github.com/hashicorp/go-multierror v1.1.0
@@ -30,5 +30,5 @@ require (
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20201224014010-6772e930b67b
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
-	golang.org/x/sys v0.0.0-20210105210732-16f7687f5001
+	golang.org/x/sys v0.0.0-20210112080510-489259a85091
 )
