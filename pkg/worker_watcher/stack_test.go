@@ -140,5 +140,3 @@ func TestStack_DestroyWithWait(t *testing.T) {
 	stack.Destroy(context.Background())
 	assert.Equal(t, uint64(0), stack.actualNumOfWorkers)
 }
-
-
