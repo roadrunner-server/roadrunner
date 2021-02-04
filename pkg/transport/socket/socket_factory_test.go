@@ -401,7 +401,7 @@ func Test_Unix_Broken(t *testing.T) {
 
 	cmd := exec.Command("php", "../../../tests/client.php", "broken", "unix")
 
-	block := make(chan struct{})
+	block := make(chan struct{}, 10)
 	listener := func(event interface{}) {
 		if wev, ok := event.(events.WorkerEvent); ok {
 			if wev.Event == events.EventWorkerStderr {
