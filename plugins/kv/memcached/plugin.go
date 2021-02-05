@@ -84,9 +84,13 @@ func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
 			return nil, errors.E(op, errors.EmptyKey)
 		}
 		exist, err := s.client.Get(keys[i])
-		// ErrCacheMiss means that a Get failed because the item wasn't present.
-		if err != nil && err != memcache.ErrCacheMiss {
-			return nil, err
+
+		if err != nil {
+			// ErrCacheMiss means that a Get failed because the item wasn't present.
+			if err == memcache.ErrCacheMiss {
+				continue
+			}
+			return nil, errors.E(op, err)
 		}
 		if exist != nil {
 			m[keys[i]] = true
@@ -105,9 +109,12 @@ func (s *Plugin) Get(key string) ([]byte, error) {
 		return nil, errors.E(op, errors.EmptyKey)
 	}
 	data, err := s.client.Get(key)
-	// ErrCacheMiss means that a Get failed because the item wasn't present.
-	if err != nil && err != memcache.ErrCacheMiss {
-		return nil, err
+	if err != nil {
+		// ErrCacheMiss means that a Get failed because the item wasn't present.
+		if err == memcache.ErrCacheMiss {
+			return nil, nil
+		}
+		return nil, errors.E(op, err)
 	}
 	if data != nil {
 		// return the value by the key
@@ -137,9 +144,12 @@ func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
 	for i := range keys {
 		// Here also MultiGet
 		data, err := s.client.Get(keys[i])
-		// ErrCacheMiss means that a Get failed because the item wasn't present.
-		if err != nil && err != memcache.ErrCacheMiss {
-			return nil, err
+		if err != nil {
+			// ErrCacheMiss means that a Get failed because the item wasn't present.
+			if err == memcache.ErrCacheMiss {
+				continue
+			}
+			return nil, errors.E(op, err)
 		}
 		if data != nil {
 			m[keys[i]] = data.Value
@@ -205,7 +215,7 @@ func (s *Plugin) MExpire(items ...kv.Item) error {
 		// verify provided TTL
 		t, err := time.Parse(time.RFC3339, items[i].TTL)
 		if err != nil {
-			return err
+			return errors.E(op, err)
 		}
 
 		// Touch updates the expiry for the given key. The seconds parameter is either
@@ -215,7 +225,7 @@ func (s *Plugin) MExpire(items ...kv.Item) error {
 		// The key must be at most 250 bytes in length.
 		err = s.client.Touch(items[i].Key, int32(t.Unix()))
 		if err != nil {
-			return err
+			return errors.E(op, err)
 		}
 	}
 	return nil
@@ -244,8 +254,12 @@ func (s *Plugin) Delete(keys ...string) error {
 	for i := range keys {
 		err := s.client.Delete(keys[i])
 		// ErrCacheMiss means that a Get failed because the item wasn't present.
-		if err != nil && err != memcache.ErrCacheMiss {
-			return err
+		if err != nil {
+			// ErrCacheMiss means that a Get failed because the item wasn't present.
+			if err == memcache.ErrCacheMiss {
+				continue
+			}
+			return errors.E(op, err)
 		}
 	}
 	return nil

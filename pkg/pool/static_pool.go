@@ -75,15 +75,18 @@ func Initialize(ctx context.Context, cmd Command, factory transport.Factory, cfg
 		options[i](p)
 	}
 
+	// set up workers allocator
 	p.allocator = p.newPoolAllocator(ctx, p.cfg.AllocateTimeout, factory, cmd)
+	// set up workers watcher
 	p.ww = workerWatcher.NewSyncWorkerWatcher(p.allocator, p.cfg.NumWorkers, p.events)
 
+	// allocate requested number of workers
 	workers, err := p.allocateWorkers(p.cfg.NumWorkers)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
 
-	// put stack in the pool
+	// add workers to the watcher
 	err = p.ww.Watch(workers)
 	if err != nil {
 		return nil, errors.E(op, err)
@@ -239,11 +242,12 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 	return func(err error, w worker.SyncWorker) (payload.Payload, error) {
 		const op = errors.Op("error encoder")
 		// just push event if on any stage was timeout error
-		if errors.Is(errors.ExecTTL, err) {
+
+		switch {
+		case errors.Is(errors.ExecTTL, err):
 			sp.events.Push(events.PoolEvent{Event: events.EventExecTTL, Payload: errors.E(op, err)})
-		}
-		// soft job errors are allowed
-		if errors.Is(errors.SoftJob, err) {
+
+		case errors.Is(errors.SoftJob, err):
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
 				err = sp.ww.Allocate()
 				if err != nil {
@@ -258,8 +262,6 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 			} else {
 				sp.ww.Push(w)
 			}
-
-			return payload.Payload{}, errors.E(op, err)
 		}
 
 		w.State().Set(worker.StateInvalid)
