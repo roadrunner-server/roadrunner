@@ -1,4 +1,4 @@
-name: macOS
+name: Windows
 
 on:
   push:

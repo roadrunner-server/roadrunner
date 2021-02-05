@@ -1,0 +1,25 @@
+name: Linters
+
+on:
+  push:
+  pull_request:
+    branches:
+      # Branches from forks have the form 'user:branch-name' so we only run
+      # this job on pull_request events for branches that look like fork
+      # branches. Without this we would end up running this job twice for non
+      # forked PRs, once for the push and then once for opening the PR.
+      - "**:**"
+
+jobs:
+  golangci-lint:
+    name: Golang-CI (lint)
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v2 # Action page: <https://github.com/golangci/golangci-lint-action>
+        with:
+          version: v1.35 # without patch version
+          only-new-issues: false # show only new issues if it's a pull request
