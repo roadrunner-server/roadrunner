@@ -1,4 +1,4 @@
-name: Linux
+name: Tests
 
 on:
   push:
