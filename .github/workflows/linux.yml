@@ -20,7 +20,7 @@ jobs:
       matrix:
         php: [ "7.4", "8.0" ]
         go: [ "1.14", "1.15" ]
-        os: [ windows-latest ]
+        os: [ ubuntu-20.04 ]
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
@@ -60,33 +60,42 @@ jobs:
       - name: Install Go dependencies
         run: go mod download
 
-      - name: Run golang tests on Windows
+      - name: Run golang tests on Linux
         run: |
           docker-compose -f ./tests/docker-compose.yaml up -d
-          go test -v -race -cover -tags=debug ./pkg/transport/pipe
-          go test -v -race -cover -tags=debug ./pkg/transport/socket
-          go test -v -race -cover -tags=debug ./pkg/pool
-          go test -v -race -cover -tags=debug ./pkg/worker
-          go test -v -race -cover -tags=debug ./pkg/worker_watcher
-          go test -v -race -cover -tags=debug ./plugins/http/config
-          go test -v -race -cover -tags=debug ./tests/plugins/http
-          go test -v -race -cover -tags=debug ./tests/plugins/informer
-          go test -v -race -cover -tags=debug ./tests/plugins/reload
-          go test -v -race -cover -tags=debug ./tests/plugins/server
-          go test -v -race -cover -tags=debug ./tests/plugins/checker
-          go test -v -race -cover -tags=debug ./tests/plugins/config
-          go test -v -race -cover -tags=debug ./tests/plugins/gzip
-          go test -v -race -cover -tags=debug ./tests/plugins/headers
-          go test -v -race -cover -tags=debug ./tests/plugins/logger
-          go test -v -race -cover -tags=debug ./tests/plugins/metrics
-          go test -v -race -cover -tags=debug ./tests/plugins/redis
-          go test -v -race -cover -tags=debug ./tests/plugins/resetter
-          go test -v -race -cover -tags=debug ./tests/plugins/rpc
-          go test -v -race -cover -tags=debug ./tests/plugins/static
-          go test -v -race -cover -tags=debug ./plugins/kv/boltdb
-          go test -v -race -cover -tags=debug ./plugins/kv/memory
-          go test -v -race -cover -tags=debug ./plugins/kv/memcached
-          go test -v -race -cover -tags=debug ./tests/plugins/kv/boltdb
-          go test -v -race -cover -tags=debug ./tests/plugins/kv/memory
-          go test -v -race -cover -tags=debug ./tests/plugins/kv/memcached
-          docker-compose -f ./tests/docker-com
+          mkdir ./coverage-ci
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/transport/pipe
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/transport/socket
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pool.txt -covermode=atomic ./pkg/pool
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker.txt -covermode=atomic ./pkg/worker
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker_stack.txt -covermode=atomic ./pkg/worker_watcher
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/http_config.txt -covermode=atomic ./plugins/http/config
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/http.txt -covermode=atomic ./tests/plugins/http
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/informer.txt -covermode=atomic ./tests/plugins/informer
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/reload.txt -covermode=atomic ./tests/plugins/reload
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/server.txt -covermode=atomic ./tests/plugins/server
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/checker.txt -covermode=atomic ./tests/plugins/checker
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/config.txt -covermode=atomic ./tests/plugins/config
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/gzip.txt -covermode=atomic ./tests/plugins/gzip
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/headers.txt -covermode=atomic ./tests/plugins/headers
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/logger.txt -covermode=atomic ./tests/plugins/logger
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/metrics.txt -covermode=atomic ./tests/plugins/metrics
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/redis.txt -covermode=atomic ./tests/plugins/redis
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/resetter.txt -covermode=atomic ./tests/plugins/resetter
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/rpc.txt -covermode=atomic ./tests/plugins/rpc
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/static.txt -covermode=atomic ./tests/plugins/static
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/boltdb_unit.txt -covermode=atomic ./plugins/kv/boltdb
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/kv_unit.txt -covermode=atomic ./plugins/kv/memory
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memcached_unit.txt -covermode=atomic ./plugins/kv/memcached
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/boltdb.txt -covermode=atomic ./tests/plugins/kv/boltdb
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memory.txt -covermode=atomic ./tests/plugins/kv/memory
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memcached.txt -covermode=atomic ./tests/plugins/kv/memcached
+          docker-compose -f ./tests/docker-compose.yaml down
+          cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
+
+      - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage-ci/summary.txt
+          fail_ci_if_error: false
+

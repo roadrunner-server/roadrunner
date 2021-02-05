@@ -16,11 +16,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         php: [ "7.4", "8.0" ]
         go: [ "1.14", "1.15" ]
-        os: [ macos-latest ]
+        os: [ windows-latest ]
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
@@ -60,29 +60,33 @@ jobs:
       - name: Install Go dependencies
         run: go mod download
 
-      - name: Run golang tests
+      - name: Run golang tests on Linux
         run: |
-          go test -v -race -tags=debug ./pkg/transport/pipe
-          go test -v -race -tags=debug ./pkg/transport/socket
-          go test -v -race -tags=debug ./pkg/pool
-          go test -v -race -tags=debug ./pkg/worker
-          go test -v -race -tags=debug ./pkg/worker_watcher
-          go test -v -race -tags=debug ./plugins/http/config
-          go test -v -race -tags=debug ./tests/plugins/http
-          go test -v -race -tags=debug ./tests/plugins/informer
-          go test -v -race -tags=debug ./tests/plugins/reload
-          go test -v -race -tags=debug ./tests/plugins/server
-          go test -v -race -tags=debug ./tests/plugins/checker
-          go test -v -race -tags=debug ./tests/plugins/config
-          go test -v -race -tags=debug ./tests/plugins/gzip
-          go test -v -race -tags=debug ./tests/plugins/headers
-          go test -v -race -tags=debug ./tests/plugins/logger
-          go test -v -race -tags=debug ./tests/plugins/metrics
-          go test -v -race -tags=debug ./tests/plugins/redis
-          go test -v -race -tags=debug ./tests/plugins/resetter
-          go test -v -race -tags=debug ./tests/plugins/rpc
-          go test -v -race -tags=debug ./tests/plugins/static
-          go test -v -race -tags=debug ./plugins/kv/boltdb
-          go test -v -race -tags=debug ./plugins/kv/memory
-          go test -v -race -tags=debug ./tests/plugins/kv/boltdb
-          go test -v -race -tags=debug ./tests/plugins/kv/memory
+          docker-compose -f ./tests/docker-compose.yaml up -d
+          go test -v -race -cover -tags=debug ./pkg/transport/pipe
+          go test -v -race -cover -tags=debug ./pkg/transport/socket
+          go test -v -race -cover -tags=debug ./pkg/pool
+          go test -v -race -cover -tags=debug ./pkg/worker
+          go test -v -race -cover -tags=debug ./pkg/worker_watcher
+          go test -v -race -cover -tags=debug ./plugins/http/config
+          go test -v -race -cover -tags=debug ./tests/plugins/http
+          go test -v -race -cover -tags=debug ./tests/plugins/informer
+          go test -v -race -cover -tags=debug ./tests/plugins/reload
+          go test -v -race -cover -tags=debug ./tests/plugins/server
+          go test -v -race -cover -tags=debug ./tests/plugins/checker
+          go test -v -race -cover -tags=debug ./tests/plugins/config
+          go test -v -race -cover -tags=debug ./tests/plugins/gzip
+          go test -v -race -cover -tags=debug ./tests/plugins/headers
+          go test -v -race -cover -tags=debug ./tests/plugins/logger
+          go test -v -race -cover -tags=debug ./tests/plugins/metrics
+          go test -v -race -cover -tags=debug ./tests/plugins/redis
+          go test -v -race -cover -tags=debug ./tests/plugins/resetter
+          go test -v -race -cover -tags=debug ./tests/plugins/rpc
+          go test -v -race -cover -tags=debug ./tests/plugins/static
+          go test -v -race -cover -tags=debug ./plugins/kv/boltdb
+          go test -v -race -cover -tags=debug ./plugins/kv/memory
+          go test -v -race -cover -tags=debug ./plugins/kv/memcached
+          go test -v -race -cover -tags=debug ./tests/plugins/kv/boltdb
+          go test -v -race -cover -tags=debug ./tests/plugins/kv/memory
+          go test -v -race -cover -tags=debug ./tests/plugins/kv/memcached
+          docker-compose -f ./tests/docker-com
