@@ -1,5 +1,7 @@
 package payload
 
+import "unsafe"
+
 // Payload carries binary header and body to stack and
 // back to the server.
 type Payload struct {
@@ -12,5 +14,10 @@ type Payload struct {
 
 // String returns payload body as string
 func (p *Payload) String() string {
-	return string(p.Body)
+	return toString(p.Body)
+}
+
+// unsafe, but lightning fast []byte to string conversion
+func toString(data []byte) string {
+	return *(*string)(unsafe.Pointer(&data))
 }

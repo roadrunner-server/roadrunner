@@ -645,3 +645,34 @@ func Benchmark_Pool_Echo_Replaced(b *testing.B) {
 		}
 	}
 }
+
+// BenchmarkToStringUnsafe-12    	566317729	         1.91 ns/op	       0 B/op	       0 allocs/op
+// inline BenchmarkToStringUnsafe-12    	1000000000	         0.295 ns/op	       0 B/op	       0 allocs/op
+func BenchmarkToStringUnsafe(b *testing.B) {
+	testPayload := []byte("falsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtoj")
+	b.ResetTimer()
+	b.ReportAllocs()
+
+	for i := 0; i < b.N; i++ {
+		res := toString(testPayload)
+		_ = res
+	}
+}
+
+// BenchmarkToStringSafe-12    	28584489	        39.1 ns/op	     112 B/op	       1 allocs/op
+// inline BenchmarkToStringSafe-12    	28926276	        46.6 ns/op	     128 B/op	       1 allocs/op
+func BenchmarkToStringSafe(b *testing.B) {
+	testPayload := []byte("falsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtoj")
+
+	b.ResetTimer()
+	b.ReportAllocs()
+
+	for i := 0; i < b.N; i++ {
+		res := toStringNotFun(testPayload)
+		_ = res
+	}
+}
+
+func toStringNotFun(data []byte) string {
+	return string(data)
+}

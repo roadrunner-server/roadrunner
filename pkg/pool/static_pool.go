@@ -4,6 +4,7 @@ import (
 	"context"
 	"os/exec"
 	"time"
+	"unsafe"
 
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/events"
@@ -148,8 +149,8 @@ func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 	}
 
 	// worker want's to be terminated
-	// TODO careful with string(rsp.Context)
-	if len(rsp.Body) == 0 && string(rsp.Context) == StopRequest {
+	// TODO careful with toString(rsp.Context)
+	if len(rsp.Body) == 0 && toString(rsp.Context) == StopRequest {
 		sp.stopWorker(w)
 		return sp.Exec(p)
 	}
@@ -178,7 +179,7 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, p payload.Payload) (p
 	}
 
 	// worker want's to be terminated
-	if len(rsp.Body) == 0 && string(rsp.Context) == StopRequest {
+	if len(rsp.Body) == 0 && toString(rsp.Context) == StopRequest {
 		sp.stopWorker(w)
 		return sp.ExecWithContext(ctx, p)
 	}
@@ -322,4 +323,9 @@ func (sp *StaticPool) allocateWorkers(numWorkers uint64) ([]worker.SyncWorker, e
 		workers = append(workers, w)
 	}
 	return workers, nil
+}
+
+// unsafe, but lightning fast []byte to string conversion
+func toString(data []byte) string {
+	return *(*string)(unsafe.Pointer(&data))
 }
