@@ -9,7 +9,7 @@ import (
 
 	"github.com/shirou/gopsutil/process"
 	"github.com/spiral/errors"
-	"github.com/spiral/goridge/v3/interfaces/relay"
+	"github.com/spiral/goridge/v3/pkg/relay"
 	"github.com/spiral/goridge/v3/pkg/socket"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/events"

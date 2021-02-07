@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/spiral/goridge/v3/interfaces/relay"
+	"github.com/spiral/goridge/v3/pkg/relay"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 )
 

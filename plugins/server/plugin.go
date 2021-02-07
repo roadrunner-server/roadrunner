@@ -51,7 +51,7 @@ func (server *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 
 	server.factory, err = server.initFactory()
 	if err != nil {
-		return errors.E(err)
+		return errors.E(op, err)
 	}
 
 	return nil

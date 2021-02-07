@@ -20,14 +20,16 @@ temporal:
   address: localhost:7233
   activities:
     num_workers: 4
-  codec: json
+  codec: proto
   debug_level: 2
 
 http:
   # host and port separated by semicolon
   address: 127.0.0.1:44933
   max_request_size: 1024
+  # middlewares for the http plugin, order matters
   middleware: [ "gzip", "headers" ]
+  # uploads
   uploads:
     forbid: [ ".php", ".exe", ".bat" ]
   trusted_subnets:
@@ -40,6 +42,7 @@ http:
         "fc00::/7",
         "fe80::/10",
     ]
+  # headers
   headers:
     cors:
       allowed_origin: "*"
@@ -52,6 +55,7 @@ http:
       input: "custom-header"
     response:
       output: "output-header"
+  # http static
   static:
     dir: "tests"
     forbid: [ "" ]
@@ -63,12 +67,13 @@ http:
   pool:
     # default - num of logical CPUs
     num_workers: 6
-    # default 0
+    # default 0 - no limit
     max_jobs: 0
     # default 1 minute
     allocate_timeout: 60s
     # default 1 minute
     destroy_timeout: 60s
+    # supervisor used to control http workers
     supervisor:
       # watch_tick defines how often to check the state of the workers (seconds)
       watch_tick: 1s
@@ -94,13 +99,14 @@ http:
     h2c: false
     max_concurrent_streams: 128
 
+# plugin which can be used in other Golang plugins
+# this is not an PHP plugin
 redis:
   # UniversalClient is an abstract client which - based on the provided options -
   # can connect to either clusters, or sentinel-backed failover instances
   # or simple single-instance servers. This can be useful for testing
   # cluster-specific applications locally.
   # if the number of addrs is 1 and master_name is empty, a single-node redis Client will be returned
-
   # if the number of addrs is two or more, a ClusterClient will be returned
   addrs:
     - "localhost:6379"
@@ -127,6 +133,7 @@ redis:
   read_only: false
 
 # boltdb simple driver
+#
 boltdb:
   dir: "."
   file: "rr"

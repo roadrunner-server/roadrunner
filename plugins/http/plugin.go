@@ -102,19 +102,6 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	}
 
 	s.cfg.Env[RR_MODE] = "http"
-
-	s.pool, err = server.NewWorkerPool(context.Background(), pool.Config{
-		Debug:           s.cfg.Pool.Debug,
-		NumWorkers:      s.cfg.Pool.NumWorkers,
-		MaxJobs:         s.cfg.Pool.MaxJobs,
-		AllocateTimeout: s.cfg.Pool.AllocateTimeout,
-		DestroyTimeout:  s.cfg.Pool.DestroyTimeout,
-		Supervisor:      s.cfg.Pool.Supervisor,
-	}, s.cfg.Env, s.logCallback)
-	if err != nil {
-		return errors.E(op, err)
-	}
-
 	s.server = server
 
 	return nil
@@ -141,6 +128,19 @@ func (s *Plugin) Serve() chan error {
 	errCh := make(chan error, 2)
 
 	var err error
+	s.pool, err = s.server.NewWorkerPool(context.Background(), pool.Config{
+		Debug:           s.cfg.Pool.Debug,
+		NumWorkers:      s.cfg.Pool.NumWorkers,
+		MaxJobs:         s.cfg.Pool.MaxJobs,
+		AllocateTimeout: s.cfg.Pool.AllocateTimeout,
+		DestroyTimeout:  s.cfg.Pool.DestroyTimeout,
+		Supervisor:      s.cfg.Pool.Supervisor,
+	}, s.cfg.Env, s.logCallback)
+	if err != nil {
+		errCh <- errors.E(op, err)
+		return errCh
+	}
+
 	s.handler, err = NewHandler(
 		s.cfg.MaxRequestSize,
 		*s.cfg.Uploads,
@@ -303,6 +303,8 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Workers returns associated pool workers
 func (s *Plugin) Workers() []worker.BaseProcess {
+	s.Lock()
+	defer s.Unlock()
 	workers := s.pool.Workers()
 	baseWorkers := make([]worker.BaseProcess, 0, len(workers))
 	for i := 0; i < len(workers); i++ {
