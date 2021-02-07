@@ -89,6 +89,7 @@ func (stack *Stack) Workers() []worker.SyncWorker {
 	defer stack.mutex.Unlock()
 	workersCopy := make([]worker.SyncWorker, 0, 1)
 	// copy
+	// TODO pointers, copy have no sense
 	for _, v := range stack.workers {
 		if v != nil {
 			workersCopy = append(workersCopy, v)
