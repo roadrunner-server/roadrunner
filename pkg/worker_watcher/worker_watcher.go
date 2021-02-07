@@ -54,6 +54,10 @@ func (ww *workerWatcher) Get(ctx context.Context) (worker.SyncWorker, error) {
 	}
 	// =========================================================
 	// SLOW PATH
+	// Put worker back (no matter it's state, it will be killed next)
+	if w != nil {
+		ww.stack.Push(w)
+	}
 	// no free workers in the stack
 	// try to continuously get free one
 	for {

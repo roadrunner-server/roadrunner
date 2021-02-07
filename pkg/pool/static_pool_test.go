@@ -454,7 +454,7 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      5,
-			AllocateTimeout: time.Second,
+			AllocateTimeout: time.Second * 100,
 			DestroyTimeout:  time.Second,
 		},
 	)
