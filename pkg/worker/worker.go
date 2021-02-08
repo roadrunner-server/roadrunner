@@ -40,9 +40,6 @@ type Process struct {
 	// can be nil while process is not started.
 	pid int
 
-	// contains information about resulted process state.
-	endState *os.ProcessState
-
 	// communication bus with underlying process.
 	relay relay.Relay
 }

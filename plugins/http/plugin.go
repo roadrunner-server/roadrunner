@@ -305,12 +305,7 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (s *Plugin) Workers() []worker.BaseProcess {
 	s.Lock()
 	defer s.Unlock()
-	workers := s.pool.Workers()
-	baseWorkers := make([]worker.BaseProcess, 0, len(workers))
-	for i := 0; i < len(workers); i++ {
-		baseWorkers = append(baseWorkers, worker.FromSync(workers[i].(*worker.SyncWorkerImpl)))
-	}
-	return baseWorkers
+	return s.pool.Workers()
 }
 
 // Name returns endure.Named interface implementation

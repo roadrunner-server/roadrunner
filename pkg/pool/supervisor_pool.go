@@ -99,13 +99,13 @@ func (sp *supervised) GetConfig() interface{} {
 	return sp.pool.GetConfig()
 }
 
-func (sp *supervised) Workers() (workers []worker.SyncWorker) {
+func (sp *supervised) Workers() (workers []worker.BaseProcess) {
 	sp.mu.Lock()
 	defer sp.mu.Unlock()
 	return sp.pool.Workers()
 }
 
-func (sp *supervised) RemoveWorker(worker worker.SyncWorker) error {
+func (sp *supervised) RemoveWorker(worker worker.BaseProcess) error {
 	return sp.pool.RemoveWorker(worker)
 }
 

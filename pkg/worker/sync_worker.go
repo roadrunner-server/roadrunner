@@ -13,29 +13,16 @@ import (
 )
 
 // Allocator is responsible for worker allocation in the pool
-type Allocator func() (*SyncWorkerImpl, error)
+type Allocator func() (SyncWorker, error)
 
 type SyncWorkerImpl struct {
 	process *Process
 }
 
 // From creates SyncWorker from BaseProcess
-func From(process *Process) *SyncWorkerImpl {
+func From(process *Process) SyncWorker {
 	return &SyncWorkerImpl{
 		process: process,
-	}
-}
-
-// FromSync creates BaseProcess from SyncWorkerImpl
-func FromSync(w *SyncWorkerImpl) BaseProcess {
-	return &Process{
-		created:  w.process.created,
-		events:   w.process.events,
-		state:    w.process.state,
-		cmd:      w.process.cmd,
-		pid:      w.process.pid,
-		endState: w.process.endState,
-		relay:    w.process.relay,
 	}
 }
 

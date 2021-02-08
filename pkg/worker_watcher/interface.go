@@ -9,13 +9,13 @@ import (
 // Watcher is an interface for the Sync workers lifecycle
 type Watcher interface {
 	// Watch used to add workers to the stack
-	Watch(workers []worker.SyncWorker) error
+	Watch(workers []worker.BaseProcess) error
 
 	// Get provide first free worker
-	Get(ctx context.Context) (worker.SyncWorker, error)
+	Get(ctx context.Context) (worker.BaseProcess, error)
 
 	// Push enqueues worker back
-	Push(w worker.SyncWorker)
+	Push(w worker.BaseProcess)
 
 	// Allocate - allocates new worker and put it into the WorkerWatcher
 	Allocate() error
@@ -24,8 +24,8 @@ type Watcher interface {
 	Destroy(ctx context.Context)
 
 	// WorkersList return all stack w/o removing it from internal storage
-	List() []worker.SyncWorker
+	List() []worker.BaseProcess
 
 	// RemoveWorker remove worker from the stack
-	Remove(wb worker.SyncWorker) error
+	Remove(wb worker.BaseProcess) error
 }

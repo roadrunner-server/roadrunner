@@ -18,7 +18,7 @@ import (
 const StopRequest = "{\"stop\":true}"
 
 // ErrorEncoder encode error or make a decision based on the error type
-type ErrorEncoder func(err error, w worker.SyncWorker) (payload.Payload, error)
+type ErrorEncoder func(err error, w worker.BaseProcess) (payload.Payload, error)
 
 type Options func(p *StaticPool)
 
@@ -125,11 +125,11 @@ func (sp *StaticPool) GetConfig() interface{} {
 }
 
 // Workers returns worker list associated with the pool.
-func (sp *StaticPool) Workers() (workers []worker.SyncWorker) {
+func (sp *StaticPool) Workers() (workers []worker.BaseProcess) {
 	return sp.ww.List()
 }
 
-func (sp *StaticPool) RemoveWorker(wb worker.SyncWorker) error {
+func (sp *StaticPool) RemoveWorker(wb worker.BaseProcess) error {
 	return sp.ww.Remove(wb)
 }
 
@@ -146,7 +146,7 @@ func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 		return payload.Payload{}, errors.E(op, err)
 	}
 
-	rsp, err := w.Exec(p)
+	rsp, err := w.(worker.SyncWorker).Exec(p)
 	if err != nil {
 		return sp.err_encoder(err, w)
 	}
@@ -176,7 +176,7 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, p payload.Payload) (p
 		return payload.Payload{}, errors.E(op, err)
 	}
 
-	rsp, err := w.ExecWithTimeout(ctx, p)
+	rsp, err := w.(worker.SyncWorker).ExecWithTimeout(ctx, p)
 	if err != nil {
 		return sp.err_encoder(err, w)
 	}
@@ -195,7 +195,7 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, p payload.Payload) (p
 	return rsp, nil
 }
 
-func (sp *StaticPool) stopWorker(w worker.SyncWorker) {
+func (sp *StaticPool) stopWorker(w worker.BaseProcess) {
 	const op = errors.Op("static_pool_stop_worker")
 	w.State().Set(worker.StateInvalid)
 	err := w.Stop()
@@ -205,7 +205,7 @@ func (sp *StaticPool) stopWorker(w worker.SyncWorker) {
 }
 
 // checkMaxJobs check for worker number of executions and kill workers if that number more than sp.cfg.MaxJobs
-func (sp *StaticPool) checkMaxJobs(w worker.SyncWorker) error {
+func (sp *StaticPool) checkMaxJobs(w worker.BaseProcess) error {
 	const op = errors.Op("static_pool_check_max_jobs")
 	if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
 		err := sp.ww.Allocate()
@@ -218,7 +218,7 @@ func (sp *StaticPool) checkMaxJobs(w worker.SyncWorker) error {
 	return nil
 }
 
-func (sp *StaticPool) getWorker(ctxGetFree context.Context, op errors.Op) (worker.SyncWorker, error) {
+func (sp *StaticPool) getWorker(ctxGetFree context.Context, op errors.Op) (worker.BaseProcess, error) {
 	// Get function consumes context with timeout
 	w, err := sp.ww.Get(ctxGetFree)
 	if err != nil {
@@ -239,7 +239,7 @@ func (sp *StaticPool) Destroy(ctx context.Context) {
 }
 
 func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
-	return func(err error, w worker.SyncWorker) (payload.Payload, error) {
+	return func(err error, w worker.BaseProcess) (payload.Payload, error) {
 		const op = errors.Op("error encoder")
 		// just push event if on any stage was timeout error
 
@@ -277,7 +277,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 }
 
 func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duration, factory transport.Factory, cmd func() *exec.Cmd) worker.Allocator {
-	return func() (*worker.SyncWorkerImpl, error) {
+	return func() (worker.SyncWorker, error) {
 		ctx, cancel := context.WithTimeout(ctx, timeout)
 		defer cancel()
 		w, err := factory.SpawnWorkerWithTimeout(ctx, cmd(), sp.listeners...)
@@ -311,9 +311,9 @@ func (sp *StaticPool) execDebug(p payload.Payload) (payload.Payload, error) {
 }
 
 // allocate required number of stack
-func (sp *StaticPool) allocateWorkers(numWorkers uint64) ([]worker.SyncWorker, error) {
+func (sp *StaticPool) allocateWorkers(numWorkers uint64) ([]worker.BaseProcess, error) {
 	const op = errors.Op("allocate workers")
-	var workers []worker.SyncWorker
+	var workers []worker.BaseProcess
 
 	// constant number of stack simplify logic
 	for i := uint64(0); i < numWorkers; i++ {

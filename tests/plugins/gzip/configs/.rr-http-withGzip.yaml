@@ -2,8 +2,6 @@ server:
   command: "php ../../psr-worker.php"
   user: ""
   group: ""
-  env:
-    "RR_HTTP": "true"
   relay: "pipes"
   relay_timeout: "20s"
 
