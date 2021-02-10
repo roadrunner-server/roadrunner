@@ -1,4 +1,4 @@
-package container //nolint:golint,stylecheck
+package container
 
 import (
 	"sync/atomic"
