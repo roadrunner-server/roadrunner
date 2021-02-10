@@ -73,7 +73,7 @@ func (c *HTTP) InitDefaults() error {
 		c.Pool = &poolImpl.Config{
 			Debug:           false,
 			NumWorkers:      uint64(runtime.NumCPU()),
-			MaxJobs:         1000,
+			MaxJobs:         0,
 			AllocateTimeout: time.Second * 60,
 			DestroyTimeout:  time.Second * 60,
 			Supervisor:      nil,

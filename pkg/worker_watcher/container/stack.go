@@ -1,4 +1,4 @@
-package worker_watcher //nolint:golint,stylecheck
+package container //nolint:golint,stylecheck
 import (
 	"context"
 	"runtime"
@@ -32,8 +32,8 @@ func (stack *Stack) Reset() {
 	stack.workers = nil
 }
 
-// Push worker back to the stack
-// If stack in destroy state, Push will provide 100ms window to unlock the mutex
+// Push worker back to the vec
+// If vec in destroy state, Push will provide 100ms window to unlock the mutex
 func (stack *Stack) Push(w worker.BaseProcess) {
 	stack.Lock()
 	defer stack.Unlock()
@@ -51,7 +51,7 @@ func (stack *Stack) Pop() (worker.BaseProcess, bool) {
 	stack.Lock()
 	defer stack.Unlock()
 
-	// do not release new stack
+	// do not release new vec
 	if stack.destroy {
 		return nil, true
 	}
@@ -71,7 +71,7 @@ func (stack *Stack) FindAndRemoveByPid(pid int64) bool {
 	stack.Lock()
 	defer stack.Unlock()
 	for i := 0; i < len(stack.workers); i++ {
-		// worker in the stack, reallocating
+		// worker in the vec, reallocating
 		if stack.workers[i].Pid() == pid {
 			stack.workers = append(stack.workers[:i], stack.workers[i+1:]...)
 			stack.actualNumOfWorkers--
@@ -83,7 +83,7 @@ func (stack *Stack) FindAndRemoveByPid(pid int64) bool {
 	return false
 }
 
-// Workers return copy of the workers in the stack
+// Workers return copy of the workers in the vec
 func (stack *Stack) Workers() []worker.BaseProcess {
 	stack.Lock()
 	defer stack.Unlock()
@@ -124,11 +124,11 @@ func (stack *Stack) Destroy(_ context.Context) {
 			}
 			stack.Unlock()
 			// unnecessary mutex, but
-			// just to make sure. All stack at this moment are in the stack
+			// just to make sure. All vec at this moment are in the vec
 			// Pop operation is blocked, push can't be done, since it's not possible to pop
 			stack.Lock()
 			for i := 0; i < len(stack.workers); i++ {
-				// set state for the stack in the stack (unused at the moment)
+				// set state for the vec in the vec (unused at the moment)
 				stack.workers[i].State().Set(worker.StateDestroyed)
 				// kill the worker
 				_ = stack.workers[i].Kill()

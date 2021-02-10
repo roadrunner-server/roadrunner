@@ -32,9 +32,6 @@ const (
 
 	// StateErrored - error StateImpl (can't be used).
 	StateErrored
-
-	// StateRemove - worker is killed and removed from the stack
-	StateRemove
 )
 
 type StateImpl struct {
@@ -70,8 +67,6 @@ func (s *StateImpl) String() string {
 		return "errored"
 	case StateDestroyed:
 		return "destroyed"
-	case StateRemove:
-		return "remove"
 	}
 
 	return "undefined"

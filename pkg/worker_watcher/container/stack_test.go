@@ -1,4 +1,4 @@
-package worker_watcher //nolint:golint,stylecheck
+package container //nolint:golint,stylecheck
 import (
 	"context"
 	"os/exec"

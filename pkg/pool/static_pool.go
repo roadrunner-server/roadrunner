@@ -130,7 +130,8 @@ func (sp *StaticPool) Workers() (workers []worker.BaseProcess) {
 }
 
 func (sp *StaticPool) RemoveWorker(wb worker.BaseProcess) error {
-	return sp.ww.Remove(wb)
+	sp.ww.Remove(wb)
+	return nil
 }
 
 // Be careful, sync Exec with ExecWithContext
@@ -208,6 +209,8 @@ func (sp *StaticPool) stopWorker(w worker.BaseProcess) {
 func (sp *StaticPool) checkMaxJobs(w worker.BaseProcess) error {
 	const op = errors.Op("static_pool_check_max_jobs")
 	if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
+		w.State().Set(worker.StateDestroyed)
+		sp.ww.Remove(w)
 		err := sp.ww.Allocate()
 		if err != nil {
 			return errors.E(op, err)

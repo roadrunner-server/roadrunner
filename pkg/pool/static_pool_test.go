@@ -148,8 +148,6 @@ func Test_StaticPool_JobError(t *testing.T) {
 		cfg,
 	)
 	assert.NoError(t, err)
-	defer p.Destroy(ctx)
-
 	assert.NotNil(t, p)
 
 	res, err := p.Exec(payload.Payload{Body: []byte("hello")})
@@ -163,6 +161,7 @@ func Test_StaticPool_JobError(t *testing.T) {
 	}
 
 	assert.Contains(t, err.Error(), "hello")
+	p.Destroy(ctx)
 }
 
 func Test_StaticPool_Broken_Replace(t *testing.T) {

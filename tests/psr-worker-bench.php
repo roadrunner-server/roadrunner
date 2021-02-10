@@ -49,7 +49,7 @@ if ($env->getMode() === 'http') {
         $worker->registerWorkflowTypes('Temporal\\Tests\\Workflow\\' . $name);
     }
 
-    // register all activity
+     // register all activity
     foreach ($getClasses(__DIR__ . '/src/Activity') as $name) {
         $class = 'Temporal\\Tests\\Activity\\' . $name;
         $worker->registerActivityImplementations(new $class);
