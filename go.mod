@@ -11,7 +11,7 @@ require (
 	github.com/fatih/color v1.10.0
 	github.com/go-ole/go-ole v1.2.5 // indirect
 	github.com/go-redis/redis/v8 v8.5.0
-	github.com/gofiber/fiber/v2 v2.4.1
+	github.com/gofiber/fiber/v2 v2.5.0
 	github.com/golang/mock v1.4.4
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/json-iterator/go v1.1.10
@@ -24,7 +24,7 @@ require (
 	github.com/spiral/goridge/v3 v3.0.1
 	github.com/stretchr/testify v1.7.0
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
-	github.com/yookoala/gofast v0.4.0
+	github.com/yookoala/gofast v0.5.0
 	go.etcd.io/bbolt v1.3.5
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.16.0
