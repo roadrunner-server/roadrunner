@@ -45,13 +45,14 @@ if ($env->getMode() === 'http') {
     $worker = $factory->newWorker('default');
 
     // register all workflows
-    foreach ($getClasses(__DIR__ . '/../temporal/Workflow') as $name) {
-        $worker->registerWorkflowType('Temporal\\Tests\\Workflow\\' . $name);
+    foreach ($getClasses(__DIR__ . '/src/Workflow') as $name) {
+        $worker->registerWorkflowTypes('Temporal\\Tests\\Workflow\\' . $name);
     }
 
-    // register all activity
-    foreach ($getClasses(__DIR__ . '/../temporal/Activity') as $name) {
-        $worker->registerActivityType('Temporal\\Tests\\Activity\\' . $name);
+     // register all activity
+    foreach ($getClasses(__DIR__ . '/src/Activity') as $name) {
+        $class = 'Temporal\\Tests\\Activity\\' . $name;
+        $worker->registerActivityImplementations(new $class);
     }
 
     $factory->run();

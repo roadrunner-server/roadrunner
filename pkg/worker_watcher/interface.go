@@ -6,25 +6,26 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 )
 
+// Watcher is an interface for the Sync workers lifecycle
 type Watcher interface {
-	// AddToWatch used to add stack to wait its state
-	AddToWatch(workers []worker.SyncWorker) error
+	// Watch used to add workers to the container
+	Watch(workers []worker.BaseProcess) error
 
-	// GetFreeWorker provide first free worker
-	GetFreeWorker(ctx context.Context) (worker.SyncWorker, error)
+	// Get provide first free worker
+	Get(ctx context.Context) (worker.BaseProcess, error)
 
-	// PutWorker enqueues worker back
-	PushWorker(w worker.SyncWorker)
+	// Push enqueues worker back
+	Push(w worker.BaseProcess)
 
-	// AllocateNew used to allocate new worker and put in into the WorkerWatcher
-	AllocateNew() error
+	// Allocate - allocates new worker and put it into the WorkerWatcher
+	Allocate() error
 
-	// Destroy destroys the underlying stack
+	// Destroy destroys the underlying container
 	Destroy(ctx context.Context)
 
-	// WorkersList return all stack w/o removing it from internal storage
-	WorkersList() []worker.SyncWorker
+	// WorkersList return all container w/o removing it from internal storage
+	List() []worker.BaseProcess
 
-	// RemoveWorker remove worker from the stack
-	RemoveWorker(wb worker.SyncWorker) error
+	// RemoveWorker remove worker from the container
+	Remove(wb worker.BaseProcess)
 }

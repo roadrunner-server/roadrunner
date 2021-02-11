@@ -19,10 +19,10 @@ type Pool interface {
 	ExecWithContext(ctx context.Context, rqs payload.Payload) (payload.Payload, error)
 
 	// Workers returns worker list associated with the pool.
-	Workers() (workers []worker.SyncWorker)
+	Workers() (workers []worker.BaseProcess)
 
 	// Remove worker from the pool.
-	RemoveWorker(worker worker.SyncWorker) error
+	RemoveWorker(worker worker.BaseProcess) error
 
 	// Destroy all underlying stack (but let them to complete the task).
 	Destroy(ctx context.Context)

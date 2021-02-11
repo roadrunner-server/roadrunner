@@ -5,10 +5,28 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/spiral/goridge/v3/interfaces/relay"
-	"github.com/spiral/roadrunner/v2/internal"
+	"github.com/spiral/goridge/v3/pkg/relay"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 )
+
+// State represents WorkerProcess status and updated time.
+type State interface {
+	fmt.Stringer
+	// Value returns StateImpl value
+	Value() int64
+	// Set sets the StateImpl
+	Set(value int64)
+	// NumJobs shows how many times WorkerProcess was invoked
+	NumExecs() uint64
+	// IsActive returns true if WorkerProcess not Inactive or Stopped
+	IsActive() bool
+	// RegisterExec using to registering php executions
+	RegisterExec()
+	// SetLastUsed sets worker last used time
+	SetLastUsed(lu uint64)
+	// LastUsed return worker last used time
+	LastUsed() uint64
+}
 
 type BaseProcess interface {
 	fmt.Stringer
@@ -21,7 +39,7 @@ type BaseProcess interface {
 
 	// State return receive-only WorkerProcess state object, state can be used to safely access
 	// WorkerProcess status, time when status changed and number of WorkerProcess executions.
-	State() internal.State
+	State() State
 
 	// Start used to run Cmd and immediately return
 	Start() error

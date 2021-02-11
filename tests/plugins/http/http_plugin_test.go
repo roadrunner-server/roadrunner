@@ -1216,10 +1216,12 @@ func TestHttpBrokenPipes(t *testing.T) {
 	assert.NoError(t, err)
 
 	err = cont.Init()
-	assert.Error(t, err)
+	assert.NoError(t, err)
 
 	_, err = cont.Serve()
 	assert.Error(t, err)
+
+	assert.NoError(t, cont.Stop())
 }
 
 func TestHTTPSupervisedPool(t *testing.T) {

@@ -9,20 +9,10 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/goridge/v3/interfaces/relay"
+	"github.com/spiral/goridge/v3/pkg/relay"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/pkg/events"
-	"github.com/spiral/roadrunner/v2/pkg/states"
 	"go.uber.org/multierr"
-)
-
-const (
-	// WaitDuration - for how long error buffer should attempt to aggregate error messages
-	// before merging output together since lastError update (required to keep error update together).
-	WaitDuration = 25 * time.Millisecond
-
-	// ReadBufSize used to make a slice with specified length to read from stderr
-	ReadBufSize = 10240 // Kb
 )
 
 type Options func(p *Process)
@@ -39,7 +29,7 @@ type Process struct {
 	// number of Process executions, buf status change time.
 	// publicly this object is receive-only and protected using Mutex
 	// and atomic counter.
-	state *internal.WorkerState
+	state *StateImpl
 
 	// underlying command with associated process, command must be
 	// provided to Process from outside in non-started form. CmdSource
@@ -49,9 +39,6 @@ type Process struct {
 	// pid of the process, points to pid of underlying process and
 	// can be nil while process is not started.
 	pid int
-
-	// contains information about resulted process state.
-	endState *os.ProcessState
 
 	// communication bus with underlying process.
 	relay relay.Relay
@@ -67,7 +54,7 @@ func InitBaseWorker(cmd *exec.Cmd, options ...Options) (*Process, error) {
 		created: time.Now(),
 		events:  events.NewEventsHandler(),
 		cmd:     cmd,
-		state:   internal.NewWorkerState(states.StateInactive),
+		state:   NewWorkerState(StateInactive),
 	}
 
 	// set self as stderr implementation (Writer interface)
@@ -106,7 +93,7 @@ func (w *Process) addListener(listener events.Listener) {
 
 // State return receive-only Process state object, state can be used to safely access
 // Process status, time when status changed and number of Process executions.
-func (w *Process) State() internal.State {
+func (w *Process) State() State {
 	return w.state
 }
 
@@ -157,13 +144,13 @@ func (w *Process) Wait() error {
 	err = w.cmd.Wait()
 
 	// If worker was destroyed, just exit
-	if w.State().Value() == states.StateDestroyed {
+	if w.State().Value() == StateDestroyed {
 		return nil
 	}
 
 	// If state is different, and err is not nil, append it to the errors
 	if err != nil {
-		w.State().Set(states.StateErrored)
+		w.State().Set(StateErrored)
 		err = multierr.Combine(err, errors.E(op, err))
 	}
 
@@ -173,12 +160,12 @@ func (w *Process) Wait() error {
 	// and then process.cmd.Wait return an error
 	err2 := w.closeRelay()
 	if err2 != nil {
-		w.State().Set(states.StateErrored)
+		w.State().Set(StateErrored)
 		return multierr.Append(err, errors.E(op, err2))
 	}
 
 	if w.cmd.ProcessState.Success() {
-		w.State().Set(states.StateStopped)
+		w.State().Set(StateStopped)
 		return nil
 	}
 
@@ -198,20 +185,20 @@ func (w *Process) closeRelay() error {
 // Stop sends soft termination command to the Process and waits for process completion.
 func (w *Process) Stop() error {
 	var err error
-	w.state.Set(states.StateStopping)
+	w.state.Set(StateStopping)
 	err = multierr.Append(err, internal.SendControl(w.relay, &internal.StopCommand{Stop: true}))
 	if err != nil {
-		w.state.Set(states.StateKilling)
-		return multierr.Append(err, w.cmd.Process.Kill())
+		w.state.Set(StateKilling)
+		return multierr.Append(err, w.cmd.Process.Signal(os.Kill))
 	}
-	w.state.Set(states.StateStopped)
+	w.state.Set(StateStopped)
 	return nil
 }
 
 // Kill kills underlying process, make sure to call Wait() func to gather
 // error log from the stderr. Does not waits for process completion!
 func (w *Process) Kill() error {
-	if w.State().Value() == states.StateDestroyed {
+	if w.State().Value() == StateDestroyed {
 		err := w.cmd.Process.Signal(os.Kill)
 		if err != nil {
 			return err
@@ -219,12 +206,12 @@ func (w *Process) Kill() error {
 		return nil
 	}
 
-	w.state.Set(states.StateKilling)
+	w.state.Set(StateKilling)
 	err := w.cmd.Process.Signal(os.Kill)
 	if err != nil {
 		return err
 	}
-	w.state.Set(states.StateStopped)
+	w.state.Set(StateStopped)
 	return nil
 }
 

@@ -14,8 +14,8 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
-	"github.com/spiral/roadrunner/v2/pkg/states"
 	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -148,8 +148,6 @@ func Test_StaticPool_JobError(t *testing.T) {
 		cfg,
 	)
 	assert.NoError(t, err)
-	defer p.Destroy(ctx)
-
 	assert.NotNil(t, p)
 
 	res, err := p.Exec(payload.Payload{Body: []byte("hello")})
@@ -163,6 +161,7 @@ func Test_StaticPool_JobError(t *testing.T) {
 	}
 
 	assert.Contains(t, err.Error(), "hello")
+	p.Destroy(ctx)
 }
 
 func Test_StaticPool_Broken_Replace(t *testing.T) {
@@ -255,7 +254,7 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 
 	list := p.Workers()
 	for _, w := range list {
-		assert.Equal(t, states.StateReady, w.State().Value())
+		assert.Equal(t, worker.StateReady, w.State().Value())
 	}
 }
 
@@ -454,7 +453,7 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      5,
-			AllocateTimeout: time.Second,
+			AllocateTimeout: time.Second * 100,
 			DestroyTimeout:  time.Second,
 		},
 	)
@@ -462,11 +461,11 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 	assert.NotNil(t, p)
 
 	for i := range p.Workers() {
-		p.Workers()[i].State().Set(states.StateErrored)
+		p.Workers()[i].State().Set(worker.StateErrored)
 	}
 
 	_, err = p.Exec(payload.Payload{Body: []byte("hello")})
-	assert.Error(t, err)
+	assert.NoError(t, err)
 	p.Destroy(ctx)
 }
 
@@ -644,4 +643,35 @@ func Benchmark_Pool_Echo_Replaced(b *testing.B) {
 			log.Println(err)
 		}
 	}
+}
+
+// BenchmarkToStringUnsafe-12    	566317729	         1.91 ns/op	       0 B/op	       0 allocs/op
+// inline BenchmarkToStringUnsafe-12    	1000000000	         0.295 ns/op	       0 B/op	       0 allocs/op
+func BenchmarkToStringUnsafe(b *testing.B) {
+	testPayload := []byte("falsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtoj")
+	b.ResetTimer()
+	b.ReportAllocs()
+
+	for i := 0; i < b.N; i++ {
+		res := toString(testPayload)
+		_ = res
+	}
+}
+
+// BenchmarkToStringSafe-12    	28584489	        39.1 ns/op	     112 B/op	       1 allocs/op
+// inline BenchmarkToStringSafe-12    	28926276	        46.6 ns/op	     128 B/op	       1 allocs/op
+func BenchmarkToStringSafe(b *testing.B) {
+	testPayload := []byte("falsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtojfalsflasjlifjwpoihejfoiwejow{}{}{}{}jelfjasjfhwaopiehjtopwhtgohrgouahsgkljasdlfjasl;fjals;jdflkndgouwhetopwqhjtoj")
+
+	b.ResetTimer()
+	b.ReportAllocs()
+
+	for i := 0; i < b.N; i++ {
+		res := toStringNotFun(testPayload)
+		_ = res
+	}
+}
+
+func toStringNotFun(data []byte) string {
+	return string(data)
 }

@@ -7,5 +7,10 @@
     "spiral/roadrunner-http": "^2.0",
     "temporal/sdk": ">=1.0",
     "spiral/tokenizer": ">=2.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Temporal\\Tests\\": "src"
+    }
   }
 }

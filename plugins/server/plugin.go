@@ -49,11 +49,6 @@ func (server *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	server.cfg.InitDefaults()
 	server.log = log
 
-	server.factory, err = server.initFactory()
-	if err != nil {
-		return errors.E(err)
-	}
-
 	return nil
 }
 
@@ -64,7 +59,14 @@ func (server *Plugin) Name() string {
 
 // Serve (Start) server plugin (just a mock here to satisfy interface)
 func (server *Plugin) Serve() chan error {
+	const op = errors.Op("server_plugin_serve")
 	errCh := make(chan error, 1)
+	var err error
+	server.factory, err = server.initFactory()
+	if err != nil {
+		errCh <- errors.E(op, err)
+		return errCh
+	}
 	return errCh
 }
 

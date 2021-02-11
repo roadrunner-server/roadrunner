@@ -1,4 +1,5 @@
-package worker_watcher //nolint:golint,stylecheck
+package container
+
 import (
 	"context"
 	"os/exec"
@@ -12,7 +13,7 @@ import (
 func TestNewWorkersStack(t *testing.T) {
 	stack := NewWorkersStack(0)
 	assert.Equal(t, uint64(0), stack.actualNumOfWorkers)
-	assert.Equal(t, []*worker.SyncWorkerImpl{}, stack.workers)
+	assert.Equal(t, []worker.BaseProcess{}, stack.workers)
 }
 
 func TestStack_Push(t *testing.T) {
