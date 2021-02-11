@@ -103,7 +103,7 @@ func (ww *workerWatcher) Get(ctx context.Context) (worker.BaseProcess, error) {
 					}
 					return
 				case worker.StateWorking: // how??
-					ww.container.Enqueue(w)
+					ww.container.Enqueue(w) // put it back, let worker finish the work
 					continue
 				case
 					// all the possible wrong states
@@ -143,11 +143,15 @@ func (ww *workerWatcher) Allocate() error {
 		return errors.E(op, errors.WorkerAllocate, err)
 	}
 
+	// add worker to Wait
 	ww.addToWatch(sw)
 
+	// add new worker to the workers slice (to get information about workers in parallel)
 	ww.workers = append(ww.workers, sw)
 
+	// unlock Allocate mutex
 	ww.Unlock()
+	// push the worker to the container
 	ww.Push(sw)
 	return nil
 }
@@ -184,7 +188,7 @@ func (ww *workerWatcher) Destroy(ctx context.Context) {
 	ww.container.Destroy()
 	ww.Unlock()
 
-	tt := time.NewTicker(time.Millisecond * 500)
+	tt := time.NewTicker(time.Millisecond * 100)
 	defer tt.Stop()
 	for {
 		select {

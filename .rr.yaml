@@ -1,3 +1,7 @@
+######################################################################################
+#                       THIS IS SAMPLE OF THE CONFIGURATION                          #
+# IT'S NOT A DEFAULT CONFIGURATION, IT'S JUST A REFERENCE TO ALL OPTIONS AND PLUGINS #
+######################################################################################
 rpc:
   listen: tcp://127.0.0.1:6001
 
@@ -5,9 +9,6 @@ server:
   command: "php tests/psr-worker-bench.php"
   user: ""
   group: ""
-  env:
-    "RR_HTTP": "true"
-    "RR_RPC": "tcp://127.0.0.1:6001"
   relay: "pipes"
   relay_timeout: 20s
 
@@ -133,7 +134,6 @@ redis:
   read_only: false
 
 # boltdb simple driver
-#
 boltdb:
   dir: "."
   file: "rr"
@@ -142,7 +142,7 @@ boltdb:
   # keys ttl check interval
   TTL: 60 # seconds
 
-  # memcached driver
+# memcached driver
 memcached:
   addr:
     - "localhost:11211"
