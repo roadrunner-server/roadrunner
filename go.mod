@@ -15,7 +15,7 @@ require (
 	github.com/golang/mock v1.4.4
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/json-iterator/go v1.1.10
-	github.com/olekukonko/tablewriter v0.0.4
+	github.com/olekukonko/tablewriter v0.0.5
 	github.com/prometheus/client_golang v1.9.0
 	github.com/shirou/gopsutil v3.21.1+incompatible
 	github.com/spf13/viper v1.7.1
