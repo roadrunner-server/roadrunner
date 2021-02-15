@@ -21,6 +21,8 @@ func TestViperProvider_Init(t *testing.T) {
 	vp := &config.Viper{}
 	vp.Path = ".rr.yaml"
 	vp.Prefix = "rr"
+	vp.Flags = nil
+
 	err = container.Register(vp)
 	if err != nil {
 		t.Fatal(err)
