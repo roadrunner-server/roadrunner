@@ -1,6 +1,10 @@
 rpc:
   listen: tcp://localhost:6060
 
+logs:
+  mode: development
+  level: error
+
 reload:
   interval: 1s
   patterns: [".php"]
