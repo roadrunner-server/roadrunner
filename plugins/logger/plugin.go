@@ -20,11 +20,21 @@ type ZapLogger struct {
 // Init logger service.
 func (z *ZapLogger) Init(cfg config.Configurer) error {
 	const op = errors.Op("config_plugin_init")
+	var err error
+	// if not configured, configure with default params
 	if !cfg.Has(PluginName) {
-		return errors.E(op, errors.Disabled)
+		z.cfg = &Config{}
+		z.cfg.InitDefault()
+
+		z.base, err = z.cfg.BuildLogger()
+		if err != nil {
+			return errors.E(op, errors.Disabled, err)
+		}
+
+		return nil
 	}
 
-	err := cfg.UnmarshalKey(PluginName, &z.cfg)
+	err = cfg.UnmarshalKey(PluginName, &z.cfg)
 	if err != nil {
 		return errors.E(op, errors.Disabled, err)
 	}
