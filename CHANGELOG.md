@@ -4,6 +4,7 @@ CHANGELOG
 vNext
 -------------------
 - Add support for the overwriting `.rr.yaml` keys with values (ref: https://roadrunner.dev/docs/intro-config)
+- Make logger plugin optional to define in the config. Default values: level -> `debug`, mode -> `development`
 
 v2.0.0-RC.2 (11.02.2021)
 -------------------
