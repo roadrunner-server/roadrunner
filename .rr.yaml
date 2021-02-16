@@ -7,13 +7,21 @@ rpc:
 
 server:
   command: "php tests/psr-worker-bench.php"
+  # optional
   user: ""
+  # optional
   group: ""
+  env:
+    - SOME_KEY: "SOME_VALUE"
+    - SOME_KEY2: "SOME_VALUE2"
   relay: "pipes"
   relay_timeout: 20s
 
+# optional for development
 logs:
+  # default - development
   mode: development
+  # default - debug
   level: error
 
 # Workflow and activity mesh service
