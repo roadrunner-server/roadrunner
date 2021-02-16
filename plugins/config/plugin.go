@@ -2,6 +2,7 @@ package config
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -14,6 +15,9 @@ type Viper struct {
 	Prefix    string
 	Type      string
 	ReadInCfg []byte
+	// user defined Flags in the form of <option>.<key> = <value>
+	// which overwrites initial config key
+	Flags []string
 }
 
 // Inits config provider.
@@ -39,6 +43,23 @@ func (v *Viper) Init() error {
 
 	v.viper.SetConfigFile(v.Path)
 	v.viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	err := v.viper.ReadInConfig()
+	if err != nil {
+		return errors.E(op, err)
+	}
+
+	// override config Flags
+	if len(v.Flags) > 0 {
+		for _, f := range v.Flags {
+			key, val, err := parseFlag(f)
+			if err != nil {
+				return errors.E(op, err)
+			}
+
+			v.viper.Set(key, val)
+		}
+	}
 
 	return v.viper.ReadInConfig()
 }
@@ -81,4 +102,26 @@ func (v *Viper) Get(name string) interface{} {
 // Has checks if config section exists.
 func (v *Viper) Has(name string) bool {
 	return v.viper.IsSet(name)
+}
+
+func parseFlag(flag string) (string, string, error) {
+	const op = errors.Op("parse_flag")
+	if !strings.Contains(flag, "=") {
+		return "", "", errors.E(op, errors.Errorf("invalid flag `%s`", flag))
+	}
+
+	parts := strings.SplitN(strings.TrimLeft(flag, " \"'`"), "=", 2)
+
+	return strings.Trim(parts[0], " \n\t"), parseValue(strings.Trim(parts[1], " \n\t")), nil
+}
+
+func parseValue(value string) string {
+	escape := []rune(value)[0]
+
+	if escape == '"' || escape == '\'' || escape == '`' {
+		value = strings.Trim(value, string(escape))
+		value = strings.ReplaceAll(value, fmt.Sprintf("\\%s", string(escape)), string(escape))
+	}
+
+	return value
 }

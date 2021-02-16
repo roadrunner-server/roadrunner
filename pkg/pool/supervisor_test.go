@@ -53,7 +53,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 					assert.NotNil(t, s)
 					// since this is soft limit, double max memory limit watch
 					if (s.MemoryUsage / MB) > cfgSupervised.Supervisor.MaxWorkerMemory*2 {
-						assert.Fail(t, "max memory reached")
+						assert.Fail(t, "max memory reached, worker still alive")
 					}
 				}
 			}
@@ -61,7 +61,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 	}()
 
 	for i := 0; i < 100; i++ {
-		time.Sleep(time.Millisecond * 50)
+		time.Sleep(time.Millisecond * 100)
 		_, err = p.Exec(payload.Payload{
 			Context: []byte(""),
 			Body:    []byte("foo"),
