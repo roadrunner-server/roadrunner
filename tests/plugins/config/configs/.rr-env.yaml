@@ -1,0 +1,24 @@
+rpc:
+  listen: ${SUPER_RPC_ENV}
+
+logs:
+  mode: development
+  level: error
+
+reload:
+  interval: 1s
+  patterns: [ ".php" ]
+  services:
+    http:
+      recursive: true
+      ignore: [ "vendor" ]
+      patterns: [ ".php", ".go",".md", ]
+      dirs: [ "." ]
+    jobs:
+      recursive: false
+      ignore: [ "service/metrics" ]
+      dirs: [ "./jobs" ]
+    rpc:
+      recursive: true
+      patterns: [ ".json" ]
+      dirs: [ "" ]

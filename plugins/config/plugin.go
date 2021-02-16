@@ -3,6 +3,7 @@ package config
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -49,6 +50,12 @@ func (v *Viper) Init() error {
 		return errors.E(op, err)
 	}
 
+	// automatically inject ENV variables using ${ENV} pattern
+	for _, key := range v.viper.AllKeys() {
+		val := v.viper.Get(key)
+		v.viper.Set(key, parseEnv(val))
+	}
+
 	// override config Flags
 	if len(v.Flags) > 0 {
 		for _, f := range v.Flags {
@@ -61,7 +68,7 @@ func (v *Viper) Init() error {
 		}
 	}
 
-	return v.viper.ReadInConfig()
+	return nil
 }
 
 // Overwrite overwrites existing config with provided values
@@ -124,4 +131,19 @@ func parseValue(value string) string {
 	}
 
 	return value
+}
+
+func parseEnv(value interface{}) interface{} {
+	str, ok := value.(string)
+	if !ok || len(str) <= 3 {
+		return value
+	}
+
+	if str[0:2] == "${" && str[len(str)-1:] == "}" {
+		if v, ok := os.LookupEnv(str[2 : len(str)-1]); ok {
+			return v
+		}
+	}
+
+	return str
 }

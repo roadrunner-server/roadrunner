@@ -139,7 +139,8 @@ func (sp *supervised) control() {
 	now := time.Now()
 	const op = errors.Op("supervised_pool_control_tick")
 
-	// THIS IS A COPY OF WORKERS
+	// MIGHT BE OUTDATED
+	// It's a copy of the Workers pointers
 	workers := sp.pool.Workers()
 
 	for i := 0; i < len(workers); i++ {

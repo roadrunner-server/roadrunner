@@ -216,8 +216,8 @@ func (ww *workerWatcher) Destroy(ctx context.Context) {
 
 // Warning, this is O(n) operation, and it will return copy of the actual workers
 func (ww *workerWatcher) List() []worker.BaseProcess {
-	ww.Lock()
-	defer ww.Unlock()
+	ww.RLock()
+	defer ww.RUnlock()
 
 	base := make([]worker.BaseProcess, 0, len(ww.workers))
 	for i := 0; i < len(ww.workers); i++ {
