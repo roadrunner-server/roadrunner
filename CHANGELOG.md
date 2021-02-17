@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-vNext
+v2.0.0-RC.3 (17.02.2021)
 -------------------
 
 - Add support for the overwriting `.rr.yaml` keys with values (ref: https://roadrunner.dev/docs/intro-config)
