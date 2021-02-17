@@ -17,12 +17,25 @@ server:
   relay: "pipes"
   relay_timeout: 20s
 
+
 # optional for development
 logs:
-  # default - development
-  mode: development
-  # default - debug
-  level: error
+  # default
+  mode: debug
+  encoding: json
+  output: stderr
+  err_output: stderr
+  channels:
+    http:
+      mode: development
+      level: panic
+      encoding: console
+      output: stdout
+    server:
+      mode: production
+      level: info
+      encoding: json
+      output: stderr
 
 # Workflow and activity mesh service
 temporal:
