@@ -13,7 +13,7 @@ $rr = new RoadRunner\Worker($relay);
 
 while ($in = $rr->waitPayload()) {
     try {
-        $rr->send((string)$in->body);
+        $rr->respond(new RoadRunner\Payload((string)$in->body));
     } catch (\Throwable $e) {
         $rr->error((string)$e);
     }

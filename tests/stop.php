@@ -18,7 +18,7 @@ while ($in = $rr->waitPayload()) {
         }
 
         $used = true;
-        $rr->send((string)getmypid());
+        $rr->respond(new RoadRunner\Payload((string)getmypid()));
     } catch (\Throwable $e) {
         $rr->error((string)$e);
     }

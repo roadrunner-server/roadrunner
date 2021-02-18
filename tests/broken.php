@@ -10,5 +10,5 @@ $rr = new RoadRunner\Worker($relay);
 
 while ($in = $rr->waitPayload()) {
     echo undefined_function();
-    $rr->send((string)$in->body, null);
+    $rr->respond(new RoadRunner\Payload((string)$in->body, null));
 }
