@@ -11,5 +11,5 @@ $rr = new RoadRunner(new StreamRelay(\STDIN, \STDOUT));
 
 while($rr->waitPayload()){
     sleep(3);
-    $rr->send("");
+    $rr->respond(new \Spiral\RoadRunner\Payload(""));
 }

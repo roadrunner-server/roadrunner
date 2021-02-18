@@ -11,7 +11,7 @@ $rr = new RoadRunner\Worker($relay);
 while ($in = $rr->waitPayload()) {
     try {
         usleep($in->body * 1000);
-        $rr->send('');
+        $rr->respond(new RoadRunner\Payload(''));
     } catch (\Throwable $e) {
         $rr->error((string)$e);
     }
