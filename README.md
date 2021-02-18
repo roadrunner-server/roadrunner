@@ -51,7 +51,7 @@ Features:
     - execTTL (brute, max_execution_time)
 - Payload context and body
 - Protocol, worker and job level error management (including PHP errors)
-- Very fast (~250k rpc calls per second on Ryzen 1700X using 16 threads)
+- Development Mode  
 - Integrations with Symfony, [Laravel](https://github.com/spiral/roadrunner-laravel), Slim, CakePHP, Zend Expressive
 - Application server for [Spiral](https://github.com/spiral/framework)
 - Automatic reloading on file changes
@@ -60,29 +60,67 @@ Features:
 Installation:
 --------
 
-```
-go get -u github.com/spiral/roadrunner/v2
+```bash
+$ composer require spiral/roadrunner:v2.0 nyholm/psr7
+$ ./vendor/bin/rr get-binary
 ```
 
-> For getting roadrunner binary file you can use our docker image: `spiralscout/roadrunner:X.X.X` (more information about image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/))
+> For getting roadrunner binary file you can use our docker image: `spiralscout/roadrunner:X.X.X` (more information about 
+> image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/))
 
 Configuration can be located in `.rr.yaml`
 file ([full sample](https://github.com/spiral/roadrunner/blob/master/.rr.yaml)):
 
 ```yaml
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+server:
+  command: "php worker.php"
+
 http:
-  address: 0.0.0.0:8080
-  workers.command: "php worker.php"
+  address: "0.0.0.0:8080"
+
+logs:
+  level: error
 ```
 
 > Read more in [Documentation](https://roadrunner.dev/docs).
+
+Example Worker:
+--------
+
+```php
+<?php
+
+use Spiral\RoadRunner;
+use Nyholm\Psr7;
+
+include "vendor/autoload.php";
+
+$worker = RoadRunner\Worker::create();
+$psrFactory = new Psr7\Factory\Psr17Factory();
+
+$worker = new RoadRunner\Http\PSR7Worker($worker, $psrFactory, $psrFactory, $psrFactory);
+
+while ($req = $worker->waitRequest()) {
+    try {
+        $rsp = new Psr7\Response();
+        $rsp->getBody()->write('Hello world!');
+
+        $worker->respond($rsp);
+    } catch (\Throwable $e) {
+        $worker->getWorker()->error((string)$e);
+    }
+}
+```
 
 Run:
 ----
 To run application server:
 
 ```
-$ ./rr serve -v -d
+$ ./rr serve
 ```
 
 License:
