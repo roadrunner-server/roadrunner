@@ -412,7 +412,7 @@ func fcgiEcho(t *testing.T) {
 
 	fcgiHandler := gofast.NewHandler(
 		gofast.BasicParamsMap(gofast.BasicSession),
-		gofast.SimpleClientFactory(fcgiConnFactory, 0),
+		gofast.SimpleClientFactory(fcgiConnFactory),
 	)
 
 	w := httptest.NewRecorder()
@@ -684,7 +684,7 @@ func fcgiReqURI(t *testing.T) {
 
 	fcgiHandler := gofast.NewHandler(
 		gofast.BasicParamsMap(gofast.BasicSession),
-		gofast.SimpleClientFactory(fcgiConnFactory, 0),
+		gofast.SimpleClientFactory(fcgiConnFactory),
 	)
 
 	w := httptest.NewRecorder()
