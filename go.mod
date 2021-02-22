@@ -24,7 +24,7 @@ require (
 	github.com/spiral/goridge/v3 v3.0.1
 	github.com/stretchr/testify v1.7.0
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
-	github.com/yookoala/gofast v0.5.0
+	github.com/yookoala/gofast v0.6.0
 	go.etcd.io/bbolt v1.3.5
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.16.0
