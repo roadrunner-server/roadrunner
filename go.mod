@@ -10,7 +10,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.10.0
 	github.com/go-ole/go-ole v1.2.5 // indirect
-	github.com/go-redis/redis/v8 v8.5.0
+	github.com/go-redis/redis/v8 v8.6.0
 	github.com/gofiber/fiber/v2 v2.5.0
 	github.com/golang/mock v1.4.4
 	github.com/hashicorp/go-multierror v1.1.0
@@ -26,7 +26,7 @@ require (
 	// ===========
 	github.com/stretchr/testify v1.7.0
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
-	github.com/yookoala/gofast v0.5.0
+	github.com/yookoala/gofast v0.6.0
 	go.etcd.io/bbolt v1.3.5
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.16.0
