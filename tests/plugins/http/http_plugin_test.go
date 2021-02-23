@@ -1287,9 +1287,13 @@ func TestHTTPSupervisedPool(t *testing.T) {
 	}()
 
 	time.Sleep(time.Second * 1)
-	t.Run("HTTPEchoTest", echoHTTP2)
+	t.Run("HTTPEchoRunActivateWorker", echoHTTP2)
+	// bigger timeout to handle idle_ttl on slow systems
+	time.Sleep(time.Second * 10)
+	t.Run("HTTPInformerCompareWorkersTestBefore", informerTestBefore)
+	t.Run("HTTPEchoShouldBeNewWorker", echoHTTP2)
 	// worker should be destructed (idle_ttl)
-	t.Run("HTTPInformerCompareWorkersTest", informerTest2)
+	t.Run("HTTPInformerCompareWorkersTestAfter", informerTestAfter)
 
 	stopCh <- struct{}{}
 	wg.Wait()
@@ -1314,11 +1318,12 @@ func echoHTTP2(t *testing.T) {
 // sleep
 // supervisor destroy worker
 // compare pid's
-func informerTest2(t *testing.T) {
+var workerPid int = 0
+
+func informerTestBefore(t *testing.T) {
 	conn, err := net.Dial("tcp", "127.0.0.1:15432")
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-	pid := 0
 	// WorkerList contains list of workers.
 	list := struct {
 		// Workers is list of workers.
@@ -1329,18 +1334,25 @@ func informerTest2(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, list.Workers, 1)
 	// save the pid
-	pid = list.Workers[0].Pid
-	time.Sleep(time.Second * 10)
+	workerPid = list.Workers[0].Pid
+}
 
-	list = struct {
+func informerTestAfter(t *testing.T) {
+	conn, err := net.Dial("tcp", "127.0.0.1:15432")
+	assert.NoError(t, err)
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+	// WorkerList contains list of workers.
+	list := struct {
 		// Workers is list of workers.
 		Workers []tools.ProcessState `json:"workers"`
 	}{}
 
+	assert.NotZero(t, workerPid)
+
 	err = client.Call("informer.Workers", "http", &list)
 	assert.NoError(t, err)
 	assert.Len(t, list.Workers, 1)
-	assert.NotEqual(t, list.Workers[0].Pid, pid)
+	assert.NotEqual(t, workerPid, list.Workers[0].Pid)
 }
 
 func get(url string) (string, *http.Response, error) {
