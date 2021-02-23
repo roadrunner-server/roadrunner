@@ -14,12 +14,12 @@ import (
 
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
-	"github.com/spiral/roadrunner/v2/plugins/checker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/server"
+	"github.com/spiral/roadrunner/v2/plugins/status"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,7 +37,7 @@ func TestStatusHttp(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&checker.Plugin{},
+		&status.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -95,7 +95,7 @@ const resp = `Service: http: Status: 200
 Service: rpc not found`
 
 func checkHTTPStatus(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://127.0.0.1:34333/v1/health?plugin=http&plugin=rpc", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:34333/health?plugin=http&plugin=rpc", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -124,7 +124,7 @@ func TestStatusRPC(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&checker.Plugin{},
+		&status.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -182,7 +182,7 @@ func checkRPCStatus(t *testing.T) {
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
-	st := &checker.Status{}
+	st := &status.Status{}
 
 	err = client.Call("status.Status", "http", &st)
 	assert.NoError(t, err)
