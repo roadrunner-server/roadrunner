@@ -17,12 +17,12 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
-	"github.com/spiral/roadrunner/v2/plugins/checker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/server"
+	"github.com/spiral/roadrunner/v2/plugins/status"
 	"github.com/spiral/roadrunner/v2/utils"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -109,12 +109,9 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 
 func (s *Plugin) logCallback(event interface{}) {
 	if ev, ok := event.(ResponseEvent); ok {
-		s.log.Debug("",
+		s.log.Debug(fmt.Sprintf("%d %s %s", ev.Response.Status, ev.Request.Method, ev.Request.URI),
 			"remote", ev.Request.RemoteAddr,
-			"ts", ev.Elapsed().String(),
-			"resp.status", ev.Response.Status,
-			"method", ev.Request.Method,
-			"uri", ev.Request.URI,
+			"elapsed", ev.Elapsed().String(),
 		)
 	}
 }
@@ -303,8 +300,6 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Workers returns associated pool workers
 func (s *Plugin) Workers() []worker.BaseProcess {
-	s.Lock()
-	defer s.Unlock()
 	return s.pool.Workers()
 }
 
@@ -365,17 +360,17 @@ func (s *Plugin) AddMiddleware(name endure.Named, m Middleware) {
 }
 
 // Status return status of the particular plugin
-func (s *Plugin) Status() checker.Status {
+func (s *Plugin) Status() status.Status {
 	workers := s.Workers()
 	for i := 0; i < len(workers); i++ {
 		if workers[i].State().IsActive() {
-			return checker.Status{
+			return status.Status{
 				Code: http.StatusOK,
 			}
 		}
 	}
 	// if there are no workers, threat this as error
-	return checker.Status{
+	return status.Status{
 		Code: http.StatusInternalServerError,
 	}
 }

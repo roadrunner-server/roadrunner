@@ -8,19 +8,19 @@ import (
 
 const PluginName = "gzip"
 
-type Gzip struct{}
+type Plugin struct{}
 
 // needed for the Endure
-func (g *Gzip) Init() error {
+func (g *Plugin) Init() error {
 	return nil
 }
 
-func (g *Gzip) Middleware(next http.Handler) http.HandlerFunc {
+func (g *Plugin) Middleware(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		gziphandler.GzipHandler(next).ServeHTTP(w, r)
 	}
 }
 
-func (g *Gzip) Name() string {
+func (g *Plugin) Name() string {
 	return PluginName
 }

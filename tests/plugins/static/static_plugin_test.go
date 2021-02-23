@@ -38,7 +38,7 @@ func TestStaticPlugin(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&gzip.Gzip{},
+		&gzip.Plugin{},
 		&static.Plugin{},
 	)
 	assert.NoError(t, err)
@@ -138,7 +138,7 @@ func serveStaticSample(t *testing.T) {
 	_ = r.Body.Close()
 }
 
-func TestStaticDisabled(t *testing.T) {
+func TestStaticDisabled_Error(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
@@ -152,66 +152,11 @@ func TestStaticDisabled(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&gzip.Gzip{},
+		&gzip.Plugin{},
 		&static.Plugin{},
 	)
 	assert.NoError(t, err)
-
-	err = cont.Init()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ch, err := cont.Serve()
-	assert.NoError(t, err)
-
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-
-	stopCh := make(chan struct{}, 1)
-
-	go func() {
-		defer wg.Done()
-		for {
-			select {
-			case e := <-ch:
-				assert.Fail(t, "error", e.Error.Error())
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-			case <-sig:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-				return
-			case <-stopCh:
-				// timeout
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
-				return
-			}
-		}
-	}()
-
-	time.Sleep(time.Second)
-	t.Run("StaticDisabled", staticDisabled)
-
-	stopCh <- struct{}{}
-	wg.Wait()
-}
-
-func staticDisabled(t *testing.T) {
-	_, r, err := get("http://localhost:21234/sample.txt") //nolint:bodyclose
-	assert.NoError(t, err)
-	assert.NotNil(t, r)
-	assert.Empty(t, r.Header.Get("X-Powered-By"))
+	assert.Error(t, cont.Init())
 }
 
 func TestStaticFilesDisabled(t *testing.T) {
@@ -228,7 +173,7 @@ func TestStaticFilesDisabled(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&gzip.Gzip{},
+		&gzip.Plugin{},
 		&static.Plugin{},
 	)
 	assert.NoError(t, err)
@@ -306,7 +251,9 @@ func TestStaticFilesForbid(t *testing.T) {
 
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("", "remote", gomock.Any(), "ts", gomock.Any(), "resp.status", gomock.Any(), "method", gomock.Any(), "uri", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/http?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/client.XXX?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/client.php?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Error("file open error", "error", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes() // placeholder for the workerlogerror
 
@@ -315,7 +262,7 @@ func TestStaticFilesForbid(t *testing.T) {
 		mockLogger,
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&gzip.Gzip{},
+		&gzip.Plugin{},
 		&static.Plugin{},
 	)
 	assert.NoError(t, err)

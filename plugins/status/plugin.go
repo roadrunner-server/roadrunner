@@ -1,4 +1,4 @@
-package checker
+package status
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
@@ -43,12 +42,12 @@ func (c *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
 func (c *Plugin) Serve() chan error {
 	errCh := make(chan error, 1)
 	c.server = fiber.New(fiber.Config{
-		ReadTimeout:  time.Second * 5,
-		WriteTimeout: time.Second * 5,
-		IdleTimeout:  time.Second * 5,
+		ReadTimeout:           time.Second * 5,
+		WriteTimeout:          time.Second * 5,
+		IdleTimeout:           time.Second * 5,
+		DisableStartupMessage: true,
 	})
-	c.server.Group("/v1", c.healthHandler)
-	c.server.Use(fiberLogger.New())
+
 	c.server.Use("/health", c.healthHandler)
 
 	go func() {
@@ -120,7 +119,7 @@ func (c *Plugin) healthHandler(ctx *fiber.Ctx) error {
 
 	if len(plugins.Plugins) == 0 {
 		ctx.Status(http.StatusOK)
-		_, _ = ctx.WriteString("No plugins provided in query. Query should be in form of: /v1/health?plugin=plugin1&plugin=plugin2 \n")
+		_, _ = ctx.WriteString("No plugins provided in query. Query should be in form of: health?plugin=plugin1&plugin=plugin2 \n")
 		return nil
 	}
 
