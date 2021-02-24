@@ -5,13 +5,12 @@ server:
   command: "php ../../http/client.php echo pipes"
   user: ""
   group: ""
-  env:
-    "RR_HTTP": "true"
   relay: "pipes"
   relay_timeout: "20s"
 
 status:
   address: "127.0.0.1:34333"
+
 logs:
   mode: development
   level: error

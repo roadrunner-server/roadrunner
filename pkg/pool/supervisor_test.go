@@ -9,7 +9,6 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
-	"github.com/spiral/roadrunner/v2/tools"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,28 +36,8 @@ func TestSupervisedPool_Exec(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
-	stopCh := make(chan struct{})
-	defer p.Destroy(context.Background())
 
-	go func() {
-		for {
-			select {
-			case <-stopCh:
-				return
-			default:
-				workers := p.Workers()
-				if len(workers) > 0 {
-					s, err := tools.WorkerProcessState(workers[0])
-					assert.NoError(t, err)
-					assert.NotNil(t, s)
-					// since this is soft limit, double max memory limit watch
-					if (s.MemoryUsage / MB) > cfgSupervised.Supervisor.MaxWorkerMemory*2 {
-						assert.Fail(t, "max memory reached, worker still alive")
-					}
-				}
-			}
-		}
-	}()
+	pidBefore := p.Workers()[0].Pid()
 
 	for i := 0; i < 100; i++ {
 		time.Sleep(time.Millisecond * 100)
@@ -69,7 +48,9 @@ func TestSupervisedPool_Exec(t *testing.T) {
 		assert.NoError(t, err)
 	}
 
-	stopCh <- struct{}{}
+	assert.NotEqual(t, pidBefore, p.Workers()[0].Pid())
+
+	p.Destroy(context.Background())
 }
 
 func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
@@ -99,7 +80,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 
 	pid := p.Workers()[0].Pid()
 
-	resp, err := p.ExecWithContext(context.Background(), payload.Payload{
+	resp, err := p.execWithTTL(context.Background(), payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -129,7 +110,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep.php", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "../../tests/idle.php", "pipes") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)
@@ -139,7 +120,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 
 	pid := p.Workers()[0].Pid()
 
-	resp, err := p.ExecWithContext(context.Background(), payload.Payload{
+	resp, err := p.execWithTTL(context.Background(), payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -149,6 +130,13 @@ func TestSupervisedPool_Idle(t *testing.T) {
 	assert.Empty(t, resp.Context)
 
 	time.Sleep(time.Second * 5)
+
+	// worker should be marked as invalid and reallocated
+	_, err = p.execWithTTL(context.Background(), payload.Payload{
+		Context: []byte(""),
+		Body:    []byte("foo"),
+	})
+	assert.NoError(t, err)
 	// should be new worker with new pid
 	assert.NotEqual(t, pid, p.Workers()[0].Pid())
 	p.Destroy(context.Background())
@@ -170,7 +158,7 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep.php", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "../../tests/exec_ttl.php", "pipes") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)

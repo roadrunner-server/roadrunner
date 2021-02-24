@@ -47,7 +47,7 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 
 	err = s.cfg.Valid()
 	if err != nil {
-		return errors.E(op, errors.Disabled, err)
+		return errors.E(op, err)
 	}
 
 	return nil
@@ -88,7 +88,6 @@ func (s *Plugin) handleStatic(w http.ResponseWriter, r *http.Request) bool {
 
 	f, err := s.root.Open(fPath)
 	if err != nil {
-		s.log.Error("file open error", "error", err)
 		if s.cfg.AlwaysServe(fPath) {
 			w.WriteHeader(404)
 			return true

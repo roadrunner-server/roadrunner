@@ -25,7 +25,7 @@ http:
     supervisor:
       watch_tick: 1s
       ttl: 0
-      idle_ttl: 5s
+      idle_ttl: 1s
       exec_ttl: 10s
       max_worker_memory: 100
 logs:

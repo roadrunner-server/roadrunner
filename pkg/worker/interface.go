@@ -70,5 +70,5 @@ type SyncWorker interface {
 	// Exec used to execute payload on the SyncWorker, there is no TIMEOUTS
 	Exec(rqs payload.Payload) (payload.Payload, error)
 	// ExecWithContext used to handle Exec with TTL
-	ExecWithTimeout(ctx context.Context, p payload.Payload) (payload.Payload, error)
+	ExecWithTTL(ctx context.Context, p payload.Payload) (payload.Payload, error)
 }

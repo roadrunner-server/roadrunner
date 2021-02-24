@@ -191,7 +191,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.NotNil(t, p)
 
 	time.Sleep(time.Second)
-	res, err := p.ExecWithContext(ctx, payload.Payload{Body: []byte("hello")})
+	res, err := p.execWithTTL(ctx, payload.Payload{Body: []byte("hello")})
 	assert.Error(t, err)
 	assert.Nil(t, res.Context)
 	assert.Nil(t, res.Body)
@@ -518,11 +518,11 @@ func Test_StaticPool_NoFreeWorkers(t *testing.T) {
 	assert.NotNil(t, p)
 
 	go func() {
-		_, _ = p.ExecWithContext(ctx, payload.Payload{Body: []byte("hello")})
+		_, _ = p.execWithTTL(ctx, payload.Payload{Body: []byte("hello")})
 	}()
 
 	time.Sleep(time.Second)
-	res, err := p.ExecWithContext(ctx, payload.Payload{Body: []byte("hello")})
+	res, err := p.execWithTTL(ctx, payload.Payload{Body: []byte("hello")})
 	assert.Error(t, err)
 	assert.Nil(t, res.Context)
 	assert.Nil(t, res.Body)

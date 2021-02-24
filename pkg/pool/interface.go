@@ -15,9 +15,6 @@ type Pool interface {
 	// Exec executes task with payload
 	Exec(rqs payload.Payload) (payload.Payload, error)
 
-	// ExecWithContext executes task with context which is used with timeout
-	ExecWithContext(ctx context.Context, rqs payload.Payload) (payload.Payload, error)
-
 	// Workers returns worker list associated with the pool.
 	Workers() (workers []worker.BaseProcess)
 
@@ -26,4 +23,7 @@ type Pool interface {
 
 	// Destroy all underlying stack (but let them to complete the task).
 	Destroy(ctx context.Context)
+
+	// ExecWithContext executes task with context which is used with timeout
+	execWithTTL(ctx context.Context, rqs payload.Payload) (payload.Payload, error)
 }

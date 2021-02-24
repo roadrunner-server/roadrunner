@@ -1,4 +1,4 @@
-package checker
+package status
 
 import (
 	"github.com/spiral/errors"

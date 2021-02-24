@@ -34,7 +34,7 @@ func TestGzipPlugin(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&gzip.Gzip{},
+		&gzip.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -126,7 +126,7 @@ func TestMiddlewareNotExist(t *testing.T) {
 		mockLogger,
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&gzip.Gzip{},
+		&gzip.Plugin{},
 	)
 	assert.NoError(t, err)
 
