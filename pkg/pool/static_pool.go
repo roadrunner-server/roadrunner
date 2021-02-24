@@ -168,16 +168,16 @@ func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 }
 
 // Be careful, sync with pool.Exec method
-func (sp *StaticPool) ExecWithContext(ctx context.Context, p payload.Payload) (payload.Payload, error) {
+func (sp *StaticPool) execWithTTL(ctx context.Context, p payload.Payload) (payload.Payload, error) {
 	const op = errors.Op("static_pool_exec_with_context")
-	ctxGetFree, cancel := context.WithTimeout(ctx, sp.cfg.AllocateTimeout)
+	ctxAlloc, cancel := context.WithTimeout(ctx, sp.cfg.AllocateTimeout)
 	defer cancel()
-	w, err := sp.getWorker(ctxGetFree, op)
+	w, err := sp.getWorker(ctxAlloc, op)
 	if err != nil {
 		return payload.Payload{}, errors.E(op, err)
 	}
 
-	rsp, err := w.(worker.SyncWorker).ExecWithTimeout(ctx, p)
+	rsp, err := w.(worker.SyncWorker).ExecWithTTL(ctx, p)
 	if err != nil {
 		return sp.err_encoder(err, w)
 	}
@@ -185,7 +185,7 @@ func (sp *StaticPool) ExecWithContext(ctx context.Context, p payload.Payload) (p
 	// worker want's to be terminated
 	if len(rsp.Body) == 0 && toString(rsp.Context) == StopRequest {
 		sp.stopWorker(w)
-		return sp.ExecWithContext(ctx, p)
+		return sp.execWithTTL(ctx, p)
 	}
 
 	err = sp.checkMaxJobs(w)

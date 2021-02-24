@@ -63,7 +63,7 @@ type wexec struct {
 }
 
 // Exec payload without TTL timeout.
-func (tw *SyncWorkerImpl) ExecWithTimeout(ctx context.Context, p payload.Payload) (payload.Payload, error) {
+func (tw *SyncWorkerImpl) ExecWithTTL(ctx context.Context, p payload.Payload) (payload.Payload, error) {
 	const op = errors.Op("sync_worker_exec_worker_with_timeout")
 	c := make(chan wexec, 1)
 

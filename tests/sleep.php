@@ -10,6 +10,6 @@ require __DIR__ . "/vendor/autoload.php";
 $rr = new RoadRunner(new StreamRelay(\STDIN, \STDOUT));
 
 while($rr->waitPayload()){
-    sleep(3);
+    sleep(300);
     $rr->respond(new \Spiral\RoadRunner\Payload(""));
 }
