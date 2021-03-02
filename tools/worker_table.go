@@ -48,7 +48,6 @@ func renderStatus(status string) string {
 	case "errored":
 		return color.RedString("errored")
 	}
-
 	return status
 }
 

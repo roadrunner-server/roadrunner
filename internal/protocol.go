@@ -67,6 +67,7 @@ func FetchPID(rl relay.Relay) (int64, error) {
 	}
 
 	frameR := frame.NewFrame()
+
 	err = rl.Receive(frameR)
 	if !frameR.VerifyCRC() {
 		return 0, errors.E(op, errors.Str("CRC mismatch"))
