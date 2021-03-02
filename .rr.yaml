@@ -21,8 +21,9 @@ server:
 # optional for development
 logs:
   # default
-  mode: debug
-  encoding: json
+  mode: development
+  level: debug
+  encoding: console
   output: stderr
   err_output: stderr
   channels:
@@ -34,7 +35,12 @@ logs:
     server:
       mode: production
       level: info
-      encoding: json
+      encoding: console
+      output: stderr
+    rpc:
+      mode: production
+      level: debug
+      encoding: console
       output: stderr
 
 # Workflow and activity mesh service
