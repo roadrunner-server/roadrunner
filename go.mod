@@ -17,7 +17,7 @@ require (
 	github.com/json-iterator/go v1.1.10
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/prometheus/client_golang v1.9.0
-	github.com/shirou/gopsutil v3.21.1+incompatible
+	github.com/shirou/gopsutil v3.21.2+incompatible
 	github.com/spf13/viper v1.7.1
 	// SPIRAL ====
 	github.com/spiral/endure v1.0.0-RC.2
@@ -25,6 +25,7 @@ require (
 	github.com/spiral/goridge/v3 v3.0.1
 	// ===========
 	github.com/stretchr/testify v1.7.0
+	github.com/tklauser/go-sysconf v0.3.4 // indirect
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/yookoala/gofast v0.6.0
 	go.etcd.io/bbolt v1.3.5
@@ -32,5 +33,5 @@ require (
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20201224014010-6772e930b67b
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
-	golang.org/x/sys v0.0.0-20210112080510-489259a85091
+	golang.org/x/sys v0.0.0-20210217105451-b926d437f341
 )
