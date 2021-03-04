@@ -90,10 +90,6 @@ func (server *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 		return nil, errors.E(op, errors.Str("minimum command should be `<executable> <script>"))
 	}
 
-	_, err := os.Stat(cmdArgs[1])
-	if err != nil {
-		return nil, errors.E(op, err)
-	}
 	return func() *exec.Cmd {
 		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...) //nolint:gosec
 		utils.IsolateProcess(cmd)
