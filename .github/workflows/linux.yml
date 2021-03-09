@@ -19,7 +19,7 @@ jobs:
       fail-fast: true
       matrix:
         php: [ "7.4", "8.0" ]
-        go: [ "1.14", "1.15" ]
+        go: [ "1.15", "1.16" ]
         os: [ ubuntu-20.04 ]
     steps:
       - name: Set up Go ${{ matrix.go }}
