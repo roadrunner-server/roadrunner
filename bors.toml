@@ -1,11 +1,11 @@
 status = [
-    'Linux / Build (Go 1.14, PHP 7.4, OS ubuntu-20.04)',
+    'Linux / Build (Go 1.16, PHP 7.4, OS ubuntu-20.04)',
     'Linux / Build (Go 1.15, PHP 7.4, OS ubuntu-20.04)',
-    'Linux / Build (Go 1.14, PHP 8.0, OS ubuntu-20.04)',
+    'Linux / Build (Go 1.16, PHP 8.0, OS ubuntu-20.04)',
     'Linux / Build (Go 1.15, PHP 8.0, OS ubuntu-20.04)',
-    'macOS / Build (Go 1.14, PHP 7.4, OS macos-latest)',
+    'macOS / Build (Go 1.16, PHP 7.4, OS macos-latest)',
     'macOS / Build (Go 1.15, PHP 7.4, OS macos-latest)',
-    'macOS / Build (Go 1.14, PHP 8.0, OS macos-latest)',
+    'macOS / Build (Go 1.16, PHP 8.0, OS macos-latest)',
     'macOS / Build (Go 1.15, PHP 8.0, OS macos-latest)',
     'Linux / Golang-CI (lint) ',
 ]
