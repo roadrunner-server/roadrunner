@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v2.0.1 ()
+v2.0.1 (09.03.2021)
 -------------------
 - 🐛 Fix: incorrect PHP command validation
 - 🐛 Fix: ldflags properly inject RR version
