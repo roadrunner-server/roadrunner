@@ -40,7 +40,7 @@ func (s *SSL) Valid() error {
 	// use 0.0.0.0 as host and 443 as port
 	case 2:
 		if parts[0] == "" {
-			s.host = "0.0.0.0"
+			s.host = "127.0.0.1"
 		} else {
 			s.host = parts[0]
 		}
