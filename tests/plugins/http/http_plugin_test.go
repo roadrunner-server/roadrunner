@@ -705,11 +705,18 @@ func TestH2CUpgrade(t *testing.T) {
 		Path:   "configs/.rr-h2c.yaml",
 		Prefix: "rr",
 	}
+	controller := gomock.NewController(t)
+	mockLogger := mocks.NewMockLogger(controller)
+
+	mockLogger.EXPECT().Info("server internal stderr", "message", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("worker event received", "event", events.EventWorkerLog, "worker state", gomock.Any()).MinTimes(1)
 
 	err = cont.RegisterAll(
 		cfg,
 		&rpcPlugin.Plugin{},
-		&logger.ZapLogger{},
+		mockLogger,
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 	)
