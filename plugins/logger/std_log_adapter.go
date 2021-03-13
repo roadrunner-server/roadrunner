@@ -12,7 +12,7 @@ type StdLogAdapter struct {
 
 // Write io.Writer interface implementation
 func (s *StdLogAdapter) Write(p []byte) (n int, err error) {
-	s.log.Info("server internal stderr", "message", toString(p))
+	s.log.Error("server internal error", "message", toString(p))
 	return len(p), nil
 }
 

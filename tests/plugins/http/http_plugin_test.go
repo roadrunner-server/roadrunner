@@ -708,7 +708,7 @@ func TestH2CUpgrade(t *testing.T) {
 	controller := gomock.NewController(t)
 	mockLogger := mocks.NewMockLogger(controller)
 
-	mockLogger.EXPECT().Info("server internal stderr", "message", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Error("server internal error", "message", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("worker event received", "event", events.EventWorkerLog, "worker state", gomock.Any()).MinTimes(1)
