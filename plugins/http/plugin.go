@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/fcgi"
 	"net/url"
@@ -54,6 +55,8 @@ type Plugin struct {
 	// plugins
 	server server.Server
 	log    logger.Logger
+	// stdlog passed to the http/https/fcgi servers to log their internal messages
+	stdLog *log.Logger
 
 	cfg *httpConfig.HTTP `mapstructure:"http"`
 	// middlewares to chain
@@ -73,7 +76,7 @@ type Plugin struct {
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Server) error {
+func (s *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server server.Server) error {
 	const op = errors.Op("http_plugin_init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
@@ -89,7 +92,11 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 		return errors.E(op, err)
 	}
 
-	s.log = log
+	// rr logger (via plugin)
+	s.log = rrLogger
+	// use time and date in UTC format
+	s.stdLog = log.New(logger.NewStdAdapter(s.log), "http_plugin: ", log.Ldate|log.Ltime|log.LUTC)
+
 	s.mdwr = make(map[string]Middleware)
 
 	if !s.cfg.EnableHTTP() && !s.cfg.EnableTLS() && !s.cfg.EnableFCGI() {
@@ -153,9 +160,9 @@ func (s *Plugin) Serve() chan error {
 
 	if s.cfg.EnableHTTP() {
 		if s.cfg.EnableH2C() {
-			s.http = &http.Server{Handler: h2c.NewHandler(s, &http2.Server{})}
+			s.http = &http.Server{Handler: h2c.NewHandler(s, &http2.Server{}), ErrorLog: s.stdLog}
 		} else {
-			s.http = &http.Server{Handler: s}
+			s.http = &http.Server{Handler: s, ErrorLog: s.stdLog}
 		}
 	}
 
@@ -179,7 +186,7 @@ func (s *Plugin) Serve() chan error {
 	}
 
 	if s.cfg.EnableFCGI() {
-		s.fcgi = &http.Server{Handler: s}
+		s.fcgi = &http.Server{Handler: s, ErrorLog: s.stdLog}
 	}
 
 	// start http, https and fcgi servers if requested in the config
@@ -304,7 +311,7 @@ func (s *Plugin) Stop() error {
 
 // ServeHTTP handles connection using set of middleware and pool PSR-7 server.
 func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if headerContainsUpgrade(r, s) {
+	if headerContainsUpgrade(r) {
 		http.Error(w, "server does not support upgrade header", http.StatusInternalServerError)
 		return
 	}
@@ -414,11 +421,10 @@ func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, target.String(), http.StatusTemporaryRedirect)
 }
 
+// https://golang.org/pkg/net/http/#Hijacker
 //go:inline
-func headerContainsUpgrade(r *http.Request, s *Plugin) bool {
+func headerContainsUpgrade(r *http.Request) bool {
 	if _, ok := r.Header["Upgrade"]; ok {
-		// https://golang.org/pkg/net/http/#Hijacker
-		s.log.Error("server does not support Upgrade header")
 		return true
 	}
 	return false
@@ -507,8 +513,9 @@ func (s *Plugin) initSSL() *http.Server {
 	DefaultCipherSuites = append(DefaultCipherSuites, defaultCipherSuitesTLS13...)
 
 	sslServer := &http.Server{
-		Addr:    s.tlsAddr(s.cfg.Address, true),
-		Handler: s,
+		Addr:     s.tlsAddr(s.cfg.Address, true),
+		Handler:  s,
+		ErrorLog: s.stdLog,
 		TLSConfig: &tls.Config{
 			CurvePreferences: []tls.CurveID{
 				tls.CurveP256,
