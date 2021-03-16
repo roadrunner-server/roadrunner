@@ -8,7 +8,6 @@ server:
   relay_timeout: "20s"
 
 http:
-  debug: true
   address: :8086
   max_request_size: 1024
   middleware: [ "" ]

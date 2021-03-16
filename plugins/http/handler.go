@@ -8,7 +8,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-multierror"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/pool"
@@ -95,15 +94,36 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// validating request size
 	if h.maxRequestSize != 0 {
-		err := h.maxSize(w, r, start, op)
-		if err != nil {
-			return
+		const op = errors.Op("http_handler_max_size")
+		if length := r.Header.Get("content-length"); length != "" {
+			// try to parse the value from the `content-length` header
+			size, err := strconv.ParseInt(length, 10, 64)
+			if err != nil {
+				// if got an error while parsing -> assign 500 code to the writer and return
+				http.Error(w, errors.E(op, err).Error(), 500)
+				h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, errors.Str("error while parsing value from the `content-length` header")), start: start, elapsed: time.Since(start)})
+				return
+			}
+
+			if size > int64(h.maxRequestSize) {
+				h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, errors.Str("request body max size is exceeded")), start: start, elapsed: time.Since(start)})
+				http.Error(w, errors.E(op, errors.Str("request body max size is exceeded")).Error(), 500)
+				return
+			}
 		}
 	}
 
 	req, err := NewRequest(r, h.uploads)
 	if err != nil {
-		h.handleError(w, r, err, start)
+		// if pipe is broken, there is no sense to write the header
+		// in this case we just report about error
+		if err == errEPIPE {
+			h.sendEvent(ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
+			return
+		}
+
+		http.Error(w, errors.E(op, err).Error(), 500)
+		h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, err), start: start, elapsed: time.Since(start)})
 		return
 	}
 
@@ -115,73 +135,40 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	p, err := req.Payload()
 	if err != nil {
-		h.handleError(w, r, err, start)
+		http.Error(w, errors.E(op, err).Error(), 500)
+		h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, err), start: start, elapsed: time.Since(start)})
 		return
 	}
 
 	rsp, err := h.pool.Exec(p)
 	if err != nil {
-		h.handleError(w, r, err, start)
+		http.Error(w, errors.E(op, err).Error(), 500)
+		h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, err), start: start, elapsed: time.Since(start)})
 		return
 	}
 
 	resp, err := NewResponse(rsp)
 	if err != nil {
-		h.handleError(w, r, err, start)
+		http.Error(w, errors.E(op, err).Error(), resp.Status)
+		h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, err), start: start, elapsed: time.Since(start)})
 		return
 	}
 
 	h.handleResponse(req, resp, start)
 	err = resp.Write(w)
 	if err != nil {
-		h.handleError(w, r, err, start)
+		http.Error(w, errors.E(op, err).Error(), 500)
+		h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, err), start: start, elapsed: time.Since(start)})
 	}
-}
-
-func (h *Handler) maxSize(w http.ResponseWriter, r *http.Request, start time.Time, op errors.Op) error {
-	if length := r.Header.Get("content-length"); length != "" {
-		if size, err := strconv.ParseInt(length, 10, 64); err != nil {
-			h.handleError(w, r, err, start)
-			return err
-		} else if size > int64(h.maxRequestSize) {
-			h.handleError(w, r, errors.E(op, errors.Str("request body max size is exceeded")), start)
-			return err
-		}
-	}
-	return nil
-}
-
-// handleError sends error.
-func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error, start time.Time) {
-	h.mul.Lock()
-	defer h.mul.Unlock()
-	// if pipe is broken, there is no sense to write the header
-	// in this case we just report about error
-	if err == errEPIPE {
-		h.throw(ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
-		return
-	}
-	err = multierror.Append(err)
-	// ResponseWriter is ok, write the error code
-	w.WriteHeader(500)
-	_, err2 := w.Write([]byte(err.Error()))
-	// error during the writing to the ResponseWriter
-	if err2 != nil {
-		err = multierror.Append(err2, err)
-		// concat original error with ResponseWriter error
-		h.throw(ErrorEvent{Request: r, Error: errors.E(err), start: start, elapsed: time.Since(start)})
-		return
-	}
-	h.throw(ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
 }
 
 // handleResponse triggers response event.
 func (h *Handler) handleResponse(req *Request, resp *Response, start time.Time) {
-	h.throw(ResponseEvent{Request: req, Response: resp, start: start, elapsed: time.Since(start)})
+	h.sendEvent(ResponseEvent{Request: req, Response: resp, start: start, elapsed: time.Since(start)})
 }
 
-// throw invokes event handler if any.
-func (h *Handler) throw(event interface{}) {
+// sendEvent invokes event handler if any.
+func (h *Handler) sendEvent(event interface{}) {
 	if h.lsn != nil {
 		h.lsn(event)
 	}

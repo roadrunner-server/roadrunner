@@ -1,4 +1,4 @@
-package checker
+package status
 
 import (
 	"io/ioutil"
@@ -28,7 +28,7 @@ func TestStatusHttp(t *testing.T) {
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "configs/.rr-checker-init.yaml",
+		Path:   "configs/.rr-status-init.yaml",
 		Prefix: "rr",
 	}
 
@@ -114,7 +114,7 @@ func TestStatusRPC(t *testing.T) {
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "configs/.rr-checker-init.yaml",
+		Path:   "configs/.rr-status-init.yaml",
 		Prefix: "rr",
 	}
 
