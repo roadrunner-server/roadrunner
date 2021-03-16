@@ -1,7 +1,6 @@
 CHANGELOG
 =========
 
-
 v2.0.2 (06.04.2021)
 - 🐛 Fix: Bug with required Root CA certificate for the SSL, not it's optional.
 - 🆕 New: HTTP/FCGI/HTTPS internal logs instead of going to the raw stdout will be displayed in the RR logger at the `Info` log level.
