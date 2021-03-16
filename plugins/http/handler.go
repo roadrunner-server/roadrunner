@@ -106,11 +106,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if size > int64(h.maxRequestSize) {
+				h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, errors.Str("request body max size is exceeded")), start: start, elapsed: time.Since(start)})
 				http.Error(w, errors.E(op, errors.Str("request body max size is exceeded")).Error(), 500)
+				return
 			}
-
-			h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, errors.Str("request body max size is exceeded")), start: start, elapsed: time.Since(start)})
-			return
 		}
 	}
 
