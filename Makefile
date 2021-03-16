@@ -36,7 +36,7 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/informer.out -covermode=atomic ./tests/plugins/informer
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/reload.out -covermode=atomic ./tests/plugins/reload
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/server.out -covermode=atomic ./tests/plugins/server
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/checker.out -covermode=atomic ./tests/plugins/checker
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/status.out -covermode=atomic ./tests/plugins/status
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/config.out -covermode=atomic ./tests/plugins/config
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/gzip.out -covermode=atomic ./tests/plugins/gzip
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/headers.out -covermode=atomic ./tests/plugins/headers
@@ -68,7 +68,7 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./tests/plugins/informer
 	go test -v -race -tags=debug ./tests/plugins/reload
 	go test -v -race -tags=debug ./tests/plugins/server
-	go test -v -race -tags=debug ./tests/plugins/checker
+	go test -v -race -tags=debug ./tests/plugins/status
 	go test -v -race -tags=debug ./tests/plugins/config
 	go test -v -race -tags=debug ./tests/plugins/gzip
 	go test -v -race -tags=debug ./tests/plugins/headers
@@ -98,7 +98,7 @@ test_1.14: ## Run application tests
 	go1.14.14 test -v -race -tags=debug ./tests/plugins/informer
 	go1.14.14 test -v -race -tags=debug ./tests/plugins/reload
 	go1.14.14 test -v -race -tags=debug ./tests/plugins/server
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/checker
+	go1.14.14 test -v -race -tags=debug ./tests/plugins/status
 	go1.14.14 test -v -race -tags=debug ./tests/plugins/config
 	go1.14.14 test -v -race -tags=debug ./tests/plugins/gzip
 	go1.14.14 test -v -race -tags=debug ./tests/plugins/headers
@@ -128,7 +128,7 @@ test_1.16: ## Run application tests
 	go1.16rc1 test -v -race -tags=debug ./tests/plugins/informer
 	go1.16rc1 test -v -race -tags=debug ./tests/plugins/reload
 	go1.16rc1 test -v -race -tags=debug ./tests/plugins/server
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/checker
+	go1.16rc1 test -v -race -tags=debug ./tests/plugins/status
 	go1.16rc1 test -v -race -tags=debug ./tests/plugins/config
 	go1.16rc1 test -v -race -tags=debug ./tests/plugins/gzip
 	go1.16rc1 test -v -race -tags=debug ./tests/plugins/headers

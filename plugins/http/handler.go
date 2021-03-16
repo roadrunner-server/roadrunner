@@ -95,9 +95,22 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// validating request size
 	if h.maxRequestSize != 0 {
-		err := h.maxSize(w, r, start, op)
-		if err != nil {
-			return
+		const op = errors.Op("http_handler_max_size")
+		if length := r.Header.Get("content-length"); length != "" {
+			// try to parse the value from the `content-length` header
+			size, err := strconv.ParseInt(length, 10, 64)
+			if err != nil {
+				// if got an error while parsing -> assign 500 code to the writer and return
+				http.Error(w, errors.E(op, err).Error(), 500)
+				h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, errors.Str("error while parsing value from the `content-length` header")), start: start, elapsed: time.Since(start)})
+				return
+			}
+
+			if size > int64(h.maxRequestSize) {
+				h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, errors.Str("request body max size is exceeded")), start: start, elapsed: time.Since(start)})
+				http.Error(w, errors.E(op, errors.Str("request body max size is exceeded")).Error(), 500)
+				return
+			}
 		}
 	}
 
