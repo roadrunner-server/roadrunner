@@ -97,7 +97,7 @@ func (c *HTTP) InitDefaults() error {
 	}
 
 	if c.SSLConfig.Address == "" {
-		c.SSLConfig.Address = ":443"
+		c.SSLConfig.Address = "127.0.0.1:443"
 	}
 
 	err := c.HTTP2Config.InitDefaults()

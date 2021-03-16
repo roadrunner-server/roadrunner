@@ -418,7 +418,7 @@ func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) {
 		RawQuery: r.URL.RawQuery,
 	}
 
-	http.Redirect(w, r, target.String(), http.StatusTemporaryRedirect)
+	http.Redirect(w, r, target.String(), http.StatusPermanentRedirect)
 }
 
 // https://golang.org/pkg/net/http/#Hijacker
