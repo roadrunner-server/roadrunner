@@ -2,6 +2,7 @@ package http
 
 import (
 	"bytes"
+	"crypto/rand"
 	"crypto/tls"
 	"fmt"
 	"io/ioutil"
@@ -1415,23 +1416,21 @@ server:
   command: "%s"
   user: ""
   group: ""
-  env:
-    "RR_HTTP": "true"
   relay: "pipes"
-  relayTimeout: "20s"
+  relay_timeout: "20s"
 
 http:
   address: 127.0.0.1:%s
-  maxRequestSize: 1024
+  max_request_size: 1024
   middleware: [ "" ]
   uploads:
     forbid: [ ".php", ".exe", ".bat" ]
-  trustedSubnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
+  trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
   pool:
-    numWorkers: 2
-    maxJobs: 0
-    allocateTimeout: 60s
-    destroyTimeout: 60s
+    num_workers: 2
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
 
   ssl:
     address: %s
@@ -1444,9 +1443,98 @@ http:
   http2:
     enabled: %s
     h2c: false
-    maxConcurrentStreams: 128
+    max_concurrent_streams: 128
 logs:
   mode: development
   level: error
 `, rpcPort, command, httpPort, sslAddress, redirect, fcgiPort, http2Enabled))
+}
+
+func TestHTTPBigRequestSize(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-big-req-size.yaml",
+		Prefix: "rr",
+		Type:   "yaml",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	stopCh := make(chan struct{}, 1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	t.Run("HTTPBigEcho10Mb", bigEchoHTTP)
+
+	stopCh <- struct{}{}
+	wg.Wait()
+}
+
+func bigEchoHTTP(t *testing.T) {
+	buf := make([]byte, 1024*1024*10)
+
+	_, err := rand.Read(buf)
+	assert.NoError(t, err)
+
+	bt := bytes.NewBuffer(buf)
+
+	req, err := http.NewRequest("GET", "http://localhost:10085?hello=world", bt)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Equal(t, 500, r.StatusCode)
+	assert.Equal(t, "http_handler_max_size: request body max size is exceeded\n", string(b))
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
 }

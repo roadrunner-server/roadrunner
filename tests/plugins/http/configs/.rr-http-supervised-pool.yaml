@@ -10,7 +10,6 @@ server:
   relay_timeout: "20s"
 
 http:
-  debug: true
   address: 127.0.0.1:18888
   max_request_size: 1024
   middleware: [ "" ]

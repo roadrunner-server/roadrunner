@@ -326,7 +326,7 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r = attributes.Init(r)
-	// protect the case, when user send Reset and we are replacing handler with pool
+	// protect the case, when user sendEvent Reset and we are replacing handler with pool
 	s.RLock()
 	s.handler.ServeHTTP(w, r)
 	s.RUnlock()
