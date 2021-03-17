@@ -51,6 +51,7 @@ Features:
 - Development Mode
 - Integrations with Symfony, [Laravel](https://github.com/spiral/roadrunner-laravel), Slim, CakePHP, Zend Expressive
 - Application server for [Spiral](https://github.com/spiral/framework)
+- Included in Laravel Octane
 - Automatic reloading on file changes
 - Works on Windows (Unix sockets (AF_UNIX) supported on Windows 10)
 
