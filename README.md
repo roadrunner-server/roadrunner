@@ -27,7 +27,6 @@ with much greater performance and flexibility.
 
 Features:
 --------
-
 - Production-ready
 - PCI DSS compliant
 - PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middlewares, event listeners)
@@ -36,20 +35,20 @@ Features:
 - Flexible environment configuration
 - No external PHP dependencies (64bit version required), drop-in (based on [Goridge](https://github.com/spiral/goridge))
 - Load balancer, process manager and task pipeline
-- Frontend agnostic ([Queue](https://github.com/spiral/jobs), PSR-7, [GRPC](https://github.com/spiral/php-grpc), etc)
 - Integrated metrics (Prometheus)
+- Workflow engine by [Temporal.io](https://temporal.io)  
 - Works over TCP, UNIX sockets and standard pipes
 - Automatic worker replacement and safe PHP process destruction
 - Worker create/allocate/destroy timeouts
 - Max jobs per worker
 - Worker lifecycle management (controller)
-    - maxMemory (graceful stop)
-    - TTL (graceful stop)
-    - idleTTL (graceful stop)
-    - execTTL (brute, max_execution_time)
+  - maxMemory (graceful stop)
+  - TTL (graceful stop)
+  - idleTTL (graceful stop)
+  - execTTL (brute, max_execution_time)
 - Payload context and body
 - Protocol, worker and job level error management (including PHP errors)
-- Development Mode  
+- Development Mode
 - Integrations with Symfony, [Laravel](https://github.com/spiral/roadrunner-laravel), Slim, CakePHP, Zend Expressive
 - Application server for [Spiral](https://github.com/spiral/framework)
 - Automatic reloading on file changes
