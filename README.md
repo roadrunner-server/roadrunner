@@ -36,7 +36,7 @@ Features:
 - No external PHP dependencies (64bit version required), drop-in (based on [Goridge](https://github.com/spiral/goridge))
 - Load balancer, process manager and task pipeline
 - Integrated metrics (Prometheus)
-- Workflow engine by [Temporal.io](https://temporal.io)  
+- [Workflow engine](https://github.com/temporalio/sdk-php) by [Temporal.io](https://temporal.io)  
 - Works over TCP, UNIX sockets and standard pipes
 - Automatic worker replacement and safe PHP process destruction
 - Worker create/allocate/destroy timeouts
