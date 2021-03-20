@@ -10,6 +10,9 @@ metrics:
       help: "Custom application metric"
       labels: [ "type" ]
       buckets: [ 0.1, 0.2, 0.3, 1.0 ]
+    app_metric_counter:
+      type: counter
+      help: "Custom application counter."
 logs:
   mode: development
   level: error

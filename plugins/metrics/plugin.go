@@ -23,11 +23,6 @@ const (
 	maxHeaderSize = 1024 * 1024 * 100 // 104MB
 )
 
-type statsProvider struct {
-	collectors []prometheus.Collector
-	name       string
-}
-
 // Plugin to manage application metrics using Prometheus.
 type Plugin struct {
 	cfg        *Config
@@ -74,10 +69,7 @@ func (m *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 
 	// Register invocation will be later in the Serve method
 	for k, v := range collectors {
-		m.collectors.Store(k, statsProvider{
-			collectors: []prometheus.Collector{v},
-			name:       k,
-		})
+		m.collectors.Store(k, v)
 	}
 	return nil
 }
@@ -92,13 +84,11 @@ func (m *Plugin) Serve() chan error {
 	errCh := make(chan error, 1)
 	m.collectors.Range(func(key, value interface{}) bool {
 		// key - name
-		// value - statsProvider struct
-		c := value.(statsProvider)
-		for _, v := range c.collectors {
-			if err := m.registry.Register(v); err != nil {
-				errCh <- err
-				return false
-			}
+		// value - prometheus.Collector
+		c := value.(prometheus.Collector)
+		if err := m.registry.Register(c); err != nil {
+			errCh <- err
+			return false
 		}
 
 		return true
@@ -211,10 +201,13 @@ func (m *Plugin) Collects() []interface{} {
 
 // Collector returns application specific collector by name or nil if collector not found.
 func (m *Plugin) AddStatProvider(name endure.Named, stat StatProvider) error {
-	m.collectors.Store(name.Name(), statsProvider{
-		collectors: stat.MetricsCollector(),
-		name:       name.Name(),
-	})
+	for _, c := range stat.MetricsCollector() {
+		err := m.registry.Register(c)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
