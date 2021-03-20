@@ -75,8 +75,7 @@ func (m *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 }
 
 // Register new prometheus collector.
-func (m *Plugin) Register(c
-) error {
+func (m *Plugin) Register(c prometheus.Collector) error {
 	return m.registry.Register(c)
 }
 
