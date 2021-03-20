@@ -83,6 +83,7 @@ func TestMetricsInit(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Contains(t, out, "go_gc_duration_seconds")
+	assert.Contains(t, out, "app_metric_counter")
 
 	for {
 		select {
@@ -199,6 +200,7 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 	mockLogger.EXPECT().Info("adding metric", "name", "sub_gauge_subVector", "value", gomock.Any(), "labels", []string{"core", "first"}).MinTimes(1)
 	mockLogger.EXPECT().Info("adding metric", "name", "sub_gauge_subMetric", "value", gomock.Any(), "labels", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("adding metric", "name", "test_metrics_named_collector", "value", gomock.Any(), "labels", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("adding metric", "name", "app_metric_counter", "value", gomock.Any(), "labels", gomock.Any()).MinTimes(1)
 
 	mockLogger.EXPECT().Info("metric successfully added", "name", "observe_observeMetricNotEnoughLabels", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("metric successfully added", "name", "observe_observeMetric", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
@@ -216,6 +218,7 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 	mockLogger.EXPECT().Info("metric successfully added", "name", "test_metrics_named_collector", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("metric successfully added", "name", "test_metrics_named_collector", "labels", gomock.Any(), "value", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("metric successfully added", "name", "user_gauge_collector", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("metric successfully added", "name", "app_metric_counter", "labels", gomock.Any(), "value", gomock.Any()).MinTimes(1)
 
 	mockLogger.EXPECT().Info("declaring new metric", "name", "observe_observeMetricNotEnoughLabels", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("declaring new metric", "name", "observe_observeMetric", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
@@ -361,7 +364,29 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 
 	t.Run("ObserveMetricNotEnoughLabels", observeMetricNotEnoughLabels)
 
+	t.Run("ConfiguredCounterMetric", configuredCounterMetric)
+	genericOut, err = get()
+	assert.NoError(t, err)
+	assert.Contains(t, genericOut, "HELP app_metric_counter Custom application counter.")
+	assert.Contains(t, genericOut, `app_metric_counter 100`)
+
 	close(sig)
+}
+
+func configuredCounterMetric(t *testing.T) {
+	conn, err := net.Dial(dialNetwork, dialAddr)
+	assert.NoError(t, err)
+	defer func() {
+		_ = conn.Close()
+	}()
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+	var ret bool
+
+	assert.NoError(t, client.Call("metrics.Add", metrics.Metric{
+		Name:  "app_metric_counter",
+		Value: 100.0,
+	}, &ret))
+	assert.True(t, ret)
 }
 
 func observeMetricNotEnoughLabels(t *testing.T) {
