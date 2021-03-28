@@ -67,9 +67,9 @@ func TestHandler_Upload_File(t *testing.T) {
 
 	f := mustOpen(testFile)
 	defer func() {
-		err := f.Close()
-		if err != nil {
-			t.Errorf("failed to close a file: error %v", err)
+		errC := f.Close()
+		if errC != nil {
+			t.Errorf("failed to close a file: error %v", errC)
 		}
 	}()
 	fw, err := w.CreateFormFile("upload", f.Name())
@@ -419,7 +419,7 @@ func fileString(f string, errNo int, mime string) string {
 
 	r, err := json.Marshal(v)
 	if err != nil {
-		fmt.Println(fmt.Errorf("error marshalling fInfo, error: %v", err))
+		fmt.Println(fmt.Errorf("error marshaling fInfo, error: %v", err))
 	}
 	return string(r)
 }

@@ -5,14 +5,6 @@ run:
   skip-dirs:
     - .github
     - .git
-    - tests
-  skip-files:
-    - plugins/http/tests/http_test.go
-    - plugins/http/tests/plugin_test_old.go
-    - plugins/http/tests/rpc_test_old.go
-    - plugins/http/tests/config_test.go
-    - plugins/static/tests/static_plugin_test.go
-    - plugins/headers/tests/old.go
   modules-download-mode: readonly
   allow-parallel-runners: true
 
@@ -93,3 +85,6 @@ issues:
         - funlen
         - scopelint
         - gocognit
+        - goconst
+        - noctx
+        - gosimple
