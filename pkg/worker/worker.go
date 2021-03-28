@@ -46,7 +46,6 @@ type Process struct {
 
 // InitBaseWorker creates new Process over given exec.cmd.
 func InitBaseWorker(cmd *exec.Cmd, options ...Options) (*Process, error) {
-	const op = errors.Op("init_base_worker")
 	if cmd.Process != nil {
 		return nil, fmt.Errorf("can't attach to running process")
 	}

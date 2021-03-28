@@ -43,13 +43,13 @@ func TestHandler_Echo(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 	go func(server *http.Server) {
-		err := server.ListenAndServe()
+		err = server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -97,14 +97,14 @@ func TestHandler_Headers(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8078", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -119,7 +119,7 @@ func TestHandler_Headers(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -158,14 +158,14 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 
 	hs := &http.Server{Addr: ":19658", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -180,7 +180,7 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -218,14 +218,14 @@ func TestHandler_User_Agent(t *testing.T) {
 
 	hs := &http.Server{Addr: ":25688", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -240,7 +240,7 @@ func TestHandler_User_Agent(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -278,14 +278,14 @@ func TestHandler_Cookies(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8079", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -300,7 +300,7 @@ func TestHandler_Cookies(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -343,14 +343,14 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8090", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -369,7 +369,7 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -407,14 +407,14 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8081", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -429,7 +429,7 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -467,14 +467,14 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8082", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -489,7 +489,7 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -527,14 +527,14 @@ func TestHandler_FormData_POST(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8083", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -560,7 +560,7 @@ func TestHandler_FormData_POST(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -600,14 +600,14 @@ func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8083", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -634,7 +634,7 @@ func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -673,14 +673,14 @@ func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8083", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -706,7 +706,7 @@ func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -745,14 +745,14 @@ func TestHandler_FormData_PUT(t *testing.T) {
 
 	hs := &http.Server{Addr: ":17834", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -778,7 +778,7 @@ func TestHandler_FormData_PUT(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -817,14 +817,14 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8085", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -850,7 +850,7 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -889,14 +889,14 @@ func TestHandler_Multipart_POST(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8019", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -964,7 +964,7 @@ func TestHandler_Multipart_POST(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -1003,14 +1003,14 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8020", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1078,7 +1078,7 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -1117,14 +1117,14 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8021", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
@@ -1194,7 +1194,7 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
+		err = r.Body.Close()
 		if err != nil {
 			t.Errorf("error during the closing Body: error %v", err)
 		}
@@ -1233,14 +1233,14 @@ func TestHandler_Error(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1279,14 +1279,14 @@ func TestHandler_Error2(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1325,8 +1325,8 @@ func TestHandler_Error3(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
@@ -1384,14 +1384,14 @@ func TestHandler_ResponseDuration(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1445,14 +1445,14 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1505,8 +1505,8 @@ func TestHandler_ErrorDuration(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
@@ -1579,14 +1579,14 @@ func TestHandler_IP(t *testing.T) {
 
 	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1640,14 +1640,14 @@ func TestHandler_XRealIP(t *testing.T) {
 
 	hs := &http.Server{Addr: "127.0.0.1:8179", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1706,14 +1706,14 @@ func TestHandler_XForwardedFor(t *testing.T) {
 
 	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1771,14 +1771,14 @@ func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
 
 	hs := &http.Server{Addr: "127.0.0.1:8177", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -1819,8 +1819,8 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 
 	hs := &http.Server{Addr: ":8177", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			b.Errorf("error during the shutdown: error %v", err)
 		}
 	}()

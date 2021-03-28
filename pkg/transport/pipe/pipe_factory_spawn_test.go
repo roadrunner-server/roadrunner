@@ -281,7 +281,7 @@ func Test_Echo2(t *testing.T) {
 		assert.NoError(t, sw.Wait())
 	}()
 	defer func() {
-		err := sw.Stop()
+		err = sw.Stop()
 		if err != nil {
 			t.Errorf("error stopping the Process: error %v", err)
 		}
