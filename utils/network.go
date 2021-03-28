@@ -38,7 +38,7 @@ func CreateListener(address string) (net.Listener, error) {
 			if fileExists(dsn[1]) {
 				err := syscall.Unlink(dsn[1])
 				if err != nil {
-					return nil, fmt.Errorf("error during the unlink syscall: error %v", err)
+					return nil, fmt.Errorf("error during the unlink syscall: error %w", err)
 				}
 			}
 			return net.Listen(dsn[0], dsn[1])
