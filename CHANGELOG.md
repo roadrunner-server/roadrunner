@@ -1,25 +1,35 @@
 CHANGELOG
 =========
 
+v2.0.3 (29.03.2021)
+-------------------
+
+- 🐛 Fix: slow last response when reached `max_jobs` limit.
+
 v2.0.2 (23.03.2021)
 -------------------
+
 ## 🔥 New:
+
 - 👷 Rework ServeHTTP handler logic. Use `http.Error` instead of writing code directly to the response writer.
-- ⚡ Builds for the Mac with the M1 processor (arm64) -> [roadrunner-binary](https://github.com/spiral/roadrunner-binary).
-- ⚡ HTTP/FCGI/HTTPS internal logs instead of going to the raw stdout will be displayed via the RR logger at the `Info` log level.
+- ⚡ Builds for the Mac with the M1 processor (arm64) -> [roadrunner-binary](https://github.com/spiral/roadrunner-binary)
+  .
+- ⚡ HTTP/FCGI/HTTPS internal logs instead of going to the raw stdout will be displayed via the RR logger at the `Info`
+  log level.
 
 ## 🩹 Fixes:
+
 - 🐛 Bug with required Root CA certificate for the SSL, now it's optional.
 - 🐛 Bug with incorrectly consuming metrics collector from the RPC calls (thanks @dstrop).
-  
+
 v2.0.1 (09.03.2021)
 -------------------
+
 - 🐛 Fix: incorrect PHP command validation
 - 🐛 Fix: ldflags properly inject RR version
 - ⬆️ Update: README, links to the go.pkg from v1 to v2
 - 📦 Bump golang version in the Dockerfile and in the `go.mod` to 1.16
 - 📦 Bump Endure container to v1.0.0.
-
 
 v2.0.0 (02.03.2021)
 -------------------
