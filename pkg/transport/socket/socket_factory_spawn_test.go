@@ -19,8 +19,8 @@ func Test_Tcp_Start2(t *testing.T) {
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer func() {
-			err := ls.Close()
-			if err != nil {
+			errC := ls.Close()
+			if errC != nil {
 				t.Errorf("error closing the listener: error %v", err)
 			}
 		}()
@@ -55,7 +55,7 @@ func Test_Tcp_StartCloseFactory2(t *testing.T) {
 
 	f := NewSocketServer(ls, time.Minute)
 	defer func() {
-		err := ls.Close()
+		err = ls.Close()
 		if err != nil {
 			t.Errorf("error closing the listener: error %v", err)
 		}
@@ -75,8 +75,8 @@ func Test_Tcp_StartError2(t *testing.T) {
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer func() {
-			err := ls.Close()
-			if err != nil {
+			errC := ls.Close()
+			if errC != nil {
 				t.Errorf("error closing the listener: error %v", err)
 			}
 		}()
@@ -131,8 +131,8 @@ func Test_Tcp_Invalid2(t *testing.T) {
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer func() {
-			err := ls.Close()
-			if err != nil {
+			errC := ls.Close()
+			if errC != nil {
 				t.Errorf("error closing the listener: error %v", err)
 			}
 		}()
@@ -151,8 +151,8 @@ func Test_Tcp_Broken2(t *testing.T) {
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer func() {
-			err := ls.Close()
-			if err != nil {
+			errC := ls.Close()
+			if errC != nil {
 				t.Errorf("error closing the listener: error %v", err)
 			}
 		}()
@@ -181,8 +181,8 @@ func Test_Tcp_Broken2(t *testing.T) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err := w.Wait()
-		assert.Error(t, err)
+		errW := w.Wait()
+		assert.Error(t, errW)
 	}()
 
 	defer func() {
@@ -206,8 +206,8 @@ func Test_Tcp_Echo2(t *testing.T) {
 	ls, err := net.Listen("tcp", "localhost:9007")
 	if assert.NoError(t, err) {
 		defer func() {
-			err := ls.Close()
-			if err != nil {
+			errC := ls.Close()
+			if errC != nil {
 				t.Errorf("error closing the listener: error %v", err)
 			}
 		}()
@@ -244,7 +244,7 @@ func Test_Unix_Start2(t *testing.T) {
 	ls, err := net.Listen("unix", "sock.unix")
 	assert.NoError(t, err)
 	defer func() {
-		err := ls.Close()
+		err = ls.Close()
 		assert.NoError(t, err)
 	}()
 
@@ -268,7 +268,7 @@ func Test_Unix_Failboot2(t *testing.T) {
 	ls, err := net.Listen("unix", "sock.unix")
 	assert.NoError(t, err)
 	defer func() {
-		err := ls.Close()
+		err = ls.Close()
 		assert.NoError(t, err)
 	}()
 
@@ -295,7 +295,7 @@ func Test_Unix_Timeout2(t *testing.T) {
 	ls, err := net.Listen("unix", "sock.unix")
 	assert.NoError(t, err)
 	defer func() {
-		err := ls.Close()
+		err = ls.Close()
 		assert.NoError(t, err)
 	}()
 
@@ -311,7 +311,7 @@ func Test_Unix_Invalid2(t *testing.T) {
 	ls, err := net.Listen("unix", "sock.unix")
 	assert.NoError(t, err)
 	defer func() {
-		err := ls.Close()
+		err = ls.Close()
 		assert.NoError(t, err)
 	}()
 
@@ -326,8 +326,8 @@ func Test_Unix_Broken2(t *testing.T) {
 	ls, err := net.Listen("unix", "sock.unix")
 	assert.NoError(t, err)
 	defer func() {
-		err := ls.Close()
-		assert.NoError(t, err)
+		errC := ls.Close()
+		assert.NoError(t, errC)
 	}()
 
 	cmd := exec.Command("php", "../../../tests/client.php", "broken", "unix")
@@ -351,8 +351,8 @@ func Test_Unix_Broken2(t *testing.T) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err := w.Wait()
-		assert.Error(t, err)
+		errW := w.Wait()
+		assert.Error(t, errW)
 	}()
 
 	defer func() {
@@ -376,7 +376,7 @@ func Test_Unix_Echo2(t *testing.T) {
 	ls, err := net.Listen("unix", "sock.unix")
 	assert.NoError(t, err)
 	defer func() {
-		err := ls.Close()
+		err = ls.Close()
 		assert.NoError(t, err)
 	}()
 
@@ -412,7 +412,7 @@ func Benchmark_Tcp_SpawnWorker_Stop2(b *testing.B) {
 	ls, err := net.Listen("unix", "sock.unix")
 	assert.NoError(b, err)
 	defer func() {
-		err := ls.Close()
+		err = ls.Close()
 		assert.NoError(b, err)
 	}()
 
@@ -439,7 +439,7 @@ func Benchmark_Tcp_Worker_ExecEcho2(b *testing.B) {
 	ls, err := net.Listen("unix", "sock.unix")
 	assert.NoError(b, err)
 	defer func() {
-		err := ls.Close()
+		err = ls.Close()
 		assert.NoError(b, err)
 	}()
 
@@ -472,8 +472,8 @@ func Benchmark_Unix_SpawnWorker_Stop2(b *testing.B) {
 	ls, err := net.Listen("unix", "sock.unix")
 	if err == nil {
 		defer func() {
-			err := ls.Close()
-			if err != nil {
+			errC := ls.Close()
+			if errC != nil {
 				b.Errorf("error closing the listener: error %v", err)
 			}
 		}()
@@ -503,8 +503,8 @@ func Benchmark_Unix_Worker_ExecEcho2(b *testing.B) {
 	ls, err := net.Listen("unix", "sock.unix")
 	if err == nil {
 		defer func() {
-			err := ls.Close()
-			if err != nil {
+			errC := ls.Close()
+			if errC != nil {
 				b.Errorf("error closing the listener: error %v", err)
 			}
 		}()

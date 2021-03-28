@@ -187,7 +187,7 @@ func (s *Plugin) Get(key string) ([]byte, error) {
 
 func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
 	const op = errors.Op("boltdb_plugin_mget")
-	// defence
+	// defense
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
 	}

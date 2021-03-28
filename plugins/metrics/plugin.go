@@ -105,7 +105,7 @@ func (m *Plugin) Serve() chan error {
 	hasGCMAsm := hasGCMAsmAMD64 || hasGCMAsmARM64 || hasGCMAsmS390X
 
 	if hasGCMAsm {
-		// If AES-GCM hardware is provided then prioritise AES-GCM
+		// If AES-GCM hardware is provided then prioritize AES-GCM
 		// cipher suites.
 		topCipherSuites = []uint16{
 			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
