@@ -361,7 +361,7 @@ func Test_StaticPool_Stop_Worker(t *testing.T) {
 		pipe.NewPipeFactory(),
 		Config{
 			NumWorkers:      1,
-			AllocateTimeout: time.Second * 100,
+			AllocateTimeout: time.Second,
 			DestroyTimeout:  time.Second,
 		},
 	)
