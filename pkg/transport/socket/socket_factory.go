@@ -88,7 +88,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 	const op = errors.Op("factory_spawn_worker_with_timeout")
 	c := make(chan socketSpawn)
 	go func() {
-		ctx, cancel := context.WithTimeout(ctx, f.tout)
+		ctxT, cancel := context.WithTimeout(ctx, f.tout)
 		defer cancel()
 		w, err := worker.InitBaseWorker(cmd, worker.AddListeners(listeners...))
 		if err != nil {
@@ -108,7 +108,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 			return
 		}
 
-		rl, err := f.findRelayWithContext(ctx, w)
+		rl, err := f.findRelayWithContext(ctxT, w)
 		if err != nil {
 			err = multierr.Combine(
 				err,
@@ -179,18 +179,19 @@ func (f *Factory) Close() error {
 
 // waits for Process to connect over socket and returns associated relay of timeout
 func (f *Factory) findRelayWithContext(ctx context.Context, w worker.BaseProcess) (*socket.Relay, error) {
-	ticker := time.NewTicker(time.Millisecond * 100)
+	ticker := time.NewTicker(time.Millisecond * 10)
 	for {
 		select {
 		case <-ctx.Done():
 			return nil, ctx.Err()
 		case <-ticker.C:
+			// check for the process exists
 			_, err := process.NewProcess(int32(w.Pid()))
 			if err != nil {
 				return nil, err
 			}
 		default:
-			tmp, ok := f.relays.Load(w.Pid())
+			tmp, ok := f.relays.LoadAndDelete(w.Pid())
 			if !ok {
 				continue
 			}
@@ -220,9 +221,4 @@ func (f *Factory) findRelay(w worker.BaseProcess) (*socket.Relay, error) {
 // chan to store relay associated with specific pid
 func (f *Factory) attachRelayToPid(pid int64, relay relay.Relay) {
 	f.relays.Store(pid, relay)
-}
-
-// deletes relay chan associated with specific pid
-func (f *Factory) removeRelayFromPid(pid int64) {
-	f.relays.Delete(pid)
 }

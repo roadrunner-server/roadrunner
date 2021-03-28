@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Configures the pool behaviour.
+// Configures the pool behavior.
 type Config struct {
 	// Debug flag creates new fresh worker before every request.
 	Debug bool

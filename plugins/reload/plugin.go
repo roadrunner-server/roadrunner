@@ -44,11 +44,11 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, res resetter.Res
 	s.stopc = make(chan struct{}, 1)
 	s.services = make(map[string]interface{})
 
-	var configs []WatcherConfig
+	configs := make([]WatcherConfig, 0, len(s.cfg.Services))
 
 	for serviceName, serviceConfig := range s.cfg.Services {
-		ignored, err := ConvertIgnored(serviceConfig.Ignore)
-		if err != nil {
+		ignored, errIgn := ConvertIgnored(serviceConfig.Ignore)
+		if errIgn != nil {
 			return errors.E(op, err)
 		}
 		configs = append(configs, WatcherConfig{

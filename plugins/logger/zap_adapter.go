@@ -23,7 +23,7 @@ func (log *ZapAdapter) fields(keyvals []interface{}) []zap.Field {
 		return []zap.Field{zap.Error(fmt.Errorf("odd number of keyvals pairs: %v", keyvals))}
 	}
 
-	var fields []zap.Field
+	fields := make([]zap.Field, 0, len(keyvals)/2)
 	for i := 0; i < len(keyvals); i += 2 {
 		key, ok := keyvals[i].(string)
 		if !ok {
