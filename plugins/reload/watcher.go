@@ -148,7 +148,6 @@ func ConvertIgnored(ignored []string) (map[string]struct{}, error) {
 
 // pass map from outside
 func (w *Watcher) retrieveFilesSingle(serviceName, path string) (map[string]os.FileInfo, error) {
-	const op = errors.Op("watcher_retrieve_files_single")
 	stat, err := os.Stat(path)
 	if err != nil {
 		return nil, err

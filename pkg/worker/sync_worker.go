@@ -44,7 +44,7 @@ func (tw *SyncWorkerImpl) Exec(p payload.Payload) (payload.Payload, error) {
 	rsp, err := tw.execPayload(p)
 	if err != nil {
 		// just to be more verbose
-		if errors.Is(errors.SoftJob, err) == false {
+		if errors.Is(errors.SoftJob, err) == false { //nolint:gosimple
 			tw.process.State().Set(StateErrored)
 			tw.process.State().RegisterExec()
 		}
@@ -91,7 +91,7 @@ func (tw *SyncWorkerImpl) ExecWithTTL(ctx context.Context, p payload.Payload) (p
 		rsp, err := tw.execPayload(p)
 		if err != nil {
 			// just to be more verbose
-			if errors.Is(errors.SoftJob, err) == false {
+			if errors.Is(errors.SoftJob, err) == false { //nolint:gosimple
 				tw.process.State().Set(StateErrored)
 				tw.process.State().RegisterExec()
 			}

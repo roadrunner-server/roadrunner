@@ -176,7 +176,7 @@ func (h *Handler) sendEvent(event interface{}) {
 
 // get real ip passing multiple proxy
 func (h *Handler) resolveIP(r *Request) {
-	if h.trusted.IsTrusted(r.RemoteAddr) == false {
+	if h.trusted.IsTrusted(r.RemoteAddr) == false { //nolint:gosimple
 		return
 	}
 

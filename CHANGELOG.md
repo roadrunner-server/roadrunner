@@ -1,8 +1,14 @@
 CHANGELOG
 =========
 
+v2.0.3 (-.-.2021)
+-------------------
+
+- 🐛 Fix: slow last response when reached `max_jobs` limit.
+
 v2.0.2 (06.04.2021)
 -------------------
+
 - 🐛 Fix: Bug with required Root CA certificate for the SSL, now it's optional.
 - 🐛 Fix: Bug with incorrectly consuming metrics collector from the RPC calls (thanks @dstrop).
 - 🆕 New: HTTP/FCGI/HTTPS internal logs instead of going to the raw stdout will be displayed in the RR logger at
@@ -10,15 +16,15 @@ v2.0.2 (06.04.2021)
 - ⚡ New: Builds for the Mac with the M1 processor (arm64).
 - 👷 Rework ServeHTTP handler logic. Use http.Error instead of writing code directly to the response writer. Other small
   improvements.
-  
+
 v2.0.1 (09.03.2021)
 -------------------
+
 - 🐛 Fix: incorrect PHP command validation
 - 🐛 Fix: ldflags properly inject RR version
 - ⬆️ Update: README, links to the go.pkg from v1 to v2
 - 📦 Bump golang version in the Dockerfile and in the `go.mod` to 1.16
 - 📦 Bump Endure container to v1.0.0.
-
 
 v2.0.0 (02.03.2021)
 -------------------

@@ -166,7 +166,6 @@ func (sp *supervised) Stop() {
 
 func (sp *supervised) control() {
 	now := time.Now()
-	const op = errors.Op("supervised_pool_control_tick")
 
 	// MIGHT BE OUTDATED
 	// It's a copy of the Workers pointers

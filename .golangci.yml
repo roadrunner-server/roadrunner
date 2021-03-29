@@ -1,37 +1,90 @@
+# Documentation: <https://github.com/golangci/golangci-lint#config-file>
+
 run:
-  skip-files:
-    - plugins/http/tests/http_test.go
-    - plugins/http/tests/plugin_test_old.go
-    - plugins/http/tests/rpc_test_old.go
-    - plugins/http/tests/config_test.go
-    - plugins/static/tests/static_plugin_test.go
-    - plugins/headers/tests/old.go
-linters:
+  timeout: 1m
+  skip-dirs:
+    - .github
+    - .git
+  modules-download-mode: readonly
+  allow-parallel-runners: true
+
+output:
+  format: colored-line-number # colored-line-number|line-number|json|tab|checkstyle|code-climate
+
+linters-settings:
+  govet:
+    check-shadowing: true
+  golint:
+    min-confidence: 0.1
+  gocyclo:
+    min-complexity: 15
+  godot:
+    scope: declarations
+    capital: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 3
+  misspell:
+    locale: US
+  lll:
+    line-length: 120
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: true
+  nolintlint:
+    allow-leading-space: false
+    require-specific: true
+
+linters: # All available linters list: <https://golangci-lint.run/usage/linters/>
   disable-all: true
   enable:
-    - bodyclose
-    - deadcode
-    - depguard
-    - dogsled
-    - errcheck
-    - exhaustive
-    - gocritic
-    - gocyclo
-    - gofmt
-    - goimports
-    - golint
-    - goprintffuncname
-    - gosec
-    - govet
-    - ineffassign
-    - misspell
-    - nakedret
-    - nolintlint
-    - rowserrcheck
-    - exportloopref
-    - staticcheck
-    - structcheck
-    - stylecheck
-    - unconvert
-    - varcheck
+    - asciicheck # Simple linter to check that your code does not contain non-ASCII identifiers
+    - bodyclose # Checks whether HTTP response body is closed successfully
+    - deadcode # Finds unused code
+    - depguard # Go linter that checks if package imports are in a list of acceptable packages
+    - dogsled # Checks assignments with too many blank identifiers (e.g. x, _, _, _, := f())
+    - errcheck # Errcheck is a program for checking for unchecked errors in go programs. These unchecked errors can be critical bugs in some cases
+    - exhaustive # check exhaustiveness of enum switch statements
+    - exportloopref # checks for pointers to enclosing loop variables
+    - gochecknoinits # Checks that no init functions are present in Go code
+    - gocognit # Computes and checks the cognitive complexity of functions
+    - goconst # Finds repeated strings that could be replaced by a constant
+    - gocritic # The most opinionated Go source code linter
+    - gofmt # Gofmt checks whether code was gofmt-ed. By default this tool runs with -s option to check for code simplification
+    - goimports # Goimports does everything that gofmt does. Additionally it checks unused imports
+    - golint # Golint differs from gofmt. Gofmt reformats Go source code, whereas golint prints out style mistakes
+    - goprintffuncname # Checks that printf-like functions are named with `f` at the end
+    - gosec # Inspects source code for security problems
+    - gosimple # Linter for Go source code that specializes in simplifying a code
+    - govet # Vet examines Go source code and reports suspicious constructs, such as Printf calls whose arguments do not align with the format string
+    - ineffassign # Detects when assignments to existing variables are not used
+    - misspell # Finds commonly misspelled English words in comments
+    - nakedret # Finds naked returns in functions greater than a specified function length
+    - noctx # finds sending http request without context.Context
+    - nolintlint # Reports ill-formed or insufficient nolint directives
+    - prealloc # Finds slice declarations that could potentially be preallocated
+    - rowserrcheck # Checks whether Err of rows is checked successfully
+    - staticcheck # Staticcheck is a go vet on steroids, applying a ton of static analysis checks
+    - structcheck # Finds unused struct fields
+    - stylecheck # Stylecheck is a replacement for golint
+    - tparallel # detects inappropriate usage of t.Parallel() method in your Go test codes
+    - typecheck # Like the front-end of a Go compiler, parses and type-checks Go code
+    - unconvert # Remove unnecessary type conversions
+    - unused # Checks Go code for unused constants, variables, functions and types
+    - varcheck # Finds unused global variables and constants
+    - whitespace # Tool for detection of leading and trailing whitespace
 
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - dupl
+        - funlen
+        - scopelint
+        - gocognit
+        - goconst
+        - noctx
+        - gosimple

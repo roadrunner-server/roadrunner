@@ -48,16 +48,16 @@ func TestHandler_Upload_File(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8021", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
-			t.Errorf("error during the shutdown: error %v", err)
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
+			t.Errorf("error during the shutdown: error %v", errS)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
-		if err != nil && err != http.ErrServerClosed {
-			t.Errorf("error listening the interface: error %v", err)
+		errL := hs.ListenAndServe()
+		if errL != nil && errL != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", errL)
 		}
 	}()
 	time.Sleep(time.Millisecond * 10)
@@ -67,9 +67,9 @@ func TestHandler_Upload_File(t *testing.T) {
 
 	f := mustOpen(testFile)
 	defer func() {
-		err := f.Close()
-		if err != nil {
-			t.Errorf("failed to close a file: error %v", err)
+		errC := f.Close()
+		if errC != nil {
+			t.Errorf("failed to close a file: error %v", errC)
 		}
 	}()
 	fw, err := w.CreateFormFile("upload", f.Name())
@@ -93,9 +93,9 @@ func TestHandler_Upload_File(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("error closing the Body: error %v", err)
+		errC := r.Body.Close()
+		if errC != nil {
+			t.Errorf("error closing the Body: error %v", errC)
 		}
 	}()
 
@@ -131,16 +131,16 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8021", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
-			t.Errorf("error during the shutdown: error %v", err)
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
+			t.Errorf("error during the shutdown: error %v", errS)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
-		if err != nil && err != http.ErrServerClosed {
-			t.Errorf("error listening the interface: error %v", err)
+		errL := hs.ListenAndServe()
+		if errL != nil && errL != http.ErrServerClosed {
+			t.Errorf("error listening the interface: error %v", errL)
 		}
 	}()
 	time.Sleep(time.Millisecond * 10)
@@ -150,9 +150,9 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 
 	f := mustOpen(testFile)
 	defer func() {
-		err := f.Close()
-		if err != nil {
-			t.Errorf("failed to close a file: error %v", err)
+		errC := hs.Close()
+		if errC != nil {
+			t.Errorf("failed to close a file: error %v", errC)
 		}
 	}()
 	fw, err := w.CreateFormFile("upload[x][y][z][]", f.Name())
@@ -176,9 +176,9 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("error closing the Body: error %v", err)
+		errC := r.Body.Close()
+		if errC != nil {
+			t.Errorf("error closing the Body: error %v", errC)
 		}
 	}()
 
@@ -214,14 +214,14 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8021", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -233,9 +233,9 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 
 	f := mustOpen(testFile)
 	defer func() {
-		err := f.Close()
-		if err != nil {
-			t.Errorf("failed to close a file: error %v", err)
+		errC := hs.Close()
+		if errC != nil {
+			t.Errorf("failed to close a file: error %v", errC)
 		}
 	}()
 	fw, err := w.CreateFormFile("upload", f.Name())
@@ -259,9 +259,9 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("error closing the Body: error %v", err)
+		errC := r.Body.Close()
+		if errC != nil {
+			t.Errorf("error closing the Body: error %v", errC)
 		}
 	}()
 
@@ -297,14 +297,14 @@ func TestHandler_Upload_File_Forbids(t *testing.T) {
 
 	hs := &http.Server{Addr: ":8021", Handler: h}
 	defer func() {
-		err := hs.Shutdown(context.Background())
-		if err != nil {
+		errS := hs.Shutdown(context.Background())
+		if errS != nil {
 			t.Errorf("error during the shutdown: error %v", err)
 		}
 	}()
 
 	go func() {
-		err := hs.ListenAndServe()
+		err = hs.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("error listening the interface: error %v", err)
 		}
@@ -316,9 +316,9 @@ func TestHandler_Upload_File_Forbids(t *testing.T) {
 
 	f := mustOpen(testFile)
 	defer func() {
-		err := f.Close()
-		if err != nil {
-			t.Errorf("failed to close a file: error %v", err)
+		errC := hs.Close()
+		if errC != nil {
+			t.Errorf("failed to close a file: error %v", errC)
 		}
 	}()
 	fw, err := w.CreateFormFile("upload", f.Name())
@@ -342,9 +342,9 @@ func TestHandler_Upload_File_Forbids(t *testing.T) {
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
 	defer func() {
-		err := r.Body.Close()
-		if err != nil {
-			t.Errorf("error closing the Body: error %v", err)
+		errC := r.Body.Close()
+		if errC != nil {
+			t.Errorf("error closing the Body: error %v", errC)
 		}
 	}()
 
@@ -419,7 +419,7 @@ func fileString(f string, errNo int, mime string) string {
 
 	r, err := json.Marshal(v)
 	if err != nil {
-		fmt.Println(fmt.Errorf("error marshalling fInfo, error: %v", err))
+		fmt.Println(fmt.Errorf("error marshaling fInfo, error: %v", err))
 	}
 	return string(r)
 }

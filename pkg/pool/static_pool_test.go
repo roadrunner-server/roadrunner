@@ -213,7 +213,7 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 		}
 	}
 
-	var cfg = Config{
+	var cfg2 = Config{
 		NumWorkers:      1,
 		AllocateTimeout: time.Second * 5,
 		DestroyTimeout:  time.Second * 5,
@@ -223,7 +223,7 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../../tests/client.php", "echo", "pipes") },
 		pipe.NewPipeFactory(),
-		cfg,
+		cfg2,
 		AddListeners(listener),
 	)
 	assert.NoError(t, err)
@@ -432,8 +432,8 @@ func Test_Static_Pool_Destroy_And_Close_While_Wait(t *testing.T) {
 	assert.NoError(t, err)
 
 	go func() {
-		_, err := p.Exec(payload.Payload{Body: []byte("100")})
-		if err != nil {
+		_, errP := p.Exec(payload.Payload{Body: []byte("100")})
+		if errP != nil {
 			t.Errorf("error executing payload: error %v", err)
 		}
 	}()

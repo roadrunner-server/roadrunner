@@ -27,6 +27,9 @@ const (
 	// State of worker, when no need to allocate new one
 	StateDestroyed
 
+	// State of worker, when it reached executions limit
+	StateMaxJobsReached
+
 	// StateStopped - process has been terminated.
 	StateStopped
 

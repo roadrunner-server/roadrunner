@@ -220,10 +220,10 @@ func randomlyChangeFile(t *testing.T) {
 	// let's try to randomly change it
 	for i := 0; i < 10; i++ {
 		// rand sleep
-		rSleep := rand.Int63n(500) // nolint:gosec
+		rSleep := rand.Int63n(500) //nolint:gosec
 		time.Sleep(time.Millisecond * time.Duration(rSleep))
-		rNum := rand.Int63n(int64(hugeNumberOfFiles))                                                                            // nolint:gosec
-		err := ioutil.WriteFile(filepath.Join(testDir, "file_"+strconv.Itoa(int(rNum))+".txt"), []byte("Hello, Gophers!"), 0755) // nolint:gosec
+		rNum := rand.Int63n(int64(hugeNumberOfFiles))                                                                            //nolint:gosec
+		err := ioutil.WriteFile(filepath.Join(testDir, "file_"+strconv.Itoa(int(rNum))+".txt"), []byte("Hello, Gophers!"), 0755) //nolint:gosec
 		assert.NoError(t, err)
 	}
 }
@@ -339,20 +339,20 @@ func reloadFilteredExt(t *testing.T) {
 	// change files with abc extension
 	for i := 0; i < 10; i++ {
 		// rand sleep
-		rSleep := rand.Int63n(1000) // nolint:gosec
+		rSleep := rand.Int63n(1000) //nolint:gosec
 		time.Sleep(time.Millisecond * time.Duration(rSleep))
-		rNum := rand.Int63n(int64(hugeNumberOfFiles))                                                                            // nolint:gosec
-		err := ioutil.WriteFile(filepath.Join(testDir, "file_"+strconv.Itoa(int(rNum))+".abc"), []byte("Hello, Gophers!"), 0755) // nolint:gosec
+		rNum := rand.Int63n(int64(hugeNumberOfFiles))                                                                            //nolint:gosec
+		err := ioutil.WriteFile(filepath.Join(testDir, "file_"+strconv.Itoa(int(rNum))+".abc"), []byte("Hello, Gophers!"), 0755) //nolint:gosec
 		assert.NoError(t, err)
 	}
 
 	// change files with def extension
 	for i := 0; i < 10; i++ {
 		// rand sleep
-		rSleep := rand.Int63n(1000) // nolint:gosec
+		rSleep := rand.Int63n(1000) //nolint:gosec
 		time.Sleep(time.Millisecond * time.Duration(rSleep))
-		rNum := rand.Int63n(int64(hugeNumberOfFiles))                                                                            // nolint:gosec
-		err := ioutil.WriteFile(filepath.Join(testDir, "file_"+strconv.Itoa(int(rNum))+".def"), []byte("Hello, Gophers!"), 0755) // nolint:gosec
+		rNum := rand.Int63n(int64(hugeNumberOfFiles))                                                                            //nolint:gosec
+		err := ioutil.WriteFile(filepath.Join(testDir, "file_"+strconv.Itoa(int(rNum))+".def"), []byte("Hello, Gophers!"), 0755) //nolint:gosec
 		assert.NoError(t, err)
 	}
 }
@@ -476,11 +476,11 @@ func reloadMoveSupport(t *testing.T) {
 	// move some files
 	for i := 0; i < 10; i++ {
 		// rand sleep
-		rSleep := rand.Int63n(500) // nolint:gosec
+		rSleep := rand.Int63n(500) //nolint:gosec
 		time.Sleep(time.Millisecond * time.Duration(rSleep))
-		rNum := rand.Int63n(int64(33)) // nolint:gosec
-		rDir := rand.Int63n(9)         // nolint:gosec
-		rExt := rand.Int63n(3)         // nolint:gosec
+		rNum := rand.Int63n(int64(33)) //nolint:gosec
+		rDir := rand.Int63n(9)         //nolint:gosec
+		rExt := rand.Int63n(3)         //nolint:gosec
 
 		ext := []string{
 			".txt",
@@ -512,11 +512,11 @@ func removeFilesSupport(t *testing.T) {
 	// remove some files
 	for i := 0; i < 10; i++ {
 		// rand sleep
-		rSleep := rand.Int63n(500) // nolint:gosec
+		rSleep := rand.Int63n(500) //nolint:gosec
 		time.Sleep(time.Millisecond * time.Duration(rSleep))
-		rNum := rand.Int63n(int64(100)) // nolint:gosec
-		rDir := rand.Int63n(10)         // nolint:gosec
-		rExt := rand.Int63n(3)          // nolint:gosec
+		rNum := rand.Int63n(int64(100)) //nolint:gosec
+		rDir := rand.Int63n(10)         //nolint:gosec
+		rExt := rand.Int63n(3)          //nolint:gosec
 
 		ext := []string{
 			".txt",
@@ -570,14 +570,14 @@ func randomChangesInRecursiveDirs(t *testing.T) {
 	}
 	for i := 0; i < 10; i++ {
 		// rand sleep
-		rSleep := rand.Int63n(100) // nolint:gosec
+		rSleep := rand.Int63n(100) //nolint:gosec
 		time.Sleep(time.Millisecond * time.Duration(rSleep))
-		rNum := rand.Int63n(int64(100)) // nolint:gosec
-		rDir := rand.Int63n(10)         // nolint:gosec
-		rExt := rand.Int63n(3)          // nolint:gosec
-		rName := rand.Int63n(3)         // nolint:gosec
+		rNum := rand.Int63n(int64(100)) //nolint:gosec
+		rDir := rand.Int63n(10)         //nolint:gosec
+		rExt := rand.Int63n(3)          //nolint:gosec
+		rName := rand.Int63n(3)         //nolint:gosec
 
-		err := ioutil.WriteFile(filepath.Join(dirs[rDir], filenames[rName]+strconv.Itoa(int(rNum))+ext[rExt]), []byte("Hello, Gophers!"), 0755) // nolint:gosec
+		err := ioutil.WriteFile(filepath.Join(dirs[rDir], filenames[rName]+strconv.Itoa(int(rNum))+ext[rExt]), []byte("Hello, Gophers!"), 0755) //nolint:gosec
 		assert.NoError(t, err)
 	}
 }
