@@ -1,8 +1,17 @@
 CHANGELOG
 =========
 
-v2.0.3 (-.-.2021)
+v2.1.0 (06.04.2021)
 -------------------
+
+## 🩹 Fixes:
+
+- 🐛 Fix: bug with the temporal worker which does not follow general graceful shutdown period.
+
+v2.0.3 (29.03.2021)
+-------------------
+
+## 🩹 Fixes:
 
 - 🐛 Fix: slow last response when reached `max_jobs` limit.
 
