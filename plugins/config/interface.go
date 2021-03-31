@@ -23,4 +23,7 @@ type Configurer interface {
 
 	// Has checks if config section exists.
 	Has(name string) bool
+
+	// Returns General section. Read-only
+	GetCommonConfig() *General
 }
