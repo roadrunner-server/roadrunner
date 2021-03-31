@@ -19,6 +19,8 @@ type Viper struct {
 	// user defined Flags in the form of <option>.<key> = <value>
 	// which overwrites initial config key
 	Flags []string
+
+	CommonConfig *General
 }
 
 // Inits config provider.
@@ -109,6 +111,11 @@ func (v *Viper) Get(name string) interface{} {
 // Has checks if config section exists.
 func (v *Viper) Has(name string) bool {
 	return v.viper.IsSet(name)
+}
+
+// Returns common config parameters
+func (v *Viper) GetCommonConfig() *General {
+	return v.CommonConfig
 }
 
 func parseFlag(flag string) (string, string, error) {
