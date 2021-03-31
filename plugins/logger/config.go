@@ -50,6 +50,16 @@ func (cfg *Config) BuildLogger() (*zap.Logger, error) {
 		zCfg = zap.NewProductionConfig()
 	case "development":
 		zCfg = zap.NewDevelopmentConfig()
+	case "clean":
+		zCfg = zap.Config{
+			Level:    zap.NewAtomicLevelAt(zap.DebugLevel),
+			Encoding: "console",
+			EncoderConfig: zapcore.EncoderConfig{
+				MessageKey: "message",
+			},
+			OutputPaths:      []string{"stderr"},
+			ErrorOutputPaths: []string{"stderr"},
+		}
 	default:
 		zCfg = zap.Config{
 			Level:    zap.NewAtomicLevelAt(zap.DebugLevel),

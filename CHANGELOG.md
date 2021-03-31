@@ -5,6 +5,7 @@ v2.0.3 (-.-.2021)
 -------------------
 
 - 🐛 Fix: slow last response when reached `max_jobs` limit.
+- 📜 Add a new `clean` mode for the `logger` plugin to keep the stderr log message of the worker unmodified.
 
 v2.0.2 (06.04.2021)
 -------------------
