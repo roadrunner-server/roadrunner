@@ -32,8 +32,8 @@ func (p1 *Plugin) Serve() chan error {
 	p1.log.Warn("error", "test")
 
 	// test the `raw` mode
-	messageJson := []byte(`{"field": "value"}`)
-	p1.log.Debug(strings.TrimRight(string(messageJson), " \n\t"))
+	messageJSON := []byte(`{"field": "value"}`)
+	p1.log.Debug(strings.TrimRight(string(messageJSON), " \n\t"))
 
 	return errCh
 }
