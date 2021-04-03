@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/signal"
 	"sync"
+	"syscall"
 	"testing"
 
 	"github.com/kami-zh/go-capturer"
@@ -76,57 +77,62 @@ func TestLogger(t *testing.T) {
 	wg.Wait()
 }
 
-func TestLoggerRawMode(t *testing.T) {
+func TestLoggerRawErr(t *testing.T) {
 	out := capturer.CaptureOutput(func() {
-		container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.ErrorLevel))
-		if err != nil {
-			t.Fatal(err)
-		}
-		// config plugin
-		vp := &config.Viper{}
-		vp.Path = "configs/.rr-raw-mode.yaml"
-		vp.Prefix = "rr"
+		cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+		assert.NoError(t, err)
 
-		err = container.RegisterAll(
-			vp,
-			&Plugin{},
+		// config plugin
+		cfg := &config.Viper{}
+		cfg.Path = "configs/.rr-raw-mode.yaml"
+		cfg.Prefix = "rr"
+
+		err = cont.RegisterAll(
+			cfg,
 			&logger.ZapLogger{},
+			&server.Plugin{},
+			&http.Plugin{},
 		)
 		assert.NoError(t, err)
 
-		err = container.Init()
+		err = cont.Init()
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		errCh, err := container.Serve()
-		if err != nil {
-			t.Fatal(err)
-		}
+		ch, err := cont.Serve()
+		assert.NoError(t, err)
 
-		// stop by CTRL+C
-		c := make(chan os.Signal, 1)
-		signal.Notify(c, os.Interrupt)
-
-		stopCh := make(chan struct{}, 1)
+		sig := make(chan os.Signal, 1)
+		signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 		wg := &sync.WaitGroup{}
 		wg.Add(1)
+
+		stopCh := make(chan struct{}, 1)
 
 		go func() {
 			defer wg.Done()
 			for {
 				select {
-				case e := <-errCh:
-					assert.NoError(t, e.Error)
-					assert.NoError(t, container.Stop())
-					return
-				case <-c:
-					err = container.Stop()
-					assert.NoError(t, err)
+				case e := <-ch:
+					assert.Fail(t, "error", e.Error.Error())
+					err = cont.Stop()
+					if err != nil {
+						assert.FailNow(t, "error", err.Error())
+					}
+				case <-sig:
+					err = cont.Stop()
+					if err != nil {
+						assert.FailNow(t, "error", err.Error())
+					}
 					return
 				case <-stopCh:
-					assert.NoError(t, container.Stop())
+					// timeout
+					err = cont.Stop()
+					if err != nil {
+						assert.FailNow(t, "error", err.Error())
+					}
 					return
 				}
 			}
@@ -136,7 +142,7 @@ func TestLoggerRawMode(t *testing.T) {
 		wg.Wait()
 	})
 
-	assert.Contains(t, out, `{"field": "value"}`)
+	assert.Contains(t, out, "\n{\"field\": \"value\"}\n")
 }
 
 func TestLoggerNoConfig(t *testing.T) {

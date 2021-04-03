@@ -1,2 +1,15 @@
+server:
+  command: "php ../../raw-error.php"
+  relay: "pipes"
+
+http:
+  address: 127.0.0.1:34999
+  maxRequestSize: 1024
+  pool:
+    numWorkers: 1
+    maxJobs: 0
+    allocateTimeout: 10s
+    destroyTimeout: 10s
+
 logs:
   mode: raw
