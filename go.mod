@@ -18,7 +18,7 @@ require (
 	github.com/kami-zh/go-capturer v0.0.0-20171211120116-e492ea43421d
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/prometheus/client_golang v1.10.0
-	github.com/shirou/gopsutil v3.21.2+incompatible
+	github.com/shirou/gopsutil v3.21.3+incompatible
 	github.com/spf13/viper v1.7.1
 	// SPIRAL ====
 	github.com/spiral/endure v1.0.0
