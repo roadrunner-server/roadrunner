@@ -50,7 +50,7 @@ func (cfg *Config) BuildLogger() (*zap.Logger, error) {
 		zCfg = zap.NewProductionConfig()
 	case "development":
 		zCfg = zap.NewDevelopmentConfig()
-	case "clean":
+	case "raw":
 		zCfg = zap.Config{
 			Level:    zap.NewAtomicLevelAt(zap.DebugLevel),
 			Encoding: "console",
