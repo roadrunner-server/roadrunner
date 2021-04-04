@@ -4,6 +4,10 @@ CHANGELOG
 v2.0.4 (06.04.2021)
 -------------------
 
+## 🔥 New:
+
+- 📜 Add a new `raw` mode for the `logger` plugin to keep the stderr log message of the worker unmodified (logger severity level should be at least `INFO`).
+
 ## 🩹 Fixes:
 
 - 🐛 Fix: bug with the temporal worker which does not follow general graceful shutdown period.
