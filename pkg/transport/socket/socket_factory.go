@@ -33,8 +33,6 @@ type Factory struct {
 	ErrCh chan error
 }
 
-// todo: review
-
 // NewSocketServer returns Factory attached to a given socket listener.
 // tout specifies for how long factory should serve for incoming relay connection
 func NewSocketServer(ls net.Listener, tout time.Duration) *Factory {

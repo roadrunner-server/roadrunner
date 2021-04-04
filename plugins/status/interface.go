@@ -9,3 +9,10 @@ type Status struct {
 type Checker interface {
 	Status() Status
 }
+
+// Readiness interface used to get readiness status from the plugin
+// that means, that worker poll inside the plugin has 1+ plugins which are ready to work
+// at the particular moment
+type Readiness interface {
+	Ready() Status
+}

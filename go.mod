@@ -20,7 +20,7 @@ require (
 	github.com/shirou/gopsutil v3.21.3+incompatible
 	github.com/spf13/viper v1.7.1
 	// SPIRAL ====
-	github.com/spiral/endure v1.0.0
+	github.com/spiral/endure v1.0.1
 	github.com/spiral/errors v1.0.9
 	github.com/spiral/goridge/v3 v3.0.1
 	// ===========
@@ -34,4 +34,8 @@ require (
 	golang.org/x/net v0.0.0-20201224014010-6772e930b67b
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/sys v0.0.0-20210309074719-68d13333faf2
+)
+
+replace (
+	github.com/spiral/roadrunner/v2 => ../roadrunner
 )

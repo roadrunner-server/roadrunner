@@ -1,12 +1,15 @@
 CHANGELOG
 =========
 
-v2.1.0 (06.04.2021)
+v2.0.4 (06.04.2021)
 -------------------
 
 ## 🩹 Fixes:
 
 - 🐛 Fix: bug with the temporal worker which does not follow general graceful shutdown period.
+
+## 🔥 New:
+- 🆕 Add Readiness probe check. The `status` plugin provides `/ready` endpoint which return the `204` HTTP code if there are no workers in the `Ready` state and `200 OK` status if there are at least 1 worker in the `Ready` state.
 
 v2.0.3 (29.03.2021)
 -------------------
