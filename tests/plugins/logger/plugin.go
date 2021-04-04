@@ -1,6 +1,8 @@
 package logger
 
 import (
+	"strings"
+
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -28,6 +30,11 @@ func (p1 *Plugin) Serve() chan error {
 	p1.log.Info("error", "test")
 	p1.log.Debug("error", "test")
 	p1.log.Warn("error", "test")
+
+	// test the `raw` mode
+	messageJSON := []byte(`{"field": "value"}`)
+	p1.log.Debug(strings.TrimRight(string(messageJSON), " \n\t"))
+
 	return errCh
 }
 

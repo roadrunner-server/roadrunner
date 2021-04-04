@@ -1,8 +1,12 @@
 CHANGELOG
 =========
 
-v2.1.0 (06.04.2021)
+v2.0.4 (06.04.2021)
 -------------------
+
+## 🔥 New:
+
+- 📜 Add a new `raw` mode for the `logger` plugin to keep the stderr log message of the worker unmodified (logger severity level should be at least `INFO`).
 
 ## 🩹 Fixes:
 
