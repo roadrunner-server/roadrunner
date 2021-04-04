@@ -18,13 +18,4 @@ $psr7 = new RoadRunner\Http\PSR7Worker(
 
 error_log('{"field": "value"}');
 
-while ($req = $psr7->waitRequest()) {
-    try {
-        $resp = new \Nyholm\Psr7\Response();
-        $resp->getBody()->write("hello world");
-
-        $psr7->respond($resp);
-    } catch (\Throwable $e) {
-        $psr7->getWorker()->error((string)$e);
-    }
-}
+while ($req = $psr7->waitRequest()) {}

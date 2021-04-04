@@ -4,12 +4,12 @@ server:
 
 http:
   address: 127.0.0.1:34999
-  maxRequestSize: 1024
+  max_requestSize: 1024
   pool:
-    numWorkers: 1
-    maxJobs: 0
-    allocateTimeout: 10s
-    destroyTimeout: 10s
+    num_workers: 1
+    max_jobs: 0
+    allocate_timeout: 10s
+    destroy_timeout: 10s
 
 logs:
   mode: raw

@@ -1003,21 +1003,22 @@ server:
   env:
     "RR_HTTP": "true"
   relay: "pipes"
-  relayTimeout: "20s"
+  relay_timeout: "20s"
 
 http:
   debug: true
   address: 127.0.0.1:34999
-  maxRequestSize: 1024
+  max_request_size: 1024
   middleware: [ "pluginMiddleware", "pluginMiddleware2" ]
   uploads:
     forbid: [ "" ]
-  trustedSubnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
+  trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
   pool:
-    numWorkers: 2
-    maxJobs: 0
-    allocateTimeout: 60s
-    destroyTimeout: 60s
+    num_workers: 2
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+
 logs:
   mode: development
   level: error
@@ -1037,7 +1038,7 @@ logs:
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("201 GET http://localhost:34999/?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
-	mockLogger.EXPECT().Debug("WORLD", "pid", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("WORLD").MinTimes(1)
 	mockLogger.EXPECT().Debug("worker event received", "event", events.EventWorkerLog, "worker state", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes() // placeholder for the workerlogerror
 

@@ -52,7 +52,7 @@ func (cfg *Config) BuildLogger() (*zap.Logger, error) {
 		zCfg = zap.NewDevelopmentConfig()
 	case "raw":
 		zCfg = zap.Config{
-			Level:    zap.NewAtomicLevelAt(zap.DebugLevel),
+			Level:    zap.NewAtomicLevelAt(zap.InfoLevel),
 			Encoding: "console",
 			EncoderConfig: zapcore.EncoderConfig{
 				MessageKey: "message",
