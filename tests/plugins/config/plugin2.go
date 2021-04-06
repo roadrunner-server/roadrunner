@@ -37,7 +37,7 @@ func (f *Foo2) Serve() chan error {
 		return errCh
 	}
 
-	if allCfg.RPC.Listen != "tcp://localhost:6061" {
+	if allCfg.RPC.Listen != "tcp://localhost:36643" {
 		errCh <- errors.E(op, errors.Str("RPC.Listen should be overwritten"))
 		return errCh
 	}

@@ -97,7 +97,7 @@ func TestConfigOverwriteValid(t *testing.T) {
 	vp := &config.Viper{}
 	vp.Path = "configs/.rr.yaml"
 	vp.Prefix = "rr"
-	vp.Flags = []string{"rpc.listen=tcp://localhost:6061"}
+	vp.Flags = []string{"rpc.listen=tcp://localhost:36643"}
 
 	err = container.RegisterAll(
 		&logger.ZapLogger{},
@@ -143,7 +143,7 @@ func TestConfigEnvVariables(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = os.Setenv("SUPER_RPC_ENV", "tcp://localhost:6061")
+	err = os.Setenv("SUPER_RPC_ENV", "tcp://localhost:36643")
 	assert.NoError(t, err)
 
 	vp := &config.Viper{}

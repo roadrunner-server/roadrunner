@@ -405,7 +405,25 @@ func (s *Plugin) Status() status.Status {
 	}
 	// if there are no workers, threat this as error
 	return status.Status{
-		Code: http.StatusInternalServerError,
+		Code: http.StatusServiceUnavailable,
+	}
+}
+
+// Status return status of the particular plugin
+func (s *Plugin) Ready() status.Status {
+	workers := s.Workers()
+	for i := 0; i < len(workers); i++ {
+		// If state of the worker is ready (at least 1)
+		// we assume, that plugin's worker pool is ready
+		if workers[i].State().Value() == worker.StateReady {
+			return status.Status{
+				Code: http.StatusOK,
+			}
+		}
+	}
+	// if there are no workers, threat this as no content error
+	return status.Status{
+		Code: http.StatusServiceUnavailable,
 	}
 }
 

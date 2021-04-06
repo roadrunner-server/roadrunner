@@ -6,7 +6,10 @@ v2.0.4 (06.04.2021)
 
 ## 🔥 New:
 
-- 📜 Add a new `raw` mode for the `logger` plugin to keep the stderr log message of the worker unmodified (logger severity level should be at least `INFO`).
+- 📜 Add a new `raw` mode for the `logger` plugin to keep the stderr log message of the worker unmodified (logger
+  severity level should be at least `INFO`).
+- 🆕 Add Readiness probe check. The `status` plugin provides `/ready` endpoint which return the `204` HTTP code if there
+  are no workers in the `Ready` state and `200 OK` status if there are at least 1 worker in the `Ready` state.
 
 ## 🩹 Fixes:
 

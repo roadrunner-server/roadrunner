@@ -14,7 +14,7 @@ type rpc struct {
 func (rpc *rpc) Status(service string, status *Status) error {
 	const op = errors.Op("checker_rpc_status")
 	rpc.log.Debug("started Status method", "service", service)
-	st, err := rpc.srv.Status(service)
+	st, err := rpc.srv.status(service)
 	if err != nil {
 		return errors.E(op, err)
 	}
@@ -22,6 +22,22 @@ func (rpc *rpc) Status(service string, status *Status) error {
 	*status = st
 
 	rpc.log.Debug("status code", "code", st.Code)
-	rpc.log.Debug("successfully finished Status method")
+	rpc.log.Debug("successfully finished the Status method")
+	return nil
+}
+
+// Status return current status of the provided plugin
+func (rpc *rpc) Ready(service string, status *Status) error {
+	const op = errors.Op("checker_rpc_ready")
+	rpc.log.Debug("started Ready method", "service", service)
+	st, err := rpc.srv.ready(service)
+	if err != nil {
+		return errors.E(op, err)
+	}
+
+	*status = st
+
+	rpc.log.Debug("status code", "code", st.Code)
+	rpc.log.Debug("successfully finished the Ready method")
 	return nil
 }
