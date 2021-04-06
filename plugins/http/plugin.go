@@ -405,7 +405,7 @@ func (s *Plugin) Status() status.Status {
 	}
 	// if there are no workers, threat this as error
 	return status.Status{
-		Code: http.StatusNoContent,
+		Code: http.StatusServiceUnavailable,
 	}
 }
 
@@ -423,7 +423,7 @@ func (s *Plugin) Ready() status.Status {
 	}
 	// if there are no workers, threat this as no content error
 	return status.Status{
-		Code: http.StatusNoContent,
+		Code: http.StatusServiceUnavailable,
 	}
 }
 

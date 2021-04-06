@@ -368,8 +368,8 @@ func checkHTTPReadiness2(t *testing.T) {
 	assert.NoError(t, err)
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
-	assert.Equal(t, 200, r.StatusCode)
-	assert.Equal(t, resp2, string(b))
+	assert.Equal(t, 503, r.StatusCode)
+	assert.Equal(t, "", string(b))
 
 	err = r.Body.Close()
 	assert.NoError(t, err)
@@ -384,5 +384,5 @@ func checkRPCReadiness(t *testing.T) {
 
 	err = client.Call("status.Ready", "http", &st)
 	assert.NoError(t, err)
-	assert.Equal(t, st.Code, 204)
+	assert.Equal(t, st.Code, 503)
 }
