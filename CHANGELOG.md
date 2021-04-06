@@ -4,8 +4,11 @@ CHANGELOG
 v2.0.4 (06.04.2021)
 -------------------
 
-## 🔥 New:
+## 👀 New:
 
+- ✏️ Add support for `linux/arm64` platform for docker image (thanks @tarampampam).
+- ✏️ Add dotenv file support (`.env` in working directory by default; file location can be changed using CLI
+  flag `--dotenv` or `DOTENV_PATH` environment variable) (thanks @tarampampam).
 - 📜 Add a new `raw` mode for the `logger` plugin to keep the stderr log message of the worker unmodified (logger
   severity level should be at least `INFO`).
 - 🆕 Add Readiness probe check. The `status` plugin provides `/ready` endpoint which return the `204` HTTP code if there
