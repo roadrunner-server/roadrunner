@@ -18,11 +18,12 @@ RoadRunner is an open-source (MIT licensed) high-performance PHP application ser
 It supports running as a service with the ability to extend its functionality on a per-project basis.
 
 RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP/2 server and can be used to replace classic Nginx+FPM setup
-with much greater performance and flexibility.
+with much greater performance and flexibility.  
 
 <p align="center">
 	<a href="https://roadrunner.dev/"><b>Official Website</b></a> | 
-	<a href="https://roadrunner.dev/docs"><b>Documentation</b></a>
+	<a href="https://roadrunner.dev/docs"><b>Documentation</b></a> |
+    <a href="https://github.com/orgs/spiral/projects/2"><b>Release schedule</b></a>
 </p>
 
 Features:
