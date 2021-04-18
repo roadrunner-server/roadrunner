@@ -1,13 +1,88 @@
 package service
 
 import (
+	"sync"
+
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
+const PluginName string = "service"
+
 type Plugin struct {
+	sync.Mutex
+
+	logger logger.Logger
+	cfg    Config
+
+	// all processes attached to the service
+	processes []*Process
 }
 
-func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
+func (service *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
+	const op = errors.Op("service_plugin_init")
+	if !cfg.Has(PluginName) {
+		return errors.E(errors.Disabled)
+	}
+	err := cfg.UnmarshalKey(PluginName, &service.cfg.Services)
+	if err != nil {
+		return errors.E(op, err)
+	}
+
+	// init default parameters if not set by user
+	service.cfg.InitDefault()
+	// save the logger
+	service.logger = log
+
 	return nil
+}
+
+func (service *Plugin) Serve() chan error {
+	errCh := make(chan error, 1)
+
+	// start processing
+	go func() {
+		service.processes = make([]*Process, 0, len(service.cfg.Services))
+		// for the every service
+		for k := range service.cfg.Services {
+			// create needed number of the processes
+			for i := 0; i < service.cfg.Services[k].ProcessNum; i++ {
+				// create processor structure, which will process all the services
+				service.processes = append(service.processes, NewFatProcess(
+					service.cfg.Services[k].RestartAfterExit,
+					service.cfg.Services[k].ExecTimeout,
+					service.cfg.Services[k].RestartDelay,
+					service.cfg.Services[k].Command,
+					service.logger,
+					errCh,
+				))
+			}
+		}
+
+		service.Lock()
+		for i := 0; i < len(service.processes); i++ {
+			service.processes[i].start()
+		}
+		service.Unlock()
+	}()
+
+	return errCh
+}
+
+func (service *Plugin) Stop() error {
+	service.Lock()
+	defer service.Unlock()
+
+	if len(service.processes) > 0 {
+		for i := 0; i < len(service.processes); i++ {
+			service.processes[i].stop()
+		}
+	}
+	return nil
+}
+
+// Name contains service name.
+func (service *Plugin) Name() string {
+	return PluginName
 }
