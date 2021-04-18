@@ -19,12 +19,12 @@ type Process struct {
 	// command to execute
 	command *exec.Cmd
 	// rawCmd from the plugin
-	rawCmd  string
+	rawCmd string
 
 	// root plugin error chan
 	errCh chan error
 	// logger
-	log   logger.Logger
+	log logger.Logger
 
 	ExecTimeout      time.Duration
 	RestartAfterExit bool
@@ -111,37 +111,34 @@ func (p *Process) stop() {
 
 func (p *Process) execHandler() {
 	tt := time.NewTicker(time.Second)
-	for {
-		select {
-		case <-tt.C:
-			// lock here, because p.startTime could be changed during the check
-			p.Lock()
-			// if the exec timeout is set
-			if p.ExecTimeout != 0 {
-				// if stopped -> kill the process (SIGINT-> SIGKILL) and exit
-				if atomic.CompareAndSwapUint64(&p.stopped, 1, 1) {
-					err := p.command.Process.Signal(syscall.SIGINT)
-					if err != nil {
-						_ = p.command.Process.Signal(syscall.SIGKILL)
-					}
-					tt.Stop()
-					p.Unlock()
-					return
+	for range tt.C {
+		// lock here, because p.startTime could be changed during the check
+		p.Lock()
+		// if the exec timeout is set
+		if p.ExecTimeout != 0 {
+			// if stopped -> kill the process (SIGINT-> SIGKILL) and exit
+			if atomic.CompareAndSwapUint64(&p.stopped, 1, 1) {
+				err := p.command.Process.Signal(syscall.SIGINT)
+				if err != nil {
+					_ = p.command.Process.Signal(syscall.SIGKILL)
 				}
-
-				// check the running time for the script
-				if time.Now().After(p.startTime.Add(p.ExecTimeout)) {
-					err := p.command.Process.Signal(syscall.SIGINT)
-					if err != nil {
-						_ = p.command.Process.Signal(syscall.SIGKILL)
-					}
-					p.Unlock()
-					tt.Stop()
-					return
-				}
+				tt.Stop()
+				p.Unlock()
+				return
 			}
-			p.Unlock()
+
+			// check the running time for the script
+			if time.Now().After(p.startTime.Add(p.ExecTimeout)) {
+				err := p.command.Process.Signal(syscall.SIGINT)
+				if err != nil {
+					_ = p.command.Process.Signal(syscall.SIGKILL)
+				}
+				p.Unlock()
+				tt.Stop()
+				return
+			}
 		}
+		p.Unlock()
 	}
 }
 
