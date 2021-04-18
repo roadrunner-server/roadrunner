@@ -1,21 +1,22 @@
 service:
-  some_service_1: #<-- user defined name
-    command: "php php/loop.php" # command, can be any command (php, script, binary, exe)"
-    process_num: 10 # number of copies (processes)
-    exec_timeout: 5s # how long process allowed to run (until restart or stop), default - unlimited
-    restart_after_exit: false # run and restart after finish
-    restart_delay: 1s # delay between binary/script restarts, default 1minute
-#  some_service_2: # exec_timeout is not set, by default - unlimited
-#    command: "./test_binary"
-#    process_num: 1
-#    restart_after_exit: false
-#    restart_delay: 10 # <--- ignored when restart_after_exit is false
+  some_service_1:
+    command: "php test_files/loop.php"
+    process_num: 1
+    exec_timeout: 5s
+    restart_after_exit: true
+    restart_delay: 1s
+  some_service_2:
+    command: "test_files/test_binary"
+    process_num: 1
+    restart_after_exit: true
+    restart_delay: 1s
+    exec_timeout: 5s
 
 logs:
-  level: debug
+  level: info
   mode: raw
 
 endure:
   grace_period: 120s
   print_graph: false
-  log_level: debug
+  log_level: error

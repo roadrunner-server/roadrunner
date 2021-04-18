@@ -43,6 +43,10 @@ func (service *Plugin) Serve() chan error {
 
 	// start processing
 	go func() {
+		// lock here, because Stop command might be invoked during the Serve
+		service.Lock()
+		defer service.Unlock()
+
 		service.processes = make([]*Process, 0, len(service.cfg.Services))
 		// for the every service
 		for k := range service.cfg.Services {
@@ -60,11 +64,9 @@ func (service *Plugin) Serve() chan error {
 			}
 		}
 
-		service.Lock()
 		for i := 0; i < len(service.processes); i++ {
 			service.processes[i].start()
 		}
-		service.Unlock()
 	}()
 
 	return errCh
