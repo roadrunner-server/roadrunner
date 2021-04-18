@@ -31,8 +31,9 @@ type Process struct {
 	stopCh    chan struct{}
 }
 
-func NewFatProcess(restartAfterExit bool, execTimeout, restartDelay time.Duration, command string, l logger.Logger, errCh chan error) *Process {
-	p := &Process{
+// NewServiceProcess constructs service process structure
+func NewServiceProcess(restartAfterExit bool, execTimeout, restartDelay time.Duration, command string, l logger.Logger, errCh chan error) *Process {
+	return &Process{
 		rawCmd:           command,
 		RestartDelay:     restartDelay,
 		ExecTimeout:      execTimeout,
@@ -41,8 +42,6 @@ func NewFatProcess(restartAfterExit bool, execTimeout, restartDelay time.Duratio
 		stopCh:           make(chan struct{}),
 		log:              l,
 	}
-	// stderr redirect to the logger
-	return p
 }
 
 // write message to the log (stderr)
@@ -57,7 +56,7 @@ func (p *Process) start() {
 
 	const op = errors.Op("processor_start")
 
-	// cmdArgs contain command arguments if the command in form of: php <command> or ls <command> -i -b
+	// crate fat-process here
 	p.createProcess()
 
 	err := p.command.Start()
@@ -73,6 +72,7 @@ func (p *Process) start() {
 }
 
 func (p *Process) createProcess() {
+	// cmdArgs contain command arguments if the command in form of: php <command> or ls <command> -i -b
 	var cmdArgs []string
 	cmdArgs = append(cmdArgs, strings.Split(p.rawCmd, " ")...)
 	if len(cmdArgs) < 2 {
@@ -106,6 +106,7 @@ func (p *Process) execHandler() {
 	for {
 		select {
 		case <-tt.C:
+			// lock here, because p.startTime could be changed during the check
 			p.Lock()
 			// if the exec timeout is set
 			if p.ExecTimeout != 0 {
@@ -129,6 +130,8 @@ func (p *Process) execHandler() {
 	}
 }
 
+// unsafe and fast []byte to string convert
+//go:inline
 func toString(data []byte) string {
 	return *(*string)(unsafe.Pointer(&data))
 }

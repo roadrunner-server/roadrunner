@@ -49,7 +49,7 @@ func (service *Plugin) Serve() chan error {
 			// create needed number of the processes
 			for i := 0; i < service.cfg.Services[k].ProcessNum; i++ {
 				// create processor structure, which will process all the services
-				service.processes = append(service.processes, NewFatProcess(
+				service.processes = append(service.processes, NewServiceProcess(
 					service.cfg.Services[k].RestartAfterExit,
 					service.cfg.Services[k].ExecTimeout,
 					service.cfg.Services[k].RestartDelay,
