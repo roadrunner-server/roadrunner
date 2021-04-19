@@ -10,12 +10,11 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.10.0
 	github.com/go-ole/go-ole v1.2.5 // indirect
-	github.com/go-redis/redis/v8 v8.8.0
+	github.com/go-redis/redis/v8 v8.8.2
 	github.com/gofiber/fiber/v2 v2.7.1
 	github.com/golang/mock v1.4.4
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/json-iterator/go v1.1.10
-	github.com/kami-zh/go-capturer v0.0.0-20171211120116-e492ea43421d
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/prometheus/client_golang v1.10.0
 	github.com/shirou/gopsutil v3.21.3+incompatible
