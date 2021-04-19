@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
@@ -54,9 +55,9 @@ func (service *Plugin) Serve() chan error {
 			for i := 0; i < service.cfg.Services[k].ProcessNum; i++ {
 				// create processor structure, which will process all the services
 				service.processes = append(service.processes, NewServiceProcess(
-					service.cfg.Services[k].RestartAfterExit,
+					service.cfg.Services[k].RemainAfterExit,
 					service.cfg.Services[k].ExecTimeout,
-					service.cfg.Services[k].RestartDelay,
+					service.cfg.Services[k].RestartSec,
 					service.cfg.Services[k].Command,
 					service.logger,
 					errCh,
@@ -64,12 +65,27 @@ func (service *Plugin) Serve() chan error {
 			}
 		}
 
+		// start all processes
 		for i := 0; i < len(service.processes); i++ {
 			service.processes[i].start()
 		}
 	}()
 
 	return errCh
+}
+
+func (service *Plugin) Workers() []process.State {
+	service.Lock()
+	defer service.Unlock()
+	states := make([]process.State, 0, len(service.processes))
+	for i := 0; i < len(service.processes); i++ {
+		st, err := process.GeneralProcessState(service.processes[i].Pid)
+		if err != nil {
+			continue
+		}
+		states = append(states, st)
+	}
+	return states
 }
 
 func (service *Plugin) Stop() error {

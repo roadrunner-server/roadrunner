@@ -17,6 +17,7 @@ import (
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/pool"
+	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
@@ -332,8 +333,24 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.RUnlock()
 }
 
-// Workers returns associated pool workers
-func (s *Plugin) Workers() []worker.BaseProcess {
+// Workers returns slice with the process states for the workers
+func (s *Plugin) Workers() []process.State {
+	workers := s.pool.Workers()
+
+	ps := make([]process.State, 0, len(workers))
+	for i := 0; i < len(workers); i++ {
+		state, err := process.WorkerProcessState(workers[i])
+		if err != nil {
+			return nil
+		}
+		ps = append(ps, state)
+	}
+
+	return ps
+}
+
+// internal
+func (s *Plugin) workers() []worker.BaseProcess {
 	return s.pool.Workers()
 }
 
@@ -395,7 +412,7 @@ func (s *Plugin) AddMiddleware(name endure.Named, m Middleware) {
 
 // Status return status of the particular plugin
 func (s *Plugin) Status() status.Status {
-	workers := s.Workers()
+	workers := s.workers()
 	for i := 0; i < len(workers); i++ {
 		if workers[i].State().IsActive() {
 			return status.Status{
@@ -409,9 +426,9 @@ func (s *Plugin) Status() status.Status {
 	}
 }
 
-// Status return status of the particular plugin
+// Ready return readiness status of the particular plugin
 func (s *Plugin) Ready() status.Status {
-	workers := s.Workers()
+	workers := s.workers()
 	for i := 0; i < len(workers); i++ {
 		// If state of the worker is ready (at least 1)
 		// we assume, that plugin's worker pool is ready

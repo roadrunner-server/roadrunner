@@ -20,15 +20,16 @@ type Process struct {
 	command *exec.Cmd
 	// rawCmd from the plugin
 	rawCmd string
+	Pid    int
 
 	// root plugin error chan
 	errCh chan error
 	// logger
 	log logger.Logger
 
-	ExecTimeout      time.Duration
-	RestartAfterExit bool
-	RestartDelay     time.Duration
+	ExecTimeout     time.Duration
+	RemainAfterExit bool
+	RestartSec      uint64
 
 	// process start time
 	startTime time.Time
@@ -36,14 +37,14 @@ type Process struct {
 }
 
 // NewServiceProcess constructs service process structure
-func NewServiceProcess(restartAfterExit bool, execTimeout, restartDelay time.Duration, command string, l logger.Logger, errCh chan error) *Process {
+func NewServiceProcess(restartAfterExit bool, execTimeout time.Duration, restartDelay uint64, command string, l logger.Logger, errCh chan error) *Process {
 	return &Process{
-		rawCmd:           command,
-		RestartDelay:     restartDelay,
-		ExecTimeout:      execTimeout,
-		RestartAfterExit: restartAfterExit,
-		errCh:            errCh,
-		log:              l,
+		rawCmd:          command,
+		RestartSec:      restartDelay,
+		ExecTimeout:     execTimeout,
+		RemainAfterExit: restartAfterExit,
+		errCh:           errCh,
+		log:             l,
 	}
 }
 
@@ -70,10 +71,11 @@ func (p *Process) start() {
 
 	// start process waiting routine
 	go p.wait()
-	// startExec
+	// execHandler checks for the execTimeout
 	go p.execHandler()
 	// save start time
 	p.startTime = time.Now()
+	p.Pid = p.command.Process.Pid
 }
 
 // create command for the process
@@ -93,12 +95,14 @@ func (p *Process) createProcess() {
 // wait process for exit
 func (p *Process) wait() {
 	// Wait error doesn't matter here
-	_ = p.command.Wait()
-
+	err := p.command.Wait()
+	if err != nil {
+		p.log.Error("process wait error", "error", err)
+	}
 	// wait for restart delay
-	if p.RestartAfterExit {
+	if p.RemainAfterExit {
 		// wait for the delay
-		time.Sleep(p.RestartDelay)
+		time.Sleep(time.Second * time.Duration(p.RestartSec))
 		// and start command again
 		p.start()
 	}

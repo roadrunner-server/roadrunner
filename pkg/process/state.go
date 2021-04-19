@@ -1,4 +1,4 @@
-package tools
+package process
 
 import (
 	"github.com/shirou/gopsutil/process"
@@ -6,8 +6,8 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 )
 
-// ProcessState provides information about specific worker.
-type ProcessState struct {
+// State provides information about specific worker.
+type State struct {
 	// Pid contains process id.
 	Pid int `json:"pid"`
 
@@ -23,22 +23,49 @@ type ProcessState struct {
 	// MemoryUsage holds the information about worker memory usage in bytes.
 	// Values might vary for different operating systems and based on RSS.
 	MemoryUsage uint64 `json:"memoryUsage"`
+
+	CPUPercent float64
 }
 
 // WorkerProcessState creates new worker state definition.
-func WorkerProcessState(w worker.BaseProcess) (ProcessState, error) {
+func WorkerProcessState(w worker.BaseProcess) (State, error) {
 	const op = errors.Op("worker_process_state")
 	p, _ := process.NewProcess(int32(w.Pid()))
 	i, err := p.MemoryInfo()
 	if err != nil {
-		return ProcessState{}, errors.E(op, err)
+		return State{}, errors.E(op, err)
 	}
 
-	return ProcessState{
+	percent, err := p.CPUPercent()
+	if err != nil {
+		return State{}, err
+	}
+
+	return State{
+		CPUPercent:  percent,
 		Pid:         int(w.Pid()),
 		Status:      w.State().String(),
 		NumJobs:     w.State().NumExecs(),
 		Created:     w.Created().UnixNano(),
+		MemoryUsage: i.RSS,
+	}, nil
+}
+
+func GeneralProcessState(pid int) (State, error) {
+	const op = errors.Op("process_state")
+	p, _ := process.NewProcess(int32(pid))
+	i, err := p.MemoryInfo()
+	if err != nil {
+		return State{}, errors.E(op, err)
+	}
+	percent, err := p.CPUPercent()
+	if err != nil {
+		return State{}, err
+	}
+
+	return State{
+		CPUPercent:  percent,
+		Pid:         pid,
 		MemoryUsage: i.RSS,
 	}, nil
 }

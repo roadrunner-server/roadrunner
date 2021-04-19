@@ -3,7 +3,7 @@ package informer
 import (
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/pkg/worker"
+	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
@@ -21,7 +21,7 @@ func (p *Plugin) Init(log logger.Logger) error {
 }
 
 // Workers provides BaseProcess slice with workers for the requested plugin
-func (p *Plugin) Workers(name string) ([]worker.BaseProcess, error) {
+func (p *Plugin) Workers(name string) ([]process.State, error) {
 	const op = errors.Op("informer_plugin_workers")
 	svc, ok := p.registry[name]
 	if !ok {
@@ -49,7 +49,7 @@ func (p *Plugin) Name() string {
 	return PluginName
 }
 
-// RPCService returns associated rpc service.
+// RPC returns associated rpc service.
 func (p *Plugin) RPC() interface{} {
 	return &rpc{srv: p, log: p.log}
 }

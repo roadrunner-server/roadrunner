@@ -4,11 +4,11 @@ import "time"
 
 // Service represents particular service configuration
 type Service struct {
-	Command          string        `mapstructure:"command"`
-	ProcessNum       int           `mapstructure:"process_num"`
-	ExecTimeout      time.Duration `mapstructure:"exec_timeout"`
-	RestartAfterExit bool          `mapstructure:"restart_after_exit"`
-	RestartDelay     time.Duration `mapstructure:"restart_delay"`
+	Command         string        `mapstructure:"command"`
+	ProcessNum      int           `mapstructure:"process_num"`
+	ExecTimeout     time.Duration `mapstructure:"exec_timeout"`
+	RemainAfterExit bool          `mapstructure:"remain_after_exit"`
+	RestartSec      uint64        `mapstructure:"restart_sec"`
 }
 
 // Config for the services
@@ -24,9 +24,9 @@ func (c *Config) InitDefault() {
 				val.ProcessNum = 1
 				c.Services[k] = val
 			}
-			if v.RestartDelay == 0 {
+			if v.RestartSec == 0 {
 				val := c.Services[k]
-				val.RestartDelay = time.Minute
+				val.RestartSec = 30
 				c.Services[k] = val
 			}
 		}

@@ -24,10 +24,10 @@ const (
 	// StateKilling - process is being forcibly stopped
 	StateKilling
 
-	// State of worker, when no need to allocate new one
+	// StateDestroyed State of worker, when no need to allocate new one
 	StateDestroyed
 
-	// State of worker, when it reached executions limit
+	// StateMaxJobsReached State of worker, when it reached executions limit
 	StateMaxJobsReached
 
 	// StateStopped - process has been terminated.
@@ -91,17 +91,17 @@ func (s *StateImpl) IsActive() bool {
 	return val == StateWorking || val == StateReady
 }
 
-// change StateImpl value (status)
+// Set change StateImpl value (status)
 func (s *StateImpl) Set(value int64) {
 	atomic.StoreInt64(&s.value, value)
 }
 
-// register new execution atomically
+// RegisterExec register new execution atomically
 func (s *StateImpl) RegisterExec() {
 	atomic.AddUint64(&s.numExecs, 1)
 }
 
-// Update last used time
+// SetLastUsed Update last used time
 func (s *StateImpl) SetLastUsed(lu uint64) {
 	atomic.StoreUint64(&s.lastUsed, lu)
 }
