@@ -39,16 +39,20 @@ func WorkerTable(writer io.Writer, workers []process.State) *tablewriter.Table {
 // ServiceWorkerTable renders table with information about rr server workers.
 func ServiceWorkerTable(writer io.Writer, workers []process.State) *tablewriter.Table {
 	tw := tablewriter.NewWriter(writer)
-	tw.SetHeader([]string{"PID", "Memory", "CPU%"})
+	tw.SetAutoWrapText(false)
+	tw.SetHeader([]string{"PID", "Memory", "CPU%", "Command"})
 	tw.SetColMinWidth(0, 7)
 	tw.SetColMinWidth(1, 7)
 	tw.SetColMinWidth(2, 7)
+	tw.SetColMinWidth(3, 18)
+	tw.SetAlignment(tablewriter.ALIGN_LEFT)
 
 	for i := 0; i < len(workers); i++ {
 		tw.Append([]string{
 			strconv.Itoa(workers[i].Pid),
 			humanize.Bytes(workers[i].MemoryUsage),
 			renderCPU(workers[i].CPUPercent),
+			workers[i].Command,
 		})
 	}
 

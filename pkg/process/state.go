@@ -24,7 +24,11 @@ type State struct {
 	// Values might vary for different operating systems and based on RSS.
 	MemoryUsage uint64 `json:"memoryUsage"`
 
+	// CPU_Percent returns how many percent of the CPU time this process uses
 	CPUPercent float64
+
+	// Command used in the service plugin and shows a command for the particular service
+	Command string
 }
 
 // WorkerProcessState creates new worker state definition.
@@ -51,7 +55,7 @@ func WorkerProcessState(w worker.BaseProcess) (State, error) {
 	}, nil
 }
 
-func GeneralProcessState(pid int) (State, error) {
+func GeneralProcessState(pid int, command string) (State, error) {
 	const op = errors.Op("process_state")
 	p, _ := process.NewProcess(int32(pid))
 	i, err := p.MemoryInfo()
@@ -67,5 +71,6 @@ func GeneralProcessState(pid int) (State, error) {
 		CPUPercent:  percent,
 		Pid:         pid,
 		MemoryUsage: i.RSS,
+		Command:     command,
 	}, nil
 }

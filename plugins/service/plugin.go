@@ -79,7 +79,7 @@ func (service *Plugin) Workers() []process.State {
 	defer service.Unlock()
 	states := make([]process.State, 0, len(service.processes))
 	for i := 0; i < len(service.processes); i++ {
-		st, err := process.GeneralProcessState(service.processes[i].Pid)
+		st, err := process.GeneralProcessState(service.processes[i].Pid, service.processes[i].rawCmd)
 		if err != nil {
 			continue
 		}
