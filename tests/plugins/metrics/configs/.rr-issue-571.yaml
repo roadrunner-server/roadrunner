@@ -1,0 +1,13 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+server:
+  command: "php ../../metrics-issue-571.php"
+
+http:
+  address: "0.0.0.0:56444"
+  pool:
+    num_workers: 5
+
+metrics:
+  address: "0.0.0.0:23557"
