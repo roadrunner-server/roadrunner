@@ -393,9 +393,8 @@ func (s *Plugin) Reset() error {
 		return errors.E(op, err)
 	}
 
-	s.log.Info("HTTP listeners successfully re-added")
-
 	s.log.Info("HTTP workers Pool successfully restarted")
+
 	s.handler, err = NewHandler(
 		s.cfg.MaxRequestSize,
 		*s.cfg.Uploads,
@@ -405,6 +404,9 @@ func (s *Plugin) Reset() error {
 	if err != nil {
 		return errors.E(op, err)
 	}
+
+	s.log.Info("HTTP handler listeners successfully re-added")
+	s.handler.AddListener(s.logCallback)
 
 	s.log.Info("HTTP plugin successfully restarted")
 	return nil
