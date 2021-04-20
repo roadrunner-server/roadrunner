@@ -82,6 +82,7 @@ func TestMetricsInit(t *testing.T) {
 	tt := time.NewTimer(time.Second * 5)
 	defer tt.Stop()
 
+	time.Sleep(time.Second * 2)
 	out, err := get()
 	assert.NoError(t, err)
 
@@ -279,6 +280,7 @@ func TestMetricsGaugeCollector(t *testing.T) {
 	tt := time.NewTimer(time.Second * 5)
 	defer tt.Stop()
 
+	time.Sleep(time.Second * 2)
 	out, err := get()
 	assert.NoError(t, err)
 	assert.Contains(t, out, "my_gauge 100")
@@ -439,6 +441,7 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 2)
 	t.Run("DeclareMetric", declareMetricsTest)
 	genericOut, err := get()
 	assert.NoError(t, err)
