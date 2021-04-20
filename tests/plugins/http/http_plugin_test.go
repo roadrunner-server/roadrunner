@@ -1545,6 +1545,8 @@ func TestHTTPBigRequestSize(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 2)
+
 	t.Run("HTTPBigEcho10Mb", bigEchoHTTP)
 
 	stopCh <- struct{}{}
