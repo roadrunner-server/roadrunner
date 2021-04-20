@@ -9,7 +9,6 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -199,8 +198,8 @@ func (m *Plugin) Collects() []interface{} {
 	}
 }
 
-// Collector returns application specific collector by name or nil if collector not found.
-func (m *Plugin) AddStatProvider(name endure.Named, stat StatProvider) error {
+// AddStatProvider adds a metrics provider
+func (m *Plugin) AddStatProvider(stat StatProvider) error {
 	for _, c := range stat.MetricsCollector() {
 		err := m.registry.Register(c)
 		if err != nil {
@@ -211,7 +210,7 @@ func (m *Plugin) AddStatProvider(name endure.Named, stat StatProvider) error {
 	return nil
 }
 
-// RPC interface satisfaction
+// Name returns user friendly plugin name
 func (m *Plugin) Name() string {
 	return PluginName
 }

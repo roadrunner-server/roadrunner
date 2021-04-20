@@ -126,13 +126,21 @@ func (s *Plugin) logCallback(event interface{}) {
 
 // Serve serves the svc.
 func (s *Plugin) Serve() chan error {
-	s.Lock()
-	defer s.Unlock()
-
-	const op = errors.Op("http_plugin_serve")
 	errCh := make(chan error, 2)
+	// run whole process in the goroutine
+	go func() {
+		// protect http initialization
+		s.Lock()
+		s.serve(errCh)
+		s.Unlock()
+	}()
 
+	return errCh
+}
+
+func (s *Plugin) serve(errCh chan error) {
 	var err error
+	const op = errors.Op("http_plugin_serve")
 	s.pool, err = s.server.NewWorkerPool(context.Background(), pool.Config{
 		Debug:           s.cfg.Pool.Debug,
 		NumWorkers:      s.cfg.Pool.NumWorkers,
@@ -143,7 +151,7 @@ func (s *Plugin) Serve() chan error {
 	}, s.cfg.Env, s.logCallback)
 	if err != nil {
 		errCh <- errors.E(op, err)
-		return errCh
+		return
 	}
 
 	s.handler, err = NewHandler(
@@ -154,7 +162,7 @@ func (s *Plugin) Serve() chan error {
 	)
 	if err != nil {
 		errCh <- errors.E(op, err)
-		return errCh
+		return
 	}
 
 	s.handler.AddListener(s.logCallback)
@@ -173,7 +181,7 @@ func (s *Plugin) Serve() chan error {
 			err = s.appendRootCa()
 			if err != nil {
 				errCh <- errors.E(op, err)
-				return errCh
+				return
 			}
 		}
 
@@ -181,7 +189,7 @@ func (s *Plugin) Serve() chan error {
 		if s.cfg.HTTP2Config != nil {
 			if err := s.initHTTP2(); err != nil {
 				errCh <- errors.E(op, err)
-				return errCh
+				return
 			}
 		}
 	}
@@ -202,8 +210,6 @@ func (s *Plugin) Serve() chan error {
 	go func() {
 		s.serveFCGI(errCh)
 	}()
-
-	return errCh
 }
 
 func (s *Plugin) serveHTTP(errCh chan error) {
@@ -305,7 +311,10 @@ func (s *Plugin) Stop() error {
 		}
 	}
 
-	s.pool.Destroy(context.Background())
+	// check for safety
+	if s.pool != nil {
+		s.pool.Destroy(context.Background())
+	}
 
 	return err
 }
@@ -335,7 +344,10 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Workers returns slice with the process states for the workers
 func (s *Plugin) Workers() []process.State {
-	workers := s.pool.Workers()
+	s.RLock()
+	defer s.RUnlock()
+
+	workers := s.workers()
 
 	ps := make([]process.State, 0, len(workers))
 	for i := 0; i < len(workers); i++ {
@@ -412,6 +424,9 @@ func (s *Plugin) AddMiddleware(name endure.Named, m Middleware) {
 
 // Status return status of the particular plugin
 func (s *Plugin) Status() status.Status {
+	s.RLock()
+	defer s.RUnlock()
+
 	workers := s.workers()
 	for i := 0; i < len(workers); i++ {
 		if workers[i].State().IsActive() {
@@ -428,6 +443,9 @@ func (s *Plugin) Status() status.Status {
 
 // Ready return readiness status of the particular plugin
 func (s *Plugin) Ready() status.Status {
+	s.RLock()
+	defer s.RUnlock()
+
 	workers := s.workers()
 	for i := 0; i < len(workers); i++ {
 		// If state of the worker is ready (at least 1)
