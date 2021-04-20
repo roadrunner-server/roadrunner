@@ -27,7 +27,7 @@ type SpawnResult struct {
 	err error
 }
 
-// SpawnWorker creates new Process and connects it to goridge relay,
+// SpawnWorkerWithTimeout creates new Process and connects it to goridge relay,
 // method Wait() must be handled on level above.
 func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.Listener) (*worker.Process, error) {
 	c := make(chan SpawnResult)

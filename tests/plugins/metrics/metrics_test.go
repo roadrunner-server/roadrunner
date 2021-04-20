@@ -7,6 +7,7 @@ import (
 	"net/rpc"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"testing"
 	"time"
@@ -15,9 +16,11 @@ import (
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/config"
+	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/metrics"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
+	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/tests/mocks"
 	"github.com/stretchr/testify/assert"
 )
@@ -54,7 +57,7 @@ func TestMetricsInit(t *testing.T) {
 
 	cfg := &config.Viper{}
 	cfg.Prefix = "rr"
-	cfg.Path = ".rr-test.yaml"
+	cfg.Path = "configs/.rr-test.yaml"
 
 	err = cont.RegisterAll(
 		cfg,
@@ -79,6 +82,7 @@ func TestMetricsInit(t *testing.T) {
 	tt := time.NewTimer(time.Second * 5)
 	defer tt.Stop()
 
+	time.Sleep(time.Second * 2)
 	out, err := get()
 	assert.NoError(t, err)
 
@@ -110,6 +114,138 @@ func TestMetricsInit(t *testing.T) {
 	}
 }
 
+func TestMetricsIssue571(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := &config.Viper{}
+	cfg.Prefix = "rr"
+	cfg.Path = "configs/.rr-issue-571.yaml"
+
+	controller := gomock.NewController(t)
+	mockLogger := mocks.NewMockLogger(controller)
+
+	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "services", []string{"metrics"}).MinTimes(1)
+	mockLogger.EXPECT().Debug("200 GET http://localhost:56444/", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("declaring new metric", "name", "test", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("metric successfully added", "name", "test", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("metric successfully added", "name", "test", "labels", []string{}, "value", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("adding metric", "name", "test", "value", gomock.Any(), "labels", []string{}).MinTimes(1)
+	mockLogger.EXPECT().Error("metric with provided name already exist", "name", "test", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(3)
+
+	err = cont.RegisterAll(
+		cfg,
+		&metrics.Plugin{},
+		&rpcPlugin.Plugin{},
+		&server.Plugin{},
+		mockLogger,
+		&httpPlugin.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	// give some time to wait http
+	time.Sleep(time.Second * 2)
+	_, err = issue571Http()
+	assert.NoError(t, err)
+
+	out, err := issue571Metrics()
+	assert.NoError(t, err)
+
+	assert.Contains(t, out, "HELP test Test counter")
+	assert.Contains(t, out, "TYPE test counter")
+
+	stopCh := make(chan struct{}, 1)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second * 2)
+	stopCh <- struct{}{}
+	wg.Wait()
+}
+
+// get request and return body
+func issue571Http() (string, error) {
+	r, err := http.Get("http://localhost:56444")
+	if err != nil {
+		return "", err
+	}
+
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return "", err
+	}
+
+	err = r.Body.Close()
+	if err != nil {
+		return "", err
+	}
+	// unsafe
+	return string(b), err
+}
+
+// get request and return body
+func issue571Metrics() (string, error) {
+	r, err := http.Get("http://localhost:23557")
+	if err != nil {
+		return "", err
+	}
+
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return "", err
+	}
+
+	err = r.Body.Close()
+	if err != nil {
+		return "", err
+	}
+	// unsafe
+	return string(b), err
+}
+
 func TestMetricsGaugeCollector(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
@@ -118,7 +254,7 @@ func TestMetricsGaugeCollector(t *testing.T) {
 
 	cfg := &config.Viper{}
 	cfg.Prefix = "rr"
-	cfg.Path = ".rr-test.yaml"
+	cfg.Path = "configs/.rr-test.yaml"
 
 	err = cont.RegisterAll(
 		cfg,
@@ -144,6 +280,7 @@ func TestMetricsGaugeCollector(t *testing.T) {
 	tt := time.NewTimer(time.Second * 5)
 	defer tt.Stop()
 
+	time.Sleep(time.Second * 2)
 	out, err := get()
 	assert.NoError(t, err)
 	assert.Contains(t, out, "my_gauge 100")
@@ -186,7 +323,7 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 
 	cfg := &config.Viper{}
 	cfg.Prefix = "rr"
-	cfg.Path = ".rr-test.yaml"
+	cfg.Path = "configs/.rr-test.yaml"
 
 	controller := gomock.NewController(t)
 	mockLogger := mocks.NewMockLogger(controller)
@@ -304,6 +441,7 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 2)
 	t.Run("DeclareMetric", declareMetricsTest)
 	genericOut, err := get()
 	assert.NoError(t, err)

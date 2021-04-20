@@ -81,6 +81,7 @@ func TestGzipPlugin(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(time.Second * 2)
 	t.Run("GzipCheckHeader", headerCheck)
 
 	stopCh <- struct{}{}
