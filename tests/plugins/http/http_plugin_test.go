@@ -21,13 +21,13 @@ import (
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/pkg/events"
+	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
 	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/tests/mocks"
-	"github.com/spiral/roadrunner/v2/tools"
 	"github.com/yookoala/gofast"
 
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
@@ -288,7 +288,7 @@ func informerTest(t *testing.T) {
 	// WorkerList contains list of workers.
 	list := struct {
 		// Workers is list of workers.
-		Workers []tools.ProcessState `json:"workers"`
+		Workers []process.State `json:"workers"`
 	}{}
 
 	err = client.Call("informer.Workers", "http", &list)
@@ -1336,7 +1336,7 @@ func informerTestBefore(t *testing.T) {
 	// WorkerList contains list of workers.
 	list := struct {
 		// Workers is list of workers.
-		Workers []tools.ProcessState `json:"workers"`
+		Workers []process.State `json:"workers"`
 	}{}
 
 	err = client.Call("informer.Workers", "http", &list)
@@ -1353,7 +1353,7 @@ func informerTestAfter(t *testing.T) {
 	// WorkerList contains list of workers.
 	list := struct {
 		// Workers is list of workers.
-		Workers []tools.ProcessState `json:"workers"`
+		Workers []process.State `json:"workers"`
 	}{}
 
 	assert.NotZero(t, workerPid)

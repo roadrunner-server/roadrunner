@@ -26,3 +26,4 @@ builds/
 tests/vendor/
 .rr-sample.yaml
 cmd
+rr

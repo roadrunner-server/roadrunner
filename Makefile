@@ -36,6 +36,7 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/informer.out -covermode=atomic ./tests/plugins/informer
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/reload.out -covermode=atomic ./tests/plugins/reload
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/server.out -covermode=atomic ./tests/plugins/server
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/service.out -covermode=atomic ./tests/plugins/service
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/status.out -covermode=atomic ./tests/plugins/status
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/config.out -covermode=atomic ./tests/plugins/config
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/gzip.out -covermode=atomic ./tests/plugins/gzip
@@ -68,6 +69,7 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./tests/plugins/informer
 	go test -v -race -tags=debug ./tests/plugins/reload
 	go test -v -race -tags=debug ./tests/plugins/server
+	go test -v -race -tags=debug ./tests/plugins/service
 	go test -v -race -tags=debug ./tests/plugins/status
 	go test -v -race -tags=debug ./tests/plugins/config
 	go test -v -race -tags=debug ./tests/plugins/gzip
@@ -85,65 +87,3 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./tests/plugins/kv/memory
 	go test -v -race -tags=debug ./tests/plugins/kv/memcached
 	docker-compose -f tests/docker-compose.yaml down
-
-test_1.14: ## Run application tests
-	docker-compose -f tests/docker-compose.yaml up -d
-	go1.14.14 test -v -race -tags=debug ./pkg/transport/pipe
-	go1.14.14 test -v -race -tags=debug ./pkg/transport/socket
-	go1.14.14 test -v -race -tags=debug ./pkg/pool
-	go1.14.14 test -v -race -tags=debug ./pkg/worker
-	go1.14.14 test -v -race -tags=debug ./pkg/worker_watcher
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/http
-	go1.14.14 test -v -race -tags=debug ./plugins/http/config
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/informer
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/reload
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/server
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/status
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/config
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/gzip
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/headers
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/logger
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/metrics
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/redis
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/resetter
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/rpc
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/static
-	go1.14.14 test -v -race -tags=debug ./plugins/kv/boltdb
-	go1.14.14 test -v -race -tags=debug ./plugins/kv/memory
-	go1.14.14 test -v -race -tags=debug ./plugins/kv/memcached
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/kv/boltdb
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/kv/memory
-	go1.14.14 test -v -race -tags=debug ./tests/plugins/kv/memcached
-	docker-compose -f tests/docker-compose.yaml down
-
-test_1.16: ## Run application tests
-	docker-compose -f tests/docker-compose.yaml up -d
-	go1.16rc1 test -v -race -tags=debug ./pkg/transport/pipe
-	go1.16rc1 test -v -race -tags=debug ./pkg/transport/socket
-	go1.16rc1 test -v -race -tags=debug ./pkg/pool
-	go1.16rc1 test -v -race -tags=debug ./pkg/worker
-	go1.16rc1 test -v -race -tags=debug ./pkg/worker_watcher
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/http
-	go1.16rc1 test -v -race -tags=debug ./plugins/http/config
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/informer
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/reload
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/server
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/status
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/config
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/gzip
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/headers
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/logger
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/metrics
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/redis
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/resetter
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/rpc
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/static
-	go1.16rc1 test -v -race -tags=debug ./plugins/kv/boltdb
-	go1.16rc1 test -v -race -tags=debug ./plugins/kv/memory
-	go1.16rc1 test -v -race -tags=debug ./plugins/kv/memcached
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/kv/boltdb
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/kv/memory
-	go1.16rc1 test -v -race -tags=debug ./tests/plugins/kv/memcached
-	docker-compose -f tests/docker-compose.yaml down
-
-test_pipeline: test_1.14 test

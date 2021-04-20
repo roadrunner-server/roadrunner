@@ -10,7 +10,7 @@ import (
 
 // Factory is responsible of wrapping given command into tasks WorkerProcess.
 type Factory interface {
-	// SpawnWorkerWithContext creates new WorkerProcess process based on given command with context.
+	// SpawnWorkerWithTimeout creates new WorkerProcess process based on given command with context.
 	// Process must not be started.
 	SpawnWorkerWithTimeout(context.Context, *exec.Cmd, ...events.Listener) (*worker.Process, error)
 	// SpawnWorker creates new WorkerProcess process based on given command.

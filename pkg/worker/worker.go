@@ -96,14 +96,12 @@ func (w *Process) State() State {
 	return w.state
 }
 
-// State return receive-only Process state object, state can be used to safely access
-// Process status, time when status changed and number of Process executions.
+// AttachRelay attaches relay to the worker
 func (w *Process) AttachRelay(rl relay.Relay) {
 	w.relay = rl
 }
 
-// State return receive-only Process state object, state can be used to safely access
-// Process status, time when status changed and number of Process executions.
+// Relay returns relay attached to the worker
 func (w *Process) Relay() relay.Relay {
 	return w.relay
 }

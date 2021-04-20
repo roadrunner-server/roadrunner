@@ -1,0 +1,16 @@
+service:
+  some_service_2:
+    command: "test_files/test_binary"
+    process_num: 1
+    remain_after_exit: true
+    restart_delay: 1s
+    exec_timeout: 1s
+
+logs:
+  level: info
+  mode: raw
+
+endure:
+  grace_period: 120s
+  print_graph: false
+  log_level: error

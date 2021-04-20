@@ -57,7 +57,7 @@ func (s *Plugin) Name() string {
 	return PluginName
 }
 
-// middleware must return true if request/response pair is handled within the middleware.
+// Middleware must return true if request/response pair is handled within the middleware.
 func (s *Plugin) Middleware(next http.Handler) http.HandlerFunc {
 	// Define the http.HandlerFunc
 	return func(w http.ResponseWriter, r *http.Request) {

@@ -69,7 +69,7 @@ func (z *ZapLogger) NamedLogger(name string) (Logger, error) {
 	return NewZapAdapter(z.base.Named(name)), nil
 }
 
-// NamedLogger returns logger dedicated to the specific channel. Similar to Named() but also reads the core params.
+// ServiceLogger returns logger dedicated to the specific channel. Similar to Named() but also reads the core params.
 func (z *ZapLogger) ServiceLogger(n endure.Named) (Logger, error) {
 	return z.NamedLogger(n.Name())
 }
@@ -78,5 +78,6 @@ func (z *ZapLogger) ServiceLogger(n endure.Named) (Logger, error) {
 func (z *ZapLogger) Provides() []interface{} {
 	return []interface{}{
 		z.ServiceLogger,
+		z.DefaultLogger,
 	}
 }

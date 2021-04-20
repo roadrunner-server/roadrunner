@@ -22,7 +22,7 @@ type Config struct {
 	// level of all loggers descended from this config.
 	Level string `mapstructure:"level"`
 
-	// Encoding sets the logger's encoding. Valid values are "json" and
+	// Encoding sets the logger's encoding. InitDefault values are "json" and
 	// "console", as well as any third-party encodings registered via
 	// RegisterEncoder.
 	Encoding string `mapstructure:"encoding"`
