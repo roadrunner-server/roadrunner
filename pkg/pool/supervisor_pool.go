@@ -8,8 +8,8 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
+	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
-	"github.com/spiral/roadrunner/v2/tools"
 )
 
 const MB = 1024 * 1024
@@ -176,7 +176,7 @@ func (sp *supervised) control() {
 			continue
 		}
 
-		s, err := tools.WorkerProcessState(workers[i])
+		s, err := process.WorkerProcessState(workers[i])
 		if err != nil {
 			// worker not longer valid for supervision
 			continue

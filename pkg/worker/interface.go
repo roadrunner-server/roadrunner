@@ -16,7 +16,7 @@ type State interface {
 	Value() int64
 	// Set sets the StateImpl
 	Set(value int64)
-	// NumJobs shows how many times WorkerProcess was invoked
+	// NumExecs shows how many times WorkerProcess was invoked
 	NumExecs() uint64
 	// IsActive returns true if WorkerProcess not Inactive or Stopped
 	IsActive() bool
@@ -69,6 +69,6 @@ type SyncWorker interface {
 	BaseProcess
 	// Exec used to execute payload on the SyncWorker, there is no TIMEOUTS
 	Exec(rqs payload.Payload) (payload.Payload, error)
-	// ExecWithContext used to handle Exec with TTL
+	// ExecWithTTL used to handle Exec with TTL
 	ExecWithTTL(ctx context.Context, p payload.Payload) (payload.Payload, error)
 }

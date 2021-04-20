@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+v2.0.5 (27.04.2021)
+-------------------
+
+## 👀 New:
+
+- ✏️ New `service` plugin.
+
+## 🩹 Fixes:
+
+- 🐛 Fix: Logger didn't provide an anonymous log instance to a plugins w/o `Named` interface implemented.
+
 v2.0.4 (06.04.2021)
 -------------------
 

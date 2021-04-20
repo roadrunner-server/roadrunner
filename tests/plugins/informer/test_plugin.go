@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/spiral/roadrunner/v2/pkg/pool"
-	"github.com/spiral/roadrunner/v2/pkg/worker"
+	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/server"
 )
@@ -49,11 +49,21 @@ func (p1 *Plugin1) Name() string {
 	return "informer.plugin1"
 }
 
-func (p1 *Plugin1) Workers() []worker.BaseProcess {
+func (p1 *Plugin1) Workers() []process.State {
 	p, err := p1.server.NewWorkerPool(context.Background(), testPoolConfig, nil)
 	if err != nil {
 		panic(err)
 	}
 
-	return p.Workers()
+	ps := make([]process.State, 0, len(p.Workers()))
+	workers := p.Workers()
+	for i := 0; i < len(workers); i++ {
+		state, err := process.WorkerProcessState(workers[i])
+		if err != nil {
+			return nil
+		}
+		ps = append(ps, state)
+	}
+
+	return ps
 }

@@ -8,29 +8,60 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
+	"github.com/spiral/roadrunner/v2/pkg/process"
 )
 
 // WorkerTable renders table with information about rr server workers.
-func WorkerTable(writer io.Writer, workers []ProcessState) *tablewriter.Table {
+func WorkerTable(writer io.Writer, workers []process.State) *tablewriter.Table {
 	tw := tablewriter.NewWriter(writer)
-	tw.SetHeader([]string{"PID", "Status", "Execs", "Memory", "Created"})
+	tw.SetHeader([]string{"PID", "Status", "Execs", "Memory", "CPU%", "Created"})
 	tw.SetColMinWidth(0, 7)
 	tw.SetColMinWidth(1, 9)
 	tw.SetColMinWidth(2, 7)
 	tw.SetColMinWidth(3, 7)
-	tw.SetColMinWidth(4, 18)
+	tw.SetColMinWidth(4, 7)
+	tw.SetColMinWidth(5, 18)
 
-	for key := range workers {
+	for i := 0; i < len(workers); i++ {
 		tw.Append([]string{
-			strconv.Itoa(workers[key].Pid),
-			renderStatus(workers[key].Status),
-			renderJobs(workers[key].NumJobs),
-			humanize.Bytes(workers[key].MemoryUsage),
-			renderAlive(time.Unix(0, workers[key].Created)),
+			strconv.Itoa(workers[i].Pid),
+			renderStatus(workers[i].Status),
+			renderJobs(workers[i].NumJobs),
+			humanize.Bytes(workers[i].MemoryUsage),
+			renderCPU(workers[i].CPUPercent),
+			renderAlive(time.Unix(0, workers[i].Created)),
 		})
 	}
 
 	return tw
+}
+
+// ServiceWorkerTable renders table with information about rr server workers.
+func ServiceWorkerTable(writer io.Writer, workers []process.State) *tablewriter.Table {
+	tw := tablewriter.NewWriter(writer)
+	tw.SetAutoWrapText(false)
+	tw.SetHeader([]string{"PID", "Memory", "CPU%", "Command"})
+	tw.SetColMinWidth(0, 7)
+	tw.SetColMinWidth(1, 7)
+	tw.SetColMinWidth(2, 7)
+	tw.SetColMinWidth(3, 18)
+	tw.SetAlignment(tablewriter.ALIGN_LEFT)
+
+	for i := 0; i < len(workers); i++ {
+		tw.Append([]string{
+			strconv.Itoa(workers[i].Pid),
+			humanize.Bytes(workers[i].MemoryUsage),
+			renderCPU(workers[i].CPUPercent),
+			workers[i].Command,
+		})
+	}
+
+	return tw
+}
+
+//go:inline
+func renderCPU(cpu float64) string {
+	return strconv.FormatFloat(cpu, 'f', 2, 64)
 }
 
 func renderStatus(status string) string {

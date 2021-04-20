@@ -1,9 +1,8 @@
 package informer
 
 import (
-	"github.com/spiral/roadrunner/v2/pkg/worker"
+	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
-	"github.com/spiral/roadrunner/v2/tools"
 )
 
 type rpc struct {
@@ -14,7 +13,7 @@ type rpc struct {
 // WorkerList contains list of workers.
 type WorkerList struct {
 	// Workers is list of workers.
-	Workers []tools.ProcessState `json:"workers"`
+	Workers []process.State `json:"workers"`
 }
 
 // List all resettable services.
@@ -38,15 +37,9 @@ func (rpc *rpc) Workers(service string, list *WorkerList) error {
 		return err
 	}
 
-	list.Workers = make([]tools.ProcessState, 0)
-	for _, w := range workers {
-		ps, err := tools.WorkerProcessState(w.(worker.BaseProcess))
-		if err != nil {
-			continue
-		}
+	// write actual processes
+	list.Workers = workers
 
-		list.Workers = append(list.Workers, ps)
-	}
 	rpc.log.Debug("list of workers", "workers", list.Workers)
 	rpc.log.Debug("successfully finished Workers method")
 	return nil

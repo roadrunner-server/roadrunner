@@ -119,7 +119,7 @@ func (sp *StaticPool) addListener(listener events.Listener) {
 	sp.events.AddListener(listener)
 }
 
-// Config returns associated pool configuration. Immutable.
+// GetConfig returns associated pool configuration. Immutable.
 func (sp *StaticPool) GetConfig() interface{} {
 	return sp.cfg
 }
@@ -134,7 +134,7 @@ func (sp *StaticPool) RemoveWorker(wb worker.BaseProcess) error {
 	return nil
 }
 
-// Be careful, sync Exec with ExecWithContext
+// Exec executes provided payload on the worker
 func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 	const op = errors.Op("static_pool_exec")
 	if sp.cfg.Debug {
