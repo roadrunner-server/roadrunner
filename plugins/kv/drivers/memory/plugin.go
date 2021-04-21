@@ -57,6 +57,10 @@ func (s *Plugin) Stop() error {
 	return nil
 }
 
+func (s *Plugin) Configure(key string) (kv.Storage, error) {
+	return s, nil
+}
+
 func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
 	const op = errors.Op("in_memory_plugin_has")
 	if keys == nil {
@@ -218,11 +222,6 @@ func (s *Plugin) Delete(keys ...string) error {
 func (s *Plugin) Close() error {
 	s.stop <- struct{}{}
 	return nil
-}
-
-// RPCService returns associated rpc service.
-func (s *Plugin) RPC() interface{} {
-	return kv.NewRPCServer(s, s.log)
 }
 
 // Name returns plugin user-friendly name

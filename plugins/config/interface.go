@@ -1,7 +1,7 @@
 package config
 
 type Configurer interface {
-	// // UnmarshalKey takes a single key and unmarshals it into a Struct.
+	// UnmarshalKey takes a single key and unmarshals it into a Struct.
 	//
 	// func (h *HttpService) Init(cp config.Configurer) error {
 	//     h.config := &HttpConfig{}

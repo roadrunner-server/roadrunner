@@ -4,7 +4,6 @@ go 1.16
 
 require (
 	github.com/NYTimes/gziphandler v1.1.1
-	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/alicebob/miniredis/v2 v2.14.3
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
 	github.com/dustin/go-humanize v1.0.0
@@ -13,6 +12,7 @@ require (
 	github.com/go-redis/redis/v8 v8.8.2
 	github.com/gofiber/fiber/v2 v2.8.0
 	github.com/golang/mock v1.4.4
+	github.com/google/flatbuffers v1.12.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/json-iterator/go v1.1.10
 	github.com/olekukonko/tablewriter v0.0.5

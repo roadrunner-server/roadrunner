@@ -18,15 +18,16 @@ import (
 
 const PluginName = "boltdb"
 
-// BoltDB K/V storage.
+// Plugin BoltDB K/V storage.
 type Plugin struct {
 	// db instance
 	DB *bolt.DB
 	// name should be UTF-8
 	bucket []byte
 
-	// config for RR integration
-	cfg *Config
+	// boltdb configuration
+	cfg       *Config
+	cfgPlugin config.Configurer
 
 	// logger
 	log logger.Logger
@@ -41,26 +42,42 @@ type Plugin struct {
 }
 
 func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
-	const op = errors.Op("boltdb_plugin_init")
+	s.log = log
+	s.cfgPlugin = cfg
+	return nil
+}
 
-	if !cfg.Has(PluginName) {
-		return errors.E(op, errors.Disabled)
+// Serve is noop here
+func (s *Plugin) Serve() chan error {
+	errCh := make(chan error, 1)
+	return errCh
+}
+
+func (s *Plugin) Stop() error {
+	const op = errors.Op("boltdb_plugin_stop")
+	if s.DB != nil {
+		err := s.Close()
+		if err != nil {
+			return errors.E(op, err)
+		}
 	}
+	return nil
+}
 
-	err := cfg.UnmarshalKey(PluginName, &s.cfg)
+func (s *Plugin) Configure(key string) (kv.Storage, error) {
+	const op = errors.Op("boltdb_plugin_configure")
+
+	err := s.cfgPlugin.UnmarshalKey(key, &s.cfg)
 	if err != nil {
-		return errors.E(op, errors.Disabled, err)
+		return nil, errors.E(op, err)
 	}
 
 	// add default values
 	s.cfg.InitDefaults()
 
-	// set the logger
-	s.log = log
-
 	db, err := bolt.Open(path.Join(s.cfg.Dir, s.cfg.File), os.FileMode(s.cfg.Permissions), nil)
 	if err != nil {
-		return errors.E(op, err)
+		return nil, errors.E(op, err)
 	}
 
 	// create bucket if it does not exist
@@ -75,7 +92,7 @@ func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
 	})
 
 	if err != nil {
-		return errors.E(op, err)
+		return nil, errors.E(op, err)
 	}
 
 	s.DB = db
@@ -84,24 +101,10 @@ func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
 	s.timeout = time.Duration(s.cfg.Interval) * time.Second
 	s.gc = &sync.Map{}
 
-	return nil
-}
-
-func (s *Plugin) Serve() chan error {
-	errCh := make(chan error, 1)
-	// start the TTL gc
+	// start the GC phase
 	go s.gcPhase()
 
-	return errCh
-}
-
-func (s *Plugin) Stop() error {
-	const op = errors.Op("boltdb_plugin_stop")
-	err := s.Close()
-	if err != nil {
-		return errors.E(op, err)
-	}
-	return nil
+	return s, nil
 }
 
 func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
@@ -395,11 +398,6 @@ func (s *Plugin) Close() error {
 	// stop the keys GC
 	s.stop <- struct{}{}
 	return s.DB.Close()
-}
-
-// RPCService returns associated rpc service.
-func (s *Plugin) RPC() interface{} {
-	return kv.NewRPCServer(s, s.log)
 }
 
 // Name returns plugin name

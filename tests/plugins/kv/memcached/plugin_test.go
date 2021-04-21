@@ -15,7 +15,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
-	"github.com/spiral/roadrunner/v2/plugins/kv/memcached"
+	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/memcached"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/server"

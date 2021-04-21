@@ -56,19 +56,18 @@ func (s *Plugin) Serve() chan error {
 	return errCh
 }
 
-// Memcached has no stop/close or smt similar to close the connection
+// Stop Memcached has no stop/close or smt similar to close the connection
 func (s *Plugin) Stop() error {
 	return nil
-}
-
-// RPCService returns associated rpc service.
-func (s *Plugin) RPC() interface{} {
-	return kv.NewRPCServer(s, s.log)
 }
 
 // Name returns plugin user-friendly name
 func (s *Plugin) Name() string {
 	return PluginName
+}
+
+func (s *Plugin) Configure(key string) (kv.Storage, error) {
+	return s, nil
 }
 
 // Has checks the key for existence

@@ -5,3 +5,7 @@ services:
     image: memcached:latest
     ports:
       - "0.0.0.0:11211:11211"
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"

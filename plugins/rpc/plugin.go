@@ -13,7 +13,7 @@ import (
 )
 
 // PluginName contains default plugin name.
-const PluginName = "RPC"
+const PluginName = "rpc"
 
 // Plugin is RPC service.
 type Plugin struct {
@@ -23,7 +23,7 @@ type Plugin struct {
 	// set of the plugins, which are implement RPCer interface and can be plugged into the RR via RPC
 	plugins  map[string]RPCer
 	listener net.Listener
-	closed   *uint32
+	closed   uint32
 }
 
 // Init rpc service. Must return true if service is enabled.
@@ -40,13 +40,12 @@ func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	// Init defaults
 	s.cfg.InitDefaults()
 	// Init pluggable plugins map
-	s.plugins = make(map[string]RPCer)
+	s.plugins = make(map[string]RPCer, 5)
 	// init logs
 	s.log = log
+
 	// set up state
-	state := uint32(0)
-	s.closed = &state
-	atomic.StoreUint32(s.closed, 0)
+	atomic.StoreUint32(&s.closed, 0)
 
 	// validate config
 	err = s.cfg.Valid()
@@ -79,7 +78,7 @@ func (s *Plugin) Serve() chan error {
 	var err error
 	s.listener, err = s.cfg.Listener()
 	if err != nil {
-		errCh <- err
+		errCh <- errors.E(op, err)
 		return errCh
 	}
 
@@ -89,7 +88,7 @@ func (s *Plugin) Serve() chan error {
 		for {
 			conn, err := s.listener.Accept()
 			if err != nil {
-				if atomic.LoadUint32(s.closed) == 1 {
+				if atomic.LoadUint32(&s.closed) == 1 {
 					// just continue, this is not a critical issue, we just called Stop
 					return
 				}
@@ -110,7 +109,7 @@ func (s *Plugin) Serve() chan error {
 func (s *Plugin) Stop() error {
 	const op = errors.Op("rpc_plugin_stop")
 	// store closed state
-	atomic.StoreUint32(s.closed, 1)
+	atomic.StoreUint32(&s.closed, 1)
 	err := s.listener.Close()
 	if err != nil {
 		return errors.E(op, err)
@@ -123,7 +122,7 @@ func (s *Plugin) Name() string {
 	return PluginName
 }
 
-// Depends declares services to collect for RPC.
+// Collects all plugins which implement Name + RPCer interfaces
 func (s *Plugin) Collects() []interface{} {
 	return []interface{}{
 		s.RegisterPlugin,
@@ -149,14 +148,4 @@ func (s *Plugin) Register(name string, svc interface{}) error {
 	}
 
 	return s.rpc.RegisterName(name, svc)
-}
-
-// Client creates new RPC client.
-func (s *Plugin) Client() (*rpc.Client, error) {
-	conn, err := s.cfg.Dialer()
-	if err != nil {
-		return nil, err
-	}
-
-	return rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn)), nil
 }

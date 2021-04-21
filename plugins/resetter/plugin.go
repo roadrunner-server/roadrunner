@@ -74,7 +74,7 @@ func (p *Plugin) Name() string {
 	return PluginName
 }
 
-// RPCService returns associated rpc service.
+// RPC returns associated rpc service.
 func (p *Plugin) RPC() interface{} {
 	return &rpc{srv: p, log: p.log}
 }

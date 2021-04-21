@@ -13,5 +13,7 @@
         "psr-4": {
             "Temporal\\Tests\\": "src"
         }
-    }
+    },
+    "name": "test/test",
+    "description": "test"
 }

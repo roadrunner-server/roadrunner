@@ -38,4 +38,8 @@ type Storage interface {
 
 	// Close closes the storage and underlying resources.
 	Close() error
+
+	// Configure used to configure storage
+	// key - yaml config key, for example kv.boltdb-north
+	Configure(key string) (Storage, error)
 }

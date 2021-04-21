@@ -23,7 +23,7 @@ type Viper struct {
 	CommonConfig *General
 }
 
-// Inits config provider.
+// Init config provider.
 func (v *Viper) Init() error {
 	const op = errors.Op("config_plugin_init")
 	v.viper = viper.New()
