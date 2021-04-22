@@ -17,7 +17,8 @@ var EmptyItem = kv.Item{}
 
 type Plugin struct {
 	// config
-	cfg *Config
+	cfg       *Config
+	cfgPlugin config.Configurer
 	// logger
 	log logger.Logger
 	// memcached client
@@ -27,37 +28,20 @@ type Plugin struct {
 // NewMemcachedClient returns a memcache client using the provided server(s)
 // with equal weight. If a server is listed multiple times,
 // it gets a proportional amount of weight.
-func NewMemcachedClient(url string) kv.Storage {
-	m := memcache.New(url)
+func NewMemcachedClient(url ...string) kv.Storage {
+	m := memcache.New(url...)
 	return &Plugin{
 		client: m,
 	}
 }
 
 func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
-	const op = errors.Op("memcached_plugin_init")
-	if !cfg.Has(PluginName) {
-		return errors.E(op, errors.Disabled)
-	}
-	err := cfg.UnmarshalKey(PluginName, &s.cfg)
-	if err != nil {
-		return errors.E(op, err)
+	if !cfg.Has(kv.PluginName) {
+		return errors.E(errors.Disabled)
 	}
 
-	s.cfg.InitDefaults()
-
+	s.cfgPlugin = cfg
 	s.log = log
-	return nil
-}
-
-func (s *Plugin) Serve() chan error {
-	errCh := make(chan error, 1)
-	s.client = memcache.New(s.cfg.Addr...)
-	return errCh
-}
-
-// Stop Memcached has no stop/close or smt similar to close the connection
-func (s *Plugin) Stop() error {
 	return nil
 }
 
@@ -67,7 +51,16 @@ func (s *Plugin) Name() string {
 }
 
 func (s *Plugin) Configure(key string) (kv.Storage, error) {
-	return s, nil
+	const op = errors.Op("memcached_plugin_configure")
+	err := s.cfgPlugin.UnmarshalKey(key, &s.cfg)
+	if err != nil {
+		return nil, errors.E(op, err)
+	}
+
+	// initialize default keys
+	s.cfg.InitDefaults()
+
+	return NewMemcachedClient(s.cfg.Addr...), nil
 }
 
 // Has checks the key for existence
@@ -123,7 +116,7 @@ func (s *Plugin) Get(key string) ([]byte, error) {
 	return nil, nil
 }
 
-// return map with key -- string
+// MGet return map with key -- string
 // and map value as value -- []byte
 func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
 	const op = errors.Op("memcached_plugin_mget")
@@ -201,7 +194,7 @@ func (s *Plugin) Set(items ...kv.Item) error {
 	return nil
 }
 
-// Expiration is the cache expiration time, in seconds: either a relative
+// MExpire Expiration is the cache expiration time, in seconds: either a relative
 // time from now (up to 1 month), or an absolute Unix epoch time.
 // Zero means the Item has no expiration time.
 func (s *Plugin) MExpire(items ...kv.Item) error {
@@ -230,8 +223,8 @@ func (s *Plugin) MExpire(items ...kv.Item) error {
 	return nil
 }
 
-// return time in seconds (int32) for a given keys
-func (s *Plugin) TTL(keys ...string) (map[string]interface{}, error) {
+// TTL return time in seconds (int32) for a given keys
+func (s *Plugin) TTL(_ ...string) (map[string]interface{}, error) {
 	const op = errors.Op("memcached_plugin_ttl")
 	return nil, errors.E(op, errors.Str("not valid request for memcached, see https://github.com/memcached/memcached/issues/239"))
 }

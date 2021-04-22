@@ -105,7 +105,6 @@ func (p *Plugin) Serve() chan error {
 
 			// save the storage
 			p.storages[k] = storage
-
 		case boltdb:
 			if _, ok := p.drivers[boltdb]; !ok {
 				continue

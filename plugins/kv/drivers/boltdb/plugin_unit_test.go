@@ -62,7 +62,7 @@ func newBoltClient(path string, perm os.FileMode, options *bolt.Options, bucket 
 	}
 
 	// start the TTL gc
-	go s.gcPhase()
+	go s.startGCLoop()
 
 	return s, nil
 }

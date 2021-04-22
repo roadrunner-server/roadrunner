@@ -12,7 +12,7 @@ kv:
     file: "rr.db"
     bucket: "rr"
     permissions: 0666
-    ttl: 40s
+    interval: 1
 
   boltdb-africa:
     driver: boltdb
@@ -20,7 +20,7 @@ kv:
     file: "africa.db"
     bucket: "rr"
     permissions: 0666
-    ttl: 40
+    interval: 1
 
   memcached:
     driver: memcached

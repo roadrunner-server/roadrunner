@@ -19,32 +19,25 @@ type Plugin struct {
 	heap sync.Map
 	stop chan struct{}
 
-	log logger.Logger
-	cfg *Config
+	log       logger.Logger
+	cfg       *Config
+	cfgPlugin config.Configurer
 }
 
 func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	const op = errors.Op("in_memory_plugin_init")
-	if !cfg.Has(PluginName) {
+	if !cfg.Has(kv.PluginName) {
 		return errors.E(op, errors.Disabled)
 	}
-	err := cfg.UnmarshalKey(PluginName, &s.cfg)
-	if err != nil {
-		return errors.E(op, err)
-	}
 
-	s.cfg.InitDefaults()
 	s.log = log
-
+	s.cfgPlugin = cfg
 	s.stop = make(chan struct{}, 1)
 	return nil
 }
 
 func (s *Plugin) Serve() chan error {
 	errCh := make(chan error, 1)
-	// start in-memory gc for kv
-	go s.gc()
-
 	return errCh
 }
 
@@ -58,6 +51,18 @@ func (s *Plugin) Stop() error {
 }
 
 func (s *Plugin) Configure(key string) (kv.Storage, error) {
+	const op = errors.Op("inmemory_plugin_configure")
+	err := s.cfgPlugin.UnmarshalKey(key, &s.cfg)
+	if err != nil {
+		return nil, errors.E(op, err)
+	}
+
+	// initialize default keys
+	s.cfg.InitDefaults()
+
+	// start in-memory gc for kv
+	go s.gc()
+
 	return s, nil
 }
 
@@ -232,7 +237,6 @@ func (s *Plugin) Name() string {
 // ================================== PRIVATE ======================================
 
 func (s *Plugin) gc() {
-	// TODO check
 	ticker := time.NewTicker(time.Duration(s.cfg.Interval) * time.Second)
 	for {
 		select {

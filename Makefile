@@ -84,8 +84,5 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./plugins/kv/drivers/boltdb
 	go test -v -race -tags=debug ./plugins/kv/drivers/memory
 	go test -v -race -tags=debug ./plugins/kv/drivers/memcached
-	go test -v -race -tags=debug ./tests/plugins/kv/boltdb
-	go test -v -race -tags=debug ./tests/plugins/kv/memory
-	go test -v -race -tags=debug ./tests/plugins/kv/memcached
 	go test -v -race -tags=debug ./tests/plugins/kv
 	docker-compose -f tests/docker-compose.yaml down

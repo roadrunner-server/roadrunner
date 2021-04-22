@@ -80,9 +80,6 @@ jobs:
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/boltdb_unit.txt -covermode=atomic ./plugins/kv/drivers/boltdb
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/kv_unit.txt -covermode=atomic ./plugins/kv/drivers/memory
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memcached_unit.txt -covermode=atomic ./plugins/kv/drivers/memcached
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/boltdb.txt -covermode=atomic ./tests/plugins/kv/boltdb
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memory.txt -covermode=atomic ./tests/plugins/kv/memory
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memcached.txt -covermode=atomic ./tests/plugins/kv/memcached
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/kv_plugin.txt -covermode=atomic ./tests/plugins/kv
           docker-compose -f ./tests/docker-compose.yaml down
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
