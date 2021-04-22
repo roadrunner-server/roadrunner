@@ -6,6 +6,6 @@ logs:
   level: error
 
 kv:
-  default:
+  memory-rr:
     driver: memory
     interval: 1

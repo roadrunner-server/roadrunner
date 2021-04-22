@@ -60,9 +60,6 @@ func (p *Plugin) Serve() chan error {
 			for the boltdb and memcached
 			We should provide here the actual configs for the all requested storages
 				kv:
-				  default:
-				    driver: memory
-
 				  boltdb-south:
 				    driver: boltdb
 				    dir: "tests/rr-bolt"
@@ -90,8 +87,10 @@ func (p *Plugin) Serve() chan error {
 	for k, v := range p.cfg.Data {
 		if _, ok := v.(map[string]interface{})[driver]; !ok {
 			errCh <- errors.E(op, errors.Errorf("could not find mandatory driver field in the %s storage", k))
+			return errCh
 		}
 
+		// config key for the particular sub-driver
 		configKey := fmt.Sprintf("%s.%s", PluginName, k)
 		// at this point we know, that driver field present in the cofiguration
 		switch v.(map[string]interface{})[driver] {
@@ -150,7 +149,7 @@ func (p *Plugin) Serve() chan error {
 			p.storages[k] = storage
 
 		default:
-			errCh <- errors.E(op, errors.Errorf("unknown storage %s", v.(map[string]interface{})[driver]))
+			p.log.Error("unknown storage", errors.E(op, errors.Errorf("unknown storage %s", v.(map[string]interface{})[driver])))
 		}
 	}
 

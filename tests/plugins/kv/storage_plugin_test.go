@@ -664,7 +664,7 @@ func testRPCMethodsInMemory(t *testing.T) {
 
 	// add 5 second ttl
 	tt := time.Now().Add(time.Second * 5).Format(time.RFC3339)
-	keys := makePayload(flatbuffers.NewBuilder(100), "default", []kv.Item{
+	keys := makePayload(flatbuffers.NewBuilder(100), "memory-rr", []kv.Item{
 		{
 			Key: "a",
 		},
@@ -675,7 +675,7 @@ func testRPCMethodsInMemory(t *testing.T) {
 			Key: "c",
 		},
 	})
-	data := makePayload(flatbuffers.NewBuilder(100), "default", []kv.Item{
+	data := makePayload(flatbuffers.NewBuilder(100), "memory-rr", []kv.Item{
 		{
 			Key:   "a",
 			Value: "aa",
@@ -727,7 +727,7 @@ func testRPCMethodsInMemory(t *testing.T) {
 	assert.Equal(t, "bb", mGet["b"].(string))
 
 	tt2 := time.Now().Add(time.Second * 10).Format(time.RFC3339)
-	data2 := makePayload(flatbuffers.NewBuilder(100), "default", []kv.Item{
+	data2 := makePayload(flatbuffers.NewBuilder(100), "memory-rr", []kv.Item{
 		{
 			Key: "a",
 			TTL: tt2,
@@ -749,7 +749,7 @@ func testRPCMethodsInMemory(t *testing.T) {
 	assert.True(t, mExpRes)
 
 	// TTL
-	keys2 := makePayload(flatbuffers.NewBuilder(100), "default", []kv.Item{
+	keys2 := makePayload(flatbuffers.NewBuilder(100), "memory-rr", []kv.Item{
 		{
 			Key: "a",
 		},
@@ -773,7 +773,7 @@ func testRPCMethodsInMemory(t *testing.T) {
 	assert.Len(t, ret, 0)
 
 	// DELETE
-	keysDel := makePayload(flatbuffers.NewBuilder(100), "default", []kv.Item{
+	keysDel := makePayload(flatbuffers.NewBuilder(100), "memory-rr", []kv.Item{
 		{
 			Key: "e",
 		},

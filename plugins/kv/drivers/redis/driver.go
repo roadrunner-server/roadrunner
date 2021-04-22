@@ -27,6 +27,7 @@ func NewRedisDriver(log logger.Logger, key string, cfgPlugin config.Configurer) 
 		log: log,
 	}
 
+	// will be different for every connected driver
 	err := cfgPlugin.UnmarshalKey(key, &d.cfg)
 	if err != nil {
 		return nil, errors.E(op, err)
