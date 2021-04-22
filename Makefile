@@ -48,9 +48,6 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/resetter.out -covermode=atomic ./tests/plugins/resetter
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/rpc.out -covermode=atomic ./tests/plugins/rpc
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/static.out -covermode=atomic ./tests/plugins/static
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/boltdb_unit.out -covermode=atomic ./plugins/kv/drivers/boltdb
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/kv_unit.out -covermode=atomic ./plugins/kv/drivers/memory
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/memcached_unit.out -covermode=atomic ./plugins/kv/drivers/memcached
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/boltdb.out -covermode=atomic ./tests/plugins/kv/boltdb
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/memory.out -covermode=atomic ./tests/plugins/kv/memory
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/memcached.out -covermode=atomic ./tests/plugins/kv/memcached
@@ -81,8 +78,5 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./tests/plugins/resetter
 	go test -v -race -tags=debug ./tests/plugins/rpc
 	go test -v -race -tags=debug ./tests/plugins/static
-	go test -v -race -tags=debug ./plugins/kv/drivers/boltdb
-	go test -v -race -tags=debug ./plugins/kv/drivers/memory
-	go test -v -race -tags=debug ./plugins/kv/drivers/memcached
 	go test -v -race -tags=debug ./tests/plugins/kv
 	docker-compose -f tests/docker-compose.yaml down

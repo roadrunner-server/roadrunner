@@ -25,11 +25,12 @@ const (
 type Plugin struct {
 	log logger.Logger
 	// drivers contains general storage drivers, such as boltdb, memory, memcached, redis.
-	drivers map[string]Storage
+	drivers map[string]StorageDriver
 	// storages contains user-defined storages, such as boltdb-north, memcached-us and so on.
 	storages map[string]Storage
 	// KV configuration
-	cfg Config
+	cfg       Config
+	cfgPlugin config.Configurer
 }
 
 func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
@@ -42,9 +43,10 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	if err != nil {
 		return errors.E(op, err)
 	}
-	p.drivers = make(map[string]Storage, 5)
+	p.drivers = make(map[string]StorageDriver, 5)
 	p.storages = make(map[string]Storage, 5)
 	p.log = log
+	p.cfgPlugin = cfg
 	return nil
 }
 
@@ -97,7 +99,8 @@ func (p *Plugin) Serve() chan error {
 			if _, ok := p.drivers[memcached]; !ok {
 				continue
 			}
-			storage, err := p.drivers[memcached].Configure(configKey)
+
+			storage, err := p.drivers[memcached].Provide(configKey)
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -105,11 +108,13 @@ func (p *Plugin) Serve() chan error {
 
 			// save the storage
 			p.storages[k] = storage
+
 		case boltdb:
 			if _, ok := p.drivers[boltdb]; !ok {
 				continue
 			}
-			storage, err := p.drivers[boltdb].Configure(configKey)
+
+			storage, err := p.drivers[boltdb].Provide(configKey)
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -121,7 +126,8 @@ func (p *Plugin) Serve() chan error {
 			if _, ok := p.drivers[memory]; !ok {
 				continue
 			}
-			storage, err := p.drivers[memory].Configure(configKey)
+
+			storage, err := p.drivers[memory].Provide(configKey)
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -129,18 +135,19 @@ func (p *Plugin) Serve() chan error {
 
 			// save the storage
 			p.storages[k] = storage
+
 		case redis:
-			if _, ok := p.drivers[redis]; !ok {
-				continue
-			}
-			storage, err := p.drivers[redis].Configure(configKey)
-			if err != nil {
-				errCh <- errors.E(op, err)
-				return errCh
-			}
-
-			// save the storage
-			p.storages[k] = storage
+			// if _, ok := p.drivers[redis]; !ok {
+			// 	continue
+			// }
+			// storage, err := p.drivers[redis].Configure(configKey)
+			// if err != nil {
+			// 	errCh <- errors.E(op, err)
+			// 	return errCh
+			// }
+			//
+			// // save the storage
+			// p.storages[k] = storage
 		default:
 			errCh <- errors.E(op, errors.Errorf("unknown storage %s", v.(map[string]interface{})[driver]))
 		}
@@ -160,7 +167,7 @@ func (p *Plugin) Collects() []interface{} {
 	}
 }
 
-func (p *Plugin) GetAllStorageDrivers(name endure.Named, storage Storage) {
+func (p *Plugin) GetAllStorageDrivers(name endure.Named, storage StorageDriver) {
 	// save the storage driver
 	p.drivers[name.Name()] = storage
 }

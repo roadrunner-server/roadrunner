@@ -35,11 +35,15 @@ type Storage interface {
 
 	// Delete one or multiple keys.
 	Delete(keys ...string) error
+}
 
-	// Close closes the storage and underlying resources.
-	Close() error
+// StorageDriver interface provide storage
+type StorageDriver interface {
+	Provider
+}
 
-	// Configure used to configure storage
-	// key - yaml config key, for example kv.boltdb-north
-	Configure(key string) (Storage, error)
+// Provider provides storage based on the config
+type Provider interface {
+	// Provide provides Storage based on the config key
+	Provide(key string) (Storage, error)
 }

@@ -216,24 +216,6 @@ func (r *rpc) Delete(in []byte, ok *bool) error {
 	return errors.E(op, errors.Errorf("no such storage: %s", dataRoot.Storage()))
 }
 
-// Close closes the storage connection
-func (r *rpc) Close(storage string, ok *bool) error {
-	const op = errors.Op("rpc_close")
-	if st, exists := r.storages[storage]; exists {
-		err := st.Close()
-		if err != nil {
-			return errors.E(op, err)
-		}
-
-		// save the result
-		*ok = true
-		return nil
-	}
-
-	*ok = false
-	return nil
-}
-
 func strConvert(s []byte) string {
 	return *(*string)(unsafe.Pointer(&s))
 }
