@@ -80,7 +80,7 @@ func NewBoltDBDriver(log logger.Logger, key string, cfgPlugin config.Configurer,
 }
 
 func (d *Driver) Has(keys ...string) (map[string]bool, error) {
-	const op = errors.Op("boltdb_plugin_has")
+	const op = errors.Op("boltdb_driver_has")
 	d.log.Debug("boltdb HAS method called", "args", keys)
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -121,7 +121,7 @@ func (d *Driver) Has(keys ...string) (map[string]bool, error) {
 // Returns a nil value if the key does not exist or if the key is a nested bucket.
 // The returned value is only valid for the life of the transaction.
 func (d *Driver) Get(key string) ([]byte, error) {
-	const op = errors.Op("boltdb_plugin_get")
+	const op = errors.Op("boltdb_driver_get")
 	// to get cases like "  "
 	keyTrimmed := strings.TrimSpace(key)
 	if keyTrimmed == "" {
@@ -161,7 +161,7 @@ func (d *Driver) Get(key string) ([]byte, error) {
 }
 
 func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
-	const op = errors.Op("boltdb_plugin_mget")
+	const op = errors.Op("boltdb_driver_mget")
 	// defense
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -213,7 +213,7 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 
 // Set puts the K/V to the bolt
 func (d *Driver) Set(items ...kv.Item) error {
-	const op = errors.Op("boltdb_plugin_set")
+	const op = errors.Op("boltdb_driver_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
 	}
@@ -276,7 +276,7 @@ func (d *Driver) Set(items ...kv.Item) error {
 
 // Delete all keys from DB
 func (d *Driver) Delete(keys ...string) error {
-	const op = errors.Op("boltdb_plugin_delete")
+	const op = errors.Op("boltdb_driver_delete")
 	if keys == nil {
 		return errors.E(op, errors.NoKeys)
 	}
@@ -323,7 +323,7 @@ func (d *Driver) Delete(keys ...string) error {
 // MExpire sets the expiration time to the key
 // If key already has the expiration time, it will be overwritten
 func (d *Driver) MExpire(items ...kv.Item) error {
-	const op = errors.Op("boltdb_plugin_mexpire")
+	const op = errors.Op("boltdb_driver_mexpire")
 	for i := range items {
 		if items[i].TTL == "" || strings.TrimSpace(items[i].Key) == "" {
 			return errors.E(op, errors.Str("should set timeout and at least one key"))
@@ -341,7 +341,7 @@ func (d *Driver) MExpire(items ...kv.Item) error {
 }
 
 func (d *Driver) TTL(keys ...string) (map[string]interface{}, error) {
-	const op = errors.Op("boltdb_plugin_ttl")
+	const op = errors.Op("boltdb_driver_ttl")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
 	}

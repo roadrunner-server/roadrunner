@@ -135,19 +135,20 @@ func (p *Plugin) Serve() chan error {
 
 			// save the storage
 			p.storages[k] = storage
-
 		case redis:
-			// if _, ok := p.drivers[redis]; !ok {
-			// 	continue
-			// }
-			// storage, err := p.drivers[redis].Configure(configKey)
-			// if err != nil {
-			// 	errCh <- errors.E(op, err)
-			// 	return errCh
-			// }
-			//
-			// // save the storage
-			// p.storages[k] = storage
+			if _, ok := p.drivers[redis]; !ok {
+				continue
+			}
+
+			storage, err := p.drivers[redis].Provide(configKey)
+			if err != nil {
+				errCh <- errors.E(op, err)
+				return errCh
+			}
+
+			// save the storage
+			p.storages[k] = storage
+
 		default:
 			errCh <- errors.E(op, errors.Errorf("unknown storage %s", v.(map[string]interface{})[driver]))
 		}
