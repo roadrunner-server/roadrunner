@@ -35,7 +35,15 @@ type Storage interface {
 
 	// Delete one or multiple keys.
 	Delete(keys ...string) error
+}
 
-	// Close closes the storage and underlying resources.
-	Close() error
+// StorageDriver interface provide storage
+type StorageDriver interface {
+	Provider
+}
+
+// Provider provides storage based on the config
+type Provider interface {
+	// Provide provides Storage based on the config key
+	Provide(key string) (Storage, error)
 }

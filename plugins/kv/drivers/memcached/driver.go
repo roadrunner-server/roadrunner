@@ -11,68 +11,37 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
-const PluginName = "memcached"
-
-var EmptyItem = kv.Item{}
-
-type Plugin struct {
-	// config
-	cfg *Config
-	// logger
-	log logger.Logger
-	// memcached client
+type Driver struct {
 	client *memcache.Client
+	log    logger.Logger
+	cfg    *Config
 }
 
-// NewMemcachedClient returns a memcache client using the provided server(s)
+// NewMemcachedDriver returns a memcache client using the provided server(s)
 // with equal weight. If a server is listed multiple times,
 // it gets a proportional amount of weight.
-func NewMemcachedClient(url string) kv.Storage {
-	m := memcache.New(url)
-	return &Plugin{
-		client: m,
-	}
-}
+func NewMemcachedDriver(log logger.Logger, key string, cfgPlugin config.Configurer) (kv.Storage, error) {
+	const op = errors.Op("new_memcached_driver")
 
-func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
-	const op = errors.Op("memcached_plugin_init")
-	if !cfg.Has(PluginName) {
-		return errors.E(op, errors.Disabled)
+	s := &Driver{
+		log: log,
 	}
-	err := cfg.UnmarshalKey(PluginName, &s.cfg)
+
+	err := cfgPlugin.UnmarshalKey(key, &s.cfg)
 	if err != nil {
-		return errors.E(op, err)
+		return nil, errors.E(op, err)
 	}
 
 	s.cfg.InitDefaults()
 
-	s.log = log
-	return nil
-}
+	m := memcache.New(s.cfg.Addr...)
+	s.client = m
 
-func (s *Plugin) Serve() chan error {
-	errCh := make(chan error, 1)
-	s.client = memcache.New(s.cfg.Addr...)
-	return errCh
-}
-
-// Memcached has no stop/close or smt similar to close the connection
-func (s *Plugin) Stop() error {
-	return nil
-}
-
-// RPCService returns associated rpc service.
-func (s *Plugin) RPC() interface{} {
-	return kv.NewRPCServer(s, s.log)
-}
-
-// Name returns plugin user-friendly name
-func (s *Plugin) Name() string {
-	return PluginName
+	return s, nil
 }
 
 // Has checks the key for existence
-func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
+func (d *Driver) Has(keys ...string) (map[string]bool, error) {
 	const op = errors.Op("memcached_plugin_has")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -83,7 +52,7 @@ func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
 		if keyTrimmed == "" {
 			return nil, errors.E(op, errors.EmptyKey)
 		}
-		exist, err := s.client.Get(keys[i])
+		exist, err := d.client.Get(keys[i])
 
 		if err != nil {
 			// ErrCacheMiss means that a Get failed because the item wasn't present.
@@ -101,14 +70,14 @@ func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
 
 // Get gets the item for the given key. ErrCacheMiss is returned for a
 // memcache cache miss. The key must be at most 250 bytes in length.
-func (s *Plugin) Get(key string) ([]byte, error) {
+func (d *Driver) Get(key string) ([]byte, error) {
 	const op = errors.Op("memcached_plugin_get")
 	// to get cases like "  "
 	keyTrimmed := strings.TrimSpace(key)
 	if keyTrimmed == "" {
 		return nil, errors.E(op, errors.EmptyKey)
 	}
-	data, err := s.client.Get(key)
+	data, err := d.client.Get(key)
 	if err != nil {
 		// ErrCacheMiss means that a Get failed because the item wasn't present.
 		if err == memcache.ErrCacheMiss {
@@ -124,9 +93,9 @@ func (s *Plugin) Get(key string) ([]byte, error) {
 	return nil, nil
 }
 
-// return map with key -- string
+// MGet return map with key -- string
 // and map value as value -- []byte
-func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
+func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 	const op = errors.Op("memcached_plugin_mget")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -143,7 +112,7 @@ func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
 	m := make(map[string]interface{}, len(keys))
 	for i := range keys {
 		// Here also MultiGet
-		data, err := s.client.Get(keys[i])
+		data, err := d.client.Get(keys[i])
 		if err != nil {
 			// ErrCacheMiss means that a Get failed because the item wasn't present.
 			if err == memcache.ErrCacheMiss {
@@ -164,7 +133,7 @@ func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
 // Expiration is the cache expiration time, in seconds: either a relative
 // time from now (up to 1 month), or an absolute Unix epoch time.
 // Zero means the Item has no expiration time.
-func (s *Plugin) Set(items ...kv.Item) error {
+func (d *Driver) Set(items ...kv.Item) error {
 	const op = errors.Op("memcached_plugin_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
@@ -193,7 +162,7 @@ func (s *Plugin) Set(items ...kv.Item) error {
 			memcachedItem.Expiration = int32(t.Unix())
 		}
 
-		err := s.client.Set(memcachedItem)
+		err := d.client.Set(memcachedItem)
 		if err != nil {
 			return err
 		}
@@ -202,10 +171,10 @@ func (s *Plugin) Set(items ...kv.Item) error {
 	return nil
 }
 
-// Expiration is the cache expiration time, in seconds: either a relative
+// MExpire Expiration is the cache expiration time, in seconds: either a relative
 // time from now (up to 1 month), or an absolute Unix epoch time.
 // Zero means the Item has no expiration time.
-func (s *Plugin) MExpire(items ...kv.Item) error {
+func (d *Driver) MExpire(items ...kv.Item) error {
 	const op = errors.Op("memcached_plugin_mexpire")
 	for i := range items {
 		if items[i].TTL == "" || strings.TrimSpace(items[i].Key) == "" {
@@ -223,7 +192,7 @@ func (s *Plugin) MExpire(items ...kv.Item) error {
 		// into the future at which time the item will expire. Zero means the item has
 		// no expiration time. ErrCacheMiss is returned if the key is not in the cache.
 		// The key must be at most 250 bytes in length.
-		err = s.client.Touch(items[i].Key, int32(t.Unix()))
+		err = d.client.Touch(items[i].Key, int32(t.Unix()))
 		if err != nil {
 			return errors.E(op, err)
 		}
@@ -231,13 +200,13 @@ func (s *Plugin) MExpire(items ...kv.Item) error {
 	return nil
 }
 
-// return time in seconds (int32) for a given keys
-func (s *Plugin) TTL(keys ...string) (map[string]interface{}, error) {
+// TTL return time in seconds (int32) for a given keys
+func (d *Driver) TTL(_ ...string) (map[string]interface{}, error) {
 	const op = errors.Op("memcached_plugin_ttl")
 	return nil, errors.E(op, errors.Str("not valid request for memcached, see https://github.com/memcached/memcached/issues/239"))
 }
 
-func (s *Plugin) Delete(keys ...string) error {
+func (d *Driver) Delete(keys ...string) error {
 	const op = errors.Op("memcached_plugin_has")
 	if keys == nil {
 		return errors.E(op, errors.NoKeys)
@@ -252,7 +221,7 @@ func (s *Plugin) Delete(keys ...string) error {
 	}
 
 	for i := range keys {
-		err := s.client.Delete(keys[i])
+		err := d.client.Delete(keys[i])
 		// ErrCacheMiss means that a Get failed because the item wasn't present.
 		if err != nil {
 			// ErrCacheMiss means that a Get failed because the item wasn't present.
@@ -262,9 +231,5 @@ func (s *Plugin) Delete(keys ...string) error {
 			return errors.E(op, err)
 		}
 	}
-	return nil
-}
-
-func (s *Plugin) Close() error {
 	return nil
 }

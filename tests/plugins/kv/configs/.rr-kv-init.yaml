@@ -1,0 +1,30 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+
+kv:
+  default:
+    driver: memory
+
+  boltdb-south:
+    driver: boltdb
+    dir: "."
+    file: "rr.db"
+    bucket: "rr"
+    permissions: 0666
+    interval: 1
+
+  boltdb-africa:
+    driver: boltdb
+    dir: "."
+    file: "africa.db"
+    bucket: "rr"
+    permissions: 0666
+    interval: 1
+
+  memcached:
+    driver: memcached
+    addr: [ "localhost:11211" ]
+
+#  redis:
+#    driver: redis

@@ -1,0 +1,14 @@
+namespace generated;
+
+table Payload {
+    Storage:string;
+    Items:[Item];
+}
+
+table Item {
+    Key:string;
+    Value:string;
+    Timeout:string;
+}
+
+root_type Payload;

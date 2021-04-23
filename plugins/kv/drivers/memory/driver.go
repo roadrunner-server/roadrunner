@@ -11,53 +11,35 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
-// PluginName is user friendly name for the plugin
-const PluginName = "memory"
-
-type Plugin struct {
-	// heap is user map for the key-value pairs
+type Driver struct {
 	heap sync.Map
+	// stop is used to stop keys GC and close boltdb connection
 	stop chan struct{}
-
-	log logger.Logger
-	cfg *Config
+	log  logger.Logger
+	cfg  *Config
 }
 
-func (s *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
-	const op = errors.Op("in_memory_plugin_init")
-	if !cfg.Has(PluginName) {
-		return errors.E(op, errors.Disabled)
+func NewInMemoryDriver(log logger.Logger, key string, cfgPlugin config.Configurer, stop chan struct{}) (kv.Storage, error) {
+	const op = errors.Op("new_in_memory_driver")
+
+	d := &Driver{
+		stop: stop,
+		log:  log,
 	}
-	err := cfg.UnmarshalKey(PluginName, &s.cfg)
+
+	err := cfgPlugin.UnmarshalKey(key, &d.cfg)
 	if err != nil {
-		return errors.E(op, err)
+		return nil, errors.E(op, err)
 	}
 
-	s.cfg.InitDefaults()
-	s.log = log
+	d.cfg.InitDefaults()
 
-	s.stop = make(chan struct{}, 1)
-	return nil
+	go d.gc()
+
+	return d, nil
 }
 
-func (s *Plugin) Serve() chan error {
-	errCh := make(chan error, 1)
-	// start in-memory gc for kv
-	go s.gc()
-
-	return errCh
-}
-
-func (s *Plugin) Stop() error {
-	const op = errors.Op("in_memory_plugin_stop")
-	err := s.Close()
-	if err != nil {
-		return errors.E(op, err)
-	}
-	return nil
-}
-
-func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
+func (s *Driver) Has(keys ...string) (map[string]bool, error) {
 	const op = errors.Op("in_memory_plugin_has")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -77,7 +59,7 @@ func (s *Plugin) Has(keys ...string) (map[string]bool, error) {
 	return m, nil
 }
 
-func (s *Plugin) Get(key string) ([]byte, error) {
+func (s *Driver) Get(key string) ([]byte, error) {
 	const op = errors.Op("in_memory_plugin_get")
 	// to get cases like "  "
 	keyTrimmed := strings.TrimSpace(key)
@@ -93,7 +75,7 @@ func (s *Plugin) Get(key string) ([]byte, error) {
 	return nil, nil
 }
 
-func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
+func (s *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 	const op = errors.Op("in_memory_plugin_mget")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -118,7 +100,7 @@ func (s *Plugin) MGet(keys ...string) (map[string]interface{}, error) {
 	return m, nil
 }
 
-func (s *Plugin) Set(items ...kv.Item) error {
+func (s *Driver) Set(items ...kv.Item) error {
 	const op = errors.Op("in_memory_plugin_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
@@ -141,7 +123,7 @@ func (s *Plugin) Set(items ...kv.Item) error {
 
 // MExpire sets the expiration time to the key
 // If key already has the expiration time, it will be overwritten
-func (s *Plugin) MExpire(items ...kv.Item) error {
+func (s *Driver) MExpire(items ...kv.Item) error {
 	const op = errors.Op("in_memory_plugin_mexpire")
 	for i := range items {
 		if items[i].TTL == "" || strings.TrimSpace(items[i].Key) == "" {
@@ -170,7 +152,7 @@ func (s *Plugin) MExpire(items ...kv.Item) error {
 	return nil
 }
 
-func (s *Plugin) TTL(keys ...string) (map[string]interface{}, error) {
+func (s *Driver) TTL(keys ...string) (map[string]interface{}, error) {
 	const op = errors.Op("in_memory_plugin_ttl")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -194,7 +176,7 @@ func (s *Plugin) TTL(keys ...string) (map[string]interface{}, error) {
 	return m, nil
 }
 
-func (s *Plugin) Delete(keys ...string) error {
+func (s *Driver) Delete(keys ...string) error {
 	const op = errors.Op("in_memory_plugin_delete")
 	if keys == nil {
 		return errors.E(op, errors.NoKeys)
@@ -214,26 +196,9 @@ func (s *Plugin) Delete(keys ...string) error {
 	return nil
 }
 
-// Close clears the in-memory storage
-func (s *Plugin) Close() error {
-	s.stop <- struct{}{}
-	return nil
-}
-
-// RPCService returns associated rpc service.
-func (s *Plugin) RPC() interface{} {
-	return kv.NewRPCServer(s, s.log)
-}
-
-// Name returns plugin user-friendly name
-func (s *Plugin) Name() string {
-	return PluginName
-}
-
 // ================================== PRIVATE ======================================
 
-func (s *Plugin) gc() {
-	// TODO check
+func (s *Driver) gc() {
 	ticker := time.NewTicker(time.Duration(s.cfg.Interval) * time.Second)
 	for {
 		select {

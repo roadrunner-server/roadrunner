@@ -1,6 +1,6 @@
 name: Tests
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   golang:
@@ -77,12 +77,7 @@ jobs:
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/resetter.txt -covermode=atomic ./tests/plugins/resetter
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/rpc.txt -covermode=atomic ./tests/plugins/rpc
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/static.txt -covermode=atomic ./tests/plugins/static
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/boltdb_unit.txt -covermode=atomic ./plugins/kv/boltdb
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/kv_unit.txt -covermode=atomic ./plugins/kv/memory
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memcached_unit.txt -covermode=atomic ./plugins/kv/memcached
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/boltdb.txt -covermode=atomic ./tests/plugins/kv/boltdb
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memory.txt -covermode=atomic ./tests/plugins/kv/memory
-          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/memcached.txt -covermode=atomic ./tests/plugins/kv/memcached
+          go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/kv_plugin.txt -covermode=atomic ./tests/plugins/kv
           docker-compose -f ./tests/docker-compose.yaml down
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
