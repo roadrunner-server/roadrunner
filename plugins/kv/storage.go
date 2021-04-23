@@ -3,7 +3,6 @@ package kv
 import (
 	"fmt"
 
-	"github.com/prometheus/common/log"
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
@@ -97,7 +96,7 @@ func (p *Plugin) Serve() chan error {
 		switch v.(map[string]interface{})[driver] {
 		case memcached:
 			if _, ok := p.drivers[memcached]; !ok {
-				log.Warn("no memcached drivers registered", "registered", p.drivers)
+				p.log.Warn("no memcached drivers registered", "registered", p.drivers)
 				continue
 			}
 
@@ -112,7 +111,7 @@ func (p *Plugin) Serve() chan error {
 
 		case boltdb:
 			if _, ok := p.drivers[boltdb]; !ok {
-				log.Warn("no boltdb drivers registered", "registered", p.drivers)
+				p.log.Warn("no boltdb drivers registered", "registered", p.drivers)
 				continue
 			}
 
@@ -126,7 +125,7 @@ func (p *Plugin) Serve() chan error {
 			p.storages[k] = storage
 		case memory:
 			if _, ok := p.drivers[memory]; !ok {
-				log.Warn("no in-memory drivers registered", "registered", p.drivers)
+				p.log.Warn("no in-memory drivers registered", "registered", p.drivers)
 				continue
 			}
 
@@ -140,7 +139,7 @@ func (p *Plugin) Serve() chan error {
 			p.storages[k] = storage
 		case redis:
 			if _, ok := p.drivers[redis]; !ok {
-				log.Warn("no redis drivers registered", "registered", p.drivers)
+				p.log.Warn("no redis drivers registered", "registered", p.drivers)
 				continue
 			}
 
