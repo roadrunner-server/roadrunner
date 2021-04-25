@@ -18,11 +18,7 @@ http:
     dir: "../../../tests"
     forbid: [ ".php", ".htaccess" ]
     always: [ ".ico" ]
-    request:
-      "Example-Request-Header": "Value"
-    # Automatically add headers to every response.
-    response:
-      "X-Powered-By": "RoadRunner"
+
   pool:
     num_workers: 2
     max_jobs: 0

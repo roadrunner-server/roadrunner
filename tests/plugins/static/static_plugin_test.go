@@ -259,7 +259,8 @@ func TestStaticFilesForbid(t *testing.T) {
 
 	err = cont.RegisterAll(
 		cfg,
-		mockLogger,
+		//mockLogger,
+		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},

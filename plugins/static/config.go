@@ -2,8 +2,6 @@ package static
 
 import (
 	"os"
-	"path"
-	"strings"
 
 	"github.com/spiral/errors"
 )
@@ -14,9 +12,13 @@ type Config struct {
 		// Dir contains name of directory to control access to.
 		Dir string
 
-		// Forbid specifies list of file extensions which are forbidden for access.
-		// Example: .php, .exe, .bat, .htaccess and etc.
+		// forbid specifies list of file extensions which are forbidden for access.
+		// example: .php, .exe, .bat, .htaccess and etc.
 		Forbid []string
+
+		// Allow specifies list of file extensions which are allowed for access.
+		// example: .php, .exe, .bat, .htaccess and etc.
+		Allow []string
 
 		// Always specifies list of extensions which must always be served by static
 		// service, even if file not found.
@@ -47,30 +49,4 @@ func (c *Config) Valid() error {
 	}
 
 	return nil
-}
-
-// AlwaysForbid must return true if file extension is not allowed for the upload.
-func (c *Config) AlwaysForbid(filename string) bool {
-	ext := strings.ToLower(path.Ext(filename))
-
-	for _, v := range c.Static.Forbid {
-		if ext == v {
-			return true
-		}
-	}
-
-	return false
-}
-
-// AlwaysServe must indicate that file is expected to be served by static service.
-func (c *Config) AlwaysServe(filename string) bool {
-	ext := strings.ToLower(path.Ext(filename))
-
-	for _, v := range c.Static.Always {
-		if ext == v {
-			return true
-		}
-	}
-
-	return false
 }
