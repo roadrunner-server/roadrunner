@@ -1669,7 +1669,7 @@ func staticNotForbid(t *testing.T) {
 }
 
 func serveStaticSample(t *testing.T) {
-	b, r, err := get("http://localhost:21603/tests/sample.txt")
+	b, r, err := get("http://localhost:21603/tests/static/sample.txt")
 	assert.NoError(t, err)
 	assert.Equal(t, "sample", b)
 	_ = r.Body.Close()
