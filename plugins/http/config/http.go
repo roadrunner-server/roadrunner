@@ -108,6 +108,9 @@ func (c *HTTP) InitDefaults() error {
 		if c.Static.Pattern == "" {
 			c.Static.Pattern = "/static/"
 		}
+		if c.Static.Dir == "" {
+			c.Static.Dir = "."
+		}
 	}
 
 	err := c.HTTP2Config.InitDefaults()

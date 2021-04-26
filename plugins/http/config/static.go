@@ -9,11 +9,12 @@ import (
 // Static describes file location and controls access to them.
 type Static struct {
 	// Dir contains name of directory to control access to.
+	// Default - "."
 	Dir string
 
 	// HTTP pattern, where to serve static files
-	// for example - `/static`, `/my-files/static`, etc
-	// Default - /static
+	// for example - `/static/`, `/my-files/static/`, etc
+	// Default - /static/
 	Pattern string
 
 	// forbid specifies list of file extensions which are forbidden for access.
