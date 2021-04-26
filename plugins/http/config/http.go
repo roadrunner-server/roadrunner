@@ -106,7 +106,7 @@ func (c *HTTP) InitDefaults() error {
 	// static files
 	if c.Static != nil {
 		if c.Static.Pattern == "" {
-			c.Static.Pattern = "/static"
+			c.Static.Pattern = "/static/"
 		}
 	}
 
