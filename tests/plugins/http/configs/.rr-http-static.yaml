@@ -1,5 +1,5 @@
 server:
-  command: "php ../../http/client.php echo pipes"
+  command: "php ../../http/client.php pid pipes"
   user: ""
   group: ""
   env:
@@ -8,20 +8,21 @@ server:
   relay_timeout: "20s"
 
 http:
-  address: 127.0.0.1:45877
+  address: 127.0.0.1:21603
   max_request_size: 1024
   middleware: [ "gzip" ]
   trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
   uploads:
     forbid: [ ".php", ".exe", ".bat" ]
   static:
-    dir: "../../../tests"
-    forbid: [ ".php" ]
+    dir: "../../../"
+    pattern: "/tests/"
+    forbid: [ "" ]
+    allow: [ ".txt", ".php" ]
     request:
-      Example-Request-Header: "Value"
-    # Automatically add headers to every response.
+      "input": "custom-header"
     response:
-      X-Powered-By: "RoadRunner"
+      "output": "output-header"
   pool:
     num_workers: 2
     max_jobs: 0

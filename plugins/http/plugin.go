@@ -59,7 +59,9 @@ type Plugin struct {
 	// stdlog passed to the http/https/fcgi servers to log their internal messages
 	stdLog *log.Logger
 
+	// http configuration
 	cfg *httpConfig.HTTP `mapstructure:"http"`
+
 	// middlewares to chain
 	mdwr middleware
 
@@ -138,7 +140,7 @@ func (s *Plugin) Serve() chan error {
 	return errCh
 }
 
-func (s *Plugin) serve(errCh chan error) {
+func (s *Plugin) serve(errCh chan error) { //nolint:gocognit
 	var err error
 	const op = errors.Op("http_plugin_serve")
 	s.pool, err = s.server.NewWorkerPool(context.Background(), pool.Config{
@@ -167,11 +169,37 @@ func (s *Plugin) serve(errCh chan error) {
 
 	s.handler.AddListener(s.logCallback)
 
+	// Create new HTTP Multiplexer
+	mux := http.NewServeMux()
+
+	// if we have static, handler here, create a fileserver
+	if s.cfg.Static != nil {
+		h := http.FileServer(StaticFilesHandler(s.cfg.Static))
+		// Static files handler
+		mux.HandleFunc(s.cfg.Static.Pattern, func(w http.ResponseWriter, r *http.Request) {
+			if s.cfg.Static.Request != nil {
+				for k, v := range s.cfg.Static.Request {
+					r.Header.Add(k, v)
+				}
+			}
+
+			if s.cfg.Static.Response != nil {
+				for k, v := range s.cfg.Static.Response {
+					w.Header().Set(k, v)
+				}
+			}
+
+			h.ServeHTTP(w, r)
+		})
+	}
+
+	mux.HandleFunc("/", s.ServeHTTP)
+
 	if s.cfg.EnableHTTP() {
 		if s.cfg.EnableH2C() {
-			s.http = &http.Server{Handler: h2c.NewHandler(s, &http2.Server{}), ErrorLog: s.stdLog}
+			s.http = &http.Server{Handler: h2c.NewHandler(mux, &http2.Server{}), ErrorLog: s.stdLog}
 		} else {
-			s.http = &http.Server{Handler: s, ErrorLog: s.stdLog}
+			s.http = &http.Server{Handler: mux, ErrorLog: s.stdLog}
 		}
 	}
 
@@ -195,7 +223,7 @@ func (s *Plugin) serve(errCh chan error) {
 	}
 
 	if s.cfg.EnableFCGI() {
-		s.fcgi = &http.Server{Handler: s, ErrorLog: s.stdLog}
+		s.fcgi = &http.Server{Handler: mux, ErrorLog: s.stdLog}
 	}
 
 	// start http, https and fcgi servers if requested in the config
@@ -216,9 +244,11 @@ func (s *Plugin) serveHTTP(errCh chan error) {
 	if s.http == nil {
 		return
 	}
-
 	const op = errors.Op("http_plugin_serve_http")
-	applyMiddlewares(s.http, s.mdwr, s.cfg.Middleware, s.log)
+
+	if len(s.mdwr) > 0 {
+		applyMiddlewares(s.http, s.mdwr, s.cfg.Middleware, s.log)
+	}
 	l, err := utils.CreateListener(s.cfg.Address)
 	if err != nil {
 		errCh <- errors.E(op, err)
@@ -236,9 +266,10 @@ func (s *Plugin) serveHTTPS(errCh chan error) {
 	if s.https == nil {
 		return
 	}
-
 	const op = errors.Op("http_plugin_serve_https")
-	applyMiddlewares(s.https, s.mdwr, s.cfg.Middleware, s.log)
+	if len(s.mdwr) > 0 {
+		applyMiddlewares(s.https, s.mdwr, s.cfg.Middleware, s.log)
+	}
 	l, err := utils.CreateListener(s.cfg.SSLConfig.Address)
 	if err != nil {
 		errCh <- errors.E(op, err)
@@ -262,9 +293,12 @@ func (s *Plugin) serveFCGI(errCh chan error) {
 	if s.fcgi == nil {
 		return
 	}
-
 	const op = errors.Op("http_plugin_serve_fcgi")
-	applyMiddlewares(s.fcgi, s.mdwr, s.cfg.Middleware, s.log)
+
+	if len(s.mdwr) > 0 {
+		applyMiddlewares(s.https, s.mdwr, s.cfg.Middleware, s.log)
+	}
+
 	l, err := utils.CreateListener(s.cfg.FCGIConfig.Address)
 	if err != nil {
 		errCh <- errors.E(op, err)
@@ -607,9 +641,6 @@ func (s *Plugin) tlsAddr(host string, forcePort bool) string {
 }
 
 func applyMiddlewares(server *http.Server, middlewares map[string]Middleware, order []string, log logger.Logger) {
-	if len(middlewares) == 0 {
-		return
-	}
 	for i := 0; i < len(order); i++ {
 		if mdwr, ok := middlewares[order[i]]; ok {
 			server.Handler = mdwr.Middleware(server.Handler)
