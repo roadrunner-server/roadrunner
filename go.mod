@@ -14,7 +14,7 @@ require (
 	github.com/golang/mock v1.4.4
 	github.com/google/flatbuffers v1.12.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1
-	github.com/json-iterator/go v1.1.10
+	github.com/json-iterator/go v1.1.11
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/prometheus/client_golang v1.10.0
 	github.com/shirou/gopsutil v3.21.3+incompatible
