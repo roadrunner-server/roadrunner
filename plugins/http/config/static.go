@@ -17,6 +17,12 @@ type Static struct {
 	// Default - /static/
 	Pattern string
 
+	// CalculateEtag can be true/false and used to calculate etag for the static
+	CalculateEtag bool `mapstructure:"calculate_etag"`
+
+	// Weak etag `W/`
+	Weak bool
+
 	// forbid specifies list of file extensions which are forbidden for access.
 	// example: .php, .exe, .bat, .htaccess and etc.
 	Forbid []string

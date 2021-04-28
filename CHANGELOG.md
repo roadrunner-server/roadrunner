@@ -1,6 +1,24 @@
 CHANGELOG
 =========
 
+v2.2.0 (11.05.2021)
+-------------------
+
+## 👀 New:
+
+- ✏️ Reworked `static` plugin. Now, it does not affect the performance of the main route and persist on the separate
+  file server (within the `http` plugin). Looong awaited feature: `Etag` (+ weak Etags) as well with the `If-Mach`
+  , `If-None-Match`, `If-Range`, `Last-Modified`
+  and `If-Modified-Since` tags supported. Static plugin has a bunch of new options such as: `allow`, `calculate_etag`
+  , `weak` and `pattern`.
+  ### Option `always` was deleted from the plugin.
+
+- ✏️
+
+## 🩹 Fixes:
+
+- 🐛 Fix: issue with wrong ordered middlewares (reverse). Now the order is correct.
+
 v2.1.0 (27.04.2021)
 -------------------
 

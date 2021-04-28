@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/rpc"
+	"net/url"
 	"os"
 	"os/signal"
 	"sync"
@@ -1560,6 +1561,103 @@ func bigEchoHTTP(t *testing.T) {
 
 	err = r.Body.Close()
 	assert.NoError(t, err)
+}
+
+func TestStaticEtagPlugin(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-http-static.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+		&gzip.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	stopCh := make(chan struct{}, 1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second)
+	t.Run("ServeSampleEtag", serveStaticSampleEtag)
+
+	stopCh <- struct{}{}
+	wg.Wait()
+}
+
+func serveStaticSampleEtag(t *testing.T) {
+	// OK 200 response
+	b, r, err := get("http://localhost:21603/tests/static/sample.txt")
+	assert.NoError(t, err)
+	assert.Equal(t, "sample\n", b)
+	assert.Equal(t, r.StatusCode, http.StatusOK)
+	etag := r.Header.Get("Etag")
+
+	_ = r.Body.Close()
+
+	// Should be 304 response with same etag
+	c := http.Client{
+		Timeout: time.Second * 5,
+	}
+
+	parsedURL, _ := url.Parse("http://localhost:21603/tests/static/sample.txt")
+
+	req := &http.Request{
+		Method: http.MethodGet,
+		URL:    parsedURL,
+		Header: map[string][]string{"If-None-Match": {etag}},
+	}
+
+	resp, err := c.Do(req)
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusNotModified, resp.StatusCode)
+	_ = resp.Body.Close()
 }
 
 func TestStaticPlugin(t *testing.T) {

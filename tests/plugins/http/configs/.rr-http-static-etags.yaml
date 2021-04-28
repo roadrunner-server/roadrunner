@@ -20,7 +20,7 @@ http:
     forbid: [ "" ]
     allow: [ ".txt", ".php" ]
     calculate_etag: true
-    weak: false
+    weak: true
     request:
       "input": "custom-header"
     response:
