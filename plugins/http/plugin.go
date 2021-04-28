@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/hashicorp/go-multierror"
@@ -186,6 +187,13 @@ func (s *Plugin) serve(errCh chan error) { //nolint:gocognit
 
 			// calculate etag for the resource
 			if s.cfg.Static.CalculateEtag {
+				// do not allow paths like ../../resource
+				// only specified folder and resources in it
+				// https://lgtm.com/rules/1510366186013/
+				if strings.Contains(r.URL.Path, "..") {
+					w.WriteHeader(http.StatusForbidden)
+					return
+				}
 				f, errS := os.Open(filepath.Join(s.cfg.Static.Dir, r.URL.Path))
 				if errS != nil {
 					s.log.Warn("error opening file to calculate the Etag", "provided path", r.URL.Path)

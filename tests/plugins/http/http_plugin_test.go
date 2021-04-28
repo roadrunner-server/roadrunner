@@ -1660,6 +1660,154 @@ func serveStaticSampleEtag(t *testing.T) {
 	_ = resp.Body.Close()
 }
 
+func TestStaticPluginSecurity(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-http-static-security.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+		&gzip.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	stopCh := make(chan struct{}, 1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second)
+	t.Run("ServeSampleNotAllowedPath", serveStaticSampleNotAllowedPath)
+
+	stopCh <- struct{}{}
+	wg.Wait()
+}
+
+func serveStaticSampleNotAllowedPath(t *testing.T) {
+	// Should be 304 response with same etag
+	c := http.Client{
+		Timeout: time.Second * 5,
+	}
+
+	parsedURL := &url.URL{
+		Scheme: "http",
+		User:   nil,
+		Host:   "localhost:21603",
+		Path:   "%2e%2e%/tests/",
+	}
+
+	req := &http.Request{
+		Method: http.MethodGet,
+		URL:    parsedURL,
+	}
+
+	resp, err := c.Do(req)
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	_ = resp.Body.Close()
+
+	parsedURL = &url.URL{
+		Scheme: "http",
+		User:   nil,
+		Host:   "localhost:21603",
+		Path:   "%2e%2e%5ctests/",
+	}
+
+	req = &http.Request{
+		Method: http.MethodGet,
+		URL:    parsedURL,
+	}
+
+	resp, err = c.Do(req)
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	_ = resp.Body.Close()
+
+	parsedURL = &url.URL{
+		Scheme: "http",
+		User:   nil,
+		Host:   "localhost:21603",
+		Path:   "..%2ftests/",
+	}
+
+	req = &http.Request{
+		Method: http.MethodGet,
+		URL:    parsedURL,
+	}
+
+	resp, err = c.Do(req)
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	_ = resp.Body.Close()
+
+	parsedURL = &url.URL{
+		Scheme: "http",
+		User:   nil,
+		Host:   "localhost:21603",
+		Path:   "%2e%2e%2ftests/",
+	}
+
+	req = &http.Request{
+		Method: http.MethodGet,
+		URL:    parsedURL,
+	}
+
+	resp, err = c.Do(req)
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	_ = resp.Body.Close()
+
+	_, r, err := get("http://localhost:21603/../../../../tests/../static/sample.txt")
+	assert.NoError(t, err)
+	assert.Equal(t, r.StatusCode, 200)
+	_ = r.Body.Close()
+}
+
 func TestStaticPlugin(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
