@@ -1,5 +1,5 @@
 server:
-  command: "php ../../http/client.php pid pipes"
+  command: "php ../../psr-worker-bench.php"
   user: ""
   group: ""
   env:
@@ -24,7 +24,7 @@ http:
     response:
       "output": "output-header"
   pool:
-    num_workers: 2
+    num_workers: 12
     max_jobs: 0
     allocate_timeout: 60s
     destroy_timeout: 60s

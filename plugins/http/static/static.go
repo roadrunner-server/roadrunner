@@ -1,4 +1,4 @@
-package http
+package static
 
 import (
 	"io/fs"
@@ -82,7 +82,7 @@ func (f FileSystem) Open(name string) (http.File, error) {
 	return nil, fs.ErrNotExist
 }
 
-// StaticFilesHandler is a constructor for the http.FileSystem
-func StaticFilesHandler(config *httpConfig.Static) http.FileSystem {
+// FS is a constructor for the http.FileSystem
+func FS(config *httpConfig.Static) http.FileSystem {
 	return FileSystem{NewExtensionFilter(config.Allow, config.Forbid), http.Dir(config.Dir)}
 }

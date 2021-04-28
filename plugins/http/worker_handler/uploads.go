@@ -1,4 +1,4 @@
-package http
+package handler
 
 import (
 	"github.com/spiral/roadrunner/v2/plugins/http/config"

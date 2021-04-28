@@ -38,9 +38,9 @@ func (s *Plugin) Init(cfg config.Configurer) error {
 }
 
 // middleware must return true if request/response pair is handled within the middleware.
-func (s *Plugin) Middleware(next http.Handler) http.HandlerFunc {
+func (s *Plugin) Middleware(next http.Handler) http.Handler {
 	// Define the http.HandlerFunc
-	return func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if s.cfg.Headers.Request != nil {
 			for k, v := range s.cfg.Headers.Request {
 				r.Header.Add(k, v)
@@ -62,7 +62,7 @@ func (s *Plugin) Middleware(next http.Handler) http.HandlerFunc {
 		}
 
 		next.ServeHTTP(w, r)
-	}
+	})
 }
 
 func (s *Plugin) Name() string {

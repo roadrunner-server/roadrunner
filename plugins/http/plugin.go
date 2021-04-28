@@ -22,6 +22,8 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
+	"github.com/spiral/roadrunner/v2/plugins/http/static"
+	handler "github.com/spiral/roadrunner/v2/plugins/http/worker_handler"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/plugins/status"
@@ -35,16 +37,15 @@ const (
 	// PluginName declares plugin name.
 	PluginName = "http"
 
-	// RR_HTTP env variable key (internal) if the HTTP presents
-	RR_MODE = "RR_MODE" //nolint:golint,stylecheck
+	// RrMode RR_HTTP env variable key (internal) if the HTTP presents
+	RrMode = "RR_MODE"
 
-	// HTTPS_SCHEME
-	HTTPS_SCHEME = "https" //nolint:golint,stylecheck
+	HTTPSScheme = "https"
 )
 
 // Middleware interface
 type Middleware interface {
-	Middleware(f http.Handler) http.HandlerFunc
+	Middleware(f http.Handler) http.Handler
 }
 
 type middleware map[string]Middleware
@@ -69,7 +70,7 @@ type Plugin struct {
 	pool pool.Pool
 
 	// servers RR handler
-	handler *Handler
+	handler *handler.Handler
 
 	// servers
 	http  *http.Server
@@ -111,14 +112,14 @@ func (s *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server serv
 		s.cfg.Env = make(map[string]string)
 	}
 
-	s.cfg.Env[RR_MODE] = "http"
+	s.cfg.Env[RrMode] = "http"
 	s.server = server
 
 	return nil
 }
 
 func (s *Plugin) logCallback(event interface{}) {
-	if ev, ok := event.(ResponseEvent); ok {
+	if ev, ok := event.(handler.ResponseEvent); ok {
 		s.log.Debug(fmt.Sprintf("%d %s %s", ev.Response.Status, ev.Request.Method, ev.Request.URI),
 			"remote", ev.Request.RemoteAddr,
 			"elapsed", ev.Elapsed().String(),
@@ -156,7 +157,7 @@ func (s *Plugin) serve(errCh chan error) { //nolint:gocognit
 		return
 	}
 
-	s.handler, err = NewHandler(
+	s.handler, err = handler.NewHandler(
 		s.cfg.MaxRequestSize,
 		*s.cfg.Uploads,
 		s.cfg.Cidrs,
@@ -174,7 +175,7 @@ func (s *Plugin) serve(errCh chan error) { //nolint:gocognit
 
 	// if we have static, handler here, create a fileserver
 	if s.cfg.Static != nil {
-		h := http.FileServer(StaticFilesHandler(s.cfg.Static))
+		h := http.FileServer(static.FS(s.cfg.Static))
 		// Static files handler
 		mux.HandleFunc(s.cfg.Static.Pattern, func(w http.ResponseWriter, r *http.Request) {
 			if s.cfg.Static.Request != nil {
@@ -429,7 +430,7 @@ func (s *Plugin) Reset() error {
 
 	s.log.Info("HTTP workers Pool successfully restarted")
 
-	s.handler, err = NewHandler(
+	s.handler, err = handler.NewHandler(
 		s.cfg.MaxRequestSize,
 		*s.cfg.Uploads,
 		s.cfg.Cidrs,
@@ -500,7 +501,7 @@ func (s *Plugin) Ready() status.Status {
 
 func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) {
 	target := &url.URL{
-		Scheme: HTTPS_SCHEME,
+		Scheme: HTTPSScheme,
 		// host or host:port
 		Host:     s.tlsAddr(r.Host, false),
 		Path:     r.URL.Path,
@@ -641,7 +642,7 @@ func (s *Plugin) tlsAddr(host string, forcePort bool) string {
 }
 
 func applyMiddlewares(server *http.Server, middlewares map[string]Middleware, order []string, log logger.Logger) {
-	for i := 0; i < len(order); i++ {
+	for i := len(order) - 1; i >= 0; i-- {
 		if mdwr, ok := middlewares[order[i]]; ok {
 			server.Handler = mdwr.Middleware(server.Handler)
 		} else {
