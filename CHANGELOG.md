@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+v2.1.1 (29.04.2021)
+-------------------
+
+## 🩹 Fixes:
+
+- 🐛 Fix: issue with endure provided wrong logger interface implementation.
+
 v2.1.0 (27.04.2021)
 -------------------
 
