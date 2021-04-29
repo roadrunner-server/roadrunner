@@ -2,14 +2,11 @@ package http
 
 import (
 	"context"
-	"crypto/tls"
-	"crypto/x509"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"net/http/fcgi"
-	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -22,29 +19,28 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
+	"github.com/spiral/roadrunner/v2/plugins/http/static"
+	handler "github.com/spiral/roadrunner/v2/plugins/http/worker_handler"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/plugins/status"
-	"github.com/spiral/roadrunner/v2/utils"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
-	"golang.org/x/sys/cpu"
 )
 
 const (
 	// PluginName declares plugin name.
 	PluginName = "http"
 
-	// RR_HTTP env variable key (internal) if the HTTP presents
-	RR_MODE = "RR_MODE" //nolint:golint,stylecheck
+	// RrMode RR_HTTP env variable key (internal) if the HTTP presents
+	RrMode = "RR_MODE"
 
-	// HTTPS_SCHEME
-	HTTPS_SCHEME = "https" //nolint:golint,stylecheck
+	HTTPSScheme = "https"
 )
 
 // Middleware interface
 type Middleware interface {
-	Middleware(f http.Handler) http.HandlerFunc
+	Middleware(f http.Handler) http.Handler
 }
 
 type middleware map[string]Middleware
@@ -59,7 +55,9 @@ type Plugin struct {
 	// stdlog passed to the http/https/fcgi servers to log their internal messages
 	stdLog *log.Logger
 
+	// http configuration
 	cfg *httpConfig.HTTP `mapstructure:"http"`
+
 	// middlewares to chain
 	mdwr middleware
 
@@ -67,7 +65,7 @@ type Plugin struct {
 	pool pool.Pool
 
 	// servers RR handler
-	handler *Handler
+	handler *handler.Handler
 
 	// servers
 	http  *http.Server
@@ -109,14 +107,14 @@ func (s *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server serv
 		s.cfg.Env = make(map[string]string)
 	}
 
-	s.cfg.Env[RR_MODE] = "http"
+	s.cfg.Env[RrMode] = "http"
 	s.server = server
 
 	return nil
 }
 
 func (s *Plugin) logCallback(event interface{}) {
-	if ev, ok := event.(ResponseEvent); ok {
+	if ev, ok := event.(handler.ResponseEvent); ok {
 		s.log.Debug(fmt.Sprintf("%d %s %s", ev.Response.Status, ev.Request.Method, ev.Request.URI),
 			"remote", ev.Request.RemoteAddr,
 			"elapsed", ev.Elapsed().String(),
@@ -138,7 +136,7 @@ func (s *Plugin) Serve() chan error {
 	return errCh
 }
 
-func (s *Plugin) serve(errCh chan error) {
+func (s *Plugin) serve(errCh chan error) { //nolint:gocognit
 	var err error
 	const op = errors.Op("http_plugin_serve")
 	s.pool, err = s.server.NewWorkerPool(context.Background(), pool.Config{
@@ -154,7 +152,7 @@ func (s *Plugin) serve(errCh chan error) {
 		return
 	}
 
-	s.handler, err = NewHandler(
+	s.handler, err = handler.NewHandler(
 		s.cfg.MaxRequestSize,
 		*s.cfg.Uploads,
 		s.cfg.Cidrs,
@@ -167,11 +165,56 @@ func (s *Plugin) serve(errCh chan error) {
 
 	s.handler.AddListener(s.logCallback)
 
+	// Create new HTTP Multiplexer
+	mux := http.NewServeMux()
+
+	// if we have static, handler here, create a fileserver
+	if s.cfg.Static != nil {
+		h := http.FileServer(static.FS(s.cfg.Static))
+		// Static files handler
+		mux.HandleFunc(s.cfg.Static.Pattern, func(w http.ResponseWriter, r *http.Request) {
+			if s.cfg.Static.Request != nil {
+				for k, v := range s.cfg.Static.Request {
+					r.Header.Add(k, v)
+				}
+			}
+
+			if s.cfg.Static.Response != nil {
+				for k, v := range s.cfg.Static.Response {
+					w.Header().Set(k, v)
+				}
+			}
+
+			// calculate etag for the resource
+			if s.cfg.Static.CalculateEtag {
+				// do not allow paths like ../../resource
+				// only specified folder and resources in it
+				// https://lgtm.com/rules/1510366186013/
+				if strings.Contains(r.URL.Path, "..") {
+					w.WriteHeader(http.StatusForbidden)
+					return
+				}
+				f, errS := os.Open(filepath.Join(s.cfg.Static.Dir, r.URL.Path))
+				if errS != nil {
+					s.log.Warn("error opening file to calculate the Etag", "provided path", r.URL.Path)
+				}
+
+				// Set etag value to the ResponseWriter
+				static.SetEtag(s.cfg.Static, f, w)
+			}
+
+			h.ServeHTTP(w, r)
+		})
+	}
+
+	// handle main route
+	mux.HandleFunc("/", s.ServeHTTP)
+
 	if s.cfg.EnableHTTP() {
 		if s.cfg.EnableH2C() {
-			s.http = &http.Server{Handler: h2c.NewHandler(s, &http2.Server{}), ErrorLog: s.stdLog}
+			s.http = &http.Server{Handler: h2c.NewHandler(mux, &http2.Server{}), ErrorLog: s.stdLog}
 		} else {
-			s.http = &http.Server{Handler: s, ErrorLog: s.stdLog}
+			s.http = &http.Server{Handler: mux, ErrorLog: s.stdLog}
 		}
 	}
 
@@ -195,7 +238,7 @@ func (s *Plugin) serve(errCh chan error) {
 	}
 
 	if s.cfg.EnableFCGI() {
-		s.fcgi = &http.Server{Handler: s, ErrorLog: s.stdLog}
+		s.fcgi = &http.Server{Handler: mux, ErrorLog: s.stdLog}
 	}
 
 	// start http, https and fcgi servers if requested in the config
@@ -210,72 +253,6 @@ func (s *Plugin) serve(errCh chan error) {
 	go func() {
 		s.serveFCGI(errCh)
 	}()
-}
-
-func (s *Plugin) serveHTTP(errCh chan error) {
-	if s.http == nil {
-		return
-	}
-
-	const op = errors.Op("http_plugin_serve_http")
-	applyMiddlewares(s.http, s.mdwr, s.cfg.Middleware, s.log)
-	l, err := utils.CreateListener(s.cfg.Address)
-	if err != nil {
-		errCh <- errors.E(op, err)
-		return
-	}
-
-	err = s.http.Serve(l)
-	if err != nil && err != http.ErrServerClosed {
-		errCh <- errors.E(op, err)
-		return
-	}
-}
-
-func (s *Plugin) serveHTTPS(errCh chan error) {
-	if s.https == nil {
-		return
-	}
-
-	const op = errors.Op("http_plugin_serve_https")
-	applyMiddlewares(s.https, s.mdwr, s.cfg.Middleware, s.log)
-	l, err := utils.CreateListener(s.cfg.SSLConfig.Address)
-	if err != nil {
-		errCh <- errors.E(op, err)
-		return
-	}
-
-	err = s.https.ServeTLS(
-		l,
-		s.cfg.SSLConfig.Cert,
-		s.cfg.SSLConfig.Key,
-	)
-
-	if err != nil && err != http.ErrServerClosed {
-		errCh <- errors.E(op, err)
-		return
-	}
-}
-
-// serveFCGI starts FastCGI server.
-func (s *Plugin) serveFCGI(errCh chan error) {
-	if s.fcgi == nil {
-		return
-	}
-
-	const op = errors.Op("http_plugin_serve_fcgi")
-	applyMiddlewares(s.fcgi, s.mdwr, s.cfg.Middleware, s.log)
-	l, err := utils.CreateListener(s.cfg.FCGIConfig.Address)
-	if err != nil {
-		errCh <- errors.E(op, err)
-		return
-	}
-
-	err = fcgi.Serve(l, s.fcgi.Handler)
-	if err != nil && err != http.ErrServerClosed {
-		errCh <- errors.E(op, err)
-		return
-	}
 }
 
 // Stop stops the http.
@@ -395,7 +372,7 @@ func (s *Plugin) Reset() error {
 
 	s.log.Info("HTTP workers Pool successfully restarted")
 
-	s.handler, err = NewHandler(
+	s.handler, err = handler.NewHandler(
 		s.cfg.MaxRequestSize,
 		*s.cfg.Uploads,
 		s.cfg.Cidrs,
@@ -461,160 +438,5 @@ func (s *Plugin) Ready() status.Status {
 	// if there are no workers, threat this as no content error
 	return status.Status{
 		Code: http.StatusServiceUnavailable,
-	}
-}
-
-func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) {
-	target := &url.URL{
-		Scheme: HTTPS_SCHEME,
-		// host or host:port
-		Host:     s.tlsAddr(r.Host, false),
-		Path:     r.URL.Path,
-		RawQuery: r.URL.RawQuery,
-	}
-
-	http.Redirect(w, r, target.String(), http.StatusPermanentRedirect)
-}
-
-// https://golang.org/pkg/net/http/#Hijacker
-//go:inline
-func headerContainsUpgrade(r *http.Request) bool {
-	if _, ok := r.Header["Upgrade"]; ok {
-		return true
-	}
-	return false
-}
-
-// append RootCA to the https server TLS config
-func (s *Plugin) appendRootCa() error {
-	const op = errors.Op("http_plugin_append_root_ca")
-	rootCAs, err := x509.SystemCertPool()
-	if err != nil {
-		return nil
-	}
-	if rootCAs == nil {
-		rootCAs = x509.NewCertPool()
-	}
-
-	CA, err := ioutil.ReadFile(s.cfg.SSLConfig.RootCA)
-	if err != nil {
-		return err
-	}
-
-	// should append our CA cert
-	ok := rootCAs.AppendCertsFromPEM(CA)
-	if !ok {
-		return errors.E(op, errors.Str("could not append Certs from PEM"))
-	}
-	// disable "G402 (CWE-295): TLS MinVersion too low. (Confidence: HIGH, Severity: HIGH)"
-	// #nosec G402
-	cfg := &tls.Config{
-		InsecureSkipVerify: false,
-		RootCAs:            rootCAs,
-	}
-	s.http.TLSConfig = cfg
-
-	return nil
-}
-
-// Init https server
-func (s *Plugin) initSSL() *http.Server {
-	var topCipherSuites []uint16
-	var defaultCipherSuitesTLS13 []uint16
-
-	hasGCMAsmAMD64 := cpu.X86.HasAES && cpu.X86.HasPCLMULQDQ
-	hasGCMAsmARM64 := cpu.ARM64.HasAES && cpu.ARM64.HasPMULL
-	// Keep in sync with crypto/aes/cipher_s390x.go.
-	hasGCMAsmS390X := cpu.S390X.HasAES && cpu.S390X.HasAESCBC && cpu.S390X.HasAESCTR && (cpu.S390X.HasGHASH || cpu.S390X.HasAESGCM)
-
-	hasGCMAsm := hasGCMAsmAMD64 || hasGCMAsmARM64 || hasGCMAsmS390X
-
-	if hasGCMAsm {
-		// If AES-GCM hardware is provided then priorities AES-GCM
-		// cipher suites.
-		topCipherSuites = []uint16{
-			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
-			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
-		}
-		defaultCipherSuitesTLS13 = []uint16{
-			tls.TLS_AES_128_GCM_SHA256,
-			tls.TLS_CHACHA20_POLY1305_SHA256,
-			tls.TLS_AES_256_GCM_SHA384,
-		}
-	} else {
-		// Without AES-GCM hardware, we put the ChaCha20-Poly1305
-		// cipher suites first.
-		topCipherSuites = []uint16{
-			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
-			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
-			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-		}
-		defaultCipherSuitesTLS13 = []uint16{
-			tls.TLS_CHACHA20_POLY1305_SHA256,
-			tls.TLS_AES_128_GCM_SHA256,
-			tls.TLS_AES_256_GCM_SHA384,
-		}
-	}
-
-	DefaultCipherSuites := make([]uint16, 0, 22)
-	DefaultCipherSuites = append(DefaultCipherSuites, topCipherSuites...)
-	DefaultCipherSuites = append(DefaultCipherSuites, defaultCipherSuitesTLS13...)
-
-	sslServer := &http.Server{
-		Addr:     s.tlsAddr(s.cfg.Address, true),
-		Handler:  s,
-		ErrorLog: s.stdLog,
-		TLSConfig: &tls.Config{
-			CurvePreferences: []tls.CurveID{
-				tls.CurveP256,
-				tls.CurveP384,
-				tls.CurveP521,
-				tls.X25519,
-			},
-			CipherSuites:             DefaultCipherSuites,
-			MinVersion:               tls.VersionTLS12,
-			PreferServerCipherSuites: true,
-		},
-	}
-
-	return sslServer
-}
-
-// init http/2 server
-func (s *Plugin) initHTTP2() error {
-	return http2.ConfigureServer(s.https, &http2.Server{
-		MaxConcurrentStreams: s.cfg.HTTP2Config.MaxConcurrentStreams,
-	})
-}
-
-// tlsAddr replaces listen or host port with port configured by SSLConfig config.
-func (s *Plugin) tlsAddr(host string, forcePort bool) string {
-	// remove current forcePort first
-	host = strings.Split(host, ":")[0]
-
-	if forcePort || s.cfg.SSLConfig.Port != 443 {
-		host = fmt.Sprintf("%s:%v", host, s.cfg.SSLConfig.Port)
-	}
-
-	return host
-}
-
-func applyMiddlewares(server *http.Server, middlewares map[string]Middleware, order []string, log logger.Logger) {
-	if len(middlewares) == 0 {
-		return
-	}
-	for i := 0; i < len(order); i++ {
-		if mdwr, ok := middlewares[order[i]]; ok {
-			server.Handler = mdwr.Middleware(server.Handler)
-		} else {
-			log.Warn("requested middleware does not exist", "requested", order[i])
-		}
 	}
 }

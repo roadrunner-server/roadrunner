@@ -153,7 +153,7 @@ func (ww *workerWatcher) Allocate() error {
 	return nil
 }
 
-// Remove
+// Remove worker
 func (ww *workerWatcher) Remove(wb worker.BaseProcess) {
 	ww.Lock()
 	defer ww.Unlock()
@@ -172,7 +172,7 @@ func (ww *workerWatcher) Remove(wb worker.BaseProcess) {
 	}
 }
 
-// O(1) operation
+// Push O(1) operation
 func (ww *workerWatcher) Push(w worker.BaseProcess) {
 	if w.State().Value() != worker.StateReady {
 		_ = w.Kill()

@@ -10,13 +10,17 @@ server:
 http:
   address: 127.0.0.1:21603
   max_request_size: 1024
-  middleware: [ "gzip", "static" ]
+  middleware: [ "gzip" ]
   trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
   uploads:
     forbid: [ ".php", ".exe", ".bat" ]
   static:
-    dir: "../../../tests"
+    dir: "../../../"
+    pattern: "/tests/"
     forbid: [ "" ]
+    allow: [ ".txt", ".php" ]
+    calculate_etag: true
+    weak: false
     request:
       "input": "custom-header"
     response:

@@ -18,8 +18,8 @@ import (
 	j "github.com/json-iterator/go"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
-	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/http/config"
+	handler "github.com/spiral/roadrunner/v2/plugins/http/worker_handler"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -40,7 +40,7 @@ func TestHandler_Upload_File(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h, err := httpPlugin.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -123,7 +123,7 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h, err := httpPlugin.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -206,7 +206,7 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h, err := httpPlugin.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, config.Uploads{
 		Dir:    "-------",
 		Forbid: []string{},
 	}, nil, pool)
@@ -289,7 +289,7 @@ func TestHandler_Upload_File_Forbids(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h, err := httpPlugin.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{".go"},
 	}, nil, pool)
