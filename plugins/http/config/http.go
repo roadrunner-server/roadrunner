@@ -33,6 +33,9 @@ type HTTP struct {
 	// Uploads configures uploads configuration.
 	Uploads *Uploads `mapstructure:"uploads"`
 
+	// static configuration
+	Static *Static `mapstructure:"static"`
+
 	// Pool configures worker pool.
 	Pool *poolImpl.Config `mapstructure:"pool"`
 
@@ -98,6 +101,16 @@ func (c *HTTP) InitDefaults() error {
 
 	if c.SSLConfig.Address == "" {
 		c.SSLConfig.Address = "127.0.0.1:443"
+	}
+
+	// static files
+	if c.Static != nil {
+		if c.Static.Pattern == "" {
+			c.Static.Pattern = "/static/"
+		}
+		if c.Static.Dir == "" {
+			c.Static.Dir = "."
+		}
 	}
 
 	err := c.HTTP2Config.InitDefaults()
@@ -171,6 +184,14 @@ func (c *HTTP) Valid() error {
 
 	if c.EnableTLS() {
 		err := c.SSLConfig.Valid()
+		if err != nil {
+			return errors.E(op, err)
+		}
+	}
+
+	// validate static
+	if c.Static != nil {
+		err := c.Static.Valid()
 		if err != nil {
 			return errors.E(op, err)
 		}

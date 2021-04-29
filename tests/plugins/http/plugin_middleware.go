@@ -18,8 +18,8 @@ func (p *PluginMiddleware) Init(cfg config.Configurer) error {
 }
 
 // Middleware test
-func (p *PluginMiddleware) Middleware(next http.Handler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func (p *PluginMiddleware) Middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/halt" {
 			w.WriteHeader(500)
 			_, err := w.Write([]byte("halted"))
@@ -29,7 +29,7 @@ func (p *PluginMiddleware) Middleware(next http.Handler) http.HandlerFunc {
 		} else {
 			next.ServeHTTP(w, r)
 		}
-	}
+	})
 }
 
 // Name test
@@ -49,8 +49,8 @@ func (p *PluginMiddleware2) Init(cfg config.Configurer) error {
 }
 
 // Middleware test
-func (p *PluginMiddleware2) Middleware(next http.Handler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func (p *PluginMiddleware2) Middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/boom" {
 			w.WriteHeader(555)
 			_, err := w.Write([]byte("boom"))
@@ -60,7 +60,7 @@ func (p *PluginMiddleware2) Middleware(next http.Handler) http.HandlerFunc {
 		} else {
 			next.ServeHTTP(w, r)
 		}
-	}
+	})
 }
 
 // Name test
