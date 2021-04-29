@@ -8,3 +8,9 @@ import (
 type Informer interface {
 	Workers() []process.State
 }
+
+// Lister interface used to filter available plugins
+type Lister interface {
+	// List gets no args, but returns list of the active plugins
+	List() []string
+}

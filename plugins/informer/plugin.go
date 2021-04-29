@@ -11,6 +11,7 @@ const PluginName = "informer"
 
 type Plugin struct {
 	registry map[string]Informer
+	plugins  map[string]Lister
 	log      logger.Logger
 }
 
@@ -31,17 +32,22 @@ func (p *Plugin) Workers(name string) ([]process.State, error) {
 	return svc.Workers(), nil
 }
 
-// CollectTarget resettable service.
-func (p *Plugin) CollectTarget(name endure.Named, r Informer) error {
-	p.registry[name.Name()] = r
-	return nil
-}
-
 // Collects declares services to be collected.
 func (p *Plugin) Collects() []interface{} {
 	return []interface{}{
-		p.CollectTarget,
+		p.CollectWorkers,
 	}
+}
+
+// CollectPlugins collects all RR plugins
+func (p *Plugin) CollectPlugins(name endure.Named, l Lister) {
+	p.plugins[name.Name()] = l
+}
+
+// CollectWorkers obtains plugins with workers inside.
+func (p *Plugin) CollectWorkers(name endure.Named, r Informer) error {
+	p.registry[name.Name()] = r
+	return nil
 }
 
 // Name of the service.
