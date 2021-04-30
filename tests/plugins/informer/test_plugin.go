@@ -49,6 +49,8 @@ func (p1 *Plugin1) Name() string {
 	return "informer.plugin1"
 }
 
+func (p1 *Plugin1) Available() {}
+
 func (p1 *Plugin1) Workers() []process.State {
 	p, err := p1.server.NewWorkerPool(context.Background(), testPoolConfig, nil)
 	if err != nil {

@@ -58,6 +58,10 @@ func (server *Plugin) Name() string {
 	return PluginName
 }
 
+// Available interface implementation
+func (server *Plugin) Available() {
+}
+
 // Serve (Start) server plugin (just a mock here to satisfy interface)
 func (server *Plugin) Serve() chan error {
 	const op = errors.Op("server_plugin_serve")

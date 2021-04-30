@@ -83,7 +83,6 @@ func renderStatus(status string) string {
 }
 
 func renderJobs(number uint64) string {
-	// TODO overflow
 	return humanize.Comma(int64(number))
 }
 

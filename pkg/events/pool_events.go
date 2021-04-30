@@ -1,6 +1,5 @@
 package events
 
-// TODO event numbers
 const (
 	// EventWorkerConstruct thrown when new worker is spawned.
 	EventWorkerConstruct P = iota + 10000

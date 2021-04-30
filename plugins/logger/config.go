@@ -40,7 +40,7 @@ type Config struct {
 	ErrorOutput []string `mapstructure:"errorOutput"`
 }
 
-// ZapConfig converts config into Zap configuration.
+// BuildLogger converts config into Zap configuration.
 func (cfg *Config) BuildLogger() (*zap.Logger, error) {
 	var zCfg zap.Config
 	switch strings.ToLower(cfg.Mode) {
@@ -49,7 +49,29 @@ func (cfg *Config) BuildLogger() (*zap.Logger, error) {
 	case "production":
 		zCfg = zap.NewProductionConfig()
 	case "development":
-		zCfg = zap.NewDevelopmentConfig()
+		zCfg = zap.Config{
+			Level:       zap.NewAtomicLevelAt(zap.DebugLevel),
+			Development: true,
+			Encoding:    "console",
+			EncoderConfig: zapcore.EncoderConfig{
+				// Keys can be anything except the empty string.
+				TimeKey:        "T",
+				LevelKey:       "L",
+				NameKey:        "N",
+				CallerKey:      "C",
+				FunctionKey:    zapcore.OmitKey,
+				MessageKey:     "M",
+				StacktraceKey:  "S",
+				LineEnding:     zapcore.DefaultLineEnding,
+				EncodeLevel:    ColoredLevelEncoder,
+				EncodeTime:     zapcore.ISO8601TimeEncoder,
+				EncodeDuration: zapcore.StringDurationEncoder,
+				EncodeCaller:   zapcore.ShortCallerEncoder,
+				EncodeName:     ColoredNameEncoder,
+			},
+			OutputPaths:      []string{"stderr"},
+			ErrorOutputPaths: []string{"stderr"},
+		}
 	case "raw":
 		zCfg = zap.Config{
 			Level:    zap.NewAtomicLevelAt(zap.InfoLevel),
@@ -98,12 +120,10 @@ func (cfg *Config) BuildLogger() (*zap.Logger, error) {
 		zCfg.ErrorOutputPaths = cfg.ErrorOutput
 	}
 
-	// todo:
-
 	return zCfg.Build()
 }
 
-// Initialize default logger
+// InitDefault Initialize default logger
 func (cfg *Config) InitDefault() {
 	if cfg.Mode == "" {
 		cfg.Mode = "development"
