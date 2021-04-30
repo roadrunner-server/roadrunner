@@ -127,7 +127,12 @@ func (c *Plugin) Name() string {
 	return PluginName
 }
 
-// RPCService returns associated rpc service.
+// Available interface implementation
+func (c *Plugin) Available() bool {
+	return true
+}
+
+// RPC returns associated rpc service.
 func (c *Plugin) RPC() interface{} {
 	return &rpc{srv: c, log: c.log}
 }

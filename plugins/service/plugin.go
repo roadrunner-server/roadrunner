@@ -104,3 +104,8 @@ func (service *Plugin) Stop() error {
 func (service *Plugin) Name() string {
 	return PluginName
 }
+
+// Available interface implementation
+func (service *Plugin) Available() bool {
+	return true
+}

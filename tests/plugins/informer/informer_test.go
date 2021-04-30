@@ -64,10 +64,7 @@ func TestInformerInit(t *testing.T) {
 			select {
 			case e := <-ch:
 				assert.Fail(t, "error", e.Error.Error())
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
-				}
+				return
 			case <-sig:
 				err = cont.Stop()
 				if err != nil {
@@ -113,9 +110,11 @@ func informerListRPCTest(t *testing.T) {
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	// WorkerList contains list of workers.
-	list := make([]string, 0, 0)
+	list := make([]string, 0, 5)
+	// Plugins which are expected to be in the list
+	expected := []string{"rpc", "logs", "informer.plugin1", "config", "server"}
 
 	err = client.Call("informer.List", true, &list)
 	assert.NoError(t, err)
-	assert.Equal(t, "informer.plugin1", list[0])
+	assert.ElementsMatch(t, list, expected)
 }

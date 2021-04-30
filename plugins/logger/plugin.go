@@ -81,3 +81,13 @@ func (z *ZapLogger) Provides() []interface{} {
 		z.DefaultLogger,
 	}
 }
+
+// Name returns user-friendly plugin name
+func (z *ZapLogger) Name() string {
+	return PluginName
+}
+
+// Available interface implementation
+func (z *ZapLogger) Available() bool {
+	return true
+}

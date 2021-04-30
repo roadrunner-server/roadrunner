@@ -222,3 +222,8 @@ func (m *Plugin) RPC() interface{} {
 		log: m.log,
 	}
 }
+
+// Available interface implementation
+func (m *Plugin) Available() bool {
+	return true
+}

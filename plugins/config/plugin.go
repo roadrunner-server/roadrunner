@@ -10,6 +10,8 @@ import (
 	"github.com/spiral/errors"
 )
 
+const PluginName string = "config"
+
 type Viper struct {
 	viper     *viper.Viper
 	Path      string
@@ -116,6 +118,19 @@ func (v *Viper) Has(name string) bool {
 // GetCommonConfig Returns common config parameters
 func (v *Viper) GetCommonConfig() *General {
 	return v.CommonConfig
+}
+
+func (v *Viper) Serve() chan error {
+	return make(chan error, 1)
+}
+
+func (v *Viper) Stop() error {
+	return nil
+}
+
+// Name returns user-friendly plugin name
+func (v *Viper) Name() string {
+	return PluginName
 }
 
 // Available interface implementation

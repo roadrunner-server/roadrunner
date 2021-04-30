@@ -33,8 +33,8 @@ func (p *Plugin) Workers(name string) ([]process.State, error) {
 // Collects declares services to be collected.
 func (p *Plugin) Collects() []interface{} {
 	return []interface{}{
-		p.CollectWorkers,
 		p.CollectPlugins,
+		p.CollectWorkers,
 	}
 }
 

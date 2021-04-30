@@ -161,3 +161,8 @@ func (s *Plugin) Stop() error {
 func (s *Plugin) Name() string {
 	return PluginName
 }
+
+// Available interface implementation
+func (s *Plugin) Available() bool {
+	return true
+}
