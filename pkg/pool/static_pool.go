@@ -153,7 +153,6 @@ func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 	}
 
 	// worker want's to be terminated
-	// TODO careful with toString(rsp.Context)
 	if len(rsp.Body) == 0 && toString(rsp.Context) == StopRequest {
 		sp.stopWorker(w)
 		return sp.Exec(p)

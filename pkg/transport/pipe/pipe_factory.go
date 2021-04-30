@@ -42,7 +42,6 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 			return
 		}
 
-		// TODO why out is in?
 		in, err := cmd.StdoutPipe()
 		if err != nil {
 			c <- SpawnResult{
@@ -52,7 +51,6 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 			return
 		}
 
-		// TODO why in is out?
 		out, err := cmd.StdinPipe()
 		if err != nil {
 			c <- SpawnResult{
@@ -119,13 +117,11 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*wor
 		return nil, errors.E(op, err)
 	}
 
-	// TODO why out is in?
 	in, err := cmd.StdoutPipe()
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
 
-	// TODO why in is out?
 	out, err := cmd.StdinPipe()
 	if err != nil {
 		return nil, errors.E(op, err)

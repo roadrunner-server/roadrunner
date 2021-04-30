@@ -216,9 +216,8 @@ func (w *Watcher) waitEvent(d time.Duration) error {
 		case <-ticker.C:
 			// this is not very effective way
 			// because we have to wait on Lock
-			// better is to listen files in parallel, but, since that would be used in debug... TODO
+			// better is to listen files in parallel, but, since that would be used in debug...
 			for serviceName := range w.watcherConfigs {
-				// TODO sync approach
 				fileList, _ := w.retrieveFileList(serviceName, w.watcherConfigs[serviceName])
 				w.pollEvents(w.watcherConfigs[serviceName].ServiceName, fileList)
 			}
