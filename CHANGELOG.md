@@ -19,6 +19,13 @@ v2.2.0 (11.05.2021)
 
 - 🐛 Fix: issue with wrong ordered middlewares (reverse). Now the order is correct.
 
+v2.1.1 (29.04.2021)
+-------------------
+
+## 🩹 Fixes:
+
+- 🐛 Fix: issue with endure provided wrong logger interface implementation.
+
 v2.1.0 (27.04.2021)
 -------------------
 
