@@ -75,3 +75,12 @@ func (z *ZapLogger) Provides() []interface{} {
 		z.ServiceLogger,
 	}
 }
+
+// Name returns user-friendly plugin name
+func (z *ZapLogger) Name() string {
+	return PluginName
+}
+
+// Available interface implementation
+func (z *ZapLogger) Available() {
+}

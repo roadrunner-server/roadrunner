@@ -4,19 +4,18 @@ import (
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/process"
-	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
 const PluginName = "informer"
 
 type Plugin struct {
-	registry map[string]Informer
-	log      logger.Logger
+	registry  map[string]Informer
+	available map[string]Availabler
 }
 
-func (p *Plugin) Init(log logger.Logger) error {
+func (p *Plugin) Init() error {
+	p.available = make(map[string]Availabler)
 	p.registry = make(map[string]Informer)
-	p.log = log
 	return nil
 }
 
@@ -31,17 +30,22 @@ func (p *Plugin) Workers(name string) ([]process.State, error) {
 	return svc.Workers(), nil
 }
 
-// CollectTarget resettable service.
-func (p *Plugin) CollectTarget(name endure.Named, r Informer) error {
-	p.registry[name.Name()] = r
-	return nil
-}
-
 // Collects declares services to be collected.
 func (p *Plugin) Collects() []interface{} {
 	return []interface{}{
-		p.CollectTarget,
+		p.CollectPlugins,
+		p.CollectWorkers,
 	}
+}
+
+// CollectPlugins collects all RR plugins
+func (p *Plugin) CollectPlugins(name endure.Named, l Availabler) {
+	p.available[name.Name()] = l
+}
+
+// CollectWorkers obtains plugins with workers inside.
+func (p *Plugin) CollectWorkers(name endure.Named, r Informer) {
+	p.registry[name.Name()] = r
 }
 
 // Name of the service.
@@ -51,5 +55,5 @@ func (p *Plugin) Name() string {
 
 // RPC returns associated rpc service.
 func (p *Plugin) RPC() interface{} {
-	return &rpc{srv: p, log: p.log}
+	return &rpc{srv: p}
 }

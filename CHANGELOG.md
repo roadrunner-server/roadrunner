@@ -13,11 +13,14 @@ v2.2.0 (11.05.2021)
   , `weak` and `pattern`.
   ### Option `always` was deleted from the plugin.
 
-- ✏️
+
+- ✏️ Update `informer.List` implementation. Now it returns a list with the all available plugins in the runtime.
 
 ## 🩹 Fixes:
 
 - 🐛 Fix: issue with wrong ordered middlewares (reverse). Now the order is correct.
+
+---
 
 v2.1.1 (29.04.2021)
 -------------------

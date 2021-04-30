@@ -401,8 +401,6 @@ func (d *Driver) startGCLoop() { //nolint:gocognit
 						})
 						if err != nil {
 							d.log.Error("error during the gc phase of update", "error", err)
-							// todo this error is ignored, it means, that timer still be active
-							// to prevent this, we need to invoke t.Stop()
 							return false
 						}
 					}
