@@ -442,6 +442,4 @@ func (s *Plugin) Ready() status.Status {
 }
 
 // Available interface implementation
-func (s *Plugin) Available() bool {
-	return true
-}
+func (s *Plugin) Available() {}

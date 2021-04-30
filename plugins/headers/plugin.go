@@ -70,9 +70,7 @@ func (s *Plugin) Name() string {
 }
 
 // Available interface implementation
-func (s *Plugin) Available() bool {
-	return true
-}
+func (s *Plugin) Available() {}
 
 // configure OPTIONS response
 func (s *Plugin) preflightRequest(w http.ResponseWriter) {

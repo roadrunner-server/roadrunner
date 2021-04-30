@@ -59,8 +59,7 @@ func (server *Plugin) Name() string {
 }
 
 // Available interface implementation
-func (server *Plugin) Available() bool {
-	return true
+func (server *Plugin) Available() {
 }
 
 // Serve (Start) server plugin (just a mock here to satisfy interface)

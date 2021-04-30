@@ -75,8 +75,7 @@ func (p *Plugin) Name() string {
 }
 
 // Available interface implementation
-func (p *Plugin) Available() bool {
-	return true
+func (p *Plugin) Available() {
 }
 
 // RPC returns associated rpc service.

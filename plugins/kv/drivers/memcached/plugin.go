@@ -34,9 +34,7 @@ func (s *Plugin) Name() string {
 }
 
 // Available interface implementation
-func (s *Plugin) Available() bool {
-	return true
-}
+func (s *Plugin) Available() {}
 
 func (s *Plugin) Provide(key string) (kv.Storage, error) {
 	const op = errors.Op("boltdb_plugin_provide")

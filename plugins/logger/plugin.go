@@ -82,6 +82,5 @@ func (z *ZapLogger) Name() string {
 }
 
 // Available interface implementation
-func (z *ZapLogger) Available() bool {
-	return true
+func (z *ZapLogger) Available() {
 }

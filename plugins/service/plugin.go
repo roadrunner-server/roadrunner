@@ -106,6 +106,5 @@ func (service *Plugin) Name() string {
 }
 
 // Available interface implementation
-func (service *Plugin) Available() bool {
-	return true
+func (service *Plugin) Available() {
 }

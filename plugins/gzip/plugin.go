@@ -22,9 +22,7 @@ func (g *Plugin) Middleware(next http.Handler) http.Handler {
 }
 
 // Available interface implementation
-func (g *Plugin) Available() bool {
-	return true
-}
+func (g *Plugin) Available() {}
 
 func (g *Plugin) Name() string {
 	return PluginName

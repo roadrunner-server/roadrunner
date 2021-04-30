@@ -224,6 +224,5 @@ func (m *Plugin) RPC() interface{} {
 }
 
 // Available interface implementation
-func (m *Plugin) Available() bool {
-	return true
+func (m *Plugin) Available() {
 }

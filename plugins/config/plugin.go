@@ -134,9 +134,7 @@ func (v *Viper) Name() string {
 }
 
 // Available interface implementation
-func (v *Viper) Available() bool {
-	return true
-}
+func (v *Viper) Available() {}
 
 func parseFlag(flag string) (string, string, error) {
 	const op = errors.Op("parse_flag")

@@ -16,6 +16,6 @@ type Informer interface {
 
 // Availabler interface should be implemented by every plugin which wish to report to the PHP worker that it available in the RR runtime
 type Availabler interface {
-	// Available returns true if the particular plugin available in the RR2 runtime
-	Available() bool
+	// Available method needed to collect all plugins which are available in the runtime.
+	Available()
 }
