@@ -440,3 +440,8 @@ func (s *Plugin) Ready() status.Status {
 		Code: http.StatusServiceUnavailable,
 	}
 }
+
+// Available interface implementation
+func (s *Plugin) Available() bool {
+	return true
+}

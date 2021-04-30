@@ -113,9 +113,14 @@ func (v *Viper) Has(name string) bool {
 	return v.viper.IsSet(name)
 }
 
-// Returns common config parameters
+// GetCommonConfig Returns common config parameters
 func (v *Viper) GetCommonConfig() *General {
 	return v.CommonConfig
+}
+
+// Available interface implementation
+func (v *Viper) Available() bool {
+	return true
 }
 
 func parseFlag(flag string) (string, string, error) {

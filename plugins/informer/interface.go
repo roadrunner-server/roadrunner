@@ -4,13 +4,18 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/process"
 )
 
+/*
+Informer plugin should not receive any other plugin in the Init or via Collects
+Because Availabler implementation should present in every plugin
+*/
+
 // Informer used to get workers from particular plugin or set of plugins
 type Informer interface {
 	Workers() []process.State
 }
 
-// Lister interface used to filter available plugins
-type Lister interface {
-	// List gets no args, but returns list of the active plugins
-	List() []string
+// Availabler interface should be implemented by every plugin which wish to report to the PHP worker that it available in the RR runtime
+type Availabler interface {
+	// Available returns true if the particular plugin available in the RR2 runtime
+	Available() bool
 }
