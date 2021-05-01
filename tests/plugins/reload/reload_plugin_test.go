@@ -17,7 +17,7 @@ import (
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
+	httpPlugin "github.com/spiral/roadrunner/v2/plugins/protocols/http"
 	"github.com/spiral/roadrunner/v2/plugins/reload"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
 	"github.com/spiral/roadrunner/v2/plugins/server"

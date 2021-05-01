@@ -7,7 +7,7 @@ import (
 	"os"
 	"unsafe"
 
-	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
+	httpConfig "github.com/spiral/roadrunner/v2/plugins/protocols/http/config"
 )
 
 const etag string = "Etag"

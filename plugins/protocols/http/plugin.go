@@ -17,11 +17,12 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
-	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
-	"github.com/spiral/roadrunner/v2/plugins/http/static"
-	handler "github.com/spiral/roadrunner/v2/plugins/http/worker_handler"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/plugins/protocols/http/attributes"
+	httpConfig "github.com/spiral/roadrunner/v2/plugins/protocols/http/config"
+	"github.com/spiral/roadrunner/v2/plugins/protocols/http/static"
+	handler "github.com/spiral/roadrunner/v2/plugins/protocols/http/worker_handler"
+	"github.com/spiral/roadrunner/v2/plugins/protocols/https"
 	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/plugins/status"
 	"golang.org/x/net/http2"
@@ -34,8 +35,6 @@ const (
 
 	// RrMode RR_HTTP env variable key (internal) if the HTTP presents
 	RrMode = "RR_MODE"
-
-	HTTPSScheme = "https"
 )
 
 // Middleware interface
@@ -75,7 +74,7 @@ type Plugin struct {
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (s *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server server.Server) error {
+func (s *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server server.Server, server2 *https.Server) error {
 	const op = errors.Op("http_plugin_init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
@@ -218,25 +217,6 @@ func (s *Plugin) serve(errCh chan error) { //nolint:gocognit
 		}
 	}
 
-	if s.cfg.EnableTLS() {
-		s.https = s.initSSL()
-		if s.cfg.SSLConfig.RootCA != "" {
-			err = s.appendRootCa()
-			if err != nil {
-				errCh <- errors.E(op, err)
-				return
-			}
-		}
-
-		// if HTTP2Config not nil
-		if s.cfg.HTTP2Config != nil {
-			if err := s.initHTTP2(); err != nil {
-				errCh <- errors.E(op, err)
-				return
-			}
-		}
-	}
-
 	if s.cfg.EnableFCGI() {
 		s.fcgi = &http.Server{Handler: mux, ErrorLog: s.stdLog}
 	}
@@ -303,14 +283,14 @@ func (s *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if s.https != nil && r.TLS == nil && s.cfg.SSLConfig.Redirect {
-		s.redirect(w, r)
-		return
-	}
+	//if s.https != nil && r.TLS == nil && s.cfg.SSLConfig.Redirect {
+	//	s.redirect(w, r)
+	//	return
+	//}
 
-	if s.https != nil && r.TLS != nil {
-		w.Header().Add("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
-	}
+	//if s.https != nil && r.TLS != nil {
+	//	w.Header().Add("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload")
+	//}
 
 	r = attributes.Init(r)
 	// protect the case, when user sendEvent Reset and we are replacing handler with pool

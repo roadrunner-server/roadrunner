@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
+	httpConfig "github.com/spiral/roadrunner/v2/plugins/protocols/http/config"
 )
 
 type ExtensionFilter struct {

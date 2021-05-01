@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/plugins/protocols/http/config"
 
 	"io"
 	"io/ioutil"

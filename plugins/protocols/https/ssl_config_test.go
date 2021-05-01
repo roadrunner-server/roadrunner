@@ -1,4 +1,4 @@
-package config
+package https
 
 import (
 	"testing"
@@ -7,14 +7,14 @@ import (
 )
 
 func TestSSL_Valid1(t *testing.T) {
-	conf := &SSL{
+	conf := &Config{
 		Address:  "",
 		Redirect: false,
 		Key:      "",
 		Cert:     "",
 		RootCA:   "",
 		host:     "",
-		Port:     0,
+		port:     0,
 	}
 
 	err := conf.Valid()
@@ -22,14 +22,14 @@ func TestSSL_Valid1(t *testing.T) {
 }
 
 func TestSSL_Valid2(t *testing.T) {
-	conf := &SSL{
+	conf := &Config{
 		Address:  ":hello",
 		Redirect: false,
 		Key:      "",
 		Cert:     "",
 		RootCA:   "",
 		host:     "",
-		Port:     0,
+		port:     0,
 	}
 
 	err := conf.Valid()
@@ -37,14 +37,14 @@ func TestSSL_Valid2(t *testing.T) {
 }
 
 func TestSSL_Valid3(t *testing.T) {
-	conf := &SSL{
+	conf := &Config{
 		Address:  ":555",
 		Redirect: false,
 		Key:      "",
 		Cert:     "",
 		RootCA:   "",
 		host:     "",
-		Port:     0,
+		port:     0,
 	}
 
 	err := conf.Valid()
@@ -52,15 +52,15 @@ func TestSSL_Valid3(t *testing.T) {
 }
 
 func TestSSL_Valid4(t *testing.T) {
-	conf := &SSL{
+	conf := &Config{
 		Address:  ":555",
 		Redirect: false,
-		Key:      "../../../tests/plugins/http/fixtures/server.key",
-		Cert:     "../../../tests/plugins/http/fixtures/server.crt",
+		Key:      "../../../../tests/plugins/http/fixtures/server.key",
+		Cert:     "../../../../tests/plugins/http/fixtures/server.crt",
 		RootCA:   "",
 		host:     "",
 		// private
-		Port: 0,
+		port: 0,
 	}
 
 	err := conf.Valid()
@@ -68,7 +68,7 @@ func TestSSL_Valid4(t *testing.T) {
 }
 
 func TestSSL_Valid5(t *testing.T) {
-	conf := &SSL{
+	conf := &Config{
 		Address:  "a:b:c",
 		Redirect: false,
 		Key:      "../../../tests/plugins/http/fixtures/server.key",
@@ -76,7 +76,7 @@ func TestSSL_Valid5(t *testing.T) {
 		RootCA:   "",
 		host:     "",
 		// private
-		Port: 0,
+		port: 0,
 	}
 
 	err := conf.Valid()
@@ -84,7 +84,7 @@ func TestSSL_Valid5(t *testing.T) {
 }
 
 func TestSSL_Valid6(t *testing.T) {
-	conf := &SSL{
+	conf := &Config{
 		Address:  ":",
 		Redirect: false,
 		Key:      "../../../tests/plugins/http/fixtures/server.key",
@@ -92,7 +92,7 @@ func TestSSL_Valid6(t *testing.T) {
 		RootCA:   "",
 		host:     "",
 		// private
-		Port: 0,
+		port: 0,
 	}
 
 	err := conf.Valid()
@@ -100,7 +100,7 @@ func TestSSL_Valid6(t *testing.T) {
 }
 
 func TestSSL_Valid7(t *testing.T) {
-	conf := &SSL{
+	conf := &Config{
 		Address:  "localhost:555:1",
 		Redirect: false,
 		Key:      "../../../tests/plugins/http/fixtures/server.key",
@@ -108,7 +108,7 @@ func TestSSL_Valid7(t *testing.T) {
 		RootCA:   "",
 		host:     "",
 		// private
-		Port: 0,
+		port: 0,
 	}
 
 	err := conf.Valid()

@@ -10,9 +10,9 @@ import (
 
 	j "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
-	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
-	"github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/plugins/protocols/http/attributes"
+	"github.com/spiral/roadrunner/v2/plugins/protocols/http/config"
 )
 
 var json = j.ConfigCompatibleWithStandardLibrary

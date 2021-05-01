@@ -15,9 +15,6 @@ type HTTP struct {
 	// Host and port to handle as http server.
 	Address string
 
-	// SSLConfig defines https server options.
-	SSLConfig *SSL `mapstructure:"ssl"`
-
 	// FCGIConfig configuration. You can use FastCGI without HTTP server.
 	FCGIConfig *FCGI `mapstructure:"fcgi"`
 
@@ -56,7 +53,8 @@ func (c *HTTP) EnableHTTP() bool {
 
 // EnableTLS returns true if pool must listen TLS connections.
 func (c *HTTP) EnableTLS() bool {
-	return c.SSLConfig.Key != "" || c.SSLConfig.Cert != ""
+	return false
+	//return c.SSLConfig.Key != "" || c.SSLConfig.Cert != ""
 }
 
 // EnableH2C when HTTP/2 extension must be enabled on TCP.
@@ -93,14 +91,6 @@ func (c *HTTP) InitDefaults() error {
 
 	if c.Uploads == nil {
 		c.Uploads = &Uploads{}
-	}
-
-	if c.SSLConfig == nil {
-		c.SSLConfig = &SSL{}
-	}
-
-	if c.SSLConfig.Address == "" {
-		c.SSLConfig.Address = "127.0.0.1:443"
 	}
 
 	// static files
@@ -182,12 +172,12 @@ func (c *HTTP) Valid() error {
 		return errors.E(op, errors.Str("malformed http server address"))
 	}
 
-	if c.EnableTLS() {
-		err := c.SSLConfig.Valid()
-		if err != nil {
-			return errors.E(op, err)
-		}
-	}
+	//if c.EnableTLS() {
+	//	err := c.SSLConfig.Valid()
+	//	if err != nil {
+	//		return errors.E(op, err)
+	//	}
+	//}
 
 	// validate static
 	if c.Static != nil {

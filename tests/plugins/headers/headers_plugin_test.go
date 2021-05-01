@@ -13,8 +13,8 @@ import (
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/headers"
-	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	httpPlugin "github.com/spiral/roadrunner/v2/plugins/protocols/http"
 	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/stretchr/testify/assert"
 )

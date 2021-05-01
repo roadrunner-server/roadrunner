@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/spiral/roadrunner/v2/plugins/http/config"
+	"github.com/spiral/roadrunner/v2/plugins/protocols/http/config"
 )
 
 // MaxLevel defines maximum tree depth for incoming request data and files.

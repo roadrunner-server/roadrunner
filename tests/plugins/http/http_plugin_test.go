@@ -28,12 +28,13 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/gzip"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/plugins/protocols/https"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
 	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/tests/mocks"
 	"github.com/yookoala/gofast"
 
-	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
+	httpPlugin "github.com/spiral/roadrunner/v2/plugins/protocols/http"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/stretchr/testify/assert"
 )
@@ -61,6 +62,7 @@ func TestHTTPInit(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
+		&https.Plugin{},
 	)
 	assert.NoError(t, err)
 

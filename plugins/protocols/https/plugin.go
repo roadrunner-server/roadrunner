@@ -1,99 +1,119 @@
-package http
+package https
 
 import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"net"
 	"net/http"
-	"net/http/fcgi"
 	"net/url"
 	"os"
 	"strings"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/utils"
-	"golang.org/x/net/http2"
 	"golang.org/x/sys/cpu"
 )
 
-func (s *Plugin) serveHTTP(errCh chan error) {
-	if s.http == nil {
-		return
-	}
-	const op = errors.Op("http_plugin_serve_http")
+// RootPluginName is the name of root plugin
+const (
+	RootPluginName string = "http"
 
-	if len(s.mdwr) > 0 {
-		applyMiddlewares(s.http, s.mdwr, s.cfg.Middleware, s.log)
+	PluginName string = "ssl"
+
+	HTTPSScheme = "https"
+)
+
+type Plugin struct {
+	s      *Server
+	server *http.Server
+	cfg    *Config
+
+	// this variable indicates if the ssl sub-plugin initialized in the configuration
+	// if not - we just return nil server, but an error.
+	initialized bool
+}
+
+// Server represents https server structure which include all needed to start serving
+// It only needs a handler and ErrorLog endpoint to connect
+// Handler should be ServeHTTP handler with worker handler
+type Server struct {
+	Server   *http.Server
+	Listener net.Listener
+	Redirect func(w http.ResponseWriter, r *http.Request)
+	Key      string
+	Cert     string
+}
+
+func (p *Plugin) Init(cfg config.Configurer) error {
+	const op = errors.Op("https_plugin_init")
+	// If there is no ssl activated, just return nil server
+	// because we should not turn off the whole http server if sub-plugin not activated
+	if !cfg.Has(fmt.Sprintf("%s.%s", RootPluginName, PluginName)) {
+		// set not initialized state
+		p.initialized = false
+		return nil
 	}
-	l, err := utils.CreateListener(s.cfg.Address)
+
+	// Unmarshal only section for the ssl sub-plugin
+	err := cfg.UnmarshalKey(fmt.Sprintf("%s.%s", RootPluginName, PluginName), &p.cfg)
 	if err != nil {
-		errCh <- errors.E(op, err)
-		return
+		return errors.E(op, err)
 	}
 
-	err = s.http.Serve(l)
-	if err != nil && err != http.ErrServerClosed {
-		errCh <- errors.E(op, err)
-		return
+	p.cfg.InitDefaults()
+
+	// validate
+	err = p.cfg.Valid()
+	if err != nil {
+		return errors.E(op, err)
+	}
+	// sub-plugin was initialized
+	p.initialized = true
+	return nil
+}
+
+func (p *Plugin) Provides() []interface{} {
+	return []interface{}{
+		p.ProvideServer,
 	}
 }
 
-func (s *Plugin) serveHTTPS(errCh chan error) {
-	if s.https == nil {
-		return
+func (p *Plugin) ProvideServer() (*Server, error) {
+	// if there is no ssl section
+	// return nil config
+	if !p.initialized {
+		return nil, nil
 	}
-	const op = errors.Op("http_plugin_serve_https")
-	if len(s.mdwr) > 0 {
-		applyMiddlewares(s.https, s.mdwr, s.cfg.Middleware, s.log)
+	p.server = p.initSSL()
+	if p.cfg.RootCA != "" {
+		err := p.appendRootCa()
+		if err != nil {
+			return nil, err
+		}
 	}
-	l, err := utils.CreateListener(s.cfg.SSLConfig.Address)
+	l, err := utils.CreateListener(p.cfg.Address)
 	if err != nil {
-		errCh <- errors.E(op, err)
-		return
+		return nil, err
 	}
-
-	err = s.https.ServeTLS(
+	s := &Server{
+		p.server,
 		l,
-		s.cfg.SSLConfig.Cert,
-		s.cfg.SSLConfig.Key,
-	)
-
-	if err != nil && err != http.ErrServerClosed {
-		errCh <- errors.E(op, err)
-		return
+		p.redirect,
+		p.cfg.Cert,
+		p.cfg.Key,
 	}
+
+	return s, nil
 }
 
-// serveFCGI starts FastCGI server.
-func (s *Plugin) serveFCGI(errCh chan error) {
-	if s.fcgi == nil {
-		return
-	}
-	const op = errors.Op("http_plugin_serve_fcgi")
-
-	if len(s.mdwr) > 0 {
-		applyMiddlewares(s.https, s.mdwr, s.cfg.Middleware, s.log)
-	}
-
-	l, err := utils.CreateListener(s.cfg.FCGIConfig.Address)
-	if err != nil {
-		errCh <- errors.E(op, err)
-		return
-	}
-
-	err = fcgi.Serve(l, s.fcgi.Handler)
-	if err != nil && err != http.ErrServerClosed {
-		errCh <- errors.E(op, err)
-		return
-	}
-}
-
-func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) {
+//go:inline
+func (p *Plugin) redirect(w http.ResponseWriter, r *http.Request) {
 	target := &url.URL{
 		Scheme: HTTPSScheme,
 		// host or host:port
-		Host:     s.tlsAddr(r.Host, false),
+		Host:     p.tlsAddr(r.Host, false),
 		Path:     r.URL.Path,
 		RawQuery: r.URL.RawQuery,
 	}
@@ -101,17 +121,8 @@ func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, target.String(), http.StatusPermanentRedirect)
 }
 
-// https://golang.org/pkg/net/http/#Hijacker
-//go:inline
-func headerContainsUpgrade(r *http.Request) bool {
-	if _, ok := r.Header["Upgrade"]; ok {
-		return true
-	}
-	return false
-}
-
 // append RootCA to the https server TLS config
-func (s *Plugin) appendRootCa() error {
+func (p *Plugin) appendRootCa() error {
 	const op = errors.Op("http_plugin_append_root_ca")
 	rootCAs, err := x509.SystemCertPool()
 	if err != nil {
@@ -121,7 +132,7 @@ func (s *Plugin) appendRootCa() error {
 		rootCAs = x509.NewCertPool()
 	}
 
-	CA, err := os.ReadFile(s.cfg.SSLConfig.RootCA)
+	CA, err := os.ReadFile(p.cfg.RootCA)
 	if err != nil {
 		return err
 	}
@@ -137,13 +148,13 @@ func (s *Plugin) appendRootCa() error {
 		InsecureSkipVerify: false,
 		RootCAs:            rootCAs,
 	}
-	s.http.TLSConfig = cfg
+	p.server.TLSConfig = cfg
 
 	return nil
 }
 
 // Init https server
-func (s *Plugin) initSSL() *http.Server {
+func (p *Plugin) initSSL() *http.Server {
 	var topCipherSuites []uint16
 	var defaultCipherSuitesTLS13 []uint16
 
@@ -193,9 +204,7 @@ func (s *Plugin) initSSL() *http.Server {
 	DefaultCipherSuites = append(DefaultCipherSuites, defaultCipherSuitesTLS13...)
 
 	sslServer := &http.Server{
-		Addr:     s.tlsAddr(s.cfg.Address, true),
-		Handler:  s,
-		ErrorLog: s.stdLog,
+		Addr: p.tlsAddr(p.cfg.Address, true),
 		TLSConfig: &tls.Config{
 			CurvePreferences: []tls.CurveID{
 				tls.CurveP256,
@@ -212,31 +221,21 @@ func (s *Plugin) initSSL() *http.Server {
 	return sslServer
 }
 
-// init http/2 server
-func (s *Plugin) initHTTP2() error {
-	return http2.ConfigureServer(s.https, &http2.Server{
-		MaxConcurrentStreams: s.cfg.HTTP2Config.MaxConcurrentStreams,
-	})
-}
-
 // tlsAddr replaces listen or host port with port configured by SSLConfig config.
-func (s *Plugin) tlsAddr(host string, forcePort bool) string {
+func (p *Plugin) tlsAddr(host string, forcePort bool) string {
 	// remove current forcePort first
 	host = strings.Split(host, ":")[0]
 
-	if forcePort || s.cfg.SSLConfig.Port != 443 {
-		host = fmt.Sprintf("%s:%v", host, s.cfg.SSLConfig.Port)
+	if forcePort || p.cfg.port != 443 {
+		host = fmt.Sprintf("%s:%v", host, p.cfg.port)
 	}
 
 	return host
 }
 
-func applyMiddlewares(server *http.Server, middlewares map[string]Middleware, order []string, log logger.Logger) {
-	for i := len(order) - 1; i >= 0; i-- {
-		if mdwr, ok := middlewares[order[i]]; ok {
-			server.Handler = mdwr.Middleware(server.Handler)
-		} else {
-			log.Warn("requested middleware does not exist", "requested", order[i])
-		}
-	}
+func (p *Plugin) Name() string {
+	return PluginName
 }
+
+// Available interface implementation
+func (p *Plugin) Available() {}

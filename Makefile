@@ -32,8 +32,8 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pool.out -covermode=atomic ./pkg/pool
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/worker.out -covermode=atomic ./pkg/worker
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/worker_stack.out -covermode=atomic ./pkg/worker_watcher
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/http.out -covermode=atomic ./tests/plugins/http
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/http_config.out -covermode=atomic ./plugins/http/config
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/http.out -covermode=atomic ./tests/plugins/protocols/http
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/http_config.out -covermode=atomic ./plugins/http/protocols/config
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/informer.out -covermode=atomic ./tests/plugins/informer
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/reload.out -covermode=atomic ./tests/plugins/reload
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/server.out -covermode=atomic ./tests/plugins/server
@@ -59,7 +59,7 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./pkg/worker
 	go test -v -race -tags=debug ./pkg/worker_watcher
 	go test -v -race -tags=debug ./tests/plugins/http
-	go test -v -race -tags=debug ./plugins/http/config
+	go test -v -race -tags=debug ./plugins/protocols/http/config
 	go test -v -race -tags=debug ./tests/plugins/informer
 	go test -v -race -tags=debug ./tests/plugins/reload
 	go test -v -race -tags=debug ./tests/plugins/server

@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/spiral/roadrunner/v2/plugins/http/config"
+	"github.com/spiral/roadrunner/v2/plugins/protocols/http/config"
 	"github.com/stretchr/testify/assert"
 )
 
