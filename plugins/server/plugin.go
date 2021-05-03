@@ -260,8 +260,3 @@ func (server *Plugin) collectWorkerLogs(event interface{}) {
 		}
 	}
 }
-
-// unsafe, but lightning fast []byte to string conversion
-func toString(data []byte) string {
-	return *(*string)(unsafe.Pointer(&data))
-}

@@ -3,7 +3,7 @@ package http
 import (
 	"testing"
 
-	handler "github.com/spiral/roadrunner/v2/plugins/http/worker_handler"
+	handler2 "github.com/spiral/roadrunner/v2/pkg/worker_handler"
 )
 
 var samples = []struct {
@@ -21,7 +21,7 @@ var samples = []struct {
 
 func Test_FetchIndexes(t *testing.T) {
 	for i := 0; i < len(samples); i++ {
-		r := handler.FetchIndexes(samples[i].in)
+		r := handler2.FetchIndexes(samples[i].in)
 		if !same(r, samples[i].out) {
 			t.Errorf("got %q, want %q", r, samples[i].out)
 		}
@@ -31,7 +31,7 @@ func Test_FetchIndexes(t *testing.T) {
 func BenchmarkConfig_FetchIndexes(b *testing.B) {
 	for _, tt := range samples {
 		for n := 0; n < b.N; n++ {
-			r := handler.FetchIndexes(tt.in)
+			r := handler2.FetchIndexes(tt.in)
 			if !same(r, tt.out) {
 				b.Fail()
 			}

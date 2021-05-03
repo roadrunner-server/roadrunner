@@ -1,0 +1,10 @@
+# broadcast service configuration.rr.yaml
+broadcast:
+  # path to enable web-socket handler middleware
+  path: /ws
+
+  # optional, redis broker configuration
+  redis:
+    addr:      "localhost:6379"
+    passsword: ""
+    db:        0

@@ -327,8 +327,3 @@ func (sp *StaticPool) allocateWorkers(numWorkers uint64) ([]worker.BaseProcess, 
 	}
 	return workers, nil
 }
-
-// unsafe, but lightning fast []byte to string conversion
-func toString(data []byte) string {
-	return *(*string)(unsafe.Pointer(&data))
-}

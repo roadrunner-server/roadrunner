@@ -1,0 +1,2 @@
+broadcast:
+  redis.addr: "localhost:6379"

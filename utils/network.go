@@ -12,7 +12,8 @@ import (
 	"github.com/valyala/tcplisten"
 )
 
-//   - SO_REUSEPORT. This option allows linear scaling server performance
+// CreateListener
+// - SO_REUSEPORT. This option allows linear scaling server performance
 //     on multi-CPU servers.
 //     See https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/ for details.
 //

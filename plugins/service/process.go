@@ -145,9 +145,3 @@ func (p *Process) execHandler() {
 		p.Unlock()
 	}
 }
-
-// unsafe and fast []byte to string convert
-//go:inline
-func toString(data []byte) string {
-	return *(*string)(unsafe.Pointer(&data))
-}

@@ -65,7 +65,3 @@ func appendUint(dst []byte, n uint32) []byte {
 	dst = append(dst, buf[i:]...)
 	return dst
 }
-
-func byteToSrt(b []byte) string {
-	return *(*string)(unsafe.Pointer(&b))
-}

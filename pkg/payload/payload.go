@@ -16,8 +16,3 @@ type Payload struct {
 func (p *Payload) String() string {
 	return toString(p.Body)
 }
-
-// unsafe, but lightning fast []byte to string conversion
-func toString(data []byte) string {
-	return *(*string)(unsafe.Pointer(&data))
-}

@@ -216,6 +216,3 @@ func (r *rpc) Delete(in []byte, ok *bool) error {
 	return errors.E(op, errors.Errorf("no such storage: %s", dataRoot.Storage()))
 }
 
-func strConvert(s []byte) string {
-	return *(*string)(unsafe.Pointer(&s))
-}
