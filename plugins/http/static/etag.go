@@ -5,9 +5,9 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"unsafe"
 
 	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 const etag string = "Etag"
@@ -44,7 +44,7 @@ func SetEtag(cfg *httpConfig.Static, f *os.File, w http.ResponseWriter) {
 	calculatedEtag = appendUint(calculatedEtag, crc32.Checksum(body, crc32q))
 	calculatedEtag = append(calculatedEtag, '"')
 
-	w.Header().Set(etag, byteToSrt(calculatedEtag))
+	w.Header().Set(etag, utils.AsString(calculatedEtag))
 }
 
 // appendUint appends n to dst and returns the extended dst.

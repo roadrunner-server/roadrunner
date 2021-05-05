@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"unsafe"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 // StdLogAdapter can be passed to the http.Server or any place which required standard logger to redirect output
@@ -12,7 +12,7 @@ type StdLogAdapter struct {
 
 // Write io.Writer interface implementation
 func (s *StdLogAdapter) Write(p []byte) (n int, err error) {
-	s.log.Error("server internal error", "message", toString(p))
+	s.log.Error("server internal error", "message", utils.AsString(p))
 	return len(p), nil
 }
 

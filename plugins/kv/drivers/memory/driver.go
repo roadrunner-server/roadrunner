@@ -9,6 +9,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 type Driver struct {
@@ -70,7 +71,7 @@ func (s *Driver) Get(key string) ([]byte, error) {
 	if data, exist := s.heap.Load(key); exist {
 		// here might be a panic
 		// but data only could be a string, see Set function
-		return []byte(data.(kv.Item).Value), nil
+		return utils.AsBytes(data.(kv.Item).Value), nil
 	}
 	return nil, nil
 }

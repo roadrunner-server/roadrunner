@@ -89,7 +89,7 @@ func (h *Handler) AddListener(l events.Listener) {
 
 // mdwr serve using PSR-7 requests passed to underlying application. Attempts to serve static files first if enabled.
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	const op = errors.Op("http_plugin_serve_http")
+	const op = errors.Op("serve_http")
 	start := time.Now()
 
 	// validating request size

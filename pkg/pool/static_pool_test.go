@@ -16,6 +16,7 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
+	"github.com/spiral/roadrunner/v2/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -653,7 +654,7 @@ func BenchmarkToStringUnsafe(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		res := toString(testPayload)
+		res := utils.AsString(testPayload)
 		_ = res
 	}
 }

@@ -21,7 +21,7 @@ func (s *Plugin) serveHTTP(errCh chan error) {
 	if s.http == nil {
 		return
 	}
-	const op = errors.Op("http_plugin_serve_http")
+	const op = errors.Op("serveHTTP")
 
 	if len(s.mdwr) > 0 {
 		applyMiddlewares(s.http, s.mdwr, s.cfg.Middleware, s.log)
@@ -43,7 +43,7 @@ func (s *Plugin) serveHTTPS(errCh chan error) {
 	if s.https == nil {
 		return
 	}
-	const op = errors.Op("http_plugin_serve_https")
+	const op = errors.Op("serveHTTPS")
 	if len(s.mdwr) > 0 {
 		applyMiddlewares(s.https, s.mdwr, s.cfg.Middleware, s.log)
 	}
@@ -70,7 +70,7 @@ func (s *Plugin) serveFCGI(errCh chan error) {
 	if s.fcgi == nil {
 		return
 	}
-	const op = errors.Op("http_plugin_serve_fcgi")
+	const op = errors.Op("serveFCGI")
 
 	if len(s.mdwr) > 0 {
 		applyMiddlewares(s.https, s.mdwr, s.cfg.Middleware, s.log)

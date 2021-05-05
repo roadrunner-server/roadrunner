@@ -13,6 +13,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/utils"
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -393,7 +394,7 @@ func (d *Driver) startGCLoop() { //nolint:gocognit
 							if b == nil {
 								return errors.E(op, errors.NoSuchBucket)
 							}
-							err := b.Delete([]byte(k))
+							err := b.Delete(utils.AsBytes(k))
 							if err != nil {
 								return errors.E(op, err)
 							}

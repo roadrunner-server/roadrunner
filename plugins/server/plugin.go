@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"unsafe"
 
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/transport"
@@ -239,10 +238,10 @@ func (server *Plugin) collectEvents(event interface{}) {
 		case events.EventWorkerError:
 			server.log.Error(strings.TrimRight(we.Payload.(error).Error(), " \n\t"))
 		case events.EventWorkerLog:
-			server.log.Debug(strings.TrimRight(toString(we.Payload.([]byte)), " \n\t"))
+			server.log.Debug(strings.TrimRight(utils.AsString(we.Payload.([]byte)), " \n\t"))
 			// stderr event is INFO level
 		case events.EventWorkerStderr:
-			server.log.Info(strings.TrimRight(toString(we.Payload.([]byte)), " \n\t"))
+			server.log.Info(strings.TrimRight(utils.AsString(we.Payload.([]byte)), " \n\t"))
 		}
 	}
 }
@@ -253,10 +252,10 @@ func (server *Plugin) collectWorkerLogs(event interface{}) {
 		case events.EventWorkerError:
 			server.log.Error(strings.TrimRight(we.Payload.(error).Error(), " \n\t"))
 		case events.EventWorkerLog:
-			server.log.Debug(strings.TrimRight(toString(we.Payload.([]byte)), " \n\t"))
+			server.log.Debug(strings.TrimRight(utils.AsString(we.Payload.([]byte)), " \n\t"))
 			// stderr event is INFO level
 		case events.EventWorkerStderr:
-			server.log.Info(strings.TrimRight(toString(we.Payload.([]byte)), " \n\t"))
+			server.log.Info(strings.TrimRight(utils.AsString(we.Payload.([]byte)), " \n\t"))
 		}
 	}
 }

@@ -1,10 +1,29 @@
-# broadcast service configuration.rr.yaml
 broadcast:
   # path to enable web-socket handler middleware
   path: /ws
 
   # optional, redis broker configuration
   redis:
-    addr:      "localhost:6379"
-    passsword: ""
-    db:        0
+    addrs:
+      - "localhost:6379"
+      # if a MasterName is passed a sentinel-backed FailoverClient will be returned
+    master_name: ""
+    username: ""
+    password: ""
+    db: 0
+    sentinel_password: ""
+    route_by_latency: false
+    route_randomly: false
+    dial_timeout: 0 # accepted values [1s, 5m, 3h]
+    max_retries: 1
+    min_retry_backoff: 0 # accepted values [1s, 5m, 3h]
+    max_retry_backoff: 0 # accepted values [1s, 5m, 3h]
+    pool_size: 0
+    min_idle_conns: 0
+    max_conn_age: 0 # accepted values [1s, 5m, 3h]
+    read_timeout: 0 # accepted values [1s, 5m, 3h]
+    write_timeout: 0 # accepted values [1s, 5m, 3h]
+    pool_timeout: 0 # accepted values [1s, 5m, 3h]
+    idle_timeout: 0 # accepted values [1s, 5m, 3h]
+    idle_check_freq: 0 # accepted values [1s, 5m, 3h]
+    read_only: false

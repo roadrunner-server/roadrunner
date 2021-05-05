@@ -1,13 +1,34 @@
-package memory
+package old
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMemory_Broadcast(t *testing.T) {
-	br, _, c := setup(`{}`)
+func TestRedis_Error(t *testing.T) {
+	logger, _ := test.NewNullLogger()
+	logger.SetLevel(logrus.DebugLevel)
+
+	//c := service.NewContainer(logger)
+	//c.Register(rpc.ID, &rpc.Service{})
+	//c.Register(ID, &Service{})
+	//
+	//err := c.Init(&testCfg{
+	//	broadcast: `{"redis":{"addr":"localhost:6372"}}`,
+	//	rpc:       fmt.Sprintf(`{"join":"tcp://:%v"}`, rpcPort),
+	//})
+
+	rpcPort++
+
+	assert.Error(t, err)
+}
+
+func TestRedis_Broadcast(t *testing.T) {
+	br, _, c := setup(`{"redis":{"addr":"localhost:6379"}}`)
 	defer c.Stop()
 
 	client := br.NewClient()
@@ -33,8 +54,8 @@ func TestMemory_Broadcast(t *testing.T) {
 	assert.Equal(t, `hello4`, readStr(<-client.Channel()))
 }
 
-func TestMemory_BroadcastPattern(t *testing.T) {
-	br, _, c := setup(`{}`)
+func TestRedis_BroadcastPattern(t *testing.T) {
+	br, _, c := setup(`{"redis":{"addr":"localhost:6379"}}`)
 	defer c.Stop()
 
 	client := br.NewClient()
@@ -45,9 +66,6 @@ func TestMemory_BroadcastPattern(t *testing.T) {
 	assert.NoError(t, client.SubscribePattern("topic/*"))
 
 	assert.NoError(t, br.Broker().Publish(newMessage("topic/1", "hello1")))
-	assert.Equal(t, `hello1`, readStr(<-client.Channel()))
-
-	assert.NoError(t, client.Publish(newMessage("topic/1", "hello1")))
 	assert.Equal(t, `hello1`, readStr(<-client.Channel()))
 
 	assert.NoError(t, br.Broker().Publish(newMessage("topic/2", "hello2")))
@@ -68,8 +86,8 @@ func TestMemory_BroadcastPattern(t *testing.T) {
 	assert.Equal(t, `hello7`, readStr(<-client.Channel()))
 }
 
-func TestMemory_NotActive(t *testing.T) {
-	b := memoryBroker()
+func TestRedis_NotActive(t *testing.T) {
+	b := &Redis{}
 	b.stopped = 1
 
 	assert.Error(t, b.Publish(nil))
