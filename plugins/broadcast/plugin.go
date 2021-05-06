@@ -12,7 +12,7 @@ const (
 )
 
 type Plugin struct {
-	broker Broker
+	broker Subscriber
 
 	log logger.Logger
 	cfg *Config
@@ -53,6 +53,7 @@ func (p *Plugin) Serve() chan error {
 			errCh <- errors.E(op, err)
 		}
 	}()
+
 	return errCh
 }
 
@@ -76,7 +77,7 @@ func (p *Plugin) Collects() []interface{} {
 	}
 }
 
-func (p *Plugin) CollectBroker(name endure.Named, broker Broker) {
+func (p *Plugin) CollectBroker(name endure.Named, broker Subscriber) {
 	p.broker = broker
 }
 

@@ -78,5 +78,4 @@ func (s *Plugin) Name() string {
 }
 
 // Available interface implementation
-func (s *Plugin) Available() {
-}
+func (s *Plugin) Available() {}

@@ -6,7 +6,7 @@ type Driver struct {
 
 }
 
-func NewInMemoryDriver() broadcast.Broker {
+func NewInMemoryDriver() broadcast.Subscriber {
 	b := &Driver{
 
 	}

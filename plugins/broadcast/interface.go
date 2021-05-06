@@ -2,14 +2,8 @@ package broadcast
 
 import "encoding/json"
 
-// Broker defines the ability to operate as message passing broker.
-type Broker interface {
-	// Serve serves broker.
-	Serve() error
-
-	// Stop closes the consumption and disconnects broker.
-	Stop()
-
+// Subscriber defines the ability to operate as message passing broker.
+type Subscriber interface {
 	// Subscribe broker to one or multiple topics.
 	Subscribe(upstream chan *Message, topics ...string) error
 
@@ -21,7 +15,13 @@ type Broker interface {
 
 	// UnsubscribePattern broker from pattern.
 	UnsubscribePattern(upstream chan *Message, pattern string) error
+}
 
+type Storage interface {
+
+}
+
+type Publisher interface {
 	// Publish one or multiple Channel.
 	Publish(messages ...*Message) error
 }
