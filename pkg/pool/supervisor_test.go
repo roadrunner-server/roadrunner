@@ -53,6 +53,34 @@ func TestSupervisedPool_Exec(t *testing.T) {
 	p.Destroy(context.Background())
 }
 
+// This test should finish without freezes
+func TestSupervisedPool_ExecWithDebugMode(t *testing.T) {
+	var cfgSupervised = cfgSupervised
+	cfgSupervised.Debug = true
+
+	ctx := context.Background()
+	p, err := Initialize(
+		ctx,
+		func() *exec.Cmd { return exec.Command("php", "../../tests/memleak.php", "pipes") },
+		pipe.NewPipeFactory(),
+		cfgSupervised,
+	)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, p)
+
+	for i := 0; i < 100; i++ {
+		time.Sleep(time.Millisecond * 100)
+		_, err = p.Exec(payload.Payload{
+			Context: []byte(""),
+			Body:    []byte("foo"),
+		})
+		assert.NoError(t, err)
+	}
+
+	p.Destroy(context.Background())
+}
+
 func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 	var cfgExecTTL = Config{
 		NumWorkers:      uint64(1),
