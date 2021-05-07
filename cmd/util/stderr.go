@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// LogEvent outputs rr event into given logger and return false if event was not handled.
+// StdErrOutput outputs rr event into given logger and return false if event was not handled.
 func StdErrOutput(event int, ctx interface{}) bool {
 	// outputs
 	switch event {
@@ -21,6 +21,6 @@ func StdErrOutput(event int, ctx interface{}) bool {
 
 		return true
 	}
-	
+
 	return false
 }
