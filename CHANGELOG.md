@@ -1,11 +1,39 @@
 CHANGELOG
 =========
 
+v1.8.4 (21.10.2020)
+-------------------
+- Update Goridge go dep to 2.4.6
+
+v1.8.3 (02.09.2020)
+-------------------
+- Fix superfluous response.WriteHeader issue.
+- Proper handle of `broken pipe` error on Linux and Windows.
+- PCI DSS compliant upgrade (thanks @antonydevanchi).
+- Fix HSTS header (thanks @antonydevanchi).
+- Add Request and Response headers to static files (thanks @siad007).
+- Add user_namespaces check when running RR worker from a particular user.
+
+v1.8.2 (06.06.2020)
+-------------------
+- Bugfix release
+
+v1.8.1 (23.05.2020)
+-------------------
+- Update goridge version to 2.4.4
+- Fix code warnings from phpstan
+- Improve RPC
+- Create templates for the Bug reporting and Feature requests
+- Move docker images from golang-alpine to regular golang images
+- Add support for the CloudFlare CF-Connecting-IP and True-Client-IP headers (thanks @vsychov)
+- Add support for the Root CA via the `rootCa` .rr.yaml option
+- See the full milestone here: [link](https://github.com/spiral/roadrunner/milestone/11?closed=1)
+
 v1.8.0 (05.05.2020)
 -------------------
 - Update goridge version to 2.4.0
 - Update PHP version to the 7.2 (currently minimum supported)
-- See the full milestone here: [link](https://github.com/spiral/roadrunner/issues?q=is%3Aclosed+milestone%3A1.8.0)
+- See the full milestone here: [link](https://github.com/spiral/roadrunner/milestone/10?closed=1)
 
 v1.7.1 (22.04.2020)
 -------------------

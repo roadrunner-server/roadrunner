@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [7.2, 7.3, 7.4]
-        go: [1.13, 1.14]
+        go: [1.14, 1.15]
         os: [ubuntu-latest]
     env:
       GO111MODULE: on
@@ -57,8 +57,8 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-suggest # --prefer-source
 
-#      - name: Analyze PHP sources
-#        run: composer analyze
+      - name: Analyze PHP sources
+        run: composer analyze
 
       - name: Install Go dependencies
         run: go mod download

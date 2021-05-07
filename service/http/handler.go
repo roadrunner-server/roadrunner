@@ -1,15 +1,17 @@
 package http
 
 import (
-	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
-	"github.com/spiral/roadrunner"
+	"fmt"
 	"net"
 	"net/http"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
+	"github.com/spiral/roadrunner"
 )
 
 const (
@@ -130,13 +132,22 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // handleError sends error.
 func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, err error, start time.Time) {
-	h.throw(EventError, &ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
-
-	w.WriteHeader(500)
-	_, err = w.Write([]byte(err.Error()))
-	if err != nil {
+	// if pipe is broken, there is no sense to write the header
+	// in this case we just report about error
+	if err == errEPIPE {
 		h.throw(EventError, &ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
+		return
 	}
+	// ResponseWriter is ok, write the error code
+	w.WriteHeader(500)
+	_, err2 := w.Write([]byte(err.Error()))
+	// error during the writing to the ResponseWriter
+	if err2 != nil {
+		// concat original error with ResponseWriter error
+		h.throw(EventError, &ErrorEvent{Request: r, Error: errors.New(fmt.Sprintf("error: %v, during handle this error, ResponseWriter error occurred: %v", err, err2)), start: start, elapsed: time.Since(start)})
+		return
+	}
+	h.throw(EventError, &ErrorEvent{Request: r, Error: err, start: start, elapsed: time.Since(start)})
 }
 
 // handleResponse triggers response event.

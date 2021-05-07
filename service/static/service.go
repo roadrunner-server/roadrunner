@@ -36,6 +36,18 @@ func (s *Service) Init(cfg *Config, r *rrhttp.Service) (bool, error) {
 func (s *Service) middleware(f http.HandlerFunc) http.HandlerFunc {
 	// Define the http.HandlerFunc
 	return func(w http.ResponseWriter, r *http.Request) {
+		if s.cfg.Request != nil {
+			for k, v := range s.cfg.Request {
+				r.Header.Add(k, v)
+			}
+		}
+
+		if s.cfg.Response != nil {
+			for k, v := range s.cfg.Response {
+				w.Header().Set(k, v)
+			}
+		}
+
 		if !s.handleStatic(w, r) {
 			f(w, r)
 		}

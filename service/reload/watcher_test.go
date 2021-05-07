@@ -246,7 +246,7 @@ func Test_Recursive_Support(t *testing.T) {
 		}
 	}()
 
-	nestedDir, err := ioutil.TempDir(tempDir, "/nested")
+	nestedDir, err := ioutil.TempDir(tempDir, "nested")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -368,7 +368,7 @@ func Test_Filter_Directory(t *testing.T) {
 
 	go limitTime(time.Second*10, t.Name(), c)
 
-	nestedDir, err := ioutil.TempDir(tempDir, "/nested")
+	nestedDir, err := ioutil.TempDir(tempDir, "nested")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -470,7 +470,7 @@ func Test_Copy_Directory(t *testing.T) {
 		c <- struct{}{}
 	}()
 
-	nestedDir, err := ioutil.TempDir(tempDir, "/nested")
+	nestedDir, err := ioutil.TempDir(tempDir, "nested")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -535,7 +535,7 @@ func Test_Copy_Directory(t *testing.T) {
 
 	go func() {
 		go func() {
-			err2 := copyDir(nestedDir, filepath.Join(tempDir, "/copyTo"))
+			err2 := copyDir(nestedDir, filepath.Join(tempDir, "copyTo"))
 			if err2 != nil {
 				panic(err2)
 			}

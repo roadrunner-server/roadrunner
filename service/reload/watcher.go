@@ -177,15 +177,6 @@ func (w *Watcher) retrieveFilesSingle(serviceName, path string) (map[string]os.F
 	// so, we will add files with goto pattern
 outer:
 	for i := 0; i < len(fileInfoList); i++ {
-		var pathToFile string
-		// BCE check elimination
-		// https://go101.org/article/bounds-check-elimination.html
-		if len(fileInfoList) != 0 && len(fileInfoList) >= i {
-			pathToFile = filepath.Join(pathToFile, fileInfoList[i].Name())
-		} else {
-			return nil, errors.New("file info list len")
-		}
-
 		// if file in ignored --> continue
 		if _, ignored := w.watcherConfigs[serviceName].ignored[path]; ignored {
 			continue
@@ -199,7 +190,7 @@ outer:
 			}
 		}
 
-		filesList[pathToFile] = fileInfoList[i]
+		filesList[fileInfoList[i].Name()] = fileInfoList[i]
 	}
 
 	return filesList, nil

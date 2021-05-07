@@ -2,15 +2,16 @@ package http
 
 import (
 	"fmt"
-	json "github.com/json-iterator/go"
-	"github.com/sirupsen/logrus"
-	"github.com/spiral/roadrunner"
-	"github.com/spiral/roadrunner/service/http/attributes"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
 	"strings"
+
+	json "github.com/json-iterator/go"
+	"github.com/sirupsen/logrus"
+	"github.com/spiral/roadrunner"
+	"github.com/spiral/roadrunner/service/http/attributes"
 )
 
 const (
