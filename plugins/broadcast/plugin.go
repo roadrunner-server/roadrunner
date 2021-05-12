@@ -13,6 +13,7 @@ const (
 
 type Plugin struct {
 	broker Subscriber
+	driver Storage
 
 	log logger.Logger
 	cfg *Config
@@ -48,17 +49,16 @@ func (p *Plugin) Serve() chan error {
 
 	// start the underlying broker
 	go func() {
-		err := p.broker.Serve()
-		if err != nil {
-			errCh <- errors.E(op, err)
-		}
+		// err := p.broker.Serve()
+		// if err != nil {
+		// 	errCh <- errors.E(op, err)
+		// }
 	}()
 
 	return errCh
 }
 
 func (p *Plugin) Stop() error {
-
 	return nil
 }
 

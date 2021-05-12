@@ -18,7 +18,7 @@ type Subscriber interface {
 }
 
 type Storage interface {
-
+	Store()
 }
 
 type Publisher interface {
