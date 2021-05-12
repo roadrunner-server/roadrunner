@@ -15,3 +15,4 @@ jobs:
         with:
           version: v1.39 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
+          args: --timeout=10m
