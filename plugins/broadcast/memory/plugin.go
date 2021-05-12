@@ -10,14 +10,13 @@ import (
 )
 
 const (
-	PluginName string = "broadcast"
+	PluginName  string = "broadcast"
 	SectionName string = "memory"
 )
 
 type Plugin struct {
 	log logger.Logger
 	cfg *Config
-
 }
 
 func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
@@ -46,7 +45,6 @@ func (p *Plugin) Serve() chan error {
 	const op = errors.Op("memory_plugin_serve")
 	errCh := make(chan error)
 
-
 	return errCh
 }
 
@@ -63,8 +61,6 @@ func (p *Plugin) Name() string {
 	// broadcast.memory
 	return fmt.Sprintf("%s.%s", PluginName, SectionName)
 }
-
-
 
 func (p *Plugin) Publish(msg []*broadcast.Message) error {
 	return nil

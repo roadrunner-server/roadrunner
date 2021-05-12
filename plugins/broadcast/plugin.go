@@ -63,13 +63,12 @@ func (p *Plugin) Stop() error {
 }
 
 // Available interface implementation for the plugin
-func (p * Plugin) Available() {}
+func (p *Plugin) Available() {}
 
 // Name is endure.Named interface implementation
 func (p *Plugin) Name() string {
 	return PluginName
 }
-
 
 func (p *Plugin) Collects() []interface{} {
 	return []interface{}{
@@ -94,4 +93,3 @@ func (p *Plugin) Publish(msg []*Message) error {
 	const op = errors.Op("broadcast_plugin_publish")
 	return nil
 }
-

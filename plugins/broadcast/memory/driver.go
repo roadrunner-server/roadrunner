@@ -3,13 +3,10 @@ package memory
 import "github.com/spiral/roadrunner/v2/plugins/broadcast"
 
 type Driver struct {
-
 }
 
 func NewInMemoryDriver() broadcast.Subscriber {
-	b := &Driver{
-
-	}
+	b := &Driver{}
 	return b
 }
 

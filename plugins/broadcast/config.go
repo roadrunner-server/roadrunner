@@ -1,7 +1,6 @@
 package broadcast
 
 type Config struct {
-
 }
 
 func (c *Config) InitDefaults() {

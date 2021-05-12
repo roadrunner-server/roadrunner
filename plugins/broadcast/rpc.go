@@ -10,7 +10,6 @@ type rpc struct {
 	svc *Plugin
 }
 
-
 func (r *rpc) Publish(msg []*Message, ok *bool) error {
 	const op = errors.Op("broadcast_publish")
 	err := r.svc.Publish(msg)
