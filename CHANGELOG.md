@@ -19,6 +19,8 @@ v2.2.0 (11.05.2021)
 ## 🩹 Fixes:
 
 - 🐛 Fix: issue with wrong ordered middlewares (reverse). Now the order is correct.
+- 🐛 Fix: issue when RR fails if a user sets `debug` mode with the `exec_ttl` supervisor option.
+- 🐛 Fix: uniform log levels. Use everywhere the same levels (warn, error, debug, info, panic).
 
 ---
 

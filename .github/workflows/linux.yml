@@ -82,7 +82,6 @@ jobs:
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage-ci/summary.txt
           fail_ci_if_error: false
 
