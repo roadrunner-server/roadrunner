@@ -128,6 +128,18 @@ func (s *Plugin) Middleware(next http.Handler) http.Handler {
 			return
 		}
 
+		// if we have some allowed extensions, we should check them
+		// if not - all extensions allowed except forbidden
+		if len(s.allowedExtensions) > 0 {
+			// not found in allowed
+			if _, ok := s.allowedExtensions[ext]; !ok {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			// file extension allowed
+		}
+
 		// ok, file is not in the forbidden list
 		// Stat it and get file info
 		f, err := s.root.Open(fPath)
@@ -150,6 +162,13 @@ func (s *Plugin) Middleware(next http.Handler) http.Handler {
 			return
 		}
 
+		defer func() {
+			err = f.Close()
+			if err != nil {
+				s.log.Error("file close error", "error", err)
+			}
+		}()
+
 		// if provided path to the dir, do not serve the dir, but pass the request to the worker
 		if finfo.IsDir() {
 			s.log.Debug("possible path to dir provided")
@@ -163,27 +182,7 @@ func (s *Plugin) Middleware(next http.Handler) http.Handler {
 			SetEtag(s.cfg.Static.Weak, f, finfo.Name(), w)
 		}
 
-		defer func() {
-			err = f.Close()
-			if err != nil {
-				s.log.Error("file close error", "error", err)
-			}
-		}()
-
-		// here we know, that file extension is not in the AlwaysServe and file exists
-		// (or by some reason, there is no error from the http.Open method)
-
-		// if we have some allowed extensions, we should check them
-		if len(s.allowedExtensions) > 0 {
-			if _, ok := s.allowedExtensions[ext]; ok {
-				http.ServeContent(w, r, finfo.Name(), finfo.ModTime(), f)
-			}
-
-			// file not in the allowed file extensions
-			return
-		}
-
-		// otherwise we guess, that all file extensions are allowed
+		// we passed all checks - serve the file
 		http.ServeContent(w, r, finfo.Name(), finfo.ModTime(), f)
 	})
 }
