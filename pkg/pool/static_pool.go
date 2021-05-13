@@ -4,7 +4,6 @@ import (
 	"context"
 	"os/exec"
 	"time"
-	"unsafe"
 
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/events"
@@ -12,6 +11,7 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/transport"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	workerWatcher "github.com/spiral/roadrunner/v2/pkg/worker_watcher"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 // StopRequest can be sent by worker to indicate that restart is required.
@@ -153,7 +153,7 @@ func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 	}
 
 	// worker want's to be terminated
-	if len(rsp.Body) == 0 && toString(rsp.Context) == StopRequest {
+	if len(rsp.Body) == 0 && utils.AsString(rsp.Context) == StopRequest {
 		sp.stopWorker(w)
 		return sp.Exec(p)
 	}
@@ -187,7 +187,7 @@ func (sp *StaticPool) execWithTTL(ctx context.Context, p payload.Payload) (paylo
 	}
 
 	// worker want's to be terminated
-	if len(rsp.Body) == 0 && toString(rsp.Context) == StopRequest {
+	if len(rsp.Body) == 0 && utils.AsString(rsp.Context) == StopRequest {
 		sp.stopWorker(w)
 		return sp.execWithTTL(ctx, p)
 	}
@@ -346,9 +346,4 @@ func (sp *StaticPool) allocateWorkers(numWorkers uint64) ([]worker.BaseProcess, 
 		workers = append(workers, w)
 	}
 	return workers, nil
-}
-
-// unsafe, but lightning fast []byte to string conversion
-func toString(data []byte) string {
-	return *(*string)(unsafe.Pointer(&data))
 }

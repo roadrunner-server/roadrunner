@@ -1,11 +1,10 @@
 package kv
 
 import (
-	"unsafe"
-
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/kv/payload/generated"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 // Wrapper for the plugin
@@ -31,10 +30,10 @@ func (r *rpc) Has(in []byte, res *map[string]bool) error {
 		if !dataRoot.Items(tmpItem, i) {
 			continue
 		}
-		keys = append(keys, strConvert(tmpItem.Key()))
+		keys = append(keys, utils.AsString(tmpItem.Key()))
 	}
 
-	if st, ok := r.storages[strConvert(dataRoot.Storage())]; ok {
+	if st, ok := r.storages[utils.AsString(dataRoot.Storage())]; ok {
 		ret, err := st.Has(keys...)
 		if err != nil {
 			return err
@@ -73,7 +72,7 @@ func (r *rpc) Set(in []byte, ok *bool) error {
 		items = append(items, itc)
 	}
 
-	if st, exists := r.storages[strConvert(dataRoot.Storage())]; exists {
+	if st, exists := r.storages[utils.AsString(dataRoot.Storage())]; exists {
 		err := st.Set(items...)
 		if err != nil {
 			return err
@@ -104,7 +103,7 @@ func (r *rpc) MGet(in []byte, res *map[string]interface{}) error {
 		keys = append(keys, string(tmpItem.Key()))
 	}
 
-	if st, exists := r.storages[strConvert(dataRoot.Storage())]; exists {
+	if st, exists := r.storages[utils.AsString(dataRoot.Storage())]; exists {
 		ret, err := st.MGet(keys...)
 		if err != nil {
 			return err
@@ -143,7 +142,7 @@ func (r *rpc) MExpire(in []byte, ok *bool) error {
 		items = append(items, itc)
 	}
 
-	if st, exists := r.storages[strConvert(dataRoot.Storage())]; exists {
+	if st, exists := r.storages[utils.AsString(dataRoot.Storage())]; exists {
 		err := st.MExpire(items...)
 		if err != nil {
 			return errors.E(op, err)
@@ -173,7 +172,7 @@ func (r *rpc) TTL(in []byte, res *map[string]interface{}) error {
 		keys = append(keys, string(tmpItem.Key()))
 	}
 
-	if st, exists := r.storages[strConvert(dataRoot.Storage())]; exists {
+	if st, exists := r.storages[utils.AsString(dataRoot.Storage())]; exists {
 		ret, err := st.TTL(keys...)
 		if err != nil {
 			return err
@@ -201,7 +200,7 @@ func (r *rpc) Delete(in []byte, ok *bool) error {
 		}
 		keys = append(keys, string(tmpItem.Key()))
 	}
-	if st, exists := r.storages[strConvert(dataRoot.Storage())]; exists {
+	if st, exists := r.storages[utils.AsString(dataRoot.Storage())]; exists {
 		err := st.Delete(keys...)
 		if err != nil {
 			return errors.E(op, err)
@@ -214,8 +213,4 @@ func (r *rpc) Delete(in []byte, ok *bool) error {
 
 	*ok = false
 	return errors.E(op, errors.Errorf("no such storage: %s", dataRoot.Storage()))
-}
-
-func strConvert(s []byte) string {
-	return *(*string)(unsafe.Pointer(&s))
 }

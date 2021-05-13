@@ -233,10 +233,19 @@ func (s *Plugin) tlsAddr(host string, forcePort bool) string {
 
 func applyMiddlewares(server *http.Server, middlewares map[string]Middleware, order []string, log logger.Logger) {
 	for i := len(order) - 1; i >= 0; i-- {
+		// set static last in the row
+		if order[i] == "static" {
+			continue
+		}
 		if mdwr, ok := middlewares[order[i]]; ok {
 			server.Handler = mdwr.Middleware(server.Handler)
 		} else {
 			log.Warn("requested middleware does not exist", "requested", order[i])
 		}
+	}
+
+	// set static if exists
+	if mdwr, ok := middlewares["static"]; ok {
+		server.Handler = mdwr.Middleware(server.Handler)
 	}
 }

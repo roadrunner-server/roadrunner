@@ -15,8 +15,7 @@ http:
   uploads:
     forbid: [ ".php", ".exe", ".bat" ]
   static:
-    dir: "../../../"
-    pattern: "/tests/"
+    dir: "../../../tests"
     forbid: [ "" ]
     allow: [ ".txt", ".php" ]
     calculate_etag: true

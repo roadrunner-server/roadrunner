@@ -7,10 +7,10 @@ import (
 	"sync/atomic"
 	"syscall"
 	"time"
-	"unsafe"
 
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 // Process structure contains an information about process, restart information, log, errors, etc
@@ -50,7 +50,7 @@ func NewServiceProcess(restartAfterExit bool, execTimeout time.Duration, restart
 
 // write message to the log (stderr)
 func (p *Process) Write(b []byte) (int, error) {
-	p.log.Info(toString(b))
+	p.log.Info(utils.AsString(b))
 	return len(b), nil
 }
 
@@ -144,10 +144,4 @@ func (p *Process) execHandler() {
 		}
 		p.Unlock()
 	}
-}
-
-// unsafe and fast []byte to string convert
-//go:inline
-func toString(data []byte) string {
-	return *(*string)(unsafe.Pointer(&data))
 }
