@@ -1,6 +1,19 @@
 CHANGELOG
 =========
 
+v2.3.0 (01.06.2021)
+-------------------
+
+## 👀 New:
+
+- ✏️
+
+## 🩹 Fixes:
+
+- 🐛 Fix: remove `build` and other old targets from the Makefile.
+
+---
+
 v2.2.0 (11.05.2021)
 -------------------
 
