@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// All config (.rr.yaml)
+// Config All config (.rr.yaml)
 // For other section use pointer to distinguish between `empty` and `not present`
 type Config struct {
 	// Server config section

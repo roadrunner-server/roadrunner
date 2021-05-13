@@ -1807,7 +1807,7 @@ func serveStaticSampleNotAllowedPath(t *testing.T) {
 
 	_, r, err := get("http://localhost:21603/../../../../tests/../static/sample.txt")
 	assert.NoError(t, err)
-	assert.Equal(t, 200, r.StatusCode)
+	assert.Equal(t, 403, r.StatusCode)
 	_ = r.Body.Close()
 }
 
