@@ -3,8 +3,8 @@ server:
   user: ""
   group: ""
   env:
-    "RR_CONFIG": "/some/place/on/the/C134"
-    "RR_CONFIG2": "C138"
+    - RR_CONFIG: "/some/place/on/the/C134"
+    - RR_CONFIG2: "C138"
   relay: "tcp://localhost:9999"
   relay_timeout: "20s"
 logs:

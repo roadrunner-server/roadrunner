@@ -30,6 +30,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
 	"github.com/spiral/roadrunner/v2/plugins/server"
+	"github.com/spiral/roadrunner/v2/plugins/static"
 	"github.com/spiral/roadrunner/v2/tests/mocks"
 	"github.com/yookoala/gofast"
 
@@ -1578,6 +1579,7 @@ func TestStaticEtagPlugin(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
+		&static.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1633,7 +1635,7 @@ func TestStaticEtagPlugin(t *testing.T) {
 
 func serveStaticSampleEtag(t *testing.T) {
 	// OK 200 response
-	b, r, err := get("http://localhost:21603/tests/static/sample.txt")
+	b, r, err := get("http://localhost:21603/sample.txt")
 	assert.NoError(t, err)
 	assert.Equal(t, "sample\n", b)
 	assert.Equal(t, r.StatusCode, http.StatusOK)
@@ -1646,7 +1648,7 @@ func serveStaticSampleEtag(t *testing.T) {
 		Timeout: time.Second * 5,
 	}
 
-	parsedURL, _ := url.Parse("http://localhost:21603/tests/static/sample.txt")
+	parsedURL, _ := url.Parse("http://localhost:21603/sample.txt")
 
 	req := &http.Request{
 		Method: http.MethodGet,
@@ -1675,6 +1677,7 @@ func TestStaticPluginSecurity(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
+		&static.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1804,7 +1807,7 @@ func serveStaticSampleNotAllowedPath(t *testing.T) {
 
 	_, r, err := get("http://localhost:21603/../../../../tests/../static/sample.txt")
 	assert.NoError(t, err)
-	assert.Equal(t, r.StatusCode, 200)
+	assert.Equal(t, 403, r.StatusCode)
 	_ = r.Body.Close()
 }
 
@@ -1823,6 +1826,7 @@ func TestStaticPlugin(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
+		&static.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1879,7 +1883,7 @@ func TestStaticPlugin(t *testing.T) {
 }
 
 func staticHeaders(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:21603/tests/client.php", nil)
+	req, err := http.NewRequest("GET", "http://localhost:21603/client.php", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1907,7 +1911,7 @@ func staticHeaders(t *testing.T) {
 }
 
 func staticNotForbid(t *testing.T) {
-	b, r, err := get("http://localhost:21603/tests/client.php")
+	b, r, err := get("http://localhost:21603/client.php")
 	assert.NoError(t, err)
 	assert.Equal(t, all("../../../tests/client.php"), b)
 	assert.Equal(t, all("../../../tests/client.php"), b)
@@ -1915,7 +1919,7 @@ func staticNotForbid(t *testing.T) {
 }
 
 func serveStaticSample(t *testing.T) {
-	b, r, err := get("http://localhost:21603/tests/static/sample.txt")
+	b, r, err := get("http://localhost:21603/sample.txt")
 	assert.NoError(t, err)
 	assert.Equal(t, "sample\n", b)
 	_ = r.Body.Close()
@@ -1936,6 +1940,7 @@ func TestStaticDisabled_Error(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
+		&static.Plugin{},
 	)
 	assert.NoError(t, err)
 	assert.Error(t, cont.Init())
@@ -1956,6 +1961,7 @@ func TestStaticFilesDisabled(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
+		&static.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -2032,10 +2038,13 @@ func TestStaticFilesForbid(t *testing.T) {
 
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/tests/http?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
-	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/tests/client.XXX?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
-	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/tests/client.php?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/http?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/client.XXX?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/client.php?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Error("file open error", "error", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("no such file or directory", "error", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("possible path to dir provided").AnyTimes()
+	mockLogger.EXPECT().Debug("file extension is forbidden", gomock.Any(), gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes() // placeholder for the workerlogerror
 
 	err = cont.RegisterAll(
@@ -2044,6 +2053,7 @@ func TestStaticFilesForbid(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
+		&static.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -2094,37 +2104,29 @@ func TestStaticFilesForbid(t *testing.T) {
 	t.Run("StaticTestFilesDir", staticTestFilesDir)
 	t.Run("StaticNotFound", staticNotFound)
 	t.Run("StaticFilesForbid", staticFilesForbid)
-	t.Run("StaticFilesAlways", staticFilesAlways)
 
 	stopCh <- struct{}{}
 	wg.Wait()
 }
 
 func staticTestFilesDir(t *testing.T) {
-	b, r, err := get("http://localhost:34653/tests/http?hello=world")
+	b, r, err := get("http://localhost:34653/http?hello=world")
 	assert.NoError(t, err)
-	assert.Equal(t, "403 Forbidden\n", b)
+	assert.Equal(t, "WORLD", b)
 	_ = r.Body.Close()
 }
 
 func staticNotFound(t *testing.T) {
-	b, _, _ := get("http://localhost:34653/tests/client.XXX?hello=world") //nolint:bodyclose
-	assert.Equal(t, "404 page not found\n", b)
-}
-
-func staticFilesAlways(t *testing.T) {
-	_, r, err := get("http://localhost:34653/tests/favicon.ico")
-	assert.NoError(t, err)
-	assert.Equal(t, 404, r.StatusCode)
-	_ = r.Body.Close()
+	b, _, _ := get("http://localhost:34653/client.XXX?hello=world") //nolint:bodyclose
+	assert.Equal(t, "WORLD", b)
 }
 
 func staticFilesForbid(t *testing.T) {
-	b, r, err := get("http://localhost:34653/tests/client.php?hello=world")
+	b, r, err := get("http://localhost:34653/client.php?hello=world")
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t, "403 Forbidden\n", b)
+	assert.Equal(t, "WORLD", b)
 	_ = r.Body.Close()
 }
 

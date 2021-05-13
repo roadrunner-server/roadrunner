@@ -1,6 +1,8 @@
 package payload
 
-import "unsafe"
+import (
+	"github.com/spiral/roadrunner/v2/utils"
+)
 
 // Payload carries binary header and body to stack and
 // back to the server.
@@ -14,10 +16,5 @@ type Payload struct {
 
 // String returns payload body as string
 func (p *Payload) String() string {
-	return toString(p.Body)
-}
-
-// unsafe, but lightning fast []byte to string conversion
-func toString(data []byte) string {
-	return *(*string)(unsafe.Pointer(&data))
+	return utils.AsString(p.Body)
 }
