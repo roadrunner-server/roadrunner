@@ -4,9 +4,7 @@ import (
 	"hash/crc32"
 	"io"
 	"net/http"
-	"os"
 
-	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/spiral/roadrunner/v2/utils"
 )
 
@@ -18,7 +16,22 @@ var weakPrefix = []byte(`W/`)
 // CRC32 table
 var crc32q = crc32.MakeTable(0x48D90782)
 
-func SetEtag(cfg *httpConfig.Static, f *os.File, w http.ResponseWriter) {
+// SetEtag sets etag for the file
+func SetEtag(weak bool, f http.File, name string, w http.ResponseWriter) {
+	// preallocate
+	calculatedEtag := make([]byte, 0, 64)
+
+	// write weak
+	if weak {
+		calculatedEtag = append(calculatedEtag, weakPrefix...)
+		calculatedEtag = append(calculatedEtag, '"')
+		calculatedEtag = appendUint(calculatedEtag, crc32.Checksum(utils.AsBytes(name), crc32q))
+		calculatedEtag = append(calculatedEtag, '"')
+
+		w.Header().Set(etag, utils.AsString(calculatedEtag))
+		return
+	}
+
 	// read the file content
 	body, err := io.ReadAll(f)
 	if err != nil {
@@ -28,14 +41,6 @@ func SetEtag(cfg *httpConfig.Static, f *os.File, w http.ResponseWriter) {
 	// skip for 0 body
 	if len(body) == 0 {
 		return
-	}
-
-	// preallocate
-	calculatedEtag := make([]byte, 0, 64)
-
-	// write weak
-	if cfg.Weak {
-		calculatedEtag = append(calculatedEtag, weakPrefix...)
 	}
 
 	calculatedEtag = append(calculatedEtag, '"')

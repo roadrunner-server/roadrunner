@@ -170,6 +170,10 @@ func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 // Be careful, sync with pool.Exec method
 func (sp *StaticPool) execWithTTL(ctx context.Context, p payload.Payload) (payload.Payload, error) {
 	const op = errors.Op("static_pool_exec_with_context")
+	if sp.cfg.Debug {
+		return sp.execDebugWithTTL(ctx, p)
+	}
+
 	ctxAlloc, cancel := context.WithTimeout(ctx, sp.cfg.AllocateTimeout)
 	defer cancel()
 	w, err := sp.getWorker(ctxAlloc, op)
@@ -243,7 +247,6 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 	return func(err error, w worker.BaseProcess) (payload.Payload, error) {
 		const op = errors.Op("error encoder")
 		// just push event if on any stage was timeout error
-
 		switch {
 		case errors.Is(errors.ExecTTL, err):
 			sp.events.Push(events.PoolEvent{Event: events.EventExecTTL, Payload: errors.E(op, err)})
@@ -296,14 +299,31 @@ func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duratio
 	}
 }
 
+// execDebug used when debug mode was not set and exec_ttl is 0
 func (sp *StaticPool) execDebug(p payload.Payload) (payload.Payload, error) {
 	sw, err := sp.allocator()
 	if err != nil {
 		return payload.Payload{}, err
 	}
 
+	// redirect call to the workers exec method (without ttl)
 	r, err := sw.Exec(p)
+	if stopErr := sw.Stop(); stopErr != nil {
+		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: err})
+	}
 
+	return r, err
+}
+
+// execDebugWithTTL used when user set debug mode and exec_ttl
+func (sp *StaticPool) execDebugWithTTL(ctx context.Context, p payload.Payload) (payload.Payload, error) {
+	sw, err := sp.allocator()
+	if err != nil {
+		return payload.Payload{}, err
+	}
+
+	// redirect call to the worker with TTL
+	r, err := sw.ExecWithTTL(ctx, p)
 	if stopErr := sw.Stop(); stopErr != nil {
 		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: err})
 	}

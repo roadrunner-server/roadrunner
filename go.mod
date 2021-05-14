@@ -4,15 +4,16 @@ go 1.16
 
 require (
 	github.com/NYTimes/gziphandler v1.1.1
+	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
 	github.com/alicebob/miniredis/v2 v2.14.3
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.10.0
 	github.com/go-ole/go-ole v1.2.5 // indirect
 	github.com/go-redis/redis/v8 v8.8.2
-	github.com/gofiber/fiber/v2 v2.8.0
+	github.com/gofiber/fiber/v2 v2.9.0
 	github.com/golang/mock v1.4.4
-	github.com/google/flatbuffers v1.12.0 // indirect
+	github.com/google/flatbuffers v1.12.1
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/json-iterator/go v1.1.11
 	github.com/olekukonko/tablewriter v0.0.5
@@ -29,7 +30,7 @@ require (
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a
 	github.com/yookoala/gofast v0.6.0
 	go.etcd.io/bbolt v1.3.5
-	go.uber.org/multierr v1.6.0
+	go.uber.org/multierr v1.7.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20210226101413-39120d07d75e
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a

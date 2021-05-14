@@ -5,9 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
-	"strings"
 	"sync"
 
 	"github.com/hashicorp/go-multierror"
@@ -16,11 +13,10 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
-	handler "github.com/spiral/roadrunner/v2/pkg/worker_handler"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
-	"github.com/spiral/roadrunner/v2/plugins/http/static"
+	handler "github.com/spiral/roadrunner/v2/plugins/http/worker_handler"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/plugins/status"
@@ -136,7 +132,7 @@ func (s *Plugin) Serve() chan error {
 	return errCh
 }
 
-func (s *Plugin) serve(errCh chan error) { //nolint:gocognit
+func (s *Plugin) serve(errCh chan error) {
 	var err error
 	const op = errors.Op("http_plugin_serve")
 	s.pool, err = s.server.NewWorkerPool(context.Background(), pool.Config{
@@ -165,56 +161,11 @@ func (s *Plugin) serve(errCh chan error) { //nolint:gocognit
 
 	s.handler.AddListener(s.logCallback)
 
-	// Create new HTTP Multiplexer
-	mux := http.NewServeMux()
-
-	// if we have static, handler here, create a fileserver
-	if s.cfg.Static != nil {
-		h := http.FileServer(static.FS(s.cfg.Static))
-		// Static files handler
-		mux.HandleFunc(s.cfg.Static.Pattern, func(w http.ResponseWriter, r *http.Request) {
-			if s.cfg.Static.Request != nil {
-				for k, v := range s.cfg.Static.Request {
-					r.Header.Add(k, v)
-				}
-			}
-
-			if s.cfg.Static.Response != nil {
-				for k, v := range s.cfg.Static.Response {
-					w.Header().Set(k, v)
-				}
-			}
-
-			// calculate etag for the resource
-			if s.cfg.Static.CalculateEtag {
-				// do not allow paths like ../../resource
-				// only specified folder and resources in it
-				// https://lgtm.com/rules/1510366186013/
-				if strings.Contains(r.URL.Path, "..") {
-					w.WriteHeader(http.StatusForbidden)
-					return
-				}
-				f, errS := os.Open(filepath.Join(s.cfg.Static.Dir, r.URL.Path))
-				if errS != nil {
-					s.log.Warn("error opening file to calculate the Etag", "provided path", r.URL.Path)
-				}
-
-				// Set etag value to the ResponseWriter
-				static.SetEtag(s.cfg.Static, f, w)
-			}
-
-			h.ServeHTTP(w, r)
-		})
-	}
-
-	// handle main route
-	mux.HandleFunc("/", s.ServeHTTP)
-
 	if s.cfg.EnableHTTP() {
 		if s.cfg.EnableH2C() {
-			s.http = &http.Server{Handler: h2c.NewHandler(mux, &http2.Server{}), ErrorLog: s.stdLog}
+			s.http = &http.Server{Handler: h2c.NewHandler(s, &http2.Server{}), ErrorLog: s.stdLog}
 		} else {
-			s.http = &http.Server{Handler: mux, ErrorLog: s.stdLog}
+			s.http = &http.Server{Handler: s, ErrorLog: s.stdLog}
 		}
 	}
 
@@ -238,7 +189,7 @@ func (s *Plugin) serve(errCh chan error) { //nolint:gocognit
 	}
 
 	if s.cfg.EnableFCGI() {
-		s.fcgi = &http.Server{Handler: mux, ErrorLog: s.stdLog}
+		s.fcgi = &http.Server{Handler: s, ErrorLog: s.stdLog}
 	}
 
 	// start http, https and fcgi servers if requested in the config

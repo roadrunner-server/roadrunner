@@ -58,8 +58,7 @@ func (server *Plugin) Name() string {
 }
 
 // Available interface implementation
-func (server *Plugin) Available() {
-}
+func (server *Plugin) Available() {}
 
 // Serve (Start) server plugin (just a mock here to satisfy interface)
 func (server *Plugin) Serve() chan error {
