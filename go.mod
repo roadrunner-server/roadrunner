@@ -8,7 +8,7 @@ require (
 	github.com/alicebob/miniredis/v2 v2.14.3
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
 	github.com/dustin/go-humanize v1.0.0
-	github.com/fatih/color v1.10.0
+	github.com/fatih/color v1.11.0
 	github.com/go-ole/go-ole v1.2.5 // indirect
 	github.com/go-redis/redis/v8 v8.8.2
 	github.com/gofiber/fiber/v2 v2.9.0
