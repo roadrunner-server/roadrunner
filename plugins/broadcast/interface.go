@@ -18,7 +18,8 @@ type Subscriber interface {
 }
 
 type Storage interface {
-	Store()
+	Store(topics ...string)
+	StorePattern(pattern string)
 }
 
 type Publisher interface {

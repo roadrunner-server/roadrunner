@@ -90,7 +90,7 @@ func (p *Plugin) Serve() chan error {
 			return errCh
 		}
 
-		// config key for the particular sub-driver
+		// config key for the particular sub-driver kv.memcached
 		configKey := fmt.Sprintf("%s.%s", PluginName, k)
 		// at this point we know, that driver field present in the cofiguration
 		switch v.(map[string]interface{})[driver] {
