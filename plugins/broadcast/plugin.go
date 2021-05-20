@@ -47,6 +47,12 @@ func (p *Plugin) Serve() chan error {
 		return errCh
 	}
 
+	if p.driver == nil {
+		// Or if no storage detected, use in-memory storage
+		errCh <- errors.E(op, errors.Str("no storage detected"))
+		return errCh
+	}
+
 	// start the underlying broker
 	go func() {
 		// err := p.broker.Serve()
@@ -72,12 +78,16 @@ func (p *Plugin) Name() string {
 
 func (p *Plugin) Collects() []interface{} {
 	return []interface{}{
-		p.CollectBroker,
+		p.CollectSubscriber,
 	}
 }
 
-func (p *Plugin) CollectBroker(name endure.Named, broker Subscriber) {
-	p.broker = broker
+func (p *Plugin) CollectSubscriber(name endure.Named, subscriber Subscriber) {
+	p.broker = subscriber
+}
+
+func (p *Plugin) CollectStorage(name endure.Named, storage Storage) {
+	p.driver = storage
 }
 
 func (p *Plugin) RPC() interface{} {

@@ -92,7 +92,7 @@ func (p *Plugin) Serve() chan error {
 
 		// config key for the particular sub-driver kv.memcached
 		configKey := fmt.Sprintf("%s.%s", PluginName, k)
-		// at this point we know, that driver field present in the cofiguration
+		// at this point we know, that driver field present in the configuration
 		switch v.(map[string]interface{})[driver] {
 		case memcached:
 			if _, ok := p.drivers[memcached]; !ok {

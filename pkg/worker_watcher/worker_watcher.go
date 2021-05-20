@@ -1,4 +1,4 @@
-package worker_watcher //nolint:golint,stylecheck
+package worker_watcher //nolint:stylecheck
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/worker_watcher/container"
 )
 
-// workerCreateFunc can be nil, but in that case, dead container will not be replaced
+// NewSyncWorkerWatcher is a constructor for the Watcher
 func NewSyncWorkerWatcher(allocator worker.Allocator, numWorkers uint64, events events.Handler) Watcher {
 	ww := &workerWatcher{
 		container:  container.NewVector(numWorkers),
@@ -215,7 +215,7 @@ func (ww *workerWatcher) Destroy(ctx context.Context) {
 	}
 }
 
-// Warning, this is O(n) operation, and it will return copy of the actual workers
+// List - this is O(n) operation, and it will return copy of the actual workers
 func (ww *workerWatcher) List() []worker.BaseProcess {
 	ww.RLock()
 	defer ww.RUnlock()

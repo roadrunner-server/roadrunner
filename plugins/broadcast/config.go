@@ -3,15 +3,16 @@ package broadcast
 /*
 broadcast:
   ws-us-region-1:
-    subscriber: ws
-    path: "/ws"
+    subscriber: websockets
+	middleware: ["headers", "gzip"] # ????
+    address: "localhost:53223"
+	path: "/ws"
 
-    driver: redis
+    storage: redis
     address:
       - 6379
     db: 0
 */
-
 
 // Config represents configuration for the ws plugin
 type Config struct {

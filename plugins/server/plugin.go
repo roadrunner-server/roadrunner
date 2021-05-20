@@ -25,9 +25,9 @@ import (
 const PluginName = "server"
 
 // RR_RELAY env variable key (internal)
-const RR_RELAY = "RR_RELAY" //nolint:golint,stylecheck
+const RR_RELAY = "RR_RELAY" //nolint:stylecheck
 // RR_RPC env variable key (internal) if the RPC presents
-const RR_RPC = "RR_RPC" //nolint:golint,stylecheck
+const RR_RPC = "RR_RPC" //nolint:stylecheck
 
 // Plugin manages worker
 type Plugin struct {

@@ -1,35 +1,50 @@
 package ws
 
-import "github.com/spiral/roadrunner/v2/plugins/broadcast"
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/spiral/roadrunner/v2/plugins/broadcast"
+	"github.com/spiral/roadrunner/v2/plugins/broadcast/ws/connection"
+)
 
 type Subscriber struct {
-	connections map[string]*Connection
-	storage broadcast.Storage
+	connections map[string]*connection.Connection
+	storage     broadcast.Storage
 }
 
-func NewWSSubscriber() (broadcast.Subscriber, error) {
-	m := make(map[string]*Connection)
+// config
+//
+func NewWSSubscriber(storage broadcast.Storage) (broadcast.Subscriber, error) {
+	m := make(map[string]*connection.Connection)
+
+	go func() {
+		app := fiber.New()
+		app.Use("/ws", wsMiddleware)
+		app.Listen(":8080")
+	}()
+
 	return &Subscriber{
 		connections: m,
+		storage:     storage,
 	}, nil
 }
 
-func (s *Subscriber) Subscribe(upstream chan *broadcast.Message, topics ...string) error {
-	panic("implement me")
-
-
-
-
-}
-
-func (s *Subscriber) SubscribePattern(upstream chan *broadcast.Message, pattern string) error {
+func (s *Subscriber) Subscribe(topics ...string) error {
 	panic("implement me")
 }
 
-func (s *Subscriber) Unsubscribe(upstream chan *broadcast.Message, topics ...string) error {
+func (s *Subscriber) SubscribePattern(pattern string) error {
 	panic("implement me")
 }
 
-func (s *Subscriber) UnsubscribePattern(upstream chan *broadcast.Message, pattern string) error {
+func (s *Subscriber) Unsubscribe(topics ...string) error {
 	panic("implement me")
+}
+
+func (s *Subscriber) UnsubscribePattern(pattern string) error {
+	panic("implement me")
+}
+
+func (s *Subscriber) Publish(messages ...*broadcast.Message) error {
+	s.storage.GetConnection(messages[9].Topic)
+	return nil
 }

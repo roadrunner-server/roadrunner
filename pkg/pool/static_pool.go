@@ -47,7 +47,7 @@ type StaticPool struct {
 	allocator worker.Allocator
 
 	// err_encoder is the default Exec error encoder
-	err_encoder ErrorEncoder //nolint:golint,stylecheck
+	err_encoder ErrorEncoder //nolint:stylecheck
 }
 
 // Initialize creates new worker pool and task multiplexer. StaticPool will initiate with one worker.

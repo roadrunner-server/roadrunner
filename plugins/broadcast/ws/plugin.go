@@ -8,10 +8,8 @@ import (
 )
 
 const (
-	//
 	RootPluginName = "broadcast"
-	//
-	PluginName = "websockets"
+	PluginName     = "websockets"
 )
 
 type Plugin struct {
@@ -20,7 +18,6 @@ type Plugin struct {
 	// configurer plugin
 	cfg config.Configurer
 }
-
 
 func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	const op = errors.Op("ws_plugin_init")
@@ -36,20 +33,11 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	return nil
 }
 
-func (p *Plugin) Serve() chan error {
-	errCh := make(chan error)
-
-	return errCh
-}
-
-func (p *Plugin) Stop() error {
-	return nil
-}
-
 func (p *Plugin) Name() string {
 	return PluginName
 }
 
+// Provides Provide a ws implementation
 func (p *Plugin) Provides() []interface{} {
 	return []interface{}{
 		p.Websocket,
@@ -57,9 +45,10 @@ func (p *Plugin) Provides() []interface{} {
 }
 
 // Websocket method should provide the Subscriber implementation to the broadcast
-func (p *Plugin) Websocket() (broadcast.Subscriber, error) {
+func (p *Plugin) Websocket(storage broadcast.Storage) (broadcast.Subscriber, error) {
 	const op = errors.Op("websocket_subscriber_provide")
-	ws, err := NewWSSubscriber()
+	// initialize subscriber with the storage
+	ws, err := NewWSSubscriber(storage)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
@@ -67,6 +56,4 @@ func (p *Plugin) Websocket() (broadcast.Subscriber, error) {
 	return ws, nil
 }
 
-
-
-func (p *Plugin) Available(){}
+func (p *Plugin) Available() {}
