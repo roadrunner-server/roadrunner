@@ -6,6 +6,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
+// rpc collectors struct
 type rpc struct {
 	plugin *Plugin
 	log    logger.Logger
