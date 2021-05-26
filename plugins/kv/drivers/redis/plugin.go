@@ -28,7 +28,7 @@ func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
 
 // Serve is noop here
 func (s *Plugin) Serve() chan error {
-	return make(chan error, 1)
+	return make(chan error)
 }
 
 func (s *Plugin) Stop() error {

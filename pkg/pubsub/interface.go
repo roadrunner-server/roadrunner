@@ -1,0 +1,38 @@
+package pubsub
+
+// PubSub ...
+type PubSub interface {
+	Publisher
+	Subscriber
+	Reader
+}
+
+// Subscriber defines the ability to operate as message passing broker.
+type Subscriber interface {
+	// Subscribe broker to one or multiple topics.
+	Subscribe(topics ...string) error
+	// Unsubscribe from one or multiply topics
+	Unsubscribe(topics ...string) error
+}
+
+// Publisher publish one or more messages
+type Publisher interface {
+	// Publish one or multiple Channel.
+	Publish(messages []Message) error
+
+	// PublishAsync publish message and return immediately
+	// If error occurred it will be printed into the logger
+	PublishAsync(messages []Message)
+}
+
+// Reader interface should return next message
+type Reader interface {
+	Next() (Message, error)
+}
+
+type Message interface {
+	Command() string
+	Payload() []byte
+	Topics() []string
+	Broker() string
+}
