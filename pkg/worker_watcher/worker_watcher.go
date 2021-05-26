@@ -174,10 +174,6 @@ func (ww *workerWatcher) Remove(wb worker.BaseProcess) {
 
 // Push O(1) operation
 func (ww *workerWatcher) Push(w worker.BaseProcess) {
-	if w.State().Value() != worker.StateReady {
-		_ = w.Kill()
-		return
-	}
 	ww.container.Enqueue(w)
 }
 
