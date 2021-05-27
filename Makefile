@@ -39,6 +39,7 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./pkg/pool
 	go test -v -race -tags=debug ./pkg/worker
 	go test -v -race -tags=debug ./pkg/worker_watcher
+	go test -v -race -tags=debug ./pkg/bst
 	go test -v -race -tags=debug ./tests/plugins/http
 	go test -v -race -tags=debug ./plugins/http/config
 	go test -v -race -tags=debug ./tests/plugins/informer
@@ -55,4 +56,5 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./tests/plugins/resetter
 	go test -v -race -tags=debug ./tests/plugins/rpc
 	go test -v -race -tags=debug ./tests/plugins/kv
+	go test -v -race -tags=debug ./tests/plugins/websockets
 	docker-compose -f tests/docker-compose.yaml down

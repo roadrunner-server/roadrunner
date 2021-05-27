@@ -245,7 +245,7 @@ func (sp *StaticPool) Destroy(ctx context.Context) {
 
 func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 	return func(err error, w worker.BaseProcess) (payload.Payload, error) {
-		const op = errors.Op("error encoder")
+		const op = errors.Op("error_encoder")
 		// just push event if on any stage was timeout error
 		switch {
 		case errors.Is(errors.ExecTTL, err):

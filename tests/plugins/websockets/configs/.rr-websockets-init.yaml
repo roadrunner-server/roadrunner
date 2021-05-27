@@ -1,7 +1,6 @@
 rpc:
   listen: tcp://127.0.0.1:6001
 
-
 server:
   command: "php ../../psr-worker-bench.php"
   user: ""
@@ -10,11 +9,9 @@ server:
   relay_timeout: "20s"
 
 http:
-  address: 127.0.0.1:15395
+  address: 127.0.0.1:11111
   max_request_size: 1024
-  middleware: ["websockets"]
-  uploads:
-    forbid: [ ".php", ".exe", ".bat" ]
+  middleware: [ "websockets" ]
   trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
   pool:
     num_workers: 2
@@ -30,16 +27,9 @@ websockets:
   # pubsubs should implement PubSub interface to be collected via endure.Collects
   # also, they should implement RPC methods to publish data into them
   # pubsubs might use general config section or its own
-
   pubsubs: [ "redis" ]
-
-  # sample of the own config section for the redis pubsub driver
-
-  redis:
-    addrs:
-      - localhost:1111
-  # path used as websockets path
   path: "/ws"
+
 logs:
   mode: development
   level: debug

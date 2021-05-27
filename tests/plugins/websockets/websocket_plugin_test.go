@@ -1,6 +1,8 @@
 package websockets
 
 import (
+	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"sync"
@@ -8,14 +10,18 @@ import (
 	"testing"
 	"time"
 
+	"github.com/fasthttp/websocket"
+	json "github.com/json-iterator/go"
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
+	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/memory"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/redis"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/plugins/websockets"
+	"github.com/spiral/roadrunner/v2/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,6 +42,7 @@ func TestBroadcastInit(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
+		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -84,19 +91,65 @@ func TestBroadcastInit(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second * 1000)
-	t.Run("test1", test1)
-	t.Run("test2", test2)
+	time.Sleep(time.Second * 1)
+	t.Run("TestWSInit", wsInit)
 
 	stopCh <- struct{}{}
 
 	wg.Wait()
 }
 
-func test1(t *testing.T) {
+type Msg struct {
+	// Topic message been pushed into.
+	T []string `json:"topic"`
 
+	// Command (join, leave, headers)
+	C string `json:"command"`
+
+	// Broker (redis, memory)
+	B string `json:"broker"`
+
+	// Payload to be broadcasted
+	P []byte `json:"payload"`
 }
 
-func test2(t *testing.T) {
+func wsInit(t *testing.T) {
+	da := websocket.Dialer{
+		Proxy:            http.ProxyFromEnvironment,
+		HandshakeTimeout: time.Second * 20,
+	}
 
+	connURL := url.URL{Scheme: "ws", Host: "localhost:11111", Path: "/ws"}
+
+	c, resp, err := da.Dial(connURL.String(), nil)
+	assert.NoError(t, err)
+
+	defer func() {
+		_ = resp.Body.Close()
+	}()
+
+	m := &Msg{
+		T: []string{"foo", "foo2"},
+		C: "join",
+		B: "memory",
+		P: []byte("hello websockets"),
+	}
+
+	d, err := json.Marshal(m)
+	if err != nil {
+		panic(err)
+	}
+
+	err = c.WriteMessage(websocket.BinaryMessage, d)
+	assert.NoError(t, err)
+
+	_, msg, err := c.ReadMessage()
+	retMsg := utils.AsString(msg)
+	assert.NoError(t, err)
+
+	// subscription done
+	assert.Equal(t, `{"topic":"@join","payload":["foo","foo2"]}`, retMsg)
+
+	err = c.WriteControl(websocket.CloseMessage, nil, time.Time{})
+	assert.NoError(t, err)
 }
