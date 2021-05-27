@@ -13,7 +13,9 @@ type BST struct {
 }
 
 func NewBST() Storage {
-	return &BST{}
+	return &BST{
+		uuids: make(map[string]struct{}, 10),
+	}
 }
 
 // Insert uuid to the topic
@@ -21,12 +23,12 @@ func (b *BST) Insert(uuid string, topic string) {
 	curr := b
 
 	for {
-		if curr.topic == topic {
+		if topic == curr.topic {
 			curr.uuids[uuid] = struct{}{}
 			return
 		}
 		// if topic less than curr topic
-		if curr.topic < topic {
+		if topic < curr.topic {
 			if curr.left == nil {
 				curr.left = &BST{
 					topic: topic,
@@ -53,16 +55,13 @@ func (b *BST) Insert(uuid string, topic string) {
 func (b *BST) Get(topic string) map[string]struct{} {
 	curr := b
 	for curr != nil {
-		if curr.topic == topic {
-			return curr.uuids
-		}
-		if curr.topic < topic {
+		switch {
+		case topic < curr.topic:
 			curr = curr.left
-			continue
-		}
-		if curr.topic > topic {
+		case topic > curr.topic:
 			curr = curr.right
-			continue
+		case topic == curr.topic:
+			return curr.uuids
 		}
 	}
 
@@ -83,6 +82,8 @@ func (b *BST) removeHelper(uuid string, topic string, parent *BST) { //nolint:go
 			parent = curr
 			curr = curr.right
 		} else {
+
+			// if more than 1 topic - remove only topic, do not remove the whole vertex
 			if len(curr.uuids) > 1 {
 				if _, ok := curr.uuids[uuid]; ok {
 					delete(curr.uuids, uuid)
