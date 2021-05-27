@@ -7,8 +7,5 @@ services:
       - "0.0.0.0:11211:11211"
   redis:
     image: redis:6
-    mem_limit: 16384m
-    mem_reservation: 2048M
-    cpus: 8
     ports:
       - "6379:6379"
