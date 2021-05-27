@@ -82,7 +82,6 @@ func (b *BST) removeHelper(uuid string, topic string, parent *BST) { //nolint:go
 			parent = curr
 			curr = curr.right
 		} else {
-
 			// if more than 1 topic - remove only topic, do not remove the whole vertex
 			if len(curr.uuids) > 1 {
 				if _, ok := curr.uuids[uuid]; ok {
