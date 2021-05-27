@@ -3,7 +3,7 @@ package storage
 import (
 	"sync"
 
-	"github.com/spiral/roadrunner/v2/plugins/memory/bst"
+	"github.com/spiral/roadrunner/v2/pkg/bst"
 )
 
 type Storage struct {

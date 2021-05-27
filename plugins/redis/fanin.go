@@ -56,9 +56,9 @@ func (fi *FanIn) AddChannel(topics ...string) error {
 func (fi *FanIn) read() {
 	for {
 		select {
-		//here we receive message from us (which we sent before in Publish)
-		//it should be compatible with the websockets.Msg interface
-		//payload should be in the redis.message.payload field
+		// here we receive message from us (which we sent before in Publish)
+		// it should be compatible with the websockets.Msg interface
+		// payload should be in the redis.message.payload field
 
 		case msg, ok := <-fi.pubsub.Channel():
 			// channel closed

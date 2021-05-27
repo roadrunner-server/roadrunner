@@ -76,7 +76,7 @@ func (b *BST) Remove(uuid string, topic string) {
 func (b *BST) removeHelper(uuid string, topic string, parent *BST) { //nolint:gocognit
 	curr := b
 	for curr != nil {
-		if topic < curr.topic {
+		if topic < curr.topic { //nolint:gocritic
 			parent = curr
 			curr = curr.left
 		} else if topic > curr.topic {
@@ -90,11 +90,11 @@ func (b *BST) removeHelper(uuid string, topic string, parent *BST) { //nolint:go
 				}
 			}
 
-			if curr.left != nil && curr.right != nil {
+			if curr.left != nil && curr.right != nil { //nolint:gocritic
 				curr.topic, curr.uuids = curr.right.traverseForMinString()
 				curr.right.removeHelper(curr.topic, uuid, curr)
 			} else if parent == nil {
-				if curr.left != nil {
+				if curr.left != nil { //nolint:gocritic
 					curr.topic = curr.left.topic
 					curr.uuids = curr.left.uuids
 
@@ -106,7 +106,7 @@ func (b *BST) removeHelper(uuid string, topic string, parent *BST) { //nolint:go
 
 					curr.left = curr.right.left
 					curr.right = curr.right.right
-				} else {
+				} else { //nolint:staticcheck
 					// single node tree
 				}
 			} else if parent.left == curr {

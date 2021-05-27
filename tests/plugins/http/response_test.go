@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/spiral/roadrunner/v2/pkg/payload"
-	"github.com/spiral/roadrunner/v2/pkg/worker_handler"
+	handler "github.com/spiral/roadrunner/v2/pkg/worker_handler"
 	"github.com/stretchr/testify/assert"
 )
 

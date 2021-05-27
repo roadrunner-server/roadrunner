@@ -43,8 +43,6 @@ func (c *Connection) Write(mt int, data []byte) error {
 }
 
 func (c *Connection) Read() (int, []byte, error) {
-	//c.RLock()
-	//defer c.RUnlock()
 	const op = errors.Op("websocket_read")
 
 	mt, data, err := c.conn.ReadMessage()

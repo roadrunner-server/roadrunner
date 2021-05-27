@@ -58,28 +58,25 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 
 func (p *Plugin) Serve() chan error {
 	errCh := make(chan error)
-	go func() {
-		ps := p.pubsubs["redis"]
 
-		for {
-			// get message
-			// get topic
-			// get connection uuid from the storage by the topic
-			// write payload into the connection
-			// do that in the workers pool
-			data, err := ps.Next()
-			if err != nil {
-				errCh <- err
-				return
+	// run all pubsubs drivers
+	for _, v := range p.pubsubs {
+		go func(ps pubsub.PubSub) {
+			for {
+				data, err := ps.Next()
+				if err != nil {
+					errCh <- err
+					return
+				}
+
+				if data == nil {
+					continue
+				}
+
+				p.workersPool.Queue(data)
 			}
-
-			if data == nil {
-				continue
-			}
-
-			p.workersPool.Queue(data)
-		}
-	}()
+		}(v)
+	}
 	return errCh
 }
 
@@ -156,7 +153,7 @@ func (p *Plugin) Middleware(next http.Handler) http.Handler {
 
 		// Executor wraps a connection to have a safe abstraction
 		p.Lock()
-		e := executor.NewExecutor(safeConn, p.log, p.storage, connectionID, p.pubsubs["redis"])
+		e := executor.NewExecutor(safeConn, p.log, p.storage, connectionID, p.pubsubs)
 		p.Unlock()
 
 		p.log.Info("websocket client connected", "uuid", connectionID)
@@ -169,6 +166,7 @@ func (p *Plugin) Middleware(next http.Handler) http.Handler {
 	})
 }
 
+// Publish is an entry point to the websocket PUBSUB
 func (p *Plugin) Publish(msg []pubsub.Message) error {
 	p.Lock()
 	defer p.Unlock()
@@ -199,7 +197,6 @@ func (p *Plugin) PublishAsync(msg []pubsub.Message) {
 					p.log.Error("publish async error", "error", err)
 					return
 				}
-
 			}
 		}
 	}()

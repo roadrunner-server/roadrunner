@@ -17,46 +17,46 @@ import (
 	"golang.org/x/sys/cpu"
 )
 
-func (s *Plugin) serveHTTP(errCh chan error) {
-	if s.http == nil {
+func (p *Plugin) serveHTTP(errCh chan error) {
+	if p.http == nil {
 		return
 	}
 	const op = errors.Op("serveHTTP")
 
-	if len(s.mdwr) > 0 {
-		applyMiddlewares(s.http, s.mdwr, s.cfg.Middleware, s.log)
+	if len(p.mdwr) > 0 {
+		applyMiddlewares(p.http, p.mdwr, p.cfg.Middleware, p.log)
 	}
-	l, err := utils.CreateListener(s.cfg.Address)
+	l, err := utils.CreateListener(p.cfg.Address)
 	if err != nil {
 		errCh <- errors.E(op, err)
 		return
 	}
 
-	err = s.http.Serve(l)
+	err = p.http.Serve(l)
 	if err != nil && err != http.ErrServerClosed {
 		errCh <- errors.E(op, err)
 		return
 	}
 }
 
-func (s *Plugin) serveHTTPS(errCh chan error) {
-	if s.https == nil {
+func (p *Plugin) serveHTTPS(errCh chan error) {
+	if p.https == nil {
 		return
 	}
 	const op = errors.Op("serveHTTPS")
-	if len(s.mdwr) > 0 {
-		applyMiddlewares(s.https, s.mdwr, s.cfg.Middleware, s.log)
+	if len(p.mdwr) > 0 {
+		applyMiddlewares(p.https, p.mdwr, p.cfg.Middleware, p.log)
 	}
-	l, err := utils.CreateListener(s.cfg.SSLConfig.Address)
+	l, err := utils.CreateListener(p.cfg.SSLConfig.Address)
 	if err != nil {
 		errCh <- errors.E(op, err)
 		return
 	}
 
-	err = s.https.ServeTLS(
+	err = p.https.ServeTLS(
 		l,
-		s.cfg.SSLConfig.Cert,
-		s.cfg.SSLConfig.Key,
+		p.cfg.SSLConfig.Cert,
+		p.cfg.SSLConfig.Key,
 	)
 
 	if err != nil && err != http.ErrServerClosed {
@@ -66,34 +66,34 @@ func (s *Plugin) serveHTTPS(errCh chan error) {
 }
 
 // serveFCGI starts FastCGI server.
-func (s *Plugin) serveFCGI(errCh chan error) {
-	if s.fcgi == nil {
+func (p *Plugin) serveFCGI(errCh chan error) {
+	if p.fcgi == nil {
 		return
 	}
 	const op = errors.Op("serveFCGI")
 
-	if len(s.mdwr) > 0 {
-		applyMiddlewares(s.https, s.mdwr, s.cfg.Middleware, s.log)
+	if len(p.mdwr) > 0 {
+		applyMiddlewares(p.https, p.mdwr, p.cfg.Middleware, p.log)
 	}
 
-	l, err := utils.CreateListener(s.cfg.FCGIConfig.Address)
+	l, err := utils.CreateListener(p.cfg.FCGIConfig.Address)
 	if err != nil {
 		errCh <- errors.E(op, err)
 		return
 	}
 
-	err = fcgi.Serve(l, s.fcgi.Handler)
+	err = fcgi.Serve(l, p.fcgi.Handler)
 	if err != nil && err != http.ErrServerClosed {
 		errCh <- errors.E(op, err)
 		return
 	}
 }
 
-func (s *Plugin) redirect(w http.ResponseWriter, r *http.Request) {
+func (p *Plugin) redirect(w http.ResponseWriter, r *http.Request) {
 	target := &url.URL{
 		Scheme: HTTPSScheme,
 		// host or host:port
-		Host:     s.tlsAddr(r.Host, false),
+		Host:     p.tlsAddr(r.Host, false),
 		Path:     r.URL.Path,
 		RawQuery: r.URL.RawQuery,
 	}
@@ -111,7 +111,7 @@ func headerContainsUpgrade(r *http.Request) bool {
 }
 
 // append RootCA to the https server TLS config
-func (s *Plugin) appendRootCa() error {
+func (p *Plugin) appendRootCa() error {
 	const op = errors.Op("http_plugin_append_root_ca")
 	rootCAs, err := x509.SystemCertPool()
 	if err != nil {
@@ -121,7 +121,7 @@ func (s *Plugin) appendRootCa() error {
 		rootCAs = x509.NewCertPool()
 	}
 
-	CA, err := os.ReadFile(s.cfg.SSLConfig.RootCA)
+	CA, err := os.ReadFile(p.cfg.SSLConfig.RootCA)
 	if err != nil {
 		return err
 	}
@@ -137,13 +137,13 @@ func (s *Plugin) appendRootCa() error {
 		InsecureSkipVerify: false,
 		RootCAs:            rootCAs,
 	}
-	s.http.TLSConfig = cfg
+	p.http.TLSConfig = cfg
 
 	return nil
 }
 
 // Init https server
-func (s *Plugin) initSSL() *http.Server {
+func (p *Plugin) initSSL() *http.Server {
 	var topCipherSuites []uint16
 	var defaultCipherSuitesTLS13 []uint16
 
@@ -193,9 +193,9 @@ func (s *Plugin) initSSL() *http.Server {
 	DefaultCipherSuites = append(DefaultCipherSuites, defaultCipherSuitesTLS13...)
 
 	sslServer := &http.Server{
-		Addr:     s.tlsAddr(s.cfg.Address, true),
-		Handler:  s,
-		ErrorLog: s.stdLog,
+		Addr:     p.tlsAddr(p.cfg.Address, true),
+		Handler:  p,
+		ErrorLog: p.stdLog,
 		TLSConfig: &tls.Config{
 			CurvePreferences: []tls.CurveID{
 				tls.CurveP256,
@@ -213,19 +213,19 @@ func (s *Plugin) initSSL() *http.Server {
 }
 
 // init http/2 server
-func (s *Plugin) initHTTP2() error {
-	return http2.ConfigureServer(s.https, &http2.Server{
-		MaxConcurrentStreams: s.cfg.HTTP2Config.MaxConcurrentStreams,
+func (p *Plugin) initHTTP2() error {
+	return http2.ConfigureServer(p.https, &http2.Server{
+		MaxConcurrentStreams: p.cfg.HTTP2Config.MaxConcurrentStreams,
 	})
 }
 
 // tlsAddr replaces listen or host port with port configured by SSLConfig config.
-func (s *Plugin) tlsAddr(host string, forcePort bool) string {
+func (p *Plugin) tlsAddr(host string, forcePort bool) string {
 	// remove current forcePort first
 	host = strings.Split(host, ":")[0]
 
-	if forcePort || s.cfg.SSLConfig.Port != 443 {
-		host = fmt.Sprintf("%s:%v", host, s.cfg.SSLConfig.Port)
+	if forcePort || p.cfg.SSLConfig.Port != 443 {
+		host = fmt.Sprintf("%s:%v", host, p.cfg.SSLConfig.Port)
 	}
 
 	return host

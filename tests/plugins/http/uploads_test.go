@@ -18,7 +18,7 @@ import (
 	j "github.com/json-iterator/go"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
-	"github.com/spiral/roadrunner/v2/pkg/worker_handler"
+	handler "github.com/spiral/roadrunner/v2/pkg/worker_handler"
 	"github.com/spiral/roadrunner/v2/plugins/http/config"
 	"github.com/stretchr/testify/assert"
 )
