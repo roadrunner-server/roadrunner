@@ -3,6 +3,7 @@ package executor
 import (
 	"github.com/fasthttp/websocket"
 	json "github.com/json-iterator/go"
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/commands"
@@ -22,6 +23,8 @@ type Executor struct {
 
 	// associated connection ID
 	connID string
+
+	// map with the pubsub drivers
 	pubsub map[string]pubsub.PubSub
 }
 
@@ -37,14 +40,16 @@ func NewExecutor(conn *connection.Connection, log logger.Logger, bst *storage.St
 }
 
 func (e *Executor) StartCommandLoop() error {
+	const op = errors.Op("executor_command_loop")
 	for {
 		mt, data, err := e.conn.Read()
 		if err != nil {
 			if mt == -1 {
-				return err
+				e.log.Error("socket was closed", "error", err, "message type", mt)
+				return nil
 			}
 
-			return err
+			return errors.E(op, err)
 		}
 
 		msg := &pubsub.Msg{}

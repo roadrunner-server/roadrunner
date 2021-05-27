@@ -134,8 +134,11 @@ func (p *Plugin) Middleware(next http.Handler) http.Handler {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		// construct safe connection protected by mutexes
 		safeConn := connection.NewConnection(_conn, p.log)
 		defer func() {
+			// close the connection on exit
 			err = safeConn.Close()
 			if err != nil {
 				p.log.Error("connection close error", "error", err)

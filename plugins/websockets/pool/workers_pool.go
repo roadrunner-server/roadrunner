@@ -20,6 +20,7 @@ type WorkersPool struct {
 	exit  chan struct{}
 }
 
+// NewWorkersPool constructs worker pool for the websocket connections
 func NewWorkersPool(storage *storage.Storage, connections *sync.Map, log logger.Logger) *WorkersPool {
 	wp := &WorkersPool{
 		connections: connections,
@@ -33,6 +34,7 @@ func NewWorkersPool(storage *storage.Storage, connections *sync.Map, log logger.
 		return make(map[string]struct{}, 10)
 	}
 
+	// start 10 workers
 	for i := 0; i < 10; i++ {
 		wp.do()
 	}
@@ -82,13 +84,14 @@ func (wp *WorkersPool) do() {
 				for i := range res {
 					c, ok := wp.connections.Load(i)
 					if !ok {
-						panic("not ok here (((")
+						wp.log.Warn("the user disconnected connection before the message being written to it", "broker", msg.Broker(), "topics", msg.Topics())
+						continue
 					}
 
 					conn := c.(*connection.Connection)
 					err := conn.Write(websocket.BinaryMessage, msg.Payload())
 					if err != nil {
-						// TODO handle error
+						wp.log.Error("error sending payload over the connection", "broker", msg.Broker(), "topics", msg.Topics())
 						wp.put(res)
 						continue
 					}
