@@ -16,6 +16,7 @@ import (
 	json "github.com/json-iterator/go"
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
+	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -30,16 +31,16 @@ import (
 
 type Msg struct {
 	// Topic message been pushed into.
-	Topics_ []string `json:"topic"`
+	Topics []string `json:"topic"`
 
 	// Command (join, leave, headers)
-	Command_ string `json:"command"`
+	Command string `json:"command"`
 
 	// Broker (redis, memory)
-	Broker_ string `json:"broker"`
+	Broker string `json:"broker"`
 
 	// Payload to be broadcasted
-	Payload_ []byte `json:"payload"`
+	Payload []byte `json:"payload"`
 }
 
 func TestBroadcastInit(t *testing.T) {
@@ -59,6 +60,7 @@ func TestBroadcastInit(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
+		&channel.Plugin{},
 	)
 
 	assert.NoError(t, err)
@@ -168,6 +170,7 @@ func TestWSRedisAndMemory(t *testing.T) {
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
 		&memory.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -504,9 +507,9 @@ func publish2(command string, broker string, topics ...string) {
 
 func message(command string, broker string, payload []byte, topics ...string) *Msg {
 	return &Msg{
-		Topics_:  topics,
-		Command_: command,
-		Broker_:  broker,
-		Payload_: payload,
+		Topics:  topics,
+		Command: command,
+		Broker:  broker,
+		Payload: payload,
 	}
 }

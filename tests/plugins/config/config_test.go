@@ -7,6 +7,7 @@ import (
 	"time"
 
 	endure "github.com/spiral/endure/pkg/container"
+	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/rpc"
@@ -29,6 +30,11 @@ func TestViperProvider_Init(t *testing.T) {
 	}
 
 	err = container.Register(&Foo{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = container.Register(&channel.Plugin{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -82,6 +88,7 @@ func TestConfigOverwriteFail(t *testing.T) {
 		&rpc.Plugin{},
 		vp,
 		&Foo2{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -103,6 +110,7 @@ func TestConfigOverwriteValid(t *testing.T) {
 		&logger.ZapLogger{},
 		&rpc.Plugin{},
 		vp,
+		&channel.Plugin{},
 		&Foo2{},
 	)
 	assert.NoError(t, err)
@@ -155,6 +163,7 @@ func TestConfigEnvVariables(t *testing.T) {
 		&rpc.Plugin{},
 		vp,
 		&Foo2{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -206,6 +215,7 @@ func TestConfigEnvVariablesFail(t *testing.T) {
 		&rpc.Plugin{},
 		vp,
 		&Foo2{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -233,6 +243,11 @@ func TestConfigProvider_GeneralSection(t *testing.T) {
 	}
 
 	err = container.Register(&Foo3{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = container.Register(&channel.Plugin{})
 	if err != nil {
 		t.Fatal(err)
 	}

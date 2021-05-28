@@ -22,13 +22,13 @@ type FanIn struct {
 	log logger.Logger
 
 	// out channel with all subs
-	out chan pubsub.Message
+	out chan *pubsub.Message
 
 	exit chan struct{}
 }
 
 func NewFanIn(redisClient redis.UniversalClient, log logger.Logger) *FanIn {
-	out := make(chan pubsub.Message, 100)
+	out := make(chan *pubsub.Message, 100)
 	fi := &FanIn{
 		out:    out,
 		client: redisClient,
@@ -65,7 +65,7 @@ func (fi *FanIn) read() {
 			if !ok {
 				return
 			}
-			m := &pubsub.Msg{}
+			m := &pubsub.Message{}
 			err := json.Unmarshal(utils.AsBytes(msg.Payload), m)
 			if err != nil {
 				fi.log.Error("failed to unmarshal payload", "error", err.Error())
@@ -95,6 +95,6 @@ func (fi *FanIn) Stop() error {
 	return nil
 }
 
-func (fi *FanIn) Consume() <-chan pubsub.Message {
+func (fi *FanIn) Consume() <-chan *pubsub.Message {
 	return fi.out
 }

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	endure "github.com/spiral/endure/pkg/container"
+	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/headers"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
@@ -34,6 +35,7 @@ func TestHeadersInit(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&headers.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -100,6 +102,7 @@ func TestRequestHeaders(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&headers.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -185,6 +188,7 @@ func TestResponseHeaders(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&headers.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -271,6 +275,7 @@ func TestCORSHeaders(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&headers.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 

@@ -101,13 +101,13 @@ func (p *Plugin) Name() string {
 // Available interface implementation
 func (p *Plugin) Available() {}
 
-func (p *Plugin) Publish(msg []pubsub.Message) error {
+func (p *Plugin) Publish(msg []*pubsub.Message) error {
 	p.Lock()
 	defer p.Unlock()
 
 	for i := 0; i < len(msg); i++ {
-		for j := 0; j < len(msg[i].Topics()); j++ {
-			f := p.universalClient.Publish(context.Background(), msg[i].Topics()[j], msg[i])
+		for j := 0; j < len(msg[i].Topics); j++ {
+			f := p.universalClient.Publish(context.Background(), msg[i].Topics[j], msg[i])
 			if f.Err() != nil {
 				return f.Err()
 			}
@@ -116,15 +116,15 @@ func (p *Plugin) Publish(msg []pubsub.Message) error {
 	return nil
 }
 
-func (p *Plugin) PublishAsync(msg []pubsub.Message) {
+func (p *Plugin) PublishAsync(msg []*pubsub.Message) {
 	go func() {
 		p.Lock()
 		defer p.Unlock()
 		for i := 0; i < len(msg); i++ {
-			for j := 0; j < len(msg[i].Topics()); j++ {
-				f := p.universalClient.Publish(context.Background(), msg[i].Topics()[j], msg[i])
+			for j := 0; j < len(msg[i].Topics); j++ {
+				f := p.universalClient.Publish(context.Background(), msg[i].Topics[j], msg[i])
 				if f.Err() != nil {
-					p.log.Error("errors publishing message", "topic", msg[i].Topics()[j], "error", f.Err().Error())
+					p.log.Error("errors publishing message", "topic", msg[i].Topics[j], "error", f.Err().Error())
 					continue
 				}
 			}
@@ -141,6 +141,6 @@ func (p *Plugin) Unsubscribe(topics ...string) error {
 }
 
 // Next return next message
-func (p *Plugin) Next() (pubsub.Message, error) {
+func (p *Plugin) Next() (*pubsub.Message, error) {
 	return <-p.fanin.Consume(), nil
 }

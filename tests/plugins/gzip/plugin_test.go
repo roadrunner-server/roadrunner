@@ -11,6 +11,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	endure "github.com/spiral/endure/pkg/container"
+	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/gzip"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
@@ -35,6 +36,7 @@ func TestGzipPlugin(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -128,6 +130,7 @@ func TestMiddlewareNotExist(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 

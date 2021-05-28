@@ -14,6 +14,7 @@ import (
 
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
+	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -38,6 +39,7 @@ func TestStatusHttp(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&status.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -125,6 +127,7 @@ func TestStatusRPC(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&status.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -204,6 +207,7 @@ func TestReadyHttp(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&status.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -291,6 +295,7 @@ func TestReadinessRPCWorkerNotReady(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&status.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 

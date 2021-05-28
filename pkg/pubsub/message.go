@@ -4,40 +4,21 @@ import (
 	json "github.com/json-iterator/go"
 )
 
-type Msg struct {
+type Message struct {
 	// Topic message been pushed into.
-	Topics_ []string `json:"topic"`
+	Topics []string `json:"topic"`
 
 	// Command (join, leave, headers)
-	Command_ string `json:"command"`
+	Command string `json:"command"`
 
 	// Broker (redis, memory)
-	Broker_ string `json:"broker"`
+	Broker string `json:"broker"`
 
 	// Payload to be broadcasted
-	Payload_ []byte `json:"payload"`
+	Payload []byte `json:"payload"`
 }
 
 // MarshalBinary needed to marshal message for the redis
-func (m *Msg) MarshalBinary() ([]byte, error) {
+func (m *Message) MarshalBinary() ([]byte, error) {
 	return json.Marshal(m)
-}
-
-// Payload in raw bytes
-func (m *Msg) Payload() []byte {
-	return m.Payload_
-}
-
-// Command for the connection
-func (m *Msg) Command() string {
-	return m.Command_
-}
-
-// Topics to subscribe
-func (m *Msg) Topics() []string {
-	return m.Topics_
-}
-
-func (m *Msg) Broker() string {
-	return m.Broker_
 }

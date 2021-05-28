@@ -15,6 +15,7 @@ import (
 	"github.com/golang/mock/gomock"
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
+	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -144,6 +145,7 @@ func TestMetricsIssue571(t *testing.T) {
 		&server.Plugin{},
 		mockLogger,
 		&httpPlugin.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 

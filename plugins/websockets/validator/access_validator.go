@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 )
 
@@ -67,16 +68,29 @@ func (w *AccessValidator) Error() string {
 
 // AssertServerAccess checks if user can join server and returns error and body if user can not. Must return nil in
 // case of error
-func (w *AccessValidator) AssertServerAccess(f http.HandlerFunc, r *http.Request) error {
+func (w *AccessValidator) AssertServerAccess(hub channel.Hub, r *http.Request) error {
 	if err := attributes.Set(r, "ws:joinServer", true); err != nil {
 		return err
 	}
 
 	defer delete(attributes.All(r), "ws:joinServer")
 
-	f(w, r)
+	hub.ReceiveCh() <- struct {
+		RW  http.ResponseWriter
+		Req *http.Request
+	}{
+		w,
+		r,
+	}
 
-	if !w.IsOK() {
+	resp := <-hub.SendCh()
+
+	rmsg := resp.(struct {
+		RW  http.ResponseWriter
+		Req *http.Request
+	})
+
+	if !rmsg.RW.(*AccessValidator).IsOK() {
 		return w
 	}
 
@@ -85,16 +99,29 @@ func (w *AccessValidator) AssertServerAccess(f http.HandlerFunc, r *http.Request
 
 // AssertTopicsAccess checks if user can access given upstream, the application will receive all user headers and cookies.
 // the decision to authorize user will be based on response code (200).
-func (w *AccessValidator) AssertTopicsAccess(f http.HandlerFunc, r *http.Request, channels ...string) error {
+func (w *AccessValidator) AssertTopicsAccess(hub channel.Hub, r *http.Request, channels ...string) error {
 	if err := attributes.Set(r, "ws:joinTopics", strings.Join(channels, ",")); err != nil {
 		return err
 	}
 
 	defer delete(attributes.All(r), "ws:joinTopics")
 
-	f(w, r)
+	hub.ReceiveCh() <- struct {
+		RW  http.ResponseWriter
+		Req *http.Request
+	}{
+		w,
+		r,
+	}
 
-	if !w.IsOK() {
+	resp := <-hub.SendCh()
+
+	rmsg := resp.(struct {
+		RW  http.ResponseWriter
+		Req *http.Request
+	})
+
+	if !rmsg.RW.(*AccessValidator).IsOK() {
 		return w
 	}
 

@@ -14,6 +14,7 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	handler "github.com/spiral/roadrunner/v2/pkg/worker_handler"
+	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
@@ -67,11 +68,14 @@ type Plugin struct {
 	http  *http.Server
 	https *http.Server
 	fcgi  *http.Server
+
+	// message bus
+	hub channel.Hub
 }
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server server.Server) error {
+func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server server.Server, channel channel.Hub) error {
 	const op = errors.Op("http_plugin_init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
@@ -105,6 +109,9 @@ func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server serv
 
 	p.cfg.Env[RrMode] = "http"
 	p.server = server
+	p.hub = channel
+
+	go p.messages()
 
 	return nil
 }

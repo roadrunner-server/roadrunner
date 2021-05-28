@@ -16,6 +16,7 @@ import (
 	"github.com/golang/mock/gomock"
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/reload"
@@ -65,6 +66,7 @@ func TestReloadInit(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&reload.Plugin{},
 		&resetter.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -161,6 +163,7 @@ func TestReloadHugeNumberOfFiles(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&reload.Plugin{},
 		&resetter.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -270,6 +273,7 @@ func TestReloadFilterFileExt(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&reload.Plugin{},
 		&resetter.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -400,6 +404,7 @@ func TestReloadCopy100(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&reload.Plugin{},
 		&resetter.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -677,6 +682,7 @@ func TestReloadNoRecursion(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&reload.Plugin{},
 		&resetter.Plugin{},
+		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 

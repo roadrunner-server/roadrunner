@@ -12,18 +12,17 @@ type rpc struct {
 	log    logger.Logger
 }
 
-func (r *rpc) Publish(msg []*pubsub.Msg, ok *bool) error {
+func (r *rpc) Publish(msg []*pubsub.Message, ok *bool) error {
 	const op = errors.Op("broadcast_publish")
 	r.log.Debug("message published", "msg", msg)
 
-	// publish to the registered broker
-	mi := make([]pubsub.Message, 0, len(msg))
-	// golang can't convert slice in-place
-	// so, we need to convert it manually
-	for i := 0; i < len(msg); i++ {
-		mi = append(mi, msg[i])
+	// just return in case of nil message
+	if msg == nil {
+		*ok = true
+		return nil
 	}
-	err := r.plugin.Publish(mi)
+
+	err := r.plugin.Publish(msg)
 	if err != nil {
 		*ok = false
 		return errors.E(op, err)
@@ -32,16 +31,16 @@ func (r *rpc) Publish(msg []*pubsub.Msg, ok *bool) error {
 	return nil
 }
 
-func (r *rpc) PublishAsync(msg []*pubsub.Msg, ok *bool) error {
-	// publish to the registered broker
-	mi := make([]pubsub.Message, 0, len(msg))
-	// golang can't convert slice in-place
-	// so, we need to convert it manually
-	for i := 0; i < len(msg); i++ {
-		mi = append(mi, msg[i])
-	}
+func (r *rpc) PublishAsync(msg []*pubsub.Message, ok *bool) error {
+	r.log.Debug("message published", "msg", msg)
 
-	r.plugin.PublishAsync(mi)
+	// just return in case of nil message
+	if msg == nil {
+		*ok = true
+		return nil
+	}
+	// publish to the registered broker
+	r.plugin.PublishAsync(msg)
 
 	*ok = true
 	return nil
