@@ -49,7 +49,7 @@ func (s *Storage) Remove(connID string, topic string) {
 	s.BST.Remove(connID, topic)
 }
 
-// Thread safe get
+// GetByPtrTS Thread safe get
 func (s *Storage) GetByPtrTS(topics []string, res map[string]struct{}) {
 	s.Lock()
 	defer s.Unlock()

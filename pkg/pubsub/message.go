@@ -18,6 +18,7 @@ type Msg struct {
 	Payload_ []byte `json:"payload"`
 }
 
+// MarshalBinary needed to marshal message for the redis
 func (m *Msg) MarshalBinary() ([]byte, error) {
 	return json.Marshal(m)
 }

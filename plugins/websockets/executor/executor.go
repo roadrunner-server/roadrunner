@@ -63,6 +63,7 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 		switch msg.Command() {
 		// handle leave
 		case commands.Join:
+			e.log.Debug("get join command", "msg", msg)
 			// associate connection with topics
 			e.storage.InsertMany(e.connID, msg.Topics())
 
@@ -96,6 +97,7 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 
 		// handle leave
 		case commands.Leave:
+			e.log.Debug("get leave command", "msg", msg)
 			// remove associated connections from the storage
 			e.storage.RemoveMany(e.connID, msg.Topics())
 

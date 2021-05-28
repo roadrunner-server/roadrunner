@@ -14,6 +14,7 @@ type rpc struct {
 
 func (r *rpc) Publish(msg []*pubsub.Msg, ok *bool) error {
 	const op = errors.Op("broadcast_publish")
+	r.log.Debug("message published", "msg", msg)
 
 	// publish to the registered broker
 	mi := make([]pubsub.Message, 0, len(msg))
