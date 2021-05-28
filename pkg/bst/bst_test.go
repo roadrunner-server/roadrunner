@@ -9,6 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const predifined = "chat-1-2"
+
 func TestNewBST(t *testing.T) {
 	// create a new bst
 	g := NewBST()
@@ -37,8 +39,6 @@ func TestNewBST(t *testing.T) {
 	exist3 := g.Get("comments3")
 	assert.Len(t, exist3, 100)
 }
-
-const predifined = "chat-1-2"
 
 func BenchmarkGraph(b *testing.B) {
 	g := NewBST()

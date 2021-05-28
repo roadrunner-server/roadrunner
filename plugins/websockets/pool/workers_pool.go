@@ -74,7 +74,7 @@ func (wp *WorkersPool) do() {
 			case msg := <-wp.queue:
 				res := wp.get()
 				// get connections for the particular topic
-				wp.storage.Get(msg.Topics(), res)
+				wp.storage.GetByPtr(msg.Topics(), res)
 				if len(res) == 0 {
 					wp.log.Info("no such topic", "topic", msg.Topics())
 					wp.put(res)

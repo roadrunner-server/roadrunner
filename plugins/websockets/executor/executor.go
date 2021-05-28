@@ -64,7 +64,7 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 		// handle leave
 		case commands.Join:
 			// associate connection with topics
-			e.storage.Store(e.connID, msg.Topics())
+			e.storage.InsertMany(e.connID, msg.Topics())
 
 			resp := &Response{
 				Topic:   "@join",
@@ -97,7 +97,7 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 		// handle leave
 		case commands.Leave:
 			// remove associated connections from the storage
-			e.storage.Remove(e.connID, msg.Topics())
+			e.storage.RemoveMany(e.connID, msg.Topics())
 
 			resp := &Response{
 				Topic:   "@leave",

@@ -305,7 +305,7 @@ func (w *Watcher) pollEvents(serviceName string, files map[string]os.FileInfo) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	// Store create and remove events for use to check for rename events.
+	// InsertMany create and remove events for use to check for rename events.
 	creates := make(map[string]os.FileInfo)
 	removes := make(map[string]os.FileInfo)
 
