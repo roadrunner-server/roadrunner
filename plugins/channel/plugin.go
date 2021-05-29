@@ -10,15 +10,16 @@ const (
 
 type Plugin struct {
 	sync.Mutex
-	send    chan interface{}
-	receive chan interface{}
+	fromCh chan interface{}
+	toCh   chan interface{}
 }
 
 func (p *Plugin) Init() error {
 	p.Lock()
 	defer p.Unlock()
-	p.send = make(chan interface{})
-	p.receive = make(chan interface{})
+
+	p.fromCh = make(chan interface{})
+	p.toCh = make(chan interface{})
 	return nil
 }
 
@@ -27,25 +28,22 @@ func (p *Plugin) Serve() chan error {
 }
 
 func (p *Plugin) Stop() error {
-	close(p.receive)
 	return nil
 }
 
-func (p *Plugin) SendCh() chan interface{} {
+func (p *Plugin) FromWorker() chan interface{} {
 	p.Lock()
 	defer p.Unlock()
-	// bi-directional queue
-	return p.send
+	// one-directional queue
+	return p.fromCh
 }
 
-func (p *Plugin) ReceiveCh() chan interface{} {
+func (p *Plugin) ToWorker() chan interface{} {
 	p.Lock()
 	defer p.Unlock()
-	// bi-directional queue
-	return p.receive
+	// one-directional queue
+	return p.toCh
 }
-
-func (p *Plugin) Available() {}
 
 func (p *Plugin) Name() string {
 	return PluginName

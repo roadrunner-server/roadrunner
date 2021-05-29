@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 )
@@ -69,13 +70,16 @@ func (w *AccessValidator) Error() string {
 // AssertServerAccess checks if user can join server and returns error and body if user can not. Must return nil in
 // case of error
 func (w *AccessValidator) AssertServerAccess(hub channel.Hub, r *http.Request) error {
-	if err := attributes.Set(r, "ws:joinServer", true); err != nil {
-		return err
+	const op = errors.Op("server_access_validator")
+	err := attributes.Set(r, "ws:joinServer", true)
+	if err != nil {
+		return errors.E(op, err)
 	}
 
 	defer delete(attributes.All(r), "ws:joinServer")
 
-	hub.ReceiveCh() <- struct {
+	// send payload to the worker
+	hub.ToWorker() <- struct {
 		RW  http.ResponseWriter
 		Req *http.Request
 	}{
@@ -83,7 +87,7 @@ func (w *AccessValidator) AssertServerAccess(hub channel.Hub, r *http.Request) e
 		r,
 	}
 
-	resp := <-hub.SendCh()
+	resp := <-hub.FromWorker()
 
 	rmsg := resp.(struct {
 		RW  http.ResponseWriter
@@ -100,13 +104,17 @@ func (w *AccessValidator) AssertServerAccess(hub channel.Hub, r *http.Request) e
 // AssertTopicsAccess checks if user can access given upstream, the application will receive all user headers and cookies.
 // the decision to authorize user will be based on response code (200).
 func (w *AccessValidator) AssertTopicsAccess(hub channel.Hub, r *http.Request, channels ...string) error {
-	if err := attributes.Set(r, "ws:joinTopics", strings.Join(channels, ",")); err != nil {
-		return err
+	const op = errors.Op("topics_access_validator")
+
+	err := attributes.Set(r, "ws:joinTopics", strings.Join(channels, ","))
+	if err != nil {
+		return errors.E(op, err)
 	}
 
 	defer delete(attributes.All(r), "ws:joinTopics")
 
-	hub.ReceiveCh() <- struct {
+	// send payload to worker
+	hub.ToWorker() <- struct {
 		RW  http.ResponseWriter
 		Req *http.Request
 	}{
@@ -114,7 +122,8 @@ func (w *AccessValidator) AssertTopicsAccess(hub channel.Hub, r *http.Request, c
 		r,
 	}
 
-	resp := <-hub.SendCh()
+	// wait response
+	resp := <-hub.FromWorker()
 
 	rmsg := resp.(struct {
 		RW  http.ResponseWriter

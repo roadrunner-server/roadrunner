@@ -75,7 +75,7 @@ type Plugin struct {
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server server.Server, channel channel.Hub) error {
+func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server server.Server, hub channel.Hub) error {
 	const op = errors.Op("http_plugin_init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
@@ -109,9 +109,7 @@ func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server serv
 
 	p.cfg.Env[RrMode] = "http"
 	p.server = server
-	p.hub = channel
-
-	go p.messages()
+	p.hub = hub
 
 	return nil
 }
@@ -128,6 +126,7 @@ func (p *Plugin) logCallback(event interface{}) {
 // Serve serves the svc.
 func (p *Plugin) Serve() chan error {
 	errCh := make(chan error, 2)
+	go p.messages()
 	// run whole process in the goroutine
 	go func() {
 		// protect http initialization
