@@ -22,10 +22,6 @@ func (g *Plugin) Middleware(next http.Handler) http.Handler {
 	})
 }
 
-func (g *Plugin) FiberMiddleware(ctx fiber.Ctx) {
-
-}
-
 // Available interface implementation
 func (g *Plugin) Available() {}
 
