@@ -28,6 +28,15 @@ func (p *Plugin) Serve() chan error {
 }
 
 func (p *Plugin) Stop() error {
+	// read from the channels on stop to prevent blocking
+	go func() {
+		for range p.fromCh {
+		}
+	}()
+	go func() {
+		for range p.toCh {
+		}
+	}()
 	return nil
 }
 

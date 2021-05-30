@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 	"sync"
+	"time"
 
-	"github.com/hashicorp/go-multierror"
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/pool"
@@ -126,7 +126,6 @@ func (p *Plugin) logCallback(event interface{}) {
 // Serve serves the svc.
 func (p *Plugin) Serve() chan error {
 	errCh := make(chan error, 2)
-	go p.messages()
 	// run whole process in the goroutine
 	go func() {
 		// protect http initialization
@@ -169,9 +168,16 @@ func (p *Plugin) serve(errCh chan error) {
 
 	if p.cfg.EnableHTTP() {
 		if p.cfg.EnableH2C() {
-			p.http = &http.Server{Handler: h2c.NewHandler(p, &http2.Server{}), ErrorLog: p.stdLog}
+			p.http = &http.Server{
+				Handler:  h2c.NewHandler(p, &http2.Server{}),
+				ErrorLog: p.stdLog,
+			}
 		} else {
-			p.http = &http.Server{Handler: p, ErrorLog: p.stdLog}
+			p.http = &http.Server{
+				Handler:           p,
+				ErrorLog:          p.stdLog,
+				ReadHeaderTimeout: time.Second,
+			}
 		}
 	}
 
@@ -210,6 +216,9 @@ func (p *Plugin) serve(errCh chan error) {
 	go func() {
 		p.serveFCGI(errCh)
 	}()
+
+	// read messages from the ws
+	go p.messages()
 }
 
 // Stop stops the http.
@@ -217,31 +226,24 @@ func (p *Plugin) Stop() error {
 	p.Lock()
 	defer p.Unlock()
 
-	var err error
 	if p.fcgi != nil {
-		err = p.fcgi.Shutdown(context.Background())
+		err := p.fcgi.Shutdown(context.Background())
 		if err != nil && err != http.ErrServerClosed {
 			p.log.Error("error shutting down the fcgi server", "error", err)
-			// write error and try to stop other transport
-			err = multierror.Append(err)
 		}
 	}
 
 	if p.https != nil {
-		err = p.https.Shutdown(context.Background())
+		err := p.https.Shutdown(context.Background())
 		if err != nil && err != http.ErrServerClosed {
 			p.log.Error("error shutting down the https server", "error", err)
-			// write error and try to stop other transport
-			err = multierror.Append(err)
 		}
 	}
 
 	if p.http != nil {
-		err = p.http.Shutdown(context.Background())
+		err := p.http.Close()
 		if err != nil && err != http.ErrServerClosed {
 			p.log.Error("error shutting down the http server", "error", err)
-			// write error and try to stop other transport
-			err = multierror.Append(err)
 		}
 	}
 
@@ -250,7 +252,7 @@ func (p *Plugin) Stop() error {
 		p.pool.Destroy(context.Background())
 	}
 
-	return err
+	return nil
 }
 
 // ServeHTTP handles connection using set of middleware and pool PSR-7 server.

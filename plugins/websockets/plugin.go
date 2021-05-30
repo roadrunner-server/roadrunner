@@ -3,7 +3,6 @@ package websockets
 import (
 	"net/http"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/fasthttp/websocket"
@@ -40,7 +39,6 @@ type Plugin struct {
 
 	// GO workers pool
 	workersPool *pool.WorkersPool
-	stopped     uint64
 
 	hub channel.Hub
 }
@@ -61,7 +59,6 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, channel channel.
 	p.storage = storage.NewStorage()
 	p.workersPool = pool.NewWorkersPool(p.storage, &p.connections, log)
 	p.hub = channel
-	p.stopped = 0
 
 	return nil
 }
@@ -87,7 +84,6 @@ func (p *Plugin) Serve() chan error {
 }
 
 func (p *Plugin) Stop() error {
-	atomic.AddUint64(&p.stopped, 1)
 	p.workersPool.Stop()
 	return nil
 }
@@ -123,11 +119,6 @@ func (p *Plugin) Middleware(next http.Handler) http.Handler {
 			return
 		}
 
-		if atomic.CompareAndSwapUint64(&p.stopped, 1, 1) {
-			// plugin stopped
-			return
-		}
-
 		r = attributes.Init(r)
 
 		err := validator.NewValidator().AssertServerAccess(p.hub, r)
@@ -156,7 +147,8 @@ func (p *Plugin) Middleware(next http.Handler) http.Handler {
 		// upgrade connection to websocket connection
 		_conn, err := upgraded.Upgrade(w, r, nil)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			// connection hijacked, do not use response.writer or request
+			p.log.Error("upgrade connection error", "error", err)
 			return
 		}
 
