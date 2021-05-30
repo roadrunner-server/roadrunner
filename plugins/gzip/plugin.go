@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/NYTimes/gziphandler"
-	"github.com/gofiber/fiber/v2"
 )
 
 const PluginName = "gzip"
