@@ -14,8 +14,10 @@ output:
 linters-settings:
   govet:
     check-shadowing: true
-  golint:
-    min-confidence: 0.1
+  revive:
+    confidence: 0.8
+    errorCode: 0
+    warningCode: 0
   gocyclo:
     min-complexity: 15
   godot:
@@ -55,7 +57,7 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - gocritic # The most opinionated Go source code linter
     - gofmt # Gofmt checks whether code was gofmt-ed. By default this tool runs with -s option to check for code simplification
     - goimports # Goimports does everything that gofmt does. Additionally it checks unused imports
-    - golint # Golint differs from gofmt. Gofmt reformats Go source code, whereas golint prints out style mistakes
+    - revive # Golint differs from gofmt. Gofmt reformats Go source code, whereas golint prints out style mistakes
     - goprintffuncname # Checks that printf-like functions are named with `f` at the end
     - gosec # Inspects source code for security problems
     - gosimple # Linter for Go source code that specializes in simplifying a code
@@ -88,3 +90,4 @@ issues:
         - goconst
         - noctx
         - gosimple
+        - revive

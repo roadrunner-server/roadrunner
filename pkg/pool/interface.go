@@ -18,7 +18,7 @@ type Pool interface {
 	// Workers returns worker list associated with the pool.
 	Workers() (workers []worker.BaseProcess)
 
-	// Remove worker from the pool.
+	// RemoveWorker removes worker from the pool.
 	RemoveWorker(worker worker.BaseProcess) error
 
 	// Destroy all underlying stack (but let them to complete the task).

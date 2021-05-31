@@ -1,0 +1,10 @@
+namespace message;
+
+table Message {
+    command:string;
+    broker:string;
+    topics:[string];
+    payload:[byte];
+}
+
+root_type Message;

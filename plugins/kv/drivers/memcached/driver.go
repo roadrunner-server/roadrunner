@@ -9,6 +9,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 type Driver struct {
@@ -148,7 +149,7 @@ func (d *Driver) Set(items ...kv.Item) error {
 		memcachedItem := &memcache.Item{
 			Key: items[i].Key,
 			// unsafe convert
-			Value: []byte(items[i].Value),
+			Value: utils.AsBytes(items[i].Value),
 			Flags: 0,
 		}
 

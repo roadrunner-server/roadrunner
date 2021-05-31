@@ -15,7 +15,7 @@ import (
 const MB = 1024 * 1024
 
 // NSEC_IN_SEC nanoseconds in second
-const NSEC_IN_SEC int64 = 1000000000 //nolint:golint,stylecheck
+const NSEC_IN_SEC int64 = 1000000000 //nolint:stylecheck
 
 type Supervised interface {
 	Pool

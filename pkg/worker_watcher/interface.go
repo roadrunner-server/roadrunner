@@ -1,4 +1,4 @@
-package worker_watcher //nolint:golint,stylecheck
+package worker_watcher //nolint:stylecheck
 
 import (
 	"context"
@@ -23,9 +23,9 @@ type Watcher interface {
 	// Destroy destroys the underlying container
 	Destroy(ctx context.Context)
 
-	// WorkersList return all container w/o removing it from internal storage
+	// List return all container w/o removing it from internal storage
 	List() []worker.BaseProcess
 
-	// RemoveWorker remove worker from the container
+	// Remove will remove worker from the container
 	Remove(wb worker.BaseProcess)
 }

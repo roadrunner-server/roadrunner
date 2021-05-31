@@ -27,3 +27,4 @@ tests/vendor/
 .rr-sample.yaml
 cmd
 rr
+**/old

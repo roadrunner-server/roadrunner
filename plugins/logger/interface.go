@@ -8,7 +8,7 @@ type Logger interface {
 	Error(msg string, keyvals ...interface{})
 }
 
-// With creates a child logger and adds structured context to it
+// WithLogger creates a child logger and adds structured context to it
 type WithLogger interface {
 	With(keyvals ...interface{}) Logger
 }

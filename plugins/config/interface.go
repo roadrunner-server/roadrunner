@@ -11,7 +11,7 @@ type Configurer interface {
 	// }
 	UnmarshalKey(name string, out interface{}) error
 
-	// Unmarshal unmarshals the config into a Struct. Make sure that the tags
+	// Unmarshal unmarshal the config into a Struct. Make sure that the tags
 	// on the fields of the structure are properly set.
 	Unmarshal(out interface{}) error
 
@@ -24,6 +24,6 @@ type Configurer interface {
 	// Has checks if config section exists.
 	Has(name string) bool
 
-	// Returns General section. Read-only
+	// GetCommonConfig returns General section. Read-only
 	GetCommonConfig() *General
 }

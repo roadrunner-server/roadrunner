@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
+	"github.com/spiral/roadrunner/v2/pkg/pool"
 )
 
 // HTTP configures RoadRunner HTTP server.
@@ -34,7 +34,7 @@ type HTTP struct {
 	Uploads *Uploads `mapstructure:"uploads"`
 
 	// Pool configures worker pool.
-	Pool *poolImpl.Config `mapstructure:"pool"`
+	Pool *pool.Config `mapstructure:"pool"`
 
 	// Env is environment variables passed to the  http pool
 	Env map[string]string
@@ -70,7 +70,7 @@ func (c *HTTP) EnableFCGI() bool {
 func (c *HTTP) InitDefaults() error {
 	if c.Pool == nil {
 		// default pool
-		c.Pool = &poolImpl.Config{
+		c.Pool = &pool.Config{
 			Debug:           false,
 			NumWorkers:      uint64(runtime.NumCPU()),
 			MaxJobs:         0,
