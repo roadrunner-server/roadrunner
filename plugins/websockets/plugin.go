@@ -179,8 +179,13 @@ func (p *Plugin) Middleware(next http.Handler) http.Handler {
 		}
 
 		if val.Status != http.StatusOK {
-			_, _ = w.Write(val.Body)
+			for k, v := range val.Header {
+				for i := 0; i < len(v); i++ {
+					w.Header().Add(k, v[i])
+				}
+			}
 			w.WriteHeader(val.Status)
+			_, _ = w.Write(val.Body)
 			return
 		}
 
@@ -325,7 +330,7 @@ func (p *Plugin) defaultAccessValidator(pool phpPool.Pool) validator.AccessValid
 
 		// if channels len is eq to 0, we use serverValidator
 		if len(topics) == 0 {
-			ctx, err := validator.TopicsAccessValidator(r, topics...)
+			ctx, err := validator.ServerAccessValidator(r)
 			if err != nil {
 				return nil, errors.E(op, err)
 			}
@@ -338,7 +343,7 @@ func (p *Plugin) defaultAccessValidator(pool phpPool.Pool) validator.AccessValid
 			return val, nil
 		}
 
-		ctx, err := validator.ServerAccessValidator(r)
+		ctx, err := validator.TopicsAccessValidator(r, topics...)
 		if err != nil {
 			return nil, errors.E(op, err)
 		}
