@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"sync"
-	"time"
 
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
@@ -14,7 +13,6 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	handler "github.com/spiral/roadrunner/v2/pkg/worker_handler"
-	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http/attributes"
 	httpConfig "github.com/spiral/roadrunner/v2/plugins/http/config"
@@ -68,14 +66,11 @@ type Plugin struct {
 	http  *http.Server
 	https *http.Server
 	fcgi  *http.Server
-
-	// message bus
-	hub channel.Hub
 }
 
 // Init must return configure svc and return true if svc hasStatus enabled. Must return error in case of
 // misconfiguration. Services must not be used without proper configuration pushed first.
-func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server server.Server, hub channel.Hub) error {
+func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server server.Server) error {
 	const op = errors.Op("http_plugin_init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
@@ -109,7 +104,6 @@ func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server serv
 
 	p.cfg.Env[RrMode] = "http"
 	p.server = server
-	p.hub = hub
 
 	return nil
 }
@@ -174,9 +168,8 @@ func (p *Plugin) serve(errCh chan error) {
 			}
 		} else {
 			p.http = &http.Server{
-				Handler:           p,
-				ErrorLog:          p.stdLog,
-				ReadHeaderTimeout: time.Second,
+				Handler:  p,
+				ErrorLog: p.stdLog,
 			}
 		}
 	}
@@ -216,9 +209,6 @@ func (p *Plugin) serve(errCh chan error) {
 	go func() {
 		p.serveFCGI(errCh)
 	}()
-
-	// read messages from the ws
-	go p.messages()
 }
 
 // Stop stops the http.
@@ -229,21 +219,21 @@ func (p *Plugin) Stop() error {
 	if p.fcgi != nil {
 		err := p.fcgi.Shutdown(context.Background())
 		if err != nil && err != http.ErrServerClosed {
-			p.log.Error("error shutting down the fcgi server", "error", err)
+			p.log.Error("fcgi shutdown", "error", err)
 		}
 	}
 
 	if p.https != nil {
 		err := p.https.Shutdown(context.Background())
 		if err != nil && err != http.ErrServerClosed {
-			p.log.Error("error shutting down the https server", "error", err)
+			p.log.Error("https shutdown", "error", err)
 		}
 	}
 
 	if p.http != nil {
-		err := p.http.Close()
+		err := p.http.Shutdown(context.Background())
 		if err != nil && err != http.ErrServerClosed {
-			p.log.Error("error shutting down the http server", "error", err)
+			p.log.Error("http shutdown", "error", err)
 		}
 	}
 
@@ -337,6 +327,7 @@ func (p *Plugin) Reset() error {
 		p.cfg.Cidrs,
 		p.pool,
 	)
+
 	if err != nil {
 		return errors.E(op, err)
 	}

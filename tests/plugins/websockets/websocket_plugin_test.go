@@ -16,7 +16,6 @@ import (
 	json "github.com/json-iterator/go"
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
-	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -60,7 +59,6 @@ func TestBroadcastInit(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
-		&channel.Plugin{},
 	)
 
 	assert.NoError(t, err)
@@ -170,7 +168,6 @@ func TestWSRedisAndMemory(t *testing.T) {
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
 		&memory.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -313,7 +310,9 @@ func RPCWsMemory(t *testing.T) {
 	assert.NoError(t, err)
 
 	defer func() {
-		_ = resp.Body.Close()
+		if resp != nil && resp.Body != nil {
+			_ = resp.Body.Close()
+		}
 	}()
 
 	d, err := json.Marshal(message("join", "memory", []byte("hello websockets"), "foo", "foo2"))

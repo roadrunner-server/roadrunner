@@ -24,7 +24,6 @@ import (
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/process"
-	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/gzip"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
@@ -63,7 +62,6 @@ func TestHTTPInit(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -128,7 +126,6 @@ func TestHTTPNoConfigSection(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -196,7 +193,6 @@ func TestHTTPInformerReset(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&informer.Plugin{},
 		&resetter.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -319,7 +315,6 @@ func TestSSL(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -456,7 +451,6 @@ func TestSSLRedirect(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -546,7 +540,6 @@ func TestSSLPushPipes(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -637,7 +630,6 @@ func TestFastCGI_RequestUri(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -732,7 +724,6 @@ func TestH2CUpgrade(t *testing.T) {
 		mockLogger,
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -824,7 +815,6 @@ func TestH2C(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -917,7 +907,6 @@ func TestHttpMiddleware(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&PluginMiddleware{},
 		&PluginMiddleware2{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1064,7 +1053,6 @@ logs:
 		&httpPlugin.Plugin{},
 		&PluginMiddleware{},
 		&PluginMiddleware2{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1150,7 +1138,6 @@ func TestHttpEnvVariables(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&PluginMiddleware{},
 		&PluginMiddleware2{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1238,7 +1225,6 @@ func TestHttpBrokenPipes(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&PluginMiddleware{},
 		&PluginMiddleware2{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1300,7 +1286,6 @@ func TestHTTPSupervisedPool(t *testing.T) {
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
 		&informer.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1503,7 +1488,6 @@ func TestHTTPBigRequestSize(t *testing.T) {
 		&logger.ZapLogger{},
 		&server.Plugin{},
 		&httpPlugin.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1596,7 +1580,6 @@ func TestStaticEtagPlugin(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
 		&static.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1695,7 +1678,6 @@ func TestStaticPluginSecurity(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
 		&static.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1845,7 +1827,6 @@ func TestStaticPlugin(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
 		&static.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -1960,7 +1941,6 @@ func TestStaticDisabled_Error(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
 		&static.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 	assert.Error(t, cont.Init())
@@ -1982,7 +1962,6 @@ func TestStaticFilesDisabled(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
 		&static.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -2075,7 +2054,6 @@ func TestStaticFilesForbid(t *testing.T) {
 		&httpPlugin.Plugin{},
 		&gzip.Plugin{},
 		&static.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 

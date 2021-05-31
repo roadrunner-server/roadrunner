@@ -61,7 +61,7 @@ type Request struct {
 	body interface{}
 }
 
-func fetchIP(pair string) string {
+func FetchIP(pair string) string {
 	if !strings.ContainsRune(pair, ':') {
 		return pair
 	}
@@ -73,10 +73,10 @@ func fetchIP(pair string) string {
 // NewRequest creates new PSR7 compatible request using net/http request.
 func NewRequest(r *http.Request, cfg config.Uploads) (*Request, error) {
 	req := &Request{
-		RemoteAddr: fetchIP(r.RemoteAddr),
+		RemoteAddr: FetchIP(r.RemoteAddr),
 		Protocol:   r.Proto,
 		Method:     r.Method,
-		URI:        uri(r),
+		URI:        URI(r),
 		Header:     r.Header,
 		Cookies:    make(map[string]string),
 		RawQuery:   r.URL.RawQuery,
@@ -174,8 +174,8 @@ func (r *Request) contentType() int {
 	return contentStream
 }
 
-// uri fetches full uri from request in a form of string (including https scheme if TLS connection is enabled).
-func uri(r *http.Request) string {
+// URI fetches full uri from request in a form of string (including https scheme if TLS connection is enabled).
+func URI(r *http.Request) string {
 	if r.URL.Host != "" {
 		return r.URL.String()
 	}

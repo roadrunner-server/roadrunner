@@ -9,7 +9,6 @@ import (
 	json "github.com/json-iterator/go"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/pubsub"
-	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/commands"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/connection"
@@ -35,21 +34,22 @@ type Executor struct {
 	pubsub       map[string]pubsub.PubSub
 	actualTopics map[string]struct{}
 
-	hub channel.Hub
-	req *http.Request
+	req             *http.Request
+	accessValidator validator.AccessValidatorFn
 }
 
 // NewExecutor creates protected connection and starts command loop
-func NewExecutor(conn *connection.Connection, log logger.Logger, bst *storage.Storage, connID string, pubsubs map[string]pubsub.PubSub, hub channel.Hub, r *http.Request) *Executor {
+func NewExecutor(conn *connection.Connection, log logger.Logger, bst *storage.Storage,
+	connID string, pubsubs map[string]pubsub.PubSub, av validator.AccessValidatorFn, r *http.Request) *Executor {
 	return &Executor{
-		conn:         conn,
-		connID:       connID,
-		storage:      bst,
-		log:          log,
-		pubsub:       pubsubs,
-		hub:          hub,
-		actualTopics: make(map[string]struct{}, 10),
-		req:          r,
+		conn:            conn,
+		connID:          connID,
+		storage:         bst,
+		log:             log,
+		pubsub:          pubsubs,
+		accessValidator: av,
+		actualTopics:    make(map[string]struct{}, 10),
+		req:             r,
 	}
 }
 
@@ -85,8 +85,12 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 		case commands.Join:
 			e.log.Debug("get join command", "msg", msg)
 
-			err := validator.NewValidator().AssertTopicsAccess(e.hub, e.req, msg.Topics...)
+			val, err := e.accessValidator(e.req, msg.Topics...)
 			if err != nil {
+				if val != nil {
+					e.log.Debug("validation error", "status", val.Status, "headers", val.Header, "body", val.Body)
+				}
+
 				resp := &Response{
 					Topic:   "#join",
 					Payload: msg.Topics,

@@ -9,7 +9,6 @@ import (
 
 	"github.com/golang/mock/gomock"
 	endure "github.com/spiral/endure/pkg/container"
-	"github.com/spiral/roadrunner/v2/plugins/channel"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -99,7 +98,6 @@ func TestLoggerRawErr(t *testing.T) {
 		mockLogger,
 		&server.Plugin{},
 		&http.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -226,7 +224,6 @@ func TestLoggerNoConfig2(t *testing.T) {
 		&logger.ZapLogger{},
 		&http.Plugin{},
 		&server.Plugin{},
-		&channel.Plugin{},
 	)
 	assert.NoError(t, err)
 

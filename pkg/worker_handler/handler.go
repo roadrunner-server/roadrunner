@@ -202,16 +202,16 @@ func (h *Handler) resolveIP(r *Request) {
 	// CF-Connecting-IP is an Enterprise feature and we check it last in order.
 	// This operations are near O(1) because Headers struct are the map type -> type MIMEHeader map[string][]string
 	if r.Header.Get("X-Real-Ip") != "" {
-		r.RemoteAddr = fetchIP(r.Header.Get("X-Real-Ip"))
+		r.RemoteAddr = FetchIP(r.Header.Get("X-Real-Ip"))
 		return
 	}
 
 	if r.Header.Get("True-Client-IP") != "" {
-		r.RemoteAddr = fetchIP(r.Header.Get("True-Client-IP"))
+		r.RemoteAddr = FetchIP(r.Header.Get("True-Client-IP"))
 		return
 	}
 
 	if r.Header.Get("CF-Connecting-IP") != "" {
-		r.RemoteAddr = fetchIP(r.Header.Get("CF-Connecting-IP"))
+		r.RemoteAddr = FetchIP(r.Header.Get("CF-Connecting-IP"))
 	}
 }
