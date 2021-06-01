@@ -2,7 +2,6 @@ package websockets
 
 import (
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
@@ -12,9 +11,9 @@ type rpc struct {
 	log    logger.Logger
 }
 
-func (r *rpc) Publish(msg []*pubsub.Message, ok *bool) error {
+func (r *rpc) Publish(msg []byte, ok *bool) error {
 	const op = errors.Op("broadcast_publish")
-	r.log.Debug("message published", "msg", msg)
+	r.log.Debug("message published")
 
 	// just return in case of nil message
 	if msg == nil {
@@ -31,7 +30,7 @@ func (r *rpc) Publish(msg []*pubsub.Message, ok *bool) error {
 	return nil
 }
 
-func (r *rpc) PublishAsync(msg []*pubsub.Message, ok *bool) error {
+func (r *rpc) PublishAsync(msg []byte, ok *bool) error {
 	r.log.Debug("message published", "msg", msg)
 
 	// just return in case of nil message

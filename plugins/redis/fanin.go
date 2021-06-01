@@ -4,8 +4,7 @@ import (
 	"context"
 	"sync"
 
-	json "github.com/json-iterator/go"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub"
+	"github.com/spiral/roadrunner/v2/pkg/pubsub/message"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 
 	"github.com/go-redis/redis/v8"
@@ -22,13 +21,13 @@ type FanIn struct {
 	log logger.Logger
 
 	// out channel with all subs
-	out chan *pubsub.Message
+	out chan *message.Message
 
 	exit chan struct{}
 }
 
 func NewFanIn(redisClient redis.UniversalClient, log logger.Logger) *FanIn {
-	out := make(chan *pubsub.Message, 100)
+	out := make(chan *message.Message, 100)
 	fi := &FanIn{
 		out:    out,
 		client: redisClient,
@@ -65,14 +64,14 @@ func (fi *FanIn) read() {
 			if !ok {
 				return
 			}
-			m := &pubsub.Message{}
-			err := json.Unmarshal(utils.AsBytes(msg.Payload), m)
-			if err != nil {
-				fi.log.Error("failed to unmarshal payload", "error", err.Error())
-				continue
-			}
+			//m := &pubsub.Message{}
+			//err := json.Unmarshal(utils.AsBytes(msg.Payload), m)
+			//if err != nil {
+			//	fi.log.Error("failed to unmarshal payload", "error", err.Error())
+			//	continue
+			//}
 
-			fi.out <- m
+			fi.out <- message.GetRootAsMessage(utils.AsBytes(msg.Payload), 0)
 		case <-fi.exit:
 			return
 		}
@@ -95,6 +94,6 @@ func (fi *FanIn) Stop() error {
 	return nil
 }
 
-func (fi *FanIn) Consume() <-chan *pubsub.Message {
+func (fi *FanIn) Consume() <-chan *message.Message {
 	return fi.out
 }

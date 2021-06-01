@@ -19,11 +19,11 @@ type Subscriber interface {
 // Publisher publish one or more messages
 type Publisher interface {
 	// Publish one or multiple Channel.
-	Publish(messages []*Message) error
+	Publish(messages []byte) error
 
 	// PublishAsync publish message and return immediately
 	// If error occurred it will be printed into the logger
-	PublishAsync(messages []*Message)
+	PublishAsync(messages []byte)
 }
 
 // Reader interface should return next message

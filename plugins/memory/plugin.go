@@ -15,14 +15,14 @@ type Plugin struct {
 	log logger.Logger
 
 	// channel with the messages from the RPC
-	pushCh chan *pubsub.Message
+	pushCh chan []byte
 	// user-subscribed topics
 	topics sync.Map
 }
 
 func (p *Plugin) Init(log logger.Logger) error {
 	p.log = log
-	p.pushCh = make(chan *pubsub.Message, 100)
+	p.pushCh = make(chan []byte, 100)
 	return nil
 }
 
@@ -34,18 +34,14 @@ func (p *Plugin) Name() string {
 	return PluginName
 }
 
-func (p *Plugin) Publish(messages []*pubsub.Message) error {
-	for i := 0; i < len(messages); i++ {
-		p.pushCh <- messages[i]
-	}
+func (p *Plugin) Publish(messages []byte) error {
+	p.pushCh <- messages
 	return nil
 }
 
-func (p *Plugin) PublishAsync(messages []*pubsub.Message) {
+func (p *Plugin) PublishAsync(messages []byte) {
 	go func() {
-		for i := 0; i < len(messages); i++ {
-			p.pushCh <- messages[i]
-		}
+		p.pushCh <- messages
 	}()
 }
 
