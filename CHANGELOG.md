@@ -5,14 +5,16 @@ v2.3.0 (08.06.2021)
 -------------------
 
 ## 👀 New:
-- Brand new `broadcast` plugins that now have the name - `websockets` with broadcast capabilities. It can handle hundreds of
-thousands websocket connections very efficiently (~300k messages per second with 1k connected clients, in-memory bus on 2CPU cores and 1GB of RAM)
+
+- Brand new `broadcast` plugins that now have the name - `websockets` with broadcast capabilities. It can handle
+  hundreds of thousands websocket connections very efficiently (~300k messages per second with 1k connected clients,
+  in-memory bus on 2CPU cores and 1GB of RAM)
 
 - Flatbuffers binary messages for the `websockets` RPC calls under the hood.
 
 ## 🩹 Fixes:
 
-- 🐛 Fix:
+- 🐛 Fix: Bug with `informer.Workers` worked incorrectly: [Bug](https://github.com/spiral/roadrunner/issues/686)
 
 ---
 
@@ -21,7 +23,8 @@ v2.2.1 (13.05.2021)
 
 ## 🩹 Fixes:
 
-- 🐛 Fix: revert static plugin. It stays as a separate plugin on the main route (`/`) and supports all the previously announced features.
+- 🐛 Fix: revert static plugin. It stays as a separate plugin on the main route (`/`) and supports all the previously
+  announced features.
 - 🐛 Fix: remove `build` and other old targets from the Makefile.
 
 ---

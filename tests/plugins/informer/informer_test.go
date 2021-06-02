@@ -85,9 +85,25 @@ func TestInformerInit(t *testing.T) {
 	time.Sleep(time.Second)
 	t.Run("InformerWorkersRpcTest", informerWorkersRPCTest)
 	t.Run("InformerListRpcTest", informerListRPCTest)
+	t.Run("InformerPluginWithoutWorkersRpcTest", informerPluginWOWorkersRPCTest)
 
 	stopCh <- struct{}{}
 	wg.Wait()
+}
+
+func informerPluginWOWorkersRPCTest(t *testing.T) {
+	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	assert.NoError(t, err)
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+	// WorkerList contains list of workers.
+	list := struct {
+		// Workers is list of workers.
+		Workers []process.State `json:"workers"`
+	}{}
+
+	err = client.Call("informer.Workers", "informer.config", &list)
+	assert.NoError(t, err)
+	assert.Len(t, list.Workers, 0)
 }
 
 func informerWorkersRPCTest(t *testing.T) {

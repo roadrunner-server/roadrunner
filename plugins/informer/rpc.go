@@ -16,7 +16,7 @@ type WorkerList struct {
 
 // List all resettable services.
 func (rpc *rpc) List(_ bool, list *[]string) error {
-	*list = make([]string, 0, len(rpc.srv.registry))
+	*list = make([]string, 0, len(rpc.srv.withWorkers))
 
 	// append all plugin names to the output result
 	for name := range rpc.srv.available {
@@ -27,9 +27,10 @@ func (rpc *rpc) List(_ bool, list *[]string) error {
 
 // Workers state of a given service.
 func (rpc *rpc) Workers(service string, list *WorkerList) error {
-	workers, err := rpc.srv.Workers(service)
-	if err != nil {
-		return err
+	workers := rpc.srv.Workers(service)
+	if workers == nil {
+		list = nil
+		return nil
 	}
 
 	// write actual processes
