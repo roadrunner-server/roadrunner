@@ -1,9 +1,5 @@
 package pubsub
 
-import (
-	json "github.com/json-iterator/go"
-)
-
 type Message struct {
 	// Command (join, leave, headers)
 	Command string `json:"command"`
@@ -16,9 +12,4 @@ type Message struct {
 
 	// Payload to be broadcasted
 	Payload []byte `json:"payload"`
-}
-
-// MarshalBinary needed to marshal message for the redis
-func (m *Message) MarshalBinary() ([]byte, error) {
-	return json.Marshal(m)
 }
