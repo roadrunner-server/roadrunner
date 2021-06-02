@@ -14,7 +14,7 @@ require (
 	github.com/go-redis/redis/v8 v8.9.0
 	github.com/gofiber/fiber/v2 v2.10.0
 	github.com/golang/mock v1.4.4
-	github.com/google/flatbuffers v1.12.1
+	github.com/google/flatbuffers v2.0.0+incompatible
 	github.com/google/uuid v1.2.0
 	github.com/json-iterator/go v1.1.11
 	github.com/klauspost/compress v1.12.2 // indirect

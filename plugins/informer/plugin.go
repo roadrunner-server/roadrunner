@@ -2,32 +2,30 @@ package informer
 
 import (
 	endure "github.com/spiral/endure/pkg/container"
-	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/process"
 )
 
 const PluginName = "informer"
 
 type Plugin struct {
-	registry  map[string]Informer
-	available map[string]Availabler
+	withWorkers map[string]Informer
+	available   map[string]Availabler
 }
 
 func (p *Plugin) Init() error {
 	p.available = make(map[string]Availabler)
-	p.registry = make(map[string]Informer)
+	p.withWorkers = make(map[string]Informer)
 	return nil
 }
 
 // Workers provides BaseProcess slice with workers for the requested plugin
-func (p *Plugin) Workers(name string) ([]process.State, error) {
-	const op = errors.Op("informer_plugin_workers")
-	svc, ok := p.registry[name]
+func (p *Plugin) Workers(name string) []process.State {
+	svc, ok := p.withWorkers[name]
 	if !ok {
-		return nil, errors.E(op, errors.Errorf("no such service: %s", name))
+		return nil
 	}
 
-	return svc.Workers(), nil
+	return svc.Workers()
 }
 
 // Collects declares services to be collected.
@@ -45,7 +43,7 @@ func (p *Plugin) CollectPlugins(name endure.Named, l Availabler) {
 
 // CollectWorkers obtains plugins with workers inside.
 func (p *Plugin) CollectWorkers(name endure.Named, r Informer) {
-	p.registry[name.Name()] = r
+	p.withWorkers[name.Name()] = r
 }
 
 // Name of the service.
