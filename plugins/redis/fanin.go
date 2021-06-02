@@ -64,13 +64,6 @@ func (fi *FanIn) read() {
 			if !ok {
 				return
 			}
-			//m := &pubsub.Message{}
-			//err := json.Unmarshal(utils.AsBytes(msg.Payload), m)
-			//if err != nil {
-			//	fi.log.Error("failed to unmarshal payload", "error", err.Error())
-			//	continue
-			//}
-
 			fi.out <- message.GetRootAsMessage(utils.AsBytes(msg.Payload), 0)
 		case <-fi.exit:
 			return

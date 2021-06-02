@@ -63,6 +63,17 @@ func (s *Storage) GetByPtrTS(topics []string, res map[string]struct{}) {
 		}
 	}
 }
+func (s *Storage) GetOneByPtr(topic string, res map[string]struct{}) {
+	s.RLock()
+	defer s.RUnlock()
+
+	d := s.BST.Get(topic)
+	if len(d) > 0 {
+		for ii := range d {
+			res[ii] = struct{}{}
+		}
+	}
+}
 
 func (s *Storage) GetByPtr(topics []string, res map[string]struct{}) {
 	s.RLock()

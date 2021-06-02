@@ -1,5 +1,7 @@
 package pubsub
 
+import "github.com/spiral/roadrunner/v2/pkg/pubsub/message"
+
 // PubSub ...
 type PubSub interface {
 	Publisher
@@ -28,5 +30,5 @@ type Publisher interface {
 
 // Reader interface should return next message
 type Reader interface {
-	Next() (*Message, error)
+	Next() (*message.Message, error)
 }
