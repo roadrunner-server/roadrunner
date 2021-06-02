@@ -7,4 +7,8 @@ table Message {
     payload:[byte];
 }
 
-root_type Message;
+table Messages {
+    messages:[Message];
+}
+
+root_type Messages;

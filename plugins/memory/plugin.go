@@ -3,8 +3,9 @@ package memory
 import (
 	"sync"
 
-	"github.com/spiral/roadrunner/v2/pkg/pubsub"
+	"github.com/spiral/roadrunner/v2/pkg/pubsub/message"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 const (
@@ -15,14 +16,14 @@ type Plugin struct {
 	log logger.Logger
 
 	// channel with the messages from the RPC
-	pushCh chan *pubsub.Message
+	pushCh chan []byte
 	// user-subscribed topics
 	topics sync.Map
 }
 
 func (p *Plugin) Init(log logger.Logger) error {
 	p.log = log
-	p.pushCh = make(chan *pubsub.Message, 100)
+	p.pushCh = make(chan []byte, 100)
 	return nil
 }
 
@@ -34,18 +35,14 @@ func (p *Plugin) Name() string {
 	return PluginName
 }
 
-func (p *Plugin) Publish(messages []*pubsub.Message) error {
-	for i := 0; i < len(messages); i++ {
-		p.pushCh <- messages[i]
-	}
+func (p *Plugin) Publish(messages []byte) error {
+	p.pushCh <- messages
 	return nil
 }
 
-func (p *Plugin) PublishAsync(messages []*pubsub.Message) {
+func (p *Plugin) PublishAsync(messages []byte) {
 	go func() {
-		for i := 0; i < len(messages); i++ {
-			p.pushCh <- messages[i]
-		}
+		p.pushCh <- messages
 	}()
 }
 
@@ -63,18 +60,20 @@ func (p *Plugin) Unsubscribe(topics ...string) error {
 	return nil
 }
 
-func (p *Plugin) Next() (*pubsub.Message, error) {
+func (p *Plugin) Next() (*message.Message, error) {
 	msg := <-p.pushCh
 
 	if msg == nil {
 		return nil, nil
 	}
 
+	fbsMsg := message.GetRootAsMessage(msg, 0)
+
 	// push only messages, which are subscribed
 	// TODO better???
-	for i := 0; i < len(msg.Topics); i++ {
-		if _, ok := p.topics.Load(msg.Topics[i]); ok {
-			return msg, nil
+	for i := 0; i < fbsMsg.TopicsLength(); i++ {
+		if _, ok := p.topics.Load(utils.AsString(fbsMsg.Topics(i))); ok {
+			return fbsMsg, nil
 		}
 	}
 	return nil, nil

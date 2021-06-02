@@ -13,9 +13,12 @@ import (
 	"time"
 
 	"github.com/fasthttp/websocket"
+	flatbuffers "github.com/google/flatbuffers/go"
 	json "github.com/json-iterator/go"
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
+	"github.com/spiral/roadrunner/v2/pkg/pubsub"
+	"github.com/spiral/roadrunner/v2/pkg/pubsub/message"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -29,7 +32,7 @@ import (
 )
 
 type Msg struct {
-	// Topic message been pushed into.
+	// Topic makeMessage been pushed into.
 	Topics []string `json:"topic"`
 
 	// Command (join, leave, headers)
@@ -131,7 +134,7 @@ func wsInit(t *testing.T) {
 		_ = resp.Body.Close()
 	}()
 
-	d, err := json.Marshal(message("join", "memory", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", "memory", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -241,7 +244,7 @@ func RPCWsMemoryPubAsync(t *testing.T) {
 		_ = resp.Body.Close()
 	}()
 
-	d, err := json.Marshal(message("join", "memory", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", "memory", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -258,14 +261,14 @@ func RPCWsMemoryPubAsync(t *testing.T) {
 
 	publishAsync("", "memory", "foo")
 
-	// VERIFY a message
+	// VERIFY a makeMessage
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
 	assert.Equal(t, "hello, PHP", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
-	d, err = json.Marshal(message("leave", "memory", []byte("hello websockets"), "foo"))
+	d, err = json.Marshal(messageWS("leave", "memory", []byte("hello websockets"), "foo"))
 	if err != nil {
 		panic(err)
 	}
@@ -288,7 +291,7 @@ func RPCWsMemoryPubAsync(t *testing.T) {
 		publishAsync2("", "memory", "foo2")
 	}()
 
-	// should be only message from the subscribed foo2 topic
+	// should be only makeMessage from the subscribed foo2 topic
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
@@ -315,7 +318,7 @@ func RPCWsMemory(t *testing.T) {
 		}
 	}()
 
-	d, err := json.Marshal(message("join", "memory", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", "memory", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -332,14 +335,14 @@ func RPCWsMemory(t *testing.T) {
 
 	publish("", "memory", "foo")
 
-	// VERIFY a message
+	// VERIFY a makeMessage
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
 	assert.Equal(t, "hello, PHP", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
-	d, err = json.Marshal(message("leave", "memory", []byte("hello websockets"), "foo"))
+	d, err = json.Marshal(messageWS("leave", "memory", []byte("hello websockets"), "foo"))
 	if err != nil {
 		panic(err)
 	}
@@ -362,7 +365,7 @@ func RPCWsMemory(t *testing.T) {
 		publish2("", "memory", "foo2")
 	}()
 
-	// should be only message from the subscribed foo2 topic
+	// should be only makeMessage from the subscribed foo2 topic
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
@@ -387,7 +390,7 @@ func RPCWsRedis(t *testing.T) {
 		_ = resp.Body.Close()
 	}()
 
-	d, err := json.Marshal(message("join", "redis", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", "redis", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -404,14 +407,14 @@ func RPCWsRedis(t *testing.T) {
 
 	publish("", "redis", "foo")
 
-	// VERIFY a message
+	// VERIFY a makeMessage
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
 	assert.Equal(t, "hello, PHP", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
-	d, err = json.Marshal(message("leave", "redis", []byte("hello websockets"), "foo"))
+	d, err = json.Marshal(messageWS("leave", "redis", []byte("hello websockets"), "foo"))
 	if err != nil {
 		panic(err)
 	}
@@ -434,7 +437,7 @@ func RPCWsRedis(t *testing.T) {
 		publish2("", "redis", "foo2")
 	}()
 
-	// should be only message from the subscribed foo2 topic
+	// should be only makeMessage from the subscribed foo2 topic
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
@@ -537,7 +540,7 @@ func RPCWsMemoryDeny(t *testing.T) {
 		}
 	}()
 
-	d, err := json.Marshal(message("join", "memory", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", "memory", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -553,7 +556,7 @@ func RPCWsMemoryDeny(t *testing.T) {
 	assert.Equal(t, `{"topic":"#join","payload":["foo","foo2"]}`, retMsg)
 
 	// //// LEAVE foo, foo2 /////////
-	d, err = json.Marshal(message("leave", "memory", []byte("hello websockets"), "foo"))
+	d, err = json.Marshal(messageWS("leave", "memory", []byte("hello websockets"), "foo"))
 	if err != nil {
 		panic(err)
 	}
@@ -758,7 +761,7 @@ func RPCWsMemoryAllow(t *testing.T) {
 		}
 	}()
 
-	d, err := json.Marshal(message("join", "memory", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", "memory", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -775,14 +778,14 @@ func RPCWsMemoryAllow(t *testing.T) {
 
 	publish("", "memory", "foo")
 
-	// VERIFY a message
+	// VERIFY a makeMessage
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
 	assert.Equal(t, "hello, PHP", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
-	d, err = json.Marshal(message("leave", "memory", []byte("hello websockets"), "foo"))
+	d, err = json.Marshal(messageWS("leave", "memory", []byte("hello websockets"), "foo"))
 	if err != nil {
 		panic(err)
 	}
@@ -805,7 +808,7 @@ func RPCWsMemoryAllow(t *testing.T) {
 		publish2("", "memory", "foo2")
 	}()
 
-	// should be only message from the subscribed foo2 topic
+	// should be only makeMessage from the subscribed foo2 topic
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
@@ -824,7 +827,7 @@ func publish(command string, broker string, topics ...string) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	var ret bool
-	err = client.Call("websockets.Publish", []*Msg{message(command, broker, []byte("hello, PHP"), topics...)}, &ret)
+	err = client.Call("websockets.Publish", makeMessage(command, broker, []byte("hello, PHP"), topics...), &ret)
 	if err != nil {
 		panic(err)
 	}
@@ -839,7 +842,7 @@ func publishAsync(command string, broker string, topics ...string) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	var ret bool
-	err = client.Call("websockets.PublishAsync", []*Msg{message(command, broker, []byte("hello, PHP"), topics...)}, &ret)
+	err = client.Call("websockets.PublishAsync", makeMessage(command, broker, []byte("hello, PHP"), topics...), &ret)
 	if err != nil {
 		panic(err)
 	}
@@ -854,7 +857,7 @@ func publishAsync2(command string, broker string, topics ...string) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	var ret bool
-	err = client.Call("websockets.PublishAsync", []*Msg{message(command, broker, []byte("hello, PHP2"), topics...)}, &ret)
+	err = client.Call("websockets.PublishAsync", makeMessage(command, broker, []byte("hello, PHP2"), topics...), &ret)
 	if err != nil {
 		panic(err)
 	}
@@ -869,17 +872,84 @@ func publish2(command string, broker string, topics ...string) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	var ret bool
-	err = client.Call("websockets.Publish", []*Msg{message(command, broker, []byte("hello, PHP2"), topics...)}, &ret)
+	err = client.Call("websockets.Publish", makeMessage(command, broker, []byte("hello, PHP2"), topics...), &ret)
 	if err != nil {
 		panic(err)
 	}
 }
-
-func message(command string, broker string, payload []byte, topics ...string) *Msg {
+func messageWS(command string, broker string, payload []byte, topics ...string) *Msg {
 	return &Msg{
 		Topics:  topics,
 		Command: command,
 		Broker:  broker,
 		Payload: payload,
 	}
+}
+
+func makeMessage(command string, broker string, payload []byte, topics ...string) []byte {
+	m := []pubsub.Message{
+		{
+			Topics:  topics,
+			Command: command,
+			Broker:  broker,
+			Payload: payload,
+		},
+	}
+
+	b := flatbuffers.NewBuilder(1)
+
+	return msgs(b, m)
+}
+
+func serializeMsg(b *flatbuffers.Builder, msg pubsub.Message) flatbuffers.UOffsetT {
+	cmdOff := b.CreateString(msg.Command)
+	brokerOff := b.CreateString(msg.Broker)
+
+	offsets := make([]flatbuffers.UOffsetT, len(msg.Topics))
+	for j := len(msg.Topics) - 1; j >= 0; j-- {
+		offsets[j] = b.CreateString(msg.Topics[j])
+	}
+
+	message.MessageStartTopicsVector(b, len(offsets))
+
+	for j := len(offsets) - 1; j >= 0; j-- {
+		b.PrependUOffsetT(offsets[j])
+	}
+
+	tOff := b.EndVector(len(offsets))
+	pOff := b.CreateByteVector(msg.Payload)
+
+	message.MessageStart(b)
+
+	message.MessageAddCommand(b, cmdOff)
+	message.MessageAddBroker(b, brokerOff)
+	message.MessageAddTopics(b, tOff)
+	message.MessageAddPayload(b, pOff)
+
+	return message.MessageEnd(b)
+}
+
+func msgs(b *flatbuffers.Builder, msgs []pubsub.Message) []byte {
+	b.Reset()
+
+	mOff := make([]flatbuffers.UOffsetT, len(msgs))
+
+	for i := len(msgs) - 1; i >= 0; i-- {
+		mOff[i] = serializeMsg(b, msgs[i])
+	}
+
+	message.MessagesStartMessagesVector(b, len(mOff))
+
+	for i := len(mOff) - 1; i >= 0; i-- {
+		b.PrependUOffsetT(mOff[i])
+	}
+
+	msgsOff := b.EndVector(len(msgs))
+
+	message.MessagesStart(b)
+	message.MessagesAddMessages(b, msgsOff)
+	fOff := message.MessagesEnd(b)
+	b.Finish(fOff)
+
+	return b.Bytes[b.Head():]
 }
