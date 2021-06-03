@@ -9,6 +9,7 @@ server:
 http:
   address: 127.0.0.1:32552
   max_request_size: 1024
+  internal_error_code: 444
   middleware: [ ]
   uploads:
     forbid: [ ".php", ".exe", ".bat" ]

@@ -35,7 +35,7 @@ func TestHandler_Echo(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -66,7 +66,7 @@ func TestHandler_Echo(t *testing.T) {
 }
 
 func Test_HandlerErrors(t *testing.T) {
-	_, err := handler.NewHandler(1024, config.Uploads{
+	_, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, nil)
@@ -89,7 +89,7 @@ func TestHandler_Headers(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -150,7 +150,7 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -210,7 +210,7 @@ func TestHandler_User_Agent(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -270,7 +270,7 @@ func TestHandler_Cookies(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -335,7 +335,7 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -399,7 +399,7 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -459,7 +459,7 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -519,7 +519,7 @@ func TestHandler_FormData_POST(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -592,7 +592,7 @@ func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -665,7 +665,7 @@ func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -737,7 +737,7 @@ func TestHandler_FormData_PUT(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -809,7 +809,7 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -881,7 +881,7 @@ func TestHandler_Multipart_POST(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -995,7 +995,7 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -1109,7 +1109,7 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -1225,7 +1225,7 @@ func TestHandler_Error(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -1271,7 +1271,7 @@ func TestHandler_Error2(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -1317,7 +1317,7 @@ func TestHandler_Error3(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1, config.Uploads{
+	h, err := handler.NewHandler(1, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -1376,7 +1376,7 @@ func TestHandler_ResponseDuration(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -1437,7 +1437,7 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -1497,7 +1497,7 @@ func TestHandler_ErrorDuration(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)
@@ -1572,7 +1572,7 @@ func TestHandler_IP(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, cidrs, p)
@@ -1633,7 +1633,7 @@ func TestHandler_XRealIP(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, cidrs, p)
@@ -1699,7 +1699,7 @@ func TestHandler_XForwardedFor(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, cidrs, p)
@@ -1764,7 +1764,7 @@ func TestHandler_XForwardedFor_NotTrustedRemoteIp(t *testing.T) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, cidrs, p)
@@ -1812,7 +1812,7 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 		p.Destroy(context.Background())
 	}()
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, p)

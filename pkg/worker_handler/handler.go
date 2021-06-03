@@ -57,25 +57,27 @@ func (e *ResponseEvent) Elapsed() time.Duration {
 // Handler serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Handler struct {
-	maxRequestSize uint64
-	uploads        config.Uploads
-	trusted        config.Cidrs
-	log            logger.Logger
-	pool           pool.Pool
-	mul            sync.Mutex
-	lsn            events.Listener
+	maxRequestSize   uint64
+	uploads          config.Uploads
+	trusted          config.Cidrs
+	log              logger.Logger
+	pool             pool.Pool
+	mul              sync.Mutex
+	lsn              events.Listener
+	internalHTTPCode uint64
 }
 
 // NewHandler return handle interface implementation
-func NewHandler(maxReqSize uint64, uploads config.Uploads, trusted config.Cidrs, pool pool.Pool) (*Handler, error) {
+func NewHandler(maxReqSize uint64, internalHTTPCode uint64, uploads config.Uploads, trusted config.Cidrs, pool pool.Pool) (*Handler, error) {
 	if pool == nil {
 		return nil, errors.E(errors.Str("pool should be initialized"))
 	}
 	return &Handler{
-		maxRequestSize: maxReqSize * MB,
-		uploads:        uploads,
-		pool:           pool,
-		trusted:        trusted,
+		maxRequestSize:   maxReqSize * MB,
+		uploads:          uploads,
+		pool:             pool,
+		trusted:          trusted,
+		internalHTTPCode: internalHTTPCode,
 	}, nil
 }
 
@@ -177,7 +179,7 @@ func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, start time
 		errors.Is(errors.Decode, err) ||
 		errors.Is(errors.Network, err) {
 		// write an internal server error
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(int(h.internalHTTPCode))
 		h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, err), start: start, elapsed: time.Since(start)})
 	}
 }

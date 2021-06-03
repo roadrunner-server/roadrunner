@@ -2208,7 +2208,7 @@ func echoIssue659(t *testing.T) {
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
 	assert.Empty(t, b)
-	assert.Equal(t, 500, r.StatusCode)
+	assert.Equal(t, 444, r.StatusCode)
 
 	err = r.Body.Close()
 	assert.NoError(t, err)

@@ -15,6 +15,9 @@ type HTTP struct {
 	// Host and port to handle as http server.
 	Address string
 
+	// InternalErrorCode used to override default 500 (InternalServerError) http code
+	InternalErrorCode uint64 `mapstructure:"internal_error_code"`
+
 	// SSLConfig defines https server options.
 	SSLConfig *SSL `mapstructure:"ssl"`
 
@@ -78,6 +81,10 @@ func (c *HTTP) InitDefaults() error {
 			DestroyTimeout:  time.Second * 60,
 			Supervisor:      nil,
 		}
+	}
+
+	if c.InternalErrorCode == 0 {
+		c.InternalErrorCode = 500
 	}
 
 	if c.HTTP2Config == nil {

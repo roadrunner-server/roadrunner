@@ -149,6 +149,7 @@ func (p *Plugin) serve(errCh chan error) {
 
 	p.handler, err = handler.NewHandler(
 		p.cfg.MaxRequestSize,
+		p.cfg.InternalErrorCode,
 		*p.cfg.Uploads,
 		p.cfg.Cidrs,
 		p.pool,
@@ -323,6 +324,7 @@ func (p *Plugin) Reset() error {
 
 	p.handler, err = handler.NewHandler(
 		p.cfg.MaxRequestSize,
+		p.cfg.InternalErrorCode,
 		*p.cfg.Uploads,
 		p.cfg.Cidrs,
 		p.pool,
