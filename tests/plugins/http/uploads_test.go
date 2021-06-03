@@ -40,7 +40,7 @@ func TestHandler_Upload_File(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -123,7 +123,7 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{},
 	}, nil, pool)
@@ -206,7 +206,7 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    "-------",
 		Forbid: []string{},
 	}, nil, pool)
@@ -289,7 +289,7 @@ func TestHandler_Upload_File_Forbids(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h, err := handler.NewHandler(1024, config.Uploads{
+	h, err := handler.NewHandler(1024, 500, config.Uploads{
 		Dir:    os.TempDir(),
 		Forbid: []string{".go"},
 	}, nil, pool)

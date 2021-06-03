@@ -57,25 +57,27 @@ func (e *ResponseEvent) Elapsed() time.Duration {
 // Handler serves http connections to underlying PHP application using PSR-7 protocol. Context will include request headers,
 // parsed files and query, payload will include parsed form dataTree (if any).
 type Handler struct {
-	maxRequestSize uint64
-	uploads        config.Uploads
-	trusted        config.Cidrs
-	log            logger.Logger
-	pool           pool.Pool
-	mul            sync.Mutex
-	lsn            events.Listener
+	maxRequestSize   uint64
+	uploads          config.Uploads
+	trusted          config.Cidrs
+	log              logger.Logger
+	pool             pool.Pool
+	mul              sync.Mutex
+	lsn              events.Listener
+	internalHTTPCode uint64
 }
 
 // NewHandler return handle interface implementation
-func NewHandler(maxReqSize uint64, uploads config.Uploads, trusted config.Cidrs, pool pool.Pool) (*Handler, error) {
+func NewHandler(maxReqSize uint64, internalHTTPCode uint64, uploads config.Uploads, trusted config.Cidrs, pool pool.Pool) (*Handler, error) {
 	if pool == nil {
 		return nil, errors.E(errors.Str("pool should be initialized"))
 	}
 	return &Handler{
-		maxRequestSize: maxReqSize * MB,
-		uploads:        uploads,
-		pool:           pool,
-		trusted:        trusted,
+		maxRequestSize:   maxReqSize * MB,
+		uploads:          uploads,
+		pool:             pool,
+		trusted:          trusted,
+		internalHTTPCode: internalHTTPCode,
 	}, nil
 }
 
@@ -100,14 +102,14 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			size, err := strconv.ParseInt(length, 10, 64)
 			if err != nil {
 				// if got an error while parsing -> assign 500 code to the writer and return
-				http.Error(w, errors.E(op, err).Error(), 500)
+				http.Error(w, "", 500)
 				h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, errors.Str("error while parsing value from the `content-length` header")), start: start, elapsed: time.Since(start)})
 				return
 			}
 
 			if size > int64(h.maxRequestSize) {
 				h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, errors.Str("request body max size is exceeded")), start: start, elapsed: time.Since(start)})
-				http.Error(w, errors.E(op, errors.Str("request body max size is exceeded")).Error(), 500)
+				http.Error(w, errors.E(op, errors.Str("request body max size is exceeded")).Error(), http.StatusBadRequest)
 				return
 			}
 		}
@@ -135,21 +137,21 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	p, err := req.Payload()
 	if err != nil {
-		http.Error(w, errors.E(op, err).Error(), 500)
+		h.handleError(w, r, start, err)
 		h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, err), start: start, elapsed: time.Since(start)})
 		return
 	}
 
 	rsp, err := h.pool.Exec(p)
 	if err != nil {
-		http.Error(w, errors.E(op, err).Error(), 500)
+		h.handleError(w, r, start, err)
 		h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, err), start: start, elapsed: time.Since(start)})
 		return
 	}
 
 	resp, err := NewResponse(rsp)
 	if err != nil {
-		http.Error(w, errors.E(op, err).Error(), resp.Status)
+		h.handleError(w, r, start, err)
 		h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, err), start: start, elapsed: time.Since(start)})
 		return
 	}
@@ -158,6 +160,26 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err = resp.Write(w)
 	if err != nil {
 		http.Error(w, errors.E(op, err).Error(), 500)
+		h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, err), start: start, elapsed: time.Since(start)})
+	}
+}
+
+// handleError will handle internal RR errors and return 500
+func (h *Handler) handleError(w http.ResponseWriter, r *http.Request, start time.Time, err error) {
+	const op = errors.Op("handle_error")
+	// internal error types, user should not see them
+	if errors.Is(errors.SoftJob, err) ||
+		errors.Is(errors.WatcherStopped, err) ||
+		errors.Is(errors.WorkerAllocate, err) ||
+		errors.Is(errors.NoFreeWorkers, err) ||
+		errors.Is(errors.ExecTTL, err) ||
+		errors.Is(errors.IdleTTL, err) ||
+		errors.Is(errors.TTL, err) ||
+		errors.Is(errors.Encode, err) ||
+		errors.Is(errors.Decode, err) ||
+		errors.Is(errors.Network, err) {
+		// write an internal server error
+		w.WriteHeader(int(h.internalHTTPCode))
 		h.sendEvent(ErrorEvent{Request: r, Error: errors.E(op, err), start: start, elapsed: time.Since(start)})
 	}
 }

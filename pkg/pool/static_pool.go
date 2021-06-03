@@ -46,8 +46,8 @@ type StaticPool struct {
 	// allocate new worker
 	allocator worker.Allocator
 
-	// err_encoder is the default Exec error encoder
-	err_encoder ErrorEncoder //nolint:stylecheck
+	// errEncoder is the default Exec error encoder
+	errEncoder ErrorEncoder
 }
 
 // Initialize creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
@@ -92,7 +92,7 @@ func Initialize(ctx context.Context, cmd Command, factory transport.Factory, cfg
 		return nil, errors.E(op, err)
 	}
 
-	p.err_encoder = defaultErrEncoder(p)
+	p.errEncoder = defaultErrEncoder(p)
 
 	// if supervised config not nil, guess, that pool wanted to be supervised
 	if cfg.Supervisor != nil {
@@ -149,7 +149,7 @@ func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 
 	rsp, err := w.(worker.SyncWorker).Exec(p)
 	if err != nil {
-		return sp.err_encoder(err, w)
+		return sp.errEncoder(err, w)
 	}
 
 	// worker want's to be terminated
@@ -183,7 +183,7 @@ func (sp *StaticPool) execWithTTL(ctx context.Context, p payload.Payload) (paylo
 
 	rsp, err := w.(worker.SyncWorker).ExecWithTTL(ctx, p)
 	if err != nil {
-		return sp.err_encoder(err, w)
+		return sp.errEncoder(err, w)
 	}
 
 	// worker want's to be terminated
@@ -264,6 +264,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 					sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: errors.E(op, err)})
 				}
 			} else {
+				sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: err})
 				sp.ww.Push(w)
 			}
 		}
@@ -271,9 +272,8 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 		w.State().Set(worker.StateInvalid)
 		sp.events.Push(events.PoolEvent{Event: events.EventWorkerDestruct, Payload: w})
 		errS := w.Stop()
-
 		if errS != nil {
-			return payload.Payload{}, errors.E(op, errors.Errorf("%v, %v", err, errS))
+			return payload.Payload{}, errors.E(op, err, errS)
 		}
 
 		return payload.Payload{}, errors.E(op, err)
