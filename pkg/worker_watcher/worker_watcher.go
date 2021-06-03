@@ -182,7 +182,7 @@ func (ww *workerWatcher) Push(w worker.BaseProcess) {
 }
 
 // Destroy all underlying container (but let them to complete the task)
-func (ww *workerWatcher) Destroy(ctx context.Context) {
+func (ww *workerWatcher) Destroy(_ context.Context) {
 	// destroy container, we don't use ww mutex here, since we should be able to push worker
 	ww.Lock()
 	// do not release new workers

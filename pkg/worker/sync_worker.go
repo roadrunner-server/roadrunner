@@ -44,11 +44,11 @@ func (tw *SyncWorkerImpl) Exec(p payload.Payload) (payload.Payload, error) {
 	rsp, err := tw.execPayload(p)
 	if err != nil {
 		// just to be more verbose
-		if errors.Is(errors.SoftJob, err) == false { //nolint:gosimple
+		if !errors.Is(errors.SoftJob, err) {
 			tw.process.State().Set(StateErrored)
 			tw.process.State().RegisterExec()
 		}
-		return payload.Payload{}, err
+		return payload.Payload{}, errors.E(op, err)
 	}
 
 	tw.process.State().Set(StateReady)
@@ -152,21 +152,21 @@ func (tw *SyncWorkerImpl) execPayload(p payload.Payload) (payload.Payload, error
 
 	err := tw.Relay().Send(fr)
 	if err != nil {
-		return payload.Payload{}, err
+		return payload.Payload{}, errors.E(op, errors.Network, err)
 	}
 
 	frameR := frame.NewFrame()
 
 	err = tw.process.Relay().Receive(frameR)
 	if err != nil {
-		return payload.Payload{}, errors.E(op, err)
+		return payload.Payload{}, errors.E(op, errors.Network, err)
 	}
 	if frameR == nil {
-		return payload.Payload{}, errors.E(op, errors.Str("nil fr received"))
+		return payload.Payload{}, errors.E(op, errors.Network, errors.Str("nil fr received"))
 	}
 
 	if !frameR.VerifyCRC() {
-		return payload.Payload{}, errors.E(op, errors.Str("failed to verify CRC"))
+		return payload.Payload{}, errors.E(op, errors.Network, errors.Str("failed to verify CRC"))
 	}
 
 	flags := frameR.ReadFlags()
@@ -177,7 +177,7 @@ func (tw *SyncWorkerImpl) execPayload(p payload.Payload) (payload.Payload, error
 
 	options := frameR.ReadOptions()
 	if len(options) != 1 {
-		return payload.Payload{}, errors.E(op, errors.Str("options length should be equal 1 (body offset)"))
+		return payload.Payload{}, errors.E(op, errors.Decode, errors.Str("options length should be equal 1 (body offset)"))
 	}
 
 	pl := payload.Payload{}

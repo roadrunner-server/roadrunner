@@ -235,6 +235,18 @@ func (server *Plugin) collectEvents(event interface{}) {
 	if we, ok := event.(events.WorkerEvent); ok {
 		switch we.Event {
 		case events.EventWorkerError:
+			switch e := we.Payload.(type) { //nolint:gocritic
+			case error:
+				if errors.Is(errors.SoftJob, e) {
+					// get source error for the softjob error
+					server.log.Error(strings.TrimRight(e.(*errors.Error).Err.Error(), " \n\t"))
+					return
+				}
+
+				// print full error for the other types of errors
+				server.log.Error(strings.TrimRight(e.Error(), " \n\t"))
+				return
+			}
 			server.log.Error(strings.TrimRight(we.Payload.(error).Error(), " \n\t"))
 		case events.EventWorkerLog:
 			server.log.Debug(strings.TrimRight(utils.AsString(we.Payload.([]byte)), " \n\t"))

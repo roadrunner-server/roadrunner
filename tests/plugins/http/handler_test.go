@@ -1357,7 +1357,7 @@ func TestHandler_Error3(t *testing.T) {
 	}()
 
 	assert.NoError(t, err)
-	assert.Equal(t, 500, r.StatusCode)
+	assert.Equal(t, 400, r.StatusCode)
 }
 
 func TestHandler_ResponseDuration(t *testing.T) {
@@ -1519,12 +1519,12 @@ func TestHandler_ErrorDuration(t *testing.T) {
 	}()
 	time.Sleep(time.Millisecond * 10)
 
-	goterr := make(chan interface{})
+	goterr := make(chan struct{}, 10)
 	h.AddListener(func(event interface{}) {
 		switch tp := event.(type) {
 		case handler.ErrorEvent:
 			if tp.Elapsed() > 0 {
-				close(goterr)
+				goterr <- struct{}{}
 			}
 		default:
 		}
@@ -1536,6 +1536,7 @@ func TestHandler_ErrorDuration(t *testing.T) {
 		_ = r.Body.Close()
 	}()
 
+	<-goterr
 	<-goterr
 
 	assert.Equal(t, 500, r.StatusCode)
