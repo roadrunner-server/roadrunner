@@ -1643,7 +1643,7 @@ func bigEchoHTTP(t *testing.T) {
 	assert.NoError(t, err)
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
-	assert.Equal(t, 500, r.StatusCode)
+	assert.Equal(t, 400, r.StatusCode)
 	assert.Equal(t, "http_handler_max_size: request body max size is exceeded\n", string(b))
 
 	err = r.Body.Close()
@@ -2214,6 +2214,90 @@ func staticFilesForbid(t *testing.T) {
 	}
 	assert.Equal(t, "WORLD", b)
 	_ = r.Body.Close()
+}
+
+func TestHTTPIssue659(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-issue659.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	stopCh := make(chan struct{}, 1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second * 1)
+	t.Run("HTTPIssue659", echoIssue659)
+
+	stopCh <- struct{}{}
+
+	wg.Wait()
+}
+
+func echoIssue659(t *testing.T) {
+	req, err := http.NewRequest(http.MethodGet, "http://localhost:32552", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Empty(t, b)
+	assert.Equal(t, 444, r.StatusCode)
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
 }
 
 // HELPERS

@@ -4,8 +4,8 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	"sync"
 
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 )
 
@@ -19,14 +19,14 @@ type Response struct {
 
 	// associated Body payload.
 	Body interface{}
-	sync.Mutex
 }
 
 // NewResponse creates new response based on given pool payload.
 func NewResponse(p payload.Payload) (*Response, error) {
+	const op = errors.Op("http_response")
 	r := &Response{Body: p.Body}
 	if err := json.Unmarshal(p.Context, r); err != nil {
-		return nil, err
+		return nil, errors.E(op, errors.Decode, err)
 	}
 
 	return r, nil
