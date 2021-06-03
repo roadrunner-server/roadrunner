@@ -6,16 +6,20 @@ v2.3.0 (08.06.2021)
 
 ## 👀 New:
 
-- Brand new `broadcast` plugins that now have the name - `websockets` with broadcast capabilities. It can handle
+- ✏️ Brand new `broadcast` plugin now has the name - `websockets` with broadcast capabilities. It can handle
   hundreds of thousands websocket connections very efficiently (~300k messages per second with 1k connected clients,
   in-memory bus on 2CPU cores and 1GB of RAM)
-
-- Flatbuffers binary messages for the `websockets` RPC calls under the hood.
+- ✏️ Flatbuffers binary messages for the `websockets` RPC calls under the hood.
+- ✏️ Json-schemas for the config file v1.0 (it also registered
+  in [schemastore.org](https://github.com/SchemaStore/schemastore/pull/1614))
+- ✏️ `latest` docker image tag supported now (but we strongly recommend using a versioned tag (like `0.2.3`) instead)
+- ✏️ Add new option to the `http` config section: `internal_error_code` to override default (500) internal error code.
 
 ## 🩹 Fixes:
 
 - 🐛 Fix: Bug with `informer.Workers` worked incorrectly: [Bug](https://github.com/spiral/roadrunner/issues/686)
-
+- 🐛 Fix: Internal error messages will not be shown to the user (except HTTP status code). Error message will be in logs: [Bug](https://github.com/spiral/roadrunner/issues/659)
+- 🐛 Fix: Error message will be properly shown in the log in case of `SoftJob` error:  [Bug](https://github.com/spiral/roadrunner/issues/691)
 ---
 
 v2.2.1 (13.05.2021)
