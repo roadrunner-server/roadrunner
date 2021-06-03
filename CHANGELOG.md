@@ -6,9 +6,9 @@ v2.3.0 (08.06.2021)
 
 ## 👀 New:
 
-- ✏️ Brand new `broadcast` plugin now has the name - `websockets` with broadcast capabilities. It can handle
-  hundreds of thousands websocket connections very efficiently (~300k messages per second with 1k connected clients,
-  in-memory bus on 2CPU cores and 1GB of RAM)
+- ✏️ Brand new `broadcast` plugin now has the name - `websockets` with broadcast capabilities. It can handle hundreds of
+  thousands websocket connections very efficiently (~300k messages per second with 1k connected clients, in-memory bus
+  on 2CPU cores and 1GB of RAM)
 - ✏️ Flatbuffers binary messages for the `websockets` RPC calls under the hood.
 - ✏️ Json-schemas for the config file v1.0 (it also registered
   in [schemastore.org](https://github.com/SchemaStore/schemastore/pull/1614))
@@ -18,8 +18,13 @@ v2.3.0 (08.06.2021)
 ## 🩹 Fixes:
 
 - 🐛 Fix: Bug with `informer.Workers` worked incorrectly: [Bug](https://github.com/spiral/roadrunner/issues/686)
-- 🐛 Fix: Internal error messages will not be shown to the user (except HTTP status code). Error message will be in logs: [Bug](https://github.com/spiral/roadrunner/issues/659)
-- 🐛 Fix: Error message will be properly shown in the log in case of `SoftJob` error:  [Bug](https://github.com/spiral/roadrunner/issues/691)
+- 🐛 Fix: Internal error messages will not be shown to the user (except HTTP status code). Error message will be in
+  logs: [Bug](https://github.com/spiral/roadrunner/issues/659)
+- 🐛 Fix: Error message will be properly shown in the log in case of `SoftJob`
+  error:  [Bug](https://github.com/spiral/roadrunner/issues/691)
+- 🐛 Fix: Wrong applied middlewares for the `fcgi` server leads to the
+  NPE: [Bug](https://github.com/spiral/roadrunner/issues/701)
+
 ---
 
 v2.2.1 (13.05.2021)

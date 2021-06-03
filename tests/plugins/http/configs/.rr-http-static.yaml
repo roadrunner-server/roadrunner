@@ -1,9 +1,5 @@
 server:
   command: "php ../../http/client.php pid pipes"
-  user: ""
-  group: ""
-  env:
-    "RR_HTTP": "true"
   relay: "pipes"
   relay_timeout: "20s"
 

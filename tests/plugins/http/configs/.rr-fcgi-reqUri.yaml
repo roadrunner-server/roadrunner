@@ -1,16 +1,12 @@
 server:
   command: "php ../../http/client.php request-uri pipes"
-  user: ""
-  group: ""
-  env:
-    "RR_HTTP": "true"
   relay: "pipes"
   relay_timeout: "20s"
 
 http:
   address: :8082
   max_request_size: 1024
-  middleware: [ "" ]
+  middleware: [ ]
   uploads:
     forbid: [ ".php", ".exe", ".bat" ]
   trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]

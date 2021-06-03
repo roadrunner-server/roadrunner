@@ -73,7 +73,7 @@ func (p *Plugin) serveFCGI(errCh chan error) {
 	const op = errors.Op("serveFCGI")
 
 	if len(p.mdwr) > 0 {
-		applyMiddlewares(p.https, p.mdwr, p.cfg.Middleware, p.log)
+		applyMiddlewares(p.fcgi, p.mdwr, p.cfg.Middleware, p.log)
 	}
 
 	l, err := utils.CreateListener(p.cfg.FCGIConfig.Address)
