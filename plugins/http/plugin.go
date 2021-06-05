@@ -248,6 +248,12 @@ func (p *Plugin) Stop() error {
 
 // ServeHTTP handles connection using set of middleware and pool PSR-7 server.
 func (p *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := r.Body.Close()
+		if err != nil {
+			p.log.Error("body close", "error", err)
+		}
+	}()
 	if headerContainsUpgrade(r) {
 		http.Error(w, "server does not support upgrade header", http.StatusInternalServerError)
 		return

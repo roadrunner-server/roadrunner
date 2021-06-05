@@ -52,6 +52,22 @@ func (b *BST) Insert(uuid string, topic string) {
 	}
 }
 
+func (b *BST) Contains(topic string) bool {
+	curr := b
+	for curr != nil {
+		switch {
+		case topic < curr.topic:
+			curr = curr.left
+		case topic > curr.topic:
+			curr = curr.right
+		case topic == curr.topic:
+			return true
+		}
+	}
+
+	return false
+}
+
 func (b *BST) Get(topic string) map[string]struct{} {
 	curr := b
 	for curr != nil {
