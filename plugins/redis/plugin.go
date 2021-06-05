@@ -164,14 +164,14 @@ func (p *Plugin) Unsubscribe(connectionID string, topics ...string) error {
 
 	for i := 0; i < len(topics); i++ {
 		// if there are no such topics, we can safely unsubscribe from the redis
-		ssc := p.universalClient.SMembers(context.Background(), topics[i])
-		res, err := ssc.Result()
+		exists := p.universalClient.Exists(context.Background(), topics[i])
+		res, err := exists.Result()
 		if err != nil {
 			return err
 		}
 
 		// if we have associated connections - skip
-		if len(res) > 0 {
+		if res == 1 { // exists means that topic still exists and some other nodes may have connections associated with it
 			continue
 		}
 

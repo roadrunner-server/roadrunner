@@ -3,7 +3,7 @@ package gzip
 import (
 	"net/http"
 
-	"github.com/NYTimes/gziphandler"
+	"github.com/klauspost/compress/gzhttp"
 )
 
 const PluginName = "gzip"
@@ -17,7 +17,7 @@ func (g *Plugin) Init() error {
 
 func (g *Plugin) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		gziphandler.GzipHandler(next).ServeHTTP(w, r)
+		gzhttp.GzipHandler(next).ServeHTTP(w, r)
 	})
 }
 
