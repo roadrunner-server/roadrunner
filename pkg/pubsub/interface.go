@@ -6,7 +6,10 @@ import "github.com/spiral/roadrunner/v2/pkg/pubsub/message"
 This interface is in BETA. It might be changed.
 */
 
-// PubSub ...
+// PubSub interface designed to implement on any storage type to provide pub-sub abilities
+// Publisher used to receive messages from the PHP app via RPC
+// Subscriber should be implemented to subscribe to a topics and provide a connections list per topic
+// Reader return next message from the channel
 type PubSub interface {
 	Publisher
 	Subscriber
