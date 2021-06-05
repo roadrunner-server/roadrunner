@@ -63,7 +63,6 @@ jobs:
           go test -v -race ./pkg/bst
           go test -v -race ./pkg/worker_watcher
           go test -v -race ./plugins/http/config
-          go test -v -race ./plugins/websockets/storage
           go test -v -race ./tests/plugins/http
           go test -v -race ./tests/plugins/informer
           go test -v -race ./tests/plugins/reload
