@@ -8,4 +8,6 @@ type Storage interface {
 	Remove(uuid, topic string)
 	// Get will return all connections associated with the topic
 	Get(topic string) map[string]struct{}
+	// Contains checks if the BST contains a topic
+	Contains(topic string) bool
 }
