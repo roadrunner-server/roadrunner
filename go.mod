@@ -16,7 +16,7 @@ require (
 	github.com/google/flatbuffers v2.0.0+incompatible
 	github.com/google/uuid v1.2.0
 	github.com/json-iterator/go v1.1.11
-	github.com/klauspost/compress v1.13.0 // indirect
+	github.com/klauspost/compress v1.13.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/prometheus/client_golang v1.10.0
 	github.com/savsgio/gotils v0.0.0-20210316171653-c54912823645 // indirect
