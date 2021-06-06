@@ -6,7 +6,6 @@ require (
 	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
 	github.com/alicebob/miniredis/v2 v2.14.5
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
-	github.com/dustin/go-humanize v1.0.0
 	github.com/fasthttp/websocket v1.4.3
 	github.com/fatih/color v1.12.0
 	github.com/go-ole/go-ole v1.2.5 // indirect
@@ -17,7 +16,6 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/json-iterator/go v1.1.11
 	github.com/klauspost/compress v1.13.0
-	github.com/olekukonko/tablewriter v0.0.5
 	github.com/prometheus/client_golang v1.10.0
 	github.com/savsgio/gotils v0.0.0-20210316171653-c54912823645 // indirect
 	github.com/shirou/gopsutil v3.21.3+incompatible
