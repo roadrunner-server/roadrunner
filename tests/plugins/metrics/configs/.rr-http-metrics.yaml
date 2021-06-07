@@ -1,0 +1,20 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+server:
+  command: "php ../../psr-worker-bench.php"
+  relay: "pipes"
+
+http:
+  address: 127.0.0.1:13223
+  max_request_size: 1024
+  middleware: [ ]
+  pool:
+    num_workers: 1
+
+metrics:
+  address: localhost:2112
+
+logs:
+  mode: development
+  level: debug
