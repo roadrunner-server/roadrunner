@@ -9,4 +9,4 @@ server:
   relay_timeout: "20s"
 logs:
   mode: development
-  level: error
+  level: info

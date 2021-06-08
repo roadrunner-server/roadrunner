@@ -120,6 +120,7 @@ func TestMiddlewareNotExist(t *testing.T) {
 	mockLogger.EXPECT().Warn("requested middleware does not exist", "requested", "foo").AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Info("scan command", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes() // placeholder for the workerlogerror
 
 	err = cont.RegisterAll(

@@ -67,7 +67,7 @@ func (f *Foo) Serve() chan error {
 		return errCh
 	}
 	if cmd == nil {
-		errCh <- errors.E(op, "command is nil")
+		errCh <- errors.E(op, errors.Str("command is nil"))
 		return errCh
 	}
 

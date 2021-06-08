@@ -12,7 +12,6 @@ require (
 	github.com/go-redis/redis/v8 v8.9.0
 	github.com/gofiber/fiber/v2 v2.10.0
 	github.com/golang/mock v1.4.4
-	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.2.0
 	github.com/json-iterator/go v1.1.11
 	github.com/klauspost/compress v1.13.0
