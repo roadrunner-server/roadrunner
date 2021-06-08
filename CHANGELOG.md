@@ -14,6 +14,7 @@ v2.3.0 (08.06.2021)
   in [schemastore.org](https://github.com/SchemaStore/schemastore/pull/1614))
 - ✏️ `latest` docker image tag supported now (but we strongly recommend using a versioned tag (like `0.2.3`) instead)
 - ✏️ Add new option to the `http` config section: `internal_error_code` to override default (500) internal error code.
+- ✏️ Expose HTTP plugin metrics (workers memory, requests count, requests duration).
 
 ## 🩹 Fixes:
 

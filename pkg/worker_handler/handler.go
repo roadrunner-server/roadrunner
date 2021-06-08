@@ -63,7 +63,7 @@ type Handler struct {
 	log              logger.Logger
 	pool             pool.Pool
 	mul              sync.Mutex
-	lsn              events.Listener
+	lsn              []events.Listener
 	internalHTTPCode uint64
 }
 
@@ -82,7 +82,7 @@ func NewHandler(maxReqSize uint64, internalHTTPCode uint64, uploads config.Uploa
 }
 
 // AddListener attaches handler event controller.
-func (h *Handler) AddListener(l events.Listener) {
+func (h *Handler) AddListener(l ...events.Listener) {
 	h.mul.Lock()
 	defer h.mul.Unlock()
 
@@ -192,7 +192,9 @@ func (h *Handler) handleResponse(req *Request, resp *Response, start time.Time) 
 // sendEvent invokes event handler if any.
 func (h *Handler) sendEvent(event interface{}) {
 	if h.lsn != nil {
-		h.lsn(event)
+		for _, l := range h.lsn {
+			l(event)
+		}
 	}
 }
 

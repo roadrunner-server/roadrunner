@@ -972,3 +972,98 @@ func declareMetricsTest(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, ret)
 }
+
+func TestHTTPMetrics(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := &config.Viper{}
+	cfg.Prefix = "rr"
+	cfg.Path = "configs/.rr-http-metrics.yaml"
+
+	controller := gomock.NewController(t)
+	mockLogger := mocks.NewMockLogger(controller)
+
+	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("200 GET http://localhost:13223/", "remote", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
+
+	err = cont.RegisterAll(
+		cfg,
+		&metrics.Plugin{},
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+		mockLogger,
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	tt := time.NewTimer(time.Minute * 3)
+
+	go func() {
+		defer tt.Stop()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-tt.C:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second * 2)
+	t.Run("req1", echoHTTP)
+	t.Run("req2", echoHTTP)
+
+	genericOut, err := get()
+	assert.NoError(t, err)
+	assert.Contains(t, genericOut, `rr_http_request_duration_seconds_bucket`)
+	assert.Contains(t, genericOut, `rr_http_request_duration_seconds_sum{status="200"}`)
+	assert.Contains(t, genericOut, `rr_http_request_duration_seconds_count{status="200"} 2`)
+	assert.Contains(t, genericOut, `rr_http_request_total{status="200"} 2`)
+	assert.Contains(t, genericOut, "rr_http_workers_memory_bytes")
+
+	close(sig)
+}
+
+func echoHTTP(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://localhost:13223", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	_, err = ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Equal(t, 200, r.StatusCode)
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
+}

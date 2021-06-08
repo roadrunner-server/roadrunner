@@ -62,6 +62,10 @@ type Plugin struct {
 	// servers RR handler
 	handler *handler.Handler
 
+	// metrics
+	workersExporter  *workersExporter
+	requestsExporter *requestsExporter
+
 	// servers
 	http  *http.Server
 	https *http.Server
@@ -101,6 +105,11 @@ func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server serv
 	if p.cfg.Env == nil {
 		p.cfg.Env = make(map[string]string)
 	}
+
+	// initialize workersExporter
+	p.workersExporter = newWorkersExporter()
+	// initialize requests exporter
+	p.requestsExporter = newRequestsExporter()
 
 	p.cfg.Env[RrMode] = "http"
 	p.server = server
@@ -159,7 +168,7 @@ func (p *Plugin) serve(errCh chan error) {
 		return
 	}
 
-	p.handler.AddListener(p.logCallback)
+	p.handler.AddListener(p.logCallback, p.metricsCallback)
 
 	if p.cfg.EnableHTTP() {
 		if p.cfg.EnableH2C() {
@@ -341,7 +350,7 @@ func (p *Plugin) Reset() error {
 	}
 
 	p.log.Info("HTTP handler listeners successfully re-added")
-	p.handler.AddListener(p.logCallback)
+	p.handler.AddListener(p.logCallback, p.metricsCallback)
 
 	p.log.Info("HTTP plugin successfully restarted")
 	return nil
@@ -386,7 +395,7 @@ func (p *Plugin) Ready() status.Status {
 	workers := p.workers()
 	for i := 0; i < len(workers); i++ {
 		// If state of the worker is ready (at least 1)
-		// we assume, that plugin'p worker pool is ready
+		// we assume, that plugin's worker pool is ready
 		if workers[i].State().Value() == worker.StateReady {
 			return status.Status{
 				Code: http.StatusOK,
