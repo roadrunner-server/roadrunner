@@ -9,6 +9,7 @@ import (
 	json "github.com/json-iterator/go"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/pubsub"
+	"github.com/spiral/roadrunner/v2/pkg/pubsub/message"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/commands"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/connection"
@@ -63,7 +64,7 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 			return errors.E(op, err)
 		}
 
-		msg := &pubsub.Message{}
+		msg := &message.Message{}
 
 		err = json.Unmarshal(data, msg)
 		if err != nil {

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package pubsub.v1;
+option go_package = "./message";
+
+message Message {
+    string command = 1;
+    string broker = 2;
+    repeated string topics = 3;
+    bytes payload = 4;
+}
+
+message Messages {
+    repeated Message messages = 1;
+}

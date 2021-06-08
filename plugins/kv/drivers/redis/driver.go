@@ -9,10 +9,9 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
+	"github.com/spiral/roadrunner/v2/plugins/kv/payload"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
-
-var EmptyItem = kv.Item{}
 
 type Driver struct {
 	universalClient redis.UniversalClient
@@ -139,24 +138,24 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 //
 // Use expiration for `SETEX`-like behavior.
 // Zero expiration means the key has no expiration time.
-func (d *Driver) Set(items ...kv.Item) error {
+func (d *Driver) Set(items ...*payload.Item) error {
 	const op = errors.Op("redis_driver_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
 	}
 	now := time.Now()
 	for _, item := range items {
-		if item == EmptyItem {
+		if item == nil {
 			return errors.E(op, errors.EmptyKey)
 		}
 
-		if item.TTL == "" {
+		if item.Timeout == "" {
 			err := d.universalClient.Set(context.Background(), item.Key, item.Value, 0).Err()
 			if err != nil {
 				return err
 			}
 		} else {
-			t, err := time.Parse(time.RFC3339, item.TTL)
+			t, err := time.Parse(time.RFC3339, item.Timeout)
 			if err != nil {
 				return err
 			}
@@ -188,15 +187,18 @@ func (d *Driver) Delete(keys ...string) error {
 
 // MExpire https://redis.io/commands/expire
 // timeout in RFC3339
-func (d *Driver) MExpire(items ...kv.Item) error {
+func (d *Driver) MExpire(items ...*payload.Item) error {
 	const op = errors.Op("redis_driver_mexpire")
 	now := time.Now()
 	for _, item := range items {
-		if item.TTL == "" || strings.TrimSpace(item.Key) == "" {
+		if item == nil {
+			continue
+		}
+		if item.Timeout == "" || strings.TrimSpace(item.Key) == "" {
 			return errors.E(op, errors.Str("should set timeout and at least one key"))
 		}
 
-		t, err := time.Parse(time.RFC3339, item.TTL)
+		t, err := time.Parse(time.RFC3339, item.Timeout)
 		if err != nil {
 			return err
 		}

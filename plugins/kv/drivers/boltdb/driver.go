@@ -12,6 +12,7 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
+	"github.com/spiral/roadrunner/v2/plugins/kv/payload"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/utils"
 	bolt "go.etcd.io/bbolt"
@@ -213,7 +214,7 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 }
 
 // Set puts the K/V to the bolt
-func (d *Driver) Set(items ...kv.Item) error {
+func (d *Driver) Set(items ...*payload.Item) error {
 	const op = errors.Op("boltdb_driver_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
@@ -259,14 +260,14 @@ func (d *Driver) Set(items ...kv.Item) error {
 
 		// if there are no errors, and TTL > 0,  we put the key with timeout to the hashmap, for future check
 		// we do not need mutex here, since we use sync.Map
-		if items[i].TTL != "" {
+		if items[i].Timeout != "" {
 			// check correctness of provided TTL
-			_, err := time.Parse(time.RFC3339, items[i].TTL)
+			_, err := time.Parse(time.RFC3339, items[i].Timeout)
 			if err != nil {
 				return errors.E(op, err)
 			}
 			// Store key TTL in the separate map
-			d.gc.Store(items[i].Key, items[i].TTL)
+			d.gc.Store(items[i].Key, items[i].Timeout)
 		}
 
 		buf.Reset()
@@ -323,20 +324,20 @@ func (d *Driver) Delete(keys ...string) error {
 
 // MExpire sets the expiration time to the key
 // If key already has the expiration time, it will be overwritten
-func (d *Driver) MExpire(items ...kv.Item) error {
+func (d *Driver) MExpire(items ...*payload.Item) error {
 	const op = errors.Op("boltdb_driver_mexpire")
 	for i := range items {
-		if items[i].TTL == "" || strings.TrimSpace(items[i].Key) == "" {
+		if items[i].Timeout == "" || strings.TrimSpace(items[i].Key) == "" {
 			return errors.E(op, errors.Str("should set timeout and at least one key"))
 		}
 
 		// verify provided TTL
-		_, err := time.Parse(time.RFC3339, items[i].TTL)
+		_, err := time.Parse(time.RFC3339, items[i].Timeout)
 		if err != nil {
 			return errors.E(op, err)
 		}
 
-		d.gc.Store(items[i].Key, items[i].TTL)
+		d.gc.Store(items[i].Key, items[i].Timeout)
 	}
 	return nil
 }

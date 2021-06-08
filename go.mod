@@ -12,7 +12,7 @@ require (
 	github.com/go-redis/redis/v8 v8.9.0
 	github.com/gofiber/fiber/v2 v2.10.0
 	github.com/golang/mock v1.4.4
-	github.com/google/flatbuffers v2.0.0+incompatible
+	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.2.0
 	github.com/json-iterator/go v1.1.11
 	github.com/klauspost/compress v1.13.0
@@ -36,4 +36,5 @@ require (
 	golang.org/x/net v0.0.0-20210226101413-39120d07d75e
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/sys v0.0.0-20210514084401-e8d321eab015
+	google.golang.org/protobuf v1.23.0
 )

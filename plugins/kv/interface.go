@@ -1,14 +1,6 @@
 package kv
 
-// Item represents general storage item
-type Item struct {
-	// Key of item
-	Key string
-	// Value of item
-	Value string
-	// live until time provided by TTL in RFC 3339 format
-	TTL string
-}
+import "github.com/spiral/roadrunner/v2/plugins/kv/payload"
 
 // Storage represents single abstract storage.
 type Storage interface {
@@ -24,10 +16,10 @@ type Storage interface {
 
 	// Set used to upload item to KV with TTL
 	// 0 value in TTL means no TTL
-	Set(items ...Item) error
+	Set(items ...*payload.Item) error
 
 	// MExpire sets the TTL for multiply keys
-	MExpire(items ...Item) error
+	MExpire(items ...*payload.Item) error
 
 	// TTL return the rest time to live for provided keys
 	// Not supported for the memcached and boltdb
