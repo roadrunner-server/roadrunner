@@ -23,6 +23,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/connection"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/executor"
+	"github.com/spiral/roadrunner/v2/plugins/websockets/memory"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/pool"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/validator"
 	"google.golang.org/protobuf/proto"
@@ -89,6 +90,11 @@ func (p *Plugin) Serve() chan error {
 		var err error
 		p.Lock()
 		defer p.Unlock()
+
+		// attach default driver
+		if len(p.pubsubs) == 0 {
+			p.pubsubs["memory"] = memory.NewInMemory(p.log)
+		}
 
 		p.phpPool, err = p.server.NewWorkerPool(context.Background(), phpPool.Config{
 			Debug:           p.cfg.Pool.Debug,

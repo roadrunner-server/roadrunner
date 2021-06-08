@@ -20,7 +20,6 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
-	"github.com/spiral/roadrunner/v2/plugins/memory"
 	"github.com/spiral/roadrunner/v2/plugins/redis"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/server"
@@ -168,7 +167,6 @@ func TestWSRedisAndMemory(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
-		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -462,7 +460,6 @@ func TestWSMemoryDeny(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
-		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -590,7 +587,6 @@ func TestWSMemoryStop(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
-		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -683,7 +679,6 @@ func TestWSMemoryOk(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
-		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
