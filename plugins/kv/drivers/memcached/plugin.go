@@ -9,8 +9,6 @@ import (
 
 const PluginName = "memcached"
 
-var EmptyItem = kv.Item{}
-
 type Plugin struct {
 	// config plugin
 	cfgPlugin config.Configurer

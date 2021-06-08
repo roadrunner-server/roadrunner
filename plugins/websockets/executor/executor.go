@@ -8,6 +8,7 @@ import (
 	"github.com/fasthttp/websocket"
 	json "github.com/json-iterator/go"
 	"github.com/spiral/errors"
+	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
 	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/commands"
@@ -63,7 +64,7 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 			return errors.E(op, err)
 		}
 
-		msg := &pubsub.Message{}
+		msg := &websocketsv1.Message{}
 
 		err = json.Unmarshal(data, msg)
 		if err != nil {

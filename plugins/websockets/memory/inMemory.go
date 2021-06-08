@@ -4,13 +4,10 @@ import (
 	"sync"
 
 	"github.com/spiral/roadrunner/v2/pkg/bst"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub/message"
+	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
+	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
-	"github.com/spiral/roadrunner/v2/utils"
-)
-
-const (
-	PluginName string = "memory"
+	"google.golang.org/protobuf/proto"
 )
 
 type Plugin struct {
@@ -23,19 +20,12 @@ type Plugin struct {
 	storage bst.Storage
 }
 
-func (p *Plugin) Init(log logger.Logger) error {
-	p.log = log
-	p.pushCh = make(chan []byte, 10)
-	p.storage = bst.NewBST()
-	return nil
-}
-
-// Available interface implementation for the plugin
-func (p *Plugin) Available() {}
-
-// Name is endure.Named interface implementation
-func (p *Plugin) Name() string {
-	return PluginName
+func NewInMemory(log logger.Logger) pubsub.PubSub {
+	return &Plugin{
+		log:     log,
+		pushCh:  make(chan []byte, 10),
+		storage: bst.NewBST(),
+	}
 }
 
 func (p *Plugin) Publish(message []byte) error {
@@ -77,7 +67,7 @@ func (p *Plugin) Connections(topic string, res map[string]struct{}) {
 	}
 }
 
-func (p *Plugin) Next() (*message.Message, error) {
+func (p *Plugin) Next() (*websocketsv1.Message, error) {
 	msg := <-p.pushCh
 	if msg == nil {
 		return nil, nil
@@ -86,15 +76,19 @@ func (p *Plugin) Next() (*message.Message, error) {
 	p.RLock()
 	defer p.RUnlock()
 
-	fbsMsg := message.GetRootAsMessage(msg, 0)
+	m := &websocketsv1.Message{}
+	err := proto.Unmarshal(msg, m)
+	if err != nil {
+		return nil, err
+	}
 
 	// push only messages, which are subscribed
 	// TODO better???
-	for i := 0; i < fbsMsg.TopicsLength(); i++ {
+	for i := 0; i < len(m.GetTopics()); i++ {
 		// if we have active subscribers - send a message to a topic
 		// or send nil instead
-		if ok := p.storage.Contains(utils.AsString(fbsMsg.Topics(i))); ok {
-			return fbsMsg, nil
+		if ok := p.storage.Contains(m.GetTopics()[i]); ok {
+			return m, nil
 		}
 	}
 	return nil, nil

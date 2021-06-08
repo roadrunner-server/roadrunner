@@ -1,6 +1,6 @@
 package pubsub
 
-import "github.com/spiral/roadrunner/v2/pkg/pubsub/message"
+import websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
 
 /*
 This interface is in BETA. It might be changed.
@@ -42,5 +42,5 @@ type Publisher interface {
 
 // Reader interface should return next message
 type Reader interface {
-	Next() (*message.Message, error)
+	Next() (*websocketsv1.Message, error)
 }

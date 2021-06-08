@@ -9,7 +9,7 @@ v2.3.0 (08.06.2021)
 - ✏️ Brand new `broadcast` plugin now has the name - `websockets` with broadcast capabilities. It can handle hundreds of
   thousands websocket connections very efficiently (~300k messages per second with 1k connected clients, in-memory bus
   on 2CPU cores and 1GB of RAM)
-- ✏️ Flatbuffers binary messages for the `websockets` RPC calls under the hood.
+- ✏️ Protobuf binary messages for the `websockets` RPC calls under the hood.
 - ✏️ Json-schemas for the config file v1.0 (it also registered
   in [schemastore.org](https://github.com/SchemaStore/schemastore/pull/1614))
 - ✏️ `latest` docker image tag supported now (but we strongly recommend using a versioned tag (like `0.2.3`) instead)

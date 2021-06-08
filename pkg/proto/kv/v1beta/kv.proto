@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package kv.v1beta;
+option go_package = "./;kvv1beta";
+
+message Payload {
+    // could be an enum in the future
+    string storage = 1;
+    repeated Item items = 2;
+}
+
+message Item {
+    string key = 1;
+    string value = 2;
+    // RFC 3339
+    string timeout = 3;
+}

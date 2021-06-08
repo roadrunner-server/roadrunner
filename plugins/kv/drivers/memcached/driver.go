@@ -6,6 +6,7 @@ import (
 
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/spiral/errors"
+	kvv1 "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -134,14 +135,14 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 // Expiration is the cache expiration time, in seconds: either a relative
 // time from now (up to 1 month), or an absolute Unix epoch time.
 // Zero means the Item has no expiration time.
-func (d *Driver) Set(items ...kv.Item) error {
+func (d *Driver) Set(items ...*kvv1.Item) error {
 	const op = errors.Op("memcached_plugin_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
 	}
 
 	for i := range items {
-		if items[i] == EmptyItem {
+		if items[i] == nil {
 			return errors.E(op, errors.EmptyItem)
 		}
 
@@ -154,9 +155,9 @@ func (d *Driver) Set(items ...kv.Item) error {
 		}
 
 		// add additional TTL in case of TTL isn't empty
-		if items[i].TTL != "" {
+		if items[i].Timeout != "" {
 			// verify the TTL
-			t, err := time.Parse(time.RFC3339, items[i].TTL)
+			t, err := time.Parse(time.RFC3339, items[i].Timeout)
 			if err != nil {
 				return err
 			}
@@ -175,15 +176,18 @@ func (d *Driver) Set(items ...kv.Item) error {
 // MExpire Expiration is the cache expiration time, in seconds: either a relative
 // time from now (up to 1 month), or an absolute Unix epoch time.
 // Zero means the Item has no expiration time.
-func (d *Driver) MExpire(items ...kv.Item) error {
+func (d *Driver) MExpire(items ...*kvv1.Item) error {
 	const op = errors.Op("memcached_plugin_mexpire")
 	for i := range items {
-		if items[i].TTL == "" || strings.TrimSpace(items[i].Key) == "" {
+		if items[i] == nil {
+			continue
+		}
+		if items[i].Timeout == "" || strings.TrimSpace(items[i].Key) == "" {
 			return errors.E(op, errors.Str("should set timeout and at least one key"))
 		}
 
 		// verify provided TTL
-		t, err := time.Parse(time.RFC3339, items[i].TTL)
+		t, err := time.Parse(time.RFC3339, items[i].Timeout)
 		if err != nil {
 			return errors.E(op, err)
 		}

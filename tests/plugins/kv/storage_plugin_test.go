@@ -10,65 +10,19 @@ import (
 	"testing"
 	"time"
 
-	flatbuffers "github.com/google/flatbuffers/go"
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
+	payload "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/boltdb"
 	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/memcached"
 	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/memory"
 	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/redis"
-	"github.com/spiral/roadrunner/v2/plugins/kv/payload/generated"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/stretchr/testify/assert"
 )
-
-func makePayload(b *flatbuffers.Builder, storage string, items []kv.Item) []byte {
-	b.Reset()
-
-	storageOffset := b.CreateString(storage)
-
-	// //////////////////// ITEMS VECTOR ////////////////////////////
-	offset := make([]flatbuffers.UOffsetT, len(items))
-	for i := len(items) - 1; i >= 0; i-- {
-		offset[i] = serializeItems(b, items[i])
-	}
-
-	generated.PayloadStartItemsVector(b, len(offset))
-
-	for i := len(offset) - 1; i >= 0; i-- {
-		b.PrependUOffsetT(offset[i])
-	}
-
-	itemsOffset := b.EndVector(len(offset))
-	// /////////////////////////////////////////////////////////////////
-
-	generated.PayloadStart(b)
-	generated.PayloadAddItems(b, itemsOffset)
-	generated.PayloadAddStorage(b, storageOffset)
-
-	finalOffset := generated.PayloadEnd(b)
-
-	b.Finish(finalOffset)
-
-	return b.Bytes[b.Head():]
-}
-
-func serializeItems(b *flatbuffers.Builder, item kv.Item) flatbuffers.UOffsetT {
-	key := b.CreateString(item.Key)
-	val := b.CreateString(item.Value)
-	ttl := b.CreateString(item.TTL)
-
-	generated.ItemStart(b)
-
-	generated.ItemAddKey(b, key)
-	generated.ItemAddValue(b, val)
-	generated.ItemAddTimeout(b, ttl)
-
-	return generated.ItemEnd(b)
-}
 
 func TestKVInit(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
@@ -153,18 +107,19 @@ func kvSetTest(t *testing.T) {
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	// WorkerList contains list of workers.
-
-	b := flatbuffers.NewBuilder(100)
-	args := makePayload(b, "boltdb-south", []kv.Item{
-		{
-			Key:   "key",
-			Value: "val",
+	p := &payload.Payload{
+		Storage: "boltdb-south",
+		Items: []*payload.Item{
+			{
+				Key:   "key",
+				Value: "val",
+			},
 		},
-	})
+	}
 
 	var ok bool
 
-	err = client.Call("kv.Set", args, &ok)
+	err = client.Call("kv.Set", p, &ok)
 	assert.NoError(t, err)
 	assert.True(t, ok, "Set return result")
 }
@@ -174,17 +129,19 @@ func kvHasTest(t *testing.T) {
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	// WorkerList contains list of workers.
-
-	b := flatbuffers.NewBuilder(100)
-	args := makePayload(b, "boltdb-south", []kv.Item{
-		{
-			Key:   "key",
-			Value: "val",
+	p := &payload.Payload{
+		Storage: "boltdb-south",
+		Items: []*payload.Item{
+			{
+				Key:   "key",
+				Value: "val",
+			},
 		},
-	})
+	}
+
 	var ret map[string]bool
 
-	err = client.Call("kv.Has", args, &ret)
+	err = client.Call("kv.Has", p, &ret)
 	assert.NoError(t, err)
 }
 
@@ -250,7 +207,7 @@ func TestBoltDb(t *testing.T) {
 	}()
 
 	time.Sleep(time.Second * 1)
-	t.Run("testBoltDbRPCMethods", testRPCMethods)
+	t.Run("BOLTDB", testRPCMethods)
 	stopCh <- struct{}{}
 	wg.Wait()
 
@@ -264,40 +221,48 @@ func testRPCMethods(t *testing.T) {
 
 	// add 5 second ttl
 	tt := time.Now().Add(time.Second * 5).Format(time.RFC3339)
-	keys := makePayload(flatbuffers.NewBuilder(100), "boltdb-rr", []kv.Item{
-		{
-			Key: "a",
+
+	keys := &payload.Payload{
+		Storage: "boltdb-rr",
+		Items: []*payload.Item{
+			{
+				Key: "a",
+			},
+			{
+				Key: "b",
+			},
+			{
+				Key: "c",
+			},
 		},
-		{
-			Key: "b",
+	}
+
+	data := &payload.Payload{
+		Storage: "boltdb-rr",
+		Items: []*payload.Item{
+			{
+				Key:   "a",
+				Value: "aa",
+			},
+			{
+				Key:   "b",
+				Value: "bb",
+			},
+			{
+				Key:     "c",
+				Value:   "cc",
+				Timeout: tt,
+			},
+			{
+				Key:   "d",
+				Value: "dd",
+			},
+			{
+				Key:   "e",
+				Value: "ee",
+			},
 		},
-		{
-			Key: "c",
-		},
-	})
-	data := makePayload(flatbuffers.NewBuilder(100), "boltdb-rr", []kv.Item{
-		{
-			Key:   "a",
-			Value: "aa",
-		},
-		{
-			Key:   "b",
-			Value: "bb",
-		},
-		{
-			Key:   "c",
-			Value: "cc",
-			TTL:   tt,
-		},
-		{
-			Key:   "d",
-			Value: "dd",
-		},
-		{
-			Key:   "e",
-			Value: "ee",
-		},
-	})
+	}
 
 	var setRes bool
 
@@ -327,20 +292,24 @@ func testRPCMethods(t *testing.T) {
 	assert.Equal(t, "bb", mGet["b"].(string))
 
 	tt2 := time.Now().Add(time.Second * 10).Format(time.RFC3339)
-	data2 := makePayload(flatbuffers.NewBuilder(100), "boltdb-rr", []kv.Item{
-		{
-			Key: "a",
-			TTL: tt2,
+
+	data2 := &payload.Payload{
+		Storage: "boltdb-rr",
+		Items: []*payload.Item{
+			{
+				Key:     "a",
+				Timeout: tt2,
+			},
+			{
+				Key:     "b",
+				Timeout: tt2,
+			},
+			{
+				Key:     "d",
+				Timeout: tt2,
+			},
 		},
-		{
-			Key: "b",
-			TTL: tt2,
-		},
-		{
-			Key: "d",
-			TTL: tt2,
-		},
-	})
+	}
 
 	// MEXPIRE
 	var mExpRes bool
@@ -349,17 +318,21 @@ func testRPCMethods(t *testing.T) {
 	assert.True(t, mExpRes)
 
 	// TTL
-	keys2 := makePayload(flatbuffers.NewBuilder(100), "boltdb-rr", []kv.Item{
-		{
-			Key: "a",
+	keys2 := &payload.Payload{
+		Storage: "boltdb-rr",
+		Items: []*payload.Item{
+			{
+				Key: "a",
+			},
+			{
+				Key: "b",
+			},
+			{
+				Key: "d",
+			},
 		},
-		{
-			Key: "b",
-		},
-		{
-			Key: "d",
-		},
-	})
+	}
+
 	ttlRes := make(map[string]interface{})
 	err = client.Call("kv.TTL", keys2, &ttlRes)
 	assert.NoError(t, err)
@@ -373,11 +346,15 @@ func testRPCMethods(t *testing.T) {
 	assert.Len(t, ret, 0)
 
 	// DELETE
-	keysDel := makePayload(flatbuffers.NewBuilder(100), "boltdb-rr", []kv.Item{
-		{
-			Key: "e",
+	keysDel := &payload.Payload{
+		Storage: "boltdb-rr",
+		Items: []*payload.Item{
+			{
+				Key: "e",
+			},
 		},
-	})
+	}
+
 	var delRet bool
 	err = client.Call("kv.Delete", keysDel, &delRet)
 	assert.NoError(t, err)
@@ -464,40 +441,48 @@ func testRPCMethodsMemcached(t *testing.T) {
 
 	// add 5 second ttl
 	tt := time.Now().Add(time.Second * 5).Format(time.RFC3339)
-	keys := makePayload(flatbuffers.NewBuilder(100), "memcached-rr", []kv.Item{
-		{
-			Key: "a",
+
+	keys := &payload.Payload{
+		Storage: "memcached-rr",
+		Items: []*payload.Item{
+			{
+				Key: "a",
+			},
+			{
+				Key: "b",
+			},
+			{
+				Key: "c",
+			},
 		},
-		{
-			Key: "b",
+	}
+
+	data := &payload.Payload{
+		Storage: "memcached-rr",
+		Items: []*payload.Item{
+			{
+				Key:   "a",
+				Value: "aa",
+			},
+			{
+				Key:   "b",
+				Value: "bb",
+			},
+			{
+				Key:     "c",
+				Value:   "cc",
+				Timeout: tt,
+			},
+			{
+				Key:   "d",
+				Value: "dd",
+			},
+			{
+				Key:   "e",
+				Value: "ee",
+			},
 		},
-		{
-			Key: "c",
-		},
-	})
-	data := makePayload(flatbuffers.NewBuilder(100), "memcached-rr", []kv.Item{
-		{
-			Key:   "a",
-			Value: "aa",
-		},
-		{
-			Key:   "b",
-			Value: "bb",
-		},
-		{
-			Key:   "c",
-			Value: "cc",
-			TTL:   tt,
-		},
-		{
-			Key:   "d",
-			Value: "dd",
-		},
-		{
-			Key:   "e",
-			Value: "ee",
-		},
-	})
+	}
 
 	var setRes bool
 
@@ -527,20 +512,24 @@ func testRPCMethodsMemcached(t *testing.T) {
 	assert.Equal(t, string("bb"), string(mGet["b"].([]byte)))
 
 	tt2 := time.Now().Add(time.Second * 10).Format(time.RFC3339)
-	data2 := makePayload(flatbuffers.NewBuilder(100), "memcached-rr", []kv.Item{
-		{
-			Key: "a",
-			TTL: tt2,
+
+	data2 := &payload.Payload{
+		Storage: "memcached-rr",
+		Items: []*payload.Item{
+			{
+				Key:     "a",
+				Timeout: tt2,
+			},
+			{
+				Key:     "b",
+				Timeout: tt2,
+			},
+			{
+				Key:     "d",
+				Timeout: tt2,
+			},
 		},
-		{
-			Key: "b",
-			TTL: tt2,
-		},
-		{
-			Key: "d",
-			TTL: tt2,
-		},
-	})
+	}
 
 	// MEXPIRE
 	var mExpRes bool
@@ -549,17 +538,21 @@ func testRPCMethodsMemcached(t *testing.T) {
 	assert.True(t, mExpRes)
 
 	// TTL call is not supported for the memcached driver
-	keys2 := makePayload(flatbuffers.NewBuilder(100), "memcached-rr", []kv.Item{
-		{
-			Key: "a",
+	keys2 := &payload.Payload{
+		Storage: "memcached-rr",
+		Items: []*payload.Item{
+			{
+				Key: "a",
+			},
+			{
+				Key: "b",
+			},
+			{
+				Key: "d",
+			},
 		},
-		{
-			Key: "b",
-		},
-		{
-			Key: "d",
-		},
-	})
+	}
+
 	ttlRes := make(map[string]interface{})
 	err = client.Call("kv.TTL", keys2, &ttlRes)
 	assert.Error(t, err)
@@ -573,11 +566,15 @@ func testRPCMethodsMemcached(t *testing.T) {
 	assert.Len(t, ret, 0)
 
 	// DELETE
-	keysDel := makePayload(flatbuffers.NewBuilder(100), "memcached-rr", []kv.Item{
-		{
-			Key: "e",
+	keysDel := &payload.Payload{
+		Storage: "memcached-rr",
+		Items: []*payload.Item{
+			{
+				Key: "e",
+			},
 		},
-	})
+	}
+
 	var delRet bool
 	err = client.Call("kv.Delete", keysDel, &delRet)
 	assert.NoError(t, err)
@@ -664,40 +661,47 @@ func testRPCMethodsInMemory(t *testing.T) {
 
 	// add 5 second ttl
 	tt := time.Now().Add(time.Second * 5).Format(time.RFC3339)
-	keys := makePayload(flatbuffers.NewBuilder(100), "memory-rr", []kv.Item{
-		{
-			Key: "a",
+	keys := &payload.Payload{
+		Storage: "memory-rr",
+		Items: []*payload.Item{
+			{
+				Key: "a",
+			},
+			{
+				Key: "b",
+			},
+			{
+				Key: "c",
+			},
 		},
-		{
-			Key: "b",
+	}
+
+	data := &payload.Payload{
+		Storage: "memory-rr",
+		Items: []*payload.Item{
+			{
+				Key:   "a",
+				Value: "aa",
+			},
+			{
+				Key:   "b",
+				Value: "bb",
+			},
+			{
+				Key:     "c",
+				Value:   "cc",
+				Timeout: tt,
+			},
+			{
+				Key:   "d",
+				Value: "dd",
+			},
+			{
+				Key:   "e",
+				Value: "ee",
+			},
 		},
-		{
-			Key: "c",
-		},
-	})
-	data := makePayload(flatbuffers.NewBuilder(100), "memory-rr", []kv.Item{
-		{
-			Key:   "a",
-			Value: "aa",
-		},
-		{
-			Key:   "b",
-			Value: "bb",
-		},
-		{
-			Key:   "c",
-			Value: "cc",
-			TTL:   tt,
-		},
-		{
-			Key:   "d",
-			Value: "dd",
-		},
-		{
-			Key:   "e",
-			Value: "ee",
-		},
-	})
+	}
 
 	var setRes bool
 
@@ -727,20 +731,24 @@ func testRPCMethodsInMemory(t *testing.T) {
 	assert.Equal(t, "bb", mGet["b"].(string))
 
 	tt2 := time.Now().Add(time.Second * 10).Format(time.RFC3339)
-	data2 := makePayload(flatbuffers.NewBuilder(100), "memory-rr", []kv.Item{
-		{
-			Key: "a",
-			TTL: tt2,
+
+	data2 := &payload.Payload{
+		Storage: "memory-rr",
+		Items: []*payload.Item{
+			{
+				Key:     "a",
+				Timeout: tt2,
+			},
+			{
+				Key:     "b",
+				Timeout: tt2,
+			},
+			{
+				Key:     "d",
+				Timeout: tt2,
+			},
 		},
-		{
-			Key: "b",
-			TTL: tt2,
-		},
-		{
-			Key: "d",
-			TTL: tt2,
-		},
-	})
+	}
 
 	// MEXPIRE
 	var mExpRes bool
@@ -749,17 +757,21 @@ func testRPCMethodsInMemory(t *testing.T) {
 	assert.True(t, mExpRes)
 
 	// TTL
-	keys2 := makePayload(flatbuffers.NewBuilder(100), "memory-rr", []kv.Item{
-		{
-			Key: "a",
+	keys2 := &payload.Payload{
+		Storage: "memory-rr",
+		Items: []*payload.Item{
+			{
+				Key: "a",
+			},
+			{
+				Key: "b",
+			},
+			{
+				Key: "d",
+			},
 		},
-		{
-			Key: "b",
-		},
-		{
-			Key: "d",
-		},
-	})
+	}
+
 	ttlRes := make(map[string]interface{})
 	err = client.Call("kv.TTL", keys2, &ttlRes)
 	assert.NoError(t, err)
@@ -773,11 +785,15 @@ func testRPCMethodsInMemory(t *testing.T) {
 	assert.Len(t, ret, 0)
 
 	// DELETE
-	keysDel := makePayload(flatbuffers.NewBuilder(100), "memory-rr", []kv.Item{
-		{
-			Key: "e",
+	keysDel := &payload.Payload{
+		Storage: "memory-rr",
+		Items: []*payload.Item{
+			{
+				Key: "e",
+			},
 		},
-	})
+	}
+
 	var delRet bool
 	err = client.Call("kv.Delete", keysDel, &delRet)
 	assert.NoError(t, err)
@@ -864,40 +880,47 @@ func testRPCMethodsRedis(t *testing.T) {
 
 	// add 5 second ttl
 	tt := time.Now().Add(time.Second * 5).Format(time.RFC3339)
-	keys := makePayload(flatbuffers.NewBuilder(100), "redis-rr", []kv.Item{
-		{
-			Key: "a",
+	keys := &payload.Payload{
+		Storage: "redis-rr",
+		Items: []*payload.Item{
+			{
+				Key: "a",
+			},
+			{
+				Key: "b",
+			},
+			{
+				Key: "c",
+			},
 		},
-		{
-			Key: "b",
+	}
+
+	data := &payload.Payload{
+		Storage: "redis-rr",
+		Items: []*payload.Item{
+			{
+				Key:   "a",
+				Value: "aa",
+			},
+			{
+				Key:   "b",
+				Value: "bb",
+			},
+			{
+				Key:     "c",
+				Value:   "cc",
+				Timeout: tt,
+			},
+			{
+				Key:   "d",
+				Value: "dd",
+			},
+			{
+				Key:   "e",
+				Value: "ee",
+			},
 		},
-		{
-			Key: "c",
-		},
-	})
-	data := makePayload(flatbuffers.NewBuilder(100), "redis-rr", []kv.Item{
-		{
-			Key:   "a",
-			Value: "aa",
-		},
-		{
-			Key:   "b",
-			Value: "bb",
-		},
-		{
-			Key:   "c",
-			Value: "cc",
-			TTL:   tt,
-		},
-		{
-			Key:   "d",
-			Value: "dd",
-		},
-		{
-			Key:   "e",
-			Value: "ee",
-		},
-	})
+	}
 
 	var setRes bool
 
@@ -927,20 +950,23 @@ func testRPCMethodsRedis(t *testing.T) {
 	assert.Equal(t, "bb", mGet["b"].(string))
 
 	tt2 := time.Now().Add(time.Second * 10).Format(time.RFC3339)
-	data2 := makePayload(flatbuffers.NewBuilder(100), "redis-rr", []kv.Item{
-		{
-			Key: "a",
-			TTL: tt2,
+	data2 := &payload.Payload{
+		Storage: "redis-rr",
+		Items: []*payload.Item{
+			{
+				Key:     "a",
+				Timeout: tt2,
+			},
+			{
+				Key:     "b",
+				Timeout: tt2,
+			},
+			{
+				Key:     "d",
+				Timeout: tt2,
+			},
 		},
-		{
-			Key: "b",
-			TTL: tt2,
-		},
-		{
-			Key: "d",
-			TTL: tt2,
-		},
-	})
+	}
 
 	// MEXPIRE
 	var mExpRes bool
@@ -949,17 +975,21 @@ func testRPCMethodsRedis(t *testing.T) {
 	assert.True(t, mExpRes)
 
 	// TTL
-	keys2 := makePayload(flatbuffers.NewBuilder(100), "redis-rr", []kv.Item{
-		{
-			Key: "a",
+	keys2 := &payload.Payload{
+		Storage: "redis-rr",
+		Items: []*payload.Item{
+			{
+				Key: "a",
+			},
+			{
+				Key: "b",
+			},
+			{
+				Key: "d",
+			},
 		},
-		{
-			Key: "b",
-		},
-		{
-			Key: "d",
-		},
-	})
+	}
+
 	ttlRes := make(map[string]interface{})
 	err = client.Call("kv.TTL", keys2, &ttlRes)
 	assert.NoError(t, err)
@@ -973,11 +1003,15 @@ func testRPCMethodsRedis(t *testing.T) {
 	assert.Len(t, ret, 0)
 
 	// DELETE
-	keysDel := makePayload(flatbuffers.NewBuilder(100), "redis-rr", []kv.Item{
-		{
-			Key: "e",
+	keysDel := &payload.Payload{
+		Storage: "redis-rr",
+		Items: []*payload.Item{
+			{
+				Key: "e",
+			},
 		},
-	})
+	}
+
 	var delRet bool
 	err = client.Call("kv.Delete", keysDel, &delRet)
 	assert.NoError(t, err)
