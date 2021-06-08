@@ -192,8 +192,13 @@ func (h *Handler) handleResponse(req *Request, resp *Response, start time.Time) 
 // sendEvent invokes event handler if any.
 func (h *Handler) sendEvent(event interface{}) {
 	if h.lsn != nil {
-		for _, l := range h.lsn {
-			l(event)
+		for i := range h.lsn {
+			// do not block the pipeline
+			// TODO not a good approach, redesign event bus
+			i := i
+			go func() {
+				h.lsn[i](event)
+			}()
 		}
 	}
 }
