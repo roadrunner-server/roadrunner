@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package pubsub.v1;
-option go_package = "./message";
+package websockets.v1beta;
+option go_package = "./;websocketsv1beta";
 
 message Message {
     string command = 1;

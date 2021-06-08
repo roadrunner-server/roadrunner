@@ -2,7 +2,7 @@ package kv
 
 import (
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/plugins/kv/payload"
+	kvv1 "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
@@ -17,7 +17,7 @@ type rpc struct {
 }
 
 // Has accept []*payload.Payload proto payload with Storage and Item
-func (r *rpc) Has(in *payload.Payload, res *map[string]bool) error {
+func (r *rpc) Has(in *kvv1.Payload, res *map[string]bool) error {
 	const op = errors.Op("rpc_has")
 
 	if in.Storage == "" {
@@ -46,7 +46,7 @@ func (r *rpc) Has(in *payload.Payload, res *map[string]bool) error {
 }
 
 // Set accept proto payload with Storage and Item
-func (r *rpc) Set(in *payload.Payload, ok *bool) error {
+func (r *rpc) Set(in *kvv1.Payload, ok *bool) error {
 	const op = errors.Op("rpc_set")
 
 	if st, exists := r.storages[in.GetStorage()]; exists {
@@ -65,7 +65,7 @@ func (r *rpc) Set(in *payload.Payload, ok *bool) error {
 }
 
 // MGet accept proto payload with Storage and Item
-func (r *rpc) MGet(in *payload.Payload, res *map[string]interface{}) error {
+func (r *rpc) MGet(in *kvv1.Payload, res *map[string]interface{}) error {
 	const op = errors.Op("rpc_mget")
 
 	keys := make([]string, 0, len(in.GetItems()))
@@ -89,7 +89,7 @@ func (r *rpc) MGet(in *payload.Payload, res *map[string]interface{}) error {
 }
 
 // MExpire accept proto payload with Storage and Item
-func (r *rpc) MExpire(in *payload.Payload, ok *bool) error {
+func (r *rpc) MExpire(in *kvv1.Payload, ok *bool) error {
 	const op = errors.Op("rpc_mexpire")
 
 	if st, exists := r.storages[in.GetStorage()]; exists {
@@ -108,7 +108,7 @@ func (r *rpc) MExpire(in *payload.Payload, ok *bool) error {
 }
 
 // TTL accept proto payload with Storage and Item
-func (r *rpc) TTL(in *payload.Payload, res *map[string]interface{}) error {
+func (r *rpc) TTL(in *kvv1.Payload, res *map[string]interface{}) error {
 	const op = errors.Op("rpc_ttl")
 	keys := make([]string, 0, len(in.GetItems()))
 
@@ -131,7 +131,7 @@ func (r *rpc) TTL(in *payload.Payload, res *map[string]interface{}) error {
 }
 
 // Delete accept proto payload with Storage and Item
-func (r *rpc) Delete(in *payload.Payload, ok *bool) error {
+func (r *rpc) Delete(in *kvv1.Payload, ok *bool) error {
 	const op = errors.Op("rcp_delete")
 
 	keys := make([]string, 0, len(in.GetItems()))

@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
+	kvv1 "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
-	"github.com/spiral/roadrunner/v2/plugins/kv/payload"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/utils"
 	bolt "go.etcd.io/bbolt"
@@ -214,7 +214,7 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 }
 
 // Set puts the K/V to the bolt
-func (d *Driver) Set(items ...*payload.Item) error {
+func (d *Driver) Set(items ...*kvv1.Item) error {
 	const op = errors.Op("boltdb_driver_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
@@ -324,7 +324,7 @@ func (d *Driver) Delete(keys ...string) error {
 
 // MExpire sets the expiration time to the key
 // If key already has the expiration time, it will be overwritten
-func (d *Driver) MExpire(items ...*payload.Item) error {
+func (d *Driver) MExpire(items ...*kvv1.Item) error {
 	const op = errors.Op("boltdb_driver_mexpire")
 	for i := range items {
 		if items[i].Timeout == "" || strings.TrimSpace(items[i].Key) == "" {

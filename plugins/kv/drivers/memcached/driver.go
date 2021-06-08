@@ -6,9 +6,9 @@ import (
 
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/spiral/errors"
+	kvv1 "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
-	"github.com/spiral/roadrunner/v2/plugins/kv/payload"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/utils"
 )
@@ -135,7 +135,7 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 // Expiration is the cache expiration time, in seconds: either a relative
 // time from now (up to 1 month), or an absolute Unix epoch time.
 // Zero means the Item has no expiration time.
-func (d *Driver) Set(items ...*payload.Item) error {
+func (d *Driver) Set(items ...*kvv1.Item) error {
 	const op = errors.Op("memcached_plugin_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
@@ -176,7 +176,7 @@ func (d *Driver) Set(items ...*payload.Item) error {
 // MExpire Expiration is the cache expiration time, in seconds: either a relative
 // time from now (up to 1 month), or an absolute Unix epoch time.
 // Zero means the Item has no expiration time.
-func (d *Driver) MExpire(items ...*payload.Item) error {
+func (d *Driver) MExpire(items ...*kvv1.Item) error {
 	const op = errors.Op("memcached_plugin_mexpire")
 	for i := range items {
 		if items[i] == nil {

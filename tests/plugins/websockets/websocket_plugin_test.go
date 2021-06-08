@@ -16,7 +16,7 @@ import (
 	json "github.com/json-iterator/go"
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub/message"
+	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -216,9 +216,9 @@ func TestWSRedisAndMemory(t *testing.T) {
 	}()
 
 	time.Sleep(time.Second * 1)
+	t.Run("RPCWsMemoryPubAsync", RPCWsMemoryPubAsync)
 	t.Run("RPCWsMemory", RPCWsMemory)
 	t.Run("RPCWsRedis", RPCWsRedis)
-	t.Run("RPCWsMemoryPubAsync", RPCWsMemoryPubAsync)
 
 	stopCh <- struct{}{}
 
@@ -870,8 +870,8 @@ func publish2(command string, broker string, topics ...string) {
 		panic(err)
 	}
 }
-func messageWS(command string, broker string, payload []byte, topics ...string) *message.Message {
-	return &message.Message{
+func messageWS(command string, broker string, payload []byte, topics ...string) *websocketsv1.Message {
+	return &websocketsv1.Message{
 		Topics:  topics,
 		Command: command,
 		Broker:  broker,
@@ -879,9 +879,9 @@ func messageWS(command string, broker string, payload []byte, topics ...string) 
 	}
 }
 
-func makeMessage(command string, broker string, payload []byte, topics ...string) *message.Messages {
-	m := &message.Messages{
-		Messages: []*message.Message{
+func makeMessage(command string, broker string, payload []byte, topics ...string) *websocketsv1.Messages {
+	m := &websocketsv1.Messages{
+		Messages: []*websocketsv1.Message{
 			{
 				Topics:  topics,
 				Command: command,

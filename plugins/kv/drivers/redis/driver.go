@@ -7,9 +7,9 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/spiral/errors"
+	kvv1 "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
-	"github.com/spiral/roadrunner/v2/plugins/kv/payload"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
@@ -138,7 +138,7 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 //
 // Use expiration for `SETEX`-like behavior.
 // Zero expiration means the key has no expiration time.
-func (d *Driver) Set(items ...*payload.Item) error {
+func (d *Driver) Set(items ...*kvv1.Item) error {
 	const op = errors.Op("redis_driver_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
@@ -187,7 +187,7 @@ func (d *Driver) Delete(keys ...string) error {
 
 // MExpire https://redis.io/commands/expire
 // timeout in RFC3339
-func (d *Driver) MExpire(items ...*payload.Item) error {
+func (d *Driver) MExpire(items ...*kvv1.Item) error {
 	const op = errors.Op("redis_driver_mexpire")
 	now := time.Now()
 	for _, item := range items {

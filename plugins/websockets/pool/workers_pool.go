@@ -4,8 +4,8 @@ import (
 	"sync"
 
 	"github.com/fasthttp/websocket"
+	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
 	"github.com/spiral/roadrunner/v2/pkg/pubsub"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub/message"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/connection"
 )
@@ -16,7 +16,7 @@ type WorkersPool struct {
 	resPool     sync.Pool
 	log         logger.Logger
 
-	queue chan *message.Message
+	queue chan *websocketsv1.Message
 	exit  chan struct{}
 }
 
@@ -24,7 +24,7 @@ type WorkersPool struct {
 func NewWorkersPool(pubsubs map[string]pubsub.PubSub, connections *sync.Map, log logger.Logger) *WorkersPool {
 	wp := &WorkersPool{
 		connections: connections,
-		queue:       make(chan *message.Message, 100),
+		queue:       make(chan *websocketsv1.Message, 100),
 		storage:     pubsubs,
 		log:         log,
 		exit:        make(chan struct{}),
@@ -42,7 +42,7 @@ func NewWorkersPool(pubsubs map[string]pubsub.PubSub, connections *sync.Map, log
 	return wp
 }
 
-func (wp *WorkersPool) Queue(msg *message.Message) {
+func (wp *WorkersPool) Queue(msg *websocketsv1.Message) {
 	wp.queue <- msg
 }
 

@@ -12,13 +12,13 @@ import (
 
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
+	payload "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/boltdb"
 	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/memcached"
 	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/memory"
 	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/redis"
-	"github.com/spiral/roadrunner/v2/plugins/kv/payload"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/stretchr/testify/assert"
@@ -107,7 +107,6 @@ func kvSetTest(t *testing.T) {
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	// WorkerList contains list of workers.
-
 	p := &payload.Payload{
 		Storage: "boltdb-south",
 		Items: []*payload.Item{
@@ -130,7 +129,6 @@ func kvHasTest(t *testing.T) {
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 	// WorkerList contains list of workers.
-
 	p := &payload.Payload{
 		Storage: "boltdb-south",
 		Items: []*payload.Item{

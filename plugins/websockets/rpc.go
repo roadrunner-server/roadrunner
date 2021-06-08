@@ -2,7 +2,7 @@ package websockets
 
 import (
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub/message"
+	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"google.golang.org/protobuf/proto"
 )
@@ -15,7 +15,7 @@ type rpc struct {
 
 // Publish ... msg is a proto decoded payload
 // see: pkg/pubsub/message.fbs
-func (r *rpc) Publish(in *message.Messages, ok *bool) error {
+func (r *rpc) Publish(in *websocketsv1.Messages, ok *bool) error {
 	const op = errors.Op("broadcast_publish")
 
 	// just return in case of nil message
@@ -47,7 +47,7 @@ func (r *rpc) Publish(in *message.Messages, ok *bool) error {
 
 // PublishAsync ...
 // see: pkg/pubsub/message.fbs
-func (r *rpc) PublishAsync(in *message.Messages, ok *bool) error {
+func (r *rpc) PublishAsync(in *websocketsv1.Messages, ok *bool) error {
 	const op = errors.Op("publish_async")
 
 	// just return in case of nil message

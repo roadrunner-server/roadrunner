@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
+	kvv1 "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
-	"github.com/spiral/roadrunner/v2/plugins/kv/payload"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/utils"
 )
@@ -72,7 +72,7 @@ func (s *Driver) Get(key string) ([]byte, error) {
 	if data, exist := s.heap.Load(key); exist {
 		// here might be a panic
 		// but data only could be a string, see Set function
-		return utils.AsBytes(data.(*payload.Item).Value), nil
+		return utils.AsBytes(data.(*kvv1.Item).Value), nil
 	}
 	return nil, nil
 }
@@ -95,14 +95,14 @@ func (s *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 
 	for i := range keys {
 		if value, ok := s.heap.Load(keys[i]); ok {
-			m[keys[i]] = value.(*payload.Item).Value
+			m[keys[i]] = value.(*kvv1.Item).Value
 		}
 	}
 
 	return m, nil
 }
 
-func (s *Driver) Set(items ...*payload.Item) error {
+func (s *Driver) Set(items ...*kvv1.Item) error {
 	const op = errors.Op("in_memory_plugin_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
@@ -128,7 +128,7 @@ func (s *Driver) Set(items ...*payload.Item) error {
 
 // MExpire sets the expiration time to the key
 // If key already has the expiration time, it will be overwritten
-func (s *Driver) MExpire(items ...*payload.Item) error {
+func (s *Driver) MExpire(items ...*kvv1.Item) error {
 	const op = errors.Op("in_memory_plugin_mexpire")
 	for i := range items {
 		if items[i] == nil {
@@ -145,11 +145,11 @@ func (s *Driver) MExpire(items ...*payload.Item) error {
 			if err != nil {
 				return errors.E(op, err)
 			}
-			tmp := pItem.(*payload.Item)
+			tmp := pItem.(*kvv1.Item)
 			// guess that t is in the future
 			// in memory is just FOR TESTING PURPOSES
 			// LOGIC ISN'T IDEAL
-			s.heap.Store(items[i].Key, &payload.Item{
+			s.heap.Store(items[i].Key, &kvv1.Item{
 				Key:     items[i].Key,
 				Value:   tmp.Value,
 				Timeout: items[i].Timeout,
@@ -178,7 +178,7 @@ func (s *Driver) TTL(keys ...string) (map[string]interface{}, error) {
 
 	for i := range keys {
 		if item, ok := s.heap.Load(keys[i]); ok {
-			m[keys[i]] = item.(*payload.Item).Timeout
+			m[keys[i]] = item.(*kvv1.Item).Timeout
 		}
 	}
 	return m, nil
@@ -216,7 +216,7 @@ func (s *Driver) gc() {
 		case now := <-ticker.C:
 			// check every second
 			s.heap.Range(func(key, value interface{}) bool {
-				v := value.(*payload.Item)
+				v := value.(*kvv1.Item)
 				if v.Timeout == "" {
 					return true
 				}

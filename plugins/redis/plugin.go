@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub/message"
+	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"google.golang.org/protobuf/proto"
@@ -107,7 +107,7 @@ func (p *Plugin) Publish(msg []byte) error {
 	p.Lock()
 	defer p.Unlock()
 
-	m := &message.Message{}
+	m := &websocketsv1.Message{}
 	err := proto.Unmarshal(msg, m)
 	if err != nil {
 		return errors.E(err)
@@ -126,7 +126,7 @@ func (p *Plugin) PublishAsync(msg []byte) {
 	go func() {
 		p.Lock()
 		defer p.Unlock()
-		m := &message.Message{}
+		m := &websocketsv1.Message{}
 		err := proto.Unmarshal(msg, m)
 		if err != nil {
 			p.log.Error("message unmarshal error")
@@ -209,6 +209,6 @@ func (p *Plugin) Connections(topic string, res map[string]struct{}) {
 }
 
 // Next return next message
-func (p *Plugin) Next() (*message.Message, error) {
+func (p *Plugin) Next() (*websocketsv1.Message, error) {
 	return <-p.fanin.consume(), nil
 }

@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package kv.v1;
-option go_package = "./payload";
+package kv.v1beta;
+option go_package = "./;kvv1beta";
 
 message Payload {
     // could be an enum in the future
