@@ -11,6 +11,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 type Driver struct {
@@ -101,7 +102,7 @@ func (d *Driver) Get(key string) ([]byte, error) {
 // MGet loads content of multiple values (some values might be skipped).
 // https://redis.io/commands/mget
 // Returns slice with the interfaces with values
-func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
+func (d *Driver) MGet(keys ...string) (map[string][]byte, error) {
 	const op = errors.Op("redis_driver_mget")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -115,7 +116,7 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 		}
 	}
 
-	m := make(map[string]interface{}, len(keys))
+	m := make(map[string][]byte, len(keys))
 
 	for _, k := range keys {
 		cmd := d.universalClient.Get(context.Background(), k)
@@ -126,7 +127,7 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 			return nil, errors.E(op, cmd.Err())
 		}
 
-		m[k] = cmd.Val()
+		m[k] = utils.AsBytes(cmd.Val())
 	}
 
 	return m, nil
@@ -213,7 +214,7 @@ func (d *Driver) MExpire(items ...*kvv1.Item) error {
 
 // TTL https://redis.io/commands/ttl
 // return time in seconds (float64) for a given keys
-func (d *Driver) TTL(keys ...string) (map[string]interface{}, error) {
+func (d *Driver) TTL(keys ...string) (map[string]string, error) {
 	const op = errors.Op("redis_driver_ttl")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -227,7 +228,7 @@ func (d *Driver) TTL(keys ...string) (map[string]interface{}, error) {
 		}
 	}
 
-	m := make(map[string]interface{}, len(keys))
+	m := make(map[string]string, len(keys))
 
 	for _, key := range keys {
 		duration, err := d.universalClient.TTL(context.Background(), key).Result()
@@ -235,7 +236,7 @@ func (d *Driver) TTL(keys ...string) (map[string]interface{}, error) {
 			return nil, err
 		}
 
-		m[key] = duration.Seconds()
+		m[key] = duration.String()
 	}
 	return m, nil
 }

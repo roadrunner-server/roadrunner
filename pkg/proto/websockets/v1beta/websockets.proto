@@ -10,6 +10,12 @@ message Message {
     bytes payload = 4;
 }
 
-message Messages {
+// RPC request with messages
+message Request {
     repeated Message messages = 1;
+}
+
+// RPC response (false in case of error)
+message Response {
+    bool ok = 1;
 }

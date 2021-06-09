@@ -10,7 +10,6 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
-	"github.com/spiral/roadrunner/v2/utils"
 )
 
 type Driver struct {
@@ -72,12 +71,12 @@ func (s *Driver) Get(key string) ([]byte, error) {
 	if data, exist := s.heap.Load(key); exist {
 		// here might be a panic
 		// but data only could be a string, see Set function
-		return utils.AsBytes(data.(*kvv1.Item).Value), nil
+		return data.(*kvv1.Item).Value, nil
 	}
 	return nil, nil
 }
 
-func (s *Driver) MGet(keys ...string) (map[string]interface{}, error) {
+func (s *Driver) MGet(keys ...string) (map[string][]byte, error) {
 	const op = errors.Op("in_memory_plugin_mget")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -91,7 +90,7 @@ func (s *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 		}
 	}
 
-	m := make(map[string]interface{}, len(keys))
+	m := make(map[string][]byte, len(keys))
 
 	for i := range keys {
 		if value, ok := s.heap.Load(keys[i]); ok {
@@ -160,7 +159,7 @@ func (s *Driver) MExpire(items ...*kvv1.Item) error {
 	return nil
 }
 
-func (s *Driver) TTL(keys ...string) (map[string]interface{}, error) {
+func (s *Driver) TTL(keys ...string) (map[string]string, error) {
 	const op = errors.Op("in_memory_plugin_ttl")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -174,7 +173,7 @@ func (s *Driver) TTL(keys ...string) (map[string]interface{}, error) {
 		}
 	}
 
-	m := make(map[string]interface{}, len(keys))
+	m := make(map[string]string, len(keys))
 
 	for i := range keys {
 		if item, ok := s.heap.Load(keys[i]); ok {

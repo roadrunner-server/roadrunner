@@ -17,7 +17,7 @@ type rpc struct {
 }
 
 // Has accept []*kvv1.Payload proto payload with Storage and Item
-func (r *rpc) Has(in *kvv1.Payload, res *map[string]bool) error {
+func (r *rpc) Has(in *kvv1.Request, out *kvv1.Response) error {
 	const op = errors.Op("rpc_has")
 
 	if in.GetStorage() == "" {
@@ -38,7 +38,12 @@ func (r *rpc) Has(in *kvv1.Payload, res *map[string]bool) error {
 
 		// update the value in the pointer
 		// save the result
-		*res = ret
+		out.Items = make([]*kvv1.Item, 0, len(ret))
+		for k := range ret {
+			out.Items = append(out.Items, &kvv1.Item{
+				Key: k,
+			})
+		}
 		return nil
 	}
 
@@ -46,7 +51,7 @@ func (r *rpc) Has(in *kvv1.Payload, res *map[string]bool) error {
 }
 
 // Set accept proto payload with Storage and Item
-func (r *rpc) Set(in *kvv1.Payload, ok *bool) error {
+func (r *rpc) Set(in *kvv1.Request, _ *kvv1.Response) error {
 	const op = errors.Op("rpc_set")
 
 	if st, exists := r.storages[in.GetStorage()]; exists {
@@ -56,16 +61,14 @@ func (r *rpc) Set(in *kvv1.Payload, ok *bool) error {
 		}
 
 		// save the result
-		*ok = true
 		return nil
 	}
 
-	*ok = false
 	return errors.E(op, errors.Errorf("no such storage: %s", in.GetStorage()))
 }
 
 // MGet accept proto payload with Storage and Item
-func (r *rpc) MGet(in *kvv1.Payload, res *map[string]interface{}) error {
+func (r *rpc) MGet(in *kvv1.Request, out *kvv1.Response) error {
 	const op = errors.Op("rpc_mget")
 
 	keys := make([]string, 0, len(in.GetItems()))
@@ -80,8 +83,13 @@ func (r *rpc) MGet(in *kvv1.Payload, res *map[string]interface{}) error {
 			return errors.E(op, err)
 		}
 
-		// save the result
-		*res = ret
+		out.Items = make([]*kvv1.Item, 0, len(ret))
+		for k := range ret {
+			out.Items = append(out.Items, &kvv1.Item{
+				Key:   k,
+				Value: ret[k],
+			})
+		}
 		return nil
 	}
 
@@ -89,7 +97,7 @@ func (r *rpc) MGet(in *kvv1.Payload, res *map[string]interface{}) error {
 }
 
 // MExpire accept proto payload with Storage and Item
-func (r *rpc) MExpire(in *kvv1.Payload, ok *bool) error {
+func (r *rpc) MExpire(in *kvv1.Request, _ *kvv1.Response) error {
 	const op = errors.Op("rpc_mexpire")
 
 	if st, exists := r.storages[in.GetStorage()]; exists {
@@ -98,17 +106,14 @@ func (r *rpc) MExpire(in *kvv1.Payload, ok *bool) error {
 			return errors.E(op, err)
 		}
 
-		// save the result
-		*ok = true
 		return nil
 	}
 
-	*ok = false
 	return errors.E(op, errors.Errorf("no such storage: %s", in.GetStorage()))
 }
 
 // TTL accept proto payload with Storage and Item
-func (r *rpc) TTL(in *kvv1.Payload, res *map[string]interface{}) error {
+func (r *rpc) TTL(in *kvv1.Request, out *kvv1.Response) error {
 	const op = errors.Op("rpc_ttl")
 	keys := make([]string, 0, len(in.GetItems()))
 
@@ -122,8 +127,14 @@ func (r *rpc) TTL(in *kvv1.Payload, res *map[string]interface{}) error {
 			return errors.E(op, err)
 		}
 
-		// save the result
-		*res = ret
+		out.Items = make([]*kvv1.Item, 0, len(ret))
+		for k := range ret {
+			out.Items = append(out.Items, &kvv1.Item{
+				Key:     k,
+				Timeout: ret[k],
+			})
+		}
+
 		return nil
 	}
 
@@ -131,7 +142,7 @@ func (r *rpc) TTL(in *kvv1.Payload, res *map[string]interface{}) error {
 }
 
 // Delete accept proto payload with Storage and Item
-func (r *rpc) Delete(in *kvv1.Payload, ok *bool) error {
+func (r *rpc) Delete(in *kvv1.Request, _ *kvv1.Response) error {
 	const op = errors.Op("rcp_delete")
 
 	keys := make([]string, 0, len(in.GetItems()))
@@ -145,11 +156,8 @@ func (r *rpc) Delete(in *kvv1.Payload, ok *bool) error {
 			return errors.E(op, err)
 		}
 
-		// save the result
-		*ok = true
 		return nil
 	}
 
-	*ok = false
 	return errors.E(op, errors.Errorf("no such storage: %s", in.GetStorage()))
 }

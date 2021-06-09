@@ -22,7 +22,7 @@ require (
 	// SPIRAL ====
 	github.com/spiral/endure v1.0.1
 	github.com/spiral/errors v1.0.11
-	github.com/spiral/goridge/v3 v3.0.1
+	github.com/spiral/goridge/v3 v3.1.0
 	// ===========
 	github.com/stretchr/testify v1.7.0
 	github.com/tklauser/go-sysconf v0.3.4 // indirect
@@ -35,6 +35,6 @@ require (
 	golang.org/x/net v0.0.0-20210226101413-39120d07d75e
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/sys v0.0.0-20210514084401-e8d321eab015
-	google.golang.org/protobuf v1.23.0
+	google.golang.org/protobuf v1.26.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )

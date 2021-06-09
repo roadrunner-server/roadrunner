@@ -15,12 +15,12 @@ type rpc struct {
 
 // Publish ... msg is a proto decoded payload
 // see: pkg/pubsub/message.fbs
-func (r *rpc) Publish(in *websocketsv1.Messages, ok *bool) error {
+func (r *rpc) Publish(in *websocketsv1.Request, out *websocketsv1.Response) error {
 	const op = errors.Op("broadcast_publish")
 
 	// just return in case of nil message
 	if in == nil {
-		*ok = true
+		out.Ok = false
 		return nil
 	}
 
@@ -36,23 +36,23 @@ func (r *rpc) Publish(in *websocketsv1.Messages, ok *bool) error {
 
 		err = r.plugin.Publish(bb)
 		if err != nil {
-			*ok = false
+			out.Ok = false
 			return errors.E(op, err)
 		}
 	}
 
-	*ok = true
+	out.Ok = false
 	return nil
 }
 
 // PublishAsync ...
 // see: pkg/pubsub/message.fbs
-func (r *rpc) PublishAsync(in *websocketsv1.Messages, ok *bool) error {
+func (r *rpc) PublishAsync(in *websocketsv1.Request, out *websocketsv1.Response) error {
 	const op = errors.Op("publish_async")
 
 	// just return in case of nil message
 	if in == nil {
-		*ok = true
+		out.Ok = false
 		return nil
 	}
 
@@ -69,6 +69,6 @@ func (r *rpc) PublishAsync(in *websocketsv1.Messages, ok *bool) error {
 		r.plugin.PublishAsync(bb)
 	}
 
-	*ok = true
+	out.Ok = false
 	return nil
 }

@@ -28,20 +28,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type Msg struct {
-	// Topic makeMessage been pushed into.
-	Topics []string `json:"topic"`
-
-	// Command (join, leave, headers)
-	Command string `json:"command"`
-
-	// Broker (redis, memory)
-	Broker string `json:"broker"`
-
-	// Payload to be broadcasted
-	Payload []byte `json:"payload"`
-}
-
 func TestBroadcastInit(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
@@ -819,8 +805,8 @@ func publish(command string, broker string, topics ...string) {
 
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
-	var ret bool
-	err = client.Call("websockets.Publish", makeMessage(command, broker, []byte("hello, PHP"), topics...), &ret)
+	ret := &websocketsv1.Response{}
+	err = client.Call("websockets.Publish", makeMessage(command, broker, []byte("hello, PHP"), topics...), ret)
 	if err != nil {
 		panic(err)
 	}
@@ -834,8 +820,8 @@ func publishAsync(command string, broker string, topics ...string) {
 
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
-	var ret bool
-	err = client.Call("websockets.PublishAsync", makeMessage(command, broker, []byte("hello, PHP"), topics...), &ret)
+	ret := &websocketsv1.Response{}
+	err = client.Call("websockets.PublishAsync", makeMessage(command, broker, []byte("hello, PHP"), topics...), ret)
 	if err != nil {
 		panic(err)
 	}
@@ -849,8 +835,8 @@ func publishAsync2(command string, broker string, topics ...string) {
 
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
-	var ret bool
-	err = client.Call("websockets.PublishAsync", makeMessage(command, broker, []byte("hello, PHP2"), topics...), &ret)
+	ret := &websocketsv1.Response{}
+	err = client.Call("websockets.PublishAsync", makeMessage(command, broker, []byte("hello, PHP2"), topics...), ret)
 	if err != nil {
 		panic(err)
 	}
@@ -864,8 +850,8 @@ func publish2(command string, broker string, topics ...string) {
 
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
-	var ret bool
-	err = client.Call("websockets.Publish", makeMessage(command, broker, []byte("hello, PHP2"), topics...), &ret)
+	ret := &websocketsv1.Response{}
+	err = client.Call("websockets.Publish", makeMessage(command, broker, []byte("hello, PHP2"), topics...), ret)
 	if err != nil {
 		panic(err)
 	}
@@ -879,8 +865,8 @@ func messageWS(command string, broker string, payload []byte, topics ...string) 
 	}
 }
 
-func makeMessage(command string, broker string, payload []byte, topics ...string) *websocketsv1.Messages {
-	m := &websocketsv1.Messages{
+func makeMessage(command string, broker string, payload []byte, topics ...string) *websocketsv1.Request {
+	m := &websocketsv1.Request{
 		Messages: []*websocketsv1.Message{
 			{
 				Topics:  topics,
