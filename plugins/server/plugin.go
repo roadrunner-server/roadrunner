@@ -24,10 +24,11 @@ import (
 // PluginName for the server
 const PluginName = "server"
 
-// RR_RELAY env variable key (internal)
-const RR_RELAY = "RR_RELAY" //nolint:stylecheck
-// RR_RPC env variable key (internal) if the RPC presents
-const RR_RPC = "RR_RPC" //nolint:stylecheck
+// RrRelay env variable key (internal)
+const RrRelay = "RR_RELAY"
+
+// RrRPC env variable key (internal) if the RPC presents
+const RrRPC = "RR_RPC"
 
 // Plugin manages worker
 type Plugin struct {
@@ -91,6 +92,12 @@ func (server *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 	cmdArgs = append(cmdArgs, strings.Split(server.cfg.Server.Command, " ")...)
 	if len(cmdArgs) < 2 {
 		return nil, errors.E(op, errors.Str("minimum command should be `<executable> <script>"))
+	}
+
+	// try to find a path here
+	err := server.scanCommand(cmdArgs)
+	if err != nil {
+		server.log.Info("scan command", "error", err)
 	}
 
 	return func() *exec.Cmd {
@@ -183,13 +190,13 @@ func (server *Plugin) initFactory() (transport.Factory, error) {
 }
 
 func (server *Plugin) setEnv(e Env) []string {
-	env := append(os.Environ(), fmt.Sprintf(RR_RELAY+"=%s", server.cfg.Server.Relay))
+	env := append(os.Environ(), fmt.Sprintf(RrRelay+"=%s", server.cfg.Server.Relay))
 	for k, v := range e {
 		env = append(env, fmt.Sprintf("%s=%s", strings.ToUpper(k), v))
 	}
 
 	if server.cfg.RPC != nil && server.cfg.RPC.Listen != "" {
-		env = append(env, fmt.Sprintf("%s=%s", RR_RPC, server.cfg.RPC.Listen))
+		env = append(env, fmt.Sprintf("%s=%s", RrRPC, server.cfg.RPC.Listen))
 	}
 
 	// set env variables from the config

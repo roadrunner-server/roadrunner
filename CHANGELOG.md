@@ -8,13 +8,13 @@ v2.3.0 (08.06.2021)
 
 - ✏️ Brand new `broadcast` plugin now has the name - `websockets` with broadcast capabilities. It can handle hundreds of
   thousands websocket connections very efficiently (~300k messages per second with 1k connected clients, in-memory bus
-  on 2CPU cores and 1GB of RAM)
-- ✏️ Protobuf binary messages for the `websockets` RPC calls under the hood.
-- ✏️ Json-schemas for the config file v1.0 (it also registered
-  in [schemastore.org](https://github.com/SchemaStore/schemastore/pull/1614))
+  on 2CPU cores and 1GB of RAM) [Issue](https://github.com/spiral/roadrunner/issues/513)
+- ✏️ Protobuf binary messages for the `websockets` RPC calls under the hood. [Issue](https://github.com/spiral/roadrunner/issues/711)
+- ✏️ Json-schemas for the config file v1.0 (it also registered in [schemastore.org](https://github.com/SchemaStore/schemastore/pull/1614))
 - ✏️ `latest` docker image tag supported now (but we strongly recommend using a versioned tag (like `0.2.3`) instead)
-- ✏️ Add new option to the `http` config section: `internal_error_code` to override default (500) internal error code.
-- ✏️ Expose HTTP plugin metrics (workers memory, requests count, requests duration).
+- ✏️ Add new option to the `http` config section: `internal_error_code` to override default (500) internal error code. [Issue](https://github.com/spiral/roadrunner/issues/659)
+- ✏️ Expose HTTP plugin metrics (workers memory, requests count, requests duration). [Issue](https://github.com/spiral/roadrunner/issues/489)
+- ✏️ Scan `server.command` and find errors related to the wrong path to a `PHP` file, or `.ph`, `.sh` scripts. [Issue](https://github.com/spiral/roadrunner/issues/658)
 
 ## 🩹 Fixes:
 

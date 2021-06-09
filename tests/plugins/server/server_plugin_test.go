@@ -23,22 +23,13 @@ func TestAppPipes(t *testing.T) {
 	vp := &config.Viper{}
 	vp.Path = "configs/.rr.yaml"
 	vp.Prefix = "rr"
-	err = container.Register(vp)
-	if err != nil {
-		t.Fatal(err)
-	}
 
-	err = container.Register(&server.Plugin{})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = container.Register(&Foo{})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = container.Register(&logger.ZapLogger{})
+	err = container.RegisterAll(
+		vp,
+		&server.Plugin{},
+		&Foo{},
+		&logger.ZapLogger{},
+	)
 	if err != nil {
 		t.Fatal(err)
 	}

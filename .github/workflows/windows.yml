@@ -1,6 +1,18 @@
 name: Windows
 
-on: [ push, pull_request ]
+on:
+  push:
+    branches:
+      - master
+      - beta
+      - stable
+    tags-ignore:
+      - '**'
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
 
 jobs:
   golang:
@@ -63,6 +75,7 @@ jobs:
           go test -v -race ./pkg/bst
           go test -v -race ./pkg/worker_watcher
           go test -v -race ./plugins/http/config
+          go test -v -race ./plugins/server
           go test -v -race ./tests/plugins/http
           go test -v -race ./tests/plugins/informer
           go test -v -race ./tests/plugins/reload

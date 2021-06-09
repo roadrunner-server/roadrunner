@@ -136,6 +136,7 @@ func TestMetricsIssue571(t *testing.T) {
 	mockLogger.EXPECT().Info("metric successfully added", "name", "test", "labels", []string{}, "value", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("adding metric", "name", "test", "value", gomock.Any(), "labels", []string{}).MinTimes(1)
 	mockLogger.EXPECT().Error("metric with provided name already exist", "name", "test", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(3)
+	mockLogger.EXPECT().Info("scan command", gomock.Any()).AnyTimes()
 
 	err = cont.RegisterAll(
 		cfg,
