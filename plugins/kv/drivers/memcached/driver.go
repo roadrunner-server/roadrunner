@@ -10,7 +10,6 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
-	"github.com/spiral/roadrunner/v2/utils"
 )
 
 type Driver struct {
@@ -97,7 +96,7 @@ func (d *Driver) Get(key string) ([]byte, error) {
 
 // MGet return map with key -- string
 // and map value as value -- []byte
-func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
+func (d *Driver) MGet(keys ...string) (map[string][]byte, error) {
 	const op = errors.Op("memcached_plugin_mget")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -111,7 +110,7 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 		}
 	}
 
-	m := make(map[string]interface{}, len(keys))
+	m := make(map[string][]byte, len(keys))
 	for i := range keys {
 		// Here also MultiGet
 		data, err := d.client.Get(keys[i])
@@ -150,7 +149,7 @@ func (d *Driver) Set(items ...*kvv1.Item) error {
 		memcachedItem := &memcache.Item{
 			Key: items[i].Key,
 			// unsafe convert
-			Value: utils.AsBytes(items[i].Value),
+			Value: items[i].Value,
 			Flags: 0,
 		}
 
@@ -206,7 +205,7 @@ func (d *Driver) MExpire(items ...*kvv1.Item) error {
 }
 
 // TTL return time in seconds (int32) for a given keys
-func (d *Driver) TTL(_ ...string) (map[string]interface{}, error) {
+func (d *Driver) TTL(_ ...string) (map[string]string, error) {
 	const op = errors.Op("memcached_plugin_ttl")
 	return nil, errors.E(op, errors.Str("not valid request for memcached, see https://github.com/memcached/memcached/issues/239"))
 }

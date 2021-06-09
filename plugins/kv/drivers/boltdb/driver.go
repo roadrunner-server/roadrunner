@@ -162,7 +162,7 @@ func (d *Driver) Get(key string) ([]byte, error) {
 	return val, nil
 }
 
-func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
+func (d *Driver) MGet(keys ...string) (map[string][]byte, error) {
 	const op = errors.Op("boltdb_driver_mget")
 	// defense
 	if keys == nil {
@@ -177,7 +177,7 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 		}
 	}
 
-	m := make(map[string]interface{}, len(keys))
+	m := make(map[string][]byte, len(keys))
 
 	err := d.DB.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(d.bucket)
@@ -186,7 +186,7 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 		}
 
 		buf := new(bytes.Buffer)
-		var out string
+		var out []byte
 		buf.Grow(100)
 		for i := range keys {
 			value := b.Get([]byte(keys[i]))
@@ -200,7 +200,7 @@ func (d *Driver) MGet(keys ...string) (map[string]interface{}, error) {
 				}
 				m[keys[i]] = out
 				buf.Reset()
-				out = ""
+				out = nil
 			}
 		}
 
@@ -241,8 +241,8 @@ func (d *Driver) Set(items ...*kvv1.Item) error {
 		// performance note: pass a prepared bytes slice with initial cap
 		// we can't move buf and gob out of loop, because we need to clear both from data
 		// but gob will contain (w/o re-init) the past data
-		buf := bytes.Buffer{}
-		encoder := gob.NewEncoder(&buf)
+		buf := new(bytes.Buffer)
+		encoder := gob.NewEncoder(buf)
 		if errors.Is(errors.EmptyItem, err) {
 			return errors.E(op, errors.EmptyItem)
 		}
@@ -342,7 +342,7 @@ func (d *Driver) MExpire(items ...*kvv1.Item) error {
 	return nil
 }
 
-func (d *Driver) TTL(keys ...string) (map[string]interface{}, error) {
+func (d *Driver) TTL(keys ...string) (map[string]string, error) {
 	const op = errors.Op("boltdb_driver_ttl")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -356,7 +356,7 @@ func (d *Driver) TTL(keys ...string) (map[string]interface{}, error) {
 		}
 	}
 
-	m := make(map[string]interface{}, len(keys))
+	m := make(map[string]string, len(keys))
 
 	for i := range keys {
 		if item, ok := d.gc.Load(keys[i]); ok {

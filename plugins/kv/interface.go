@@ -12,7 +12,7 @@ type Storage interface {
 
 	// MGet loads content of multiple values
 	// Returns the map with existing keys and associated values
-	MGet(keys ...string) (map[string]interface{}, error)
+	MGet(keys ...string) (map[string][]byte, error)
 
 	// Set used to upload item to KV with TTL
 	// 0 value in TTL means no TTL
@@ -23,7 +23,7 @@ type Storage interface {
 
 	// TTL return the rest time to live for provided keys
 	// Not supported for the memcached and boltdb
-	TTL(keys ...string) (map[string]interface{}, error)
+	TTL(keys ...string) (map[string]string, error)
 
 	// Delete one or multiple keys.
 	Delete(keys ...string) error
