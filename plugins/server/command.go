@@ -22,7 +22,7 @@ func (server *Plugin) scanCommand(cmd []string) error {
 			// try to stat
 			_, err := os.Stat(cmd[i])
 			if err != nil {
-				return errors.E(op, err)
+				return errors.E(op, errors.FileNotFound, err)
 			}
 
 			// stat successful
