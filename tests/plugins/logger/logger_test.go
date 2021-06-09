@@ -1,16 +1,19 @@
 package logger
 
 import (
+	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/http"
+	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/server"
@@ -19,7 +22,7 @@ import (
 )
 
 func TestLogger(t *testing.T) {
-	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.ErrorLevel))
+	container, err := endure.NewContainer(nil, endure.RetryOnFail(false), endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,7 +100,7 @@ func TestLoggerRawErr(t *testing.T) {
 		cfg,
 		mockLogger,
 		&server.Plugin{},
-		&http.Plugin{},
+		&httpPlugin.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -222,7 +225,7 @@ func TestLoggerNoConfig2(t *testing.T) {
 		vp,
 		&rpc.Plugin{},
 		&logger.ZapLogger{},
-		&http.Plugin{},
+		&httpPlugin.Plugin{},
 		&server.Plugin{},
 	)
 	assert.NoError(t, err)
@@ -267,4 +270,90 @@ func TestLoggerNoConfig2(t *testing.T) {
 
 	stopCh <- struct{}{}
 	wg.Wait()
+}
+
+func TestFileLogger(t *testing.T) {
+	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.ErrorLevel))
+	if err != nil {
+		t.Fatal(err)
+	}
+	// config plugin
+	vp := &config.Viper{}
+	vp.Path = "configs/.rr-file-logger.yaml"
+	vp.Prefix = "rr"
+
+	err = container.RegisterAll(
+		vp,
+		&rpc.Plugin{},
+		&logger.ZapLogger{},
+		&httpPlugin.Plugin{},
+		&server.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = container.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	errCh, err := container.Serve()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// stop by CTRL+C
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+
+	stopCh := make(chan struct{}, 1)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-errCh:
+				assert.NoError(t, e.Error)
+				assert.NoError(t, container.Stop())
+				return
+			case <-c:
+				err = container.Stop()
+				assert.NoError(t, err)
+				return
+			case <-stopCh:
+				assert.NoError(t, container.Stop())
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second * 2)
+	t.Run("HTTPEchoReq", httpEcho)
+
+	f, err := os.ReadFile("test.log")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	strings.Contains(string(f), "worker constructed")
+	strings.Contains(string(f), "201 GET")
+
+	_ = os.Remove("test.log")
+
+	stopCh <- struct{}{}
+	wg.Wait()
+}
+
+func httpEcho(t *testing.T) {
+	req, err := http.NewRequest(http.MethodGet, "http://localhost:54224?hello=world", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusCreated, r.StatusCode)
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
 }
