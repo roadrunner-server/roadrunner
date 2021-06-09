@@ -3,10 +3,6 @@ rpc:
 
 server:
   command: "php ../../http/client.php echo pipes"
-  user: ""
-  group: ""
-  env:
-    "RR_HTTP": "true"
   relay: "pipes"
   relay_timeout: "20s"
 
