@@ -8,7 +8,7 @@ import (
 )
 
 // pattern for the path finding
-const pattern string = `^\/*([A-z0-9/.:-]+\.(php|sh|ph))$`
+const pattern string = `^\/*([A-z/.:-]+\.(php|sh|ph))$`
 
 func (server *Plugin) scanCommand(cmd []string) error {
 	const op = errors.Op("server_command_scan")

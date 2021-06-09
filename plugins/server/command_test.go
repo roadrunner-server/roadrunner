@@ -33,4 +33,11 @@ func TestServerCommandChecker(t *testing.T) {
 	if !errors.Is(errors.FileNotFound, err) {
 		t.Fatal("should be of filenotfound type")
 	}
+
+	cmd6 := "php 0/../../tests/cluent.php --option1 --option2"
+	err = s.scanCommand(strings.Split(cmd6, " "))
+	assert.Error(t, err)
+	if errors.Is(errors.FileNotFound, err) {
+		t.Fatal("should be of filenotfound type")
+	}
 }
