@@ -1,6 +1,18 @@
 name: Windows
 
-on: [ push, pull_request ]
+on:
+  push:
+    branches:
+      - master
+      - beta
+      - stable
+    tags-ignore:
+      - '**'
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
 
 jobs:
   golang:
