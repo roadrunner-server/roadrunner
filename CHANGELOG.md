@@ -20,14 +20,12 @@ v2.3.0 (08.06.2021)
 ## 🩹 Fixes:
 
 - 🐛 Fix: Bug with `informer.Workers` worked incorrectly: [Bug](https://github.com/spiral/roadrunner/issues/686)
-- 🐛 Fix: Internal error messages will not be shown to the user (except HTTP status code). Error message will be in
-  logs: [Bug](https://github.com/spiral/roadrunner/issues/659)
-- 🐛 Fix: Error message will be properly shown in the log in case of `SoftJob`
-  error:  [Bug](https://github.com/spiral/roadrunner/issues/691)
-- 🐛 Fix: Wrong applied middlewares for the `fcgi` server leads to the
-  NPE: [Bug](https://github.com/spiral/roadrunner/issues/701)
+- 🐛 Fix: Internal error messages will not be shown to the user (except HTTP status code). Error message will be in logs: [Bug](https://github.com/spiral/roadrunner/issues/659)
+- 🐛 Fix: Error message will be properly shown in the log in case of `SoftJob` error:  [Bug](https://github.com/spiral/roadrunner/issues/691)
+- 🐛 Fix: Wrong applied middlewares for the `fcgi` server leads to the NPE: [Bug](https://github.com/spiral/roadrunner/issues/701)
 
 ## 📦 Packages:
+
 - 📦 Update goridge to `v3.1.0`
 
 ---
