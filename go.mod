@@ -36,4 +36,5 @@ require (
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/sys v0.0.0-20210514084401-e8d321eab015
 	google.golang.org/protobuf v1.23.0
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )

@@ -1,13 +1,10 @@
-rpc:
-  listen: tcp://127.0.0.1:6001
-
 server:
   command: "php ../../http/client.php echo pipes"
   relay: "pipes"
   relay_timeout: "20s"
 
 http:
-  address: 127.0.0.1:15395
+  address: 127.0.0.1:54224
   max_request_size: 1024
   middleware: [ ]
   uploads:
@@ -19,18 +16,8 @@ http:
     allocate_timeout: 60s
     destroy_timeout: 60s
 
-  ssl:
-    address: :8892
-    redirect: false
-    cert: fixtures/server.crt
-    key: fixtures/server.key
-  #    root_ca: root.crt
-  fcgi:
-    address: tcp://0.0.0.0:7921
-  http2:
-    h2c: false
-    maxConcurrentStreams: 128
 logs:
   mode: development
-  level: error
-
+  level: debug
+  file_logger_options:
+    log_output: "test.log"

@@ -10,7 +10,7 @@ type ZapAdapter struct {
 	zl *zap.Logger
 }
 
-// Create NewZapAdapter which uses general log interface
+// NewZapAdapter ... which uses general log interface
 func NewZapAdapter(zapLogger *zap.Logger) *ZapAdapter {
 	return &ZapAdapter{
 		zl: zapLogger.WithOptions(zap.AddCallerSkip(1)),

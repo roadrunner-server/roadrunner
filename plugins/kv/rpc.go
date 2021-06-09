@@ -16,11 +16,11 @@ type rpc struct {
 	log logger.Logger
 }
 
-// Has accept []*payload.Payload proto payload with Storage and Item
+// Has accept []*kvv1.Payload proto payload with Storage and Item
 func (r *rpc) Has(in *kvv1.Payload, res *map[string]bool) error {
 	const op = errors.Op("rpc_has")
 
-	if in.Storage == "" {
+	if in.GetStorage() == "" {
 		return errors.E(op, errors.Str("no storage provided"))
 	}
 
@@ -30,10 +30,10 @@ func (r *rpc) Has(in *kvv1.Payload, res *map[string]bool) error {
 		keys = append(keys, in.Items[i].Key)
 	}
 
-	if st, ok := r.storages[in.Storage]; ok {
+	if st, ok := r.storages[in.GetStorage()]; ok {
 		ret, err := st.Has(keys...)
 		if err != nil {
-			return err
+			return errors.E(op, err)
 		}
 
 		// update the value in the pointer
@@ -52,7 +52,7 @@ func (r *rpc) Set(in *kvv1.Payload, ok *bool) error {
 	if st, exists := r.storages[in.GetStorage()]; exists {
 		err := st.Set(in.GetItems()...)
 		if err != nil {
-			return err
+			return errors.E(op, err)
 		}
 
 		// save the result
@@ -77,7 +77,7 @@ func (r *rpc) MGet(in *kvv1.Payload, res *map[string]interface{}) error {
 	if st, exists := r.storages[in.GetStorage()]; exists {
 		ret, err := st.MGet(keys...)
 		if err != nil {
-			return err
+			return errors.E(op, err)
 		}
 
 		// save the result
@@ -119,7 +119,7 @@ func (r *rpc) TTL(in *kvv1.Payload, res *map[string]interface{}) error {
 	if st, exists := r.storages[in.GetStorage()]; exists {
 		ret, err := st.TTL(keys...)
 		if err != nil {
-			return err
+			return errors.E(op, err)
 		}
 
 		// save the result
