@@ -171,7 +171,7 @@ func (tw *SyncWorkerImpl) execPayload(p payload.Payload) (payload.Payload, error
 
 	flags := frameR.ReadFlags()
 
-	if flags&byte(frame.ERROR) != byte(0) {
+	if flags&frame.ERROR != byte(0) {
 		return payload.Payload{}, errors.E(op, errors.SoftJob, errors.Str(string(frameR.Payload())))
 	}
 

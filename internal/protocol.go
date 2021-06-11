@@ -81,7 +81,7 @@ func FetchPID(rl relay.Relay) (int64, error) {
 
 	flags := frameR.ReadFlags()
 
-	if flags&(byte(frame.CONTROL)) == 0 {
+	if flags&frame.CONTROL == 0 {
 		return 0, errors.E(op, errors.Str("unexpected response, header is missing, no CONTROL flag"))
 	}
 
