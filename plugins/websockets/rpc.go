@@ -41,7 +41,7 @@ func (r *rpc) Publish(in *websocketsv1.Request, out *websocketsv1.Response) erro
 		}
 	}
 
-	out.Ok = false
+	out.Ok = true
 	return nil
 }
 
@@ -63,12 +63,13 @@ func (r *rpc) PublishAsync(in *websocketsv1.Request, out *websocketsv1.Response)
 	for i := 0; i < msgLen; i++ {
 		bb, err := proto.Marshal(in.GetMessages()[i])
 		if err != nil {
+			out.Ok = false
 			return errors.E(op, err)
 		}
 
 		r.plugin.PublishAsync(bb)
 	}
 
-	out.Ok = false
+	out.Ok = true
 	return nil
 }

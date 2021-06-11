@@ -16,17 +16,15 @@ require (
 	github.com/json-iterator/go v1.1.11
 	github.com/klauspost/compress v1.13.0
 	github.com/prometheus/client_golang v1.10.0
-	github.com/savsgio/gotils v0.0.0-20210316171653-c54912823645 // indirect
 	github.com/shirou/gopsutil v3.21.3+incompatible
 	github.com/spf13/viper v1.7.1
 	// SPIRAL ====
 	github.com/spiral/endure v1.0.1
 	github.com/spiral/errors v1.0.11
-	github.com/spiral/goridge/v3 v3.1.0
+	github.com/spiral/goridge/v3 v3.1.3
 	// ===========
 	github.com/stretchr/testify v1.7.0
-	github.com/tklauser/go-sysconf v0.3.4 // indirect
-	github.com/valyala/fasthttp v1.24.0 // indirect
+	github.com/tklauser/go-sysconf v0.3.6 // indirect
 	github.com/valyala/tcplisten v1.0.0
 	github.com/yookoala/gofast v0.6.0
 	go.etcd.io/bbolt v1.3.5

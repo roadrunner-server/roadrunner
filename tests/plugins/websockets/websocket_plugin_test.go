@@ -241,7 +241,7 @@ func RPCWsMemoryPubAsync(t *testing.T) {
 	// subscription done
 	assert.Equal(t, `{"topic":"@join","payload":["foo","foo2"]}`, retMsg)
 
-	publishAsync("", "memory", "foo")
+	publishAsync(t, "", "memory", "foo")
 
 	// VERIFY a makeMessage
 	_, msg, err = c.ReadMessage()
@@ -266,11 +266,11 @@ func RPCWsMemoryPubAsync(t *testing.T) {
 	assert.Equal(t, `{"topic":"@leave","payload":["foo"]}`, retMsg)
 
 	// TRY TO PUBLISH TO UNSUBSCRIBED TOPIC
-	publishAsync("", "memory", "foo")
+	publishAsync(t, "", "memory", "foo")
 
 	go func() {
 		time.Sleep(time.Second * 5)
-		publishAsync2("", "memory", "foo2")
+		publishAsync2(t, "", "memory", "foo2")
 	}()
 
 	// should be only makeMessage from the subscribed foo2 topic
@@ -344,7 +344,7 @@ func RPCWsMemory(t *testing.T) {
 
 	go func() {
 		time.Sleep(time.Second * 5)
-		publish2("", "memory", "foo2")
+		publish2(t, "", "memory", "foo2")
 	}()
 
 	// should be only makeMessage from the subscribed foo2 topic
@@ -416,7 +416,7 @@ func RPCWsRedis(t *testing.T) {
 
 	go func() {
 		time.Sleep(time.Second * 5)
-		publish2("", "redis", "foo2")
+		publish2(t, "", "redis", "foo2")
 	}()
 
 	// should be only makeMessage from the subscribed foo2 topic
@@ -784,7 +784,7 @@ func RPCWsMemoryAllow(t *testing.T) {
 
 	go func() {
 		time.Sleep(time.Second * 5)
-		publish2("", "memory", "foo2")
+		publish2(t, "", "memory", "foo2")
 	}()
 
 	// should be only makeMessage from the subscribed foo2 topic
@@ -812,7 +812,7 @@ func publish(command string, broker string, topics ...string) {
 	}
 }
 
-func publishAsync(command string, broker string, topics ...string) {
+func publishAsync(t *testing.T, command string, broker string, topics ...string) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	if err != nil {
 		panic(err)
@@ -822,12 +822,11 @@ func publishAsync(command string, broker string, topics ...string) {
 
 	ret := &websocketsv1.Response{}
 	err = client.Call("websockets.PublishAsync", makeMessage(command, broker, []byte("hello, PHP"), topics...), ret)
-	if err != nil {
-		panic(err)
-	}
+	assert.NoError(t, err)
+	assert.True(t, ret.Ok)
 }
 
-func publishAsync2(command string, broker string, topics ...string) {
+func publishAsync2(t *testing.T, command string, broker string, topics ...string) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	if err != nil {
 		panic(err)
@@ -837,12 +836,11 @@ func publishAsync2(command string, broker string, topics ...string) {
 
 	ret := &websocketsv1.Response{}
 	err = client.Call("websockets.PublishAsync", makeMessage(command, broker, []byte("hello, PHP2"), topics...), ret)
-	if err != nil {
-		panic(err)
-	}
+	assert.NoError(t, err)
+	assert.True(t, ret.Ok)
 }
 
-func publish2(command string, broker string, topics ...string) {
+func publish2(t *testing.T, command string, broker string, topics ...string) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	if err != nil {
 		panic(err)
@@ -852,9 +850,8 @@ func publish2(command string, broker string, topics ...string) {
 
 	ret := &websocketsv1.Response{}
 	err = client.Call("websockets.Publish", makeMessage(command, broker, []byte("hello, PHP2"), topics...), ret)
-	if err != nil {
-		panic(err)
-	}
+	assert.NoError(t, err)
+	assert.True(t, ret.Ok)
 }
 func messageWS(command string, broker string, payload []byte, topics ...string) *websocketsv1.Message {
 	return &websocketsv1.Message{
