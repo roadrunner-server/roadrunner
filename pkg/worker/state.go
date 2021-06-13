@@ -44,7 +44,7 @@ type StateImpl struct {
 	lastUsed uint64
 }
 
-// Thread safe
+// NewWorkerState initializes a state for the sync.Worker
 func NewWorkerState(value int64) *StateImpl {
 	return &StateImpl{value: value}
 }

@@ -35,9 +35,7 @@ func (v *Vec) Dequeue() (worker.BaseProcess, bool) {
 		return nil, true
 	}
 
-	w := <-v.workers
-
-	return w, false
+	return <-v.workers, false
 }
 
 func (v *Vec) Destroy() {
