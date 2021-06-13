@@ -2,6 +2,7 @@ package internal
 
 import (
 	"os"
+	"sync"
 
 	j "github.com/json-iterator/go"
 	"github.com/spiral/errors"
@@ -19,9 +20,25 @@ type pidCommand struct {
 	Pid int `json:"pid"`
 }
 
+var fPool = sync.Pool{New: func() interface{} {
+	return frame.NewFrame()
+}}
+
+func getFrame() *frame.Frame {
+	return fPool.Get().(*frame.Frame)
+}
+
+func putFrame(f *frame.Frame) {
+	f.Reset()
+	fPool.Put(f)
+}
+
 func SendControl(rl relay.Relay, payload interface{}) error {
 	const op = errors.Op("send_control")
-	fr := frame.NewFrame()
+
+	fr := getFrame()
+	defer putFrame(fr)
+
 	fr.WriteVersion(frame.VERSION_1)
 	fr.WriteFlags(frame.CONTROL)
 
@@ -51,6 +68,8 @@ func SendControl(rl relay.Relay, payload interface{}) error {
 	fr.WritePayload(data)
 	fr.WriteCRC()
 
+	// hold a pointer to a frame
+	// Do we need a copy here????
 	err = rl.Send(fr)
 	if err != nil {
 		return errors.E(op, err)
@@ -66,27 +85,28 @@ func FetchPID(rl relay.Relay) (int64, error) {
 		return 0, errors.E(op, err)
 	}
 
-	frameR := frame.NewFrame()
+	fr := getFrame()
+	defer putFrame(fr)
 
-	err = rl.Receive(frameR)
-	if !frameR.VerifyCRC() {
+	err = rl.Receive(fr)
+	if !fr.VerifyCRC() {
 		return 0, errors.E(op, errors.Str("CRC mismatch"))
 	}
 	if err != nil {
 		return 0, errors.E(op, err)
 	}
-	if frameR == nil {
+	if fr == nil {
 		return 0, errors.E(op, errors.Str("nil frame received"))
 	}
 
-	flags := frameR.ReadFlags()
+	flags := fr.ReadFlags()
 
 	if flags&frame.CONTROL == 0 {
 		return 0, errors.E(op, errors.Str("unexpected response, header is missing, no CONTROL flag"))
 	}
 
 	link := &pidCommand{}
-	err = json.Unmarshal(frameR.Payload(), link)
+	err = json.Unmarshal(fr.Payload(), link)
 	if err != nil {
 		return 0, errors.E(op, err)
 	}
