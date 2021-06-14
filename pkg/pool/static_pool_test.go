@@ -588,7 +588,7 @@ func Benchmark_Pool_Echo(b *testing.B) {
 	}
 }
 
-//
+// Benchmark_Pool_Echo_Batched-32          366996          2873 ns/op        1233 B/op          24 allocs/op
 func Benchmark_Pool_Echo_Batched(b *testing.B) {
 	ctx := context.Background()
 	p, err := Initialize(
@@ -619,7 +619,7 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 	wg.Wait()
 }
 
-//
+// Benchmark_Pool_Echo_Replaced-32    	     104/100	  10900218 ns/op	   52365 B/op	     125 allocs/op
 func Benchmark_Pool_Echo_Replaced(b *testing.B) {
 	ctx := context.Background()
 	p, err := Initialize(
