@@ -1,0 +1,14 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+logs:
+  mode: development
+  level: error
+
+redis-rr:
+  addrs:
+    - 'localhost:6379'
+
+kv:
+  redis-rr:
+    driver: redis

@@ -10,36 +10,36 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type Plugin struct {
+type PubSubDriver struct {
 	sync.RWMutex
-	log logger.Logger
-
 	// channel with the messages from the RPC
 	pushCh chan []byte
 	// user-subscribed topics
 	storage bst.Storage
+	log     logger.Logger
 }
 
-func NewInMemory(log logger.Logger) pubsub.PubSub {
-	return &Plugin{
-		log:     log,
+func NewPubSubDriver(log logger.Logger, _ string) (pubsub.PubSub, error) {
+	ps := &PubSubDriver{
 		pushCh:  make(chan []byte, 10),
 		storage: bst.NewBST(),
+		log:     log,
 	}
+	return ps, nil
 }
 
-func (p *Plugin) Publish(message []byte) error {
+func (p *PubSubDriver) Publish(message []byte) error {
 	p.pushCh <- message
 	return nil
 }
 
-func (p *Plugin) PublishAsync(message []byte) {
+func (p *PubSubDriver) PublishAsync(message []byte) {
 	go func() {
 		p.pushCh <- message
 	}()
 }
 
-func (p *Plugin) Subscribe(connectionID string, topics ...string) error {
+func (p *PubSubDriver) Subscribe(connectionID string, topics ...string) error {
 	p.Lock()
 	defer p.Unlock()
 	for i := 0; i < len(topics); i++ {
@@ -48,7 +48,7 @@ func (p *Plugin) Subscribe(connectionID string, topics ...string) error {
 	return nil
 }
 
-func (p *Plugin) Unsubscribe(connectionID string, topics ...string) error {
+func (p *PubSubDriver) Unsubscribe(connectionID string, topics ...string) error {
 	p.Lock()
 	defer p.Unlock()
 	for i := 0; i < len(topics); i++ {
@@ -57,7 +57,7 @@ func (p *Plugin) Unsubscribe(connectionID string, topics ...string) error {
 	return nil
 }
 
-func (p *Plugin) Connections(topic string, res map[string]struct{}) {
+func (p *PubSubDriver) Connections(topic string, res map[string]struct{}) {
 	p.RLock()
 	defer p.RUnlock()
 
@@ -67,7 +67,7 @@ func (p *Plugin) Connections(topic string, res map[string]struct{}) {
 	}
 }
 
-func (p *Plugin) Next() (*websocketsv1.Message, error) {
+func (p *PubSubDriver) Next() (*websocketsv1.Message, error) {
 	msg := <-p.pushCh
 	if msg == nil {
 		return nil, nil

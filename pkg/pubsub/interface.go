@@ -44,3 +44,7 @@ type Publisher interface {
 type Reader interface {
 	Next() (*websocketsv1.Message, error)
 }
+
+type PSProvider interface {
+	PSProvide(key string) (PubSub, error)
+}

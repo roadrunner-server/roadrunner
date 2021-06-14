@@ -37,5 +37,5 @@ type StorageDriver interface {
 // Provider provides storage based on the config
 type Provider interface {
 	// Provide provides Storage based on the config key
-	Provide(key string) (Storage, error)
+	KVProvide(key string) (Storage, error)
 }
