@@ -1,6 +1,20 @@
 CHANGELOG
 =========
 
+v2.3.1 (_.06.2021)
+-------------------
+## 🩹 Fixes:
+
+- 🐛 Fix: Bugs with `boltdb` storage: [Boom](https://github.com/spiral/roadrunner/issues/717), [Boom](https://github.com/spiral/roadrunner/issues/718), [Boom](https://github.com/spiral/roadrunner/issues/719)
+- 🐛 Fix: Bug with incorrect redis initialization and usage [Bug](https://github.com/spiral/roadrunner/issues/720)
+- 🐛 Fix: Bug, Goridge duplicate error messages [Bug](https://github.com/spiral/goridge/issues/128)
+
+## 📦 Packages:
+
+- 📦 Update goridge to `v3.1.4`
+
+---
+
 v2.3.0 (08.06.2021)
 -------------------
 
