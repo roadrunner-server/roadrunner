@@ -214,6 +214,112 @@ func TestWSRedisAndMemory(t *testing.T) {
 	wg.Wait()
 }
 
+func TestWSRedisAndMemoryGlobal(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-websockets-redis-memory.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&redis.Plugin{},
+		&websockets.Plugin{},
+		&httpPlugin.Plugin{},
+		&memory.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	stopCh := make(chan struct{}, 1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second * 1)
+	t.Run("RPCWsMemoryPubAsync", RPCWsMemoryPubAsync)
+	t.Run("RPCWsMemory", RPCWsMemory)
+	t.Run("RPCWsRedis", RPCWsRedis)
+
+	stopCh <- struct{}{}
+
+	wg.Wait()
+}
+
+func TestWSRedisNoSection(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-websockets-redis-no-section.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&redis.Plugin{},
+		&websockets.Plugin{},
+		&httpPlugin.Plugin{},
+		&memory.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = cont.Serve()
+	assert.Error(t, err)
+}
+
 func RPCWsMemoryPubAsync(t *testing.T) {
 	da := websocket.Dialer{
 		Proxy:            http.ProxyFromEnvironment,

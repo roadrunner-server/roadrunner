@@ -90,7 +90,7 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 }
 
 func (p *Plugin) Serve() chan error {
-	errCh := make(chan error)
+	errCh := make(chan error, 1)
 	const op = errors.Op("websockets_plugin_serve")
 
 	err := p.initPubSubs()
