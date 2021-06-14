@@ -1,0 +1,13 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+
+kv:
+  boltdb-south:
+    driver: boltdb
+    file: "rr.db"
+
+  boltdb-africa:
+    driver: boltdb
+    file: "africa.db"
+    permissions: 0777

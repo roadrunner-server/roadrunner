@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/gob"
 	"os"
-	"path"
 	"strings"
 	"sync"
 	"time"
@@ -47,14 +46,21 @@ func NewBoltDBDriver(log logger.Logger, key string, cfgPlugin config.Configurer,
 		return nil, errors.E(op, err)
 	}
 
-	d.bucket = []byte(d.cfg.Bucket)
-	d.timeout = time.Duration(d.cfg.Interval) * time.Second
-	d.gc = sync.Map{}
-
 	// add default values
 	d.cfg.InitDefaults()
 
-	db, err := bolt.Open(path.Join(d.cfg.Dir, d.cfg.File), os.FileMode(d.cfg.Permissions), nil)
+	d.bucket = []byte(d.cfg.bucket)
+	d.timeout = time.Duration(d.cfg.Interval) * time.Second
+	d.gc = sync.Map{}
+
+	db, err := bolt.Open(d.cfg.File, os.FileMode(d.cfg.Permissions), &bolt.Options{
+		Timeout:        time.Second * 20,
+		NoGrowSync:     false,
+		NoFreelistSync: false,
+		ReadOnly:       false,
+		NoSync:         false,
+	})
+
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
@@ -65,7 +71,7 @@ func NewBoltDBDriver(log logger.Logger, key string, cfgPlugin config.Configurer,
 	// tx.Commit invokes via the db.Update
 	err = db.Update(func(tx *bolt.Tx) error {
 		const upOp = errors.Op("boltdb_plugin_update")
-		_, err = tx.CreateBucketIfNotExists([]byte(d.cfg.Bucket))
+		_, err = tx.CreateBucketIfNotExists([]byte(d.cfg.bucket))
 		if err != nil {
 			return errors.E(op, upOp)
 		}
