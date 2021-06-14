@@ -16,6 +16,7 @@ ignore:
   - "tests"
   - "plugins/metrics/config_test.go"
   - "plugins/websockets/storage/storage_test.go"
+  - "plugins/websockets/config.go"
   - "pkg/bst/bst_test.go"
   - "pkg/doc"
   - "pkg/pool/static_pool_test.go"

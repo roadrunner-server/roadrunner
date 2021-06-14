@@ -14,8 +14,10 @@ type Plugin1 struct {
 }
 
 func (p *Plugin1) Init(redis redisPlugin.Redis) error {
-	p.redisClient = redis.GetClient()
-	return nil
+	var err error
+	p.redisClient, err = redis.RedisClient("redis")
+
+	return err
 }
 
 func (p *Plugin1) Serve() chan error {

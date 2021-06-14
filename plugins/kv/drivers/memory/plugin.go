@@ -45,7 +45,7 @@ func (s *Plugin) Stop() error {
 	return nil
 }
 
-func (s *Plugin) Provide(key string) (kv.Storage, error) {
+func (s *Plugin) KVProvide(key string) (kv.Storage, error) {
 	const op = errors.Op("inmemory_plugin_provide")
 	st, err := NewInMemoryDriver(s.log, key, s.cfgPlugin, s.stop)
 	if err != nil {

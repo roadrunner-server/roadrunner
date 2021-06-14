@@ -20,6 +20,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/plugins/memory"
 	"github.com/spiral/roadrunner/v2/plugins/redis"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/server"
@@ -45,6 +46,7 @@ func TestBroadcastInit(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
+		&memory.Plugin{},
 	)
 
 	assert.NoError(t, err)
@@ -153,6 +155,7 @@ func TestWSRedisAndMemory(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
+		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -209,6 +212,112 @@ func TestWSRedisAndMemory(t *testing.T) {
 	stopCh <- struct{}{}
 
 	wg.Wait()
+}
+
+func TestWSRedisAndMemoryGlobal(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-websockets-redis-memory.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&redis.Plugin{},
+		&websockets.Plugin{},
+		&httpPlugin.Plugin{},
+		&memory.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	stopCh := make(chan struct{}, 1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second * 1)
+	t.Run("RPCWsMemoryPubAsync", RPCWsMemoryPubAsync)
+	t.Run("RPCWsMemory", RPCWsMemory)
+	t.Run("RPCWsRedis", RPCWsRedis)
+
+	stopCh <- struct{}{}
+
+	wg.Wait()
+}
+
+func TestWSRedisNoSection(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-websockets-redis-no-section.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&redis.Plugin{},
+		&websockets.Plugin{},
+		&httpPlugin.Plugin{},
+		&memory.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = cont.Serve()
+	assert.Error(t, err)
 }
 
 func RPCWsMemoryPubAsync(t *testing.T) {
@@ -446,6 +555,7 @@ func TestWSMemoryDeny(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
+		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -573,6 +683,7 @@ func TestWSMemoryStop(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
+		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -665,6 +776,7 @@ func TestWSMemoryOk(t *testing.T) {
 		&redis.Plugin{},
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
+		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -853,6 +965,7 @@ func publish2(t *testing.T, command string, broker string, topics ...string) {
 	assert.NoError(t, err)
 	assert.True(t, ret.Ok)
 }
+
 func messageWS(command string, broker string, payload []byte, topics ...string) *websocketsv1.Message {
 	return &websocketsv1.Message{
 		Topics:  topics,

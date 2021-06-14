@@ -21,7 +21,7 @@ require (
 	// SPIRAL ====
 	github.com/spiral/endure v1.0.2
 	github.com/spiral/errors v1.0.11
-	github.com/spiral/goridge/v3 v3.1.3
+	github.com/spiral/goridge/v3 v3.1.4
 	// ===========
 	github.com/stretchr/testify v1.7.0
 	github.com/tklauser/go-sysconf v0.3.6 // indirect

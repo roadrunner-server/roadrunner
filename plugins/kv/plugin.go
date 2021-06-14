@@ -50,7 +50,7 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	return nil
 }
 
-func (p *Plugin) Serve() chan error {
+func (p *Plugin) Serve() chan error { //nolint:gocognit
 	errCh := make(chan error, 1)
 	const op = errors.Op("kv_plugin_serve")
 	// key - storage name in the config
@@ -100,7 +100,7 @@ func (p *Plugin) Serve() chan error {
 				continue
 			}
 
-			storage, err := p.drivers[memcached].Provide(configKey)
+			storage, err := p.drivers[memcached].KVProvide(configKey)
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -115,7 +115,7 @@ func (p *Plugin) Serve() chan error {
 				continue
 			}
 
-			storage, err := p.drivers[boltdb].Provide(configKey)
+			storage, err := p.drivers[boltdb].KVProvide(configKey)
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -129,7 +129,7 @@ func (p *Plugin) Serve() chan error {
 				continue
 			}
 
-			storage, err := p.drivers[memory].Provide(configKey)
+			storage, err := p.drivers[memory].KVProvide(configKey)
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -143,14 +143,32 @@ func (p *Plugin) Serve() chan error {
 				continue
 			}
 
-			storage, err := p.drivers[redis].Provide(configKey)
-			if err != nil {
-				errCh <- errors.E(op, err)
-				return errCh
-			}
+			// first - try local configuration
+			switch {
+			case p.cfgPlugin.Has(configKey):
+				storage, err := p.drivers[redis].KVProvide(configKey)
+				if err != nil {
+					errCh <- errors.E(op, err)
+					return errCh
+				}
 
-			// save the storage
-			p.storages[k] = storage
+				// save the storage
+				p.storages[k] = storage
+			case p.cfgPlugin.Has(redis):
+				storage, err := p.drivers[redis].KVProvide(configKey)
+				if err != nil {
+					errCh <- errors.E(op, err)
+					return errCh
+				}
+
+				// save the storage
+				p.storages[k] = storage
+				continue
+			default:
+				// otherwise - error, no local or global config
+				p.log.Warn("no global or local redis configuration provided", "key", configKey)
+				continue
+			}
 
 		default:
 			p.log.Error("unknown storage", errors.E(op, errors.Errorf("unknown storage %s", v.(map[string]interface{})[driver])))
