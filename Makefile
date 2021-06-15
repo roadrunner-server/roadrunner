@@ -62,3 +62,31 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./tests/plugins/kv
 	go test -v -race -tags=debug ./tests/plugins/websockets
 	docker-compose -f tests/docker-compose.yaml down
+
+testGo1.17beta1: ## Run application tests
+	docker-compose -f tests/docker-compose.yaml up -d
+	go1.17beta1 test -v -race -tags=debug ./pkg/transport/pipe
+	go1.17beta1 test -v -race -tags=debug ./pkg/transport/socket
+	go1.17beta1 test -v -race -tags=debug ./pkg/pool
+	go1.17beta1 test -v -race -tags=debug ./pkg/worker
+	go1.17beta1 test -v -race -tags=debug ./pkg/worker_watcher
+	go1.17beta1 test -v -race -tags=debug ./pkg/bst
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/http
+	go1.17beta1 test -v -race -tags=debug ./plugins/http/config
+	go1.17beta1 test -v -race -tags=debug ./plugins/server
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/informer
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/reload
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/server
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/service
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/status
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/config
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/gzip
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/headers
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/logger
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/metrics
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/redis
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/resetter
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/rpc
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/kv
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/websockets
+	docker-compose -f tests/docker-compose.yaml down
