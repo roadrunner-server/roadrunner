@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  beanstalk:
+    image: schickling/beanstalkd
+    ports:
+      - "11300:11300"
+
+  sqs:
+    image: vsouza/sqs-local
+    ports:
+      - "9324:9324"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: /
+    ports:
+      - "15672:15672"
+      - "5672:5672"
