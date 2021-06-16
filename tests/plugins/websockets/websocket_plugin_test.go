@@ -356,7 +356,7 @@ func RPCWsMemoryPubAsync(t *testing.T) {
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
-	assert.Equal(t, "hello, PHP", retMsg)
+	assert.Equal(t, "{\"topic\":\"foo\",\"payload\":\"hello, PHP\"}", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
 	d, err = json.Marshal(messageWS("leave", "memory", []byte("hello websockets"), "foo"))
@@ -386,7 +386,7 @@ func RPCWsMemoryPubAsync(t *testing.T) {
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
-	assert.Equal(t, "hello, PHP2", retMsg)
+	assert.Equal(t, "{\"topic\":\"foo2\",\"payload\":\"hello, PHP2\"}", retMsg)
 
 	err = c.WriteControl(websocket.CloseMessage, nil, time.Time{})
 	assert.NoError(t, err)
@@ -430,7 +430,7 @@ func RPCWsMemory(t *testing.T) {
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
-	assert.Equal(t, "hello, PHP", retMsg)
+	assert.Equal(t, "{\"topic\":\"foo\",\"payload\":\"hello, PHP\"}", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
 	d, err = json.Marshal(messageWS("leave", "memory", []byte("hello websockets"), "foo"))
@@ -460,7 +460,7 @@ func RPCWsMemory(t *testing.T) {
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
-	assert.Equal(t, "hello, PHP2", retMsg)
+	assert.Equal(t, "{\"topic\":\"foo2\",\"payload\":\"hello, PHP2\"}", retMsg)
 
 	err = c.WriteControl(websocket.CloseMessage, nil, time.Time{})
 	assert.NoError(t, err)
@@ -502,7 +502,7 @@ func RPCWsRedis(t *testing.T) {
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
-	assert.Equal(t, "hello, PHP", retMsg)
+	assert.Equal(t, "{\"topic\":\"foo\",\"payload\":\"hello, PHP\"}", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
 	d, err = json.Marshal(messageWS("leave", "redis", []byte("hello websockets"), "foo"))
@@ -532,7 +532,7 @@ func RPCWsRedis(t *testing.T) {
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
-	assert.Equal(t, "hello, PHP2", retMsg)
+	assert.Equal(t, "{\"topic\":\"foo2\",\"payload\":\"hello, PHP2\"}", retMsg)
 
 	err = c.WriteControl(websocket.CloseMessage, nil, time.Time{})
 	assert.NoError(t, err)
@@ -873,7 +873,7 @@ func RPCWsMemoryAllow(t *testing.T) {
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
-	assert.Equal(t, "hello, PHP", retMsg)
+	assert.Equal(t, "{\"topic\":\"foo\",\"payload\":\"hello, PHP\"}", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
 	d, err = json.Marshal(messageWS("leave", "memory", []byte("hello websockets"), "foo"))
@@ -903,7 +903,7 @@ func RPCWsMemoryAllow(t *testing.T) {
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
-	assert.Equal(t, "hello, PHP2", retMsg)
+	assert.Equal(t, "{\"topic\":\"foo2\",\"payload\":\"hello, PHP2\"}", retMsg)
 
 	err = c.WriteControl(websocket.CloseMessage, nil, time.Time{})
 	assert.NoError(t, err)

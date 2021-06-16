@@ -22,7 +22,7 @@ func NewConnection(wsConn *websocket.Conn, log logger.Logger) *Connection {
 	}
 }
 
-func (c *Connection) Write(mt int, data []byte) error {
+func (c *Connection) Write(data []byte) error {
 	c.Lock()
 	defer c.Unlock()
 
@@ -34,7 +34,7 @@ func (c *Connection) Write(mt int, data []byte) error {
 		}
 	}()
 
-	err := c.conn.WriteMessage(mt, data)
+	err := c.conn.WriteMessage(websocket.TextMessage, data)
 	if err != nil {
 		return errors.E(op, err)
 	}

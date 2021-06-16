@@ -3,11 +3,12 @@ package pool
 import (
 	"sync"
 
-	"github.com/fasthttp/websocket"
+	json "github.com/json-iterator/go"
 	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
 	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/connection"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 type WorkersPool struct {
@@ -67,6 +68,12 @@ func (wp *WorkersPool) get() map[string]struct{} {
 	return wp.resPool.Get().(map[string]struct{})
 }
 
+// Response from the server
+type Response struct {
+	Topic   string `json:"topic"`
+	Payload string `json:"payload"`
+}
+
 func (wp *WorkersPool) do() { //nolint:gocognit
 	go func() {
 		for {
@@ -89,44 +96,52 @@ func (wp *WorkersPool) do() { //nolint:gocognit
 					continue
 				}
 
-				res := wp.get()
-
+				// send a message to every topic
 				for i := 0; i < len(msg.GetTopics()); i++ {
+					// get free map
+					res := wp.get()
+
 					// get connections for the particular topic
 					br.Connections(msg.GetTopics()[i], res)
-				}
 
-				if len(res) == 0 {
-					for i := 0; i < len(msg.GetTopics()); i++ {
+					if len(res) == 0 {
 						wp.log.Info("no such topic", "topic", msg.GetTopics()[i])
+						wp.put(res)
+						continue
 					}
-					wp.put(res)
-					continue
-				}
 
-				for i := range res {
-					c, ok := wp.connections.Load(i)
-					if !ok {
-						for i := 0; i < len(msg.GetTopics()); i++ {
+					// res is a map with a connectionsID
+					for topic := range res {
+						c, ok := wp.connections.Load(topic)
+						if !ok {
 							wp.log.Warn("the user disconnected connection before the message being written to it", "broker", msg.GetBroker(), "topics", msg.GetTopics()[i])
+							wp.put(res)
+							continue
 						}
-						continue
-					}
 
-					conn := c.(*connection.Connection)
-
-					// put data into the bytes buffer
-					err := conn.Write(websocket.BinaryMessage, msg.GetPayload())
-					if err != nil {
-						for i := 0; i < len(msg.GetTopics()); i++ {
-							wp.log.Error("error sending payload over the connection", "error", err, "broker", msg.GetBroker(), "topics", msg.GetTopics()[i])
+						response := &Response{
+							Topic:   msg.GetTopics()[i],
+							Payload: utils.AsString(msg.GetPayload()),
 						}
-						continue
+
+						d, err := json.Marshal(response)
+						if err != nil {
+							wp.log.Error("error marshaling response", "error", err)
+							wp.put(res)
+							break
+						}
+
+						// put data into the bytes buffer
+						err = c.(*connection.Connection).Write(d)
+						if err != nil {
+							for i := 0; i < len(msg.GetTopics()); i++ {
+								wp.log.Error("error sending payload over the connection", "error", err, "broker", msg.GetBroker(), "topics", msg.GetTopics()[i])
+							}
+							wp.put(res)
+							continue
+						}
 					}
 				}
-
-				// put map with results back
-				wp.put(res)
 			case <-wp.exit:
 				wp.log.Info("get exit signal, exiting from the workers pool")
 				return
