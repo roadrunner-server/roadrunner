@@ -82,6 +82,13 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 		HandshakeTimeout: time.Second * 60,
 		ReadBufferSize:   1024,
 		WriteBufferSize:  1024,
+		WriteBufferPool:  nil,
+		Subprotocols:     nil,
+		Error:            nil,
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+		EnableCompression: false,
 	}
 	p.serveExit = make(chan struct{})
 	p.server = server

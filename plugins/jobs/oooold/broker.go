@@ -1,4 +1,4 @@
-package jobs
+package oooold
 
 // Broker manages set of pipelines and provides ability to push jobs into them.
 type Broker interface {

@@ -1,4 +1,4 @@
-package jobs
+package oooold
 
 import (
 	"fmt"
@@ -87,7 +87,7 @@ func (p Pipeline) With(name string, value interface{}) Pipeline {
 	}
 	out[name] = value
 
-	return Pipeline(out)
+	return out
 }
 
 // Name returns pipeline name.
@@ -121,7 +121,7 @@ func (p Pipeline) Map(name string) Pipeline {
 		}
 	}
 
-	return Pipeline(out)
+	return out
 }
 
 // Bool must return option value as string or return default value.
