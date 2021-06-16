@@ -41,7 +41,6 @@ func TestConfig_OriginWildCard(t *testing.T) {
 	assert.False(t, isOriginAllowed("asde!@#!!@#!%", cfg))
 	assert.False(t, isOriginAllowed("http://*.domain.com", cfg))
 
-
 	assert.False(t, isOriginAllowed("https://*site.com", cfg))
 	assert.True(t, isOriginAllowed("https://some.my.site.com", cfg))
 }
@@ -62,7 +61,6 @@ func TestConfig_OriginWildCard2(t *testing.T) {
 	assert.False(t, isOriginAllowed("****", cfg))
 	assert.False(t, isOriginAllowed("asde!@#!!@#!%", cfg))
 	assert.False(t, isOriginAllowed("http://*.domain.com", cfg))
-
 
 	assert.False(t, isOriginAllowed("https://*site.com", cfg))
 	assert.True(t, isOriginAllowed("https://my.bad.com", cfg))
