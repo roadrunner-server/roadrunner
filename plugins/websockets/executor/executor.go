@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/fasthttp/websocket"
 	json "github.com/json-iterator/go"
 	"github.com/spiral/errors"
 	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
@@ -100,7 +99,7 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 					return errors.E(op, fmt.Errorf("%v,%v", err, errJ))
 				}
 
-				errW := e.conn.Write(websocket.BinaryMessage, packet)
+				errW := e.conn.Write(packet)
 				if errW != nil {
 					e.log.Error("error writing payload to the connection", "payload", packet, "error", errW)
 					return errors.E(op, fmt.Errorf("%v,%v", err, errW))
@@ -120,7 +119,7 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 				return errors.E(op, err)
 			}
 
-			err = e.conn.Write(websocket.BinaryMessage, packet)
+			err = e.conn.Write(packet)
 			if err != nil {
 				e.log.Error("error writing payload to the connection", "payload", packet, "error", err)
 				return errors.E(op, err)
@@ -150,7 +149,7 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 				return errors.E(op, err)
 			}
 
-			err = e.conn.Write(websocket.BinaryMessage, packet)
+			err = e.conn.Write(packet)
 			if err != nil {
 				e.log.Error("error writing payload to the connection", "payload", packet, "error", err)
 				return errors.E(op, err)

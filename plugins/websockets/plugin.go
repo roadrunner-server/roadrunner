@@ -82,6 +82,9 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 		HandshakeTimeout: time.Second * 60,
 		ReadBufferSize:   1024,
 		WriteBufferSize:  1024,
+		CheckOrigin: func(r *http.Request) bool {
+			return isOriginAllowed(r.Header.Get("Origin"), p.cfg)
+		},
 	}
 	p.serveExit = make(chan struct{})
 	p.server = server

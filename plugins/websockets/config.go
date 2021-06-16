@@ -1,6 +1,7 @@
 package websockets
 
 import (
+	"strings"
 	"time"
 
 	"github.com/spiral/roadrunner/v2/pkg/pool"
@@ -57,9 +58,15 @@ type Config struct {
 	PubSubs    []string `mapstructure:"pubsubs"`
 	Middleware []string `mapstructure:"middleware"`
 
-	Redis *RedisConfig `mapstructure:"redis"`
+	AllowedOrigin string `mapstructure:"allowed_origin"`
 
-	Pool *pool.Config `mapstructure:"pool"`
+	// wildcard origin
+	allowedWOrigins []wildcard
+	allowedOrigins  []string
+	allowedAll      bool
+
+	Redis *RedisConfig `mapstructure:"redis"`
+	Pool  *pool.Config `mapstructure:"pool"`
 }
 
 // InitDefault initialize default values for the ws config
@@ -67,6 +74,7 @@ func (c *Config) InitDefault() {
 	if c.Path == "" {
 		c.Path = "/ws"
 	}
+
 	if len(c.PubSubs) == 0 {
 		// memory used by default
 		c.PubSubs = append(c.PubSubs, "memory")
@@ -86,10 +94,9 @@ func (c *Config) InitDefault() {
 		if c.Pool.DestroyTimeout == 0 {
 			c.Pool.DestroyTimeout = time.Minute
 		}
-		if c.Pool.Supervisor == nil {
-			return
+		if c.Pool.Supervisor != nil {
+			c.Pool.Supervisor.InitDefaults()
 		}
-		c.Pool.Supervisor.InitDefaults()
 	}
 
 	if c.Redis != nil {
@@ -97,5 +104,23 @@ func (c *Config) InitDefault() {
 			// append default
 			c.Redis.Addrs = append(c.Redis.Addrs, "localhost:6379")
 		}
+	}
+
+	if c.AllowedOrigin == "" {
+		c.AllowedOrigin = "*"
+	}
+
+	// Normalize
+	origin := strings.ToLower(c.AllowedOrigin)
+	if origin == "*" {
+		// If "*" is present in the list, turn the whole list into a match all
+		c.allowedAll = true
+		return
+	} else if i := strings.IndexByte(origin, '*'); i >= 0 {
+		// Split the origin in two: start and end string without the *
+		w := wildcard{origin[0:i], origin[i+1:]}
+		c.allowedWOrigins = append(c.allowedWOrigins, w)
+	} else {
+		c.allowedOrigins = append(c.allowedOrigins, origin)
 	}
 }
