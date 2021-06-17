@@ -21,7 +21,8 @@ http:
 
 
 websockets:
-  pubsubs: [ "redis", "memory" ]
+  broker: test
+  allowed_origin: "*"
   path: "/ws"
 
 logs:

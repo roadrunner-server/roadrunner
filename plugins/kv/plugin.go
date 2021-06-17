@@ -85,6 +85,11 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 		when user requests for example boltdb-south, we should provide that particular preconfigured storage
 	*/
 	for k, v := range p.cfg.Data {
+		// for example if the key not properly formatted (yaml)
+		if v == nil {
+			continue
+		}
+
 		if _, ok := v.(map[string]interface{})[driver]; !ok {
 			errCh <- errors.E(op, errors.Errorf("could not find mandatory driver field in the %s storage", k))
 			return errCh

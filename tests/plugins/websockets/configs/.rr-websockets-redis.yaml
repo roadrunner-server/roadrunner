@@ -23,10 +23,13 @@ redis:
   addrs:
     - "localhost:6379"
 
+broadcast:
+  test:
+    driver: redis
+
 websockets:
-  # pubsubs should implement PubSub interface to be collected via endure.Collects
-  # pubsubs might use general config section
-  pubsubs: [ "redis", "memory" ]
+  broker: test
+  allowed_origin: "*"
   path: "/ws"
 
 logs:

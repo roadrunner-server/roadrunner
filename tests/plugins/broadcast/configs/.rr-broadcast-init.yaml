@@ -23,19 +23,21 @@ redis:
   addrs:
     - "localhost:6379"
 
+
 broadcast:
-   default:
-     driver: redis
-   test:
-     driver: memory
+  default:
+    driver: redis
+    addrs:
+      - "localhost:6379"
 
 websockets:
-  pubsubs: [ "redis" ]
+  broker: default
+  allowed_origin: "*"
   path: "/ws"
 
 logs:
   mode: development
-  level: error
+  level: debug
 
 endure:
   grace_period: 120s

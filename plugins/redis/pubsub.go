@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/pkg/interface/pubsub"
 	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"google.golang.org/protobuf/proto"
@@ -61,6 +61,11 @@ func NewPubSubDriver(log logger.Logger, key string, cfgPlugin config.Configurer,
 		RouteRandomly:      ps.cfg.RouteRandomly,
 		MasterName:         ps.cfg.MasterName,
 	})
+
+	statusCmd := ps.universalClient.Ping(context.Background())
+	if statusCmd.Err() != nil {
+		return nil, statusCmd.Err()
+	}
 
 	ps.fanin = newFanIn(ps.universalClient, log)
 

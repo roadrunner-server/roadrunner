@@ -17,6 +17,7 @@ import (
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
+	"github.com/spiral/roadrunner/v2/plugins/broadcast"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -47,6 +48,7 @@ func TestBroadcastInit(t *testing.T) {
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
 		&memory.Plugin{},
+		&broadcast.Plugin{},
 	)
 
 	assert.NoError(t, err)
@@ -98,6 +100,8 @@ func TestBroadcastInit(t *testing.T) {
 
 	time.Sleep(time.Second * 1)
 	t.Run("TestWSInit", wsInit)
+	t.Run("RPCWsMemoryPubAsync", RPCWsMemoryPubAsync)
+	t.Run("RPCWsMemory", RPCWsMemory)
 
 	stopCh <- struct{}{}
 
@@ -119,7 +123,7 @@ func wsInit(t *testing.T) {
 		_ = resp.Body.Close()
 	}()
 
-	d, err := json.Marshal(messageWS("join", "memory", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -156,6 +160,7 @@ func TestWSRedisAndMemory(t *testing.T) {
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
 		&memory.Plugin{},
+		&broadcast.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -219,7 +224,7 @@ func TestWSRedisAndMemoryGlobal(t *testing.T) {
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "configs/.rr-websockets-redis-memory.yaml",
+		Path:   "configs/.rr-websockets-redis.yaml",
 		Prefix: "rr",
 	}
 
@@ -232,6 +237,7 @@ func TestWSRedisAndMemoryGlobal(t *testing.T) {
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
 		&memory.Plugin{},
+		&broadcast.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -281,8 +287,7 @@ func TestWSRedisAndMemoryGlobal(t *testing.T) {
 	}()
 
 	time.Sleep(time.Second * 1)
-	t.Run("RPCWsMemoryPubAsync", RPCWsMemoryPubAsync)
-	t.Run("RPCWsMemory", RPCWsMemory)
+
 	t.Run("RPCWsRedis", RPCWsRedis)
 
 	stopCh <- struct{}{}
@@ -308,6 +313,7 @@ func TestWSRedisNoSection(t *testing.T) {
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
 		&memory.Plugin{},
+		&broadcast.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -326,7 +332,7 @@ func RPCWsMemoryPubAsync(t *testing.T) {
 		HandshakeTimeout: time.Second * 20,
 	}
 
-	connURL := url.URL{Scheme: "ws", Host: "localhost:13235", Path: "/ws"}
+	connURL := url.URL{Scheme: "ws", Host: "localhost:11111", Path: "/ws"}
 
 	c, resp, err := da.Dial(connURL.String(), nil)
 	assert.NoError(t, err)
@@ -335,7 +341,7 @@ func RPCWsMemoryPubAsync(t *testing.T) {
 		_ = resp.Body.Close()
 	}()
 
-	d, err := json.Marshal(messageWS("join", "memory", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -359,7 +365,7 @@ func RPCWsMemoryPubAsync(t *testing.T) {
 	assert.Equal(t, "{\"topic\":\"foo\",\"payload\":\"hello, PHP\"}", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
-	d, err = json.Marshal(messageWS("leave", "memory", []byte("hello websockets"), "foo"))
+	d, err = json.Marshal(messageWS("leave", []byte("hello websockets"), "foo"))
 	if err != nil {
 		panic(err)
 	}
@@ -386,7 +392,7 @@ func RPCWsMemoryPubAsync(t *testing.T) {
 	_, msg, err = c.ReadMessage()
 	retMsg = utils.AsString(msg)
 	assert.NoError(t, err)
-	assert.Equal(t, "{\"topic\":\"foo2\",\"payload\":\"hello, PHP2\"}", retMsg)
+	assert.Equal(t, "{\"topic\":\"foo2\",\"payload\":\"hello, PHP\"}", retMsg)
 
 	err = c.WriteControl(websocket.CloseMessage, nil, time.Time{})
 	assert.NoError(t, err)
@@ -398,7 +404,7 @@ func RPCWsMemory(t *testing.T) {
 		HandshakeTimeout: time.Second * 20,
 	}
 
-	connURL := url.URL{Scheme: "ws", Host: "localhost:13235", Path: "/ws"}
+	connURL := url.URL{Scheme: "ws", Host: "localhost:11111", Path: "/ws"}
 
 	c, resp, err := da.Dial(connURL.String(), nil)
 	assert.NoError(t, err)
@@ -409,7 +415,7 @@ func RPCWsMemory(t *testing.T) {
 		}
 	}()
 
-	d, err := json.Marshal(messageWS("join", "memory", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -433,7 +439,7 @@ func RPCWsMemory(t *testing.T) {
 	assert.Equal(t, "{\"topic\":\"foo\",\"payload\":\"hello, PHP\"}", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
-	d, err = json.Marshal(messageWS("leave", "memory", []byte("hello websockets"), "foo"))
+	d, err = json.Marshal(messageWS("leave", []byte("hello websockets"), "foo"))
 	if err != nil {
 		panic(err)
 	}
@@ -481,7 +487,7 @@ func RPCWsRedis(t *testing.T) {
 		_ = resp.Body.Close()
 	}()
 
-	d, err := json.Marshal(messageWS("join", "redis", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -505,7 +511,7 @@ func RPCWsRedis(t *testing.T) {
 	assert.Equal(t, "{\"topic\":\"foo\",\"payload\":\"hello, PHP\"}", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
-	d, err = json.Marshal(messageWS("leave", "redis", []byte("hello websockets"), "foo"))
+	d, err = json.Marshal(messageWS("leave", []byte("hello websockets"), "foo"))
 	if err != nil {
 		panic(err)
 	}
@@ -556,6 +562,7 @@ func TestWSMemoryDeny(t *testing.T) {
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
 		&memory.Plugin{},
+		&broadcast.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -631,7 +638,7 @@ func RPCWsMemoryDeny(t *testing.T) {
 		}
 	}()
 
-	d, err := json.Marshal(messageWS("join", "memory", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -647,7 +654,7 @@ func RPCWsMemoryDeny(t *testing.T) {
 	assert.Equal(t, `{"topic":"#join","payload":["foo","foo2"]}`, retMsg)
 
 	// //// LEAVE foo, foo2 /////////
-	d, err = json.Marshal(messageWS("leave", "memory", []byte("hello websockets"), "foo"))
+	d, err = json.Marshal(messageWS("leave", []byte("hello websockets"), "foo"))
 	if err != nil {
 		panic(err)
 	}
@@ -684,6 +691,7 @@ func TestWSMemoryStop(t *testing.T) {
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
 		&memory.Plugin{},
+		&broadcast.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -777,6 +785,7 @@ func TestWSMemoryOk(t *testing.T) {
 		&websockets.Plugin{},
 		&httpPlugin.Plugin{},
 		&memory.Plugin{},
+		&broadcast.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -852,7 +861,7 @@ func RPCWsMemoryAllow(t *testing.T) {
 		}
 	}()
 
-	d, err := json.Marshal(messageWS("join", "memory", []byte("hello websockets"), "foo", "foo2"))
+	d, err := json.Marshal(messageWS("join", []byte("hello websockets"), "foo", "foo2"))
 	if err != nil {
 		panic(err)
 	}
@@ -876,7 +885,7 @@ func RPCWsMemoryAllow(t *testing.T) {
 	assert.Equal(t, "{\"topic\":\"foo\",\"payload\":\"hello, PHP\"}", retMsg)
 
 	// //// LEAVE foo, foo2 /////////
-	d, err = json.Marshal(messageWS("leave", "memory", []byte("hello websockets"), "foo"))
+	d, err = json.Marshal(messageWS("leave", []byte("hello websockets"), "foo"))
 	if err != nil {
 		panic(err)
 	}
@@ -909,7 +918,7 @@ func RPCWsMemoryAllow(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func publish(command string, broker string, topics ...string) {
+func publish(command string, topics ...string) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	if err != nil {
 		panic(err)
@@ -918,13 +927,13 @@ func publish(command string, broker string, topics ...string) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	ret := &websocketsv1.Response{}
-	err = client.Call("websockets.Publish", makeMessage(command, broker, []byte("hello, PHP"), topics...), ret)
+	err = client.Call("broadcast.Publish", makeMessage(command, []byte("hello, PHP"), topics...), ret)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func publishAsync(t *testing.T, command string, broker string, topics ...string) {
+func publishAsync(t *testing.T, command string, topics ...string) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	if err != nil {
 		panic(err)
@@ -933,12 +942,12 @@ func publishAsync(t *testing.T, command string, broker string, topics ...string)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	ret := &websocketsv1.Response{}
-	err = client.Call("websockets.PublishAsync", makeMessage(command, broker, []byte("hello, PHP"), topics...), ret)
+	err = client.Call("broadcast.PublishAsync", makeMessage(command, []byte("hello, PHP"), topics...), ret)
 	assert.NoError(t, err)
 	assert.True(t, ret.Ok)
 }
 
-func publishAsync2(t *testing.T, command string, broker string, topics ...string) {
+func publishAsync2(t *testing.T, command string, topics ...string) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	if err != nil {
 		panic(err)
@@ -947,12 +956,12 @@ func publishAsync2(t *testing.T, command string, broker string, topics ...string
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	ret := &websocketsv1.Response{}
-	err = client.Call("websockets.PublishAsync", makeMessage(command, broker, []byte("hello, PHP2"), topics...), ret)
+	err = client.Call("broadcast.PublishAsync", makeMessage(command, []byte("hello, PHP2"), topics...), ret)
 	assert.NoError(t, err)
 	assert.True(t, ret.Ok)
 }
 
-func publish2(t *testing.T, command string, broker string, topics ...string) {
+func publish2(t *testing.T, command string, topics ...string) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	if err != nil {
 		panic(err)
@@ -961,27 +970,25 @@ func publish2(t *testing.T, command string, broker string, topics ...string) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	ret := &websocketsv1.Response{}
-	err = client.Call("websockets.Publish", makeMessage(command, broker, []byte("hello, PHP2"), topics...), ret)
+	err = client.Call("broadcast.Publish", makeMessage(command, []byte("hello, PHP2"), topics...), ret)
 	assert.NoError(t, err)
 	assert.True(t, ret.Ok)
 }
 
-func messageWS(command string, broker string, payload []byte, topics ...string) *websocketsv1.Message {
+func messageWS(command string, payload []byte, topics ...string) *websocketsv1.Message {
 	return &websocketsv1.Message{
 		Topics:  topics,
 		Command: command,
-		Broker:  broker,
 		Payload: payload,
 	}
 }
 
-func makeMessage(command string, broker string, payload []byte, topics ...string) *websocketsv1.Request {
+func makeMessage(command string, payload []byte, topics ...string) *websocketsv1.Request {
 	m := &websocketsv1.Request{
 		Messages: []*websocketsv1.Message{
 			{
 				Topics:  topics,
 				Command: command,
-				Broker:  broker,
 				Payload: payload,
 			},
 		},

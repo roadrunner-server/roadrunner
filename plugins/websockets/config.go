@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/pool"
 )
 
@@ -17,9 +18,9 @@ websockets:
 // Config represents configuration for the ws plugin
 type Config struct {
 	// http path for the websocket
-	Path string `mapstructure:"path"`
-
+	Path          string `mapstructure:"path"`
 	AllowedOrigin string `mapstructure:"allowed_origin"`
+	Broker        string `mapstructure:"broker"`
 
 	// wildcard origin
 	allowedWOrigins []wildcard
@@ -31,9 +32,14 @@ type Config struct {
 }
 
 // InitDefault initialize default values for the ws config
-func (c *Config) InitDefault() {
+func (c *Config) InitDefault() error {
 	if c.Path == "" {
 		c.Path = "/ws"
+	}
+
+	// broker is mandatory
+	if c.Broker == "" {
+		return errors.Str("broker key should be specified")
 	}
 
 	if c.Pool == nil {
@@ -64,7 +70,7 @@ func (c *Config) InitDefault() {
 	if origin == "*" {
 		// If "*" is present in the list, turn the whole list into a match all
 		c.allowedAll = true
-		return
+		return nil
 	} else if i := strings.IndexByte(origin, '*'); i >= 0 {
 		// Split the origin in two: start and end string without the *
 		w := wildcard{origin[0:i], origin[i+1:]}
@@ -72,4 +78,6 @@ func (c *Config) InitDefault() {
 	} else {
 		c.allowedOrigins = append(c.allowedOrigins, origin)
 	}
+
+	return nil
 }

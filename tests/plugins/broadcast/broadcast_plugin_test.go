@@ -98,8 +98,7 @@ func TestBroadcastInit(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second * 1)
-	//t.Run("TestWSInit", wsInit)
+	t.Run("TestWSInit", wsInit)
 
 	stopCh <- struct{}{}
 
@@ -186,7 +185,7 @@ func messageWS(command string, broker string, payload []byte, topics ...string) 
 	return &websocketsv1.Message{
 		Topics:  topics,
 		Command: command,
-		Broker:  broker,
+		//Broker:  broker,
 		Payload: payload,
 	}
 }
@@ -197,7 +196,7 @@ func makeMessage(command string, broker string, payload []byte, topics ...string
 			{
 				Topics:  topics,
 				Command: command,
-				Broker:  broker,
+				//Broker:  broker,
 				Payload: payload,
 			},
 		},

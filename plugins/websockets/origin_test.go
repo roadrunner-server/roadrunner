@@ -11,7 +11,8 @@ func TestConfig_Origin(t *testing.T) {
 		AllowedOrigin: "*",
 	}
 
-	cfg.InitDefault()
+	err := cfg.InitDefault()
+	assert.NoError(t, err)
 
 	assert.True(t, isOriginAllowed("http://some.some.some.sssome", cfg))
 	assert.True(t, isOriginAllowed("http://", cfg))
@@ -29,7 +30,8 @@ func TestConfig_OriginWildCard(t *testing.T) {
 		AllowedOrigin: "https://*my.site.com",
 	}
 
-	cfg.InitDefault()
+	err := cfg.InitDefault()
+	assert.NoError(t, err)
 
 	assert.True(t, isOriginAllowed("https://my.site.com", cfg))
 	assert.False(t, isOriginAllowed("http://", cfg))
@@ -50,7 +52,8 @@ func TestConfig_OriginWildCard2(t *testing.T) {
 		AllowedOrigin: "https://my.*.com",
 	}
 
-	cfg.InitDefault()
+	err := cfg.InitDefault()
+	assert.NoError(t, err)
 
 	assert.True(t, isOriginAllowed("https://my.site.com", cfg))
 	assert.False(t, isOriginAllowed("http://", cfg))

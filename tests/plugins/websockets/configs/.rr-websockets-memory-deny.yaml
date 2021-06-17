@@ -19,12 +19,13 @@ http:
     allocate_timeout: 60s
     destroy_timeout: 60s
 
-redis:
-  addrs:
-    - "localhost:6379"
+broadcast:
+  test:
+    driver: memory
 
 websockets:
-  pubsubs: [ "memory" ]
+  broker: test
+  allowed_origin: "*"
   path: "/ws"
 
 logs:

@@ -20,17 +20,18 @@ http:
     destroy_timeout: 60s
 
 
-websockets:
-  pubsubs: [ "redis", "memory" ]
-  redis:
-  addrs:
-    - "localhost:6379"
+broadcast:
+   test:
+  driver: memory
 
+websockets:
+  broker: test
+  allowed_origin: "*"
   path: "/ws"
 
 logs:
   mode: development
-  level: error
+  level: debug
 
 endure:
   grace_period: 120s

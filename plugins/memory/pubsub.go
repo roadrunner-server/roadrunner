@@ -4,8 +4,8 @@ import (
 	"sync"
 
 	"github.com/spiral/roadrunner/v2/pkg/bst"
+	"github.com/spiral/roadrunner/v2/pkg/interface/pubsub"
 	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"google.golang.org/protobuf/proto"
 )
