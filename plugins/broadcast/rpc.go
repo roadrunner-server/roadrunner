@@ -1,4 +1,4 @@
-package websockets
+package broadcast
 
 import (
 	"github.com/spiral/errors"

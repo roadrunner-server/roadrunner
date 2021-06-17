@@ -16,6 +16,11 @@ type PubSub interface {
 	Reader
 }
 
+type SubReader interface {
+	Subscriber
+	Reader
+}
+
 // Subscriber defines the ability to operate as message passing broker.
 // BETA interface
 type Subscriber interface {

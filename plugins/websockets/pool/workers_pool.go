@@ -12,7 +12,7 @@ import (
 )
 
 type WorkersPool struct {
-	storage     map[string]pubsub.PubSub
+	storage     map[string]pubsub.SubReader
 	connections *sync.Map
 	resPool     sync.Pool
 	log         logger.Logger
@@ -22,7 +22,7 @@ type WorkersPool struct {
 }
 
 // NewWorkersPool constructs worker pool for the websocket connections
-func NewWorkersPool(pubsubs map[string]pubsub.PubSub, connections *sync.Map, log logger.Logger) *WorkersPool {
+func NewWorkersPool(pubsubs map[string]pubsub.SubReader, connections *sync.Map, log logger.Logger) *WorkersPool {
 	wp := &WorkersPool{
 		connections: connections,
 		queue:       make(chan *websocketsv1.Message, 100),

@@ -29,7 +29,7 @@ type Executor struct {
 	connID string
 
 	// map with the pubsub drivers
-	pubsub       map[string]pubsub.PubSub
+	pubsub       map[string]pubsub.Subscriber
 	actualTopics map[string]struct{}
 
 	req             *http.Request
@@ -38,7 +38,7 @@ type Executor struct {
 
 // NewExecutor creates protected connection and starts command loop
 func NewExecutor(conn *connection.Connection, log logger.Logger,
-	connID string, pubsubs map[string]pubsub.PubSub, av validator.AccessValidatorFn, r *http.Request) *Executor {
+	connID string, pubsubs map[string]pubsub.Subscriber, av validator.AccessValidatorFn, r *http.Request) *Executor {
 	return &Executor{
 		conn:            conn,
 		connID:          connID,
@@ -170,7 +170,7 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 	}
 }
 
-func (e *Executor) Set(br pubsub.PubSub, topics []string) error {
+func (e *Executor) Set(br pubsub.Subscriber, topics []string) error {
 	// associate connection with topics
 	err := br.Subscribe(e.connID, topics...)
 	if err != nil {
@@ -188,7 +188,7 @@ func (e *Executor) Set(br pubsub.PubSub, topics []string) error {
 	return nil
 }
 
-func (e *Executor) Leave(br pubsub.PubSub, topics []string) error {
+func (e *Executor) Leave(br pubsub.Subscriber, topics []string) error {
 	// remove associated connections from the storage
 	err := br.Unsubscribe(e.connID, topics...)
 	if err != nil {
