@@ -74,8 +74,8 @@ func (p *Plugin) Serve() chan error {
 				return errCh
 			}
 		default:
-			p.log.Warn("wrong type detected in the configuration, please, check yaml indentation")
-			continue
+			errCh <- errors.E(op, errors.Str("wrong type detected in the configuration, please, check yaml indentation"))
+			return errCh
 		}
 
 		// config key for the particular sub-driver kv.memcached

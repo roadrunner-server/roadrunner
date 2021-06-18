@@ -19,12 +19,6 @@ http:
     allocate_timeout: 60s
     destroy_timeout: 60s
 
-broadcast:
-  default:
-    driver: redis
-    addrs:
-      - "localhost:6379"
-
 logs:
   mode: development
   level: error

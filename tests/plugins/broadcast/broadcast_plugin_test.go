@@ -92,3 +92,68 @@ func TestBroadcastInit(t *testing.T) {
 
 	wg.Wait()
 }
+
+func TestBroadcastConfigError(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-broadcast-config-error.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&broadcast.Plugin{},
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&redis.Plugin{},
+		&websockets.Plugin{},
+		&httpPlugin.Plugin{},
+		&memory.Plugin{},
+	)
+
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = cont.Serve()
+	assert.Error(t, err)
+}
+
+func TestBroadcastNoConfig(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-broadcast-no-config.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&broadcast.Plugin{},
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&server.Plugin{},
+		&redis.Plugin{},
+		&websockets.Plugin{},
+		&httpPlugin.Plugin{},
+		&memory.Plugin{},
+	)
+
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// should be just disabled
+	_, err = cont.Serve()
+	assert.NoError(t, err)
+}

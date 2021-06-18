@@ -20,10 +20,8 @@ http:
     destroy_timeout: 60s
 
 broadcast:
-  default:
+    default:
     driver: redis
-    addrs:
-      - "localhost:6379"
 
 logs:
   mode: development

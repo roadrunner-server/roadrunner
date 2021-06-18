@@ -22,6 +22,7 @@ type Response struct {
 
 type Executor struct {
 	sync.Mutex
+	// raw ws connection
 	conn *connection.Connection
 	log  logger.Logger
 
@@ -67,20 +68,20 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 
 		err = json.Unmarshal(data, msg)
 		if err != nil {
-			e.log.Error("error unmarshal message", "error", err)
+			e.log.Error("unmarshal message", "error", err)
 			continue
 		}
 
 		// nil message, continue
 		if msg == nil {
-			e.log.Warn("get nil message, skipping")
+			e.log.Warn("nil message, skipping")
 			continue
 		}
 
 		switch msg.Command {
 		// handle leave
 		case commands.Join:
-			e.log.Debug("get join command", "msg", msg)
+			e.log.Debug("received join command", "msg", msg)
 
 			val, err := e.accessValidator(e.req, msg.Topics...)
 			if err != nil {
@@ -95,13 +96,13 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 
 				packet, errJ := json.Marshal(resp)
 				if errJ != nil {
-					e.log.Error("error marshal the body", "error", errJ)
+					e.log.Error("marshal the body", "error", errJ)
 					return errors.E(op, fmt.Errorf("%v,%v", err, errJ))
 				}
 
 				errW := e.conn.Write(packet)
 				if errW != nil {
-					e.log.Error("error writing payload to the connection", "payload", packet, "error", errW)
+					e.log.Error("write payload to the connection", "payload", packet, "error", errW)
 					return errors.E(op, fmt.Errorf("%v,%v", err, errW))
 				}
 
@@ -115,13 +116,13 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 
 			packet, err := json.Marshal(resp)
 			if err != nil {
-				e.log.Error("error marshal the body", "error", err)
+				e.log.Error("marshal the body", "error", err)
 				return errors.E(op, err)
 			}
 
 			err = e.conn.Write(packet)
 			if err != nil {
-				e.log.Error("error writing payload to the connection", "payload", packet, "error", err)
+				e.log.Error("write payload to the connection", "payload", packet, "error", err)
 				return errors.E(op, err)
 			}
 
@@ -133,7 +134,7 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 
 		// handle leave
 		case commands.Leave:
-			e.log.Debug("get leave command", "msg", msg)
+			e.log.Debug("received leave command", "msg", msg)
 
 			// prepare response
 			resp := &Response{
@@ -143,13 +144,13 @@ func (e *Executor) StartCommandLoop() error { //nolint:gocognit
 
 			packet, err := json.Marshal(resp)
 			if err != nil {
-				e.log.Error("error marshal the body", "error", err)
+				e.log.Error("marshal the body", "error", err)
 				return errors.E(op, err)
 			}
 
 			err = e.conn.Write(packet)
 			if err != nil {
-				e.log.Error("error writing payload to the connection", "payload", packet, "error", err)
+				e.log.Error("write payload to the connection", "payload", packet, "error", err)
 				return errors.E(op, err)
 			}
 
@@ -170,7 +171,7 @@ func (e *Executor) Set(topics []string) error {
 	// associate connection with topics
 	err := e.sub.Subscribe(e.connID, topics...)
 	if err != nil {
-		e.log.Error("error subscribing to the provided topics", "topics", topics, "error", err.Error())
+		e.log.Error("subscribe to the provided topics", "topics", topics, "error", err.Error())
 		// in case of error, unsubscribe connection from the dead topics
 		_ = e.sub.Unsubscribe(e.connID, topics...)
 		return err
@@ -188,7 +189,7 @@ func (e *Executor) Leave(topics []string) error {
 	// remove associated connections from the storage
 	err := e.sub.Unsubscribe(e.connID, topics...)
 	if err != nil {
-		e.log.Error("error subscribing to the provided topics", "topics", topics, "error", err.Error())
+		e.log.Error("subscribe to the provided topics", "topics", topics, "error", err.Error())
 		return err
 	}
 

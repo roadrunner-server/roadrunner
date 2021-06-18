@@ -123,7 +123,7 @@ func (p *Plugin) Serve() chan error {
 
 	p.workersPool = pool.NewWorkersPool(p.subReader, &p.connections, p.log)
 
-	// run all pubsubs drivers
+	// we need here only Reader part of the interface
 	go func(ps pubsub.Reader) {
 		for {
 			select {
