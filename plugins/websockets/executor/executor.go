@@ -7,12 +7,12 @@ import (
 
 	json "github.com/json-iterator/go"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/pkg/interface/pubsub"
-	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
+	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/commands"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/connection"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/validator"
+	websocketsv1 "github.com/spiral/roadrunner/v2/proto/websockets/v1beta"
 )
 
 type Response struct {

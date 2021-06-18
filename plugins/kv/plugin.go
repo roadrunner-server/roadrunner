@@ -24,8 +24,8 @@ const (
 // Plugin for the unified storage
 type Plugin struct {
 	log logger.Logger
-	// drivers contains general storage drivers, such as boltdb, memory, memcached, redis.
-	drivers map[string]StorageDriver
+	// constructors contains general storage constructors, such as boltdb, memory, memcached, redis.
+	constructors map[string]Constructor
 	// storages contains user-defined storages, such as boltdb-north, memcached-us and so on.
 	storages map[string]Storage
 	// KV configuration
@@ -43,7 +43,7 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	if err != nil {
 		return errors.E(op, err)
 	}
-	p.drivers = make(map[string]StorageDriver, 5)
+	p.constructors = make(map[string]Constructor, 5)
 	p.storages = make(map[string]Storage, 5)
 	p.log = log
 	p.cfgPlugin = cfg
@@ -81,7 +81,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 				    addr: [ "localhost:11211" ]
 
 
-		For this config we should have 3 drivers: memory, boltdb and memcached but 4 KVs: default, boltdb-south, boltdb-north and memcached
+		For this config we should have 3 constructors: memory, boltdb and memcached but 4 KVs: default, boltdb-south, boltdb-north and memcached
 		when user requests for example boltdb-south, we should provide that particular preconfigured storage
 	*/
 	for k, v := range p.cfg.Data {
@@ -90,9 +90,18 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 			continue
 		}
 
-		if _, ok := v.(map[string]interface{})[driver]; !ok {
-			errCh <- errors.E(op, errors.Errorf("could not find mandatory driver field in the %s storage", k))
-			return errCh
+		// check type of the v
+		// should be a map[string]interface{}
+		switch t := v.(type) {
+		// correct type
+		case map[string]interface{}:
+			if _, ok := t[driver]; !ok {
+				errCh <- errors.E(op, errors.Errorf("could not find mandatory driver field in the %s storage", k))
+				return errCh
+			}
+		default:
+			p.log.Warn("wrong type detected in the configuration, please, check yaml indentation")
+			continue
 		}
 
 		// config key for the particular sub-driver kv.memcached
@@ -100,12 +109,12 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 		// at this point we know, that driver field present in the configuration
 		switch v.(map[string]interface{})[driver] {
 		case memcached:
-			if _, ok := p.drivers[memcached]; !ok {
-				p.log.Warn("no memcached drivers registered", "registered", p.drivers)
+			if _, ok := p.constructors[memcached]; !ok {
+				p.log.Warn("no memcached constructors registered", "registered", p.constructors)
 				continue
 			}
 
-			storage, err := p.drivers[memcached].KVProvide(configKey)
+			storage, err := p.constructors[memcached].KVConstruct(configKey)
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -115,12 +124,12 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 			p.storages[k] = storage
 
 		case boltdb:
-			if _, ok := p.drivers[boltdb]; !ok {
-				p.log.Warn("no boltdb drivers registered", "registered", p.drivers)
+			if _, ok := p.constructors[boltdb]; !ok {
+				p.log.Warn("no boltdb constructors registered", "registered", p.constructors)
 				continue
 			}
 
-			storage, err := p.drivers[boltdb].KVProvide(configKey)
+			storage, err := p.constructors[boltdb].KVConstruct(configKey)
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -129,12 +138,12 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 			// save the storage
 			p.storages[k] = storage
 		case memory:
-			if _, ok := p.drivers[memory]; !ok {
-				p.log.Warn("no in-memory drivers registered", "registered", p.drivers)
+			if _, ok := p.constructors[memory]; !ok {
+				p.log.Warn("no in-memory constructors registered", "registered", p.constructors)
 				continue
 			}
 
-			storage, err := p.drivers[memory].KVProvide(configKey)
+			storage, err := p.constructors[memory].KVConstruct(configKey)
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -143,15 +152,15 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 			// save the storage
 			p.storages[k] = storage
 		case redis:
-			if _, ok := p.drivers[redis]; !ok {
-				p.log.Warn("no redis drivers registered", "registered", p.drivers)
+			if _, ok := p.constructors[redis]; !ok {
+				p.log.Warn("no redis constructors registered", "registered", p.constructors)
 				continue
 			}
 
 			// first - try local configuration
 			switch {
 			case p.cfgPlugin.Has(configKey):
-				storage, err := p.drivers[redis].KVProvide(configKey)
+				storage, err := p.constructors[redis].KVConstruct(configKey)
 				if err != nil {
 					errCh <- errors.E(op, err)
 					return errCh
@@ -160,7 +169,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 				// save the storage
 				p.storages[k] = storage
 			case p.cfgPlugin.Has(redis):
-				storage, err := p.drivers[redis].KVProvide(configKey)
+				storage, err := p.constructors[redis].KVConstruct(configKey)
 				if err != nil {
 					errCh <- errors.E(op, err)
 					return errCh
@@ -194,9 +203,9 @@ func (p *Plugin) Collects() []interface{} {
 	}
 }
 
-func (p *Plugin) GetAllStorageDrivers(name endure.Named, storage StorageDriver) {
-	// save the storage driver
-	p.drivers[name.Name()] = storage
+func (p *Plugin) GetAllStorageDrivers(name endure.Named, constructor Constructor) {
+	// save the storage constructor
+	p.constructors[name.Name()] = constructor
 }
 
 // RPC returns associated rpc service.

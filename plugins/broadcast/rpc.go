@@ -2,8 +2,8 @@ package broadcast
 
 import (
 	"github.com/spiral/errors"
-	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	websocketsv1 "github.com/spiral/roadrunner/v2/proto/websockets/v1beta"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -24,8 +24,7 @@ func (r *rpc) Publish(in *websocketsv1.Request, out *websocketsv1.Response) erro
 		return nil
 	}
 
-	r.log.Debug("message published", "msg", in.Messages)
-
+	r.log.Debug("message published", "msg", in.String())
 	msgLen := len(in.GetMessages())
 
 	for i := 0; i < msgLen; i++ {
@@ -56,7 +55,7 @@ func (r *rpc) PublishAsync(in *websocketsv1.Request, out *websocketsv1.Response)
 		return nil
 	}
 
-	r.log.Debug("message published", "msg", in.Messages)
+	r.log.Debug("message published", "msg", in.GetMessages())
 
 	msgLen := len(in.GetMessages())
 

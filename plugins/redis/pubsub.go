@@ -6,10 +6,10 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/pkg/interface/pubsub"
-	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
+	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	websocketsv1 "github.com/spiral/roadrunner/v2/proto/websockets/v1beta"
 	"google.golang.org/protobuf/proto"
 )
 

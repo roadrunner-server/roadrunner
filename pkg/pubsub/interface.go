@@ -1,6 +1,6 @@
 package pubsub
 
-import websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
+import websocketsv1beta "github.com/spiral/roadrunner/v2/proto/websockets/v1beta"
 
 /*
 This interface is in BETA. It might be changed.
@@ -47,9 +47,9 @@ type Publisher interface {
 
 // Reader interface should return next message
 type Reader interface {
-	Next() (*websocketsv1.Message, error)
+	Next() (*websocketsv1beta.Message, error)
 }
 
-type PSProvider interface {
-	PSProvide(key string) (PubSub, error)
+type Constructor interface {
+	PSConstruct(key string) (PubSub, error)
 }

@@ -2,7 +2,7 @@ package memory
 
 import (
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/pkg/interface/pubsub"
+	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -41,11 +41,11 @@ func (p *Plugin) Stop() error {
 	return nil
 }
 
-func (p *Plugin) PSProvide(key string) (pubsub.PubSub, error) {
+func (p *Plugin) PSConstruct(key string) (pubsub.PubSub, error) {
 	return NewPubSubDriver(p.log, key)
 }
 
-func (p *Plugin) KVProvide(key string) (kv.Storage, error) {
+func (p *Plugin) KVConstruct(key string) (kv.Storage, error) {
 	const op = errors.Op("inmemory_plugin_provide")
 	st, err := NewInMemoryDriver(p.log, key, p.cfgPlugin, p.stop)
 	if err != nil {

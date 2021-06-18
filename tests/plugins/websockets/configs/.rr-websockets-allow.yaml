@@ -2,14 +2,14 @@ rpc:
   listen: tcp://127.0.0.1:6001
 
 server:
-  command: "php ../../psr-worker-bench.php"
+  command: "php ../../worker-ok.php"
   user: ""
   group: ""
   relay: "pipes"
   relay_timeout: "20s"
 
 http:
-  address: 127.0.0.1:11111
+  address: 127.0.0.1:41278
   max_request_size: 1024
   middleware: [ "websockets" ]
   trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
@@ -24,14 +24,13 @@ redis:
     - "localhost:6379"
 
 broadcast:
-  default:
+   test:
     driver: memory
 
 websockets:
-  broker: default
+  broker: test
   allowed_origin: "*"
   path: "/ws"
-
 
 logs:
   mode: development

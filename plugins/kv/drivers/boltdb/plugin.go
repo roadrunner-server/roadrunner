@@ -46,7 +46,7 @@ func (s *Plugin) Stop() error {
 	return nil
 }
 
-func (s *Plugin) KVProvide(key string) (kv.Storage, error) {
+func (s *Plugin) KVConstruct(key string) (kv.Storage, error) {
 	const op = errors.Op("boltdb_plugin_provide")
 	st, err := NewBoltDBDriver(s.log, key, s.cfgPlugin, s.stop)
 	if err != nil {

@@ -2,14 +2,14 @@ rpc:
   listen: tcp://127.0.0.1:6001
 
 server:
-  command: "php ../../psr-worker-bench.php"
+  command: "php ../../worker-deny.php"
   user: ""
   group: ""
   relay: "pipes"
   relay_timeout: "20s"
 
 http:
-  address: 127.0.0.1:13235
+  address: 127.0.0.1:15588
   max_request_size: 1024
   middleware: [ "websockets" ]
   trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
@@ -19,10 +19,11 @@ http:
     allocate_timeout: 60s
     destroy_timeout: 60s
 
-
 broadcast:
-   test:
-  driver: memory
+  test:
+    driver: redis
+    addrs:
+      - "localhost:6379"
 
 websockets:
   broker: test
@@ -31,7 +32,7 @@ websockets:
 
 logs:
   mode: development
-  level: debug
+  level: error
 
 endure:
   grace_period: 120s

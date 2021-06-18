@@ -4,10 +4,10 @@ import (
 	"sync"
 
 	json "github.com/json-iterator/go"
-	"github.com/spiral/roadrunner/v2/pkg/interface/pubsub"
-	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
+	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/websockets/connection"
+	websocketsv1 "github.com/spiral/roadrunner/v2/proto/websockets/v1beta"
 	"github.com/spiral/roadrunner/v2/utils"
 )
 
@@ -105,10 +105,10 @@ func (wp *WorkersPool) do() { //nolint:gocognit
 					}
 
 					// res is a map with a connectionsID
-					for topic := range res {
-						c, ok := wp.connections.Load(topic)
+					for connID := range res {
+						c, ok := wp.connections.Load(connID)
 						if !ok {
-							wp.log.Warn("the user disconnected connection before the message being written to it", "topics", msg.GetTopics()[i])
+							wp.log.Warn("the websocket disconnected before the message being written to it", "topics", msg.GetTopics()[i])
 							wp.put(res)
 							continue
 						}

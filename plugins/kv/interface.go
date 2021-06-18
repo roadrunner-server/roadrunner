@@ -1,6 +1,6 @@
 package kv
 
-import kvv1 "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
+import kvv1 "github.com/spiral/roadrunner/v2/proto/kv/v1beta"
 
 // Storage represents single abstract storage.
 type Storage interface {
@@ -29,13 +29,8 @@ type Storage interface {
 	Delete(keys ...string) error
 }
 
-// StorageDriver interface provide storage
-type StorageDriver interface {
-	Provider
-}
-
-// Provider provides storage based on the config
-type Provider interface {
-	// KVProvide provides Storage based on the config key
-	KVProvide(key string) (Storage, error)
+// Constructor provides storage based on the config
+type Constructor interface {
+	// KVConstruct provides Storage based on the config key
+	KVConstruct(key string) (Storage, error)
 }

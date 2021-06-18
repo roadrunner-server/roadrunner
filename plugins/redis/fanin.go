@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 
-	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	websocketsv1 "github.com/spiral/roadrunner/v2/proto/websockets/v1beta"
 	"google.golang.org/protobuf/proto"
 
 	"github.com/go-redis/redis/v8"
