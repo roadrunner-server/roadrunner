@@ -3,6 +3,10 @@ CHANGELOG
 
 v2.3.1 (_.06.2021)
 -------------------
+## 👀 New:
+
+- ✏️ Rework `broadcast` plugin. Add architecture diagrams to the `doc` folder. [PR](https://github.com/spiral/roadrunner/pull/732)
+
 ## 🩹 Fixes:
 
 - 🐛 Fix: Bugs with `boltdb` storage: [Boom](https://github.com/spiral/roadrunner/issues/717), [Boom](https://github.com/spiral/roadrunner/issues/718), [Boom](https://github.com/spiral/roadrunner/issues/719)
