@@ -181,7 +181,7 @@ func (p *PubSubDriver) Connections(topic string, res map[string]struct{}) {
 		panic(err)
 	}
 
-	// assighn connections
+	// assign connections
 	// res expected to be from the sync.Pool
 	for k := range r {
 		res[k] = struct{}{}
