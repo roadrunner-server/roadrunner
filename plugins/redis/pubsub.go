@@ -116,7 +116,7 @@ func (p *PubSubDriver) Subscribe(connectionID string, topics ...string) error {
 			return err
 		}
 		if res == 0 {
-			p.log.Warn("could not subscribe to the provided topic", "connectionID", connectionID, "topic", topics[i])
+			p.log.Warn("could not subscribe to the provided topic, you might be already subscribed to it", "connectionID", connectionID, "topic", topics[i])
 			continue
 		}
 	}
