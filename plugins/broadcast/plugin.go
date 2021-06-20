@@ -116,7 +116,7 @@ func (p *Plugin) PublishAsync(m *pubsub.Message) {
 	}()
 }
 
-func (p *Plugin) GetDriver(key string) (pubsub.SubReader, error) {
+func (p *Plugin) GetDriver(key string) (pubsub.SubReader, error) { //nolint:gocognit
 	const op = errors.Op("broadcast_plugin_get_driver")
 
 	// choose a driver
@@ -164,17 +164,28 @@ func (p *Plugin) GetDriver(key string) (pubsub.SubReader, error) {
 					return nil, errors.E(op, err)
 				}
 
-				// save the pubsub under a config key
-				//
+				// if section already exists, return new connection
+				if _, ok := p.publishers[configKey]; ok {
+					return ps, nil
+				}
+
+				// if not - initialize a connection
 				p.publishers[configKey] = ps
 				return ps, nil
+
+				// then try global if local does not exist
 			case p.cfgPlugin.Has(redis):
 				ps, err := p.constructors[redis].PSConstruct(configKey)
 				if err != nil {
 					return nil, errors.E(op, err)
 				}
 
-				// save the pubsub
+				// if section already exists, return new connection
+				if _, ok := p.publishers[configKey]; ok {
+					return ps, nil
+				}
+
+				// if not - initialize a connection
 				p.publishers[configKey] = ps
 				return ps, nil
 			}

@@ -273,10 +273,10 @@ func TestBroadcastSameSubscriber(t *testing.T) {
 
 	time.Sleep(time.Second * 2)
 
-	t.Run("PublishHelloFooFoo2Foo3", BroadcastPublishFooFoo2Foo3)
-	t.Run("PublishHelloFoo2", BroadcastPublishFoo2)
-	t.Run("PublishHelloFoo3", BroadcastPublishFoo3)
-	t.Run("PublishAsyncHelloFooFoo2Foo3", BroadcastPublishAsyncFooFoo2Foo3)
+	t.Run("PublishHelloFooFoo2Foo3", BroadcastPublishFooFoo2Foo3("6002"))
+	t.Run("PublishHelloFoo2", BroadcastPublishFoo2("6002"))
+	t.Run("PublishHelloFoo3", BroadcastPublishFoo3("6002"))
+	t.Run("PublishAsyncHelloFooFoo2Foo3", BroadcastPublishAsyncFooFoo2Foo3("6002"))
 
 	time.Sleep(time.Second * 4)
 	stopCh <- struct{}{}
@@ -284,61 +284,179 @@ func TestBroadcastSameSubscriber(t *testing.T) {
 	wg.Wait()
 }
 
-func BroadcastPublishFooFoo2Foo3(t *testing.T) {
-	conn, err := net.Dial("tcp", "127.0.0.1:6002")
+func TestBroadcastSameSubscriberGlobal(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-broadcast-global.yaml",
+		Prefix: "rr",
+	}
+
+	controller := gomock.NewController(t)
+	mockLogger := mocks.NewMockLogger(controller)
+
+	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6003", "services", []string{"broadcast"}).MinTimes(1)
+	mockLogger.EXPECT().Debug("message published", "msg", gomock.Any()).MinTimes(1)
+
+	mockLogger.EXPECT().Info(`plugin1: {foo hello}`).Times(3)
+	mockLogger.EXPECT().Info(`plugin1: {foo2 hello}`).Times(3)
+	mockLogger.EXPECT().Info(`plugin1: {foo3 hello}`).Times(3)
+	mockLogger.EXPECT().Info(`plugin2: {foo hello}`).Times(3)
+	mockLogger.EXPECT().Info(`plugin3: {foo hello}`).Times(3)
+	mockLogger.EXPECT().Info(`plugin4: {foo hello}`).Times(3)
+	mockLogger.EXPECT().Info(`plugin5: {foo hello}`).Times(3)
+	mockLogger.EXPECT().Info(`plugin6: {foo hello}`).Times(3)
+
+	err = cont.RegisterAll(
+		cfg,
+		&broadcast.Plugin{},
+		&rpcPlugin.Plugin{},
+		mockLogger,
+		&server.Plugin{},
+		&redis.Plugin{},
+		&websockets.Plugin{},
+		&httpPlugin.Plugin{},
+		&memory.Plugin{},
+
+		// test - redis
+		// test2 - redis (port 6378)
+		// test3 - memory
+		// test4 - memory
+		&plugins.Plugin1{}, // foo, foo2, foo3 test
+		&plugins.Plugin2{}, // foo, test
+		&plugins.Plugin3{}, // foo, test2
+		&plugins.Plugin4{}, // foo, test3
+		&plugins.Plugin5{}, // foo, test4
+		&plugins.Plugin6{}, // foo, test3
+	)
+
+	assert.NoError(t, err)
+
+	err = cont.Init()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-
-	ret := &websocketsv1.Response{}
-	err = client.Call("broadcast.Publish", makeMessage([]byte("hello"), "foo", "foo2", "foo3"), ret)
+	ch, err := cont.Serve()
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	stopCh := make(chan struct{}, 1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second * 2)
+
+	t.Run("PublishHelloFooFoo2Foo3", BroadcastPublishFooFoo2Foo3("6003"))
+	t.Run("PublishHelloFoo2", BroadcastPublishFoo2("6003"))
+	t.Run("PublishHelloFoo3", BroadcastPublishFoo3("6003"))
+	t.Run("PublishAsyncHelloFooFoo2Foo3", BroadcastPublishAsyncFooFoo2Foo3("6003"))
+
+	time.Sleep(time.Second * 4)
+	stopCh <- struct{}{}
+
+	wg.Wait()
+}
+
+func BroadcastPublishFooFoo2Foo3(port string) func(t *testing.T) {
+	return func(t *testing.T) {
+		conn, err := net.Dial("tcp", "127.0.0.1:"+port)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+
+		ret := &websocketsv1.Response{}
+		err = client.Call("broadcast.Publish", makeMessage([]byte("hello"), "foo", "foo2", "foo3"), ret)
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 
-func BroadcastPublishFoo2(t *testing.T) {
-	conn, err := net.Dial("tcp", "127.0.0.1:6002")
-	if err != nil {
-		t.Fatal(err)
-	}
+func BroadcastPublishFoo2(port string) func(t *testing.T) {
+	return func(t *testing.T) {
+		conn, err := net.Dial("tcp", "127.0.0.1:"+port)
+		if err != nil {
+			t.Fatal(err)
+		}
 
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+		client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
-	ret := &websocketsv1.Response{}
-	err = client.Call("broadcast.Publish", makeMessage([]byte("hello"), "foo"), ret)
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-func BroadcastPublishFoo3(t *testing.T) {
-	conn, err := net.Dial("tcp", "127.0.0.1:6002")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-
-	ret := &websocketsv1.Response{}
-	err = client.Call("broadcast.Publish", makeMessage([]byte("hello"), "foo3"), ret)
-	if err != nil {
-		t.Fatal(err)
+		ret := &websocketsv1.Response{}
+		err = client.Call("broadcast.Publish", makeMessage([]byte("hello"), "foo"), ret)
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
-func BroadcastPublishAsyncFooFoo2Foo3(t *testing.T) {
-	conn, err := net.Dial("tcp", "127.0.0.1:6002")
-	if err != nil {
-		t.Fatal(err)
+
+func BroadcastPublishFoo3(port string) func(t *testing.T) {
+	return func(t *testing.T) {
+		conn, err := net.Dial("tcp", "127.0.0.1:"+port)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+
+		ret := &websocketsv1.Response{}
+		err = client.Call("broadcast.Publish", makeMessage([]byte("hello"), "foo3"), ret)
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
+}
+func BroadcastPublishAsyncFooFoo2Foo3(port string) func(t *testing.T) {
+	return func(t *testing.T) {
+		conn, err := net.Dial("tcp", "127.0.0.1:"+port)
+		if err != nil {
+			t.Fatal(err)
+		}
 
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+		client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
-	ret := &websocketsv1.Response{}
-	err = client.Call("broadcast.PublishAsync", makeMessage([]byte("hello"), "foo", "foo2", "foo3"), ret)
-	if err != nil {
-		t.Fatal(err)
+		ret := &websocketsv1.Response{}
+		err = client.Call("broadcast.PublishAsync", makeMessage([]byte("hello"), "foo", "foo2", "foo3"), ret)
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 

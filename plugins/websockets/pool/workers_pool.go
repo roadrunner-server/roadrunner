@@ -93,7 +93,7 @@ func (wp *WorkersPool) do() { //nolint:gocognit
 				wp.subscriber.Connections(msg.Topic, res)
 
 				if len(res) == 0 {
-					wp.log.Info("no such topic", "topic", msg.Topic)
+					wp.log.Info("no connections associated with provided topic", "topic", msg.Topic)
 					wp.put(res)
 					continue
 				}

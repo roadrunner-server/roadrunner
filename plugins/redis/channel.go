@@ -11,7 +11,7 @@ import (
 	"github.com/spiral/roadrunner/v2/utils"
 )
 
-type FanIn struct {
+type redisChannel struct {
 	sync.Mutex
 
 	// redis client
@@ -26,9 +26,9 @@ type FanIn struct {
 	exit chan struct{}
 }
 
-func newFanIn(redisClient redis.UniversalClient, log logger.Logger) *FanIn {
+func newRedisChannel(redisClient redis.UniversalClient, log logger.Logger) *redisChannel {
 	out := make(chan *pubsub.Message, 100)
-	fi := &FanIn{
+	fi := &redisChannel{
 		out:    out,
 		client: redisClient,
 		pubsub: redisClient.Subscribe(context.Background()),
@@ -42,9 +42,9 @@ func newFanIn(redisClient redis.UniversalClient, log logger.Logger) *FanIn {
 	return fi
 }
 
-func (fi *FanIn) sub(topics ...string) error {
-	const op = errors.Op("fanin_addchannel")
-	err := fi.pubsub.Subscribe(context.Background(), topics...)
+func (r *redisChannel) sub(topics ...string) error {
+	const op = errors.Op("redis_sub")
+	err := r.pubsub.Subscribe(context.Background(), topics...)
 	if err != nil {
 		return errors.E(op, err)
 	}
@@ -52,46 +52,46 @@ func (fi *FanIn) sub(topics ...string) error {
 }
 
 // read reads messages from the pubsub subscription
-func (fi *FanIn) read() {
+func (r *redisChannel) read() {
 	for {
 		select {
 		// here we receive message from us (which we sent before in Publish)
-		// it should be compatible with the websockets.Msg interface
+		// it should be compatible with the pubsub.Message structure
 		// payload should be in the redis.message.payload field
 
-		case msg, ok := <-fi.pubsub.Channel():
+		case msg, ok := <-r.pubsub.Channel():
 			// channel closed
 			if !ok {
 				return
 			}
 
-			fi.out <- &pubsub.Message{
+			r.out <- &pubsub.Message{
 				Topic:   msg.Channel,
 				Payload: utils.AsBytes(msg.Payload),
 			}
 
-		case <-fi.exit:
+		case <-r.exit:
 			return
 		}
 	}
 }
 
-func (fi *FanIn) unsub(topic string) error {
-	const op = errors.Op("fanin_remove")
-	err := fi.pubsub.Unsubscribe(context.Background(), topic)
+func (r *redisChannel) unsub(topic string) error {
+	const op = errors.Op("redis_unsub")
+	err := r.pubsub.Unsubscribe(context.Background(), topic)
 	if err != nil {
 		return errors.E(op, err)
 	}
 	return nil
 }
 
-func (fi *FanIn) stop() error {
-	fi.exit <- struct{}{}
-	close(fi.out)
-	close(fi.exit)
+func (r *redisChannel) stop() error {
+	r.exit <- struct{}{}
+	close(r.out)
+	close(r.exit)
 	return nil
 }
 
-func (fi *FanIn) consume() <-chan *pubsub.Message {
-	return fi.out
+func (r *redisChannel) message() *pubsub.Message {
+	return <-r.out
 }

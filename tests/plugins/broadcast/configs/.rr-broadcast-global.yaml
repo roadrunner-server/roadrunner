@@ -1,0 +1,46 @@
+rpc:
+  listen: tcp://127.0.0.1:6003
+
+server:
+  command: "php ../../psr-worker-bench.php"
+  user: ""
+  group: ""
+  relay: "pipes"
+  relay_timeout: "20s"
+
+http:
+  address: 127.0.0.1:21543
+  max_request_size: 1024
+  middleware: [ "websockets" ]
+  trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
+  pool:
+    num_workers: 2
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+
+redis:
+  addrs:
+    - "localhost:6379"
+
+broadcast:
+  test:
+    driver: redis
+  test2:
+    driver: redis
+    addrs:
+      - "localhost:6378"
+  test3:
+    driver: memory
+  test4:
+    driver: memory
+
+
+logs:
+  mode: development
+  level: error
+
+endure:
+  grace_period: 120s
+  print_graph: false
+  log_level: error
