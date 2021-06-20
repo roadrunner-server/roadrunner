@@ -1,5 +1,5 @@
 rpc:
-  listen: tcp://127.0.0.1:6001
+  listen: tcp://127.0.0.1:6002
 
 server:
   command: "php ../../psr-worker-bench.php"
@@ -18,6 +18,20 @@ http:
     max_jobs: 0
     allocate_timeout: 60s
     destroy_timeout: 60s
+
+broadcast:
+  test:
+    driver: redis
+    addrs:
+      - "localhost:6379"
+  test2:
+    driver: redis
+    addrs:
+      - "localhost:6378"
+  test3:
+    driver: memory
+  test4:
+    driver: memory
 
 logs:
   mode: development

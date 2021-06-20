@@ -25,7 +25,7 @@ broadcast:
 
 logs:
   mode: development
-  level: error
+  level: debug
 
 endure:
   grace_period: 120s

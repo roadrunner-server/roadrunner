@@ -1,7 +1,5 @@
 package pubsub
 
-import websocketsv1beta "github.com/spiral/roadrunner/v2/proto/websockets/v1beta"
-
 /*
 This interface is in BETA. It might be changed.
 */
@@ -38,18 +36,19 @@ type Subscriber interface {
 // BETA interface
 type Publisher interface {
 	// Publish one or multiple Channel.
-	Publish(messages []byte) error
+	Publish(message *Message) error
 
 	// PublishAsync publish message and return immediately
 	// If error occurred it will be printed into the logger
-	PublishAsync(messages []byte)
+	PublishAsync(message *Message)
 }
 
 // Reader interface should return next message
 type Reader interface {
-	Next() (*websocketsv1beta.Message, error)
+	Next() (*Message, error)
 }
 
+// Constructor is a special pub-sub interface made to return a constructed PubSub type
 type Constructor interface {
 	PSConstruct(key string) (PubSub, error)
 }
