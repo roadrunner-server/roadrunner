@@ -9,7 +9,7 @@ server:
   relay_timeout: "20s"
 
 http:
-  address: 127.0.0.1:11111
+  address: 127.0.0.1:21345
   max_request_size: 1024
   middleware: [ "websockets" ]
   trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
@@ -19,19 +19,9 @@ http:
     allocate_timeout: 60s
     destroy_timeout: 60s
 
-broadcast:
-  default:
-    driver: memory
-
-websockets:
-  broker: default
-  allowed_origin: "*"
-  path: "/ws"
-
-
 logs:
   mode: development
-  level: error
+  level: debug
 
 endure:
   grace_period: 120s

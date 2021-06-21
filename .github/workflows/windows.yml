@@ -67,7 +67,6 @@ jobs:
       - name: Run golang tests on Windows
         run: |
           docker-compose -f ./tests/docker-compose.yaml up -d
-          mkdir ./coverage-ci
           go test -v -race ./pkg/transport/pipe
           go test -v -race ./pkg/transport/socket
           go test -v -race ./pkg/pool
@@ -91,6 +90,7 @@ jobs:
           go test -v -race ./tests/plugins/resetter
           go test -v -race ./tests/plugins/rpc
           go test -v -race ./tests/plugins/kv
+          go test -v -race ./tests/plugins/broadcast
           go test -v -race ./tests/plugins/websockets
+          go test -v -race ./plugins/websockets
           docker-compose -f ./tests/docker-compose.yaml down
-          cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt

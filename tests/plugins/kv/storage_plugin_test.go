@@ -12,7 +12,6 @@ import (
 
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
-	payload "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/boltdb"
@@ -21,6 +20,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/memory"
 	"github.com/spiral/roadrunner/v2/plugins/redis"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
+	payload "github.com/spiral/roadrunner/v2/proto/kv/v1beta"
 	"github.com/stretchr/testify/assert"
 )
 

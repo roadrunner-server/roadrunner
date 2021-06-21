@@ -31,7 +31,9 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/resetter.out -covermode=atomic ./tests/plugins/resetter
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/rpc.out -covermode=atomic ./tests/plugins/rpc
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/kv_plugin.out -covermode=atomic ./tests/plugins/kv
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/broadcast_plugin.out -covermode=atomic ./tests/plugins/broadcast
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/ws_plugin.out -covermode=atomic ./tests/plugins/websockets
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/ws_origin.out -covermode=atomic ./plugins/websockets
 	cat ./coverage/*.out > ./coverage/summary.out
 	docker-compose -f tests/docker-compose.yaml down
 
@@ -60,7 +62,9 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./tests/plugins/resetter
 	go test -v -race -tags=debug ./tests/plugins/rpc
 	go test -v -race -tags=debug ./tests/plugins/kv
+	go test -v -race -tags=debug ./tests/plugins/broadcast
 	go test -v -race -tags=debug ./tests/plugins/websockets
+	go test -v -race -tags=debug ./plugins/websockets
 	docker-compose -f tests/docker-compose.yaml down
 
 testGo1.17beta1: ## Run application tests
@@ -89,4 +93,6 @@ testGo1.17beta1: ## Run application tests
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/rpc
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/kv
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/websockets
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/broadcast
+	go1.17beta1 test -v -race -tags=debug ./plugins/websockets
 	docker-compose -f tests/docker-compose.yaml down

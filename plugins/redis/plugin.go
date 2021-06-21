@@ -59,8 +59,8 @@ func (p *Plugin) Name() string {
 // Available interface implementation
 func (p *Plugin) Available() {}
 
-// KVProvide provides KV storage implementation over the redis plugin
-func (p *Plugin) KVProvide(key string) (kv.Storage, error) {
+// KVConstruct provides KV storage implementation over the redis plugin
+func (p *Plugin) KVConstruct(key string) (kv.Storage, error) {
 	const op = errors.Op("redis_plugin_provide")
 	st, err := NewRedisDriver(p.log, key, p.cfgPlugin)
 	if err != nil {
@@ -70,6 +70,6 @@ func (p *Plugin) KVProvide(key string) (kv.Storage, error) {
 	return st, nil
 }
 
-func (p *Plugin) PSProvide(key string) (pubsub.PubSub, error) {
+func (p *Plugin) PSConstruct(key string) (pubsub.PubSub, error) {
 	return NewPubSubDriver(p.log, key, p.cfgPlugin, p.stopCh)
 }

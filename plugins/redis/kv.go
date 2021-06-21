@@ -7,10 +7,10 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/spiral/errors"
-	kvv1 "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	kvv1 "github.com/spiral/roadrunner/v2/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/utils"
 )
 
