@@ -30,7 +30,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBroadcastInit(t *testing.T) {
+func TestWebsocketsInit(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
@@ -756,7 +756,7 @@ func RPCWsPub(port string) func(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, "{\"topic\":\"foo\",\"payload\":\"hello, PHP\"}", retMsg)
 
-		// //// LEAVE foo, foo2 /////////
+		// //// LEAVE foo /////////
 		d, err = json.Marshal(messageWS("leave", []byte("hello websockets"), "foo"))
 		if err != nil {
 			panic(err)

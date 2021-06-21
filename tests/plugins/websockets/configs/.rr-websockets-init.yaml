@@ -19,10 +19,6 @@ http:
     allocate_timeout: 60s
     destroy_timeout: 60s
 
-redis:
-  addrs:
-    - "localhost:6379"
-
 broadcast:
   default:
     driver: memory
