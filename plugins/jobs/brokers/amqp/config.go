@@ -1,10 +1,6 @@
 package amqp
 
-import (
-	"fmt"
-	"github.com/spiral/roadrunner/service"
-	"time"
-)
+import "time"
 
 // Config defines sqs broker configuration.
 type Config struct {
@@ -13,19 +9,6 @@ type Config struct {
 
 	// Timeout to allocate the connection. Default 10 seconds.
 	Timeout int
-}
-
-// Hydrate config values.
-func (c *Config) Hydrate(cfg service.Config) error {
-	if err := cfg.Unmarshal(c); err != nil {
-		return err
-	}
-
-	if c.Addr == "" {
-		return fmt.Errorf("AMQP address is missing")
-	}
-
-	return nil
 }
 
 // TimeoutDuration returns number of seconds allowed to redial

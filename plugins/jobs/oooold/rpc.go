@@ -2,7 +2,6 @@ package oooold
 
 import (
 	"fmt"
-	"github.com/spiral/roadrunner/util"
 )
 
 type rpcServer struct{ svc *Service }

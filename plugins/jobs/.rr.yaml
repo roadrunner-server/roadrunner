@@ -1,0 +1,73 @@
+server:
+  command: "php worker.php"
+
+jobs:
+  # worker pool configuration
+  pool:
+    num_workers: 4
+
+  # rabbitmq and similar servers
+  amqp:
+    addr:     amqp://guest:guest@localhost:5672/
+
+  # beanstalk configuration
+  beanstalk:
+    addr:    tcp://localhost:11300
+
+  # amazon sqs configuration
+  sqs:
+    key:      api-key
+    secret:   api-secret
+    region:   us-west-1
+    endpoint: http://localhost:9324
+
+  # job destinations and options
+  dispatch:
+    spiral-jobs-tests-amqp-*.pipeline:      amqp
+    spiral-jobs-tests-local-*.pipeline:     local
+    spiral-jobs-tests-beanstalk-*.pipeline: beanstalk
+    spiral-jobs-tests-sqs-*.pipeline:       sqs
+
+  # list of broker pipelines associated with endpoints
+  pipelines:
+    local:
+      broker: ephemeral
+
+    amqp:
+      broker: amqp
+      queue:  default
+
+    beanstalk:
+      broker: beanstalk
+      tube:   default
+
+    sqs:
+      broker: sqs
+      queue:  default
+      declare:
+        MessageRetentionPeriod: 86400
+
+  # list of pipelines to be consumed by the server, keep empty if you want to start consuming manually
+  consume: ["local", "amqp", "beanstalk", "sqs"]
+
+
+# monitors rr server(s)
+limit:
+  # check worker state each second
+  interval: 1
+
+  # custom watch configuration for each service
+  services:
+    # monitor queue workers
+    jobs:
+      # maximum allowed memory consumption per worker (soft)
+      maxMemory: 100
+
+      # maximum time to live for the worker (soft)
+      TTL: 0
+
+      # maximum allowed amount of time worker can spend in idle before being removed (for weak db connections, soft)
+      idleTTL: 0
+
+      # max_execution_time (brutal)
+      execTTL: 60

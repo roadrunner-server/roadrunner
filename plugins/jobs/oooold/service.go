@@ -91,27 +91,27 @@ func (svc *Service) Init(
 	}
 
 	// run all brokers in nested container
-	svc.brokers = service.NewContainer(log)
-	for name, b := range svc.Brokers {
-		svc.brokers.Register(name, b)
-		if ep, ok := b.(EventProvider); ok {
-			ep.Listen(svc.throw)
-		}
-	}
+	//svc.brokers = service.NewContainer(log)
+	//for name, b := range svc.Brokers {
+	//	svc.brokers.Register(name, b)
+	//	if ep, ok := b.(EventProvider); ok {
+	//		ep.Listen(svc.throw)
+	//	}
+	//}
 
 	// init all broker configs
-	if err := svc.brokers.Init(svc.cfg); err != nil {
-		return false, err
-	}
+	//if err := svc.brokers.Init(svc.cfg); err != nil {
+	//	return false, err
+	//}
 
 	// register all pipelines (per broker)
-	for name, b := range svc.Brokers {
-		for _, pipe := range svc.cfg.pipelines.Broker(name) {
-			if err := b.Register(pipe); err != nil {
-				return false, err
-			}
-		}
-	}
+	//for name, b := range svc.Brokers {
+	//	for _, pipe := range svc.cfg.pipelines.Broker(name) {
+	//		if err := b.Register(pipe); err != nil {
+	//			return false, err
+	//		}
+	//	}
+	//}
 
 	return true, nil
 }
