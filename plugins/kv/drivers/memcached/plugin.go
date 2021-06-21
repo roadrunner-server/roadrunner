@@ -34,7 +34,7 @@ func (s *Plugin) Name() string {
 // Available interface implementation
 func (s *Plugin) Available() {}
 
-func (s *Plugin) KVProvide(key string) (kv.Storage, error) {
+func (s *Plugin) KVConstruct(key string) (kv.Storage, error) {
 	const op = errors.Op("boltdb_plugin_provide")
 	st, err := NewMemcachedDriver(s.log, key, s.cfgPlugin)
 	if err != nil {

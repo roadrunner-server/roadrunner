@@ -41,11 +41,11 @@ func (p *Plugin) Stop() error {
 	return nil
 }
 
-func (p *Plugin) PSProvide(key string) (pubsub.PubSub, error) {
+func (p *Plugin) PSConstruct(key string) (pubsub.PubSub, error) {
 	return NewPubSubDriver(p.log, key)
 }
 
-func (p *Plugin) KVProvide(key string) (kv.Storage, error) {
+func (p *Plugin) KVConstruct(key string) (kv.Storage, error) {
 	const op = errors.Op("inmemory_plugin_provide")
 	st, err := NewInMemoryDriver(p.log, key, p.cfgPlugin, p.stop)
 	if err != nil {

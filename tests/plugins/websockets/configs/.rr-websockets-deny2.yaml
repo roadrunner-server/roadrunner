@@ -9,7 +9,7 @@ server:
   relay_timeout: "20s"
 
 http:
-  address: 127.0.0.1:11112
+  address: 127.0.0.1:15588
   max_request_size: 1024
   middleware: [ "websockets" ]
   trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
@@ -19,12 +19,15 @@ http:
     allocate_timeout: 60s
     destroy_timeout: 60s
 
-redis:
-  addrs:
-    - "localhost:6379"
+broadcast:
+  test:
+    driver: redis
+    addrs:
+      - "localhost:6379"
 
 websockets:
-  pubsubs: [ "memory" ]
+  broker: test
+  allowed_origin: "*"
   path: "/ws"
 
 logs:

@@ -6,11 +6,9 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/spiral/errors"
-	websocketsv1 "github.com/spiral/roadrunner/v2/pkg/proto/websockets/v1beta"
 	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
-	"google.golang.org/protobuf/proto"
 )
 
 type PubSubDriver struct {
@@ -18,7 +16,7 @@ type PubSubDriver struct {
 	cfg *Config `mapstructure:"redis"`
 
 	log             logger.Logger
-	fanin           *FanIn
+	channel         *redisChannel
 	universalClient redis.UniversalClient
 	stopCh          chan struct{}
 }
@@ -62,7 +60,12 @@ func NewPubSubDriver(log logger.Logger, key string, cfgPlugin config.Configurer,
 		MasterName:         ps.cfg.MasterName,
 	})
 
-	ps.fanin = newFanIn(ps.universalClient, log)
+	statusCmd := ps.universalClient.Ping(context.Background())
+	if statusCmd.Err() != nil {
+		return nil, statusCmd.Err()
+	}
+
+	ps.channel = newRedisChannel(ps.universalClient, log)
 
 	ps.stop()
 
@@ -72,47 +75,32 @@ func NewPubSubDriver(log logger.Logger, key string, cfgPlugin config.Configurer,
 func (p *PubSubDriver) stop() {
 	go func() {
 		for range p.stopCh {
-			_ = p.fanin.stop()
+			_ = p.channel.stop()
 			return
 		}
 	}()
 }
 
-func (p *PubSubDriver) Publish(msg []byte) error {
+func (p *PubSubDriver) Publish(msg *pubsub.Message) error {
 	p.Lock()
 	defer p.Unlock()
 
-	m := &websocketsv1.Message{}
-	err := proto.Unmarshal(msg, m)
-	if err != nil {
-		return errors.E(err)
+	f := p.universalClient.Publish(context.Background(), msg.Topic, msg.Payload)
+	if f.Err() != nil {
+		return f.Err()
 	}
 
-	for j := 0; j < len(m.GetTopics()); j++ {
-		f := p.universalClient.Publish(context.Background(), m.GetTopics()[j], msg)
-		if f.Err() != nil {
-			return f.Err()
-		}
-	}
 	return nil
 }
 
-func (p *PubSubDriver) PublishAsync(msg []byte) {
+func (p *PubSubDriver) PublishAsync(msg *pubsub.Message) {
 	go func() {
 		p.Lock()
 		defer p.Unlock()
-		m := &websocketsv1.Message{}
-		err := proto.Unmarshal(msg, m)
-		if err != nil {
-			p.log.Error("message unmarshal error")
-			return
-		}
 
-		for j := 0; j < len(m.GetTopics()); j++ {
-			f := p.universalClient.Publish(context.Background(), m.GetTopics()[j], msg)
-			if f.Err() != nil {
-				p.log.Error("redis publish", "error", f.Err())
-			}
+		f := p.universalClient.Publish(context.Background(), msg.Topic, msg.Payload)
+		if f.Err() != nil {
+			p.log.Error("redis publish", "error", f.Err())
 		}
 	}()
 }
@@ -128,13 +116,13 @@ func (p *PubSubDriver) Subscribe(connectionID string, topics ...string) error {
 			return err
 		}
 		if res == 0 {
-			p.log.Warn("could not subscribe to the provided topic", "connectionID", connectionID, "topic", topics[i])
+			p.log.Warn("could not subscribe to the provided topic, you might be already subscribed to it", "connectionID", connectionID, "topic", topics[i])
 			continue
 		}
 	}
 
 	// and subscribe after
-	return p.fanin.sub(topics...)
+	return p.channel.sub(topics...)
 }
 
 func (p *PubSubDriver) Unsubscribe(connectionID string, topics ...string) error {
@@ -160,7 +148,7 @@ func (p *PubSubDriver) Unsubscribe(connectionID string, topics ...string) error 
 		}
 
 		// else - unsubscribe
-		err = p.fanin.unsub(topics[i])
+		err = p.channel.unsub(topics[i])
 		if err != nil {
 			return err
 		}
@@ -176,7 +164,7 @@ func (p *PubSubDriver) Connections(topic string, res map[string]struct{}) {
 		panic(err)
 	}
 
-	// assighn connections
+	// assign connections
 	// res expected to be from the sync.Pool
 	for k := range r {
 		res[k] = struct{}{}
@@ -184,6 +172,6 @@ func (p *PubSubDriver) Connections(topic string, res map[string]struct{}) {
 }
 
 // Next return next message
-func (p *PubSubDriver) Next() (*websocketsv1.Message, error) {
-	return <-p.fanin.consume(), nil
+func (p *PubSubDriver) Next() (*pubsub.Message, error) {
+	return p.channel.message(), nil
 }

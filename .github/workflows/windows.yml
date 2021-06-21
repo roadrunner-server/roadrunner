@@ -90,6 +90,7 @@ jobs:
           go test -v -race ./tests/plugins/resetter
           go test -v -race ./tests/plugins/rpc
           go test -v -race ./tests/plugins/kv
+          go test -v -race ./tests/plugins/broadcast
           go test -v -race ./tests/plugins/websockets
           go test -v -race ./plugins/websockets
           docker-compose -f ./tests/docker-compose.yaml down

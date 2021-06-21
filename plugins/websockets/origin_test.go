@@ -9,9 +9,11 @@ import (
 func TestConfig_Origin(t *testing.T) {
 	cfg := &Config{
 		AllowedOrigin: "*",
+		Broker:        "any",
 	}
 
-	cfg.InitDefault()
+	err := cfg.InitDefault()
+	assert.NoError(t, err)
 
 	assert.True(t, isOriginAllowed("http://some.some.some.sssome", cfg))
 	assert.True(t, isOriginAllowed("http://", cfg))
@@ -27,9 +29,11 @@ func TestConfig_Origin(t *testing.T) {
 func TestConfig_OriginWildCard(t *testing.T) {
 	cfg := &Config{
 		AllowedOrigin: "https://*my.site.com",
+		Broker:        "any",
 	}
 
-	cfg.InitDefault()
+	err := cfg.InitDefault()
+	assert.NoError(t, err)
 
 	assert.True(t, isOriginAllowed("https://my.site.com", cfg))
 	assert.False(t, isOriginAllowed("http://", cfg))
@@ -48,9 +52,11 @@ func TestConfig_OriginWildCard(t *testing.T) {
 func TestConfig_OriginWildCard2(t *testing.T) {
 	cfg := &Config{
 		AllowedOrigin: "https://my.*.com",
+		Broker:        "any",
 	}
 
-	cfg.InitDefault()
+	err := cfg.InitDefault()
+	assert.NoError(t, err)
 
 	assert.True(t, isOriginAllowed("https://my.site.com", cfg))
 	assert.False(t, isOriginAllowed("http://", cfg))

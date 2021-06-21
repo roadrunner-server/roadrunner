@@ -5,9 +5,8 @@ option go_package = "./;websocketsv1beta";
 
 message Message {
     string command = 1;
-    string broker = 2;
-    repeated string topics = 3;
-    bytes payload = 4;
+    repeated string topics = 2;
+    bytes payload = 3;
 }
 
 // RPC request with messages

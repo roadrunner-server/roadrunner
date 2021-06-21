@@ -2,8 +2,8 @@ package kv
 
 import (
 	"github.com/spiral/errors"
-	kvv1 "github.com/spiral/roadrunner/v2/pkg/proto/kv/v1beta"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	kvv1 "github.com/spiral/roadrunner/v2/proto/kv/v1beta"
 )
 
 // Wrapper for the plugin
