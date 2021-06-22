@@ -2,12 +2,15 @@ package boltdb
 
 import (
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/common/kv"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
-const PluginName = "boltdb"
+const (
+	PluginName     string = "boltdb"
+	RootPluginName string = "kv"
+)
 
 // Plugin BoltDB K/V storage.
 type Plugin struct {
@@ -21,7 +24,7 @@ type Plugin struct {
 }
 
 func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
-	if !cfg.Has(kv.PluginName) {
+	if !cfg.Has(RootPluginName) {
 		return errors.E(errors.Disabled)
 	}
 

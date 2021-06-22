@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
+	kv "github.com/spiral/roadrunner/v2/common/kv"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	kvv1 "github.com/spiral/roadrunner/v2/proto/kv/v1beta"
 )

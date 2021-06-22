@@ -2,6 +2,7 @@ package jobs
 
 import (
 	"context"
+	"fmt"
 
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
@@ -12,6 +13,8 @@ import (
 )
 
 const (
+	// RrJobs env variable
+	RrJobs     string = "rr_jobs"
 	PluginName string = "jobs"
 )
 
@@ -22,6 +25,10 @@ type Plugin struct {
 	workersPool pool.Pool
 
 	consumers map[string]Consumer
+}
+
+func testListener(data interface{}) {
+	fmt.Println(data)
 }
 
 func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Server) error {
@@ -35,7 +42,7 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 		return errors.E(op, err)
 	}
 
-	p.workersPool, err = server.NewWorkerPool(context.Background(), p.cfg.poolCfg, nil, nil)
+	p.workersPool, err = server.NewWorkerPool(context.Background(), p.cfg.poolCfg, map[string]string{RrJobs: "true"}, testListener)
 	if err != nil {
 		return errors.E(op, err)
 	}

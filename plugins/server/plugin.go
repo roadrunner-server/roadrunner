@@ -124,7 +124,7 @@ func (server *Plugin) NewWorker(ctx context.Context, env Env, listeners ...event
 	const op = errors.Op("server_plugin_new_worker")
 
 	list := make([]events.Listener, 0, len(listeners))
-	list = append(list, server.collectWorkerLogs)
+	list = append(list, server.collectWorkerEvents)
 
 	spawnCmd, err := server.CmdFactory(env)
 	if err != nil {
@@ -147,8 +147,8 @@ func (server *Plugin) NewWorkerPool(ctx context.Context, opt pool.Config, env En
 		return nil, errors.E(op, err)
 	}
 
-	list := make([]events.Listener, 0, 1)
-	list = append(list, server.collectEvents)
+	list := make([]events.Listener, 0, 22)
+	list = append(list, server.collectPoolEvents, server.collectWorkerEvents)
 	if len(listeners) != 0 {
 		list = append(list, listeners...)
 	}
@@ -209,7 +209,7 @@ func (server *Plugin) setEnv(e Env) []string {
 	return env
 }
 
-func (server *Plugin) collectEvents(event interface{}) {
+func (server *Plugin) collectPoolEvents(event interface{}) {
 	if we, ok := event.(events.PoolEvent); ok {
 		switch we.Event {
 		case events.EventMaxMemory:
@@ -238,7 +238,9 @@ func (server *Plugin) collectEvents(event interface{}) {
 			server.log.Warn("requested pool restart")
 		}
 	}
+}
 
+func (server *Plugin) collectWorkerEvents(event interface{}) {
 	if we, ok := event.(events.WorkerEvent); ok {
 		switch we.Event {
 		case events.EventWorkerError:
@@ -264,16 +266,13 @@ func (server *Plugin) collectEvents(event interface{}) {
 	}
 }
 
-func (server *Plugin) collectWorkerLogs(event interface{}) {
-	if we, ok := event.(events.WorkerEvent); ok {
-		switch we.Event {
-		case events.EventWorkerError:
-			server.log.Error(strings.TrimRight(we.Payload.(error).Error(), " \n\t"))
-		case events.EventWorkerLog:
-			server.log.Debug(strings.TrimRight(utils.AsString(we.Payload.([]byte)), " \n\t"))
-			// stderr event is INFO level
-		case events.EventWorkerStderr:
-			server.log.Info(strings.TrimRight(utils.AsString(we.Payload.([]byte)), " \n\t"))
+func (server *Plugin) collectJobsEvents(event interface{}) { //nolint:unused
+	if jev, ok := event.(events.JobEvent); ok {
+		switch jev.Event {
+		case events.EventJobStart:
+			server.log.Info("Job started", "start", jev.Start, "elapsed", jev.Elapsed)
+		case events.EventJobOK:
+			server.log.Info("Job OK", "start", jev.Start, "elapsed", jev.Elapsed)
 		}
 	}
 }

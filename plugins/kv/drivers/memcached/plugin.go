@@ -2,12 +2,15 @@ package memcached
 
 import (
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/common/kv"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
-const PluginName = "memcached"
+const (
+	PluginName     string = "memcached"
+	RootPluginName string = "kv"
+)
 
 type Plugin struct {
 	// config plugin
@@ -17,7 +20,7 @@ type Plugin struct {
 }
 
 func (s *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
-	if !cfg.Has(kv.PluginName) {
+	if !cfg.Has(RootPluginName) {
 		return errors.E(errors.Disabled)
 	}
 

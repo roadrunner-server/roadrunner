@@ -5,10 +5,12 @@ import (
 
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/common/kv"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
+// PluginName linked to the memory, boltdb, memcached, redis plugins. DO NOT change w/o sync.
 const PluginName string = "kv"
 
 const (
@@ -25,9 +27,9 @@ const (
 type Plugin struct {
 	log logger.Logger
 	// constructors contains general storage constructors, such as boltdb, memory, memcached, redis.
-	constructors map[string]Constructor
+	constructors map[string]kv.Constructor
 	// storages contains user-defined storages, such as boltdb-north, memcached-us and so on.
-	storages map[string]Storage
+	storages map[string]kv.Storage
 	// KV configuration
 	cfg       Config
 	cfgPlugin config.Configurer
@@ -43,8 +45,8 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	if err != nil {
 		return errors.E(op, err)
 	}
-	p.constructors = make(map[string]Constructor, 5)
-	p.storages = make(map[string]Storage, 5)
+	p.constructors = make(map[string]kv.Constructor, 5)
+	p.storages = make(map[string]kv.Storage, 5)
 	p.log = log
 	p.cfgPlugin = cfg
 	return nil
@@ -203,7 +205,7 @@ func (p *Plugin) Collects() []interface{} {
 	}
 }
 
-func (p *Plugin) GetAllStorageDrivers(name endure.Named, constructor Constructor) {
+func (p *Plugin) GetAllStorageDrivers(name endure.Named, constructor kv.Constructor) {
 	// save the storage constructor
 	p.constructors[name.Name()] = constructor
 }

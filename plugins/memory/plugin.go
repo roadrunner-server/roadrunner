@@ -2,9 +2,9 @@ package memory
 
 import (
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub"
+	"github.com/spiral/roadrunner/v2/common/kv"
+	"github.com/spiral/roadrunner/v2/common/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
@@ -20,7 +20,6 @@ type Plugin struct {
 }
 
 func (p *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
-	p.log = log
 	p.log = log
 	p.cfgPlugin = cfg
 	p.stop = make(chan struct{}, 1)

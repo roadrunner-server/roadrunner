@@ -3,8 +3,8 @@ package memory
 import (
 	"sync"
 
+	"github.com/spiral/roadrunner/v2/common/pubsub"
 	"github.com/spiral/roadrunner/v2/pkg/bst"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
