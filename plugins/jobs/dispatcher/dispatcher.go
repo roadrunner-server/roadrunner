@@ -1,17 +1,19 @@
-package jobs
+package dispatcher
 
 import (
 	"strings"
+
+	"github.com/spiral/roadrunner/v2/plugins/jobs/structs"
 )
 
 var separators = []string{"/", "-", "\\"}
 
 // Dispatcher provides ability to automatically locate the pipeline for the specific job
 // and update job options (if none set).
-type Dispatcher map[string]*Options
+type Dispatcher map[string]*structs.Options
 
 // pre-compile patterns
-func initDispatcher(routes map[string]*Options) Dispatcher {
+func initDispatcher(routes map[string]*structs.Options) Dispatcher {
 	dispatcher := make(Dispatcher)
 	for pattern, opts := range routes {
 		pattern = strings.ToLower(pattern)
@@ -27,8 +29,8 @@ func initDispatcher(routes map[string]*Options) Dispatcher {
 	return dispatcher
 }
 
-// match clarifies target job pipeline and other job options. Can return nil.
-func (dispatcher Dispatcher) match(job *Job) (found *Options) {
+// Match clarifies target job pipeline and other job options. Can return nil.
+func (dispatcher Dispatcher) Match(job *structs.Job) (found *structs.Options) {
 	var best = 0
 
 	jobName := strings.ToLower(job.Job)

@@ -1,4 +1,4 @@
-package jobs
+package pipeline
 
 import (
 	"time"
@@ -10,7 +10,7 @@ import (
 
 type Pipelines []*Pipeline
 
-func initPipelines(pipes map[string]*Pipeline) (Pipelines, error) {
+func InitPipelines(pipes map[string]*Pipeline) (Pipelines, error) {
 	const op = errors.Op("pipeline_init")
 	out := make(Pipelines, 0)
 

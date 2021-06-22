@@ -3,6 +3,9 @@ package jobs
 import (
 	"github.com/spiral/errors"
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/dispatcher"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/structs"
 )
 
 // Config defines settings for job broker, workers and job-pipeline mapping.
@@ -12,23 +15,23 @@ type Config struct {
 	poolCfg poolImpl.Config
 
 	// Dispatch defines where and how to match jobs.
-	Dispatch map[string]*Options
+	Dispatch map[string]*structs.Options
 
 	// Pipelines defines mapping between PHP job pipeline and associated job broker.
-	Pipelines map[string]*Pipeline
+	Pipelines map[string]*pipeline.Pipeline
 
 	// Consuming specifies names of pipelines to be consumed on service start.
 	Consume []string
 
 	// parent config for broken options.
-	pipelines Pipelines
-	route     Dispatcher
+	pipelines pipeline.Pipelines
+	route     dispatcher.Dispatcher
 }
 
 func (c *Config) InitDefaults() error {
 	const op = errors.Op("config_init_defaults")
 	var err error
-	c.pipelines, err = initPipelines(c.Pipelines)
+	c.pipelines, err = pipeline.InitPipelines(c.Pipelines)
 	if err != nil {
 		return errors.E(op, err)
 	}
@@ -36,9 +39,9 @@ func (c *Config) InitDefaults() error {
 }
 
 // MatchPipeline locates the pipeline associated with the job.
-func (c *Config) MatchPipeline(job *Job) (*Pipeline, *Options, error) {
+func (c *Config) MatchPipeline(job *structs.Job) (*pipeline.Pipeline, *structs.Options, error) {
 	const op = errors.Op("config_match_pipeline")
-	opt := c.route.match(job)
+	opt := c.route.Match(job)
 
 	pipe := ""
 	if job.Options != nil {

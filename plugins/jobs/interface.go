@@ -1,9 +1,14 @@
 package jobs
 
-// todo naming
+import (
+	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/structs"
+)
+
+// Consumer todo naming
 type Consumer interface {
-	Push()
+	Push(*pipeline.Pipeline, *structs.Job) (string, error)
 	Stat()
-	Consume(*Pipeline)
-	Register(*Pipeline)
+	Consume(*pipeline.Pipeline)
+	Register(*pipeline.Pipeline)
 }
