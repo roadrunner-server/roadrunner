@@ -1,8 +1,9 @@
 package jobs
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestJob_Body(t *testing.T) {

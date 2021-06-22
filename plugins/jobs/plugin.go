@@ -1,10 +1,14 @@
 package jobs
 
 import (
+	"context"
+
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/plugins/server"
 )
 
 const (
@@ -15,16 +19,23 @@ type Plugin struct {
 	cfg *Config
 	log logger.Logger
 
+	workersPool pool.Pool
+
 	consumers map[string]Consumer
 }
 
-func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
+func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Server) error {
 	const op = errors.Op("jobs_plugin_init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
 	}
 
 	err := cfg.UnmarshalKey(PluginName, &p.cfg)
+	if err != nil {
+		return errors.E(op, err)
+	}
+
+	p.workersPool, err = server.NewWorkerPool(context.Background(), p.cfg.poolCfg, nil, nil)
 	if err != nil {
 		return errors.E(op, err)
 	}

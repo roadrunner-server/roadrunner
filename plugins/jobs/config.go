@@ -8,8 +8,8 @@ import (
 // Config defines settings for job broker, workers and job-pipeline mapping.
 type Config struct {
 	// Workers configures roadrunner server and worker busy.
-	//Workers *roadrunner.ServerConfig
-	pool poolImpl.Config
+	// Workers *roadrunner.ServerConfig
+	poolCfg poolImpl.Config
 
 	// Dispatch defines where and how to match jobs.
 	Dispatch map[string]*Options
@@ -23,6 +23,16 @@ type Config struct {
 	// parent config for broken options.
 	pipelines Pipelines
 	route     Dispatcher
+}
+
+func (c *Config) InitDefaults() error {
+	const op = errors.Op("config_init_defaults")
+	var err error
+	c.pipelines, err = initPipelines(c.Pipelines)
+	if err != nil {
+		return errors.E(op, err)
+	}
+	return nil
 }
 
 // MatchPipeline locates the pipeline associated with the job.

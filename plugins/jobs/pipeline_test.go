@@ -1,9 +1,10 @@
 package jobs
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPipeline_Map(t *testing.T) {

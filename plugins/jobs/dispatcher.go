@@ -18,7 +18,7 @@ func initDispatcher(routes map[string]*Options) Dispatcher {
 		pattern = strings.Trim(pattern, "-.*")
 
 		for _, s := range separators {
-			pattern = strings.Replace(pattern, s, ".", -1)
+			pattern = strings.ReplaceAll(pattern, s, ".")
 		}
 
 		dispatcher[pattern] = opts

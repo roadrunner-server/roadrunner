@@ -5,12 +5,6 @@ import (
 	"github.com/spiral/roadrunner/v2/utils"
 )
 
-//// Handler handles job execution.
-//type Handler func(id string, j *Job) error
-//
-//// ErrorHandler handles job execution errors.
-//type ErrorHandler func(id string, j *Job, err error)
-
 // Job carries information about single job.
 type Job struct {
 	// Job contains name of job broker (usually PHP class).
