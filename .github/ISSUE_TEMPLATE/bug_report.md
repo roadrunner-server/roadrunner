@@ -3,7 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 title: "[BUG]"
 labels: B-bug, F-need-verification
-assignees: 48d90782
+assignees: rustatian
 
 ---
 
@@ -28,6 +28,8 @@ I expected to see this happen: *explanation*
 Instead, this happened: *explanation*
 
 The version of RR used: *explanation*
+  
+My `.rr.yaml` configuration is: *config*
 
 Errortrace, Backtrace or Panictrace
 ```
