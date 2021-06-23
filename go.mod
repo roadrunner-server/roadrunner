@@ -6,7 +6,6 @@ require (
 	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
 	github.com/alicebob/miniredis/v2 v2.14.5
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
-	github.com/cenkalti/backoff/v4 v4.1.1
 	github.com/fasthttp/websocket v1.4.3
 	github.com/fatih/color v1.12.0
 	github.com/go-ole/go-ole v1.2.5 // indirect
@@ -23,7 +22,6 @@ require (
 	github.com/spiral/endure v1.0.2
 	github.com/spiral/errors v1.0.11
 	github.com/spiral/goridge/v3 v3.1.4
-	github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271
 	// ===========
 	github.com/stretchr/testify v1.7.0
 	github.com/tklauser/go-sysconf v0.3.6 // indirect
