@@ -1,6 +1,10 @@
 package ephemeral
 
-import "github.com/spiral/roadrunner/v2/plugins/logger"
+import (
+	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
+	"github.com/spiral/roadrunner/v2/plugins/jobs"
+	"github.com/spiral/roadrunner/v2/plugins/logger"
+)
 
 const (
 	PluginName string = "ephemeral"
@@ -17,4 +21,8 @@ func (p *Plugin) Init(log logger.Logger) error {
 
 func (p *Plugin) Name() string {
 	return PluginName
+}
+
+func (p *Plugin) InitJobBroker(q priorityqueue.Queue) (jobs.Consumer, error) {
+	return NewJobBroker(q)
 }

@@ -148,7 +148,7 @@ func (server *Plugin) NewWorkerPool(ctx context.Context, opt *pool.Config, env E
 		return nil, errors.E(op, err)
 	}
 
-	list := make([]events.Listener, 0, 22)
+	list := make([]events.Listener, 0, 2)
 	list = append(list, server.collectPoolEvents, server.collectWorkerEvents)
 	if len(listeners) != 0 {
 		list = append(list, listeners...)

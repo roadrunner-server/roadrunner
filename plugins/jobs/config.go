@@ -36,9 +36,11 @@ func (c *Config) InitDefaults() error {
 		return errors.E(op, err)
 	}
 
-	if c.poolCfg != nil {
-		c.poolCfg.InitDefaults()
+	if c.poolCfg == nil {
+		c.poolCfg = &poolImpl.Config{}
 	}
+
+	c.poolCfg.InitDefaults()
 
 	return nil
 }
