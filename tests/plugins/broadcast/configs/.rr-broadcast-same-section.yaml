@@ -3,8 +3,6 @@ rpc:
 
 server:
   command: "php ../../psr-worker-bench.php"
-  user: ""
-  group: ""
   relay: "pipes"
   relay_timeout: "20s"
 
@@ -35,9 +33,4 @@ broadcast:
 
 logs:
   mode: development
-  level: debug
-
-endure:
-  grace_period: 120s
-  print_graph: false
-  log_level: error
+  level: info
