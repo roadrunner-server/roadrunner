@@ -12,7 +12,7 @@ import (
 type Config struct {
 	// Workers configures roadrunner server and worker busy.
 	// Workers *roadrunner.ServerConfig
-	poolCfg poolImpl.Config
+	poolCfg *poolImpl.Config
 
 	// Dispatch defines where and how to match jobs.
 	Dispatch map[string]*structs.Options
@@ -35,6 +35,11 @@ func (c *Config) InitDefaults() error {
 	if err != nil {
 		return errors.E(op, err)
 	}
+
+	if c.poolCfg != nil {
+		c.poolCfg.InitDefaults()
+	}
+
 	return nil
 }
 

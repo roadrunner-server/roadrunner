@@ -21,14 +21,14 @@ import (
 	"github.com/spiral/roadrunner/v2/utils"
 )
 
-// PluginName for the server
-const PluginName = "server"
-
-// RrRelay env variable key (internal)
-const RrRelay = "RR_RELAY"
-
-// RrRPC env variable key (internal) if the RPC presents
-const RrRPC = "RR_RPC"
+const (
+	// PluginName for the server
+	PluginName = "server"
+	// RrRelay env variable key (internal)
+	RrRelay = "RR_RELAY"
+	// RrRPC env variable key (internal) if the RPC presents
+	RrRPC = "RR_RPC"
+)
 
 // Plugin manages worker
 type Plugin struct {
@@ -140,8 +140,9 @@ func (server *Plugin) NewWorker(ctx context.Context, env Env, listeners ...event
 }
 
 // NewWorkerPool issues new worker pool.
-func (server *Plugin) NewWorkerPool(ctx context.Context, opt pool.Config, env Env, listeners ...events.Listener) (pool.Pool, error) {
+func (server *Plugin) NewWorkerPool(ctx context.Context, opt *pool.Config, env Env, listeners ...events.Listener) (pool.Pool, error) {
 	const op = errors.Op("server_plugin_new_worker_pool")
+
 	spawnCmd, err := server.CmdFactory(env)
 	if err != nil {
 		return nil, errors.E(op, err)

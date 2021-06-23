@@ -9,7 +9,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/server"
 )
 
-var testPoolConfig = poolImpl.Config{
+var testPoolConfig = &poolImpl.Config{
 	NumWorkers:      10,
 	MaxJobs:         100,
 	AllocateTimeout: time.Second * 10,

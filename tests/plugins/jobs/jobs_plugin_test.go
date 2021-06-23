@@ -10,9 +10,11 @@ import (
 
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/jobs"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/brokers/ephemeral"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
-	"github.com/spiral/roadrunner/v2/plugins/memory"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
+	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,15 +23,17 @@ func TestJobsInit(t *testing.T) {
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "configs/.rr-kv-init.yaml",
+		Path:   "configs/.rr-jobs-init.yaml",
 		Prefix: "rr",
 	}
 
 	err = cont.RegisterAll(
 		cfg,
-		&memory.Plugin{},
+		&server.Plugin{},
 		&rpcPlugin.Plugin{},
 		&logger.ZapLogger{},
+		&jobs.Plugin{},
+		&ephemeral.Plugin{},
 	)
 	assert.NoError(t, err)
 

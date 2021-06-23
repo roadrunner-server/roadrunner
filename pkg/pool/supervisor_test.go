@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var cfgSupervised = Config{
+var cfgSupervised = &Config{
 	NumWorkers:      uint64(1),
 	AllocateTimeout: time.Second,
 	DestroyTimeout:  time.Second,
@@ -82,7 +82,7 @@ func TestSupervisedPool_ExecWithDebugMode(t *testing.T) {
 }
 
 func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
-	var cfgExecTTL = Config{
+	var cfgExecTTL = &Config{
 		NumWorkers:      uint64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
@@ -123,7 +123,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 }
 
 func TestSupervisedPool_Idle(t *testing.T) {
-	var cfgExecTTL = Config{
+	var cfgExecTTL = &Config{
 		NumWorkers:      uint64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
@@ -171,7 +171,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 }
 
 func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
-	var cfgExecTTL = Config{
+	var cfgExecTTL = &Config{
 		NumWorkers:      uint64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
@@ -213,7 +213,7 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 }
 
 func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
-	var cfgExecTTL = Config{
+	var cfgExecTTL = &Config{
 		NumWorkers:      uint64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,

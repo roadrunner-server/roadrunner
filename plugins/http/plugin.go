@@ -143,7 +143,7 @@ func (p *Plugin) Serve() chan error {
 func (p *Plugin) serve(errCh chan error) {
 	var err error
 	const op = errors.Op("http_plugin_serve")
-	p.pool, err = p.server.NewWorkerPool(context.Background(), pool.Config{
+	p.pool, err = p.server.NewWorkerPool(context.Background(), &pool.Config{
 		Debug:           p.cfg.Pool.Debug,
 		NumWorkers:      p.cfg.Pool.NumWorkers,
 		MaxJobs:         p.cfg.Pool.MaxJobs,
@@ -323,7 +323,7 @@ func (p *Plugin) Reset() error {
 	p.pool = nil
 
 	var err error
-	p.pool, err = p.server.NewWorkerPool(context.Background(), pool.Config{
+	p.pool, err = p.server.NewWorkerPool(context.Background(), &pool.Config{
 		Debug:           p.cfg.Pool.Debug,
 		NumWorkers:      p.cfg.Pool.NumWorkers,
 		MaxJobs:         p.cfg.Pool.MaxJobs,

@@ -26,7 +26,7 @@ type Command func() *exec.Cmd
 
 // StaticPool controls worker creation, destruction and task routing. Pool uses fixed amount of stack.
 type StaticPool struct {
-	cfg Config
+	cfg *Config
 
 	// worker command creator
 	cmd Command
@@ -51,7 +51,7 @@ type StaticPool struct {
 }
 
 // Initialize creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
-func Initialize(ctx context.Context, cmd Command, factory transport.Factory, cfg Config, options ...Options) (Pool, error) {
+func Initialize(ctx context.Context, cmd Command, factory transport.Factory, cfg *Config, options ...Options) (Pool, error) {
 	const op = errors.Op("static_pool_initialize")
 	if factory == nil {
 		return nil, errors.E(op, errors.Str("no factory initialized"))

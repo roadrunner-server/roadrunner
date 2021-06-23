@@ -106,7 +106,7 @@ func (p *Plugin) Serve() chan error {
 		p.Lock()
 		defer p.Unlock()
 
-		p.phpPool, err = p.server.NewWorkerPool(context.Background(), phpPool.Config{
+		p.phpPool, err = p.server.NewWorkerPool(context.Background(), &phpPool.Config{
 			Debug:           p.cfg.Pool.Debug,
 			NumWorkers:      p.cfg.Pool.NumWorkers,
 			MaxJobs:         p.cfg.Pool.MaxJobs,
@@ -273,7 +273,7 @@ func (p *Plugin) Reset() error {
 	p.phpPool = nil
 
 	var err error
-	p.phpPool, err = p.server.NewWorkerPool(context.Background(), phpPool.Config{
+	p.phpPool, err = p.server.NewWorkerPool(context.Background(), &phpPool.Config{
 		Debug:           p.cfg.Pool.Debug,
 		NumWorkers:      p.cfg.Pool.NumWorkers,
 		MaxJobs:         p.cfg.Pool.MaxJobs,

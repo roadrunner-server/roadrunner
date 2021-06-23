@@ -45,6 +45,11 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 		return errors.E(op, err)
 	}
 
+	err = p.cfg.InitDefaults()
+	if err != nil {
+		return errors.E(op, err)
+	}
+
 	p.workersPool, err = server.NewWorkerPool(context.Background(), p.cfg.poolCfg, map[string]string{RrJobs: "true"}, testListener)
 	if err != nil {
 		return errors.E(op, err)
@@ -59,6 +64,11 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 
 func (p *Plugin) Serve() chan error {
 	errCh := make(chan error, 1)
+
+	// initialize sub-plugins
+	// provide a queue to them
+	// start consume loop
+	// start resp loop
 
 	return errCh
 }

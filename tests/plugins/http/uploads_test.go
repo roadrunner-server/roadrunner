@@ -31,7 +31,7 @@ func TestHandler_Upload_File(t *testing.T) {
 	pool, err := poolImpl.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "upload", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		&poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -114,7 +114,7 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 	pool, err := poolImpl.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "upload", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		&poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -197,7 +197,7 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 	pool, err := poolImpl.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "upload", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		&poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
@@ -280,7 +280,7 @@ func TestHandler_Upload_File_Forbids(t *testing.T) {
 	pool, err := poolImpl.Initialize(context.Background(),
 		func() *exec.Cmd { return exec.Command("php", "../../http/client.php", "upload", "pipes") },
 		pipe.NewPipeFactory(),
-		poolImpl.Config{
+		&poolImpl.Config{
 			NumWorkers:      1,
 			AllocateTimeout: time.Second * 1000,
 			DestroyTimeout:  time.Second * 1000,
