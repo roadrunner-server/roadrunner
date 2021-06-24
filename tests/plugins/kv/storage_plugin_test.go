@@ -575,6 +575,53 @@ func testRPCMethods(t *testing.T) {
 	err = client.Call("kv.Has", keysDel, ret)
 	assert.NoError(t, err)
 	assert.Len(t, ret.GetItems(), 0)
+
+	dataClear := &payload.Request{
+		Storage: "boltdb-rr",
+		Items: []*payload.Item{
+			{
+				Key:   "a",
+				Value: []byte("aa"),
+			},
+			{
+				Key:   "b",
+				Value: []byte("bb"),
+			},
+			{
+				Key:   "c",
+				Value: []byte("cc"),
+			},
+			{
+				Key:   "d",
+				Value: []byte("dd"),
+			},
+			{
+				Key:   "e",
+				Value: []byte("ee"),
+			},
+		},
+	}
+
+	clear := &payload.Request{Storage: "boltdb-rr"}
+
+	ret = &payload.Response{}
+	// Register 3 keys with values
+	err = client.Call("kv.Set", dataClear, ret)
+	assert.NoError(t, err)
+
+	ret = &payload.Response{}
+	err = client.Call("kv.Has", dataClear, ret)
+	assert.NoError(t, err)
+	assert.Len(t, ret.GetItems(), 5) // should be 5
+
+	ret = &payload.Response{}
+	err = client.Call("kv.Clear", clear, ret)
+	assert.NoError(t, err)
+
+	ret = &payload.Response{}
+	err = client.Call("kv.Has", dataClear, ret)
+	assert.NoError(t, err)
+	assert.Len(t, ret.GetItems(), 0) // should be 5
 }
 
 func TestMemcached(t *testing.T) {
@@ -790,6 +837,54 @@ func testRPCMethodsMemcached(t *testing.T) {
 	err = client.Call("kv.Has", keysDel, ret)
 	assert.NoError(t, err)
 	assert.Len(t, ret.GetItems(), 0)
+
+	dataClear := &payload.Request{
+		Storage: "memcached-rr",
+		Items: []*payload.Item{
+			{
+				Key:   "a",
+				Value: []byte("aa"),
+			},
+			{
+				Key:   "b",
+				Value: []byte("bb"),
+			},
+			{
+				Key:   "c",
+				Value: []byte("cc"),
+			},
+			{
+				Key:   "d",
+				Value: []byte("dd"),
+			},
+			{
+				Key:   "e",
+				Value: []byte("ee"),
+			},
+		},
+	}
+
+	clear := &payload.Request{Storage: "memcached-rr"}
+
+	ret = &payload.Response{}
+	// Register 3 keys with values
+	err = client.Call("kv.Set", dataClear, ret)
+	assert.NoError(t, err)
+
+	ret = &payload.Response{}
+	err = client.Call("kv.Has", dataClear, ret)
+	assert.NoError(t, err)
+	assert.Len(t, ret.GetItems(), 5) // should be 5
+
+	ret = &payload.Response{}
+	err = client.Call("kv.Clear", clear, ret)
+	assert.NoError(t, err)
+
+	time.Sleep(time.Second * 2)
+	ret = &payload.Response{}
+	err = client.Call("kv.Has", dataClear, ret)
+	assert.NoError(t, err)
+	assert.Len(t, ret.GetItems(), 0) // should be 5
 }
 
 func TestInMemory(t *testing.T) {
@@ -1004,6 +1099,53 @@ func testRPCMethodsInMemory(t *testing.T) {
 	err = client.Call("kv.Has", keysDel, ret)
 	assert.NoError(t, err)
 	assert.Len(t, ret.GetItems(), 0)
+
+	dataClear := &payload.Request{
+		Storage: "memory-rr",
+		Items: []*payload.Item{
+			{
+				Key:   "a",
+				Value: []byte("aa"),
+			},
+			{
+				Key:   "b",
+				Value: []byte("bb"),
+			},
+			{
+				Key:   "c",
+				Value: []byte("cc"),
+			},
+			{
+				Key:   "d",
+				Value: []byte("dd"),
+			},
+			{
+				Key:   "e",
+				Value: []byte("ee"),
+			},
+		},
+	}
+
+	clear := &payload.Request{Storage: "memory-rr"}
+
+	ret = &payload.Response{}
+	// Register 3 keys with values
+	err = client.Call("kv.Set", dataClear, ret)
+	assert.NoError(t, err)
+
+	ret = &payload.Response{}
+	err = client.Call("kv.Has", dataClear, ret)
+	assert.NoError(t, err)
+	assert.Len(t, ret.GetItems(), 5) // should be 5
+
+	ret = &payload.Response{}
+	err = client.Call("kv.Clear", clear, ret)
+	assert.NoError(t, err)
+
+	ret = &payload.Response{}
+	err = client.Call("kv.Has", dataClear, ret)
+	assert.NoError(t, err)
+	assert.Len(t, ret.GetItems(), 0) // should be 5
 }
 
 func TestRedis(t *testing.T) {
@@ -1354,4 +1496,51 @@ func testRPCMethodsRedis(t *testing.T) {
 	err = client.Call("kv.Has", keysDel, ret)
 	assert.NoError(t, err)
 	assert.Len(t, ret.GetItems(), 0)
+
+	dataClear := &payload.Request{
+		Storage: "redis-rr",
+		Items: []*payload.Item{
+			{
+				Key:   "a",
+				Value: []byte("aa"),
+			},
+			{
+				Key:   "b",
+				Value: []byte("bb"),
+			},
+			{
+				Key:   "c",
+				Value: []byte("cc"),
+			},
+			{
+				Key:   "d",
+				Value: []byte("dd"),
+			},
+			{
+				Key:   "e",
+				Value: []byte("ee"),
+			},
+		},
+	}
+
+	clear := &payload.Request{Storage: "redis-rr"}
+
+	ret = &payload.Response{}
+	// Register 3 keys with values
+	err = client.Call("kv.Set", dataClear, ret)
+	assert.NoError(t, err)
+
+	ret = &payload.Response{}
+	err = client.Call("kv.Has", dataClear, ret)
+	assert.NoError(t, err)
+	assert.Len(t, ret.GetItems(), 5) // should be 5
+
+	ret = &payload.Response{}
+	err = client.Call("kv.Clear", clear, ret)
+	assert.NoError(t, err)
+
+	ret = &payload.Response{}
+	err = client.Call("kv.Has", dataClear, ret)
+	assert.NoError(t, err)
+	assert.Len(t, ret.GetItems(), 0) // should be 5
 }

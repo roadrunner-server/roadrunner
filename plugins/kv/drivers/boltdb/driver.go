@@ -18,6 +18,7 @@ import (
 )
 
 type Driver struct {
+	clearMu sync.RWMutex
 	// db instance
 	DB *bolt.DB
 	// name should be UTF-8
@@ -373,6 +374,35 @@ func (d *Driver) TTL(keys ...string) (map[string]string, error) {
 	return m, nil
 }
 
+func (d *Driver) Clear() error {
+	err := d.DB.Update(func(tx *bolt.Tx) error {
+		err := tx.DeleteBucket(d.bucket)
+		if err != nil {
+			d.log.Error("boltdb delete bucket", "error", err)
+			return err
+		}
+
+		_, err = tx.CreateBucket(d.bucket)
+		if err != nil {
+			d.log.Error("boltdb create bucket", "error", err)
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		d.log.Error("clear transaction failed", "error", err)
+		return err
+	}
+
+	d.clearMu.Lock()
+	d.gc = sync.Map{}
+	d.clearMu.Unlock()
+
+	return nil
+}
+
 // ========================= PRIVATE =================================
 
 func (d *Driver) startGCLoop() { //nolint:gocognit
@@ -382,6 +412,8 @@ func (d *Driver) startGCLoop() { //nolint:gocognit
 		for {
 			select {
 			case <-t.C:
+				d.clearMu.RLock()
+
 				// calculate current time before loop started to be fair
 				now := time.Now()
 				d.gc.Range(func(key, value interface{}) bool {
@@ -414,6 +446,8 @@ func (d *Driver) startGCLoop() { //nolint:gocognit
 					}
 					return true
 				})
+
+				d.clearMu.RUnlock()
 			case <-d.stop:
 				err := d.DB.Close()
 				if err != nil {

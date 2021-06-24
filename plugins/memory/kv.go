@@ -13,7 +13,8 @@ import (
 )
 
 type Driver struct {
-	heap sync.Map
+	clearMu sync.RWMutex
+	heap    sync.Map
 	// stop is used to stop keys GC and close boltdb connection
 	stop chan struct{}
 	log  logger.Logger
@@ -203,6 +204,14 @@ func (s *Driver) Delete(keys ...string) error {
 	return nil
 }
 
+func (s *Driver) Clear() error {
+	s.clearMu.Lock()
+	s.heap = sync.Map{}
+	s.clearMu.Unlock()
+
+	return nil
+}
+
 // ================================== PRIVATE ======================================
 
 func (s *Driver) gc() {
@@ -213,6 +222,9 @@ func (s *Driver) gc() {
 			ticker.Stop()
 			return
 		case now := <-ticker.C:
+			// mutes needed to clear the map
+			s.clearMu.RLock()
+
 			// check every second
 			s.heap.Range(func(key, value interface{}) bool {
 				v := value.(*kvv1.Item)
@@ -231,6 +243,8 @@ func (s *Driver) gc() {
 				}
 				return true
 			})
+
+			s.clearMu.RUnlock()
 		}
 	}
 }

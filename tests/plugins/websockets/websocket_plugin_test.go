@@ -645,7 +645,7 @@ func RPCWsPubAsync(port string) func(t *testing.T) {
 	return func(t *testing.T) {
 		da := websocket.Dialer{
 			Proxy:            http.ProxyFromEnvironment,
-			HandshakeTimeout: time.Second * 18,
+			HandshakeTimeout: time.Second * 20,
 		}
 
 		connURL := url.URL{Scheme: "ws", Host: "localhost:" + port, Path: "/ws"}
@@ -654,8 +654,31 @@ func RPCWsPubAsync(port string) func(t *testing.T) {
 		assert.NoError(t, err)
 
 		defer func() {
-			_ = resp.Body.Close()
+			if resp != nil && resp.Body != nil {
+				_ = resp.Body.Close()
+			}
 		}()
+
+		go func() {
+			messagesToVerify := make([]string, 0, 10)
+			messagesToVerify = append(messagesToVerify, `{"topic":"@join","payload":["foo","foo2"]}`)
+			messagesToVerify = append(messagesToVerify, `{"topic":"foo","payload":"hello, PHP"}`)
+			messagesToVerify = append(messagesToVerify, `{"topic":"@leave","payload":["foo"]}`)
+			messagesToVerify = append(messagesToVerify, `{"topic":"foo2","payload":"hello, PHP2"}`)
+			i := 0
+			for {
+				_, msg, err2 := c.ReadMessage()
+				retMsg := utils.AsString(msg)
+				assert.NoError(t, err2)
+				assert.Equal(t, messagesToVerify[i], retMsg)
+				i++
+				if i == 3 {
+					return
+				}
+			}
+		}()
+
+		time.Sleep(time.Second)
 
 		d, err := json.Marshal(messageWS("join", []byte("hello websockets"), "foo", "foo2"))
 		if err != nil {
@@ -665,20 +688,11 @@ func RPCWsPubAsync(port string) func(t *testing.T) {
 		err = c.WriteMessage(websocket.BinaryMessage, d)
 		assert.NoError(t, err)
 
-		_, msg, err := c.ReadMessage()
-		retMsg := utils.AsString(msg)
-		assert.NoError(t, err)
+		time.Sleep(time.Second)
 
-		// subscription done
-		assert.Equal(t, `{"topic":"@join","payload":["foo","foo2"]}`, retMsg)
+		publishAsync(t, "foo")
 
-		publishAsync(t, "placeholder", "foo")
-
-		// VERIFY a makeMessage
-		_, msg, err = c.ReadMessage()
-		retMsg = utils.AsString(msg)
-		assert.NoError(t, err)
-		assert.Equal(t, "{\"topic\":\"foo\",\"payload\":\"hello, PHP\"}", retMsg)
+		time.Sleep(time.Second)
 
 		// //// LEAVE foo /////////
 		d, err = json.Marshal(messageWS("leave", []byte("hello websockets"), "foo"))
@@ -689,26 +703,15 @@ func RPCWsPubAsync(port string) func(t *testing.T) {
 		err = c.WriteMessage(websocket.BinaryMessage, d)
 		assert.NoError(t, err)
 
-		_, msg, err = c.ReadMessage()
-		retMsg = utils.AsString(msg)
-		assert.NoError(t, err)
-
-		// subscription done
-		assert.Equal(t, `{"topic":"@leave","payload":["foo"]}`, retMsg)
+		time.Sleep(time.Second)
 
 		// TRY TO PUBLISH TO UNSUBSCRIBED TOPIC
-		publishAsync(t, "placeholder", "foo")
+		publishAsync(t, "foo")
 
 		go func() {
-			time.Sleep(time.Second * 3)
-			publishAsync(t, "placeholder", "foo2")
+			time.Sleep(time.Second * 5)
+			publishAsync(t, "foo2")
 		}()
-
-		// should be only makeMessage from the subscribed foo0 topic
-		_, msg, err = c.ReadMessage()
-		retMsg = utils.AsString(msg)
-		assert.NoError(t, err)
-		assert.Equal(t, "{\"topic\":\"foo2\",\"payload\":\"hello, PHP\"}", retMsg)
 
 		err = c.WriteControl(websocket.CloseMessage, nil, time.Time{})
 		assert.NoError(t, err)
@@ -733,6 +736,27 @@ func RPCWsPub(port string) func(t *testing.T) {
 			}
 		}()
 
+		go func() {
+			messagesToVerify := make([]string, 0, 10)
+			messagesToVerify = append(messagesToVerify, `{"topic":"@join","payload":["foo","foo2"]}`)
+			messagesToVerify = append(messagesToVerify, `{"topic":"foo","payload":"hello, PHP"}`)
+			messagesToVerify = append(messagesToVerify, `{"topic":"@leave","payload":["foo"]}`)
+			messagesToVerify = append(messagesToVerify, `{"topic":"foo2","payload":"hello, PHP2"}`)
+			i := 0
+			for {
+				_, msg, err2 := c.ReadMessage()
+				retMsg := utils.AsString(msg)
+				assert.NoError(t, err2)
+				assert.Equal(t, messagesToVerify[i], retMsg)
+				i++
+				if i == 3 {
+					return
+				}
+			}
+		}()
+
+		time.Sleep(time.Second)
+
 		d, err := json.Marshal(messageWS("join", []byte("hello websockets"), "foo", "foo2"))
 		if err != nil {
 			panic(err)
@@ -741,20 +765,11 @@ func RPCWsPub(port string) func(t *testing.T) {
 		err = c.WriteMessage(websocket.BinaryMessage, d)
 		assert.NoError(t, err)
 
-		_, msg, err := c.ReadMessage()
-		retMsg := utils.AsString(msg)
-		assert.NoError(t, err)
-
-		// subscription done
-		assert.Equal(t, `{"topic":"@join","payload":["foo","foo2"]}`, retMsg)
+		time.Sleep(time.Second)
 
 		publish("", "foo")
 
-		// VERIFY a makeMessage
-		_, msg, err = c.ReadMessage()
-		retMsg = utils.AsString(msg)
-		assert.NoError(t, err)
-		assert.Equal(t, "{\"topic\":\"foo\",\"payload\":\"hello, PHP\"}", retMsg)
+		time.Sleep(time.Second)
 
 		// //// LEAVE foo /////////
 		d, err = json.Marshal(messageWS("leave", []byte("hello websockets"), "foo"))
@@ -765,12 +780,7 @@ func RPCWsPub(port string) func(t *testing.T) {
 		err = c.WriteMessage(websocket.BinaryMessage, d)
 		assert.NoError(t, err)
 
-		_, msg, err = c.ReadMessage()
-		retMsg = utils.AsString(msg)
-		assert.NoError(t, err)
-
-		// subscription done
-		assert.Equal(t, `{"topic":"@leave","payload":["foo"]}`, retMsg)
+		time.Sleep(time.Second)
 
 		// TRY TO PUBLISH TO UNSUBSCRIBED TOPIC
 		publish("", "foo")
@@ -779,12 +789,6 @@ func RPCWsPub(port string) func(t *testing.T) {
 			time.Sleep(time.Second * 5)
 			publish2(t, "", "foo2")
 		}()
-
-		// should be only makeMessage from the subscribed foo2 topic
-		_, msg, err = c.ReadMessage()
-		retMsg = utils.AsString(msg)
-		assert.NoError(t, err)
-		assert.Equal(t, "{\"topic\":\"foo2\",\"payload\":\"hello, PHP2\"}", retMsg)
 
 		err = c.WriteControl(websocket.CloseMessage, nil, time.Time{})
 		assert.NoError(t, err)
@@ -849,7 +853,7 @@ func RPCWsDeny(port string) func(t *testing.T) {
 
 // ---------------------------------------------------------------------------------------------------
 
-func publish(command string, topics ...string) {
+func publish(topics ...string) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	if err != nil {
 		panic(err)
@@ -858,13 +862,13 @@ func publish(command string, topics ...string) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	ret := &websocketsv1.Response{}
-	err = client.Call("broadcast.Publish", makeMessage(command, []byte("hello, PHP"), topics...), ret)
+	err = client.Call("broadcast.Publish", makeMessage([]byte("hello, PHP"), topics...), ret)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func publishAsync(t *testing.T, command string, topics ...string) {
+func publishAsync(t *testing.T, topics ...string) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	if err != nil {
 		panic(err)
@@ -873,12 +877,12 @@ func publishAsync(t *testing.T, command string, topics ...string) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	ret := &websocketsv1.Response{}
-	err = client.Call("broadcast.PublishAsync", makeMessage(command, []byte("hello, PHP"), topics...), ret)
+	err = client.Call("broadcast.PublishAsync", makeMessage([]byte("hello, PHP"), topics...), ret)
 	assert.NoError(t, err)
 	assert.True(t, ret.Ok)
 }
 
-func publish2(t *testing.T, command string, topics ...string) {
+func publish2(t *testing.T, topics ...string) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	if err != nil {
 		panic(err)
@@ -887,7 +891,7 @@ func publish2(t *testing.T, command string, topics ...string) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	ret := &websocketsv1.Response{}
-	err = client.Call("broadcast.Publish", makeMessage(command, []byte("hello, PHP2"), topics...), ret)
+	err = client.Call("broadcast.Publish", makeMessage([]byte("hello, PHP2"), topics...), ret)
 	assert.NoError(t, err)
 	assert.True(t, ret.Ok)
 }
@@ -900,12 +904,11 @@ func messageWS(command string, payload []byte, topics ...string) *websocketsv1.M
 	}
 }
 
-func makeMessage(command string, payload []byte, topics ...string) *websocketsv1.Request {
+func makeMessage(payload []byte, topics ...string) *websocketsv1.Request {
 	m := &websocketsv1.Request{
 		Messages: []*websocketsv1.Message{
 			{
 				Topics:  topics,
-				Command: command,
 				Payload: payload,
 			},
 		},

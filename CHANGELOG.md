@@ -6,6 +6,7 @@ v2.3.1 (_.06.2021)
 ## 👀 New:
 
 - ✏️ Rework `broadcast` plugin. Add architecture diagrams to the `doc` folder. [PR](https://github.com/spiral/roadrunner/pull/732)
+- ✏️ Add `Clear` method to the KV plugin RPC. [PR](https://github.com/spiral/roadrunner/pull/736)
 
 ## 🩹 Fixes:
 

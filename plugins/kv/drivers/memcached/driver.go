@@ -237,3 +237,13 @@ func (d *Driver) Delete(keys ...string) error {
 	}
 	return nil
 }
+
+func (d *Driver) Clear() error {
+	err := d.client.DeleteAll()
+	if err != nil {
+		d.log.Error("flush_all operation failed", "error", err)
+		return err
+	}
+
+	return nil
+}
