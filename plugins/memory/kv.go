@@ -223,7 +223,7 @@ func (s *Driver) gc() {
 			return
 		case now := <-ticker.C:
 			// mutes needed to clear the map
-			s.clearMu.Lock()
+			s.clearMu.RLock()
 
 			// check every second
 			s.heap.Range(func(key, value interface{}) bool {
@@ -244,7 +244,7 @@ func (s *Driver) gc() {
 				return true
 			})
 
-			s.clearMu.Unlock()
+			s.clearMu.RUnlock()
 		}
 	}
 }

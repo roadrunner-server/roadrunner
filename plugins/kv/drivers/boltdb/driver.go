@@ -18,6 +18,7 @@ import (
 )
 
 type Driver struct {
+	clearMu sync.RWMutex
 	// db instance
 	DB *bolt.DB
 	// name should be UTF-8
@@ -395,6 +396,10 @@ func (d *Driver) Clear() error {
 		return err
 	}
 
+	d.clearMu.Lock()
+	d.gc = sync.Map{}
+	d.clearMu.Unlock()
+
 	return nil
 }
 
@@ -407,6 +412,8 @@ func (d *Driver) startGCLoop() { //nolint:gocognit
 		for {
 			select {
 			case <-t.C:
+				d.clearMu.RLock()
+
 				// calculate current time before loop started to be fair
 				now := time.Now()
 				d.gc.Range(func(key, value interface{}) bool {
@@ -439,6 +446,8 @@ func (d *Driver) startGCLoop() { //nolint:gocognit
 					}
 					return true
 				})
+
+				d.clearMu.RUnlock()
 			case <-d.stop:
 				err := d.DB.Close()
 				if err != nil {
