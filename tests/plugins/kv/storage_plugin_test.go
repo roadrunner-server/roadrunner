@@ -622,7 +622,6 @@ func testRPCMethods(t *testing.T) {
 	err = client.Call("kv.Has", dataClear, ret)
 	assert.NoError(t, err)
 	assert.Len(t, ret.GetItems(), 0) // should be 5
-
 }
 
 func TestMemcached(t *testing.T) {
@@ -886,7 +885,6 @@ func testRPCMethodsMemcached(t *testing.T) {
 	err = client.Call("kv.Has", dataClear, ret)
 	assert.NoError(t, err)
 	assert.Len(t, ret.GetItems(), 0) // should be 5
-
 }
 
 func TestInMemory(t *testing.T) {
@@ -1148,7 +1146,6 @@ func testRPCMethodsInMemory(t *testing.T) {
 	err = client.Call("kv.Has", dataClear, ret)
 	assert.NoError(t, err)
 	assert.Len(t, ret.GetItems(), 0) // should be 5
-
 }
 
 func TestRedis(t *testing.T) {
