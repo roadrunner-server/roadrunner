@@ -667,9 +667,9 @@ func RPCWsPubAsync(port string) func(t *testing.T) {
 			messagesToVerify = append(messagesToVerify, `{"topic":"foo2","payload":"hello, PHP2"}`)
 			i := 0
 			for {
-				_, msg, err := c.ReadMessage()
+				_, msg, err2 := c.ReadMessage()
 				retMsg := utils.AsString(msg)
-				assert.NoError(t, err)
+				assert.NoError(t, err2)
 				assert.Equal(t, messagesToVerify[i], retMsg)
 				i++
 				if i == 3 {
@@ -744,9 +744,9 @@ func RPCWsPub(port string) func(t *testing.T) {
 			messagesToVerify = append(messagesToVerify, `{"topic":"foo2","payload":"hello, PHP2"}`)
 			i := 0
 			for {
-				_, msg, err := c.ReadMessage()
+				_, msg, err2 := c.ReadMessage()
 				retMsg := utils.AsString(msg)
-				assert.NoError(t, err)
+				assert.NoError(t, err2)
 				assert.Equal(t, messagesToVerify[i], retMsg)
 				i++
 				if i == 3 {
