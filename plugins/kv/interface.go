@@ -22,8 +22,11 @@ type Storage interface {
 	MExpire(items ...*kvv1.Item) error
 
 	// TTL return the rest time to live for provided keys
-	// Not supported for the memcached and boltdb
+	// Not supported for the memcached
 	TTL(keys ...string) (map[string]string, error)
+
+	// Clear clean the entire storage
+	Clear() error
 
 	// Delete one or multiple keys.
 	Delete(keys ...string) error

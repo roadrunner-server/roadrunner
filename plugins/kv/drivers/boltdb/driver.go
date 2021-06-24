@@ -373,6 +373,31 @@ func (d *Driver) TTL(keys ...string) (map[string]string, error) {
 	return m, nil
 }
 
+func (d *Driver) Clear() error {
+	err := d.DB.Update(func(tx *bolt.Tx) error {
+		err := tx.DeleteBucket(d.bucket)
+		if err != nil {
+			d.log.Error("boltdb delete bucket", "error", err)
+			return err
+		}
+
+		_, err = tx.CreateBucket(d.bucket)
+		if err != nil {
+			d.log.Error("boltdb create bucket", "error", err)
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		d.log.Error("clear transaction failed", "error", err)
+		return err
+	}
+
+	return nil
+}
+
 // ========================= PRIVATE =================================
 
 func (d *Driver) startGCLoop() { //nolint:gocognit
