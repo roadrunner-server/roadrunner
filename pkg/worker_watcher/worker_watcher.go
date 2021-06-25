@@ -51,64 +51,59 @@ func (ww *workerWatcher) Watch(workers []worker.BaseProcess) error {
 func (ww *workerWatcher) Get(ctx context.Context) (worker.BaseProcess, error) {
 	const op = errors.Op("worker_watcher_get_free_worker")
 
+	// thread safe operation
+	w, err := ww.container.Dequeue(ctx)
+	if errors.Is(errors.WatcherStopped, err) {
+		return nil, errors.E(op, errors.WatcherStopped)
+	}
+
+	if err != nil {
+		return nil, errors.E(op, err)
+	}
+
+	// fast path, worker not nil and in the ReadyState
+	if w.State().Value() == worker.StateReady {
+		return w, nil
+	}
+
+	// =========================================================
+	// SLOW PATH
+	_ = w.Kill() // how the worker get here???????
+	// no free workers in the container
+	// try to continuously get free one
 	for {
-		select {
-		case <-ctx.Done():
-			return nil, errors.E(op, errors.NoFreeWorkers)
-		default:
-			// thread safe operation
-			w, stop := ww.container.Dequeue()
-			if stop {
-				return nil, errors.E(op, errors.WatcherStopped)
-			}
+		w, err = ww.container.Dequeue(ctx)
 
-			if w == nil {
-				continue
-			}
+		if errors.Is(errors.WatcherStopped, err) {
+			return nil, errors.E(op, errors.WatcherStopped)
+		}
 
-			// fast path, worker not nil and in the ReadyState
-			if w.State().Value() == worker.StateReady {
-				return w, nil
-			}
-			// =========================================================
-			// SLOW PATH
-			_ = w.Kill() // how the worker get here???????
-			// no free workers in the container
-			// try to continuously get free one
-			for {
-				w, stop = ww.container.Dequeue()
-				if stop {
-					return nil, errors.E(op, errors.WatcherStopped)
-				}
+		if err != nil {
+			return nil, errors.E(op, err)
+		}
 
-				if w == nil {
-					continue
-				}
-
-				switch w.State().Value() {
-				// return only workers in the Ready state
-				// check first
-				case worker.StateReady:
-					return w, nil
-				case worker.StateWorking: // how??
-					ww.container.Enqueue(w) // put it back, let worker finish the work
-					continue
-				case
-					// all the possible wrong states
-					worker.StateInactive,
-					worker.StateDestroyed,
-					worker.StateErrored,
-					worker.StateStopped,
-					worker.StateInvalid,
-					worker.StateKilling,
-					worker.StateStopping:
-					// worker doing no work because it in the container
-					// so we can safely kill it (inconsistent state)
-					_ = w.Kill()
-					// try to get new worker
-					continue
-				}
-			}
+		switch w.State().Value() {
+		// return only workers in the Ready state
+		// check first
+		case worker.StateReady:
+			return w, nil
+		case worker.StateWorking: // how??
+			ww.container.Enqueue(w) // put it back, let worker finish the work
+			continue
+		case
+			// all the possible wrong states
+			worker.StateInactive,
+			worker.StateDestroyed,
+			worker.StateErrored,
+			worker.StateStopped,
+			worker.StateInvalid,
+			worker.StateKilling,
+			worker.StateStopping:
+			// worker doing no work because it in the container
+			// so we can safely kill it (inconsistent state)
+			_ = w.Kill()
+			// try to get new worker
+			continue
 		}
 	}
 }
