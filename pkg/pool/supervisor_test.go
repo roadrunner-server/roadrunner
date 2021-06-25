@@ -108,7 +108,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 
 	pid := p.Workers()[0].Pid()
 
-	resp, err := p.execWithTTL(context.Background(), payload.Payload{
+	resp, err := p.Exec(payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -148,7 +148,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 
 	pid := p.Workers()[0].Pid()
 
-	resp, err := p.execWithTTL(context.Background(), payload.Payload{
+	resp, err := p.Exec(payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -160,7 +160,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 	time.Sleep(time.Second * 5)
 
 	// worker should be marked as invalid and reallocated
-	_, err = p.execWithTTL(context.Background(), payload.Payload{
+	_, err = p.Exec(payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})

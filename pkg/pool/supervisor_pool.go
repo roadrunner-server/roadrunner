@@ -43,47 +43,8 @@ func supervisorWrapper(pool Pool, events events.Handler, cfg *SupervisorConfig) 
 	return sp
 }
 
-type ttlExec struct {
-	err error
-	p   payload.Payload
-}
-
-func (sp *supervised) execWithTTL(ctx context.Context, rqs payload.Payload) (payload.Payload, error) {
-	const op = errors.Op("supervised_exec_with_context")
-	if sp.cfg.ExecTTL == 0 {
-		return sp.pool.Exec(rqs)
-	}
-
-	c := make(chan ttlExec, 1)
-	ctx, cancel := context.WithTimeout(ctx, sp.cfg.ExecTTL)
-	defer cancel()
-	go func() {
-		res, err := sp.pool.execWithTTL(ctx, rqs)
-		if err != nil {
-			c <- ttlExec{
-				err: errors.E(op, err),
-				p:   payload.Payload{},
-			}
-		}
-
-		c <- ttlExec{
-			err: nil,
-			p:   res,
-		}
-	}()
-
-	for {
-		select {
-		case <-ctx.Done():
-			return payload.Payload{}, errors.E(op, errors.TimeOut, ctx.Err())
-		case res := <-c:
-			if res.err != nil {
-				return payload.Payload{}, res.err
-			}
-
-			return res.p, nil
-		}
-	}
+func (sp *supervised) execWithTTL(_ context.Context, _ payload.Payload) (payload.Payload, error) {
+	panic("used to satisfy pool interface")
 }
 
 func (sp *supervised) Exec(rqs payload.Payload) (payload.Payload, error) {
@@ -92,36 +53,15 @@ func (sp *supervised) Exec(rqs payload.Payload) (payload.Payload, error) {
 		return sp.pool.Exec(rqs)
 	}
 
-	c := make(chan ttlExec, 1)
 	ctx, cancel := context.WithTimeout(context.Background(), sp.cfg.ExecTTL)
 	defer cancel()
-	go func() {
-		res, err := sp.pool.execWithTTL(ctx, rqs)
-		if err != nil {
-			c <- ttlExec{
-				err: errors.E(op, err),
-				p:   payload.Payload{},
-			}
-		}
 
-		c <- ttlExec{
-			err: nil,
-			p:   res,
-		}
-	}()
-
-	for {
-		select {
-		case <-ctx.Done():
-			return payload.Payload{}, errors.E(op, errors.TimeOut, ctx.Err())
-		case res := <-c:
-			if res.err != nil {
-				return payload.Payload{}, res.err
-			}
-
-			return res.p, nil
-		}
+	res, err := sp.pool.execWithTTL(ctx, rqs)
+	if err != nil {
+		return payload.Payload{}, errors.E(op, err)
 	}
+
+	return res, nil
 }
 
 func (sp *supervised) GetConfig() interface{} {

@@ -1,6 +1,8 @@
 package container
 
-import "github.com/spiral/roadrunner/v2/pkg/worker"
+import (
+	"github.com/spiral/roadrunner/v2/pkg/worker"
+)
 
 // Vector interface represents vector container
 type Vector interface {

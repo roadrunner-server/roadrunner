@@ -174,7 +174,7 @@ func (sp *StaticPool) execWithTTL(ctx context.Context, p payload.Payload) (paylo
 		return sp.execDebugWithTTL(ctx, p)
 	}
 
-	ctxAlloc, cancel := context.WithTimeout(ctx, sp.cfg.AllocateTimeout)
+	ctxAlloc, cancel := context.WithTimeout(context.Background(), sp.cfg.AllocateTimeout)
 	defer cancel()
 	w, err := sp.getWorker(ctxAlloc, op)
 	if err != nil {
