@@ -1481,6 +1481,8 @@ func informerTestAfter(t *testing.T) {
 
 	assert.NotZero(t, workerPid)
 
+	time.Sleep(time.Second * 5)
+
 	err = client.Call("informer.Workers", "http", &list)
 	assert.NoError(t, err)
 	assert.Len(t, list.Workers, 1)

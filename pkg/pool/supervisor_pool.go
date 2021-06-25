@@ -104,7 +104,7 @@ func (sp *supervised) Stop() {
 	sp.stopCh <- struct{}{}
 }
 
-func (sp *supervised) control() {
+func (sp *supervised) control() { //nolint:gocognit
 	now := time.Now()
 
 	// MIGHT BE OUTDATED
@@ -112,7 +112,16 @@ func (sp *supervised) control() {
 	workers := sp.pool.Workers()
 
 	for i := 0; i < len(workers); i++ {
-		if workers[i].State().Value() == worker.StateInvalid {
+		// if worker not in the Ready OR working state
+		// skip such worker
+		switch workers[i].State().Value() {
+		case
+			worker.StateInvalid,
+			worker.StateErrored,
+			worker.StateDestroyed,
+			worker.StateInactive,
+			worker.StateStopped,
+			worker.StateStopping:
 			continue
 		}
 
@@ -123,12 +132,23 @@ func (sp *supervised) control() {
 		}
 
 		if sp.cfg.TTL != 0 && now.Sub(workers[i].Created()).Seconds() >= sp.cfg.TTL.Seconds() {
-			workers[i].State().Set(worker.StateInvalid)
+			// SOFT termination. DO NOT STOP active workers
+			if workers[i].State().Value() != worker.StateWorking {
+				workers[i].State().Set(worker.StateInvalid)
+				_ = workers[i].Stop()
+			}
 			sp.events.Push(events.PoolEvent{Event: events.EventTTL, Payload: workers[i]})
 			continue
 		}
 
 		if sp.cfg.MaxWorkerMemory != 0 && s.MemoryUsage >= sp.cfg.MaxWorkerMemory*MB {
+			// SOFT termination. DO NOT STOP active workers
+			if workers[i].State().Value() != worker.StateWorking {
+				workers[i].State().Set(worker.StateInvalid)
+				_ = workers[i].Stop()
+			}
+
+			// mark it as invalid, worker likely in the StateWorking, so, it will be killed after work will be done
 			workers[i].State().Set(worker.StateInvalid)
 			sp.events.Push(events.PoolEvent{Event: events.EventMaxMemory, Payload: workers[i]})
 			continue
@@ -170,6 +190,11 @@ func (sp *supervised) control() {
 			// After the control check, res will be 5, idle is 1
 			// 5 - 1 = 4, more than 0, YOU ARE FIRED (removed). Done.
 			if int64(sp.cfg.IdleTTL.Seconds())-res <= 0 {
+				if workers[i].State().Value() != worker.StateWorking {
+					workers[i].State().Set(worker.StateInvalid)
+					_ = workers[i].Stop()
+				}
+
 				workers[i].State().Set(worker.StateInvalid)
 				sp.events.Push(events.PoolEvent{Event: events.EventIdleTTL, Payload: workers[i]})
 			}

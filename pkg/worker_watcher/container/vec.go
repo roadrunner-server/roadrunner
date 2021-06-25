@@ -38,13 +38,11 @@ func (v *Vec) Dequeue(ctx context.Context) (worker.BaseProcess, error) {
 		return nil, errors.E(errors.WatcherStopped)
 	}
 
-	for {
-		select {
-		case w := <-v.workers:
-			return w, nil
-		case <-ctx.Done():
-			return nil, errors.E(ctx.Err(), errors.NoFreeWorkers)
-		}
+	select {
+	case w := <-v.workers:
+		return w, nil
+	case <-ctx.Done():
+		return nil, errors.E(ctx.Err(), errors.NoFreeWorkers)
 	}
 }
 
