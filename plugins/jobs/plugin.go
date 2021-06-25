@@ -95,6 +95,19 @@ func (p *Plugin) Serve() chan error {
 	// start consume loop
 	// start resp loop
 
+	/*
+		go func() {
+			for {
+				// get data JOB from the queue
+				job := p.queue.Pop()
+
+				// request
+				_ = job
+				p.workersPool.Exec(nil)
+			}
+		}()
+
+	*/
 	return errCh
 }
 

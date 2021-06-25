@@ -12,8 +12,8 @@ func (q *QueueImpl) Push() {
 
 }
 
-func (q *QueueImpl) Pop() {
-
+func (q *QueueImpl) Pop() interface{} {
+	return nil
 }
 
 func (q *QueueImpl) BLPop() {
