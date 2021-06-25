@@ -162,3 +162,19 @@ func (r *rpc) Delete(in *kvv1.Request, _ *kvv1.Response) error {
 
 	return errors.E(op, errors.Errorf("no such storage: %s", in.GetStorage()))
 }
+
+// Clear clean the storage
+func (r *rpc) Clear(in *kvv1.Request, _ *kvv1.Response) error {
+	const op = errors.Op("rcp_delete")
+
+	if st, exists := r.storages[in.GetStorage()]; exists {
+		err := st.Clear()
+		if err != nil {
+			return errors.E(op, err)
+		}
+
+		return nil
+	}
+
+	return errors.E(op, errors.Errorf("no such storage: %s", in.GetStorage()))
+}

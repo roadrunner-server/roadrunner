@@ -240,3 +240,12 @@ func (d *Driver) TTL(keys ...string) (map[string]string, error) {
 	}
 	return m, nil
 }
+
+func (d *Driver) Clear() error {
+	fdb := d.universalClient.FlushDB(context.Background())
+	if fdb.Err() != nil {
+		return fdb.Err()
+	}
+
+	return nil
+}
