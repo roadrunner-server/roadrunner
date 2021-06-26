@@ -108,7 +108,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 
 	pid := p.Workers()[0].Pid()
 
-	resp, err := p.execWithTTL(context.Background(), payload.Payload{
+	resp, err := p.Exec(payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -148,7 +148,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 
 	pid := p.Workers()[0].Pid()
 
-	resp, err := p.execWithTTL(context.Background(), payload.Payload{
+	resp, err := p.Exec(payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -160,7 +160,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 	time.Sleep(time.Second * 5)
 
 	// worker should be marked as invalid and reallocated
-	_, err = p.execWithTTL(context.Background(), payload.Payload{
+	_, err = p.Exec(payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -168,6 +168,48 @@ func TestSupervisedPool_Idle(t *testing.T) {
 	// should be new worker with new pid
 	assert.NotEqual(t, pid, p.Workers()[0].Pid())
 	p.Destroy(context.Background())
+}
+
+func TestSupervisedPool_IdleTTL_StateAfterTimeout(t *testing.T) {
+	var cfgExecTTL = Config{
+		NumWorkers:      uint64(1),
+		AllocateTimeout: time.Second,
+		DestroyTimeout:  time.Second,
+		Supervisor: &SupervisorConfig{
+			WatchTick:       1 * time.Second,
+			TTL:             1 * time.Second,
+			IdleTTL:         1 * time.Second,
+			MaxWorkerMemory: 100,
+		},
+	}
+	ctx := context.Background()
+	p, err := Initialize(
+		ctx,
+		func() *exec.Cmd { return exec.Command("php", "../../tests/exec_ttl.php", "pipes") },
+		pipe.NewPipeFactory(),
+		cfgExecTTL,
+	)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, p)
+	defer p.Destroy(context.Background())
+
+	pid := p.Workers()[0].Pid()
+
+	time.Sleep(time.Millisecond * 100)
+	resp, err := p.Exec(payload.Payload{
+		Context: []byte(""),
+		Body:    []byte("foo"),
+	})
+
+	assert.NoError(t, err)
+	assert.Empty(t, resp.Body)
+	assert.Empty(t, resp.Context)
+
+	time.Sleep(time.Second * 2)
+	// should be destroyed, state should be Ready, not Invalid
+	assert.NotEqual(t, pid, p.Workers()[0].Pid())
+	assert.Equal(t, int64(1), p.Workers()[0].State().Value())
 }
 
 func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
