@@ -171,7 +171,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 }
 
 func TestSupervisedPool_IdleTTL_StateAfterTimeout(t *testing.T) {
-	var cfgExecTTL = Config{
+	var cfgExecTTL = &Config{
 		NumWorkers:      uint64(1),
 		AllocateTimeout: time.Second,
 		DestroyTimeout:  time.Second,
