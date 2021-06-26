@@ -111,6 +111,15 @@ func (tw *SyncWorkerImpl) ExecWithTTL(ctx context.Context, p payload.Payload) (p
 			return
 		}
 
+		if tw.process.State().Value() != StateWorking {
+			tw.process.State().RegisterExec()
+			c <- wexec{
+				payload: rsp,
+				err:     nil,
+			}
+			return
+		}
+
 		tw.process.State().Set(StateReady)
 		tw.process.State().RegisterExec()
 

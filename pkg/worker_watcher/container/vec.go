@@ -1,8 +1,10 @@
 package container
 
 import (
+	"context"
 	"sync/atomic"
 
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 )
 
@@ -24,18 +26,24 @@ func (v *Vec) Enqueue(w worker.BaseProcess) {
 	v.workers <- w
 }
 
-func (v *Vec) Dequeue() (worker.BaseProcess, bool) {
+func (v *Vec) Dequeue(ctx context.Context) (worker.BaseProcess, error) {
 	/*
 		if *addr == old {
 			*addr = new
 			return true
 		}
 	*/
+
 	if atomic.CompareAndSwapUint64(&v.destroy, 1, 1) {
-		return nil, true
+		return nil, errors.E(errors.WatcherStopped)
 	}
 
-	return <-v.workers, false
+	select {
+	case w := <-v.workers:
+		return w, nil
+	case <-ctx.Done():
+		return nil, errors.E(ctx.Err(), errors.NoFreeWorkers)
+	}
 }
 
 func (v *Vec) Destroy() {

@@ -43,47 +43,8 @@ func supervisorWrapper(pool Pool, events events.Handler, cfg *SupervisorConfig) 
 	return sp
 }
 
-type ttlExec struct {
-	err error
-	p   payload.Payload
-}
-
-func (sp *supervised) execWithTTL(ctx context.Context, rqs payload.Payload) (payload.Payload, error) {
-	const op = errors.Op("supervised_exec_with_context")
-	if sp.cfg.ExecTTL == 0 {
-		return sp.pool.Exec(rqs)
-	}
-
-	c := make(chan ttlExec, 1)
-	ctx, cancel := context.WithTimeout(ctx, sp.cfg.ExecTTL)
-	defer cancel()
-	go func() {
-		res, err := sp.pool.execWithTTL(ctx, rqs)
-		if err != nil {
-			c <- ttlExec{
-				err: errors.E(op, err),
-				p:   payload.Payload{},
-			}
-		}
-
-		c <- ttlExec{
-			err: nil,
-			p:   res,
-		}
-	}()
-
-	for {
-		select {
-		case <-ctx.Done():
-			return payload.Payload{}, errors.E(op, errors.TimeOut, ctx.Err())
-		case res := <-c:
-			if res.err != nil {
-				return payload.Payload{}, res.err
-			}
-
-			return res.p, nil
-		}
-	}
+func (sp *supervised) execWithTTL(_ context.Context, _ payload.Payload) (payload.Payload, error) {
+	panic("used to satisfy pool interface")
 }
 
 func (sp *supervised) Exec(rqs payload.Payload) (payload.Payload, error) {
@@ -92,36 +53,15 @@ func (sp *supervised) Exec(rqs payload.Payload) (payload.Payload, error) {
 		return sp.pool.Exec(rqs)
 	}
 
-	c := make(chan ttlExec, 1)
 	ctx, cancel := context.WithTimeout(context.Background(), sp.cfg.ExecTTL)
 	defer cancel()
-	go func() {
-		res, err := sp.pool.execWithTTL(ctx, rqs)
-		if err != nil {
-			c <- ttlExec{
-				err: errors.E(op, err),
-				p:   payload.Payload{},
-			}
-		}
 
-		c <- ttlExec{
-			err: nil,
-			p:   res,
-		}
-	}()
-
-	for {
-		select {
-		case <-ctx.Done():
-			return payload.Payload{}, errors.E(op, errors.TimeOut, ctx.Err())
-		case res := <-c:
-			if res.err != nil {
-				return payload.Payload{}, res.err
-			}
-
-			return res.p, nil
-		}
+	res, err := sp.pool.execWithTTL(ctx, rqs)
+	if err != nil {
+		return payload.Payload{}, errors.E(op, err)
 	}
+
+	return res, nil
 }
 
 func (sp *supervised) GetConfig() interface{} {
@@ -164,7 +104,7 @@ func (sp *supervised) Stop() {
 	sp.stopCh <- struct{}{}
 }
 
-func (sp *supervised) control() {
+func (sp *supervised) control() { //nolint:gocognit
 	now := time.Now()
 
 	// MIGHT BE OUTDATED
@@ -172,7 +112,16 @@ func (sp *supervised) control() {
 	workers := sp.pool.Workers()
 
 	for i := 0; i < len(workers); i++ {
-		if workers[i].State().Value() == worker.StateInvalid {
+		// if worker not in the Ready OR working state
+		// skip such worker
+		switch workers[i].State().Value() {
+		case
+			worker.StateInvalid,
+			worker.StateErrored,
+			worker.StateDestroyed,
+			worker.StateInactive,
+			worker.StateStopped,
+			worker.StateStopping:
 			continue
 		}
 
@@ -183,12 +132,23 @@ func (sp *supervised) control() {
 		}
 
 		if sp.cfg.TTL != 0 && now.Sub(workers[i].Created()).Seconds() >= sp.cfg.TTL.Seconds() {
-			workers[i].State().Set(worker.StateInvalid)
+			// SOFT termination. DO NOT STOP active workers
+			if workers[i].State().Value() != worker.StateWorking {
+				workers[i].State().Set(worker.StateInvalid)
+				_ = workers[i].Stop()
+			}
 			sp.events.Push(events.PoolEvent{Event: events.EventTTL, Payload: workers[i]})
 			continue
 		}
 
 		if sp.cfg.MaxWorkerMemory != 0 && s.MemoryUsage >= sp.cfg.MaxWorkerMemory*MB {
+			// SOFT termination. DO NOT STOP active workers
+			if workers[i].State().Value() != worker.StateWorking {
+				workers[i].State().Set(worker.StateInvalid)
+				_ = workers[i].Stop()
+			}
+
+			// mark it as invalid, worker likely in the StateWorking, so, it will be killed after work will be done
 			workers[i].State().Set(worker.StateInvalid)
 			sp.events.Push(events.PoolEvent{Event: events.EventMaxMemory, Payload: workers[i]})
 			continue
@@ -230,6 +190,11 @@ func (sp *supervised) control() {
 			// After the control check, res will be 5, idle is 1
 			// 5 - 1 = 4, more than 0, YOU ARE FIRED (removed). Done.
 			if int64(sp.cfg.IdleTTL.Seconds())-res <= 0 {
+				if workers[i].State().Value() != worker.StateWorking {
+					workers[i].State().Set(worker.StateInvalid)
+					_ = workers[i].Stop()
+				}
+
 				workers[i].State().Set(worker.StateInvalid)
 				sp.events.Push(events.PoolEvent{Event: events.EventIdleTTL, Payload: workers[i]})
 			}
