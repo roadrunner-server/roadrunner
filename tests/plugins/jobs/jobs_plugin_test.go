@@ -12,6 +12,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/jobs"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/brokers/ephemeral"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/pq_plugin"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/server"
@@ -34,6 +35,7 @@ func TestJobsInit(t *testing.T) {
 		&logger.ZapLogger{},
 		&jobs.Plugin{},
 		&ephemeral.Plugin{},
+		&pq_plugin.Plugin{},
 	)
 	assert.NoError(t, err)
 

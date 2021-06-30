@@ -11,9 +11,16 @@ type Consumer interface {
 	Push(*pipeline.Pipeline, *structs.Job) (string, error)
 	Stat()
 	Consume(*pipeline.Pipeline)
-	Register(*pipeline.Pipeline)
+	Register(*pipeline.Pipeline) error
 }
 
 type Broker interface {
 	InitJobBroker(queue priorityqueue.Queue) (Consumer, error)
+}
+
+type Item interface {
+	ID() string
+	Ask()
+	Nack()
+	Payload() []byte
 }

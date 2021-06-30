@@ -1,7 +1,6 @@
 package priorityqueue
 
 type Queue interface {
-	Push()
+	Push(item interface{})
 	Pop() interface{}
-	BLPop()
 }

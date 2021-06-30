@@ -38,3 +38,17 @@ func (rpc *rpc) Workers(service string, list *WorkerList) error {
 
 	return nil
 }
+
+// sort.Sort
+
+func (w *WorkerList) Len() int {
+	return len(w.Workers)
+}
+
+func (w *WorkerList) Less(i, j int) bool {
+	return w.Workers[i].Pid < w.Workers[j].Pid
+}
+
+func (w *WorkerList) Swap(i, j int) {
+	w.Workers[i], w.Workers[j] = w.Workers[j], w.Workers[i]
+}

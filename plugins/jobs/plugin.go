@@ -41,7 +41,7 @@ func testListener(data interface{}) {
 	fmt.Println(data)
 }
 
-func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Server) error {
+func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Server, pq priorityqueue.Queue) error {
 	const op = errors.Op("jobs_plugin_init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
@@ -64,7 +64,7 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	p.consumers = make(map[string]Consumer)
 
 	// initialize priority queue
-	p.queue = priorityqueue.NewPriorityQueue()
+	p.queue = pq
 	p.log = log
 
 	return nil
@@ -157,5 +157,8 @@ func (p *Plugin) Push(j *structs.Job) (string, error) {
 }
 
 func (p *Plugin) RPC() interface{} {
-	return &rpc{log: p.log}
+	return &rpc{
+		log: p.log,
+		p:   p,
+	}
 }
