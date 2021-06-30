@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v2.3.1 (_.06.2021)
+v2.3.1 (30.06.2021)
 -------------------
 ## 👀 New:
 
@@ -20,6 +20,13 @@ v2.3.1 (_.06.2021)
 ## 📦 Packages:
 
 - 📦 Update goridge to `v3.1.4`
+- 📦 Update temporal to `v1.0.8`
+
+## 📈 Summary:
+
+- RR Milestone [2.3.1](https://github.com/spiral/roadrunner/milestone/30?closed=1)
+- Temporal Milestone [1.0.8](https://github.com/temporalio/roadrunner-temporal/milestone/11?closed=1)
+- Goridge Milestone [3.1.4](https://github.com/spiral/goridge/milestone/11?closed=1)
 
 ---
 
