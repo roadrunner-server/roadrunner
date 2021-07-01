@@ -6,52 +6,49 @@ server:
   relay: "pipes"
   relay_timeout: "20s"
 
+amqp:
+  addr: amqp://guest:guest@localhost:5672/
+
+  # beanstalk configuration
+beanstalk:
+  addr: tcp://localhost:11300
+
+  # amazon sqs configuration
+sqs:
+  key: api-key
+  secret: api-secret
+  region: us-west-1
+  endpoint: http://localhost:9324
+
+
 jobs:
   # worker pool configuration
   pool:
     num_workers: 4
 
-  # rabbitmq and similar servers
-  amqp:
-    addr:     amqp://guest:guest@localhost:5672/
-
-  # beanstalk configuration
-  beanstalk:
-    addr:    tcp://localhost:11300
-
-  # amazon sqs configuration
-  sqs:
-    key:      api-key
-    secret:   api-secret
-    region:   us-west-1
-    endpoint: http://localhost:9324
-
-  # job destinations and options
-  dispatch:
-    spiral-jobs-tests-amqp-*.pipeline:      amqp
-    spiral-jobs-tests-local-*.pipeline:     local
-    spiral-jobs-tests-beanstalk-*.pipeline: beanstalk
-    spiral-jobs-tests-sqs-*.pipeline:       sqs
-
   # list of broker pipelines associated with endpoints
   pipelines:
-    local:
-      broker: ephemeral
+    test-local:
+      driver: ephemeral
+      priority: 10
 
-    amqp:
-      broker: amqp
-      queue:  default
+    test-1:
+      driver: amqp
+      priority: 1
+      queue: default
 
-    beanstalk:
-      broker: beanstalk
-      tube:   default
+    test-2:
+      driver: beanstalk
+      priority: 11
+      tube: default
 
-    sqs:
-      broker: sqs
-      queue:  default
+    test-3:
+      #      priority: 11 - not defined, 10 by default
+      driver: sqs
+      queue: default
       declare:
         MessageRetentionPeriod: 86400
 
   # list of pipelines to be consumed by the server, keep empty if you want to start consuming manually
-  consume: ["local", "amqp", "beanstalk", "sqs"]
+  consume: [ "test-local", "test-1" ]
 
