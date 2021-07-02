@@ -12,6 +12,11 @@ import (
 
 type AccessValidatorFn = func(r *http.Request, channels ...string) (*AccessValidator, error)
 
+const (
+	joinServer string = "ws:joinServer"
+	joinTopics string = "ws:joinTopics"
+)
+
 type AccessValidator struct {
 	Header http.Header `json:"headers"`
 	Status int         `json:"status"`
@@ -26,7 +31,7 @@ func ServerAccessValidator(r *http.Request) ([]byte, error) {
 		return nil, errors.E(op, err)
 	}
 
-	defer delete(attributes.All(r), "ws:joinServer")
+	defer delete(attributes.All(r), joinServer)
 
 	req := &handler.Request{
 		RemoteAddr: handler.FetchIP(r.RemoteAddr),
@@ -54,7 +59,7 @@ func TopicsAccessValidator(r *http.Request, topics ...string) ([]byte, error) {
 		return nil, errors.E(op, err)
 	}
 
-	defer delete(attributes.All(r), "ws:joinTopics")
+	defer delete(attributes.All(r), joinTopics)
 
 	req := &handler.Request{
 		RemoteAddr: handler.FetchIP(r.RemoteAddr),
