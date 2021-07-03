@@ -1,6 +1,11 @@
 package priorityqueue
 
 type Queue interface {
-	Push(item interface{})
-	Pop() interface{}
+	Push(item PQItem)
+	Pop() PQItem
+}
+
+type PQItem interface {
+	ID() string
+	Priority() uint64
 }

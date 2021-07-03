@@ -71,7 +71,7 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	}
 
 	// initialize priority queue
-	p.queue = priorityqueue.NewPriorityQueue()
+	p.queue = priorityqueue.NewBinHeap()
 	p.log = log
 
 	return nil
