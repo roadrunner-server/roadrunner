@@ -57,6 +57,6 @@ func (j *JobBroker) Register(pipeline *pipeline.Pipeline) error {
 func (j *JobBroker) serve() {
 	for item := range j.jobs {
 		// item should satisfy
-		j.pq.Push(item)
+		j.pq.Insert(item)
 	}
 }

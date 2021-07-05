@@ -1,8 +1,8 @@
 package priorityqueue
 
 type Queue interface {
-	Push(item PQItem)
-	Pop() PQItem
+	Insert(item PQItem)
+	GetMax() PQItem
 }
 
 type PQItem interface {

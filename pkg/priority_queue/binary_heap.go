@@ -14,38 +14,73 @@ func (bh *BinHeap) Init(items []PQItem) {
 	arraySize := len(items) - 1
 
 	for i := arraySize/2 - 1; i >= 0; i-- {
-		bh.shiftDown(items, i, arraySize)
+		bh.fixDown(i, arraySize)
 	}
 
 	for i := arraySize - 1; i >= 1; i-- {
 		items[0], items[i] = items[i], items[0]
-		bh.shiftDown(items, 0, i-1)
+		bh.fixDown(0, i-1)
 	}
 }
 
-func (bh *BinHeap) shiftDown(numbers []PQItem, k, n int) {
-	// k << 1 is equal to k*2
-	for k<<1 <= n {
-		j := k << 1
+func (bh *BinHeap) fixUp() {
+	k := len(*bh) - 1
+	p := (k - 1) >> 1 // k-1 / 2
 
-		if j < n && numbers[j].Priority() < numbers[j+1].Priority() {
-			j++
+	for k > 0 {
+		cur, par := (*bh)[k], (*bh)[p]
+
+		if cur.Priority() < par.Priority() {
+			bh.swap(k, p)
+			k = p
+			p = (k - 1) >> 1
+		} else {
+			return
 		}
-
-		if !(numbers[k].Priority() < numbers[j].Priority()) {
-			break
-		}
-
-		numbers[k], numbers[j] = numbers[j], numbers[k]
-		k = j
 	}
 }
-func (bh *BinHeap) fix() {}
 
-func (bh *BinHeap) Push(_ PQItem) {}
+func (bh *BinHeap) swap(i, j int) {
+	(*bh)[i], (*bh)[j] = (*bh)[j], (*bh)[i]
+}
 
-func (bh *BinHeap) Pop() PQItem {
-	bh.fix()
-	// get min
-	return nil
+func (bh *BinHeap) fixDown(curr, end int) {
+	cOneIdx := curr*2 + 1
+	for cOneIdx <= end {
+		cTwoIdx := -1
+		if curr*2+2 <= end {
+			cTwoIdx = curr*2 + 2
+		}
+
+		idxToSwap := cOneIdx
+		if cTwoIdx > -1 && (*bh)[cTwoIdx].Priority() < (*bh)[cOneIdx].Priority() {
+			idxToSwap = cTwoIdx
+		}
+		if (*bh)[idxToSwap].Priority() < (*bh)[curr].Priority() {
+			bh.swap(curr, idxToSwap)
+			curr = idxToSwap
+			cOneIdx = curr*2 + 1
+		} else {
+			return
+		}
+	}
+}
+
+func (bh *BinHeap) Insert(item PQItem) {
+	*bh = append(*bh, item)
+	bh.fixUp()
+}
+
+func (bh *BinHeap) GetMax() PQItem {
+	l := len(*bh)
+	if l == 0 {
+		return nil
+	}
+
+	bh.swap(0, l-1)
+
+	item := (*bh)[l-1]
+	*bh = (*bh)[0 : l-1]
+	bh.fixDown(0, l-2)
+	return item
 }

@@ -29,6 +29,27 @@ func TestBinHeap_Init(t *testing.T) {
 	require.Equal(t, expected, a)
 }
 
+func TestBinHeap_Init2(t *testing.T) {
+	a := []PQItem{Test(2), Test(23), Test(33), Test(44), Test(1), Test(2), Test(2), Test(2), Test(4), Test(6), Test(99)}
+
+	bh := NewBinHeap()
+
+	for i := 0; i < len(a); i++ {
+		bh.Insert(a[i])
+	}
+
+	expected := []PQItem{Test(1), Test(2), Test(2), Test(2), Test(2), Test(4), Test(6), Test(23), Test(33), Test(44), Test(99)}
+
+	res := make([]PQItem, 0, 12)
+
+	for i := 0; i < 11; i++ {
+		item := bh.GetMax()
+		res = append(res, item)
+	}
+
+	require.Equal(t, expected, res)
+}
+
 func BenchmarkBinHeap_Init(b *testing.B) {
 	a := []PQItem{Test(2), Test(23), Test(33), Test(44), Test(1), Test(2), Test(2), Test(2), Test(4), Test(6), Test(99)}
 	bh := NewBinHeap()
