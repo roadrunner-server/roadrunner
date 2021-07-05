@@ -4,7 +4,9 @@ binary heap (min-heap) algorithm used as a core for the priority queue
 
 package priorityqueue
 
-type BinHeap []PQItem
+import priorityqueue "github.com/spiral/roadrunner/v2/common/priority_queue"
+
+type BinHeap []priorityqueue.Item
 
 func NewBinHeap() *BinHeap {
 	return &BinHeap{}
@@ -53,12 +55,12 @@ func (bh *BinHeap) fixDown(curr, end int) {
 	}
 }
 
-func (bh *BinHeap) Insert(item PQItem) {
+func (bh *BinHeap) Insert(item priorityqueue.Item) {
 	*bh = append(*bh, item)
 	bh.fixUp()
 }
 
-func (bh *BinHeap) GetMax() PQItem {
+func (bh *BinHeap) GetMax() priorityqueue.Item {
 	l := len(*bh)
 	if l == 0 {
 		return nil

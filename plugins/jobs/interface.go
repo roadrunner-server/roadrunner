@@ -1,17 +1,17 @@
 package jobs
 
 import (
-	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
+	priorityqueue "github.com/spiral/roadrunner/v2/common/priority_queue"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/structs"
 )
 
 // Consumer todo naming
 type Consumer interface {
-	Push(*pipeline.Pipeline, *structs.Job) (string, error)
+	Push(*structs.Job) (string, error)
 	Stat()
 	Consume(*pipeline.Pipeline)
-	Register(*pipeline.Pipeline) error
+	Register(pipe string) error
 }
 
 type Broker interface {
@@ -20,7 +20,5 @@ type Broker interface {
 
 type Item interface {
 	ID() string
-	Ask()
-	Nack()
 	Payload() []byte
 }

@@ -58,23 +58,23 @@ func TestPipeline_Has(t *testing.T) {
 
 func TestPipeline_FilterBroker(t *testing.T) {
 	pipes := Pipelines{
-		&Pipeline{"name": "first", "broker": "a"},
-		&Pipeline{"name": "second", "broker": "a"},
-		&Pipeline{"name": "third", "broker": "b"},
-		&Pipeline{"name": "forth", "broker": "b"},
+		&Pipeline{"name": "first", "driver": "a"},
+		&Pipeline{"name": "second", "driver": "a"},
+		&Pipeline{"name": "third", "driver": "b"},
+		&Pipeline{"name": "forth", "driver": "b"},
 	}
 
 	filtered := pipes.Names("first", "third")
 	assert.True(t, len(filtered) == 2)
 
-	assert.Equal(t, "a", filtered[0].Broker())
-	assert.Equal(t, "b", filtered[1].Broker())
+	assert.Equal(t, "a", filtered[0].Driver())
+	assert.Equal(t, "b", filtered[1].Driver())
 
 	filtered = pipes.Names("first", "third").Reverse()
 	assert.True(t, len(filtered) == 2)
 
-	assert.Equal(t, "a", filtered[1].Broker())
-	assert.Equal(t, "b", filtered[0].Broker())
+	assert.Equal(t, "a", filtered[1].Driver())
+	assert.Equal(t, "b", filtered[0].Driver())
 
 	filtered = pipes.Broker("a")
 	assert.True(t, len(filtered) == 2)

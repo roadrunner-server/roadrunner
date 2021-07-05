@@ -1,8 +1,8 @@
 rpc:
-  listen: tcp://127.0.0.1:6001
+  listen: unix:///home/valery/Downloads/rr.sock
 
 server:
-  command: "php ../../psr-worker-bench.php"
+  command: "php ../../client.php echo pipes"
   relay: "pipes"
   relay_timeout: "20s"
 
@@ -24,7 +24,10 @@ sqs:
 jobs:
   # worker pool configuration
   pool:
-    num_workers: 4
+    num_workers: 10
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
 
   # list of broker pipelines associated with endpoints
   pipelines:

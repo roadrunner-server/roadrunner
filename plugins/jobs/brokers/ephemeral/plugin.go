@@ -1,7 +1,7 @@
 package ephemeral
 
 import (
-	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
+	priorityqueue "github.com/spiral/roadrunner/v2/common/priority_queue"
 	"github.com/spiral/roadrunner/v2/plugins/jobs"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )

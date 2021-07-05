@@ -15,7 +15,7 @@ func InitPipelines(pipes map[string]*Pipeline) (Pipelines, error) {
 	out := make(Pipelines, 0)
 
 	for name, pipe := range pipes {
-		if pipe.Broker() == "" {
+		if pipe.Driver() == "" {
 			return nil, errors.E(op, errors.Errorf("found the pipeline without defined broker"))
 		}
 
@@ -42,7 +42,7 @@ func (ps Pipelines) Broker(broker string) Pipelines {
 	out := make(Pipelines, 0)
 
 	for _, p := range ps {
-		if p.Broker() != broker {
+		if p.Driver() != broker {
 			continue
 		}
 
@@ -98,9 +98,9 @@ func (p Pipeline) Name() string {
 	return p.String("name", "")
 }
 
-// Broker associated with the pipeline.
-func (p Pipeline) Broker() string {
-	return p.String("broker", "")
+// Driver associated with the pipeline.
+func (p Pipeline) Driver() string {
+	return p.String("driver", "")
 }
 
 // Has checks if value presented in pipeline.

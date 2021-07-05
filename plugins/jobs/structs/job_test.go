@@ -13,7 +13,7 @@ func TestJob_Body(t *testing.T) {
 }
 
 func TestJob_Context(t *testing.T) {
-	j := &Job{Job: "job"}
+	j := &Job{Job: "job", Options: &Options{ID: "id"}}
 
-	assert.Equal(t, []byte(`{"id":"id","job":"job"}`), j.Context("id"))
+	assert.Equal(t, []byte(`{"id":"id","job":"job"}`), j.Context())
 }

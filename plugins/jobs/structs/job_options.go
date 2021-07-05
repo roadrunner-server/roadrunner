@@ -4,6 +4,13 @@ import "time"
 
 // Options carry information about how to handle given job.
 type Options struct {
+	// Priority is job priority, default - 10
+	// pointer to distinguish 0 as a priority and nil as priority not set
+	Priority *uint64 `json:"priority"`
+
+	// ID - generated ID for the job
+	ID string `json:"id"`
+
 	// Pipeline manually specified pipeline.
 	Pipeline string `json:"pipeline,omitempty"`
 

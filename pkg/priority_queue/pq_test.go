@@ -37,7 +37,7 @@ func TestNewPriorityQueue(t *testing.T) {
 			case <-stopCh:
 				return
 			default:
-				it := pq.Get()
+				it := pq.GetMax()
 				if it == nil {
 					continue
 				}

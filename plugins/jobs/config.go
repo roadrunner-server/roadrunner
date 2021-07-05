@@ -9,19 +9,19 @@ import (
 type Config struct {
 	// Workers configures roadrunner server and worker busy.
 	// Workers *roadrunner.ServerConfig
-	poolCfg *poolImpl.Config
+	Pool *poolImpl.Config `mapstructure:"Pool"`
 
 	// Pipelines defines mapping between PHP job pipeline and associated job broker.
-	Pipelines map[string]*pipeline.Pipeline
+	Pipelines map[string]*pipeline.Pipeline `mapstructure:"pipelines"`
 
 	// Consuming specifies names of pipelines to be consumed on service start.
-	Consume []string
+	Consume []string `mapstructure:"consume"`
 }
 
 func (c *Config) InitDefaults() {
-	if c.poolCfg == nil {
-		c.poolCfg = &poolImpl.Config{}
+	if c.Pool == nil {
+		c.Pool = &poolImpl.Config{}
 	}
 
-	c.poolCfg.InitDefaults()
+	c.Pool.InitDefaults()
 }
