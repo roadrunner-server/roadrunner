@@ -10,19 +10,6 @@ func NewBinHeap() *BinHeap {
 	return &BinHeap{}
 }
 
-func (bh *BinHeap) Init(items []PQItem) {
-	arraySize := len(items) - 1
-
-	for i := arraySize/2 - 1; i >= 0; i-- {
-		bh.fixDown(i, arraySize)
-	}
-
-	for i := arraySize - 1; i >= 1; i-- {
-		items[0], items[i] = items[i], items[0]
-		bh.fixDown(0, i-1)
-	}
-}
-
 func (bh *BinHeap) fixUp() {
 	k := len(*bh) - 1
 	p := (k - 1) >> 1 // k-1 / 2
