@@ -17,12 +17,12 @@ type Job struct {
 	Options *Options `json:"options,omitempty"`
 }
 
-func (j *Job) ID() string {
+func (j *Job) ID() *string {
 	return j.Options.ID
 }
 
-func (j *Job) Priority() uint64 {
-	return *j.Options.Priority
+func (j *Job) Priority() *uint64 {
+	return j.Options.Priority
 }
 
 // Body packs job payload into binary payload.
@@ -34,8 +34,8 @@ func (j *Job) Body() []byte {
 func (j *Job) Context() []byte {
 	ctx, _ := json.Marshal(
 		struct {
-			ID  string `json:"id"`
-			Job string `json:"job"`
+			ID  *string `json:"id"`
+			Job string  `json:"job"`
 		}{ID: j.Options.ID, Job: j.Job},
 	)
 

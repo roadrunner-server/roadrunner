@@ -79,10 +79,10 @@ func TestOptions_Merge(t *testing.T) {
 	})
 
 	assert.Equal(t, "pipeline", opts.Pipeline)
-	assert.Equal(t, 1, opts.Attempts)
-	assert.Equal(t, 2, opts.Delay)
-	assert.Equal(t, 1, opts.Timeout)
-	assert.Equal(t, 1, opts.RetryDelay)
+	assert.Equal(t, uint64(1), opts.Attempts)
+	assert.Equal(t, uint64(2), opts.Delay)
+	assert.Equal(t, uint64(1), opts.Timeout)
+	assert.Equal(t, uint64(1), opts.RetryDelay)
 }
 
 func TestOptions_MergeKeepOriginal(t *testing.T) {
@@ -103,8 +103,8 @@ func TestOptions_MergeKeepOriginal(t *testing.T) {
 	})
 
 	assert.Equal(t, "default", opts.Pipeline)
-	assert.Equal(t, 10, opts.Attempts)
-	assert.Equal(t, 10, opts.Delay)
-	assert.Equal(t, 10, opts.Timeout)
-	assert.Equal(t, 10, opts.RetryDelay)
+	assert.Equal(t, uint64(10), opts.Attempts)
+	assert.Equal(t, uint64(10), opts.Delay)
+	assert.Equal(t, uint64(10), opts.Timeout)
+	assert.Equal(t, uint64(10), opts.RetryDelay)
 }

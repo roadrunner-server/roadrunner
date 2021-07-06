@@ -22,6 +22,7 @@ sqs:
 
 
 jobs:
+  num_pollers: 32
   # worker pool configuration
   pool:
     num_workers: 10

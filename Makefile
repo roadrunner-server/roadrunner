@@ -14,7 +14,7 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/worker.out -covermode=atomic ./pkg/worker
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/worker_stack.out -covermode=atomic ./pkg/worker_watcher
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/bst.out -covermode=atomic ./pkg/bst
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pq.out -covermode=atomic ./pkg/priority_queue
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pq.out -covermode=atomic ./pkg/priorityqueue
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/struct_jobs.out -covermode=atomic ./plugins/jobs/structs
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pipeline_jobs.out -covermode=atomic ./plugins/jobs/pipeline
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/http_config.out -covermode=atomic ./plugins/http/config
@@ -48,7 +48,7 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./pkg/worker
 	go test -v -race -tags=debug ./pkg/worker_watcher
 	go test -v -race -tags=debug ./pkg/bst
-	go test -v -race -tags=debug ./pkg/priority_queue
+	go test -v -race -tags=debug ./pkg/priorityqueue
 	go test -v -race -tags=debug ./plugins/jobs/structs
 	go test -v -race -tags=debug ./plugins/jobs/pipeline
 	go test -v -race -tags=debug ./plugins/http/config
@@ -81,6 +81,7 @@ testGo1.17beta1: ## Run application tests
 	go1.17beta1 test -v -race -tags=debug ./pkg/worker
 	go1.17beta1 test -v -race -tags=debug ./pkg/worker_watcher
 	go1.17beta1 test -v -race -tags=debug ./pkg/bst
+	go1.17beta1 test -v -race -tags=debug ./pkg/priorityqueue
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/http
 	go1.17beta1 test -v -race -tags=debug ./plugins/http/config
 	go1.17beta1 test -v -race -tags=debug ./plugins/server

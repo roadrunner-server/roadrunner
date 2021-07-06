@@ -3,6 +3,7 @@ package structs
 import (
 	"testing"
 
+	"github.com/spiral/roadrunner/v2/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,7 +14,7 @@ func TestJob_Body(t *testing.T) {
 }
 
 func TestJob_Context(t *testing.T) {
-	j := &Job{Job: "job", Options: &Options{ID: "id"}}
+	j := &Job{Job: "job", Options: &Options{ID: utils.AsStringPtr("id")}}
 
 	assert.Equal(t, []byte(`{"id":"id","job":"job"}`), j.Context())
 }

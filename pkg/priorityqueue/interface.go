@@ -6,10 +6,10 @@ type Queue interface {
 }
 
 type Item interface {
-	ID() string
-	Priority() uint64
-	Ack()
-	Nack()
+	ID() *string
+	Priority() *uint64
 	Body() []byte
 	Context() []byte
+	Ack()
+	Nack()
 }

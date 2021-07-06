@@ -1,14 +1,19 @@
 package jobs
 
 import (
+	"runtime"
+
 	poolImpl "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
 )
 
 // Config defines settings for job broker, workers and job-pipeline mapping.
 type Config struct {
-	// Workers configures roadrunner server and worker busy.
-	// Workers *roadrunner.ServerConfig
+	// NumPollers configures number of priority queue pollers
+	// Should be no more than 255
+	// Default - num logical cores
+	NumPollers uint8 `mapstructure:"num_pollers"`
+	// Pool configures roadrunner workers pool.
 	Pool *poolImpl.Config `mapstructure:"Pool"`
 
 	// Pipelines defines mapping between PHP job pipeline and associated job broker.
@@ -21,6 +26,10 @@ type Config struct {
 func (c *Config) InitDefaults() {
 	if c.Pool == nil {
 		c.Pool = &poolImpl.Config{}
+	}
+
+	if c.NumPollers == 0 {
+		c.NumPollers = uint8(runtime.NumCPU())
 	}
 
 	c.Pool.InitDefaults()

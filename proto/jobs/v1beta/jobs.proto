@@ -1,22 +1,36 @@
 syntax = "proto3";
 
-package kv.v1beta;
+package jobs.v1beta;
 option go_package = "./;jobsv1beta";
 
+// single job request
 message Request {
-    // could be an enum in the future
-    string storage = 1;
-    repeated Item items = 2;
+    Job job = 1;
 }
 
-message Item {
-    string key = 1;
-    bytes value = 2;
-    // RFC 3339
-    string timeout = 3;
+// batch jobs request
+message BatchRequest {
+    repeated Job jobs = 1;
 }
 
-// KV response for the KV RPC methods
+// RPC response
 message Response {
-    repeated Item items = 1;
+    string id = 1;
 }
+
+message Job {
+    string job = 1;
+    string payload = 2;
+    Options options = 3;
+}
+
+message Options {
+    uint64 priority = 1;
+    string id = 2;
+    string pipeline = 3;
+    uint64 delay = 4;
+    uint64 attempts = 5;
+    uint64 retry_delay = 6;
+    uint64 timeout = 7;
+}
+
