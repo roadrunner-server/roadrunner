@@ -57,12 +57,6 @@ func (j *JobBroker) Register(pipeline string) error {
 	return nil
 }
 
-func (j *JobBroker) PushBatch(job *[]structs.Job) (*string, error) {
-	// Use a batch response
-	// Add JobID to the payload to match responses
-	panic("todo")
-}
-
 func (j *JobBroker) Stop(pipeline string) {
 	if q, ok := j.queues.Load(pipeline); ok {
 		if q == true {

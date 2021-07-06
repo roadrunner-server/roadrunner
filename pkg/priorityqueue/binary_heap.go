@@ -25,7 +25,7 @@ func NewBinHeap() *BinHeap {
 }
 
 func (bh *BinHeap) fixUp() {
-	k := len(bh.items) - 1
+	k := bh.len - 1
 	p := (k - 1) >> 1 // k-1 / 2
 
 	for k > 0 {
@@ -41,7 +41,7 @@ func (bh *BinHeap) fixUp() {
 	}
 }
 
-func (bh *BinHeap) swap(i, j int) {
+func (bh *BinHeap) swap(i, j uint64) {
 	(bh.items)[i], (bh.items)[j] = (bh.items)[j], (bh.items)[i]
 }
 
@@ -59,7 +59,7 @@ func (bh *BinHeap) fixDown(curr, end int) {
 			idxToSwap = cTwoIdx
 		}
 		if *(bh.items)[idxToSwap].Priority() < *(bh.items)[curr].Priority() {
-			bh.swap(curr, idxToSwap)
+			bh.swap(uint64(curr), uint64(idxToSwap))
 			curr = idxToSwap
 			cOneIdx = (curr << 1) + 1
 		} else {
@@ -87,11 +87,11 @@ func (bh *BinHeap) GetMax() Item {
 	bh.cond.L.Lock()
 	defer bh.cond.L.Unlock()
 
-	for atomic.LoadUint64(&bh.len) == 0 {
+	if atomic.LoadUint64(&bh.len) == 0 {
 		bh.cond.Wait()
 	}
 
-	bh.swap(0, int(bh.len-1))
+	bh.swap(0, bh.len-1)
 
 	item := (bh.items)[int(bh.len)-1]
 	bh.items = (bh).items[0 : int(bh.len)-1]

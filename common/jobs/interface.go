@@ -9,7 +9,6 @@ import (
 // Consumer todo naming
 type Consumer interface {
 	Push(job *structs.Job) (*string, error)
-	PushBatch(job *[]structs.Job) (*string, error)
 	Consume(job *pipeline.Pipeline)
 
 	Stop(pipeline string)

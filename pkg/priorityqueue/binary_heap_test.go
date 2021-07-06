@@ -68,10 +68,10 @@ func TestNewPriorityQueue(t *testing.T) {
 		for {
 			select {
 			case <-tt.C:
-				fmt.Println(fmt.Sprintf("GetMax per second: %d", atomic.LoadUint64(&getPerSec)))
 				fmt.Println(fmt.Sprintf("Insert per second: %d", atomic.LoadUint64(&insertsPerSec)))
-				atomic.StoreUint64(&getPerSec, 0)
 				atomic.StoreUint64(&insertsPerSec, 0)
+				fmt.Println(fmt.Sprintf("GetMax per second: %d", atomic.LoadUint64(&getPerSec)))
+				atomic.StoreUint64(&getPerSec, 0)
 			case <-stopCh:
 				tt.Stop()
 				return
@@ -85,10 +85,7 @@ func TestNewPriorityQueue(t *testing.T) {
 			case <-stopCh:
 				return
 			default:
-				it := pq.GetMax()
-				if it == nil {
-					continue
-				}
+				pq.GetMax()
 				atomic.AddUint64(&getPerSec, 1)
 			}
 		}
