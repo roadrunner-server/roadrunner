@@ -66,7 +66,7 @@ jobs:
 
       - name: Run golang tests on Linux
         run: |
-          docker-compose -f ./tests/docker-compose.yaml up -d
+          docker-compose -f ./tests/env/docker-compose.yaml up -d
           mkdir ./coverage-ci
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipe.txt -covermode=atomic ./pkg/transport/pipe
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/socket.txt -covermode=atomic ./pkg/transport/socket
@@ -97,7 +97,7 @@ jobs:
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/broadcast_plugin.txt -covermode=atomic ./tests/plugins/broadcast
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/websockets.txt -covermode=atomic ./tests/plugins/websockets
           go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/ws_origin.txt -covermode=atomic ./plugins/websockets
-          docker-compose -f ./tests/docker-compose.yaml down
+          docker-compose -f ./tests/env/docker-compose.yaml down
           cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>

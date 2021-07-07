@@ -5,7 +5,7 @@
 SHELL = /bin/sh
 
 test_coverage:
-	docker-compose -f tests/docker-compose.yaml up -d --remove-orphans
+	docker-compose -f tests/env/docker-compose.yaml up -d --remove-orphans
 	rm -rf coverage
 	mkdir coverage
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/pipe.out -covermode=atomic ./pkg/transport/pipe
@@ -38,10 +38,10 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/ws_plugin.out -covermode=atomic ./tests/plugins/websockets
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/ws_origin.out -covermode=atomic ./plugins/websockets
 	cat ./coverage/*.out > ./coverage/summary.out
-	docker-compose -f tests/docker-compose.yaml down
+	docker-compose -f tests/env/docker-compose.yaml down
 
 test: ## Run application tests
-	docker-compose -f tests/docker-compose.yaml up -d
+	docker-compose -f tests/env/docker-compose.yaml up -d
 	go test -v -race -tags=debug ./pkg/transport/pipe
 	go test -v -race -tags=debug ./pkg/transport/socket
 	go test -v -race -tags=debug ./pkg/pool
@@ -71,10 +71,10 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./tests/plugins/broadcast
 	go test -v -race -tags=debug ./tests/plugins/websockets
 	go test -v -race -tags=debug ./plugins/websockets
-	docker-compose -f tests/docker-compose.yaml down
+	docker-compose -f tests/env/docker-compose.yaml down
 
 testGo1.17beta1: ## Run application tests
-	docker-compose -f tests/docker-compose.yaml up -d
+	docker-compose -f tests/env/docker-compose.yaml up -d
 	go1.17beta1 test -v -race -tags=debug ./pkg/transport/pipe
 	go1.17beta1 test -v -race -tags=debug ./pkg/transport/socket
 	go1.17beta1 test -v -race -tags=debug ./pkg/pool
@@ -102,4 +102,4 @@ testGo1.17beta1: ## Run application tests
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/websockets
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/broadcast
 	go1.17beta1 test -v -race -tags=debug ./plugins/websockets
-	docker-compose -f tests/docker-compose.yaml down
+	docker-compose -f tests/env/docker-compose.yaml down

@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  memcached:
+    image: memcached:latest
+    ports:
+      - "0.0.0.0:11211:11211"
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
+  redis2:
+    image: redis:6
+    ports:
+      - "6378:6379"
+
+  beanstalk:
+    image: schickling/beanstalkd
+    ports:
+      - "11300:11300"
+
+  sqs:
+    build:
+      context: .
+      dockerfile: Dockerfile-elastic-mq.yaml
+    ports:
+      - "9324:9324"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: /
+    ports:
+      - "15672:15672"
+      - "5672:5672"
