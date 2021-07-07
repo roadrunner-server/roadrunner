@@ -68,6 +68,10 @@ func (bh *BinHeap) fixDown(curr, end int) {
 	}
 }
 
+func (bh *BinHeap) Len() uint64 {
+	return atomic.LoadUint64(&bh.len)
+}
+
 func (bh *BinHeap) Insert(item Item) {
 	bh.cond.L.Lock()
 	bh.items = append(bh.items, item)
@@ -87,7 +91,7 @@ func (bh *BinHeap) GetMax() Item {
 	bh.cond.L.Lock()
 	defer bh.cond.L.Unlock()
 
-	if atomic.LoadUint64(&bh.len) == 0 {
+	for atomic.LoadUint64(&bh.len) == 0 {
 		bh.cond.Wait()
 	}
 

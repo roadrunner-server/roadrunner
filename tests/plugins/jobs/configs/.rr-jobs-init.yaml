@@ -1,5 +1,5 @@
 rpc:
-  listen: unix:///home/valery/Downloads/rr.sock
+  listen: unix:///tmp/rr.sock
 
 server:
   command: "php ../../client.php echo pipes"
@@ -22,7 +22,7 @@ sqs:
 
 
 jobs:
-  num_pollers: 32
+  num_pollers: 64
   # worker pool configuration
   pool:
     num_workers: 10
@@ -54,5 +54,5 @@ jobs:
         MessageRetentionPeriod: 86400
 
   # list of pipelines to be consumed by the server, keep empty if you want to start consuming manually
-  consume: [ "test-local", "test-1" ]
+  consume: [ "test-local" ]
 

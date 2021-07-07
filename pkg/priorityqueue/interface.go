@@ -3,6 +3,7 @@ package priorityqueue
 type Queue interface {
 	Insert(item Item)
 	GetMax() Item
+	Len() uint64
 }
 
 // Item represents binary heap item
