@@ -4,33 +4,41 @@ package jobs.v1beta;
 option go_package = "./;jobsv1beta";
 
 // single job request
-message Request {
+message PushRequest {
     Job job = 1;
 }
 
 // batch jobs request
-message BatchRequest {
+message PushBatchRequest {
     repeated Job jobs = 1;
 }
 
-// RPC response
-message Response {
-    string id = 1;
+// request to pause/resume
+message MaintenanceRequest {
+    repeated string pipelines = 1;
 }
+
+// all endpoints returns nothing
+message EmptyResponse {}
 
 message Job {
     string job = 1;
-    string payload = 2;
-    Options options = 3;
+    string id = 2;
+    string payload = 3;
+    map<string, HeaderValue> headers = 5;
+    Options options = 4;
+}
+
+message HeaderValue {
+    repeated string value = 1;
 }
 
 message Options {
     uint64 priority = 1;
-    string id = 2;
-    string pipeline = 3;
-    uint64 delay = 4;
-    uint64 attempts = 5;
-    uint64 retry_delay = 6;
-    uint64 timeout = 7;
+    string pipeline = 2;
+    uint64 delay = 3;
+    uint64 attempts = 4;
+    uint64 retry_delay = 5;
+    uint64 timeout = 6;
 }
 

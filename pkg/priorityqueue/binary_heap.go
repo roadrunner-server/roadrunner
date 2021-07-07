@@ -31,7 +31,7 @@ func (bh *BinHeap) fixUp() {
 	for k > 0 {
 		cur, par := (bh.items)[k], (bh.items)[p]
 
-		if *cur.Priority() < *par.Priority() {
+		if cur.Priority() < par.Priority() {
 			bh.swap(k, p)
 			k = p
 			p = (k - 1) >> 1
@@ -55,10 +55,10 @@ func (bh *BinHeap) fixDown(curr, end int) {
 
 		idxToSwap := cOneIdx
 		// oh my, so unsafe
-		if cTwoIdx > -1 && *(bh.items)[cTwoIdx].Priority() < *(bh.items)[cOneIdx].Priority() {
+		if cTwoIdx > -1 && (bh.items)[cTwoIdx].Priority() < (bh.items)[cOneIdx].Priority() {
 			idxToSwap = cTwoIdx
 		}
-		if *(bh.items)[idxToSwap].Priority() < *(bh.items)[curr].Priority() {
+		if (bh.items)[idxToSwap].Priority() < (bh.items)[curr].Priority() {
 			bh.swap(uint64(curr), uint64(idxToSwap))
 			curr = idxToSwap
 			cOneIdx = (curr << 1) + 1

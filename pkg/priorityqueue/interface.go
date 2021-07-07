@@ -5,11 +5,23 @@ type Queue interface {
 	GetMax() Item
 }
 
+// Item represents binary heap item
 type Item interface {
-	ID() *string
-	Priority() *uint64
+	// ID is a unique item identifier
+	ID() string
+
+	// Priority returns the Item's priority to sort
+	Priority() uint64
+
+	// Body is the Item payload
 	Body() []byte
-	Context() []byte
+
+	// Context is the Item meta information
+	Context() ([]byte, error)
+
+	// Ack - acknowledge the Item after processing
 	Ack()
+
+	// Nack - discard the Item
 	Nack()
 }

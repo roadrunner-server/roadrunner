@@ -8,16 +8,12 @@ import (
 
 // Consumer todo naming
 type Consumer interface {
-	Push(job *structs.Job) (*string, error)
-	Consume(job *pipeline.Pipeline)
+	Push(job *structs.Job) error
+	Register(pipeline *pipeline.Pipeline) error
+	List() []*pipeline.Pipeline
 
-	Stop(pipeline string)
-	StopAll()
+	Pause(pipeline string)
 	Resume(pipeline string)
-	ResumeAll()
-
-	Register(pipe string) error
-	Stat()
 }
 
 type Constructor interface {

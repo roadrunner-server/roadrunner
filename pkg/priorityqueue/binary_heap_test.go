@@ -7,7 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiral/roadrunner/v2/utils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -23,16 +22,16 @@ func (t Test) Body() []byte {
 	return nil
 }
 
-func (t Test) Context() []byte {
-	return nil
+func (t Test) Context() ([]byte, error) {
+	return nil, nil
 }
 
-func (t Test) ID() *string {
-	return utils.AsStringPtr("none")
+func (t Test) ID() string {
+	return "none"
 }
 
-func (t Test) Priority() *uint64 {
-	return utils.AsUint64Ptr(uint64(t))
+func (t Test) Priority() uint64 {
+	return uint64(t)
 }
 
 func TestBinHeap_Init(t *testing.T) {
