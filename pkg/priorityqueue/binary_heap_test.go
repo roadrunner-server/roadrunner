@@ -59,7 +59,7 @@ func TestNewPriorityQueue(t *testing.T) {
 	insertsPerSec := uint64(0)
 	getPerSec := uint64(0)
 	stopCh := make(chan struct{}, 1)
-	pq := NewBinHeap(100)
+	pq := NewBinHeap(10000000)
 
 	go func() {
 		tt := time.NewTicker(time.Second)
