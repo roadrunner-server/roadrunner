@@ -3,7 +3,7 @@ name: Feature request
 about: Suggest an idea for this project
 title: "[FEATURE REQUEST]"
 labels: C-feature-request
-assignees: 48d90782
+assignees: rustatian
 
 ---
 
