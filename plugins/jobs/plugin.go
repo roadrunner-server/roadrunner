@@ -3,7 +3,10 @@ package jobs
 import (
 	"context"
 	"fmt"
+	"runtime"
 	"sync"
+	"sync/atomic"
+	"time"
 
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
@@ -82,15 +85,50 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	}
 
 	// initialize priority queue
-	p.queue = priorityqueue.NewBinHeap()
+	p.queue = priorityqueue.NewBinHeap(100_000_000)
 	p.log = log
 
 	return nil
 }
 
-func (p *Plugin) Serve() chan error {
+func (p *Plugin) Serve() chan error { //nolint:gocognit
 	errCh := make(chan error, 1)
 	const op = errors.Op("jobs_plugin_serve")
+
+	// THIS IS TEST HELPERS, SHOULD BE DELETED IN THE RELEASES !!!!!!!!!!!!!!!!!!!!!!!! <-----------------------------------------------------
+	var rate uint64
+	go func() {
+		tt := time.NewTicker(time.Second * 1)
+		for { //nolint:gosimple
+			select {
+			case <-tt.C:
+				fmt.Printf("---> rate is: %d", atomic.LoadUint64(&rate))
+				atomic.StoreUint64(&rate, 0)
+			}
+		}
+	}()
+
+	go func() {
+		tt := time.NewTicker(time.Millisecond * 1000)
+		for { //nolint:gosimple
+			select {
+			case <-tt.C:
+				fmt.Printf("---> goroutines: %d", runtime.NumGoroutine())
+			}
+		}
+	}()
+
+	go func() {
+		tt := time.NewTicker(time.Millisecond * 1000)
+		for { //nolint:gosimple
+			select {
+			case <-tt.C:
+				fmt.Printf("---> curr len: %d", p.queue.Len())
+			}
+		}
+	}()
+
+	// THIS IS TEST HELPERS, SHOULD BE DELETED IN THE RELEASES !!!!!!!!!!!!!!!!!!!!!!!! <-----------------------------------------------------
 
 	// register initial pipelines
 	p.pipelines.Range(func(key, value interface{}) bool {
@@ -166,6 +204,9 @@ func (p *Plugin) Serve() chan error {
 						p.log.Error("job execute", "error", err)
 						continue
 					}
+
+					// TEST HELPER, SHOULD BE DELETED IN THE RELEASE <-----------------------------------------------------
+					atomic.AddUint64(&rate, 1)
 
 					job.Ack()
 				}
