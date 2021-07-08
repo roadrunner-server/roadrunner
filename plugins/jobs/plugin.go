@@ -103,27 +103,9 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 			select {
 			case <-tt.C:
 				fmt.Printf("---> rate is: %d\n", atomic.LoadUint64(&rate))
-				atomic.StoreUint64(&rate, 0)
-			}
-		}
-	}()
-
-	go func() {
-		tt := time.NewTicker(time.Millisecond * 1000)
-		for { //nolint:gosimple
-			select {
-			case <-tt.C:
 				fmt.Printf("---> goroutines: %d\n", runtime.NumGoroutine())
-			}
-		}
-	}()
-
-	go func() {
-		tt := time.NewTicker(time.Millisecond * 1000)
-		for { //nolint:gosimple
-			select {
-			case <-tt.C:
 				fmt.Printf("---> curr len: %d\n", p.queue.Len())
+				atomic.StoreUint64(&rate, 0)
 			}
 		}
 	}()
