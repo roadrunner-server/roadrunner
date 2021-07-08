@@ -9,6 +9,7 @@ server:
 amqp:
   addr: amqp://guest:guest@localhost:5672/
 
+
   # beanstalk configuration
 beanstalk:
   addr: tcp://localhost:11300
@@ -45,7 +46,10 @@ jobs:
     test-1:
       driver: amqp
       priority: 1
-      queue: default
+      queue: test-1-queue
+      exchange: default
+      exchange_type: direct
+      routing_key: test
       pipeline_size: 1000000
 
     test-2:

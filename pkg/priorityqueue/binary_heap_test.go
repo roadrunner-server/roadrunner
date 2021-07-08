@@ -12,10 +12,12 @@ import (
 
 type Test int
 
-func (t Test) Ack() {
+func (t Test) Ack() error {
+	return nil
 }
 
-func (t Test) Nack() {
+func (t Test) Nack() error {
+	return nil
 }
 
 func (t Test) Body() []byte {

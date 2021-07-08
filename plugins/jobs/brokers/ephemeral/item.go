@@ -118,10 +118,12 @@ func (j *Item) Context() ([]byte, error) {
 	return ctx, nil
 }
 
-func (j *Item) Ack() {
+func (j *Item) Ack() error {
 	// noop for the in-memory
+	return nil
 }
 
-func (j *Item) Nack() {
+func (j *Item) Nack() error {
 	// noop for the in-memory
+	return nil
 }

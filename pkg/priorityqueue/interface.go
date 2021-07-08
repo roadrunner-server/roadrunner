@@ -21,8 +21,8 @@ type Item interface {
 	Context() ([]byte, error)
 
 	// Ack - acknowledge the Item after processing
-	Ack()
+	Ack() error
 
 	// Nack - discard the Item
-	Nack()
+	Nack() error
 }

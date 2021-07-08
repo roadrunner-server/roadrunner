@@ -171,7 +171,10 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 
 					ctx, err := job.Context()
 					if err != nil {
-						job.Nack()
+						errNack := job.Nack()
+						if errNack != nil {
+							p.log.Error("negatively acknowledge failed", "error", errNack)
+						}
 						p.log.Error("job marshal context", "error", err)
 					}
 
@@ -182,7 +185,11 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 
 					_, err = p.workersPool.Exec(exec)
 					if err != nil {
-						job.Nack()
+						errNack := job.Nack()
+						if errNack != nil {
+							p.log.Error("negatively acknowledge failed", "error", errNack)
+						}
+
 						p.log.Error("job execute", "error", err)
 						continue
 					}
@@ -190,7 +197,10 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 					// TEST HELPER, SHOULD BE DELETED IN THE RELEASE <-----------------------------------------------------
 					atomic.AddUint64(&rate, 1)
 
-					job.Ack()
+					errAck := job.Ack()
+					if errAck != nil {
+						p.log.Error("acknowledge failed", "error", errAck)
+					}
 				}
 			}()
 		}
