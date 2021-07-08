@@ -37,7 +37,7 @@ func (t Test) Priority() uint64 {
 func TestBinHeap_Init(t *testing.T) {
 	a := []Item{Test(2), Test(23), Test(33), Test(44), Test(1), Test(2), Test(2), Test(2), Test(4), Test(6), Test(99)}
 
-	bh := NewBinHeap(0)
+	bh := NewBinHeap(12)
 
 	for i := 0; i < len(a); i++ {
 		bh.Insert(a[i])
