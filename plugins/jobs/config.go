@@ -19,6 +19,10 @@ type Config struct {
 	// Default - num logical cores
 	NumPollers uint8 `mapstructure:"num_pollers"`
 
+	// PipelineSize is the limit of a main jobs queue which consume Items from the drivers pipeline
+	// Driver pipeline might be much larger than a main jobs queue
+	PipelineSize uint64 `mapstructure:"pipeline_size"`
+
 	// Pool configures roadrunner workers pool.
 	Pool *poolImpl.Config `mapstructure:"Pool"`
 
@@ -32,6 +36,10 @@ type Config struct {
 func (c *Config) InitDefaults() {
 	if c.Pool == nil {
 		c.Pool = &poolImpl.Config{}
+	}
+
+	if c.PipelineSize == 0 {
+		c.PipelineSize = 1_000_000
 	}
 
 	if c.NumPollers == 0 {

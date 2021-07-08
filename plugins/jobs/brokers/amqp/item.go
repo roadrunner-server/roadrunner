@@ -1,4 +1,4 @@
-package ephemeral
+package amqp
 
 import (
 	"time"
@@ -36,6 +36,10 @@ type Item struct {
 
 	// Options contains set of PipelineOptions specific to job execution. Can be empty.
 	Options Options `json:"options,omitempty"`
+
+	AckFunc func()
+
+	NackFunc func()
 }
 
 // Options carry information about how to handle given job.
@@ -110,7 +114,6 @@ func (j *Item) Context() ([]byte, error) {
 			Pipeline string              `json:"pipeline"`
 		}{ID: j.Ident, Job: j.Job, Headers: j.Headers, Timeout: j.Options.Timeout, Pipeline: j.Options.Pipeline},
 	)
-
 	if err != nil {
 		return nil, err
 	}

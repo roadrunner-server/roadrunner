@@ -19,10 +19,15 @@ sqs:
   secret: api-secret
   region: us-west-1
   endpoint: http://localhost:9324
+  declare:
+    MessageRetentionPeriod: 86400
 
 
 jobs:
+  # num logical cores by default
   num_pollers: 64
+  # 1mi by default
+  pipeline_size: 100000
   # worker pool configuration
   pool:
     num_workers: 10
@@ -35,23 +40,26 @@ jobs:
     test-local:
       driver: ephemeral
       priority: 10
+      pipeline_size: 10
 
     test-1:
       driver: amqp
       priority: 1
       queue: default
+      pipeline_size: 1000000
 
     test-2:
       driver: beanstalk
       priority: 11
       tube: default
+      pipeline_size: 1000000
 
     test-3:
       #      priority: 11 - not defined, 10 by default
+      # driver locality not specified, local by default
       driver: sqs
+      pipeline_size: 1000000
       queue: default
-      declare:
-        MessageRetentionPeriod: 86400
 
   # list of pipelines to be consumed by the server, keep empty if you want to start consuming manually
   consume: [ "test-local" ]

@@ -37,7 +37,7 @@ func (t Test) Priority() uint64 {
 func TestBinHeap_Init(t *testing.T) {
 	a := []Item{Test(2), Test(23), Test(33), Test(44), Test(1), Test(2), Test(2), Test(2), Test(4), Test(6), Test(99)}
 
-	bh := NewBinHeap(100)
+	bh := NewBinHeap(0)
 
 	for i := 0; i < len(a); i++ {
 		bh.Insert(a[i])
@@ -59,7 +59,19 @@ func TestNewPriorityQueue(t *testing.T) {
 	insertsPerSec := uint64(0)
 	getPerSec := uint64(0)
 	stopCh := make(chan struct{}, 1)
-	pq := NewBinHeap(10000000)
+	pq := NewBinHeap(1000)
+
+	go func() {
+		tt3 := time.NewTicker(time.Millisecond * 10)
+		for {
+			select {
+			case <-tt3.C:
+				require.Less(t, pq.Len(), uint64(1002))
+			case <-stopCh:
+				return
+			}
+		}
+	}()
 
 	go func() {
 		tt := time.NewTicker(time.Second)
@@ -103,6 +115,7 @@ func TestNewPriorityQueue(t *testing.T) {
 	}()
 
 	time.Sleep(time.Second * 5)
+	stopCh <- struct{}{}
 	stopCh <- struct{}{}
 	stopCh <- struct{}{}
 	stopCh <- struct{}{}

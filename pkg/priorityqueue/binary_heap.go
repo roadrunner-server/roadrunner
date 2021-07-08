@@ -18,12 +18,8 @@ type BinHeap struct {
 }
 
 func NewBinHeap(maxLen uint64) *BinHeap {
-	if maxLen == 0 {
-		maxLen = 100_000
-	}
-
 	return &BinHeap{
-		items:  make([]Item, 0, maxLen),
+		items:  make([]Item, 0, 1000),
 		len:    0,
 		maxLen: maxLen,
 		cond:   sync.Cond{L: &sync.Mutex{}},

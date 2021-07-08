@@ -85,7 +85,7 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	}
 
 	// initialize priority queue
-	p.queue = priorityqueue.NewBinHeap(100_000_000)
+	p.queue = priorityqueue.NewBinHeap(p.cfg.PipelineSize)
 	p.log = log
 
 	return nil
@@ -102,7 +102,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 		for { //nolint:gosimple
 			select {
 			case <-tt.C:
-				fmt.Printf("---> rate is: %d", atomic.LoadUint64(&rate))
+				fmt.Printf("---> rate is: %d\n", atomic.LoadUint64(&rate))
 				atomic.StoreUint64(&rate, 0)
 			}
 		}
@@ -113,7 +113,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 		for { //nolint:gosimple
 			select {
 			case <-tt.C:
-				fmt.Printf("---> goroutines: %d", runtime.NumGoroutine())
+				fmt.Printf("---> goroutines: %d\n", runtime.NumGoroutine())
 			}
 		}
 	}()
@@ -123,7 +123,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 		for { //nolint:gosimple
 			select {
 			case <-tt.C:
-				fmt.Printf("---> curr len: %d", p.queue.Len())
+				fmt.Printf("---> curr len: %d\n", p.queue.Len())
 			}
 		}
 	}()
