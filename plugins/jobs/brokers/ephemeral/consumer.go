@@ -98,6 +98,11 @@ func (j *JobBroker) Register(pipeline *pipeline.Pipeline) error {
 	return nil
 }
 
+// Consume is no-op for the ephemeral
+func (j *JobBroker) Consume(_ *pipeline.Pipeline) error {
+	return nil
+}
+
 func (j *JobBroker) Pause(pipeline string) {
 	if q, ok := j.queues.Load(pipeline); ok {
 		if q == true {

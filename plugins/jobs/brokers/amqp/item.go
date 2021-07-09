@@ -16,7 +16,7 @@ func From(d amqp.Delivery) *Item {
 }
 
 type Item struct {
-	// Job contains name of job broker (usually PHP class).
+	// Job contains pluginName of job broker (usually PHP class).
 	Job string `json:"job"`
 
 	// Ident is unique identifier of the job, should be provided from outside

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	name string = "amqp"
+	pluginName string = "amqp"
 )
 
 type Plugin struct {
@@ -23,7 +23,7 @@ func (p *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
 }
 
 func (p *Plugin) Name() string {
-	return name
+	return pluginName
 }
 
 func (p *Plugin) JobsConstruct(configKey string, pq priorityqueue.Queue) (jobs.Consumer, error) {

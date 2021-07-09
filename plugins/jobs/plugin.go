@@ -117,11 +117,6 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 		// pipeline name (ie test-local, sqs-aws, etc)
 		name := key.(string)
 
-		// skip pipelines which are not initialized to consume
-		if _, ok := p.consume[name]; !ok {
-			return true
-		}
-
 		// pipeline associated with the name
 		pipe := value.(*pipeline.Pipeline)
 		// driver for the pipeline (ie amqp, ephemeral, etc)
@@ -148,6 +143,16 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 			if err != nil {
 				errCh <- errors.E(op, errors.Errorf("pipe register failed for the driver: %s with pipe name: %s", pipe.Driver(), pipe.Name()))
 				return false
+			}
+
+			// if pipeline initialized to be consumed, call Consume on it
+			if _, ok := p.consume[name]; ok {
+				err = initializedDriver.Consume(pipe)
+				if err != nil {
+					errCh <- errors.E(op, err)
+					return false
+				}
+				return true
 			}
 		}
 

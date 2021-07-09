@@ -11,6 +11,7 @@ import (
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/jobs"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/brokers/amqp"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/brokers/ephemeral"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
@@ -34,6 +35,7 @@ func TestJobsInit(t *testing.T) {
 		&logger.ZapLogger{},
 		&jobs.Plugin{},
 		&ephemeral.Plugin{},
+		&amqp.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -82,7 +84,7 @@ func TestJobsInit(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second * 60)
+	time.Sleep(time.Second * 120)
 
 	stopCh <- struct{}{}
 

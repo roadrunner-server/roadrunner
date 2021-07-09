@@ -10,6 +10,7 @@ import (
 type Consumer interface {
 	Push(job *structs.Job) error
 	Register(pipeline *pipeline.Pipeline) error
+	Consume(pipeline *pipeline.Pipeline) error
 	List() []*pipeline.Pipeline
 
 	Pause(pipeline string)
