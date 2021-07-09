@@ -62,6 +62,15 @@ jobs:
       exchange_type: direct
       routing_key: test
 
+    test-2-amqp:
+      driver: amqp
+      priority: 2
+      pipeline_size: 1000
+      queue: test-2-queue
+      exchange: default
+      exchange_type: direct
+      routing_key: test-2
+
     test-2:
       driver: beanstalk
       priority: 11

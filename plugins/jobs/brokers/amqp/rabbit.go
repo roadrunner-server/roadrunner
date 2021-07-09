@@ -73,7 +73,7 @@ func (j *JobsConsumer) listener(deliv <-chan amqp.Delivery) {
 				}
 
 				// add task to the queue
-				j.pq.Insert(From(msg))
+				j.pq.Insert(FromDelivery(msg))
 			case <-j.stop:
 				return
 			}
