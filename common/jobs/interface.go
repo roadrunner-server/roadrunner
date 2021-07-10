@@ -11,7 +11,8 @@ type Consumer interface {
 	Push(job *structs.Job) error
 	Register(pipeline *pipeline.Pipeline) error
 	Consume(pipeline *pipeline.Pipeline) error
-	List() []*pipeline.Pipeline
+	// List of the pipelines
+	List() []string
 
 	Pause(pipeline string)
 	Resume(pipeline string)

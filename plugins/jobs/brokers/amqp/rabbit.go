@@ -72,8 +72,13 @@ func (j *JobsConsumer) listener(deliv <-chan amqp.Delivery) {
 					return
 				}
 
-				// add task to the queue
-				j.pq.Insert(FromDelivery(msg))
+				d, err := FromDelivery(msg)
+				if err != nil {
+					j.logger.Error("amqp delivery convert", "error", err)
+					continue
+				}
+				// insert job into the main priority queue
+				j.pq.Insert(d)
 			case <-j.stop:
 				return
 			}

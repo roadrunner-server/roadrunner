@@ -13,12 +13,13 @@ func From(job *structs.Job) *Item {
 		Job:     job.Job,
 		Ident:   job.Ident,
 		Payload: job.Payload,
-		Options: conv(*job.Options),
+		Options: &Options{
+			Priority: job.Options.Priority,
+			Pipeline: job.Options.Pipeline,
+			Delay:    job.Options.Delay,
+			Timeout:  job.Options.Timeout,
+		},
 	}
-}
-
-func conv(jo structs.Options) Options {
-	return Options(jo)
 }
 
 type Item struct {
@@ -35,7 +36,7 @@ type Item struct {
 	Headers map[string][]string
 
 	// Options contains set of PipelineOptions specific to job execution. Can be empty.
-	Options Options `json:"options,omitempty"`
+	Options *Options `json:"options,omitempty"`
 }
 
 // Options carry information about how to handle given job.
@@ -50,26 +51,8 @@ type Options struct {
 	// Delay defines time duration to delay execution for. Defaults to none.
 	Delay uint64 `json:"delay,omitempty"`
 
-	// Attempts define maximum job retries. Attention, value 1 will only allow job to execute once (without retry).
-	// Minimum valuable value is 2.
-	Attempts uint64 `json:"maxAttempts,omitempty"`
-
-	// RetryDelay defines for how long job should be waiting until next retry. Defaults to none.
-	RetryDelay uint64 `json:"retryDelay,omitempty"`
-
 	// Reserve defines for how broker should wait until treating job are failed. Defaults to 30 min.
 	Timeout uint64 `json:"timeout,omitempty"`
-}
-
-// CanRetry must return true if broker is allowed to re-run the job.
-func (o *Options) CanRetry(attempt uint64) bool {
-	// Attempts 1 and 0 has identical effect
-	return o.Attempts > (attempt + 1)
-}
-
-// RetryDuration returns retry delay duration in a form of time.Duration.
-func (o *Options) RetryDuration() time.Duration {
-	return time.Second * time.Duration(o.RetryDelay)
 }
 
 // DelayDuration returns delay duration in a form of time.Duration.

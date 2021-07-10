@@ -121,11 +121,11 @@ func (j *JobBroker) Resume(pipeline string) {
 	}
 }
 
-func (j *JobBroker) List() []*pipeline.Pipeline {
-	out := make([]*pipeline.Pipeline, 0, 2)
+func (j *JobBroker) List() []string {
+	out := make([]string, 0, 2)
 
 	j.queues.Range(func(key, value interface{}) bool {
-		pipe := key.(*pipeline.Pipeline)
+		pipe := key.(string)
 		out = append(out, pipe)
 		return true
 	})
