@@ -23,7 +23,7 @@ type SyncWorkerImpl struct {
 }
 
 // From creates SyncWorker from BaseProcess
-func From(process *Process) SyncWorker {
+func From(process *Process) *SyncWorkerImpl {
 	return &SyncWorkerImpl{
 		process: process,
 		fPool: sync.Pool{New: func() interface{} {

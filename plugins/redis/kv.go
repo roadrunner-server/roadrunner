@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/common/kv"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	kvv1 "github.com/spiral/roadrunner/v2/proto/kv/v1beta"
@@ -20,7 +19,7 @@ type Driver struct {
 	cfg             *Config
 }
 
-func NewRedisDriver(log logger.Logger, key string, cfgPlugin config.Configurer) (kv.Storage, error) {
+func NewRedisDriver(log logger.Logger, key string, cfgPlugin config.Configurer) (*Driver, error) {
 	const op = errors.Op("new_boltdb_driver")
 
 	d := &Driver{

@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/common/kv"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	kvv1 "github.com/spiral/roadrunner/v2/proto/kv/v1beta"
@@ -34,7 +33,7 @@ type Driver struct {
 	stop chan struct{}
 }
 
-func NewBoltDBDriver(log logger.Logger, key string, cfgPlugin config.Configurer, stop chan struct{}) (kv.Storage, error) {
+func NewBoltDBDriver(log logger.Logger, key string, cfgPlugin config.Configurer, stop chan struct{}) (*Driver, error) {
 	const op = errors.Op("new_boltdb_driver")
 
 	d := &Driver{

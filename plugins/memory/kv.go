@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/spiral/errors"
-	kv "github.com/spiral/roadrunner/v2/common/kv"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	kvv1 "github.com/spiral/roadrunner/v2/proto/kv/v1beta"
@@ -21,7 +20,7 @@ type Driver struct {
 	cfg  *Config
 }
 
-func NewInMemoryDriver(log logger.Logger, key string, cfgPlugin config.Configurer, stop chan struct{}) (kv.Storage, error) {
+func NewInMemoryDriver(log logger.Logger, key string, cfgPlugin config.Configurer, stop chan struct{}) (*Driver, error) {
 	const op = errors.Op("new_in_memory_driver")
 
 	d := &Driver{

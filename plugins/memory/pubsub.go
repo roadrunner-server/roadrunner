@@ -17,7 +17,7 @@ type PubSubDriver struct {
 	log     logger.Logger
 }
 
-func NewPubSubDriver(log logger.Logger, _ string) (pubsub.PubSub, error) {
+func NewPubSubDriver(log logger.Logger, _ string) (*PubSubDriver, error) {
 	ps := &PubSubDriver{
 		pushCh:  make(chan *pubsub.Message, 10),
 		storage: bst.NewBST(),
