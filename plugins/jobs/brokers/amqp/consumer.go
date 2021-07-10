@@ -197,10 +197,11 @@ func (j *JobsConsumer) Push(job *structs.Job) error {
 
 	// insert to the local, limited pipeline
 	err := j.publishChan.Publish(j.exchangeName, j.routingKey, false, false, amqp.Publishing{
-		Headers:     pack(job.Ident, msg),
-		ContentType: contentType,
-		Timestamp:   time.Now(),
-		Body:        msg.Body(),
+		Headers:      pack(job.Ident, msg),
+		ContentType:  contentType,
+		Timestamp:    time.Now(),
+		DeliveryMode: amqp.Persistent,
+		Body:         msg.Body(),
 	})
 	if err != nil {
 		return errors.E(op, err)
