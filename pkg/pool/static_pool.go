@@ -41,7 +41,7 @@ type StaticPool struct {
 	listeners []events.Listener
 
 	// manages worker states and TTLs
-	ww workerWatcher.Watcher
+	ww Watcher
 
 	// allocate new worker
 	allocator worker.Allocator

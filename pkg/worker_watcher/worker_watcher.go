@@ -12,7 +12,7 @@ import (
 )
 
 // NewSyncWorkerWatcher is a constructor for the Watcher
-func NewSyncWorkerWatcher(allocator worker.Allocator, numWorkers uint64, events events.Handler) Watcher {
+func NewSyncWorkerWatcher(allocator worker.Allocator, numWorkers uint64, events events.Handler) *workerWatcher {
 	ww := &workerWatcher{
 		container:  container.NewVector(numWorkers),
 		numWorkers: numWorkers,
@@ -26,7 +26,7 @@ func NewSyncWorkerWatcher(allocator worker.Allocator, numWorkers uint64, events 
 
 type workerWatcher struct {
 	sync.RWMutex
-	container container.Vector
+	container Vector
 	// used to control the Destroy stage (that all workers are in the container)
 	numWorkers uint64
 	workers    []worker.BaseProcess
