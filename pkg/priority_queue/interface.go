@@ -2,7 +2,7 @@ package priorityqueue
 
 type Queue interface {
 	Insert(item Item)
-	GetMax() Item
+	ExtractMin() Item
 	Len() uint64
 }
 

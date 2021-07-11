@@ -10,7 +10,8 @@ import (
 type Consumer interface {
 	Push(job *structs.Job) error
 	Register(pipeline *pipeline.Pipeline) error
-	Consume(pipeline *pipeline.Pipeline) error
+	Run(pipeline *pipeline.Pipeline) error
+	Stop() error
 	// List of the pipelines
 	List() []string
 
@@ -20,4 +21,5 @@ type Consumer interface {
 
 type Constructor interface {
 	JobsConstruct(configKey string, queue priorityqueue.Queue) (Consumer, error)
+	FromPipeline(pipe *pipeline.Pipeline, queue priorityqueue.Queue) (Consumer, error)
 }

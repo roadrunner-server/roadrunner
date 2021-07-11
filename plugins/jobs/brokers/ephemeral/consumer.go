@@ -22,14 +22,17 @@ type JobBroker struct {
 	queues     sync.Map
 	pq         priorityqueue.Queue
 	localQueue chan *Item
+
+	stopCh chan struct{}
 }
 
 func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, q priorityqueue.Queue) (*JobBroker, error) {
 	const op = errors.Op("new_ephemeral_pipeline")
 
 	jb := &JobBroker{
-		log: log,
-		pq:  q,
+		log:    log,
+		pq:     q,
+		stopCh: make(chan struct{}, 1),
 	}
 
 	err := cfg.UnmarshalKey(configKey, &jb.cfg)
@@ -48,6 +51,10 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, q 
 	go jb.consume()
 
 	return jb, nil
+}
+
+func FromPipeline(_ *pipeline.Pipeline, _ priorityqueue.Queue) (*JobBroker, error) {
+	panic("not implemented")
 }
 
 func (j *JobBroker) Push(job *structs.Job) error {
@@ -82,8 +89,13 @@ func (j *JobBroker) Push(job *structs.Job) error {
 
 func (j *JobBroker) consume() {
 	// redirect
-	for item := range j.localQueue {
-		j.pq.Insert(item)
+	for {
+		select {
+		case item := <-j.localQueue:
+			j.pq.Insert(item)
+		case <-j.stopCh:
+			return
+		}
 	}
 }
 
@@ -95,11 +107,6 @@ func (j *JobBroker) Register(pipeline *pipeline.Pipeline) error {
 
 	j.queues.Store(pipeline.Name(), true)
 
-	return nil
-}
-
-// Consume is no-op for the ephemeral
-func (j *JobBroker) Consume(_ *pipeline.Pipeline) error {
 	return nil
 }
 
@@ -131,4 +138,21 @@ func (j *JobBroker) List() []string {
 	})
 
 	return out
+}
+
+// Run is no-op for the ephemeral
+func (j *JobBroker) Run(_ *pipeline.Pipeline) error {
+	return nil
+}
+
+func (j *JobBroker) Stop() error {
+	j.queues.Range(func(key, _ interface{}) bool {
+		j.queues.Delete(key)
+		return true
+	})
+
+	// return from the consumer
+	j.stopCh <- struct{}{}
+
+	return nil
 }

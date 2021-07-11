@@ -50,7 +50,7 @@ func TestBinHeap_Init(t *testing.T) {
 	res := make([]Item, 0, 12)
 
 	for i := 0; i < 11; i++ {
-		item := bh.GetMax()
+		item := bh.ExtractMin()
 		res = append(res, item)
 	}
 
@@ -83,7 +83,7 @@ func TestNewPriorityQueue(t *testing.T) {
 			case <-tt.C:
 				fmt.Println(fmt.Sprintf("Insert per second: %d", atomic.LoadUint64(&insertsPerSec)))
 				atomic.StoreUint64(&insertsPerSec, 0)
-				fmt.Println(fmt.Sprintf("GetMax per second: %d", atomic.LoadUint64(&getPerSec)))
+				fmt.Println(fmt.Sprintf("ExtractMin per second: %d", atomic.LoadUint64(&getPerSec)))
 				atomic.StoreUint64(&getPerSec, 0)
 			case <-stopCh:
 				tt.Stop()
@@ -98,7 +98,7 @@ func TestNewPriorityQueue(t *testing.T) {
 			case <-stopCh:
 				return
 			default:
-				pq.GetMax()
+				pq.ExtractMin()
 				atomic.AddUint64(&getPerSec, 1)
 			}
 		}

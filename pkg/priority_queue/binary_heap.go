@@ -104,7 +104,7 @@ func (bh *BinHeap) Insert(item Item) {
 	bh.cond.Signal()
 }
 
-func (bh *BinHeap) GetMax() Item {
+func (bh *BinHeap) ExtractMin() Item {
 	bh.cond.L.Lock()
 
 	// if len == 0, wait for the signal

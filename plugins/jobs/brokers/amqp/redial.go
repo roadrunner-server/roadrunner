@@ -12,29 +12,34 @@ import (
 func (j *JobsConsumer) redialer() { //nolint:gocognit
 	go func() {
 		const op = errors.Op("rabbitmq_redial")
-		for err := range j.conn.NotifyClose(make(chan *amqp.Error)) {
-			if err != nil {
+
+		for {
+			select {
+			case err := <-j.conn.NotifyClose(make(chan *amqp.Error)):
+				if err == nil {
+					return
+				}
+
 				j.Lock()
 
-				j.logger.Error("connection closed, reconnecting", "error", err)
-
+				j.log.Error("connection closed, reconnecting", "error", err)
 				expb := backoff.NewExponentialBackOff()
 				// set the retry timeout (minutes)
 				expb.MaxElapsedTime = j.retryTimeout
 				op := func() error {
-					j.logger.Warn("rabbitmq reconnecting, caused by", "error", err)
+					j.log.Warn("rabbitmq reconnecting, caused by", "error", err)
 					var dialErr error
 					j.conn, dialErr = amqp.Dial(j.connStr)
 					if dialErr != nil {
 						return fmt.Errorf("fail to dial server endpoint: %v", dialErr)
 					}
 
-					j.logger.Info("rabbitmq dial succeed. trying to redeclare queues and subscribers")
+					j.log.Info("rabbitmq dial succeed. trying to redeclare queues and subscribers")
 
 					// re-init connection
 					errInit := j.initRabbitMQ()
 					if errInit != nil {
-						j.logger.Error("error while redialing", "error", errInit)
+						j.log.Error("error while redialing", "error", errInit)
 						return errInit
 					}
 
@@ -69,18 +74,32 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 					// restart listener
 					j.listener(deliv)
 
-					j.logger.Info("queues and subscribers redeclare succeed")
+					j.log.Info("queues and subscribers redeclare succeed")
 					return nil
 				}
 
 				retryErr := backoff.Retry(op, expb)
 				if retryErr != nil {
 					j.Unlock()
-					j.logger.Error("backoff failed", "error", retryErr)
+					j.log.Error("backoff failed", "error", retryErr)
 					return
 				}
 
 				j.Unlock()
+
+			case <-j.stopCh:
+				err := j.publishChan.Close()
+				if err != nil {
+					j.log.Error("publish channel close", "error", err)
+				}
+				err = j.consumeChan.Close()
+				if err != nil {
+					j.log.Error("consume channel close", "error", err)
+				}
+				err = j.conn.Close()
+				if err != nil {
+					j.log.Error("amqp connection close", "error", err)
+				}
 			}
 		}
 	}()

@@ -7,7 +7,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/common/jobs"
 	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
@@ -46,8 +45,8 @@ type Config struct {
 
 type JobsConsumer struct {
 	sync.RWMutex
-	logger logger.Logger
-	pq     priorityqueue.Queue
+	log logger.Logger
+	pq  priorityqueue.Queue
 
 	pipelines sync.Map
 
@@ -67,19 +66,20 @@ type JobsConsumer struct {
 
 	delayCache map[string]struct{}
 
-	stop chan struct{}
+	stopCh chan struct{}
 }
 
-func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer, stopCh chan struct{}, pq priorityqueue.Queue) (jobs.Consumer, error) {
+// NewAMQPConsumer initializes rabbitmq pipeline
+func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer, pq priorityqueue.Queue) (*JobsConsumer, error) {
 	const op = errors.Op("new_amqp_consumer")
 	// we need to obtain two parts of the amqp information here.
 	// firs part - address to connect, it is located in the global section under the amqp pluginName
 	// second part - queues and other pipeline information
 	jb := &JobsConsumer{
-		logger:       log,
+		log:          log,
 		pq:           pq,
 		consumeID:    uuid.NewString(),
-		stop:         stopCh,
+		stopCh:       make(chan struct{}),
 		retryTimeout: time.Minute * 5,
 		delayCache:   make(map[string]struct{}, 100),
 	}
@@ -144,6 +144,14 @@ func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer,
 	return jb, nil
 }
 
+func FromPipeline(_ *pipeline.Pipeline, _ priorityqueue.Queue) (*JobsConsumer, error) {
+	_ = exchangeType
+	_ = exchangeKey
+	_ = queue
+	_ = routingKey
+	panic("not implemented")
+}
+
 func (j *JobsConsumer) Push(job *structs.Job) error {
 	const op = errors.Op("rabbitmq_push")
 	// check if the pipeline registered
@@ -157,7 +165,7 @@ func (j *JobsConsumer) Push(job *structs.Job) error {
 	defer j.Unlock()
 
 	// convert
-	msg := FromJob(job)
+	msg := fromJob(job)
 	p, err := pack(job.Ident, msg)
 	if err != nil {
 		return errors.E(op, err)
@@ -245,12 +253,12 @@ func (j *JobsConsumer) Register(pipeline *pipeline.Pipeline) error {
 		return errors.E(op, errors.Errorf("queue %s has already been registered", pipeline))
 	}
 
-	j.pipelines.Store(pipeline.Name(), true)
+	j.pipelines.Store(pipeline.Name(), struct{}{})
 
 	return nil
 }
 
-func (j *JobsConsumer) Consume(pipeline *pipeline.Pipeline) error {
+func (j *JobsConsumer) Run(pipeline *pipeline.Pipeline) error {
 	const op = errors.Op("rabbit_consume")
 	if _, ok := j.pipelines.Load(pipeline.Name()); !ok {
 		return errors.E(op, errors.Errorf("no such pipeline registered: %s", pipeline.Name()))
@@ -304,77 +312,74 @@ func (j *JobsConsumer) List() []string {
 }
 
 func (j *JobsConsumer) Pause(pipeline string) {
-	if q, ok := j.pipelines.Load(pipeline); ok {
-		if q == true {
-			// mark pipeline as turned off
-			j.pipelines.Store(pipeline, false)
-		}
+	if _, ok := j.pipelines.Load(pipeline); !ok {
+		j.log.Error("no such pipeline", "requested pause on", pipeline)
+		return
 	}
 
 	// protect connection (redial)
 	j.Lock()
 	defer j.Unlock()
 
-	err := j.publishChan.Cancel(j.consumeID, true)
+	err := j.consumeChan.Cancel(j.consumeID, true)
 	if err != nil {
-		j.logger.Error("cancel publish channel, forcing close", "error", err)
-		errCl := j.publishChan.Close()
+		j.log.Error("cancel publish channel, forcing close", "error", err)
+		errCl := j.consumeChan.Close()
 		if errCl != nil {
-			j.logger.Error("force close failed", "error", err)
+			j.log.Error("force close failed", "error", err)
 		}
 	}
 }
 
 func (j *JobsConsumer) Resume(pipeline string) {
-	if q, ok := j.pipelines.Load(pipeline); ok {
-		if q == false {
-			// mark pipeline as turned off
-			j.pipelines.Store(pipeline, true)
-		}
-
-		// protect connection (redial)
-		j.Lock()
-		defer j.Unlock()
-
-		var err error
-		j.consumeChan, err = j.conn.Channel()
-		if err != nil {
-			j.logger.Error("create channel on rabbitmq connection", "error", err)
-			return
-		}
-
-		err = j.consumeChan.Qos(j.prefetchCount, 0, false)
-		if err != nil {
-			j.logger.Error("qos set failed", "error", err)
-			return
-		}
-
-		// start reading messages from the channel
-		deliv, err := j.consumeChan.Consume(
-			j.queue,
-			j.consumeID,
-			false,
-			false,
-			false,
-			false,
-			nil,
-		)
-		if err != nil {
-			j.logger.Error("consume operation failed", "error", err)
-			return
-		}
-
-		// run listener
-		j.listener(deliv)
+	if _, ok := j.pipelines.Load(pipeline); !ok {
+		j.log.Error("no such pipeline", "requested pause on", pipeline)
+		return
 	}
+
+	// protect connection (redial)
+	j.Lock()
+	defer j.Unlock()
+
+	var err error
+	j.consumeChan, err = j.conn.Channel()
+	if err != nil {
+		j.log.Error("create channel on rabbitmq connection", "error", err)
+		return
+	}
+
+	err = j.consumeChan.Qos(j.prefetchCount, 0, false)
+	if err != nil {
+		j.log.Error("qos set failed", "error", err)
+		return
+	}
+
+	// start reading messages from the channel
+	deliv, err := j.consumeChan.Consume(
+		j.queue,
+		j.consumeID,
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		j.log.Error("consume operation failed", "error", err)
+		return
+	}
+
+	// run listener
+	j.listener(deliv)
 }
 
-// Declare used to dynamically declare a pipeline
-func (j *JobsConsumer) Declare(pipeline *pipeline.Pipeline) error {
-	pipeline.String(exchangeKey, "")
-	pipeline.String(queue, "")
-	pipeline.String(routingKey, "")
-	pipeline.String(exchangeType, "direct")
+func (j *JobsConsumer) Stop() error {
+	j.stopCh <- struct{}{}
+	j.pipelines.Range(func(key, _ interface{}) bool {
+		j.pipelines.Delete(key)
+		return true
+	})
+
 	return nil
 }
 

@@ -204,7 +204,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 
 func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 	ctx := context.Background()
-	// Consume pool events
+	// Run pool events
 	ev := make(chan struct{}, 1)
 	listener := func(event interface{}) {
 		if pe, ok := event.(events.PoolEvent); ok {

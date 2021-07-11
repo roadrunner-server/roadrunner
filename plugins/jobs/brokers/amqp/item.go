@@ -20,39 +20,6 @@ const (
 	rrRetryDelay string = "rr_retry_delay"
 )
 
-func FromDelivery(d amqp.Delivery) (*Item, error) {
-	const op = errors.Op("from_delivery_convert")
-	item, err := unpack(d)
-	if err != nil {
-		return nil, errors.E(op, err)
-	}
-	return &Item{
-		Job:      item.Job,
-		Ident:    item.Ident,
-		Payload:  item.Payload,
-		Headers:  item.Headers,
-		Options:  item.Options,
-		AckFunc:  d.Ack,
-		NackFunc: d.Nack,
-	}, nil
-}
-
-func FromJob(job *structs.Job) *Item {
-	return &Item{
-		Job:     job.Job,
-		Ident:   job.Ident,
-		Payload: job.Payload,
-		Options: &Options{
-			Priority:   uint32(job.Options.Priority),
-			Pipeline:   job.Options.Pipeline,
-			Delay:      int32(job.Options.Delay),
-			Attempts:   int32(job.Options.Attempts),
-			RetryDelay: int32(job.Options.RetryDelay),
-			Timeout:    int32(job.Options.Timeout),
-		},
-	}
-}
-
 type Item struct {
 	// Job contains pluginName of job broker (usually PHP class).
 	Job string `json:"job"`
@@ -152,6 +119,39 @@ func (j *Item) Ack() error {
 
 func (j *Item) Nack() error {
 	return j.NackFunc(false, false)
+}
+
+func fromDelivery(d amqp.Delivery) (*Item, error) {
+	const op = errors.Op("from_delivery_convert")
+	item, err := unpack(d)
+	if err != nil {
+		return nil, errors.E(op, err)
+	}
+	return &Item{
+		Job:      item.Job,
+		Ident:    item.Ident,
+		Payload:  item.Payload,
+		Headers:  item.Headers,
+		Options:  item.Options,
+		AckFunc:  d.Ack,
+		NackFunc: d.Nack,
+	}, nil
+}
+
+func fromJob(job *structs.Job) *Item {
+	return &Item{
+		Job:     job.Job,
+		Ident:   job.Ident,
+		Payload: job.Payload,
+		Options: &Options{
+			Priority:   uint32(job.Options.Priority),
+			Pipeline:   job.Options.Pipeline,
+			Delay:      int32(job.Options.Delay),
+			Attempts:   int32(job.Options.Attempts),
+			RetryDelay: int32(job.Options.RetryDelay),
+			Timeout:    int32(job.Options.Timeout),
+		},
+	}
 }
 
 // pack job metadata into headers

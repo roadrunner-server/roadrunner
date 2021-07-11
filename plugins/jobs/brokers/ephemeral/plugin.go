@@ -4,6 +4,7 @@ import (
 	"github.com/spiral/roadrunner/v2/common/jobs"
 	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
 	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
@@ -28,6 +29,10 @@ func (p *Plugin) Name() string {
 
 func (p *Plugin) Available() {}
 
-func (p *Plugin) JobsConstruct(configKey string, q priorityqueue.Queue) (jobs.Consumer, error) {
-	return NewJobBroker(configKey, p.log, p.cfg, q)
+func (p *Plugin) JobsConstruct(configKey string, pq priorityqueue.Queue) (jobs.Consumer, error) {
+	return NewJobBroker(configKey, p.log, p.cfg, pq)
+}
+
+func (p *Plugin) FromPipeline(pipeline *pipeline.Pipeline, pq priorityqueue.Queue) (jobs.Consumer, error) {
+	return FromPipeline(pipeline, pq)
 }
