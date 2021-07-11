@@ -174,7 +174,7 @@ func pack(id string, j *Item) (amqp.Table, error) {
 
 // unpack restores jobs.Options
 func unpack(d amqp.Delivery) (id string, j *Item, err error) {
-	j = &Item{Payload: string(d.Body), Options: &Options{}}
+	j = &Item{Payload: utils.AsString(d.Body), Options: &Options{}}
 
 	if _, ok := d.Headers[rrID].(string); !ok {
 		return "", nil, fmt.Errorf("missing header `%s`", rrID)
