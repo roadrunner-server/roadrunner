@@ -9,7 +9,6 @@ server:
 amqp:
   addr: amqp://guest:guest@localhost:5672/
 
-
   # beanstalk configuration
 beanstalk:
   addr: tcp://localhost:11300

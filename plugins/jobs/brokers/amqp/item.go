@@ -1,7 +1,6 @@
 package amqp
 
 import (
-	"fmt"
 	"time"
 
 	json "github.com/json-iterator/go"
@@ -23,13 +22,13 @@ const (
 
 func FromDelivery(d amqp.Delivery) (*Item, error) {
 	const op = errors.Op("from_delivery_convert")
-	id, item, err := unpack(d)
+	item, err := unpack(d)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
 	return &Item{
 		Job:      item.Job,
-		Ident:    id,
+		Ident:    item.Ident,
 		Payload:  item.Payload,
 		Headers:  item.Headers,
 		Options:  item.Options,
@@ -173,15 +172,17 @@ func pack(id string, j *Item) (amqp.Table, error) {
 }
 
 // unpack restores jobs.Options
-func unpack(d amqp.Delivery) (id string, j *Item, err error) {
-	j = &Item{Payload: utils.AsString(d.Body), Options: &Options{}}
+func unpack(d amqp.Delivery) (*Item, error) {
+	j := &Item{Payload: utils.AsString(d.Body), Options: &Options{}}
 
 	if _, ok := d.Headers[rrID].(string); !ok {
-		return "", nil, fmt.Errorf("missing header `%s`", rrID)
+		return nil, errors.E(errors.Errorf("missing header `%s`", rrID))
 	}
 
+	j.Ident = d.Headers[rrID].(string)
+
 	if _, ok := d.Headers[rrJob].(string); !ok {
-		return "", nil, fmt.Errorf("missing header `%s`", rrJob)
+		return nil, errors.E(errors.Errorf("missing header `%s`", rrJob))
 	}
 
 	j.Job = d.Headers[rrJob].(string)
@@ -193,7 +194,7 @@ func unpack(d amqp.Delivery) (id string, j *Item, err error) {
 	if h, ok := d.Headers[rrHeaders].([]byte); ok {
 		err := json.Unmarshal(h, &j.Headers)
 		if err != nil {
-			return "", nil, err
+			return nil, err
 		}
 	}
 
@@ -209,5 +210,5 @@ func unpack(d amqp.Delivery) (id string, j *Item, err error) {
 		j.Options.RetryDelay = d.Headers[rrRetryDelay].(int32)
 	}
 
-	return d.Headers[rrID].(string), j, nil
+	return j, nil
 }
