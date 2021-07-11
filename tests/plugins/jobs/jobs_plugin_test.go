@@ -84,7 +84,7 @@ func TestJobsInit(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second * 120)
+	time.Sleep(time.Second * 1200)
 
 	stopCh <- struct{}{}
 

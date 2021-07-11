@@ -11,7 +11,7 @@ type rpc struct {
 // WorkerList contains list of workers.
 type WorkerList struct {
 	// Workers is list of workers.
-	Workers []process.State `json:"workers"`
+	Workers []*process.State `json:"workers"`
 }
 
 // List all resettable services.

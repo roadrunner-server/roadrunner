@@ -23,6 +23,9 @@ sqs:
   declare:
     MessageRetentionPeriod: 86400
 
+logs:
+  level: debug
+  mode: development
 
 jobs:
   # num logical cores by default
@@ -65,7 +68,7 @@ jobs:
     test-2-amqp:
       driver: amqp
       priority: 2
-      pipeline_size: 1000
+      pipeline_size: 100000
       queue: test-2-queue
       exchange: default
       exchange_type: direct
@@ -85,5 +88,5 @@ jobs:
       queue: default
 
   # list of pipelines to be consumed by the server, keep empty if you want to start consuming manually
-  consume: [ "test-local", "test-local-2", "test-local-3", "test-1" ]
+  consume: [ "test-local", "test-local-2", "test-local-3", "test-1", "test-2-amqp" ]
 

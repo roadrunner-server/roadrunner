@@ -1,7 +1,7 @@
 package jobs
 
 import (
-	"github.com/spiral/roadrunner/v2/pkg/priorityqueue"
+	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/structs"
 )

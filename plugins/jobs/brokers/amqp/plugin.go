@@ -2,7 +2,7 @@ package amqp
 
 import (
 	"github.com/spiral/roadrunner/v2/common/jobs"
-	"github.com/spiral/roadrunner/v2/pkg/priorityqueue"
+	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
@@ -25,6 +25,8 @@ func (p *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
 func (p *Plugin) Name() string {
 	return pluginName
 }
+
+func (p *Plugin) Available() {}
 
 func (p *Plugin) JobsConstruct(configKey string, pq priorityqueue.Queue) (jobs.Consumer, error) {
 	return NewAMQPConsumer(configKey, p.log, p.cfg, pq)

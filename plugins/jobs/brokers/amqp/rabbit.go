@@ -59,7 +59,7 @@ func (j *JobsConsumer) initRabbitMQ() error {
 		return errors.E(op, err)
 	}
 
-	return nil
+	return channel.Close()
 }
 
 func (j *JobsConsumer) listener(deliv <-chan amqp.Delivery) {

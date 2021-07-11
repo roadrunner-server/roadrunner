@@ -19,7 +19,7 @@ func (p *Plugin) Init() error {
 }
 
 // Workers provides BaseProcess slice with workers for the requested plugin
-func (p *Plugin) Workers(name string) []process.State {
+func (p *Plugin) Workers(name string) []*process.State {
 	svc, ok := p.withWorkers[name]
 	if !ok {
 		return nil
