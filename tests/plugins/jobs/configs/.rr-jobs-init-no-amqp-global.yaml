@@ -6,25 +6,8 @@ server:
   relay: "pipes"
   relay_timeout: "20s"
 
-amqp:
-  addr: amqp://guest:guest@localhost:5672/
-
-  # beanstalk configuration
-beanstalk:
-  addr: tcp://localhost:11300
-
-  # amazon sqs configuration
-sqs:
-  key: api-key
-  secret: api-secret
-  region: us-west-1
-  endpoint: http://localhost:9324
-  declare:
-    MessageRetentionPeriod: 86400
-
 logs:
-  level: info
-  encoding: console
+  level: error
   mode: development
 
 jobs:

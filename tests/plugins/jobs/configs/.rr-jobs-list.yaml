@@ -23,8 +23,7 @@ sqs:
     MessageRetentionPeriod: 86400
 
 logs:
-  level: info
-  encoding: console
+  level: debug
   mode: development
 
 jobs:

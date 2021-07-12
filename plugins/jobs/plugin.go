@@ -3,9 +3,7 @@ package jobs
 import (
 	"context"
 	"fmt"
-	"runtime"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	endure "github.com/spiral/endure/pkg/container"
@@ -100,23 +98,6 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 func (p *Plugin) Serve() chan error { //nolint:gocognit
 	errCh := make(chan error, 1)
 	const op = errors.Op("jobs_plugin_serve")
-
-	// THIS IS TEST HELPERS, SHOULD BE DELETED IN THE RELEASES !!!!!!!!!!!!!!!!!!!!!!!! <-----------------------------------------------------
-	var rate uint64
-	go func() {
-		tt := time.NewTicker(time.Second * 1)
-		for { //nolint:gosimple
-			select {
-			case <-tt.C:
-				fmt.Printf("---> rate is: %d\n", atomic.LoadUint64(&rate))
-				fmt.Printf("---> goroutines: %d\n", runtime.NumGoroutine())
-				fmt.Printf("---> curr len: %d\n", p.queue.Len())
-				atomic.StoreUint64(&rate, 0)
-			}
-		}
-	}()
-
-	// THIS IS TEST HELPERS, SHOULD BE DELETED IN THE RELEASES !!!!!!!!!!!!!!!!!!!!!!!! <-----------------------------------------------------
 
 	// register initial pipelines
 	p.pipelines.Range(func(key, value interface{}) bool {
@@ -234,9 +215,6 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 						}
 						p.RUnlock()
 
-						// TEST HELPER, SHOULD BE DELETED IN THE RELEASE <-----------------------------------------------------
-						atomic.AddUint64(&rate, 1)
-
 						errAck := job.Ack()
 						if errAck != nil {
 							p.log.Error("acknowledge failed", "error", errAck)
@@ -269,7 +247,7 @@ func (p *Plugin) Stop() error {
 		}
 	}()
 
-	// just wait pollers for 2 seconds before exit
+	// just wait pollers for 5 seconds before exit
 	time.Sleep(time.Second * 5)
 
 	return nil
@@ -469,6 +447,10 @@ func (p *Plugin) Destroy(pp string) error {
 	if !ok {
 		return errors.E(op, errors.Errorf("consumer not registered for the requested driver: %s", ppl.Driver()))
 	}
+
+	// delete consumer
+	delete(p.consumers, ppl.Name())
+	p.pipelines.Delete(pp)
 
 	return d.Stop()
 }

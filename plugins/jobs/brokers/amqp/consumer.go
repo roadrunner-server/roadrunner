@@ -422,6 +422,15 @@ func (j *JobsConsumer) Resume(p string) {
 
 func (j *JobsConsumer) Stop() error {
 	j.stopCh <- struct{}{}
+
+	pipe := j.pipeline.Load().(*pipeline.Pipeline)
+	j.eh.Push(events.JobEvent{
+		Event:    events.EventPipeStopped,
+		Driver:   pipe.Driver(),
+		Pipeline: pipe.Name(),
+		Start:    time.Now(),
+		Elapsed:  0,
+	})
 	return nil
 }
 

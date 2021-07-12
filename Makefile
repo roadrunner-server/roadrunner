@@ -37,6 +37,7 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/broadcast_plugin.out -covermode=atomic ./tests/plugins/broadcast
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/ws_plugin.out -covermode=atomic ./tests/plugins/websockets
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/ws_origin.out -covermode=atomic ./plugins/websockets
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage/jobs_core.out -covermode=atomic ./tests/plugins/jobs
 	cat ./coverage/*.out > ./coverage/summary.out
 	docker-compose -f tests/env/docker-compose.yaml down
 
@@ -71,6 +72,7 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./tests/plugins/broadcast
 	go test -v -race -tags=debug ./tests/plugins/websockets
 	go test -v -race -tags=debug ./plugins/websockets
+	go test -v -race -tags=debug ./tests/plugins/jobs
 	docker-compose -f tests/env/docker-compose.yaml down
 
 testGo1.17beta1: ## Run application tests
@@ -82,9 +84,10 @@ testGo1.17beta1: ## Run application tests
 	go1.17beta1 test -v -race -tags=debug ./pkg/worker_watcher
 	go1.17beta1 test -v -race -tags=debug ./pkg/bst
 	go1.17beta1 test -v -race -tags=debug ./pkg/priorityqueue
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/http
 	go1.17beta1 test -v -race -tags=debug ./plugins/http/config
 	go1.17beta1 test -v -race -tags=debug ./plugins/server
+	go1.17beta1 test -v -race -tags=debug ./plugins/websockets
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/http
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/informer
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/reload
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/server
@@ -101,5 +104,5 @@ testGo1.17beta1: ## Run application tests
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/kv
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/websockets
 	go1.17beta1 test -v -race -tags=debug ./tests/plugins/broadcast
-	go1.17beta1 test -v -race -tags=debug ./plugins/websockets
+	go1.17beta1 test -v -race -tags=debug ./tests/plugins/jobs
 	docker-compose -f tests/env/docker-compose.yaml down
