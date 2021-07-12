@@ -18,8 +18,13 @@ message MaintenanceRequest {
     repeated string pipelines = 1;
 }
 
+// some endpoints receives nothing
 // all endpoints returns nothing
-message EmptyResponse {}
+message Empty {}
+
+message List {
+    repeated string pipelines = 1;
+}
 
 message Job {
     string job = 1;

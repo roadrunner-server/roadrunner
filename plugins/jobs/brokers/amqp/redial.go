@@ -2,9 +2,12 @@ package amqp
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/pkg/events"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
 	"github.com/streadway/amqp"
 )
 
@@ -21,6 +24,17 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 				}
 
 				j.Lock()
+
+				t := time.Now()
+				pipe := j.pipeline.Load().(*pipeline.Pipeline)
+				j.eh.Push(events.JobEvent{
+					Event:    events.EventPipeError,
+					Pipeline: pipe.Name(),
+					Driver:   pipe.Driver(),
+					Error:    err,
+					Start:    time.Now(),
+					Elapsed:  0,
+				})
 
 				j.log.Error("connection closed, reconnecting", "error", err)
 				expb := backoff.NewExponentialBackOff()
@@ -84,6 +98,14 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 					j.log.Error("backoff failed", "error", retryErr)
 					return
 				}
+
+				j.eh.Push(events.JobEvent{
+					Event:    events.EventPipeActive,
+					Pipeline: pipe.Name(),
+					Driver:   pipe.Driver(),
+					Start:    t,
+					Elapsed:  time.Since(t),
+				})
 
 				j.Unlock()
 

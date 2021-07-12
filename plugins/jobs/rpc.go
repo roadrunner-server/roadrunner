@@ -26,7 +26,7 @@ List of the RPC methods:
 7. Stat - jobs statistic
 */
 
-func (r *rpc) Push(j *jobsv1beta.PushRequest, _ *jobsv1beta.EmptyResponse) error {
+func (r *rpc) Push(j *jobsv1beta.PushRequest, _ *jobsv1beta.Empty) error {
 	const op = errors.Op("jobs_rpc_push")
 
 	// convert transport entity into domain
@@ -44,7 +44,7 @@ func (r *rpc) Push(j *jobsv1beta.PushRequest, _ *jobsv1beta.EmptyResponse) error
 	return nil
 }
 
-func (r *rpc) PushBatch(j *jobsv1beta.PushBatchRequest, _ *jobsv1beta.EmptyResponse) error {
+func (r *rpc) PushBatch(j *jobsv1beta.PushBatchRequest, _ *jobsv1beta.Empty) error {
 	const op = errors.Op("jobs_rpc_push")
 
 	l := len(j.GetJobs())
@@ -65,7 +65,7 @@ func (r *rpc) PushBatch(j *jobsv1beta.PushBatchRequest, _ *jobsv1beta.EmptyRespo
 	return nil
 }
 
-func (r *rpc) Pause(req *jobsv1beta.MaintenanceRequest, _ *jobsv1beta.EmptyResponse) error {
+func (r *rpc) Pause(req *jobsv1beta.MaintenanceRequest, _ *jobsv1beta.Empty) error {
 	pipelines := make([]string, len(req.GetPipelines()))
 
 	for i := 0; i < len(pipelines); i++ {
@@ -76,7 +76,7 @@ func (r *rpc) Pause(req *jobsv1beta.MaintenanceRequest, _ *jobsv1beta.EmptyRespo
 	return nil
 }
 
-func (r *rpc) Resume(req *jobsv1beta.MaintenanceRequest, _ *jobsv1beta.EmptyResponse) error {
+func (r *rpc) Resume(req *jobsv1beta.MaintenanceRequest, _ *jobsv1beta.Empty) error {
 	pipelines := make([]string, len(req.GetPipelines()))
 
 	for i := 0; i < len(pipelines); i++ {
@@ -84,6 +84,11 @@ func (r *rpc) Resume(req *jobsv1beta.MaintenanceRequest, _ *jobsv1beta.EmptyResp
 	}
 
 	r.p.Resume(pipelines)
+	return nil
+}
+
+func (r *rpc) List(_ *jobsv1beta.Empty, resp *jobsv1beta.List) error {
+	resp.Pipelines = r.p.List()
 	return nil
 }
 

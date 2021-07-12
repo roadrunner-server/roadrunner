@@ -20,14 +20,13 @@ const (
 	// EventJobError thrown on all job related errors. See JobError as context.
 	EventJobError
 
-	// EventPipeConsume when pipeline pipelines has been requested.
-	EventPipeConsume
+	// EventPipeRun when pipeline pipelines has been requested.
+	EventPipeRun
+
+	EventInitialized
 
 	// EventPipeActive when pipeline has started.
 	EventPipeActive
-
-	// EventPipeStop when pipeline has begun stopping.
-	EventPipeStop
 
 	// EventPipeStopped when pipeline has been stopped.
 	EventPipeStopped
@@ -35,8 +34,8 @@ const (
 	// EventPipeError when pipeline specific error happen.
 	EventPipeError
 
-	// EventBrokerReady thrown when broken is ready to accept/serve tasks.
-	EventBrokerReady
+	// EventDriverReady thrown when broken is ready to accept/serve tasks.
+	EventDriverReady
 )
 
 type J int64
@@ -53,18 +52,18 @@ func (ev J) String() string {
 		return "EventJobOK"
 	case EventJobError:
 		return "EventJobError"
-	case EventPipeConsume:
-		return "EventPipeConsume"
+	case EventPipeRun:
+		return "EventPipeRun"
+	case EventInitialized:
+		return "EventInitialized"
 	case EventPipeActive:
 		return "EventPipeActive"
-	case EventPipeStop:
-		return "EventPipeStop"
 	case EventPipeStopped:
 		return "EventPipeStopped"
 	case EventPipeError:
 		return "EventPipeError"
-	case EventBrokerReady:
-		return "EventBrokerReady"
+	case EventDriverReady:
+		return "EventDriverReady"
 	}
 	return UnknownEventType
 }
@@ -75,8 +74,14 @@ type JobEvent struct {
 	// String is job id.
 	ID string
 
-	// Job is failed job.
-	Job interface{} // this is *jobs.Job, but interface used to avoid package import
+	// Pipeline name
+	Pipeline string
+
+	// Associated driver name (amqp, ephemeral, etc)
+	Driver string
+
+	// Error for the jobs/pipes errors
+	Error error
 
 	// event timings
 	Start   time.Time

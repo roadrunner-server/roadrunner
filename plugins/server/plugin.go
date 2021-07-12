@@ -266,14 +266,3 @@ func (server *Plugin) collectWorkerEvents(event interface{}) {
 		}
 	}
 }
-
-func (server *Plugin) collectJobsEvents(event interface{}) { //nolint:unused
-	if jev, ok := event.(events.JobEvent); ok {
-		switch jev.Event {
-		case events.EventJobStart:
-			server.log.Info("Job started", "start", jev.Start, "elapsed", jev.Elapsed)
-		case events.EventJobOK:
-			server.log.Info("Job OK", "start", jev.Start, "elapsed", jev.Elapsed)
-		}
-	}
-}

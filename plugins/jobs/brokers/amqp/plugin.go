@@ -2,6 +2,7 @@ package amqp
 
 import (
 	"github.com/spiral/roadrunner/v2/common/jobs"
+	"github.com/spiral/roadrunner/v2/pkg/events"
 	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
@@ -29,11 +30,11 @@ func (p *Plugin) Name() string {
 
 func (p *Plugin) Available() {}
 
-func (p *Plugin) JobsConstruct(configKey string, pq priorityqueue.Queue) (jobs.Consumer, error) {
-	return NewAMQPConsumer(configKey, p.log, p.cfg, pq)
+func (p *Plugin) JobsConstruct(configKey string, e events.Handler, pq priorityqueue.Queue) (jobs.Consumer, error) {
+	return NewAMQPConsumer(configKey, p.log, p.cfg, e, pq)
 }
 
 // FromPipeline constructs AMQP driver from pipeline
-func (p *Plugin) FromPipeline(pipe *pipeline.Pipeline, pq priorityqueue.Queue) (jobs.Consumer, error) {
-	return FromPipeline(pipe, p.log, p.cfg, pq)
+func (p *Plugin) FromPipeline(pipe *pipeline.Pipeline, e events.Handler, pq priorityqueue.Queue) (jobs.Consumer, error) {
+	return FromPipeline(pipe, p.log, p.cfg, e, pq)
 }
