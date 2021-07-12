@@ -279,14 +279,7 @@ func (p *Plugin) Reset() error {
 	p.workersPool = nil
 
 	var err error
-	p.workersPool, err = p.server.NewWorkerPool(context.Background(), &pool.Config{
-		Debug:           p.cfg.Pool.Debug,
-		NumWorkers:      p.cfg.Pool.NumWorkers,
-		MaxJobs:         p.cfg.Pool.MaxJobs,
-		AllocateTimeout: p.cfg.Pool.AllocateTimeout,
-		DestroyTimeout:  p.cfg.Pool.DestroyTimeout,
-		Supervisor:      p.cfg.Pool.Supervisor,
-	}, map[string]string{RrJobs: "true"})
+	p.workersPool, err = p.server.NewWorkerPool(context.Background(), p.cfg.Pool, map[string]string{RrJobs: "true"})
 	if err != nil {
 		return errors.E(op, err)
 	}
