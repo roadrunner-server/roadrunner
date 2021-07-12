@@ -35,5 +35,5 @@ func (p *Plugin) JobsConstruct(configKey string, pq priorityqueue.Queue) (jobs.C
 
 // FromPipeline constructs AMQP driver from pipeline
 func (p *Plugin) FromPipeline(pipe *pipeline.Pipeline, pq priorityqueue.Queue) (jobs.Consumer, error) {
-	return FromPipeline(pipe, pq)
+	return FromPipeline(pipe, p.log, p.cfg, pq)
 }

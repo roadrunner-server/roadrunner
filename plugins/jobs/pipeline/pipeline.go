@@ -44,6 +44,17 @@ func (p Pipeline) String(name string, d string) string {
 	return d
 }
 
+// Int must return option value as string or return default value.
+func (p Pipeline) Int(name string, d int) int {
+	if value, ok := p[name]; ok {
+		if i, ok := value.(int); ok {
+			return i
+		}
+	}
+
+	return d
+}
+
 // Priority returns default pipeline priority
 func (p Pipeline) Priority() uint64 {
 	if value, ok := p[priority]; ok {

@@ -12,6 +12,10 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
+const (
+	pipelineSize string = "pipeline_size"
+)
+
 type Config struct {
 	PipelineSize uint64 `mapstructure:"pipeline_size"`
 }
@@ -26,12 +30,12 @@ type JobBroker struct {
 	stopCh chan struct{}
 }
 
-func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, q priorityqueue.Queue) (*JobBroker, error) {
+func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, pq priorityqueue.Queue) (*JobBroker, error) {
 	const op = errors.Op("new_ephemeral_pipeline")
 
 	jb := &JobBroker{
 		log:    log,
-		pq:     q,
+		pq:     pq,
 		stopCh: make(chan struct{}, 1),
 	}
 
@@ -53,8 +57,22 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, q 
 	return jb, nil
 }
 
-func FromPipeline(_ *pipeline.Pipeline, _ priorityqueue.Queue) (*JobBroker, error) {
-	panic("not implemented")
+func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, pq priorityqueue.Queue) (*JobBroker, error) {
+	jb := &JobBroker{
+		log:    log,
+		pq:     pq,
+		stopCh: make(chan struct{}, 1),
+	}
+
+	jb.cfg.PipelineSize = uint64(pipeline.Int(pipelineSize, 100_000))
+
+	// initialize a local queue
+	jb.localQueue = make(chan *Item, jb.cfg.PipelineSize)
+
+	// consume from the queue
+	go jb.consume()
+
+	return jb, nil
 }
 
 func (j *JobBroker) Push(job *structs.Job) error {

@@ -39,7 +39,7 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 					// re-init connection
 					errInit := j.initRabbitMQ()
 					if errInit != nil {
-						j.log.Error("error while redialing", "error", errInit)
+						j.log.Error("rabbitmq dial", "error", errInit)
 						return errInit
 					}
 
@@ -74,7 +74,7 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 					// restart listener
 					j.listener(deliv)
 
-					j.log.Info("queues and subscribers redeclare succeed")
+					j.log.Info("queues and subscribers redeclared successfully")
 					return nil
 				}
 

@@ -29,10 +29,12 @@ func (p *Plugin) Name() string {
 
 func (p *Plugin) Available() {}
 
+// JobsConstruct creates new ephemeral consumer from the configuration
 func (p *Plugin) JobsConstruct(configKey string, pq priorityqueue.Queue) (jobs.Consumer, error) {
 	return NewJobBroker(configKey, p.log, p.cfg, pq)
 }
 
+// FromPipeline creates new ephemeral consumer from the provided pipeline
 func (p *Plugin) FromPipeline(pipeline *pipeline.Pipeline, pq priorityqueue.Queue) (jobs.Consumer, error) {
-	return FromPipeline(pipeline, pq)
+	return FromPipeline(pipeline, p.log, pq)
 }
