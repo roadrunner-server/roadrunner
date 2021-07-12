@@ -1,7 +1,6 @@
 package amqp
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
@@ -45,7 +44,7 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 					var dialErr error
 					j.conn, dialErr = amqp.Dial(j.connStr)
 					if dialErr != nil {
-						return fmt.Errorf("fail to dial server endpoint: %v", dialErr)
+						return errors.E(op, dialErr)
 					}
 
 					j.log.Info("rabbitmq dial succeed. trying to redeclare queues and subscribers")
