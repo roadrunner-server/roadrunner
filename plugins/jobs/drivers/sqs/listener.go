@@ -40,7 +40,6 @@ func (j *JobConsumer) listen() {
 					})
 					if errD != nil {
 						j.log.Error("message unpack, failed to delete the message from the queue", "error", err)
-						continue
 					}
 
 					j.log.Error("message unpack", "error", err)
