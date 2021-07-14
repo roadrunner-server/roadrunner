@@ -13,7 +13,7 @@ type Vec struct {
 	workers chan worker.BaseProcess
 }
 
-func NewVector(initialNumOfWorkers uint64) Vector {
+func NewVector(initialNumOfWorkers uint64) *Vec {
 	vec := &Vec{
 		destroy: 0,
 		workers: make(chan worker.BaseProcess, initialNumOfWorkers),
