@@ -6,6 +6,7 @@ v2.3.2 (14.07.2021)
 
 ## 🩹 Fixes:
 
+- 🐛 Fix: Do not call the container's Stop method after the container stopped by an error.
 - 🐛 Fix: Bug with ttl incorrectly handled by the worker [PR](https://github.com/spiral/roadrunner/pull/749)
 - 🐛 Fix: Add `RR_BROADCAST_PATH` to the `websockets` plugin [PR](https://github.com/spiral/roadrunner/pull/749)
 
