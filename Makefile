@@ -50,7 +50,7 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./pkg/worker_watcher
 	go test -v -race -tags=debug ./pkg/bst
 	go test -v -race -tags=debug ./pkg/priority_queue
-	go test -v -race -tags=debug ./plugins/jobs/structs
+	go test -v -race -tags=debug ./plugins/jobs/job
 	go test -v -race -tags=debug ./plugins/jobs/pipeline
 	go test -v -race -tags=debug ./plugins/http/config
 	go test -v -race -tags=debug ./plugins/server
@@ -75,34 +75,36 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./tests/plugins/jobs
 	docker-compose -f tests/env/docker-compose.yaml down
 
-testGo1.17beta1: ## Run application tests
+testGo1.17rc1: ## Run application tests
 	docker-compose -f tests/env/docker-compose.yaml up -d
-	go1.17beta1 test -v -race -tags=debug ./pkg/transport/pipe
-	go1.17beta1 test -v -race -tags=debug ./pkg/transport/socket
-	go1.17beta1 test -v -race -tags=debug ./pkg/pool
-	go1.17beta1 test -v -race -tags=debug ./pkg/worker
-	go1.17beta1 test -v -race -tags=debug ./pkg/worker_watcher
-	go1.17beta1 test -v -race -tags=debug ./pkg/bst
-	go1.17beta1 test -v -race -tags=debug ./pkg/priorityqueue
-	go1.17beta1 test -v -race -tags=debug ./plugins/http/config
-	go1.17beta1 test -v -race -tags=debug ./plugins/server
-	go1.17beta1 test -v -race -tags=debug ./plugins/websockets
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/http
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/informer
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/reload
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/server
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/service
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/status
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/config
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/gzip
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/headers
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/logger
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/metrics
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/redis
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/resetter
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/rpc
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/kv
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/websockets
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/broadcast
-	go1.17beta1 test -v -race -tags=debug ./tests/plugins/jobs
+	go1.17rc1 test -v -race -tags=debug ./pkg/transport/pipe
+	go1.17rc1 test -v -race -tags=debug ./pkg/transport/socket
+	go1.17rc1 test -v -race -tags=debug ./pkg/pool
+	go1.17rc1 test -v -race -tags=debug ./pkg/worker
+	go1.17rc1 test -v -race -tags=debug ./pkg/worker_watcher
+	go1.17rc1 test -v -race -tags=debug ./pkg/bst
+	go1.17rc1 test -v -race -tags=debug ./pkg/priority_queue
+	go1.17rc1 test -v -race -tags=debug ./plugins/jobs/job
+	go1.17rc1 test -v -race -tags=debug ./plugins/jobs/pipeline
+	go1.17rc1 test -v -race -tags=debug ./plugins/http/config
+	go1.17rc1 test -v -race -tags=debug ./plugins/server
+	go1.17rc1 test -v -race -tags=debug ./plugins/websockets
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/http
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/informer
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/reload
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/server
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/service
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/status
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/config
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/gzip
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/headers
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/logger
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/metrics
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/redis
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/resetter
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/rpc
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/kv
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/websockets
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/broadcast
+	go1.17rc1 test -v -race -tags=debug ./tests/plugins/jobs
 	docker-compose -f tests/env/docker-compose.yaml down

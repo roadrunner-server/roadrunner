@@ -32,7 +32,7 @@ func (j *JobConsumer) listen() {
 
 			for i := 0; i < len(message.Messages); i++ {
 				m := message.Messages[i]
-				item, attempt, err := j.unpack(&m)
+				item, attempt, err := unpack(&m, j.outputQ.QueueUrl, j.client)
 				if err != nil {
 					_, errD := j.client.DeleteMessage(context.Background(), &sqs.DeleteMessageInput{
 						QueueUrl:      j.outputQ.QueueUrl,

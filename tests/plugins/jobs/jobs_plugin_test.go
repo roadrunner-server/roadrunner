@@ -97,7 +97,7 @@ func TestTEMP_INTI(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second * 30000)
+	time.Sleep(time.Second * 3)
 	stopCh <- struct{}{}
 	wg.Wait()
 }

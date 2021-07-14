@@ -20,7 +20,7 @@ while ($req = $psr7->waitRequest()) {
     try {
         $resp = new \Nyholm\Psr7\Response();
         $resp->getBody()->write(str_repeat("hello world", 1000));
-        
+
         $psr7->respond($resp);
     } catch (\Throwable $e) {
         $psr7->getWorker()->error((string)$e);
