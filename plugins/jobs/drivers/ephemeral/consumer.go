@@ -152,7 +152,7 @@ func (j *JobBroker) Pause(pipeline string) {
 func (j *JobBroker) Resume(pipeline string) {
 	if q, ok := j.pipeline.Load(pipeline); ok {
 		if q == false {
-			// mark pipeline as turned off
+			// mark pipeline as turned on
 			j.pipeline.Store(pipeline, true)
 		}
 	}
@@ -163,18 +163,6 @@ func (j *JobBroker) Resume(pipeline string) {
 		Start:    time.Now(),
 		Elapsed:  0,
 	})
-}
-
-func (j *JobBroker) List() []string {
-	out := make([]string, 0, 2)
-
-	j.pipeline.Range(func(key, value interface{}) bool {
-		pipe := key.(string)
-		out = append(out, pipe)
-		return true
-	})
-
-	return out
 }
 
 // Run is no-op for the ephemeral

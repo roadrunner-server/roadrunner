@@ -142,20 +142,12 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 					errCh <- errors.E(op, err)
 					return false
 				}
-
-				p.events.Push(events.JobEvent{
-					Event:    events.EventPipeRun,
-					Pipeline: pipe.Name(),
-					Driver:   pipe.Driver(),
-					Start:    t,
-					Elapsed:  t.Sub(t),
-				})
-
 				return true
 			}
 
 			return true
 		}
+
 		p.events.Push(events.JobEvent{
 			Event:    events.EventDriverReady,
 			Pipeline: pipe.Name(),
