@@ -9,7 +9,9 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/pkg/transport/pipe"
+	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var cfgSupervised = Config{
@@ -120,6 +122,58 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 	time.Sleep(time.Second * 1)
 	// should be new worker with new pid
 	assert.NotEqual(t, pid, p.Workers()[0].Pid())
+}
+
+func TestSupervisedPool_ExecTTL_WorkerRestarted(t *testing.T) {
+	var cfgExecTTL = Config{
+		NumWorkers: uint64(1),
+		Supervisor: &SupervisorConfig{
+			WatchTick: 1 * time.Second,
+			TTL:       5 * time.Second,
+		},
+	}
+	ctx := context.Background()
+	p, err := Initialize(
+		ctx,
+		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep-ttl.php") },
+		pipe.NewPipeFactory(),
+		cfgExecTTL,
+	)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, p)
+
+	pid := p.Workers()[0].Pid()
+
+	resp, err := p.Exec(payload.Payload{
+		Context: []byte(""),
+		Body:    []byte("foo"),
+	})
+
+	assert.NoError(t, err)
+	assert.Equal(t, string(resp.Body), "hello world")
+	assert.Empty(t, resp.Context)
+
+	time.Sleep(time.Second)
+	assert.NotEqual(t, pid, p.Workers()[0].Pid())
+	require.Equal(t, p.Workers()[0].State().Value(), worker.StateReady)
+	pid = p.Workers()[0].Pid()
+
+	resp, err = p.Exec(payload.Payload{
+		Context: []byte(""),
+		Body:    []byte("foo"),
+	})
+
+	assert.NoError(t, err)
+	assert.Equal(t, string(resp.Body), "hello world")
+	assert.Empty(t, resp.Context)
+
+	time.Sleep(time.Second)
+	// should be new worker with new pid
+	assert.NotEqual(t, pid, p.Workers()[0].Pid())
+	require.Equal(t, p.Workers()[0].State().Value(), worker.StateReady)
+
+	p.Destroy(context.Background())
 }
 
 func TestSupervisedPool_Idle(t *testing.T) {
