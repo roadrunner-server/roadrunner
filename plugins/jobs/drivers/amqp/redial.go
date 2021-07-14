@@ -108,18 +108,27 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 				j.Unlock()
 
 			case <-j.stopCh:
-				err := j.publishChan.Close()
-				if err != nil {
-					j.log.Error("publish channel close", "error", err)
+				if j.publishChan != nil {
+					err := j.publishChan.Close()
+					if err != nil {
+						j.log.Error("publish channel close", "error", err)
+					}
 				}
-				err = j.consumeChan.Close()
-				if err != nil {
-					j.log.Error("consume channel close", "error", err)
+
+				if j.consumeChan != nil {
+					err := j.consumeChan.Close()
+					if err != nil {
+						j.log.Error("consume channel close", "error", err)
+					}
 				}
-				err = j.conn.Close()
-				if err != nil {
-					j.log.Error("amqp connection close", "error", err)
+				if j.conn != nil {
+					err := j.conn.Close()
+					if err != nil {
+						j.log.Error("amqp connection close", "error", err)
+					}
 				}
+
+				return
 			}
 		}
 	}()

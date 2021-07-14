@@ -101,6 +101,7 @@ func NewSQSConsumer(configKey string, log logger.Logger, cfg cfgPlugin.Configure
 		sessionToken:      globalCfg.SessionToken,
 		secret:            globalCfg.Secret,
 		endpoint:          globalCfg.Endpoint,
+		pauseCh:           make(chan struct{}),
 	}
 
 	// PARSE CONFIGURATION -------
@@ -197,6 +198,7 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg cfgPlugin.Conf
 		sessionToken:      globalCfg.SessionToken,
 		secret:            globalCfg.Secret,
 		endpoint:          globalCfg.Endpoint,
+		pauseCh:           make(chan struct{}),
 	}
 
 	// PARSE CONFIGURATION -------
