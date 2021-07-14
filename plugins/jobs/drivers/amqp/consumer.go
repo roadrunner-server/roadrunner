@@ -43,7 +43,8 @@ type JobsConsumer struct {
 
 	delayCache map[string]struct{}
 
-	stopCh chan struct{}
+	listeners uint32
+	stopCh    chan struct{}
 }
 
 // NewAMQPConsumer initializes rabbitmq pipeline
@@ -336,6 +337,13 @@ func (j *JobsConsumer) Run(p *pipeline.Pipeline) error {
 	// run listener
 	j.listener(deliv)
 
+	j.eh.Push(events.JobEvent{
+		Event:    events.EventPipeRun,
+		Driver:   pipe.Driver(),
+		Pipeline: pipe.Name(),
+		Start:    time.Now(),
+	})
+
 	return nil
 }
 
@@ -344,6 +352,15 @@ func (j *JobsConsumer) Pause(p string) {
 	if pipe.Name() != p {
 		j.log.Error("no such pipeline", "requested pause on: ", p)
 	}
+
+	l := atomic.LoadUint32(&j.listeners)
+	// no active listeners
+	if l == 0 {
+		j.log.Warn("no active listeners, nothing to pause")
+		return
+	}
+
+	atomic.AddUint32(&j.listeners, ^uint32(0))
 
 	// protect connection (redial)
 	j.Lock()
@@ -355,8 +372,17 @@ func (j *JobsConsumer) Pause(p string) {
 		errCl := j.consumeChan.Close()
 		if errCl != nil {
 			j.log.Error("force close failed", "error", err)
+			return
 		}
+		return
 	}
+
+	j.eh.Push(events.JobEvent{
+		Event:    events.EventPipeStopped,
+		Driver:   pipe.Driver(),
+		Pipeline: pipe.Name(),
+		Start:    time.Now(),
+	})
 }
 
 func (j *JobsConsumer) Resume(p string) {
@@ -368,6 +394,13 @@ func (j *JobsConsumer) Resume(p string) {
 	// protect connection (redial)
 	j.Lock()
 	defer j.Unlock()
+
+	l := atomic.LoadUint32(&j.listeners)
+	// no active listeners
+	if l == 1 {
+		j.log.Warn("sqs listener already in the active state")
+		return
+	}
 
 	var err error
 	j.consumeChan, err = j.conn.Channel()
@@ -399,6 +432,13 @@ func (j *JobsConsumer) Resume(p string) {
 
 	// run listener
 	j.listener(deliv)
+
+	j.eh.Push(events.JobEvent{
+		Event:    events.EventPipeActive,
+		Driver:   pipe.Driver(),
+		Pipeline: pipe.Name(),
+		Start:    time.Now(),
+	})
 }
 
 func (j *JobsConsumer) Stop() error {
@@ -410,7 +450,6 @@ func (j *JobsConsumer) Stop() error {
 		Driver:   pipe.Driver(),
 		Pipeline: pipe.Name(),
 		Start:    time.Now(),
-		Elapsed:  0,
 	})
 	return nil
 }

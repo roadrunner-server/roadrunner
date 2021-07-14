@@ -66,6 +66,18 @@ func (p Pipeline) Bool(name string, d bool) bool {
 	return d
 }
 
+// Map must return nested map value or empty config.
+// Here might be sqs attributes or tags for example
+func (p Pipeline) Map(name string, out map[string]interface{}) {
+	if value, ok := p[name]; ok {
+		if m, ok := value.(map[string]interface{}); ok {
+			for k, v := range m {
+				out[k] = v
+			}
+		}
+	}
+}
+
 // Priority returns default pipeline priority
 func (p Pipeline) Priority() int64 {
 	if value, ok := p[priority]; ok {
