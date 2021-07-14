@@ -28,6 +28,9 @@ import (
 
 const (
 	PluginName string = "websockets"
+
+	RrMode          string = "RR_MODE"
+	RrBroadcastPath string = "RR_BROADCAST_PATH"
 )
 
 type Plugin struct {
@@ -113,7 +116,7 @@ func (p *Plugin) Serve() chan error {
 			AllocateTimeout: p.cfg.Pool.AllocateTimeout,
 			DestroyTimeout:  p.cfg.Pool.DestroyTimeout,
 			Supervisor:      p.cfg.Pool.Supervisor,
-		}, map[string]string{"RR_MODE": "http"})
+		}, map[string]string{RrMode: "http", RrBroadcastPath: p.cfg.Path})
 		if err != nil {
 			errCh <- err
 		}
@@ -176,7 +179,7 @@ func (p *Plugin) Middleware(next http.Handler) http.Handler {
 		val, err := p.accessValidator(r)
 		p.RUnlock()
 		if err != nil {
-			p.log.Error("validation error")
+			p.log.Error("access validation")
 			w.WriteHeader(400)
 			return
 		}
@@ -280,7 +283,7 @@ func (p *Plugin) Reset() error {
 		AllocateTimeout: p.cfg.Pool.AllocateTimeout,
 		DestroyTimeout:  p.cfg.Pool.DestroyTimeout,
 		Supervisor:      p.cfg.Pool.Supervisor,
-	}, map[string]string{"RR_MODE": "http"})
+	}, map[string]string{RrMode: "http", RrBroadcastPath: p.cfg.Path})
 	if err != nil {
 		return errors.E(op, err)
 	}

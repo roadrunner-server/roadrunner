@@ -121,7 +121,8 @@ func (sp *supervised) control() { //nolint:gocognit
 			worker.StateDestroyed,
 			worker.StateInactive,
 			worker.StateStopped,
-			worker.StateStopping:
+			worker.StateStopping,
+			worker.StateKilling:
 			continue
 		}
 
@@ -132,23 +133,40 @@ func (sp *supervised) control() { //nolint:gocognit
 		}
 
 		if sp.cfg.TTL != 0 && now.Sub(workers[i].Created()).Seconds() >= sp.cfg.TTL.Seconds() {
-			// SOFT termination. DO NOT STOP active workers
+			/*
+				worker at this point might be in the middle of request execution:
+
+				---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Push
+											 ^
+				                           TTL Reached, state - invalid                                                |
+																														-----> Worker Stopped here
+			*/
+
 			if workers[i].State().Value() != worker.StateWorking {
 				workers[i].State().Set(worker.StateInvalid)
 				_ = workers[i].Stop()
 			}
+			// just to double check
+			workers[i].State().Set(worker.StateInvalid)
 			sp.events.Push(events.PoolEvent{Event: events.EventTTL, Payload: workers[i]})
 			continue
 		}
 
 		if sp.cfg.MaxWorkerMemory != 0 && s.MemoryUsage >= sp.cfg.MaxWorkerMemory*MB {
-			// SOFT termination. DO NOT STOP active workers
+			/*
+				worker at this point might be in the middle of request execution:
+
+				---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Push
+											 ^
+				                           TTL Reached, state - invalid                                                |
+																														-----> Worker Stopped here
+			*/
+
 			if workers[i].State().Value() != worker.StateWorking {
 				workers[i].State().Set(worker.StateInvalid)
 				_ = workers[i].Stop()
 			}
-
-			// mark it as invalid, worker likely in the StateWorking, so, it will be killed after work will be done
+			// just to double check
 			workers[i].State().Set(worker.StateInvalid)
 			sp.events.Push(events.PoolEvent{Event: events.EventMaxMemory, Payload: workers[i]})
 			continue
@@ -190,11 +208,20 @@ func (sp *supervised) control() { //nolint:gocognit
 			// After the control check, res will be 5, idle is 1
 			// 5 - 1 = 4, more than 0, YOU ARE FIRED (removed). Done.
 			if int64(sp.cfg.IdleTTL.Seconds())-res <= 0 {
+				/*
+					worker at this point might be in the middle of request execution:
+
+					---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Push
+												 ^
+					                           TTL Reached, state - invalid                                                |
+																															-----> Worker Stopped here
+				*/
+
 				if workers[i].State().Value() != worker.StateWorking {
 					workers[i].State().Set(worker.StateInvalid)
 					_ = workers[i].Stop()
 				}
-
+				// just to double check
 				workers[i].State().Set(worker.StateInvalid)
 				sp.events.Push(events.PoolEvent{Event: events.EventIdleTTL, Payload: workers[i]})
 			}

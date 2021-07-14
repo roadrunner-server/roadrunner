@@ -60,6 +60,13 @@ func (tw *SyncWorkerImpl) Exec(p payload.Payload) (payload.Payload, error) {
 		return payload.Payload{}, errors.E(op, err)
 	}
 
+	// supervisor may set state of the worker during the work
+	// in this case we should not re-write the worker state
+	if tw.process.State().Value() != StateWorking {
+		tw.process.State().RegisterExec()
+		return rsp, nil
+	}
+
 	tw.process.State().Set(StateReady)
 	tw.process.State().RegisterExec()
 
