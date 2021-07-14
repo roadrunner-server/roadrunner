@@ -2,7 +2,7 @@ package jobs
 
 import (
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/plugins/jobs/structs"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	jobsv1beta "github.com/spiral/roadrunner/v2/proto/jobs/v1beta"
 )
@@ -49,7 +49,7 @@ func (r *rpc) PushBatch(j *jobsv1beta.PushBatchRequest, _ *jobsv1beta.Empty) err
 
 	l := len(j.GetJobs())
 
-	batch := make([]*structs.Job, l)
+	batch := make([]*job.Job, l)
 
 	for i := 0; i < l; i++ {
 		// convert transport entity into domain
@@ -93,19 +93,19 @@ func (r *rpc) List(_ *jobsv1beta.Empty, resp *jobsv1beta.List) error {
 }
 
 // from converts from transport entity to domain
-func (r *rpc) from(j *jobsv1beta.Job) *structs.Job {
+func (r *rpc) from(j *jobsv1beta.Job) *job.Job {
 	headers := map[string][]string{}
 
 	for k, v := range j.GetHeaders() {
 		headers[k] = v.GetValue()
 	}
 
-	jb := &structs.Job{
+	jb := &job.Job{
 		Job:     j.GetJob(),
 		Headers: headers,
 		Ident:   j.GetId(),
 		Payload: j.GetPayload(),
-		Options: &structs.Options{
+		Options: &job.Options{
 			Priority:   j.GetOptions().GetPriority(),
 			Pipeline:   j.GetOptions().GetPipeline(),
 			Delay:      j.GetOptions().GetDelay(),

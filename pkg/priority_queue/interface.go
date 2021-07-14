@@ -12,7 +12,7 @@ type Item interface {
 	ID() string
 
 	// Priority returns the Item's priority to sort
-	Priority() uint64
+	Priority() int64
 
 	// Body is the Item payload
 	Body() []byte

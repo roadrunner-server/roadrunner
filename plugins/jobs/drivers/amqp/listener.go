@@ -12,7 +12,7 @@ func (j *JobsConsumer) listener(deliv <-chan amqp.Delivery) {
 					return
 				}
 
-				d, err := fromDelivery(msg)
+				d, err := j.fromDelivery(msg)
 				if err != nil {
 					j.log.Error("amqp delivery convert", "error", err)
 					continue

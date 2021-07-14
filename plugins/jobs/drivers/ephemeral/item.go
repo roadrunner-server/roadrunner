@@ -4,11 +4,11 @@ import (
 	"time"
 
 	json "github.com/json-iterator/go"
-	"github.com/spiral/roadrunner/v2/plugins/jobs/structs"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/utils"
 )
 
-func From(job *structs.Job) *Item {
+func fromJob(job *job.Job) *Item {
 	return &Item{
 		Job:     job.Job,
 		Ident:   job.Ident,
@@ -27,13 +27,13 @@ type Item struct {
 	Job string `json:"job"`
 
 	// Ident is unique identifier of the job, should be provided from outside
-	Ident string
+	Ident string `json:"id"`
 
 	// Payload is string data (usually JSON) passed to Job broker.
 	Payload string `json:"payload"`
 
 	// Headers with key-values pairs
-	Headers map[string][]string
+	Headers map[string][]string `json:"headers"`
 
 	// Options contains set of PipelineOptions specific to job execution. Can be empty.
 	Options *Options `json:"options,omitempty"`
@@ -43,16 +43,16 @@ type Item struct {
 type Options struct {
 	// Priority is job priority, default - 10
 	// pointer to distinguish 0 as a priority and nil as priority not set
-	Priority uint64 `json:"priority"`
+	Priority int64 `json:"priority"`
 
 	// Pipeline manually specified pipeline.
 	Pipeline string `json:"pipeline,omitempty"`
 
 	// Delay defines time duration to delay execution for. Defaults to none.
-	Delay uint64 `json:"delay,omitempty"`
+	Delay int64 `json:"delay,omitempty"`
 
-	// Reserve defines for how broker should wait until treating job are failed. Defaults to 30 min.
-	Timeout uint64 `json:"timeout,omitempty"`
+	// Timeout defines for how broker should wait until treating job are failed. Defaults to 30 min.
+	Timeout int64 `json:"timeout,omitempty"`
 }
 
 // DelayDuration returns delay duration in a form of time.Duration.
@@ -73,7 +73,7 @@ func (j *Item) ID() string {
 	return j.Ident
 }
 
-func (j *Item) Priority() uint64 {
+func (j *Item) Priority() int64 {
 	return j.Options.Priority
 }
 
@@ -89,7 +89,7 @@ func (j *Item) Context() ([]byte, error) {
 			ID       string              `json:"id"`
 			Job      string              `json:"job"`
 			Headers  map[string][]string `json:"headers"`
-			Timeout  uint64              `json:"timeout"`
+			Timeout  int64               `json:"timeout"`
 			Pipeline string              `json:"pipeline"`
 		}{ID: j.Ident, Job: j.Job, Headers: j.Headers, Timeout: j.Options.Timeout, Pipeline: j.Options.Pipeline},
 	)

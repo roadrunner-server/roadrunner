@@ -11,43 +11,14 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
 	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
-	"github.com/spiral/roadrunner/v2/plugins/jobs/structs"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/streadway/amqp"
 )
 
-// pipeline rabbitmq info
-const (
-	exchangeKey  string = "exchange"
-	exchangeType string = "exchange-type"
-	queue        string = "queue"
-	routingKey   string = "routing-key"
-	prefetch     string = "prefetch"
-
-	dlx           string = "x-dead-letter-exchange"
-	dlxRoutingKey string = "x-dead-letter-routing-key"
-	dlxTTL        string = "x-message-ttl"
-	dlxExpires    string = "x-expires"
-
-	contentType string = "application/octet-stream"
-)
-
-type GlobalCfg struct {
-	Addr string `mapstructure:"addr"`
-}
-
-// Config is used to parse pipeline configuration
-type Config struct {
-	PrefetchCount int    `mapstructure:"pipeline_size"`
-	Queue         string `mapstructure:"queue"`
-	Exchange      string `mapstructure:"exchange"`
-	ExchangeType  string `mapstructure:"exchange_type"`
-	RoutingKey    string `mapstructure:"routing_key"`
-}
-
 type JobsConsumer struct {
-	sync.RWMutex
+	sync.Mutex
 	log logger.Logger
 	pq  priorityqueue.Queue
 	eh  events.Handler
@@ -61,8 +32,10 @@ type JobsConsumer struct {
 
 	retryTimeout  time.Duration
 	prefetchCount int
+	priority      int64
 	exchangeName  string
 	queue         string
+	exclusive     bool
 	consumeID     string
 	connStr       string
 	exchangeType  string
@@ -123,6 +96,8 @@ func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer,
 	jb.exchangeType = pipeCfg.ExchangeType
 	jb.exchangeName = pipeCfg.Exchange
 	jb.prefetchCount = pipeCfg.PrefetchCount
+	jb.exclusive = pipeCfg.Exclusive
+	jb.priority = pipeCfg.Priority
 
 	// PARSE CONFIGURATION -------
 
@@ -185,6 +160,8 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Con
 	jb.exchangeType = pipeline.String(exchangeType, "direct")
 	jb.exchangeName = pipeline.String(exchangeKey, "amqp.default")
 	jb.prefetchCount = pipeline.Int(prefetch, 10)
+	jb.priority = int64(pipeline.Int(priority, 10))
+	jb.exclusive = pipeline.Bool(exclusive, true)
 
 	// PARSE CONFIGURATION -------
 
@@ -206,13 +183,17 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Con
 		return nil, errors.E(op, err)
 	}
 
+	// register the pipeline
+	// error here is always nil
+	_ = jb.Register(pipeline)
+
 	// run redialer for the connection
 	jb.redialer()
 
 	return jb, nil
 }
 
-func (j *JobsConsumer) Push(job *structs.Job) error {
+func (j *JobsConsumer) Push(job *job.Job) error {
 	const op = errors.Op("rabbitmq_push")
 	// check if the pipeline registered
 
@@ -235,9 +216,9 @@ func (j *JobsConsumer) Push(job *structs.Job) error {
 	}
 
 	// handle timeouts
-	if job.Options.DelayDuration() > 0 {
+	if msg.Options.DelayDuration() > 0 {
 		// TODO declare separate method for this if condition
-		delayMs := int64(job.Options.DelayDuration().Seconds() * 1000)
+		delayMs := int64(msg.Options.DelayDuration().Seconds() * 1000)
 		tmpQ := fmt.Sprintf("delayed-%d.%s.%s", delayMs, j.exchangeName, j.queue)
 
 		// delay cache optimization.
@@ -432,24 +413,4 @@ func (j *JobsConsumer) Stop() error {
 		Elapsed:  0,
 	})
 	return nil
-}
-
-func (c *Config) InitDefault() {
-	if c.ExchangeType == "" {
-		c.ExchangeType = "direct"
-	}
-
-	if c.Exchange == "" {
-		c.Exchange = "default"
-	}
-
-	if c.PrefetchCount == 0 {
-		c.PrefetchCount = 100
-	}
-}
-
-func (c *GlobalCfg) InitDefault() {
-	if c.Addr == "" {
-		c.Addr = "amqp://guest:guest@localhost:5672/"
-	}
 }

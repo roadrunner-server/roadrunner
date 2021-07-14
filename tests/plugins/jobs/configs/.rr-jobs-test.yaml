@@ -1,5 +1,5 @@
 rpc:
-  listen: tcp://127.0.0.1:6001
+  listen: unix:///tmp/rr.sock
 
 server:
   command: "php ../../client.php echo pipes"
@@ -19,6 +19,10 @@ sqs:
   secret: api-secret
   region: us-west-1
   endpoint: http://localhost:9324
+  session_token: ""
+  ping_period: 10
+  attributes:
+    MessageRetentionPeriod: 86400
 
 logs:
   level: info
@@ -27,7 +31,7 @@ logs:
 
 jobs:
   # num logical cores by default
-  num_pollers: 10
+  num_pollers: 64
   # 1mi by default
   pipeline_size: 100000
   # worker pool configuration
@@ -60,7 +64,15 @@ jobs:
       pipeline_size: 1000000
       queue: test-1-queue
       exchange: default
-      exclusive: true
+      exchange_type: direct
+      routing_key: test
+
+    test-4:
+      driver: amqp
+      priority: 1
+      pipeline_size: 1000000
+      queue: test-1-queue
+      exchange: default
       exchange_type: direct
       routing_key: test
 

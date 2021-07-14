@@ -32,7 +32,6 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 					Driver:   pipe.Driver(),
 					Error:    err,
 					Start:    time.Now(),
-					Elapsed:  0,
 				})
 
 				j.log.Error("connection closed, reconnecting", "error", err)

@@ -55,10 +55,21 @@ func (p Pipeline) Int(name string, d int) int {
 	return d
 }
 
+// Bool must return option value as bool or return default value.
+func (p Pipeline) Bool(name string, d bool) bool {
+	if value, ok := p[name]; ok {
+		if i, ok := value.(bool); ok {
+			return i
+		}
+	}
+
+	return d
+}
+
 // Priority returns default pipeline priority
-func (p Pipeline) Priority() uint64 {
+func (p Pipeline) Priority() int64 {
 	if value, ok := p[priority]; ok {
-		if v, ok := value.(uint64); ok {
+		if v, ok := value.(int64); ok {
 			return v
 		}
 	}

@@ -36,7 +36,7 @@ func (j *JobsConsumer) initRabbitMQ() error {
 		j.queue,
 		false,
 		false,
-		true,
+		j.exclusive,
 		false,
 		nil,
 	)

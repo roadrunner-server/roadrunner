@@ -1,4 +1,16 @@
-package structs
+package job
+
+// constant keys to pack/unpack messages from different drivers
+const (
+	RRID          string = "rr_id"
+	RRJob         string = "rr_job"
+	RRHeaders     string = "rr_headers"
+	RRPipeline    string = "rr_pipeline"
+	RRTimeout     string = "rr_timeout"
+	RRDelay       string = "rr_delay"
+	RRPriority    string = "rr_priority"
+	RRMaxAttempts string = "rr_max_attempts"
+)
 
 // Job carries information about single job.
 type Job struct {
@@ -6,13 +18,13 @@ type Job struct {
 	Job string `json:"job"`
 
 	// Ident is unique identifier of the job, should be provided from outside
-	Ident string
+	Ident string `json:"id"`
 
 	// Payload is string data (usually JSON) passed to Job broker.
 	Payload string `json:"payload"`
 
 	// Headers with key-value pairs
-	Headers map[string][]string
+	Headers map[string][]string `json:"headers"`
 
 	// Options contains set of PipelineOptions specific to job execution. Can be empty.
 	Options *Options `json:"options,omitempty"`

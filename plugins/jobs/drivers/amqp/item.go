@@ -5,19 +5,9 @@ import (
 
 	json "github.com/json-iterator/go"
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/plugins/jobs/structs"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/utils"
 	"github.com/streadway/amqp"
-)
-
-const (
-	rrID         string = "rr_id"
-	rrJob        string = "rr_job"
-	rrHeaders    string = "rr_headers"
-	rrPipeline   string = "rr_pipeline"
-	rrTimeout    string = "rr_timeout"
-	rrDelay      string = "rr_delay"
-	rrRetryDelay string = "rr_retry_delay"
 )
 
 type Item struct {
@@ -25,13 +15,13 @@ type Item struct {
 	Job string `json:"job"`
 
 	// Ident is unique identifier of the job, should be provided from outside
-	Ident string
+	Ident string `json:"id"`
 
 	// Payload is string data (usually JSON) passed to Job broker.
 	Payload string `json:"payload"`
 
 	// Headers with key-values pairs
-	Headers map[string][]string
+	Headers map[string][]string `json:"headers"`
 
 	// Options contains set of PipelineOptions specific to job execution. Can be empty.
 	Options *Options `json:"options,omitempty"`
@@ -50,34 +40,16 @@ type Item struct {
 type Options struct {
 	// Priority is job priority, default - 10
 	// pointer to distinguish 0 as a priority and nil as priority not set
-	Priority uint32 `json:"priority"`
+	Priority int64 `json:"priority"`
 
 	// Pipeline manually specified pipeline.
 	Pipeline string `json:"pipeline,omitempty"`
 
 	// Delay defines time duration to delay execution for. Defaults to none.
-	Delay int32 `json:"delay,omitempty"`
-
-	// Attempts define maximum job retries. Attention, value 1 will only allow job to execute once (without retry).
-	// Minimum valuable value is 2.
-	Attempts int32 `json:"maxAttempts,omitempty"`
-
-	// RetryDelay defines for how long job should be waiting until next retry. Defaults to none.
-	RetryDelay int32 `json:"retryDelay,omitempty"`
+	Delay int64 `json:"delay,omitempty"`
 
 	// Reserve defines for how broker should wait until treating job are failed. Defaults to 30 min.
-	Timeout int32 `json:"timeout,omitempty"`
-}
-
-// CanRetry must return true if broker is allowed to re-run the job.
-func (o *Options) CanRetry(attempt int32) bool {
-	// Attempts 1 and 0 has identical effect
-	return o.Attempts > (attempt + 1)
-}
-
-// RetryDuration returns retry delay duration in a form of time.Duration.
-func (o *Options) RetryDuration() time.Duration {
-	return time.Second * time.Duration(o.RetryDelay)
+	Timeout int64 `json:"timeout,omitempty"`
 }
 
 // DelayDuration returns delay duration in a form of time.Duration.
@@ -98,8 +70,8 @@ func (j *Item) ID() string {
 	return j.Ident
 }
 
-func (j *Item) Priority() uint64 {
-	return uint64(j.Options.Priority)
+func (j *Item) Priority() int64 {
+	return j.Options.Priority
 }
 
 // Body packs job payload into binary payload.
@@ -121,9 +93,9 @@ func (j *Item) Nack() error {
 	return j.NackFunc(false, false)
 }
 
-func fromDelivery(d amqp.Delivery) (*Item, error) {
+func (j *JobsConsumer) fromDelivery(d amqp.Delivery) (*Item, error) {
 	const op = errors.Op("from_delivery_convert")
-	item, err := unpack(d)
+	item, err := j.unpack(d)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
@@ -138,18 +110,16 @@ func fromDelivery(d amqp.Delivery) (*Item, error) {
 	}, nil
 }
 
-func fromJob(job *structs.Job) *Item {
+func fromJob(job *job.Job) *Item {
 	return &Item{
 		Job:     job.Job,
 		Ident:   job.Ident,
 		Payload: job.Payload,
 		Options: &Options{
-			Priority:   uint32(job.Options.Priority),
-			Pipeline:   job.Options.Pipeline,
-			Delay:      int32(job.Options.Delay),
-			Attempts:   int32(job.Options.Attempts),
-			RetryDelay: int32(job.Options.RetryDelay),
-			Timeout:    int32(job.Options.Timeout),
+			Priority: job.Options.Priority,
+			Pipeline: job.Options.Pipeline,
+			Delay:    job.Options.Delay,
+			Timeout:  job.Options.Timeout,
 		},
 	}
 }
@@ -161,54 +131,57 @@ func pack(id string, j *Item) (amqp.Table, error) {
 		return nil, err
 	}
 	return amqp.Table{
-		rrID:         id,
-		rrJob:        j.Job,
-		rrPipeline:   j.Options.Pipeline,
-		rrHeaders:    headers,
-		rrTimeout:    j.Options.Timeout,
-		rrDelay:      j.Options.Delay,
-		rrRetryDelay: j.Options.RetryDelay,
+		job.RRID:       id,
+		job.RRJob:      j.Job,
+		job.RRPipeline: j.Options.Pipeline,
+		job.RRHeaders:  headers,
+		job.RRTimeout:  j.Options.Timeout,
+		job.RRDelay:    j.Options.Delay,
+		job.RRPriority: j.Options.Priority,
 	}, nil
 }
 
 // unpack restores jobs.Options
-func unpack(d amqp.Delivery) (*Item, error) {
-	j := &Item{Payload: utils.AsString(d.Body), Options: &Options{}}
+func (j *JobsConsumer) unpack(d amqp.Delivery) (*Item, error) {
+	item := &Item{Payload: utils.AsString(d.Body), Options: &Options{}}
 
-	if _, ok := d.Headers[rrID].(string); !ok {
-		return nil, errors.E(errors.Errorf("missing header `%s`", rrID))
+	if _, ok := d.Headers[job.RRID].(string); !ok {
+		return nil, errors.E(errors.Errorf("missing header `%s`", job.RRID))
 	}
 
-	j.Ident = d.Headers[rrID].(string)
+	item.Ident = d.Headers[job.RRID].(string)
 
-	if _, ok := d.Headers[rrJob].(string); !ok {
-		return nil, errors.E(errors.Errorf("missing header `%s`", rrJob))
+	if _, ok := d.Headers[job.RRJob].(string); !ok {
+		return nil, errors.E(errors.Errorf("missing header `%s`", job.RRJob))
 	}
 
-	j.Job = d.Headers[rrJob].(string)
+	item.Job = d.Headers[job.RRJob].(string)
 
-	if _, ok := d.Headers[rrPipeline].(string); ok {
-		j.Options.Pipeline = d.Headers[rrPipeline].(string)
+	if _, ok := d.Headers[job.RRPipeline].(string); ok {
+		item.Options.Pipeline = d.Headers[job.RRPipeline].(string)
 	}
 
-	if h, ok := d.Headers[rrHeaders].([]byte); ok {
-		err := json.Unmarshal(h, &j.Headers)
+	if h, ok := d.Headers[job.RRHeaders].([]byte); ok {
+		err := json.Unmarshal(h, &item.Headers)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	if _, ok := d.Headers[rrTimeout].(int32); ok {
-		j.Options.Timeout = d.Headers[rrTimeout].(int32)
+	if _, ok := d.Headers[job.RRTimeout].(int64); ok {
+		item.Options.Timeout = d.Headers[job.RRTimeout].(int64)
 	}
 
-	if _, ok := d.Headers[rrDelay].(int32); ok {
-		j.Options.Delay = d.Headers[rrDelay].(int32)
+	if _, ok := d.Headers[job.RRDelay].(int64); ok {
+		item.Options.Delay = d.Headers[job.RRDelay].(int64)
 	}
 
-	if _, ok := d.Headers[rrRetryDelay].(int32); ok {
-		j.Options.RetryDelay = d.Headers[rrRetryDelay].(int32)
+	if _, ok := d.Headers[job.RRPriority]; !ok {
+		// set pipe's priority
+		item.Options.Priority = j.priority
+	} else {
+		item.Options.Priority = d.Headers[job.RRPriority].(int64)
 	}
 
-	return j, nil
+	return item, nil
 }

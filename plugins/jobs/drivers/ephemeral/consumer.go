@@ -8,8 +8,8 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
 	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
-	"github.com/spiral/roadrunner/v2/plugins/jobs/structs"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
@@ -79,34 +79,35 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, eh events.Hand
 	return jb, nil
 }
 
-func (j *JobBroker) Push(job *structs.Job) error {
+func (j *JobBroker) Push(jb *job.Job) error {
 	const op = errors.Op("ephemeral_push")
 
 	// check if the pipeline registered
-	if b, ok := j.pipeline.Load(job.Options.Pipeline); ok {
+	if b, ok := j.pipeline.Load(jb.Options.Pipeline); ok {
 		if !b.(bool) {
-			return errors.E(op, errors.Errorf("pipeline disabled: %s", job.Options.Pipeline))
+			return errors.E(op, errors.Errorf("pipeline disabled: %s", jb.Options.Pipeline))
 		}
 
+		msg := fromJob(jb)
 		// handle timeouts
-		if job.Options.Timeout > 0 {
-			go func(jj *structs.Job) {
+		if msg.Options.Timeout > 0 {
+			go func(jj *job.Job) {
 				time.Sleep(jj.Options.TimeoutDuration())
 
 				// send the item after timeout expired
-				j.localQueue <- From(job)
-			}(job)
+				j.localQueue <- msg
+			}(jb)
 
 			return nil
 		}
 
 		// insert to the local, limited pipeline
-		j.localQueue <- From(job)
+		j.localQueue <- msg
 
 		return nil
 	}
 
-	return errors.E(op, errors.Errorf("no such pipeline: %s", job.Options.Pipeline))
+	return errors.E(op, errors.Errorf("no such pipeline: %s", jb.Options.Pipeline))
 }
 
 func (j *JobBroker) consume() {

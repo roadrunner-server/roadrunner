@@ -32,8 +32,8 @@ func (t Test) ID() string {
 	return "none"
 }
 
-func (t Test) Priority() uint64 {
-	return uint64(t)
+func (t Test) Priority() int64 {
+	return int64(t)
 }
 
 func TestBinHeap_Init(t *testing.T) {

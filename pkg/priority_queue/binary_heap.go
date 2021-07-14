@@ -56,7 +56,6 @@ func (bh *BinHeap) fixDown(curr, end int) {
 		}
 
 		idxToSwap := cOneIdx
-		// oh my, so unsafe
 		if cTwoIdx > -1 && (bh.items)[cTwoIdx].Priority() < (bh.items)[cOneIdx].Priority() {
 			idxToSwap = cTwoIdx
 		}

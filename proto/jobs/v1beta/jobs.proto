@@ -39,11 +39,11 @@ message HeaderValue {
 }
 
 message Options {
-    uint64 priority = 1;
+    int64 priority = 1;
     string pipeline = 2;
-    uint64 delay = 3;
-    uint64 attempts = 4;
-    uint64 retry_delay = 5;
-    uint64 timeout = 6;
+    int64 delay = 3;
+    int64 attempts = 4;
+    int64 retry_delay = 5;
+    int64 timeout = 6;
 }
 

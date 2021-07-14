@@ -1,4 +1,4 @@
-package structs
+package job
 
 import "time"
 
@@ -6,23 +6,23 @@ import "time"
 type Options struct {
 	// Priority is job priority, default - 10
 	// pointer to distinguish 0 as a priority and nil as priority not set
-	Priority uint64 `json:"priority"`
+	Priority int64 `json:"priority"`
 
 	// Pipeline manually specified pipeline.
 	Pipeline string `json:"pipeline,omitempty"`
 
 	// Delay defines time duration to delay execution for. Defaults to none.
-	Delay uint64 `json:"delay,omitempty"`
+	Delay int64 `json:"delay,omitempty"`
 
 	// Attempts define maximum job retries. Attention, value 1 will only allow job to execute once (without retry).
 	// Minimum valuable value is 2.
-	Attempts uint64 `json:"maxAttempts,omitempty"`
+	Attempts int64 `json:"maxAttempts,omitempty"`
 
 	// RetryDelay defines for how long job should be waiting until next retry. Defaults to none.
-	RetryDelay uint64 `json:"retryDelay,omitempty"`
+	RetryDelay int64 `json:"retryDelay,omitempty"`
 
 	// Reserve defines for how broker should wait until treating job are failed. Defaults to 30 min.
-	Timeout uint64 `json:"timeout,omitempty"`
+	Timeout int64 `json:"timeout,omitempty"`
 }
 
 // Merge merges job options.
@@ -49,7 +49,7 @@ func (o *Options) Merge(from *Options) {
 }
 
 // CanRetry must return true if broker is allowed to re-run the job.
-func (o *Options) CanRetry(attempt uint64) bool {
+func (o *Options) CanRetry(attempt int64) bool {
 	// Attempts 1 and 0 has identical effect
 	return o.Attempts > (attempt + 1)
 }
