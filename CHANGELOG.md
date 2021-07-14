@@ -11,7 +11,7 @@ v2.3.2 (14.07.2021)
 
 ## 📈 Summary:
 
-- RR Milestone [2.3.2](https://github.com/spiral/roadrunner/milestone/30?closed=1)
+- RR Milestone [2.3.2](https://github.com/spiral/roadrunner/milestone/31?closed=1)
 
 ---
 
