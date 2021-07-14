@@ -60,7 +60,7 @@ jobs:
       pipeline_size: 1000000
       queue: test-1-queue
       exchange: default
-      exclusive: true
+      exclusive: false
       exchange_type: direct
       routing_key: test
 

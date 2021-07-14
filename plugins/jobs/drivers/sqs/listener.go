@@ -32,7 +32,7 @@ func (j *JobConsumer) listen() {
 
 			for i := 0; i < len(message.Messages); i++ {
 				m := message.Messages[i]
-				item, attempt, err := unpack(&m, j.outputQ.QueueUrl, j.client)
+				item, err := unpack(&m, j.outputQ.QueueUrl, j.client)
 				if err != nil {
 					_, errD := j.client.DeleteMessage(context.Background(), &sqs.DeleteMessageInput{
 						QueueUrl:      j.outputQ.QueueUrl,
@@ -46,7 +46,7 @@ func (j *JobConsumer) listen() {
 					continue
 				}
 
-				if item.Options.CanRetry(int64(attempt)) {
+				if item.Options.CanRetry() {
 					j.pq.Insert(item)
 					continue
 				}
