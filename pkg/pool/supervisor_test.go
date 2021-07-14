@@ -125,7 +125,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 }
 
 func TestSupervisedPool_ExecTTL_WorkerRestarted(t *testing.T) {
-	var cfgExecTTL = Config{
+	var cfgExecTTL = &Config{
 		NumWorkers: uint64(1),
 		Supervisor: &SupervisorConfig{
 			WatchTick: 1 * time.Second,
