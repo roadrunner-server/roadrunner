@@ -26,18 +26,15 @@ type Queue struct {
 	head *Node
 	tail *Node
 
-	recvCh chan worker.BaseProcess
-	curr   uint64
-	len    uint64
+	curr uint64
+	len  uint64
 
 	sliceSize uint64
 }
 
 func NewQueue() *Queue {
 	q := &Queue{
-		mu: sync.Mutex{},
-		// w/o buffering
-		recvCh:    make(chan worker.BaseProcess),
+		mu:        sync.Mutex{},
 		head:      nil,
 		tail:      nil,
 		curr:      0,
