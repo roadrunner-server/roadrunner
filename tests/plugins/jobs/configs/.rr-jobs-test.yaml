@@ -36,7 +36,7 @@ jobs:
   pipeline_size: 100000
   # worker pool configuration
   pool:
-    num_workers: 10
+    num_workers: 20
     max_jobs: 0
     allocate_timeout: 60s
     destroy_timeout: 60s

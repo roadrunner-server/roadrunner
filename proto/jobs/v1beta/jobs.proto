@@ -13,17 +13,17 @@ message PushBatchRequest {
     repeated Job jobs = 1;
 }
 
-// request to pause/resume
-message MaintenanceRequest {
+// request to pause/resume/list
+message Maintenance {
     repeated string pipelines = 1;
 }
 
 // some endpoints receives nothing
-// all endpoints returns nothing
+// all endpoints returns nothing, except error
 message Empty {}
 
-message List {
-    repeated string pipelines = 1;
+message DeclareRequest {
+    map<string, string> pipeline = 1;
 }
 
 message Job {
@@ -32,10 +32,6 @@ message Job {
     string payload = 3;
     map<string, HeaderValue> headers = 5;
     Options options = 4;
-}
-
-message HeaderValue {
-    repeated string value = 1;
 }
 
 message Options {
@@ -47,3 +43,6 @@ message Options {
     int64 timeout = 6;
 }
 
+message HeaderValue {
+    repeated string value = 1;
+}

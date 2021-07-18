@@ -8,30 +8,19 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
-	"github.com/spiral/roadrunner/v2/pkg/worker_watcher/container"
+	"github.com/spiral/roadrunner/v2/pkg/worker_watcher/container/channel"
 )
 
 // Vector interface represents vector container
 type Vector interface {
-	// Enqueue used to put worker to the vector
-	Enqueue(worker.BaseProcess)
-	// Dequeue used to get worker from the vector
-	Dequeue(ctx context.Context) (worker.BaseProcess, error)
+	// Push used to put worker to the vector
+	Push(worker.BaseProcess)
+	// Pop used to get worker from the vector
+	Pop(ctx context.Context) (worker.BaseProcess, error)
+	// Remove worker with provided pid
+	Remove(pid int64) // TODO replace
 	// Destroy used to stop releasing the workers
 	Destroy()
-}
-
-// NewSyncWorkerWatcher is a constructor for the Watcher
-func NewSyncWorkerWatcher(allocator worker.Allocator, numWorkers uint64, events events.Handler) *workerWatcher {
-	ww := &workerWatcher{
-		container:  container.NewVector(numWorkers),
-		numWorkers: numWorkers,
-		workers:    make([]worker.BaseProcess, 0, numWorkers),
-		allocator:  allocator,
-		events:     events,
-	}
-
-	return ww
 }
 
 type workerWatcher struct {
@@ -39,14 +28,31 @@ type workerWatcher struct {
 	container Vector
 	// used to control the Destroy stage (that all workers are in the container)
 	numWorkers uint64
-	workers    []worker.BaseProcess
-	allocator  worker.Allocator
-	events     events.Handler
+
+	workers []worker.BaseProcess
+
+	allocator worker.Allocator
+	events    events.Handler
+}
+
+// NewSyncWorkerWatcher is a constructor for the Watcher
+func NewSyncWorkerWatcher(allocator worker.Allocator, numWorkers uint64, events events.Handler) *workerWatcher {
+	ww := &workerWatcher{
+		container:  channel.NewVector(numWorkers),
+		numWorkers: numWorkers,
+
+		workers: make([]worker.BaseProcess, 0, numWorkers),
+
+		allocator: allocator,
+		events:    events,
+	}
+
+	return ww
 }
 
 func (ww *workerWatcher) Watch(workers []worker.BaseProcess) error {
 	for i := 0; i < len(workers); i++ {
-		ww.container.Enqueue(workers[i])
+		ww.container.Push(workers[i])
 		// add worker to watch slice
 		ww.workers = append(ww.workers, workers[i])
 
@@ -62,7 +68,7 @@ func (ww *workerWatcher) Get(ctx context.Context) (worker.BaseProcess, error) {
 	const op = errors.Op("worker_watcher_get_free_worker")
 
 	// thread safe operation
-	w, err := ww.container.Dequeue(ctx)
+	w, err := ww.container.Pop(ctx)
 	if errors.Is(errors.WatcherStopped, err) {
 		return nil, errors.E(op, errors.WatcherStopped)
 	}
@@ -78,11 +84,11 @@ func (ww *workerWatcher) Get(ctx context.Context) (worker.BaseProcess, error) {
 
 	// =========================================================
 	// SLOW PATH
-	_ = w.Kill() // how the worker get here???????
-	// no free workers in the container
+	_ = w.Kill()
+	// no free workers in the container or worker not in the ReadyState (TTL-ed)
 	// try to continuously get free one
 	for {
-		w, err = ww.container.Dequeue(ctx)
+		w, err = ww.container.Pop(ctx)
 
 		if errors.Is(errors.WatcherStopped, err) {
 			return nil, errors.E(op, errors.WatcherStopped)
@@ -98,7 +104,7 @@ func (ww *workerWatcher) Get(ctx context.Context) (worker.BaseProcess, error) {
 		case worker.StateReady:
 			return w, nil
 		case worker.StateWorking: // how??
-			ww.container.Enqueue(w) // put it back, let worker finish the work
+			ww.container.Push(w) // put it back, let worker finish the work
 			continue
 		case
 			// all the possible wrong states
@@ -162,7 +168,7 @@ func (ww *workerWatcher) Remove(wb worker.BaseProcess) {
 func (ww *workerWatcher) Push(w worker.BaseProcess) {
 	switch w.State().Value() {
 	case worker.StateReady:
-		ww.container.Enqueue(w)
+		ww.container.Push(w)
 	default:
 		_ = w.Kill()
 	}
@@ -232,6 +238,7 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 		return
 	}
 
+	w.State().Set(worker.StateStopped)
 	ww.Remove(w)
 	err = ww.Allocate()
 	if err != nil {

@@ -3,6 +3,7 @@ package jobs
 import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	jobsv1beta "github.com/spiral/roadrunner/v2/proto/jobs/v1beta"
 )
@@ -65,7 +66,7 @@ func (r *rpc) PushBatch(j *jobsv1beta.PushBatchRequest, _ *jobsv1beta.Empty) err
 	return nil
 }
 
-func (r *rpc) Pause(req *jobsv1beta.MaintenanceRequest, _ *jobsv1beta.Empty) error {
+func (r *rpc) Pause(req *jobsv1beta.Maintenance, _ *jobsv1beta.Empty) error {
 	pipelines := make([]string, len(req.GetPipelines()))
 
 	for i := 0; i < len(pipelines); i++ {
@@ -76,7 +77,7 @@ func (r *rpc) Pause(req *jobsv1beta.MaintenanceRequest, _ *jobsv1beta.Empty) err
 	return nil
 }
 
-func (r *rpc) Resume(req *jobsv1beta.MaintenanceRequest, _ *jobsv1beta.Empty) error {
+func (r *rpc) Resume(req *jobsv1beta.Maintenance, _ *jobsv1beta.Empty) error {
 	pipelines := make([]string, len(req.GetPipelines()))
 
 	for i := 0; i < len(pipelines); i++ {
@@ -87,8 +88,29 @@ func (r *rpc) Resume(req *jobsv1beta.MaintenanceRequest, _ *jobsv1beta.Empty) er
 	return nil
 }
 
-func (r *rpc) List(_ *jobsv1beta.Empty, resp *jobsv1beta.List) error {
+func (r *rpc) List(_ *jobsv1beta.Empty, resp *jobsv1beta.Maintenance) error {
 	resp.Pipelines = r.p.List()
+	return nil
+}
+
+// Declare pipeline used to dynamically declare any type of the pipeline
+// Mandatory fields:
+// 1. Driver
+// 2. Pipeline name
+// 3. Options related to the particular pipeline
+func (r *rpc) Declare(req *jobsv1beta.DeclareRequest, _ *jobsv1beta.Empty) error {
+	const op = errors.Op("rcp_declare_pipeline")
+	pipe := &pipeline.Pipeline{}
+
+	for i := range req.GetPipeline() {
+		(*pipe)[i] = req.GetPipeline()[i]
+	}
+
+	err := r.p.Declare(pipe)
+	if err != nil {
+		return errors.E(op, err)
+	}
+
 	return nil
 }
 

@@ -1,4 +1,4 @@
-package container
+package channel
 
 import (
 	"context"
@@ -22,11 +22,13 @@ func NewVector(initialNumOfWorkers uint64) *Vec {
 	return vec
 }
 
-func (v *Vec) Enqueue(w worker.BaseProcess) {
+func (v *Vec) Push(w worker.BaseProcess) {
 	v.workers <- w
 }
 
-func (v *Vec) Dequeue(ctx context.Context) (worker.BaseProcess, error) {
+func (v *Vec) Remove(_ int64) {}
+
+func (v *Vec) Pop(ctx context.Context) (worker.BaseProcess, error) {
 	/*
 		if *addr == old {
 			*addr = new

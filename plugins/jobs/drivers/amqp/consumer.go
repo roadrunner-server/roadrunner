@@ -141,7 +141,7 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Con
 		delayCache:   make(map[string]struct{}, 100),
 	}
 
-	// if no global section
+	// only global section
 	if !cfg.Has(pluginName) {
 		return nil, errors.E(op, errors.Str("no global amqp configuration, global configuration should contain amqp addrs"))
 	}

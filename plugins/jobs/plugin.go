@@ -432,6 +432,7 @@ func (p *Plugin) Declare(pipeline *pipeline.Pipeline) error {
 		}
 
 		// if pipeline initialized to be consumed, call Run on it
+		// but likely for the dynamic pipelines it should be started manually
 		if _, ok := p.consume[pipeline.Name()]; ok {
 			err = initializedDriver.Run(pipeline)
 			if err != nil {
@@ -440,6 +441,7 @@ func (p *Plugin) Declare(pipeline *pipeline.Pipeline) error {
 		}
 	}
 
+	// save the pipeline
 	p.pipelines.Store(pipeline.Name(), pipeline)
 
 	return nil

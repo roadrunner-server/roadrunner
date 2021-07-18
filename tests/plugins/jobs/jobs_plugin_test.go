@@ -123,7 +123,6 @@ func TestJobsInit(t *testing.T) {
 	mockLogger.EXPECT().Info("driver ready", "pipeline", "test-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Info("driver ready", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
-
 	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-local-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-1", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-2-amqp", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
@@ -337,7 +336,7 @@ func ephemeralPause(t *testing.T) {
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
-	pipe := &jobsv1beta.MaintenanceRequest{Pipelines: make([]string, 1)}
+	pipe := &jobsv1beta.Maintenance{Pipelines: make([]string, 1)}
 	pipe.GetPipelines()[0] = "test-local"
 
 	er := &jobsv1beta.Empty{}
@@ -350,7 +349,7 @@ func ephemeralResume(t *testing.T) {
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
-	pipe := &jobsv1beta.MaintenanceRequest{Pipelines: make([]string, 1)}
+	pipe := &jobsv1beta.Maintenance{Pipelines: make([]string, 1)}
 	pipe.GetPipelines()[0] = "test-local"
 
 	er := &jobsv1beta.Empty{}
