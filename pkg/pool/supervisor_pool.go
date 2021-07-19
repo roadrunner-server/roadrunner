@@ -136,7 +136,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			/*
 				worker at this point might be in the middle of request execution:
 
-				---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Push
+				---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Release
 											 ^
 				                           TTL Reached, state - invalid                                                |
 																														-----> Worker Stopped here
@@ -156,7 +156,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			/*
 				worker at this point might be in the middle of request execution:
 
-				---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Push
+				---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Release
 											 ^
 				                           TTL Reached, state - invalid                                                |
 																														-----> Worker Stopped here
@@ -211,7 +211,7 @@ func (sp *supervised) control() { //nolint:gocognit
 				/*
 					worker at this point might be in the middle of request execution:
 
-					---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Push
+					---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Release
 												 ^
 					                           TTL Reached, state - invalid                                                |
 																															-----> Worker Stopped here

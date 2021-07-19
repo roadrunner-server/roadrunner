@@ -604,7 +604,7 @@ func sslPush(t *testing.T) {
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
 
-	assert.Equal(t, "", r.Header.Get("Http2-Push"))
+	assert.Equal(t, "", r.Header.Get("Http2-Release"))
 
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)

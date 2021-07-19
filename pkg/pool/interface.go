@@ -33,11 +33,11 @@ type Watcher interface {
 	// Watch used to add workers to the container
 	Watch(workers []worker.BaseProcess) error
 
-	// Get provide first free worker
-	Get(ctx context.Context) (worker.BaseProcess, error)
+	// Take takes the first free worker
+	Take(ctx context.Context) (worker.BaseProcess, error)
 
-	// Push enqueues worker back
-	Push(w worker.BaseProcess)
+	// Release releases the worker putting it back to the queue
+	Release(w worker.BaseProcess)
 
 	// Allocate - allocates new worker and put it into the WorkerWatcher
 	Allocate() error

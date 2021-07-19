@@ -15,7 +15,7 @@ type rpc struct {
 
 /*
 List of the RPC methods:
-1. Push - single job push
+1. Release - single job push
 2. PushBatch - push job batch
 
 3. Reset - managed by the Resetter plugin

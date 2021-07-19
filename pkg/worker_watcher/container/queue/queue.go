@@ -91,7 +91,9 @@ func (q *Queue) Pop(ctx context.Context) (worker.BaseProcess, error) {
 	return w, nil
 }
 
-func (q *Queue) Remove(_ int64) {}
+func (q *Queue) Replace(oldPid int64, newWorker worker.BaseProcess) {
+
+}
 
 func (q *Queue) Destroy() {}
 

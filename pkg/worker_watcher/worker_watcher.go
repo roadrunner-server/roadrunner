@@ -18,9 +18,12 @@ type Vector interface {
 	// Pop used to get worker from the vector
 	Pop(ctx context.Context) (worker.BaseProcess, error)
 	// Remove worker with provided pid
-	Remove(pid int64) // TODO replace
+	Remove(pid int64)
 	// Destroy used to stop releasing the workers
 	Destroy()
+
+	// TODO Add Replace method, and remove `Remove` method. Replace will do removal and allocation
+	// Replace(prevPid int64, newWorker worker.BaseProcess)
 }
 
 type workerWatcher struct {
@@ -63,8 +66,8 @@ func (ww *workerWatcher) Watch(workers []worker.BaseProcess) error {
 	return nil
 }
 
-// Get is not a thread safe operation
-func (ww *workerWatcher) Get(ctx context.Context) (worker.BaseProcess, error) {
+// Take is not a thread safe operation
+func (ww *workerWatcher) Take(ctx context.Context) (worker.BaseProcess, error) {
 	const op = errors.Op("worker_watcher_get_free_worker")
 
 	// thread safe operation
@@ -141,7 +144,7 @@ func (ww *workerWatcher) Allocate() error {
 	// unlock Allocate mutex
 	ww.Unlock()
 	// push the worker to the container
-	ww.Push(sw)
+	ww.Release(sw)
 	return nil
 }
 
@@ -164,8 +167,8 @@ func (ww *workerWatcher) Remove(wb worker.BaseProcess) {
 	}
 }
 
-// Push O(1) operation
-func (ww *workerWatcher) Push(w worker.BaseProcess) {
+// Release O(1) operation
+func (ww *workerWatcher) Release(w worker.BaseProcess) {
 	switch w.State().Value() {
 	case worker.StateReady:
 		ww.container.Push(w)
