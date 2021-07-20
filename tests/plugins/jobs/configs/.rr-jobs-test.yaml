@@ -90,6 +90,7 @@ jobs:
       priority: 11
       tube: default
       pipeline_size: 1000000
+      reserve_timeout: 10s
 
     test-3:
       driver: sqs
