@@ -1,0 +1,12 @@
+FROM ubuntu:latest
+
+RUN apt-get update && apt-get install -y curl build-essential
+
+RUN curl -sL https://github.com/kr/beanstalkd/archive/v1.12.tar.gz | tar xvz -C /tmp
+
+WORKDIR /tmp/beanstalkd-1.12
+RUN make
+RUN cp beanstalkd /usr/bin
+
+EXPOSE 11300
+ENTRYPOINT ["/usr/bin/beanstalkd"]

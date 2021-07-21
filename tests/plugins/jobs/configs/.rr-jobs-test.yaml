@@ -43,47 +43,47 @@ jobs:
 
   # list of broker pipelines associated with endpoints
   pipelines:
-    test-local:
-      driver: ephemeral
-      priority: 10
-      pipeline_size: 10000
-
-    test-local-2:
-      driver: ephemeral
-      priority: 1
-      pipeline_size: 10000
-
-    test-local-3:
-      driver: ephemeral
-      priority: 2
-      pipeline_size: 10000
-
-    test-1:
-      driver: amqp
-      priority: 1
-      pipeline_size: 1000000
-      queue: test-1-queue
-      exchange: default
-      exchange_type: direct
-      routing_key: test
-
-    test-4:
-      driver: amqp
-      priority: 1
-      pipeline_size: 1000000
-      queue: test-1-queue
-      exchange: default
-      exchange_type: direct
-      routing_key: test
-
-    test-2-amqp:
-      driver: amqp
-      priority: 2
-      pipeline_size: 100000
-      queue: test-2-queue
-      exchange: default
-      exchange_type: direct
-      routing_key: test-2
+#    test-local:
+#      driver: ephemeral
+#      priority: 10
+#      pipeline_size: 10000
+#
+#    test-local-2:
+#      driver: ephemeral
+#      priority: 1
+#      pipeline_size: 10000
+#
+#    test-local-3:
+#      driver: ephemeral
+#      priority: 2
+#      pipeline_size: 10000
+#
+#    test-1:
+#      driver: amqp
+#      priority: 1
+#      pipeline_size: 1000000
+#      queue: test-1-queue
+#      exchange: default
+#      exchange_type: direct
+#      routing_key: test
+#
+#    test-4:
+#      driver: amqp
+#      priority: 1
+#      pipeline_size: 1000000
+#      queue: test-1-queue
+#      exchange: default
+#      exchange_type: direct
+#      routing_key: test
+#
+#    test-2-amqp:
+#      driver: amqp
+#      priority: 2
+#      pipeline_size: 100000
+#      queue: test-2-queue
+#      exchange: default
+#      exchange_type: direct
+#      routing_key: test-2
 
     test-2:
       driver: beanstalk
@@ -92,15 +92,15 @@ jobs:
       pipeline_size: 1000000
       reserve_timeout: 10s
 
-    test-3:
-      driver: sqs
-      pipeline_size: 1000000
-      queue: default
-      attributes:
-        MessageRetentionPeriod: 86400
-      tags:
-        test: "tag"
+#    test-3:
+#      driver: sqs
+#      pipeline_size: 1000000
+#      queue: default
+#      attributes:
+#        MessageRetentionPeriod: 86400
+#      tags:
+#        test: "tag"
 
   # list of pipelines to be consumed by the server, keep empty if you want to start consuming manually
-  consume: [ "test-local", "test-local-2", "test-local-3", "test-1", "test-2-amqp", "test-3" ]
+  consume: [ "test-local", "test-local-2", "test-local-3", "test-1", "test-2-amqp", "test-3", "test-2" ]
 

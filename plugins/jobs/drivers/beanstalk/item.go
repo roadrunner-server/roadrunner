@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/beanstalkd/go-beanstalk"
+	json "github.com/json-iterator/go"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/utils"
 )
@@ -77,7 +78,21 @@ func (i *Item) Body() []byte {
 // Context packs job context (job, id) into binary payload.
 // Not used in the sqs, MessageAttributes used instead
 func (i *Item) Context() ([]byte, error) {
-	return nil, nil
+	ctx, err := json.Marshal(
+		struct {
+			ID       string              `json:"id"`
+			Job      string              `json:"job"`
+			Headers  map[string][]string `json:"headers"`
+			Timeout  int64               `json:"timeout"`
+			Pipeline string              `json:"pipeline"`
+		}{ID: i.Ident, Job: i.Job, Headers: i.Headers, Timeout: i.Options.Timeout, Pipeline: i.Options.Pipeline},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ctx, nil
 }
 
 func (i *Item) Ack() error {

@@ -17,6 +17,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/informer"
 	"github.com/spiral/roadrunner/v2/plugins/jobs"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/drivers/amqp"
+	"github.com/spiral/roadrunner/v2/plugins/jobs/drivers/beanstalk"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/drivers/ephemeral"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/drivers/sqs"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
@@ -49,6 +50,7 @@ func TestTEMP_INTI(t *testing.T) {
 		&ephemeral.Plugin{},
 		&sqs.Plugin{},
 		&amqp.Plugin{},
+		&beanstalk.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -97,7 +99,7 @@ func TestTEMP_INTI(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second * 3)
+	time.Sleep(time.Second * 3000)
 	stopCh <- struct{}{}
 	wg.Wait()
 }

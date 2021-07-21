@@ -82,7 +82,21 @@ func (j *Item) Body() []byte {
 // Context packs job context (job, id) into binary payload.
 // Not used in the amqp, amqp.Table used instead
 func (j *Item) Context() ([]byte, error) {
-	return nil, nil
+	ctx, err := json.Marshal(
+		struct {
+			ID       string              `json:"id"`
+			Job      string              `json:"job"`
+			Headers  map[string][]string `json:"headers"`
+			Timeout  int64               `json:"timeout"`
+			Pipeline string              `json:"pipeline"`
+		}{ID: j.Ident, Job: j.Job, Headers: j.Headers, Timeout: j.Options.Timeout, Pipeline: j.Options.Pipeline},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ctx, nil
 }
 
 func (j *Item) Ack() error {

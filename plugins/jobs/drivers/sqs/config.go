@@ -1,5 +1,7 @@
 package sqs
 
+import "github.com/aws/aws-sdk-go-v2/aws"
+
 type GlobalCfg struct {
 	Key          string `mapstructure:"key"`
 	Secret       string `mapstructure:"secret"`
@@ -36,7 +38,7 @@ type Config struct {
 	// Queue URLs and names are case-sensitive.
 	//
 	// This member is required.
-	Queue string `mapstructure:"queue"`
+	Queue *string `mapstructure:"queue"`
 
 	// A map of attributes with their corresponding values. The following lists the
 	// names, descriptions, and values of the special request parameters that the
@@ -81,8 +83,8 @@ func (c *GlobalCfg) InitDefault() {
 }
 
 func (c *Config) InitDefault() {
-	if c.Queue == "" {
-		c.Queue = "default"
+	if c.Queue == nil {
+		c.Queue = aws.String("default")
 	}
 
 	if c.PrefetchCount == 0 || c.PrefetchCount > 10 {

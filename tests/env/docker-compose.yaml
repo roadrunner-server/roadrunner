@@ -15,7 +15,9 @@ services:
       - "6378:6379"
 
   beanstalk:
-    image: schickling/beanstalkd
+    build:
+      context: .
+      dockerfile: Dockerfile-beanstalkd.yaml
     ports:
       - "11300:11300"
 

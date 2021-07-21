@@ -30,7 +30,7 @@ func (c *Config) InitDefault() {
 	}
 
 	if c.ReserveTimeout == 0 {
-		c.ReserveTimeout = time.Second * 5
+		c.ReserveTimeout = time.Second * 1
 	}
 
 	if c.PipePriority == 0 {

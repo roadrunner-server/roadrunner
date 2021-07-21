@@ -166,7 +166,13 @@ func (j *JobBroker) Resume(pipeline string) {
 }
 
 // Run is no-op for the ephemeral
-func (j *JobBroker) Run(_ *pipeline.Pipeline) error {
+func (j *JobBroker) Run(pipe *pipeline.Pipeline) error {
+	j.eh.Push(events.JobEvent{
+		Event:    events.EventPipeRun,
+		Driver:   pipe.Driver(),
+		Pipeline: pipe.Name(),
+		Start:    time.Now(),
+	})
 	return nil
 }
 

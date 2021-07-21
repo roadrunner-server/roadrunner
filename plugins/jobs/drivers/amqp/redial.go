@@ -38,7 +38,7 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 				expb := backoff.NewExponentialBackOff()
 				// set the retry timeout (minutes)
 				expb.MaxElapsedTime = j.retryTimeout
-				op := func() error {
+				operation := func() error {
 					j.log.Warn("rabbitmq reconnecting, caused by", "error", err)
 					var dialErr error
 					j.conn, dialErr = amqp.Dial(j.connStr)
@@ -90,7 +90,7 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 					return nil
 				}
 
-				retryErr := backoff.Retry(op, expb)
+				retryErr := backoff.Retry(operation, expb)
 				if retryErr != nil {
 					j.Unlock()
 					j.log.Error("backoff failed", "error", retryErr)
