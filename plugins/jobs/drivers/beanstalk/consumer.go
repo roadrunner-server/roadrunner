@@ -66,7 +66,7 @@ func NewBeanstalkConsumer(configKey string, log logger.Logger, cfg config.Config
 		return nil, errors.E(op, errors.Errorf("invalid socket DSN (tcp://localhost:11300, unix://beanstalk.sock), provided: %s", globalCfg.Addr))
 	}
 
-	cPool, err := NewConnPool(dsn[0], dsn[1], pipeCfg.Tube, globalCfg.Timeout)
+	cPool, err := NewConnPool(dsn[0], dsn[1], pipeCfg.Tube, globalCfg.Timeout, log)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
@@ -89,9 +89,6 @@ func NewBeanstalkConsumer(configKey string, log logger.Logger, cfg config.Config
 		stopCh:      make(chan struct{}, 2),
 		reconnectCh: make(chan struct{}),
 	}
-
-	// start redial listener
-	go jc.redial()
 
 	return jc, nil
 }
@@ -121,7 +118,7 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg config.Configu
 		return nil, errors.E(op, errors.Errorf("invalid socket DSN (tcp://localhost:11300, unix://beanstalk.sock), provided: %s", globalCfg.Addr))
 	}
 
-	cPool, err := NewConnPool(dsn[0], dsn[1], pipe.String(tube, "default"), globalCfg.Timeout)
+	cPool, err := NewConnPool(dsn[0], dsn[1], pipe.String(tube, "default"), globalCfg.Timeout, log)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
@@ -144,9 +141,6 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg config.Configu
 		stopCh:      make(chan struct{}, 2),
 		reconnectCh: make(chan struct{}, 2),
 	}
-
-	// start redial listener
-	go jc.redial()
 
 	return jc, nil
 }
