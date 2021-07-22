@@ -586,6 +586,8 @@ func Benchmark_Pool_Echo(b *testing.B) {
 }
 
 // Benchmark_Pool_Echo_Batched-32          366996          2873 ns/op        1233 B/op          24 allocs/op
+// PTR -> Benchmark_Pool_Echo_Batched-32    	  406839	      2900 ns/op	    1059 B/op	      23 allocs/op
+// PTR -> Benchmark_Pool_Echo_Batched-32    	  413312	      2904 ns/op	    1067 B/op	      23 allocs/op
 func Benchmark_Pool_Echo_Batched(b *testing.B) {
 	ctx := context.Background()
 	p, err := Initialize(
@@ -601,12 +603,23 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 	assert.NoError(b, err)
 	defer p.Destroy(ctx)
 
+	bd := make([]byte, 1024)
+	c := make([]byte, 1024)
+
+	pld := &payload.Payload{
+		Context: c,
+		Body:    bd,
+	}
+
+	b.ResetTimer()
+	b.ReportAllocs()
+
 	var wg sync.WaitGroup
 	for i := 0; i < b.N; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			if _, err := p.Exec(&payload.Payload{Body: []byte("hello")}); err != nil {
+			if _, err := p.Exec(pld); err != nil {
 				b.Fail()
 				log.Println(err)
 			}
