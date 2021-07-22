@@ -205,7 +205,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 							4. Timeout in seconds
 							5. Pipeline name
 						*/
-						
+
 						ctx, err := jb.Context()
 						if err != nil {
 							errNack := jb.Nack()
