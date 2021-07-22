@@ -2,6 +2,12 @@ package beanstalk
 
 import "time"
 
+const (
+	tubePriority   string = "tube_priority"
+	tube           string = "tube"
+	reserveTimeout string = "reserve_timeout"
+)
+
 type GlobalCfg struct {
 	Addr    string        `mapstructure:"addr"`
 	Timeout time.Duration `mapstructure:"timeout"`
@@ -26,7 +32,7 @@ type Config struct {
 
 func (c *Config) InitDefault() {
 	if c.Tube == "" {
-		c.Tube = "default"
+		c.Tube = "default-" + time.Now().String()
 	}
 
 	if c.ReserveTimeout == 0 {

@@ -96,11 +96,6 @@ func NewBeanstalkConsumer(configKey string, log logger.Logger, cfg config.Config
 func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
 	const op = errors.Op("new_beanstalk_consumer")
 
-	const (
-		tube           string = "tube"
-		reserveTimeout string = "reserve_timeout"
-	)
-
 	// PARSE CONFIGURATION -------
 	var globalCfg GlobalCfg
 
@@ -134,7 +129,7 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg config.Configu
 		tout:           globalCfg.Timeout,
 		tName:          pipe.String(tube, "default"),
 		reserveTimeout: time.Second * time.Duration(pipe.Int(reserveTimeout, 5)),
-		tubePriority:   uint32(pipe.Int(tube, 10)),
+		tubePriority:   uint32(pipe.Int(tubePriority, 0)),
 		priority:       pipe.Priority(),
 
 		// buffered with two because jobs root plugin can call Stop at the same time as Pause
@@ -178,7 +173,7 @@ func (j *JobConsumer) Push(jb *job.Job) error {
 	// <ttr> seconds, the job will time out and the server will release the job.
 	//	The minimum ttr is 1. If the client sends 0, the server will silently
 	// increase the ttr to 1. Maximum ttr is 2**32-1.
-	id, err := j.pool.Put(bb.Bytes(), 0, item.Options.DelayDuration(), item.Options.TimeoutDuration())
+	id, err := j.pool.Put(bb.Bytes(), j.tubePriority, item.Options.DelayDuration(), item.Options.TimeoutDuration())
 	if err != nil {
 		errD := j.pool.Delete(id)
 		if errD != nil {

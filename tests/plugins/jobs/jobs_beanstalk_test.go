@@ -224,9 +224,10 @@ func declareBeanstalkPipe(t *testing.T) {
 	pipe := &jobsv1beta.DeclareRequest{Pipeline: map[string]string{
 		"driver":          "beanstalk",
 		"name":            "test-3",
-		"tube":            "default",
+		"tube":            "default-" + time.Now().String(),
 		"reserve_timeout": "1",
 		"priority":        "3",
+		"tube_priority":   "10",
 	}}
 
 	er := &jobsv1beta.Empty{}
