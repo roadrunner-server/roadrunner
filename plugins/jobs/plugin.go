@@ -83,7 +83,7 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	p.stopCh = make(chan struct{}, 1)
 	p.pldPool = sync.Pool{New: func() interface{} {
 		// with nil fields
-		return payload.Payload{}
+		return &payload.Payload{}
 	}}
 
 	// initial set of pipelines
@@ -104,11 +104,11 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	return nil
 }
 
-func (p *Plugin) getPayload() payload.Payload {
-	return p.pldPool.Get().(payload.Payload)
+func (p *Plugin) getPayload() *payload.Payload {
+	return p.pldPool.Get().(*payload.Payload)
 }
 
-func (p *Plugin) putPayload(pld payload.Payload) {
+func (p *Plugin) putPayload(pld *payload.Payload) {
 	pld.Body = nil
 	pld.Context = nil
 	p.pldPool.Put(pld)

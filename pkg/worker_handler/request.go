@@ -138,18 +138,18 @@ func (r *Request) Close(log logger.Logger) {
 
 // Payload request marshaled RoadRunner payload based on PSR7 data. values encode method is JSON. Make sure to open
 // files prior to calling this method.
-func (r *Request) Payload() (payload.Payload, error) {
+func (r *Request) Payload() (*payload.Payload, error) {
 	const op = errors.Op("marshal_payload")
-	p := payload.Payload{}
+	p := &payload.Payload{}
 
 	var err error
 	if p.Context, err = json.Marshal(r); err != nil {
-		return payload.Payload{}, errors.E(op, errors.Encode, err)
+		return nil, errors.E(op, errors.Encode, err)
 	}
 
 	if r.Parsed {
 		if p.Body, err = json.Marshal(r.body); err != nil {
-			return payload.Payload{}, errors.E(op, errors.Encode, err)
+			return nil, errors.E(op, errors.Encode, err)
 		}
 	} else if r.body != nil {
 		p.Body = r.body.([]byte)

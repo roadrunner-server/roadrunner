@@ -22,7 +22,7 @@ type Response struct {
 }
 
 // NewResponse creates new response based on given pool payload.
-func NewResponse(p payload.Payload) (*Response, error) {
+func NewResponse(p *payload.Payload) (*Response, error) {
 	const op = errors.Op("http_response")
 	r := &Response{Body: p.Body}
 	if err := json.Unmarshal(p.Context, r); err != nil {

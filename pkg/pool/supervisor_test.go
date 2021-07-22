@@ -43,7 +43,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 
 	for i := 0; i < 100; i++ {
 		time.Sleep(time.Millisecond * 100)
-		_, err = p.Exec(payload.Payload{
+		_, err = p.Exec(&payload.Payload{
 			Context: []byte(""),
 			Body:    []byte("foo"),
 		})
@@ -73,7 +73,7 @@ func TestSupervisedPool_ExecWithDebugMode(t *testing.T) {
 
 	for i := 0; i < 100; i++ {
 		time.Sleep(time.Millisecond * 100)
-		_, err = p.Exec(payload.Payload{
+		_, err = p.Exec(&payload.Payload{
 			Context: []byte(""),
 			Body:    []byte("foo"),
 		})
@@ -110,14 +110,13 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 
 	pid := p.Workers()[0].Pid()
 
-	resp, err := p.Exec(payload.Payload{
+	resp, err := p.Exec(&payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
 
 	assert.Error(t, err)
-	assert.Empty(t, resp.Body)
-	assert.Empty(t, resp.Context)
+	assert.Empty(t, resp)
 
 	time.Sleep(time.Second * 1)
 	// should be new worker with new pid
@@ -145,7 +144,7 @@ func TestSupervisedPool_ExecTTL_WorkerRestarted(t *testing.T) {
 
 	pid := p.Workers()[0].Pid()
 
-	resp, err := p.Exec(payload.Payload{
+	resp, err := p.Exec(&payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -159,7 +158,7 @@ func TestSupervisedPool_ExecTTL_WorkerRestarted(t *testing.T) {
 	require.Equal(t, p.Workers()[0].State().Value(), worker.StateReady)
 	pid = p.Workers()[0].Pid()
 
-	resp, err = p.Exec(payload.Payload{
+	resp, err = p.Exec(&payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -202,7 +201,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 
 	pid := p.Workers()[0].Pid()
 
-	resp, err := p.Exec(payload.Payload{
+	resp, err := p.Exec(&payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -214,7 +213,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 	time.Sleep(time.Second * 5)
 
 	// worker should be marked as invalid and reallocated
-	_, err = p.Exec(payload.Payload{
+	_, err = p.Exec(&payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -251,7 +250,7 @@ func TestSupervisedPool_IdleTTL_StateAfterTimeout(t *testing.T) {
 	pid := p.Workers()[0].Pid()
 
 	time.Sleep(time.Millisecond * 100)
-	resp, err := p.Exec(payload.Payload{
+	resp, err := p.Exec(&payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -294,7 +293,7 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	pid := p.Workers()[0].Pid()
 
 	time.Sleep(time.Millisecond * 100)
-	resp, err := p.Exec(payload.Payload{
+	resp, err := p.Exec(&payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
@@ -346,7 +345,7 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
-	resp, err := p.Exec(payload.Payload{
+	resp, err := p.Exec(&payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})

@@ -167,8 +167,7 @@ var connErrors = map[string]struct{}{"EOF": {}}
 
 func (cp *ConnPool) checkAndRedial(err error) error {
 	const op = errors.Op("connection_pool_check_redial")
-	switch et := err.(type) {
-
+	switch et := err.(type) { //nolint:gocritic
 	// check if the error
 	case beanstalk.ConnError:
 		switch bErr := et.Err.(type) {

@@ -13,7 +13,7 @@ type Pool interface {
 	GetConfig() interface{}
 
 	// Exec executes task with payload
-	Exec(rqs payload.Payload) (payload.Payload, error)
+	Exec(rqs *payload.Payload) (*payload.Payload, error)
 
 	// Workers returns worker list associated with the pool.
 	Workers() (workers []worker.BaseProcess)
@@ -25,7 +25,7 @@ type Pool interface {
 	Destroy(ctx context.Context)
 
 	// ExecWithContext executes task with context which is used with timeout
-	execWithTTL(ctx context.Context, rqs payload.Payload) (payload.Payload, error)
+	execWithTTL(ctx context.Context, rqs *payload.Payload) (*payload.Payload, error)
 }
 
 // Watcher is an interface for the Sync workers lifecycle

@@ -337,7 +337,7 @@ func (p *Plugin) defaultAccessValidator(pool phpPool.Pool) validator.AccessValid
 
 func exec(ctx []byte, pool phpPool.Pool) (*validator.AccessValidator, error) {
 	const op = errors.Op("exec")
-	pd := payload.Payload{
+	pd := &payload.Payload{
 		Context: ctx,
 	}
 

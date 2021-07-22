@@ -30,7 +30,7 @@ func (f *Foo3) Serve() chan error {
 	conf := &server.Config{}
 
 	// test payload for echo
-	r := payload.Payload{
+	r := &payload.Payload{
 		Context: nil,
 		Body:    []byte(Response),
 	}

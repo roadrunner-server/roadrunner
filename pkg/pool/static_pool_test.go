@@ -82,7 +82,7 @@ func Test_StaticPool_Echo(t *testing.T) {
 
 	assert.NotNil(t, p)
 
-	res, err := p.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := p.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -106,7 +106,7 @@ func Test_StaticPool_Echo_NilContext(t *testing.T) {
 
 	assert.NotNil(t, p)
 
-	res, err := p.Exec(payload.Payload{Body: []byte("hello"), Context: nil})
+	res, err := p.Exec(&payload.Payload{Body: []byte("hello"), Context: nil})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -130,7 +130,7 @@ func Test_StaticPool_Echo_Context(t *testing.T) {
 
 	assert.NotNil(t, p)
 
-	res, err := p.Exec(payload.Payload{Body: []byte("hello"), Context: []byte("world")})
+	res, err := p.Exec(&payload.Payload{Body: []byte("hello"), Context: []byte("world")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -151,11 +151,10 @@ func Test_StaticPool_JobError(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
-	res, err := p.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := p.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
-	assert.Nil(t, res.Body)
-	assert.Nil(t, res.Context)
+	assert.Nil(t, res)
 
 	if errors.Is(errors.SoftJob, err) == false {
 		t.Fatal("error should be of type errors.Exec")
@@ -192,10 +191,9 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	assert.NotNil(t, p)
 
 	time.Sleep(time.Second)
-	res, err := p.execWithTTL(ctx, payload.Payload{Body: []byte("hello")})
+	res, err := p.execWithTTL(ctx, &payload.Payload{Body: []byte("hello")})
 	assert.Error(t, err)
-	assert.Nil(t, res.Context)
-	assert.Nil(t, res.Body)
+	assert.Nil(t, res)
 
 	<-block
 
@@ -232,7 +230,7 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 
 	assert.NotNil(t, p)
 
-	res, err := p.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := p.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -298,11 +296,11 @@ func Test_StaticPool_Replace_Worker(t *testing.T) {
 	var lastPID string
 	lastPID = strconv.Itoa(int(p.Workers()[0].Pid()))
 
-	res, _ := p.Exec(payload.Payload{Body: []byte("hello")})
+	res, _ := p.Exec(&payload.Payload{Body: []byte("hello")})
 	assert.Equal(t, lastPID, string(res.Body))
 
 	for i := 0; i < 10; i++ {
-		res, err := p.Exec(payload.Payload{Body: []byte("hello")})
+		res, err := p.Exec(&payload.Payload{Body: []byte("hello")})
 
 		assert.NoError(t, err)
 		assert.NotNil(t, res)
@@ -334,14 +332,14 @@ func Test_StaticPool_Debug_Worker(t *testing.T) {
 	assert.Len(t, p.Workers(), 0)
 
 	var lastPID string
-	res, _ := p.Exec(payload.Payload{Body: []byte("hello")})
+	res, _ := p.Exec(&payload.Payload{Body: []byte("hello")})
 	assert.NotEqual(t, lastPID, string(res.Body))
 
 	assert.Len(t, p.Workers(), 0)
 
 	for i := 0; i < 10; i++ {
 		assert.Len(t, p.Workers(), 0)
-		res, err := p.Exec(payload.Payload{Body: []byte("hello")})
+		res, err := p.Exec(&payload.Payload{Body: []byte("hello")})
 
 		assert.NoError(t, err)
 		assert.NotNil(t, res)
@@ -374,14 +372,14 @@ func Test_StaticPool_Stop_Worker(t *testing.T) {
 	var lastPID string
 	lastPID = strconv.Itoa(int(p.Workers()[0].Pid()))
 
-	res, err := p.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := p.Exec(&payload.Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Fatal(err)
 	}
 	assert.Equal(t, lastPID, string(res.Body))
 
 	for i := 0; i < 10; i++ {
-		res, err := p.Exec(payload.Payload{Body: []byte("hello")})
+		res, err := p.Exec(&payload.Payload{Body: []byte("hello")})
 
 		assert.NoError(t, err)
 		assert.NotNil(t, res)
@@ -411,7 +409,7 @@ func Test_Static_Pool_Destroy_And_Close(t *testing.T) {
 	assert.NoError(t, err)
 
 	p.Destroy(ctx)
-	_, err = p.Exec(payload.Payload{Body: []byte("100")})
+	_, err = p.Exec(&payload.Payload{Body: []byte("100")})
 	assert.Error(t, err)
 }
 
@@ -433,7 +431,7 @@ func Test_Static_Pool_Destroy_And_Close_While_Wait(t *testing.T) {
 	assert.NoError(t, err)
 
 	go func() {
-		_, errP := p.Exec(payload.Payload{Body: []byte("100")})
+		_, errP := p.Exec(&payload.Payload{Body: []byte("100")})
 		if errP != nil {
 			t.Errorf("error executing payload: error %v", err)
 		}
@@ -441,7 +439,7 @@ func Test_Static_Pool_Destroy_And_Close_While_Wait(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 
 	p.Destroy(ctx)
-	_, err = p.Exec(payload.Payload{Body: []byte("100")})
+	_, err = p.Exec(&payload.Payload{Body: []byte("100")})
 	assert.Error(t, err)
 }
 
@@ -465,7 +463,7 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 		p.Workers()[i].State().Set(worker.StateErrored)
 	}
 
-	_, err = p.Exec(payload.Payload{Body: []byte("hello")})
+	_, err = p.Exec(&payload.Payload{Body: []byte("hello")})
 	assert.NoError(t, err)
 	p.Destroy(ctx)
 }
@@ -519,14 +517,13 @@ func Test_StaticPool_NoFreeWorkers(t *testing.T) {
 	assert.NotNil(t, p)
 
 	go func() {
-		_, _ = p.execWithTTL(ctx, payload.Payload{Body: []byte("hello")})
+		_, _ = p.execWithTTL(ctx, &payload.Payload{Body: []byte("hello")})
 	}()
 
 	time.Sleep(time.Second)
-	res, err := p.execWithTTL(ctx, payload.Payload{Body: []byte("hello")})
+	res, err := p.execWithTTL(ctx, &payload.Payload{Body: []byte("hello")})
 	assert.Error(t, err)
-	assert.Nil(t, res.Context)
-	assert.Nil(t, res.Body)
+	assert.Nil(t, res)
 
 	<-block
 
@@ -582,7 +579,7 @@ func Benchmark_Pool_Echo(b *testing.B) {
 	b.ResetTimer()
 	b.ReportAllocs()
 	for n := 0; n < b.N; n++ {
-		if _, err := p.Exec(payload.Payload{Body: []byte("hello")}); err != nil {
+		if _, err := p.Exec(&payload.Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}
@@ -609,7 +606,7 @@ func Benchmark_Pool_Echo_Batched(b *testing.B) {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			if _, err := p.Exec(payload.Payload{Body: []byte("hello")}); err != nil {
+			if _, err := p.Exec(&payload.Payload{Body: []byte("hello")}); err != nil {
 				b.Fail()
 				log.Println(err)
 			}
@@ -639,7 +636,7 @@ func Benchmark_Pool_Echo_Replaced(b *testing.B) {
 	b.ReportAllocs()
 
 	for n := 0; n < b.N; n++ {
-		if _, err := p.Exec(payload.Payload{Body: []byte("hello")}); err != nil {
+		if _, err := p.Exec(&payload.Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 			log.Println(err)
 		}

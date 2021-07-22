@@ -43,11 +43,11 @@ func supervisorWrapper(pool Pool, events events.Handler, cfg *SupervisorConfig) 
 	return sp
 }
 
-func (sp *supervised) execWithTTL(_ context.Context, _ payload.Payload) (payload.Payload, error) {
+func (sp *supervised) execWithTTL(_ context.Context, _ *payload.Payload) (*payload.Payload, error) {
 	panic("used to satisfy pool interface")
 }
 
-func (sp *supervised) Exec(rqs payload.Payload) (payload.Payload, error) {
+func (sp *supervised) Exec(rqs *payload.Payload) (*payload.Payload, error) {
 	const op = errors.Op("supervised_exec_with_context")
 	if sp.cfg.ExecTTL == 0 {
 		return sp.pool.Exec(rqs)
@@ -58,7 +58,7 @@ func (sp *supervised) Exec(rqs payload.Payload) (payload.Payload, error) {
 
 	res, err := sp.pool.execWithTTL(ctx, rqs)
 	if err != nil {
-		return payload.Payload{}, errors.E(op, err)
+		return nil, errors.E(op, err)
 	}
 
 	return res, nil

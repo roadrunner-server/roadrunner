@@ -45,7 +45,7 @@ func (f *Foo) Serve() chan error {
 	const op = errors.Op("serve")
 
 	// test payload for echo
-	r := payload.Payload{
+	r := &payload.Payload{
 		Context: nil,
 		Body:    []byte(Response),
 	}

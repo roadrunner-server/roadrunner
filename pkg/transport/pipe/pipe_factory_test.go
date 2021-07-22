@@ -159,7 +159,7 @@ func Test_Pipe_Echo(t *testing.T) {
 
 	sw := worker.From(w)
 
-	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -184,11 +184,10 @@ func Test_Pipe_Broken(t *testing.T) {
 
 	sw := worker.From(w)
 
-	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
-	assert.Nil(t, res.Body)
-	assert.Nil(t, res.Context)
+	assert.Nil(t, res)
 }
 
 func Benchmark_Pipe_SpawnWorker_Stop(b *testing.B) {
@@ -231,7 +230,7 @@ func Benchmark_Pipe_Worker_ExecEcho(b *testing.B) {
 	}()
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(payload.Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.Exec(&payload.Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}
@@ -255,7 +254,7 @@ func Benchmark_Pipe_Worker_ExecEcho3(b *testing.B) {
 	sw := worker.From(w)
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(payload.Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.Exec(&payload.Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}
@@ -279,7 +278,7 @@ func Benchmark_Pipe_Worker_ExecEchoWithoutContext(b *testing.B) {
 	sw := worker.From(w)
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(payload.Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.Exec(&payload.Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}
@@ -305,7 +304,7 @@ func Test_Echo(t *testing.T) {
 		}
 	}()
 
-	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -333,11 +332,10 @@ func Test_BadPayload(t *testing.T) {
 		}
 	}()
 
-	res, err := sw.Exec(payload.Payload{})
+	res, err := sw.Exec(&payload.Payload{})
 
 	assert.Error(t, err)
-	assert.Nil(t, res.Body)
-	assert.Nil(t, res.Context)
+	assert.Nil(t, res)
 
 	assert.Contains(t, err.Error(), "payload can not be empty")
 }
@@ -379,7 +377,7 @@ func Test_Echo_Slow(t *testing.T) {
 
 	sw := worker.From(w)
 
-	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -409,10 +407,9 @@ func Test_Broken(t *testing.T) {
 
 	sw := worker.From(w)
 
-	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 	assert.NotNil(t, err)
-	assert.Nil(t, res.Body)
-	assert.Nil(t, res.Context)
+	assert.Nil(t, res)
 
 	time.Sleep(time.Second * 3)
 	mu.Lock()
@@ -441,10 +438,9 @@ func Test_Error(t *testing.T) {
 
 	sw := worker.From(w)
 
-	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 	assert.NotNil(t, err)
-	assert.Nil(t, res.Body)
-	assert.Nil(t, res.Context)
+	assert.Nil(t, res)
 
 	if errors.Is(errors.SoftJob, err) == false {
 		t.Fatal("error should be of type errors.ErrSoftJob")
@@ -469,19 +465,19 @@ func Test_NumExecs(t *testing.T) {
 
 	sw := worker.From(w)
 
-	_, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	_, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}
 	assert.Equal(t, uint64(1), w.State().NumExecs())
 
-	_, err = sw.Exec(payload.Payload{Body: []byte("hello")})
+	_, err = sw.Exec(&payload.Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}
 	assert.Equal(t, uint64(2), w.State().NumExecs())
 
-	_, err = sw.Exec(payload.Payload{Body: []byte("hello")})
+	_, err = sw.Exec(&payload.Payload{Body: []byte("hello")})
 	if err != nil {
 		t.Errorf("fail to execute payload: error %v", err)
 	}

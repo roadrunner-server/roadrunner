@@ -12,7 +12,7 @@ func (j *JobConsumer) listen() {
 			id, body, err := j.pool.Reserve(j.reserveTimeout)
 			if err != nil {
 				if errB, ok := err.(beanstalk.ConnError); ok {
-					switch errB.Err {
+					switch errB.Err { //nolint:gocritic
 					case beanstalk.ErrTimeout:
 						j.log.Info("beanstalk reserve timeout", "warn", errB.Op)
 						continue
