@@ -222,9 +222,9 @@ func declareEphemeralPipe(t *testing.T) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	pipe := &jobsv1beta.DeclareRequest{Pipeline: map[string]string{
-		"driver":        "ephemeral",
-		"name":          "test-3",
-		"pipeline_size": "10000",
+		"driver":   "ephemeral",
+		"name":     "test-3",
+		"prefetch": "10000",
 	}}
 
 	er := &jobsv1beta.Empty{}

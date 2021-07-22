@@ -180,7 +180,6 @@ func (j *JobConsumer) Push(jb *job.Job) error {
 	// increase the ttr to 1. Maximum ttr is 2**32-1.
 	id, err := j.pool.Put(bb.Bytes(), 0, item.Options.DelayDuration(), item.Options.TimeoutDuration())
 	if err != nil {
-		// TODO check for the connection error
 		errD := j.pool.Delete(id)
 		if errD != nil {
 			return errors.E(op, errors.Errorf("%s:%s", err.Error(), errD.Error()))
