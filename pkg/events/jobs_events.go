@@ -23,6 +23,7 @@ const (
 	// EventPipeRun when pipeline pipelines has been requested.
 	EventPipeRun
 
+	// EventInitialized when pipeline has been initialized, but not started
 	EventInitialized
 
 	// EventPipeActive when pipeline has started.
@@ -30,6 +31,9 @@ const (
 
 	// EventPipeStopped when pipeline has been stopped.
 	EventPipeStopped
+
+	// EventPipePaused when pipeline has been paused.
+	EventPipePaused
 
 	// EventPipeError when pipeline specific error happen.
 	EventPipeError

@@ -66,29 +66,23 @@ func (r *rpc) PushBatch(j *jobsv1beta.PushBatchRequest, _ *jobsv1beta.Empty) err
 	return nil
 }
 
-func (r *rpc) Pause(req *jobsv1beta.Maintenance, _ *jobsv1beta.Empty) error {
-	pipelines := make([]string, len(req.GetPipelines()))
-
-	for i := 0; i < len(pipelines); i++ {
-		pipelines[i] = req.GetPipelines()[i]
+func (r *rpc) Pause(req *jobsv1beta.Pipelines, _ *jobsv1beta.Empty) error {
+	for i := 0; i < len(req.GetPipelines()); i++ {
+		r.p.Pause(req.GetPipelines()[i])
 	}
 
-	r.p.Pause(pipelines)
 	return nil
 }
 
-func (r *rpc) Resume(req *jobsv1beta.Maintenance, _ *jobsv1beta.Empty) error {
-	pipelines := make([]string, len(req.GetPipelines()))
-
-	for i := 0; i < len(pipelines); i++ {
-		pipelines[i] = req.GetPipelines()[i]
+func (r *rpc) Resume(req *jobsv1beta.Pipelines, _ *jobsv1beta.Empty) error {
+	for i := 0; i < len(req.GetPipelines()); i++ {
+		r.p.Resume(req.GetPipelines()[i])
 	}
 
-	r.p.Resume(pipelines)
 	return nil
 }
 
-func (r *rpc) List(_ *jobsv1beta.Empty, resp *jobsv1beta.Maintenance) error {
+func (r *rpc) List(_ *jobsv1beta.Empty, resp *jobsv1beta.Pipelines) error {
 	resp.Pipelines = r.p.List()
 	return nil
 }
@@ -110,6 +104,24 @@ func (r *rpc) Declare(req *jobsv1beta.DeclareRequest, _ *jobsv1beta.Empty) error
 	if err != nil {
 		return errors.E(op, err)
 	}
+
+	return nil
+}
+
+func (r *rpc) Destroy(req *jobsv1beta.Pipelines, resp *jobsv1beta.Pipelines) error {
+	const op = errors.Op("rcp_declare_pipeline")
+
+	var destroyed []string
+	for i := 0; i < len(req.GetPipelines()); i++ {
+		err := r.p.Destroy(req.GetPipelines()[i])
+		if err != nil {
+			return errors.E(op, err)
+		}
+		destroyed = append(destroyed, req.GetPipelines()[i])
+	}
+
+	// return destroyed pipelines
+	resp.Pipelines = destroyed
 
 	return nil
 }

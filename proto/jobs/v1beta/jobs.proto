@@ -13,8 +13,8 @@ message PushBatchRequest {
     repeated Job jobs = 1;
 }
 
-// request to pause/resume/list
-message Maintenance {
+// request to pause/resume/list/Destroy
+message Pipelines {
     repeated string pipelines = 1;
 }
 

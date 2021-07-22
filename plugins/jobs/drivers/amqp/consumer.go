@@ -384,7 +384,7 @@ func (j *JobsConsumer) Pause(p string) {
 	}
 
 	j.eh.Push(events.JobEvent{
-		Event:    events.EventPipeStopped,
+		Event:    events.EventPipePaused,
 		Driver:   pipe.Driver(),
 		Pipeline: pipe.Name(),
 		Start:    time.Now(),
@@ -404,7 +404,7 @@ func (j *JobsConsumer) Resume(p string) {
 	l := atomic.LoadUint32(&j.listeners)
 	// no active listeners
 	if l == 1 {
-		j.log.Warn("sqs listener already in the active state")
+		j.log.Warn("amqp listener already in the active state")
 		return
 	}
 
@@ -438,6 +438,9 @@ func (j *JobsConsumer) Resume(p string) {
 
 	// run listener
 	j.listener(deliv)
+
+	// increase number of listeners
+	atomic.AddUint32(&j.listeners, 1)
 
 	j.eh.Push(events.JobEvent{
 		Event:    events.EventPipeActive,
