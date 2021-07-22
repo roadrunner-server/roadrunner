@@ -1,5 +1,7 @@
 package beanstalk
 
+import "github.com/beanstalkd/go-beanstalk"
+
 func (j *JobConsumer) listen() {
 	for {
 		select {
@@ -9,6 +11,13 @@ func (j *JobConsumer) listen() {
 		default:
 			id, body, err := j.pool.Reserve(j.reserveTimeout)
 			if err != nil {
+				if errB, ok := err.(beanstalk.ConnError); ok {
+					switch errB.Err {
+					case beanstalk.ErrTimeout:
+						j.log.Info("beanstalk reserve timeout", "warn", errB.Op)
+						continue
+					}
+				}
 				// in case of other error - continue
 				j.log.Error("beanstalk reserve", "error", err)
 				continue

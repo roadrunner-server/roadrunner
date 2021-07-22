@@ -9,11 +9,16 @@ server:
 amqp:
   addr: amqp://guest:guest@localhost:5672/
 
-  # beanstalk configuration
+# beanstalk configuration
+#
 beanstalk:
+  # beanstalk address
   addr: tcp://localhost:11300
+  # connect timeout
+  timeout: 10s
 
-  # amazon sqs configuration
+# amazon sqs configuration
+# General section
 sqs:
   key: api-key
   secret: api-secret
@@ -42,32 +47,47 @@ jobs:
     test-local:
       driver: ephemeral
       priority: 10
-      pipeline_size: 10000
+      prefetch: 10000
 
     test-local-2:
       driver: ephemeral
       priority: 1
-      pipeline_size: 10000
+      prefetch: 10000
 
     test-local-3:
       driver: ephemeral
       priority: 2
-      pipeline_size: 10000
+      prefetch: 10000
 
     test-1:
       driver: amqp
-      priority: 1
-      pipeline_size: 1000000
+      # QoS
+      prefetch: 1000000
+      # Queue name
       queue: test-1-queue
+      # Pipeline jobs priority, 1 - highest
+      priority: 1
+      # Exchange
       exchange: default
-      exclusive: false
+      # Exchange type: direct, topic, fanout
       exchange_type: direct
+      # Routing key for the queue
       routing_key: test
+      # Declare a queue exclusive at the exchange
+      exclusive: false
+      # When multiple is true, this delivery and all prior unacknowledged deliveries
+      # on the same channel will be acknowledged.  This is useful for batch processing
+      # of deliveries
+      multiple_ack: false
+      # When multiple is true, this delivery and all prior unacknowledged deliveries
+      # on the same channel will be acknowledged.  This is useful for batch processing
+      # of deliveries
+      requeue_on_fail: false
 
     test-2-amqp:
       driver: amqp
       priority: 2
-      pipeline_size: 100000
+      prefetch: 1000000
       queue: test-2-queue
       exchange: default
       exchange_type: direct
@@ -77,11 +97,10 @@ jobs:
       driver: beanstalk
       priority: 11
       tube: default
-      pipeline_size: 1000000
 
     test-3:
       driver: sqs
-      pipeline_size: 1000000
+      prefetch: 1000000
       queue: default
       attributes:
         MessageRetentionPeriod: 86400

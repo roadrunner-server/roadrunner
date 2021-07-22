@@ -224,7 +224,9 @@ func (j *JobConsumer) Run(p *pipeline.Pipeline) error {
 func (j *JobConsumer) Stop() error {
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 
-	j.stopCh <- struct{}{}
+	if atomic.LoadUint32(&j.listeners) == 1 {
+		j.stopCh <- struct{}{}
+	}
 
 	j.eh.Push(events.JobEvent{
 		Event:    events.EventPipeStopped,

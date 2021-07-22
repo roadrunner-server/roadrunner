@@ -2,13 +2,15 @@ package amqp
 
 // pipeline rabbitmq info
 const (
-	exchangeKey  string = "exchange"
-	exchangeType string = "exchange-type"
-	queue        string = "queue"
-	routingKey   string = "routing-key"
-	prefetch     string = "prefetch"
-	exclusive    string = "exclusive"
-	priority     string = "priority"
+	exchangeKey   string = "exchange"
+	exchangeType  string = "exchange-type"
+	queue         string = "queue"
+	routingKey    string = "routing-key"
+	prefetch      string = "prefetch"
+	exclusive     string = "exclusive"
+	priority      string = "priority"
+	multipleAsk   string = "multiple_ask"
+	requeueOnFail string = "requeue_on_fail"
 
 	dlx           string = "x-dead-letter-exchange"
 	dlxRoutingKey string = "x-dead-letter-routing-key"
@@ -24,13 +26,15 @@ type GlobalCfg struct {
 
 // Config is used to parse pipeline configuration
 type Config struct {
-	PrefetchCount int    `mapstructure:"pipeline_size"`
+	Prefetch      int    `mapstructure:"prefetch"`
 	Queue         string `mapstructure:"queue"`
 	Priority      int64  `mapstructure:"priority"`
 	Exchange      string `mapstructure:"exchange"`
 	ExchangeType  string `mapstructure:"exchange_type"`
 	RoutingKey    string `mapstructure:"routing_key"`
 	Exclusive     bool   `mapstructure:"exclusive"`
+	MultipleAck   bool   `mapstructure:"multiple_ask"`
+	RequeueOnFail bool   `mapstructure:"requeue_on_fail"`
 }
 
 func (c *Config) InitDefault() {
@@ -42,8 +46,8 @@ func (c *Config) InitDefault() {
 		c.Exchange = "default"
 	}
 
-	if c.PrefetchCount == 0 {
-		c.PrefetchCount = 100
+	if c.Prefetch == 0 {
+		c.Prefetch = 100
 	}
 
 	if c.Priority == 0 {

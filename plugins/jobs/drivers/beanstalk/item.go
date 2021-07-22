@@ -100,7 +100,7 @@ func (i *Item) Ack() error {
 }
 
 func (i *Item) Nack() error {
-	return nil
+	return i.Options.conn.Delete(i.Options.id)
 }
 
 func fromJob(job *job.Job) *Item {

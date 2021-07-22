@@ -22,6 +22,7 @@ func (j *JobConsumer) listen() { //nolint:gocognit
 	for {
 		select {
 		case <-j.pauseCh:
+			j.log.Warn("sqs listener stopped")
 			return
 		default:
 			message, err := j.client.ReceiveMessage(context.Background(), &sqs.ReceiveMessageInput{
