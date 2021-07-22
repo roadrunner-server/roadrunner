@@ -581,7 +581,7 @@ Benchmark_Pool_Echo-32    	   47760	     30517 ns/op	    7955 B/op	      19 allo
 Benchmark_Pool_Echo-32    	   48148	     29816 ns/op	    7950 B/op	      19 allocs/op
 Benchmark_Pool_Echo-32    	   52705	     29809 ns/op	    7979 B/op	      19 allocs/op
 Benchmark_Pool_Echo-32    	   54374	     27776 ns/op	    7947 B/op	      19 allocs/op
- */
+*/
 func Benchmark_Pool_Echo(b *testing.B) {
 	ctx := context.Background()
 	p, err := Initialize(

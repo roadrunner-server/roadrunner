@@ -111,7 +111,7 @@ func (r *rpc) Declare(req *jobsv1beta.DeclareRequest, _ *jobsv1beta.Empty) error
 func (r *rpc) Destroy(req *jobsv1beta.Pipelines, resp *jobsv1beta.Pipelines) error {
 	const op = errors.Op("rcp_declare_pipeline")
 
-	var destroyed []string
+	var destroyed []string //nolint:prealloc
 	for i := 0; i < len(req.GetPipelines()); i++ {
 		err := r.p.Destroy(req.GetPipelines()[i])
 		if err != nil {

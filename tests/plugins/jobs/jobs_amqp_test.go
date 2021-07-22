@@ -149,7 +149,7 @@ func TestAMQPDeclare(t *testing.T) {
 		&server.Plugin{},
 		&rpcPlugin.Plugin{},
 		&logger.ZapLogger{},
-		//mockLogger,
+		// mockLogger,
 		&jobs.Plugin{},
 		&resetter.Plugin{},
 		&informer.Plugin{},
