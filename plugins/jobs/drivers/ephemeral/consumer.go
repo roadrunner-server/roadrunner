@@ -68,10 +68,8 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, eh events.Hand
 		stopCh: make(chan struct{}, 1),
 	}
 
-	jb.cfg.PipelineSize = uint64(pipeline.Int(pipelineSize, 100_000))
-
 	// initialize a local queue
-	jb.localQueue = make(chan *Item, jb.cfg.PipelineSize)
+	jb.localQueue = make(chan *Item, pipeline.Int(pipelineSize, 100_000))
 
 	// consume from the queue
 	go jb.consume()

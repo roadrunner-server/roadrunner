@@ -78,11 +78,19 @@ func (j *JobConsumer) listen() { //nolint:gocognit
 					continue
 				}
 
+				// No retry
+				if item.Options.MaxAttempts == 0 {
+					j.pq.Insert(item)
+					continue
+				}
+
+				// MaxAttempts option specified
 				if item.Options.CanRetry() {
 					j.pq.Insert(item)
 					continue
 				}
 
+				// If MaxAttempts is more than 0, and can't retry -> delete the message
 				_, errD := j.client.DeleteMessage(context.Background(), &sqs.DeleteMessageInput{
 					QueueUrl:      j.queueURL,
 					ReceiptHandle: m.ReceiptHandle,

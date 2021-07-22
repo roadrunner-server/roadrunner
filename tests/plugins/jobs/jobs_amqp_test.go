@@ -205,7 +205,7 @@ func TestAMQPDeclare(t *testing.T) {
 	time.Sleep(time.Second * 3)
 
 	t.Run("DeclareAMQPPipeline", declareAMQPPipe)
-	t.Run("ConsumeAMQPPipeline", consumeAMQPPipe)
+	t.Run("ConsumeAMQPPipeline", resumePipes("test-3"))
 	t.Run("PushAMQPPipeline", pushToPipe("test-3"))
 	t.Run("PauseAMQPPipeline", pausePipelines("test-3"))
 	t.Run("DestroyAMQPPipeline", destroyPipelines("test-3"))
@@ -236,18 +236,5 @@ func declareAMQPPipe(t *testing.T) {
 
 	er := &jobsv1beta.Empty{}
 	err = client.Call("jobs.Declare", pipe, er)
-	assert.NoError(t, err)
-}
-
-func consumeAMQPPipe(t *testing.T) {
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
-	assert.NoError(t, err)
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-
-	pipe := &jobsv1beta.Pipelines{Pipelines: make([]string, 1)}
-	pipe.GetPipelines()[0] = "test-3"
-
-	er := &jobsv1beta.Empty{}
-	err = client.Call("jobs.Resume", pipe, er)
 	assert.NoError(t, err)
 }

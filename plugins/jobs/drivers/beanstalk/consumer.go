@@ -258,7 +258,7 @@ func (j *JobConsumer) Pause(p string) {
 	j.stopCh <- struct{}{}
 
 	j.eh.Push(events.JobEvent{
-		Event:    events.EventPipeStopped,
+		Event:    events.EventPipePaused,
 		Driver:   pipe.Driver(),
 		Pipeline: pipe.Name(),
 		Start:    time.Now(),

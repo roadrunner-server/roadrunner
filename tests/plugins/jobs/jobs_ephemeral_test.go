@@ -16,7 +16,6 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
 	"github.com/spiral/roadrunner/v2/plugins/jobs"
-	"github.com/spiral/roadrunner/v2/plugins/jobs/drivers/amqp"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/drivers/ephemeral"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
@@ -25,15 +24,14 @@ import (
 	jobsv1beta "github.com/spiral/roadrunner/v2/proto/jobs/v1beta"
 	"github.com/spiral/roadrunner/v2/tests/mocks"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
-func TestJobsInit(t *testing.T) {
+func TestEphemeralInit(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "configs/.rr-jobs-init.yaml",
+		Path:   "ephemeral/.rr-ephemeral-init.yaml",
 		Prefix: "rr",
 	}
 
@@ -46,22 +44,13 @@ func TestJobsInit(t *testing.T) {
 	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "services", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 
-	mockLogger.EXPECT().Info("driver ready", "pipeline", "test-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Info("driver ready", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-
-	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-local-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-1", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-2-amqp", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-local", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-local-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
 	mockLogger.EXPECT().Info("driver initialized", "driver", "amqp", "start", gomock.Any()).Times(2)
 
-	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-local-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-local-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-1", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-2-amqp", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-local", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
 	mockLogger.EXPECT().Info("delivery channel closed, leaving the rabbit listener").Times(2)
 
@@ -75,7 +64,6 @@ func TestJobsInit(t *testing.T) {
 		&resetter.Plugin{},
 		&informer.Plugin{},
 		&ephemeral.Plugin{},
-		&amqp.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -129,43 +117,12 @@ func TestJobsInit(t *testing.T) {
 	wg.Wait()
 }
 
-func TestJobsNoAMQPGlobal(t *testing.T) {
+func TestEphemeralDeclare(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "configs/.rr-jobs-init-no-amqp-global.yaml",
-		Prefix: "rr",
-	}
-
-	err = cont.RegisterAll(
-		cfg,
-		&server.Plugin{},
-		&rpcPlugin.Plugin{},
-		&logger.ZapLogger{},
-		&jobs.Plugin{},
-		&resetter.Plugin{},
-		&informer.Plugin{},
-		&ephemeral.Plugin{},
-		&amqp.Plugin{},
-	)
-	assert.NoError(t, err)
-
-	err = cont.Init()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	_, err = cont.Serve()
-	require.Error(t, err)
-}
-
-func TestJobsPauseResume(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
-	assert.NoError(t, err)
-
-	cfg := &config.Viper{
-		Path:   "configs/.rr-jobs-pause-resume-ephemeral.yaml",
+		Path:   "ephemeral/.rr-ephemeral-declare.yaml",
 		Prefix: "rr",
 	}
 
@@ -178,18 +135,15 @@ func TestJobsPauseResume(t *testing.T) {
 	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "services", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 
-	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-local-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-local", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-1", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Info("pipeline started", "pipeline", "test-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
-	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-local-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-local-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-local", "start", gomock.Any(), "elapsed", gomock.Any()).Times(2)
+	mockLogger.EXPECT().Info("driver initialized", "driver", "amqp", "start", gomock.Any()).Times(2)
 
-	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-local", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-1", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
-	// TODO delete
-	mockLogger.EXPECT().Debug("request", "body:", gomock.Any(), "context:", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("response", "body:", gomock.Any(), "context:", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Info("delivery channel closed, leaving the rabbit listener").Times(2)
 
 	err = cont.RegisterAll(
 		cfg,
@@ -202,7 +156,6 @@ func TestJobsPauseResume(t *testing.T) {
 		&informer.Plugin{},
 		&ephemeral.Plugin{},
 	)
-
 	assert.NoError(t, err)
 
 	err = cont.Init()
@@ -252,37 +205,40 @@ func TestJobsPauseResume(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 
-	t.Run("ephemeralPause", ephemeralPause)
-	t.Run("pushToDisabledPipe", pushToDisabledPipe("test-local"))
-	t.Run("ephemeralResume", ephemeralResume)
-	t.Run("pushToEnabledPipe", pushToPipe("test-local"))
+	t.Run("DeclareEphemeralPipeline", declareEphemeralPipe)
+	t.Run("ConsumeEphemeralPipeline", consumeEphemeralPipe)
+	t.Run("PushEphemeralPipeline", pushToPipe("test-3"))
+	t.Run("PauseEphemeralPipeline", pausePipelines("test-3"))
+	t.Run("DestroyEphemeralPipeline", destroyPipelines("test-3"))
 
-	time.Sleep(time.Second * 1)
-
+	time.Sleep(time.Second * 5)
 	stopCh <- struct{}{}
 	wg.Wait()
 }
 
-func ephemeralPause(t *testing.T) {
+func declareEphemeralPipe(t *testing.T) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
-	pipe := &jobsv1beta.Pipelines{Pipelines: make([]string, 1)}
-	pipe.GetPipelines()[0] = "test-local"
+	pipe := &jobsv1beta.DeclareRequest{Pipeline: map[string]string{
+		"driver":        "ephemeral",
+		"name":          "test-3",
+		"pipeline_size": "10000",
+	}}
 
 	er := &jobsv1beta.Empty{}
-	err = client.Call("jobs.Pause", pipe, er)
+	err = client.Call("jobs.Declare", pipe, er)
 	assert.NoError(t, err)
 }
 
-func ephemeralResume(t *testing.T) {
+func consumeEphemeralPipe(t *testing.T) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	pipe := &jobsv1beta.Pipelines{Pipelines: make([]string, 1)}
-	pipe.GetPipelines()[0] = "test-local"
+	pipe.GetPipelines()[0] = "test-3"
 
 	er := &jobsv1beta.Empty{}
 	err = client.Call("jobs.Resume", pipe, er)
