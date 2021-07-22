@@ -564,6 +564,12 @@ func Test_Static_Pool_WrongCommand2(t *testing.T) {
 	assert.Nil(t, p)
 }
 
+// PTR:
+// Benchmark_Pool_Echo-32    	   49076	     29926 ns/op	    8016 B/op	      20 allocs/op
+// Benchmark_Pool_Echo-32    	   47257	     30779 ns/op	    8047 B/op	      20 allocs/op
+// Benchmark_Pool_Echo-32    	   46737	     29440 ns/op	    8065 B/op	      20 allocs/op
+// Benchmark_Pool_Echo-32    	   51177	     29074 ns/op	    7981 B/op	      20 allocs/op
+// Benchmark_Pool_Echo-32    	   51764	     28319 ns/op	    8012 B/op	      20 allocs/op
 func Benchmark_Pool_Echo(b *testing.B) {
 	ctx := context.Background()
 	p, err := Initialize(
@@ -576,10 +582,18 @@ func Benchmark_Pool_Echo(b *testing.B) {
 		b.Fatal(err)
 	}
 
+	bd := make([]byte, 1024)
+	c := make([]byte, 1024)
+
+	pld := &payload.Payload{
+		Context: c,
+		Body:    bd,
+	}
+
 	b.ResetTimer()
 	b.ReportAllocs()
 	for n := 0; n < b.N; n++ {
-		if _, err := p.Exec(&payload.Payload{Body: []byte("hello")}); err != nil {
+		if _, err := p.Exec(pld); err != nil {
 			b.Fail()
 		}
 	}
