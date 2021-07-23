@@ -32,9 +32,16 @@ jobs:
     test-1:
       driver: sqs
       prefetch: 1000
+      visibility_timeout: 0
+      wait_time_seconds: 0
       queue: default
+      # https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SetQueueAttributes.html
       attributes:
-        MessageRetentionPeriod: 86400
+        DelaySeconds: 0
+        MaximumMessageSize: 262144
+        MessageRetentionPeriod: 345600
+        ReceiveMessageWaitTimeSeconds: 0
+        VisibilityTimeout: 30
       tags:
         test: "tag"
 

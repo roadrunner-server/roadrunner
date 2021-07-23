@@ -2,6 +2,15 @@ package sqs
 
 import "github.com/aws/aws-sdk-go-v2/aws"
 
+const (
+	attributes string = "attributes"
+	tags       string = "tags"
+	queue      string = "queue"
+	pref       string = "prefetch"
+	visibility string = "visibility_timeout"
+	waitTime   string = "wait_time"
+)
+
 type GlobalCfg struct {
 	Key          string `mapstructure:"key"`
 	Secret       string `mapstructure:"secret"`
@@ -20,10 +29,10 @@ type Config struct {
 	// sooner than WaitTimeSeconds. If no messages are available and the wait time
 	// expires, the call returns successfully with an empty list of messages.
 	WaitTimeSeconds int32 `mapstructure:"wait_time_seconds"`
-	// PrefetchCount is the maximum number of messages to return. Amazon SQS never returns more messages
+	// Prefetch is the maximum number of messages to return. Amazon SQS never returns more messages
 	// than this value (however, fewer messages might be returned). Valid values: 1 to
 	// 10. Default: 1.
-	PrefetchCount int32 `mapstructure:"pipeline_size"`
+	Prefetch int32 `mapstructure:"prefetch"`
 	// The name of the new queue. The following limits apply to this name:
 	//
 	// * A queue
@@ -87,8 +96,8 @@ func (c *Config) InitDefault() {
 		c.Queue = aws.String("default")
 	}
 
-	if c.PrefetchCount == 0 || c.PrefetchCount > 10 {
-		c.PrefetchCount = 10
+	if c.Prefetch == 0 || c.Prefetch > 10 {
+		c.Prefetch = 10
 	}
 
 	if c.WaitTimeSeconds == 0 {

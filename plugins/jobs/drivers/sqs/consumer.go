@@ -93,7 +93,7 @@ func NewSQSConsumer(configKey string, log logger.Logger, cfg cfgPlugin.Configure
 		attributes:        pipeCfg.Attributes,
 		tags:              pipeCfg.Tags,
 		queue:             pipeCfg.Queue,
-		prefetch:          pipeCfg.PrefetchCount,
+		prefetch:          pipeCfg.Prefetch,
 		visibilityTimeout: pipeCfg.VisibilityTimeout,
 		waitTime:          pipeCfg.WaitTimeSeconds,
 		region:            globalCfg.Region,
@@ -141,15 +141,6 @@ func NewSQSConsumer(configKey string, log logger.Logger, cfg cfgPlugin.Configure
 
 func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg cfgPlugin.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
 	const op = errors.Op("new_sqs_consumer")
-
-	const (
-		attributes string = "attributes"
-		tags       string = "tags"
-		queue      string = "queue"
-		pref       string = "prefetch"
-		visibility string = "visibility_timeout"
-		waitTime   string = "wait_time"
-	)
 
 	// if no global section
 	if !cfg.Has(pluginName) {

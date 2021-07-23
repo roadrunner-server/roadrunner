@@ -222,12 +222,13 @@ func declareSQSPipe(t *testing.T) {
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	pipe := &jobsv1beta.DeclareRequest{Pipeline: map[string]string{
-		"driver":    "sqs",
-		"name":      "test-3",
-		"queue":     "default",
-		"prefetch":  "100",
-		"priority":  "3",
-		"wait_time": "3",
+		"driver":             "sqs",
+		"name":               "test-3",
+		"queue":              "default",
+		"prefetch":           "10",
+		"priority":           "3",
+		"visibility_timeout": "0",
+		"wait_time_seconds":  "3",
 	}}
 
 	er := &jobsv1beta.Empty{}

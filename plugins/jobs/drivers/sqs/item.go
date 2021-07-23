@@ -20,7 +20,7 @@ const (
 	ApproximateReceiveCount string = "ApproximateReceiveCount"
 )
 
-var attributes = []string{
+var itemAttributes = []string{
 	job.RRJob,
 	job.RRDelay,
 	job.RRTimeout,
@@ -194,9 +194,9 @@ func unpack(msg *types.Message, queue *string, client *sqs.Client) (*Item, error
 		return nil, errors.E(op, errors.Str("failed to unpack the ApproximateReceiveCount attribute"))
 	}
 
-	for i := 0; i < len(attributes); i++ {
-		if _, ok := msg.MessageAttributes[attributes[i]]; !ok {
-			return nil, errors.E(op, errors.Errorf("missing queue attribute: %s", attributes[i]))
+	for i := 0; i < len(itemAttributes); i++ {
+		if _, ok := msg.MessageAttributes[itemAttributes[i]]; !ok {
+			return nil, errors.E(op, errors.Errorf("missing queue attribute: %s", itemAttributes[i]))
 		}
 	}
 
