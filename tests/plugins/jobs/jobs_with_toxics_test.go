@@ -130,10 +130,9 @@ func TestDurabilityAMQP(t *testing.T) {
 	disableProxy("redial", t)
 	time.Sleep(time.Second * 5)
 
-	t.Run("DestroyPipelineWhileRedialing", destroyPipelines("test-1", "test-2"))
-
 	enableProxy("redial", t)
-	time.Sleep(time.Second * 3)
+
+	time.Sleep(time.Second * 5)
 
 	stopCh <- struct{}{}
 	wg.Wait()
