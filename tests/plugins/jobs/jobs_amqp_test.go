@@ -24,6 +24,7 @@ import (
 	jobsv1beta "github.com/spiral/roadrunner/v2/proto/jobs/v1beta"
 	"github.com/spiral/roadrunner/v2/tests/mocks"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAMQPInit(t *testing.T) {
@@ -238,4 +239,34 @@ func declareAMQPPipe(t *testing.T) {
 	er := &jobsv1beta.Empty{}
 	err = client.Call("jobs.Declare", pipe, er)
 	assert.NoError(t, err)
+}
+
+func TestAMQPNoGlobalSection(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "amqp/.rr-no-global.yaml",
+		Prefix: "rr",
+	}
+
+	err = cont.RegisterAll(
+		cfg,
+		&server.Plugin{},
+		&rpcPlugin.Plugin{},
+		&logger.ZapLogger{},
+		&jobs.Plugin{},
+		&resetter.Plugin{},
+		&informer.Plugin{},
+		&amqp.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = cont.Serve()
+	require.Error(t, err)
 }
