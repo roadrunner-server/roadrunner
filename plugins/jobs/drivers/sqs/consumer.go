@@ -256,9 +256,12 @@ func (j *JobConsumer) Push(jb *job.Job) error {
 
 	msg := fromJob(jb)
 
+	// 10 seconds deadline to make a request TODO ???
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(time.Second*10))
+	defer cancel()
 	// The new value for the message's visibility timeout (in seconds). Values range: 0
 	// to 43200. Maximum: 12 hours.
-	_, err := j.client.SendMessage(context.Background(), msg.pack(j.queueURL))
+	_, err := j.client.SendMessage(ctx, msg.pack(j.queueURL))
 	if err != nil {
 		return errors.E(op, err)
 	}

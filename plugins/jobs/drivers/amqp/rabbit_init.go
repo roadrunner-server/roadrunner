@@ -7,7 +7,7 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/events"
 )
 
-func (j *JobsConsumer) initRabbitMQ() error {
+func (j *JobConsumer) initRabbitMQ() error {
 	const op = errors.Op("jobs_plugin_rmq_init")
 	// Channel opens a unique, concurrent server channel to process the bulk of AMQP
 	// messages.  Any error from methods on this receiver will render the receiver

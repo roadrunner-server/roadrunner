@@ -10,7 +10,7 @@ sqs:
   key: api-key
   secret: api-secret
   region: us-west-1
-  endpoint: http://localhost:9324
+  endpoint: http://localhost:19324
 
 logs:
   level: debug
@@ -29,9 +29,9 @@ jobs:
   pipelines:
     test-1:
       driver: sqs
-      prefetch: 1000
+      prefetch: 10
       visibility_timeout: 0
-      wait_time_seconds: 0
+      wait_time_seconds: 1
       queue: default
       # https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SetQueueAttributes.html
       attributes:
@@ -39,14 +39,15 @@ jobs:
         MaximumMessageSize: 262144
         MessageRetentionPeriod: 345600
         ReceiveMessageWaitTimeSeconds: 0
-        VisibilityTimeout: 30
+        VisibilityTimeout: 0
       tags:
         test: "tag"
 
     test-2:
       driver: sqs
-      prefetch: 1000
+      prefetch: 10
       queue: default-2
+      wait_time_seconds: 1
       attributes:
         MessageRetentionPeriod: 86400
       tags:

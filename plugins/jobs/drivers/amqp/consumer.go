@@ -17,7 +17,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-type JobsConsumer struct {
+type JobConsumer struct {
 	sync.Mutex
 	log logger.Logger
 	pq  priorityqueue.Queue
@@ -50,7 +50,7 @@ type JobsConsumer struct {
 }
 
 // NewAMQPConsumer initializes rabbitmq pipeline
-func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobsConsumer, error) {
+func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
 	const op = errors.Op("new_amqp_consumer")
 	// we need to obtain two parts of the amqp information here.
 	// firs part - address to connect, it is located in the global section under the amqp pluginName
@@ -84,7 +84,7 @@ func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer,
 	globalCfg.InitDefault()
 	// PARSE CONFIGURATION END -------
 
-	jb := &JobsConsumer{
+	jb := &JobConsumer{
 		log:       log,
 		pq:        pq,
 		eh:        e,
@@ -129,7 +129,7 @@ func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer,
 	return jb, nil
 }
 
-func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobsConsumer, error) {
+func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
 	const op = errors.Op("new_amqp_consumer_from_pipeline")
 	// we need to obtain two parts of the amqp information here.
 	// firs part - address to connect, it is located in the global section under the amqp pluginName
@@ -152,7 +152,7 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Con
 
 	// PARSE CONFIGURATION -------
 
-	jb := &JobsConsumer{
+	jb := &JobConsumer{
 		log:          log,
 		eh:           e,
 		pq:           pq,
@@ -200,7 +200,7 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Con
 	return jb, nil
 }
 
-func (j *JobsConsumer) Push(job *job.Job) error {
+func (j *JobConsumer) Push(job *job.Job) error {
 	const op = errors.Op("rabbitmq_push")
 	// check if the pipeline registered
 
@@ -298,12 +298,12 @@ func (j *JobsConsumer) Push(job *job.Job) error {
 	return nil
 }
 
-func (j *JobsConsumer) Register(pipeline *pipeline.Pipeline) error {
+func (j *JobConsumer) Register(pipeline *pipeline.Pipeline) error {
 	j.pipeline.Store(pipeline)
 	return nil
 }
 
-func (j *JobsConsumer) Run(p *pipeline.Pipeline) error {
+func (j *JobConsumer) Run(p *pipeline.Pipeline) error {
 	const op = errors.Op("rabbit_consume")
 
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
@@ -353,7 +353,7 @@ func (j *JobsConsumer) Run(p *pipeline.Pipeline) error {
 	return nil
 }
 
-func (j *JobsConsumer) Pause(p string) {
+func (j *JobConsumer) Pause(p string) {
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
 		j.log.Error("no such pipeline", "requested pause on: ", p)
@@ -391,7 +391,7 @@ func (j *JobsConsumer) Pause(p string) {
 	})
 }
 
-func (j *JobsConsumer) Resume(p string) {
+func (j *JobConsumer) Resume(p string) {
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
 		j.log.Error("no such pipeline", "requested resume on: ", p)
@@ -450,7 +450,7 @@ func (j *JobsConsumer) Resume(p string) {
 	})
 }
 
-func (j *JobsConsumer) Stop() error {
+func (j *JobConsumer) Stop() error {
 	j.stopCh <- struct{}{}
 
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)

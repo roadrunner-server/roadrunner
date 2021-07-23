@@ -111,7 +111,7 @@ func (j *Item) Nack() error {
 	return j.NackFunc(false, j.Options.requeue)
 }
 
-func (j *JobsConsumer) fromDelivery(d amqp.Delivery) (*Item, error) {
+func (j *JobConsumer) fromDelivery(d amqp.Delivery) (*Item, error) {
 	const op = errors.Op("from_delivery_convert")
 	item, err := j.unpack(d)
 	if err != nil {
@@ -161,7 +161,7 @@ func pack(id string, j *Item) (amqp.Table, error) {
 }
 
 // unpack restores jobs.Options
-func (j *JobsConsumer) unpack(d amqp.Delivery) (*Item, error) {
+func (j *JobConsumer) unpack(d amqp.Delivery) (*Item, error) {
 	item := &Item{Payload: utils.AsString(d.Body), Options: &Options{
 		multipleAsk: j.multipleAck,
 		requeue:     j.requeueOnFail,

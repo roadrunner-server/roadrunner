@@ -2,7 +2,7 @@ package amqp
 
 import "github.com/streadway/amqp"
 
-func (j *JobsConsumer) listener(deliv <-chan amqp.Delivery) {
+func (j *JobConsumer) listener(deliv <-chan amqp.Delivery) {
 	go func() {
 		for { //nolint:gosimple
 			select {
