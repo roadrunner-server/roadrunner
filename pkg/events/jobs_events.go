@@ -20,9 +20,6 @@ const (
 	// EventJobError thrown on all job related errors. See JobError as context.
 	EventJobError
 
-	// EventPipeRun when pipeline pipelines has been requested.
-	EventPipeRun
-
 	// EventInitialized when pipeline has been initialized, but not started
 	EventInitialized
 
@@ -56,8 +53,6 @@ func (ev J) String() string {
 		return "EventJobOK"
 	case EventJobError:
 		return "EventJobError"
-	case EventPipeRun:
-		return "EventPipeRun"
 	case EventInitialized:
 		return "EventInitialized"
 	case EventPipeActive:

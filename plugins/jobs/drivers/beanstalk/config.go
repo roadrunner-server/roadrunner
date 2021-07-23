@@ -32,7 +32,7 @@ type Config struct {
 
 func (c *Config) InitDefault() {
 	if c.Tube == "" {
-		c.Tube = "default-" + time.Now().String()
+		c.Tube = "default"
 	}
 
 	if c.ReserveTimeout == 0 {
