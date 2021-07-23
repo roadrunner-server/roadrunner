@@ -43,7 +43,7 @@ func (c *Config) InitDefault() {
 	}
 
 	if c.Exchange == "" {
-		c.Exchange = "default"
+		c.Exchange = "amqp.default"
 	}
 
 	if c.Prefetch == 0 {
