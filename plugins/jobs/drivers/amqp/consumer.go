@@ -344,7 +344,7 @@ func (j *JobsConsumer) Run(p *pipeline.Pipeline) error {
 	j.listener(deliv)
 
 	j.eh.Push(events.JobEvent{
-		Event:    events.EventPipeRun,
+		Event:    events.EventPipeActive,
 		Driver:   pipe.Driver(),
 		Pipeline: pipe.Name(),
 		Start:    time.Now(),
