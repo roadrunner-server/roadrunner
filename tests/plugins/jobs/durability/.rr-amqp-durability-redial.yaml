@@ -1,0 +1,54 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+server:
+  command: "php ../../client.php echo pipes"
+  relay: "pipes"
+  relay_timeout: "20s"
+
+amqp:
+  addr: amqp://guest:guest@localhost:23679/
+
+logs:
+  level: info
+  encoding: console
+  mode: development
+
+jobs:
+  num_pollers: 10
+  pipeline_size: 100000
+  pool:
+    num_workers: 10
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+
+  pipelines:
+    test-1:
+      driver: amqp
+      prefetch: 100
+      queue: test-1-queue
+      priority: 1
+      exchange: default
+      exchange_type: direct
+      routing_key: test-1
+      exclusive: false
+      multiple_ack: false
+      requeue_on_fail: false
+
+    test-2:
+      driver: amqp
+      prefetch: 100
+      queue: test-2-queue
+      priority: 2
+      exchange: default
+      exchange_type: direct
+      routing_key: test-2
+      exclusive: false
+      multiple_ack: false
+      requeue_on_fail: false
+
+
+  # list of pipelines to be consumed by the server, keep empty if you want to start consuming manually
+  consume: [ "test-1", "test-2" ]
+

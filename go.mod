@@ -3,13 +3,16 @@ module github.com/spiral/roadrunner/v2
 go 1.16
 
 require (
+	github.com/Shopify/toxiproxy v2.1.4+incompatible // indirect
 	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
 	github.com/alicebob/miniredis/v2 v2.14.5
+	// ========= AWS SDK v2
 	github.com/aws/aws-sdk-go-v2 v1.7.0
 	github.com/aws/aws-sdk-go-v2/config v1.4.1
 	github.com/aws/aws-sdk-go-v2/credentials v1.3.0
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.6.0
 	github.com/aws/smithy-go v1.5.0
+	// =====================
 	github.com/beanstalkd/go-beanstalk v0.1.0
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
 	github.com/cenkalti/backoff/v4 v4.1.1

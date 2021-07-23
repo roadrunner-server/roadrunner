@@ -14,6 +14,13 @@ services:
     ports:
       - "6378:6379"
 
+  toxicproxy:
+    image: shopify/toxiproxy
+#    ports:
+#      - "8474:8474"
+#      - "5673:5673"
+    network_mode: "host"
+
   beanstalk:
     build:
       context: .

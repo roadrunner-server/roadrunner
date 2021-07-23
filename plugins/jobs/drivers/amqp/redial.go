@@ -26,6 +26,7 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 
 				t := time.Now()
 				pipe := j.pipeline.Load().(*pipeline.Pipeline)
+
 				j.eh.Push(events.JobEvent{
 					Event:    events.EventPipeError,
 					Pipeline: pipe.Name(),
@@ -34,7 +35,6 @@ func (j *JobsConsumer) redialer() { //nolint:gocognit
 					Start:    time.Now(),
 				})
 
-				j.log.Error("connection closed, reconnecting", "error", err)
 				expb := backoff.NewExponentialBackOff()
 				// set the retry timeout (minutes)
 				expb.MaxElapsedTime = j.retryTimeout
