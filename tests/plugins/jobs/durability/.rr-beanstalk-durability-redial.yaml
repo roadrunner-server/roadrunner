@@ -7,11 +7,11 @@ server:
   relay_timeout: "20s"
 
 beanstalk:
-  addr: tcp://localhost:11300
+  addr: tcp://localhost:11400
   timeout: 10s
 
 logs:
-  level: info
+  level: debug
   encoding: console
   mode: development
 
