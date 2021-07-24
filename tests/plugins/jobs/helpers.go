@@ -13,6 +13,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const (
+	push    string = "jobs.Push"
+	pause   string = "jobs.Pause"
+	destroy string = "jobs.Destroy"
+	resume  string = "jobs.Resume"
+)
+
 func resumePipes(pipes ...string) func(t *testing.T) {
 	return func(t *testing.T) {
 		conn, err := net.Dial("tcp", "127.0.0.1:6001")
@@ -26,7 +33,7 @@ func resumePipes(pipes ...string) func(t *testing.T) {
 		}
 
 		er := &jobsv1beta.Empty{}
-		err = client.Call("jobs.Resume", pipe, er)
+		err = client.Call(resume, pipe, er)
 		assert.NoError(t, err)
 	}
 }
@@ -49,7 +56,7 @@ func pushToDisabledPipe(pipeline string) func(t *testing.T) {
 		}}
 
 		er := &jobsv1beta.Empty{}
-		err = client.Call("jobs.Push", req, er)
+		err = client.Call(push, req, er)
 		assert.Error(t, err)
 	}
 }
@@ -76,7 +83,7 @@ func pushToPipe(pipeline string) func(t *testing.T) {
 		}}
 
 		er := &jobsv1beta.Empty{}
-		err = client.Call("jobs.Push", req, er)
+		err = client.Call(push, req, er)
 		assert.NoError(t, err)
 	}
 }
@@ -94,7 +101,7 @@ func pausePipelines(pipes ...string) func(t *testing.T) {
 		}
 
 		er := &jobsv1beta.Empty{}
-		err = client.Call("jobs.Pause", pipe, er)
+		err = client.Call(pause, pipe, er)
 		assert.NoError(t, err)
 	}
 }
@@ -112,7 +119,7 @@ func destroyPipelines(pipes ...string) func(t *testing.T) {
 		}
 
 		er := &jobsv1beta.Empty{}
-		err = client.Call("jobs.Destroy", pipe, er)
+		err = client.Call(destroy, pipe, er)
 		assert.NoError(t, err)
 	}
 }
