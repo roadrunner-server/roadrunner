@@ -129,11 +129,21 @@ func TestDurabilityAMQP(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 	disableProxy("redial", t)
-	time.Sleep(time.Second * 5)
+	time.Sleep(time.Second * 3)
 
+	go func() {
+		time.Sleep(time.Second * 2)
+		t.Run("PushPipelineWhileRedialing-1", pushToPipe("test-1"))
+		t.Run("PushPipelineWhileRedialing-2", pushToPipe("test-2"))
+	}()
+
+	time.Sleep(time.Second * 5)
 	enableProxy("redial", t)
 
-	time.Sleep(time.Second * 5)
+	t.Run("PushPipelineWhileRedialing-1", pushToPipe("test-1"))
+	t.Run("PushPipelineWhileRedialing-2", pushToPipe("test-2"))
+
+	time.Sleep(time.Second * 10)
 
 	stopCh <- struct{}{}
 	wg.Wait()
@@ -244,9 +254,13 @@ func TestDurabilitySQS(t *testing.T) {
 	disableProxy("redial", t)
 	time.Sleep(time.Second * 3)
 
-	t.Run("PushPipelineWhileRedialing-1", pushToPipeExpectErr("test-1"))
-	t.Run("PushPipelineWhileRedialing-2", pushToPipeExpectErr("test-2"))
+	go func() {
+		time.Sleep(time.Second * 2)
+		t.Run("PushPipelineWhileRedialing-1", pushToPipe("test-1"))
+		t.Run("PushPipelineWhileRedialing-2", pushToPipe("test-2"))
+	}()
 
+	time.Sleep(time.Second * 5)
 	enableProxy("redial", t)
 
 	t.Run("PushPipelineWhileRedialing-1", pushToPipe("test-1"))
