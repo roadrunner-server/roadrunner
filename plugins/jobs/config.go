@@ -23,6 +23,9 @@ type Config struct {
 	// Driver pipeline might be much larger than a main jobs queue
 	PipelineSize uint64 `mapstructure:"pipeline_size"`
 
+	// Timeout in seconds is the per-push limit to put the job into queue
+	Timeout int `mapstructure:"timeout"`
+
 	// Pool configures roadrunner workers pool.
 	Pool *poolImpl.Config `mapstructure:"Pool"`
 
@@ -49,6 +52,10 @@ func (c *Config) InitDefaults() {
 	for k := range c.Pipelines {
 		// set the pipeline name
 		c.Pipelines[k].With(pipelineName, k)
+	}
+
+	if c.Timeout == 0 {
+		c.Timeout = 10
 	}
 
 	c.Pool.InitDefaults()

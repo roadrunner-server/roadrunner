@@ -1,6 +1,8 @@
 package jobs
 
 import (
+	"context"
+
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
@@ -9,13 +11,13 @@ import (
 
 // Consumer todo naming
 type Consumer interface {
-	Push(job *job.Job) error
-	Register(pipeline *pipeline.Pipeline) error
-	Run(pipeline *pipeline.Pipeline) error
-	Stop() error
+	Push(ctx context.Context, job *job.Job) error
+	Register(ctx context.Context, pipeline *pipeline.Pipeline) error
+	Run(ctx context.Context, pipeline *pipeline.Pipeline) error
+	Stop(ctx context.Context) error
 
-	Pause(pipeline string)
-	Resume(pipeline string)
+	Pause(ctx context.Context, pipeline string)
+	Resume(ctx context.Context, pipeline string)
 }
 
 type Constructor interface {

@@ -1,15 +1,19 @@
 package beanstalk
 
-import "github.com/beanstalkd/go-beanstalk"
+import (
+	"context"
 
-func (j *JobConsumer) listen() {
+	"github.com/beanstalkd/go-beanstalk"
+)
+
+func (j *JobConsumer) listen(ctx context.Context) {
 	for {
 		select {
 		case <-j.stopCh:
 			j.log.Warn("beanstalk listener stopped")
 			return
 		default:
-			id, body, err := j.pool.Reserve(j.reserveTimeout)
+			id, body, err := j.pool.Reserve(ctx, j.reserveTimeout)
 			if err != nil {
 				if errB, ok := err.(beanstalk.ConnError); ok {
 					switch errB.Err { //nolint:gocritic

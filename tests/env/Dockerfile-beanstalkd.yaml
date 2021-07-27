@@ -1,6 +1,8 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get install -y curl build-essential
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y curl build-essential pkg-config
 
 RUN curl -sL https://github.com/kr/beanstalkd/archive/v1.12.tar.gz | tar xvz -C /tmp
 

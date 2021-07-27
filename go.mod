@@ -3,7 +3,7 @@ module github.com/spiral/roadrunner/v2
 go 1.16
 
 require (
-	github.com/Shopify/toxiproxy v2.1.4+incompatible // indirect
+	github.com/Shopify/toxiproxy v2.1.4+incompatible
 	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
 	github.com/alicebob/miniredis/v2 v2.14.5
 	// ========= AWS SDK v2

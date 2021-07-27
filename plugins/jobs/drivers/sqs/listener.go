@@ -18,14 +18,14 @@ const (
 	NonExistentQueue string = "AWS.SimpleQueueService.NonExistentQueue"
 )
 
-func (j *JobConsumer) listen() { //nolint:gocognit
+func (j *JobConsumer) listen(ctx context.Context) { //nolint:gocognit
 	for {
 		select {
 		case <-j.pauseCh:
 			j.log.Warn("sqs listener stopped")
 			return
 		default:
-			message, err := j.client.ReceiveMessage(context.Background(), &sqs.ReceiveMessageInput{
+			message, err := j.client.ReceiveMessage(ctx, &sqs.ReceiveMessageInput{
 				QueueUrl:              j.queueURL,
 				MaxNumberOfMessages:   j.prefetch,
 				AttributeNames:        []types.QueueAttributeName{types.QueueAttributeName(ApproximateReceiveCount)},

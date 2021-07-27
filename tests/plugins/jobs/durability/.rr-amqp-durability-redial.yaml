@@ -10,13 +10,14 @@ amqp:
   addr: amqp://guest:guest@localhost:23679/
 
 logs:
-  level: info
+  level: debug
   encoding: console
   mode: development
 
 jobs:
   num_pollers: 10
   pipeline_size: 100000
+  timeout: 1
   pool:
     num_workers: 10
     max_jobs: 0
