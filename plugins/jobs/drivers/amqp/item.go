@@ -4,10 +4,10 @@ import (
 	"time"
 
 	json "github.com/json-iterator/go"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/utils"
-	"github.com/streadway/amqp"
 )
 
 type Item struct {

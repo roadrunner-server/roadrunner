@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   memcached:
@@ -16,9 +16,6 @@ services:
 
   toxicproxy:
     image: shopify/toxiproxy
-#    ports:
-#      - "8474:8474"
-#      - "5673:5673"
     network_mode: "host"
 
   beanstalk:
@@ -37,10 +34,6 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-      RABBITMQ_DEFAULT_VHOST: /
     ports:
       - "15672:15672"
       - "5672:5672"

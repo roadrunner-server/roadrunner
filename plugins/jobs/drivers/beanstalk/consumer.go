@@ -192,7 +192,7 @@ func (j *JobConsumer) Register(ctx context.Context, p *pipeline.Pipeline) error 
 	return nil
 }
 
-func (j *JobConsumer) Run(ctx context.Context, p *pipeline.Pipeline) error {
+func (j *JobConsumer) Run(_ context.Context, p *pipeline.Pipeline) error {
 	const op = errors.Op("beanstalk_run")
 	// check if the pipeline registered
 
@@ -204,7 +204,7 @@ func (j *JobConsumer) Run(ctx context.Context, p *pipeline.Pipeline) error {
 
 	atomic.AddUint32(&j.listeners, 1)
 
-	go j.listen(ctx)
+	go j.listen()
 
 	j.eh.Push(events.JobEvent{
 		Event:    events.EventPipeActive,
@@ -260,7 +260,7 @@ func (j *JobConsumer) Pause(ctx context.Context, p string) {
 	})
 }
 
-func (j *JobConsumer) Resume(ctx context.Context, p string) {
+func (j *JobConsumer) Resume(_ context.Context, p string) {
 	// load atomic value
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
@@ -276,7 +276,7 @@ func (j *JobConsumer) Resume(ctx context.Context, p string) {
 	}
 
 	// start listener
-	go j.listen(ctx)
+	go j.listen()
 
 	// increase num of listeners
 	atomic.AddUint32(&j.listeners, 1)

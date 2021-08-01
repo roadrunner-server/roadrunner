@@ -4,10 +4,10 @@ import (
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
-	"github.com/streadway/amqp"
 )
 
 // redialer used to redial to the rabbitmq in case of the connection interrupts

@@ -29,7 +29,7 @@ type Vector interface {
 type workerWatcher struct {
 	sync.RWMutex
 	container Vector
-	// used to control the Destroy stage (that all workers are in the container)
+	// used to control Destroy stage (that all workers are in the container)
 	numWorkers uint64
 
 	workers []worker.BaseProcess
@@ -235,14 +235,18 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 		})
 	}
 
+	// remove worker
+	ww.Remove(w)
+
 	if w.State().Value() == worker.StateDestroyed {
 		// worker was manually destroyed, no need to replace
 		ww.events.Push(events.PoolEvent{Event: events.EventWorkerDestruct, Payload: w})
 		return
 	}
 
+	// set state as stopped
 	w.State().Set(worker.StateStopped)
-	ww.Remove(w)
+
 	err = ww.Allocate()
 	if err != nil {
 		ww.events.Push(events.PoolEvent{

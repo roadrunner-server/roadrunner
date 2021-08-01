@@ -1,13 +1,15 @@
-FROM ubuntu:latest
+FROM archlinux:latest
 
 ARG DEBIAN_FRONTEND=noninteractive
+RUN pacman-key --init
 
-RUN apt-get update && apt-get install -y curl build-essential pkg-config
+RUN Y | pacman -Syu --noconfirm
+RUN Y | pacman -S --noconfirm curl base-devel pkgconf
 
 RUN curl -sL https://github.com/kr/beanstalkd/archive/v1.12.tar.gz | tar xvz -C /tmp
 
 WORKDIR /tmp/beanstalkd-1.12
-RUN make
+RUN make -j12
 RUN cp beanstalkd /usr/bin
 
 EXPOSE 11300

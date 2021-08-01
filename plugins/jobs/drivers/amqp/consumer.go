@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
@@ -15,7 +16,6 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
-	"github.com/streadway/amqp"
 )
 
 type JobConsumer struct {
@@ -325,7 +325,7 @@ func (j *JobConsumer) Register(_ context.Context, p *pipeline.Pipeline) error {
 	return nil
 }
 
-func (j *JobConsumer) Run(ctx context.Context, p *pipeline.Pipeline) error {
+func (j *JobConsumer) Run(_ context.Context, p *pipeline.Pipeline) error {
 	const op = errors.Op("rabbit_consume")
 
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
@@ -375,7 +375,7 @@ func (j *JobConsumer) Run(ctx context.Context, p *pipeline.Pipeline) error {
 	return nil
 }
 
-func (j *JobConsumer) Pause(ctx context.Context, p string) {
+func (j *JobConsumer) Pause(_ context.Context, p string) {
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
 		j.log.Error("no such pipeline", "requested pause on: ", p)
@@ -413,7 +413,7 @@ func (j *JobConsumer) Pause(ctx context.Context, p string) {
 	})
 }
 
-func (j *JobConsumer) Resume(ctx context.Context, p string) {
+func (j *JobConsumer) Resume(_ context.Context, p string) {
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
 		j.log.Error("no such pipeline", "requested resume on: ", p)

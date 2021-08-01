@@ -1,6 +1,6 @@
 package amqp
 
-import "github.com/streadway/amqp"
+import amqp "github.com/rabbitmq/amqp091-go"
 
 func (j *JobConsumer) listener(deliv <-chan amqp.Delivery) {
 	go func() {
