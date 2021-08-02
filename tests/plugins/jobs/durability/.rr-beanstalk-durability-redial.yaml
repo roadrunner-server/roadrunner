@@ -39,7 +39,6 @@ jobs:
       tube: default-2
       reserve_timeout: 10s
 
-
   # list of pipelines to be consumed by the server, keep empty if you want to start consuming manually
   consume: [ "test-1", "test-2" ]
 

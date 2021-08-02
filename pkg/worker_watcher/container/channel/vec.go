@@ -30,7 +30,7 @@ func NewVector(len uint64) *Vec {
 }
 
 // Push is O(1) operation
-// In case of TTL and full channel O(n) worst case
+// In case of TTL and full channel O(n) worst case, where n is len of the channel
 func (v *Vec) Push(w worker.BaseProcess) {
 	// Non-blocking channel send
 	select {
