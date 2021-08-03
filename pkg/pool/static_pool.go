@@ -289,6 +289,7 @@ func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duratio
 			return nil, err
 		}
 
+		// wrap sync worker
 		sw := worker.From(w)
 
 		sp.events.Push(events.PoolEvent{
@@ -301,18 +302,25 @@ func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duratio
 
 // execDebug used when debug mode was not set and exec_ttl is 0
 func (sp *StaticPool) execDebug(p *payload.Payload) (*payload.Payload, error) {
+	const op = errors.Op("static_pool_exec_debug")
 	sw, err := sp.allocator()
 	if err != nil {
 		return nil, err
 	}
 
-	// redirect call to the workers exec method (without ttl)
+	// redirect call to the workers' exec method (without ttl)
 	r, err := sw.Exec(p)
-	if stopErr := sw.Stop(); stopErr != nil {
-		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: err})
+	if err != nil {
+		return nil, errors.E(op, err)
 	}
 
-	return r, err
+	err = sw.Stop()
+	if err != nil {
+		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: err})
+		return nil, errors.E(op, err)
+	}
+
+	return r, nil
 }
 
 // execDebugWithTTL used when user set debug mode and exec_ttl
@@ -333,7 +341,7 @@ func (sp *StaticPool) execDebugWithTTL(ctx context.Context, p *payload.Payload) 
 
 // allocate required number of stack
 func (sp *StaticPool) allocateWorkers(numWorkers uint64) ([]worker.BaseProcess, error) {
-	const op = errors.Op("allocate workers")
+	const op = errors.Op("static_pool_allocate_workers")
 	workers := make([]worker.BaseProcess, 0, numWorkers)
 
 	// constant number of stack simplify logic

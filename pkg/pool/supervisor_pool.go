@@ -221,7 +221,7 @@ func (sp *supervised) control() { //nolint:gocognit
 					workers[i].State().Set(worker.StateInvalid)
 					_ = workers[i].Stop()
 				}
-				// just to double check
+				// just to double-check
 				workers[i].State().Set(worker.StateInvalid)
 				sp.events.Push(events.PoolEvent{Event: events.EventIdleTTL, Payload: workers[i]})
 			}

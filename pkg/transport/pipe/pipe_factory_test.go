@@ -102,6 +102,7 @@ func Test_Pipe_PipeError(t *testing.T) {
 
 func Test_Pipe_PipeError2(t *testing.T) {
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
+	// error cause
 	_, err := cmd.StdinPipe()
 	if err != nil {
 		t.Errorf("error creating the STDIN pipe: error %v", err)

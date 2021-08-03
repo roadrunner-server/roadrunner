@@ -8,7 +8,7 @@ import (
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 )
 
-// Factory is responsible of wrapping given command into tasks WorkerProcess.
+// Factory is responsible for wrapping given command into tasks WorkerProcess.
 type Factory interface {
 	// SpawnWorkerWithTimeout creates new WorkerProcess process based on given command with context.
 	// Process must not be started.
