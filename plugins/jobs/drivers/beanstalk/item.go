@@ -103,6 +103,10 @@ func (i *Item) Nack() error {
 	return i.Options.conn.Delete(i.Options.id)
 }
 
+func (i *Item) Requeue(_ uint32) error {
+	return nil
+}
+
 func fromJob(job *job.Job) *Item {
 	return &Item{
 		Job:     job.Job,

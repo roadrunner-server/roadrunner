@@ -69,21 +69,21 @@ func (o *Options) TimeoutDuration() time.Duration {
 	return time.Second * time.Duration(o.Timeout)
 }
 
-func (j *Item) ID() string {
-	return j.Ident
+func (i *Item) ID() string {
+	return i.Ident
 }
 
-func (j *Item) Priority() int64 {
-	return j.Options.Priority
+func (i *Item) Priority() int64 {
+	return i.Options.Priority
 }
 
 // Body packs job payload into binary payload.
-func (j *Item) Body() []byte {
-	return utils.AsBytes(j.Payload)
+func (i *Item) Body() []byte {
+	return utils.AsBytes(i.Payload)
 }
 
 // Context packs job context (job, id) into binary payload.
-func (j *Item) Context() ([]byte, error) {
+func (i *Item) Context() ([]byte, error) {
 	ctx, err := json.Marshal(
 		struct {
 			ID       string              `json:"id"`
@@ -91,7 +91,7 @@ func (j *Item) Context() ([]byte, error) {
 			Headers  map[string][]string `json:"headers"`
 			Timeout  int64               `json:"timeout"`
 			Pipeline string              `json:"pipeline"`
-		}{ID: j.Ident, Job: j.Job, Headers: j.Headers, Timeout: j.Options.Timeout, Pipeline: j.Options.Pipeline},
+		}{ID: i.Ident, Job: i.Job, Headers: i.Headers, Timeout: i.Options.Timeout, Pipeline: i.Options.Pipeline},
 	)
 
 	if err != nil {
@@ -101,12 +101,16 @@ func (j *Item) Context() ([]byte, error) {
 	return ctx, nil
 }
 
-func (j *Item) Ack() error {
+func (i *Item) Ack() error {
 	// noop for the in-memory
 	return nil
 }
 
-func (j *Item) Nack() error {
+func (i *Item) Nack() error {
 	// noop for the in-memory
+	return nil
+}
+
+func (i *Item) Requeue(_ uint32) error {
 	return nil
 }

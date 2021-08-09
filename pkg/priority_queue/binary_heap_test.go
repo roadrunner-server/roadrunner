@@ -20,6 +20,10 @@ func (t Test) Nack() error {
 	return nil
 }
 
+func (t Test) Requeue(_ uint32) error {
+	return nil
+}
+
 func (t Test) Body() []byte {
 	return nil
 }
