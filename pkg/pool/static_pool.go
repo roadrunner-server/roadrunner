@@ -253,6 +253,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 
 		case errors.Is(errors.SoftJob, err):
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
+				// TODO suspicious logic, redesign
 				err = sp.ww.Allocate()
 				if err != nil {
 					sp.events.Push(events.PoolEvent{Event: events.EventWorkerConstruct, Payload: errors.E(op, err)})

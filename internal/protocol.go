@@ -39,8 +39,8 @@ func SendControl(rl relay.Relay, payload interface{}) error {
 	fr := getFrame()
 	defer putFrame(fr)
 
-	fr.WriteVersion(frame.VERSION_1)
-	fr.WriteFlags(frame.CONTROL)
+	fr.WriteVersion(fr.Header(), frame.VERSION_1)
+	fr.WriteFlags(fr.Header(), frame.CONTROL)
 
 	if data, ok := payload.([]byte); ok {
 		// check if payload no more that 4Gb
@@ -48,9 +48,9 @@ func SendControl(rl relay.Relay, payload interface{}) error {
 			return errors.E(op, errors.Str("payload is more that 4gb"))
 		}
 
-		fr.WritePayloadLen(uint32(len(data)))
+		fr.WritePayloadLen(fr.Header(), uint32(len(data)))
 		fr.WritePayload(data)
-		fr.WriteCRC()
+		fr.WriteCRC(fr.Header())
 
 		err := rl.Send(fr)
 		if err != nil {
@@ -64,9 +64,9 @@ func SendControl(rl relay.Relay, payload interface{}) error {
 		return errors.E(op, errors.Errorf("invalid payload: %s", err))
 	}
 
-	fr.WritePayloadLen(uint32(len(data)))
+	fr.WritePayloadLen(fr.Header(), uint32(len(data)))
 	fr.WritePayload(data)
-	fr.WriteCRC()
+	fr.WriteCRC(fr.Header())
 
 	// hold a pointer to a frame
 	// Do we need a copy here????
@@ -89,7 +89,7 @@ func FetchPID(rl relay.Relay) (int64, error) {
 	defer putFrame(fr)
 
 	err = rl.Receive(fr)
-	if !fr.VerifyCRC() {
+	if !fr.VerifyCRC(fr.Header()) {
 		return 0, errors.E(op, errors.Str("CRC mismatch"))
 	}
 	if err != nil {

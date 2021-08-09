@@ -31,7 +31,7 @@ const (
 )
 
 type Plugin struct {
-	cfg *Config `mapstructure:"jobs"`
+	cfg *Config `structure:"jobs"`
 	log logger.Logger
 
 	sync.RWMutex
