@@ -213,7 +213,7 @@ func (server *Plugin) collectEvents(event interface{}) {
 	if we, ok := event.(events.PoolEvent); ok {
 		switch we.Event {
 		case events.EventMaxMemory:
-			server.log.Warn("worker max memory reached", "pid", we.Payload.(worker.BaseProcess).Pid())
+			server.log.Info("worker max memory reached", "pid", we.Payload.(worker.BaseProcess).Pid())
 		case events.EventNoFreeWorkers:
 			server.log.Warn("no free workers in pool", "error", we.Payload.(error).Error())
 		case events.EventPoolError:
