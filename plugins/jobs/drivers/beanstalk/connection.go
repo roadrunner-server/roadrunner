@@ -61,6 +61,7 @@ func (cp *ConnPool) Put(_ context.Context, body []byte, pri uint32, delay, ttr t
 	cp.RLock()
 	defer cp.RUnlock()
 
+	// TODO(rustatian): redial based on the token
 	id, err := cp.t.Put(body, pri, delay, ttr)
 	if err != nil {
 		// errN contains both, err and internal checkAndRedial error
@@ -82,7 +83,6 @@ func (cp *ConnPool) Put(_ context.Context, body []byte, pri uint32, delay, ttr t
 //
 // Typically, a client will reserve a job, perform some work, then delete
 // the job with Conn.Delete.
-
 func (cp *ConnPool) Reserve(reserveTimeout time.Duration) (uint64, []byte, error) {
 	cp.RLock()
 	defer cp.RUnlock()
@@ -126,7 +126,7 @@ func (cp *ConnPool) redial() error {
 	cp.Lock()
 	// backoff here
 	expb := backoff.NewExponentialBackOff()
-	// TODO set via config
+	// TODO(rustatian) set via config
 	expb.MaxElapsedTime = time.Minute
 
 	operation := func() error {

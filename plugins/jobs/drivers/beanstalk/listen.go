@@ -26,7 +26,7 @@ func (j *JobConsumer) listen() {
 			}
 
 			item := &Item{}
-			err = unpack(id, body, j.pool.conn, item)
+			err = j.unpack(id, body, item)
 			if err != nil {
 				j.log.Error("beanstalk unpack item", "error", err)
 				continue

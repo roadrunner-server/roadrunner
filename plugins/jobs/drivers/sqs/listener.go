@@ -64,7 +64,7 @@ func (j *JobConsumer) listen(ctx context.Context) { //nolint:gocognit
 
 			for i := 0; i < len(message.Messages); i++ {
 				m := message.Messages[i]
-				item, err := unpack(&m, j.queueURL, j.client)
+				item, err := j.unpack(&m)
 				if err != nil {
 					_, errD := j.client.DeleteMessage(context.Background(), &sqs.DeleteMessageInput{
 						QueueUrl:      j.queueURL,
@@ -78,27 +78,7 @@ func (j *JobConsumer) listen(ctx context.Context) { //nolint:gocognit
 					continue
 				}
 
-				// No retry
-				if item.Options.MaxAttempts == 0 {
-					j.pq.Insert(item)
-					continue
-				}
-
-				// MaxAttempts option specified
-				if item.Options.CanRetry() {
-					j.pq.Insert(item)
-					continue
-				}
-
-				// If MaxAttempts is more than 0, and can't retry -> delete the message
-				_, errD := j.client.DeleteMessage(context.Background(), &sqs.DeleteMessageInput{
-					QueueUrl:      j.queueURL,
-					ReceiptHandle: m.ReceiptHandle,
-				})
-				if errD != nil {
-					j.log.Error("message unpack, failed to delete the message from the queue", "error", err)
-					continue
-				}
+				j.pq.Insert(item)
 			}
 		}
 	}

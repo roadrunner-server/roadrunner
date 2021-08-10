@@ -19,3 +19,7 @@ type Availabler interface {
 	// Available method needed to collect all plugins which are available in the runtime.
 	Available()
 }
+
+type JobsStat interface {
+	Stat()
+}

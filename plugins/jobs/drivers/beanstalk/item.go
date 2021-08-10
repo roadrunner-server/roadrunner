@@ -7,6 +7,7 @@ import (
 
 	"github.com/beanstalkd/go-beanstalk"
 	json "github.com/json-iterator/go"
+	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/utils"
 )
@@ -40,12 +41,19 @@ type Options struct {
 	// Delay defines time duration to delay execution for. Defaults to none.
 	Delay int64 `json:"delay,omitempty"`
 
-	// Reserve defines for how broker should wait until treating job are failed. Defaults to 30 min.
+	// Reserve defines for how broker should wait until treating job are failed.
+	// - <ttr> -- time to run -- is an integer number of seconds to allow a worker
+	// to run this job. This time is counted from the moment a worker reserves
+	// this job. If the worker does not delete, release, or bury the job within
+	// <ttr> seconds, the job will time out and the server will release the job.
+	// The minimum ttr is 1. If the client sends 0, the server will silently
+	// increase the ttr to 1. Maximum ttr is 2**32-1.
 	Timeout int64 `json:"timeout,omitempty"`
 
 	// Private ================
-	id   uint64
-	conn *beanstalk.Conn
+	id        uint64
+	conn      *beanstalk.Conn
+	requeueCh chan *Item
 }
 
 // DelayDuration returns delay duration in a form of time.Duration.
@@ -103,8 +111,15 @@ func (i *Item) Nack() error {
 	return i.Options.conn.Delete(i.Options.id)
 }
 
-func (i *Item) Requeue(_ int64) error {
-	return nil
+func (i *Item) Requeue(delay int64) error {
+	// overwrite the delay
+	i.Options.Delay = delay
+	select {
+	case i.Options.requeueCh <- i:
+		return nil
+	default:
+		return errors.E("can't push to the requeue channel, channel either closed or full", "current size", len(i.Options.requeueCh))
+	}
 }
 
 func fromJob(job *job.Job) *Item {
@@ -131,13 +146,14 @@ func (i *Item) pack(b *bytes.Buffer) error {
 	return nil
 }
 
-func unpack(id uint64, data []byte, conn *beanstalk.Conn, out *Item) error {
+func (j *JobConsumer) unpack(id uint64, data []byte, out *Item) error {
 	err := gob.NewDecoder(bytes.NewBuffer(data)).Decode(out)
 	if err != nil {
 		return err
 	}
-	out.Options.conn = conn
+	out.Options.conn = j.pool.conn
 	out.Options.id = id
+	out.Options.requeueCh = j.requeueCh
 
 	return nil
 }
