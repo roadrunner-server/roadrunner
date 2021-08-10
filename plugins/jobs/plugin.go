@@ -195,7 +195,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 				for {
 					select {
 					case <-p.stopCh:
-						p.log.Debug("------> job poller stopped <------")
+						p.log.Info("------> job poller stopped <------")
 						return
 					default:
 						// get prioritized JOB from the queue
@@ -238,6 +238,16 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 
 							p.putPayload(exec)
 							continue
+						}
+
+						// if response is nil or body is nil, just acknowledge the job
+						if resp == nil || resp.Body == nil {
+							p.putPayload(exec)
+							err = jb.Ack()
+							if err != nil {
+								p.log.Error("acknowledge error, job might be missed", "error", err)
+								continue
+							}
 						}
 
 						// handle the response protocol

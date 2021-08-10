@@ -20,7 +20,7 @@ func (t Test) Nack() error {
 	return nil
 }
 
-func (t Test) Requeue(_ uint32) error {
+func (t Test) Requeue(_ int64) error {
 	return nil
 }
 

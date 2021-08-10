@@ -25,22 +25,30 @@ type protocol struct {
 type errorResp struct {
 	Msg     string `json:"message"`
 	Requeue bool   `json:"requeue"`
-	Delay   uint32 `json:"delay_seconds"`
+	Delay   int64  `json:"delay_seconds"`
 }
 
 func handleResponse(resp []byte, jb pq.Item, log logger.Logger) error {
 	const op = errors.Op("jobs_handle_response")
 	// TODO(rustatian) to sync.Pool
 	p := &protocol{}
+
 	err := json.Unmarshal(resp, p)
 	if err != nil {
 		return errors.E(op, err)
 	}
 
 	switch p.T {
+	// likely case
+	case NoError:
+		err = jb.Ack()
+		if err != nil {
+			return errors.E(op, err)
+		}
 	case Error:
 		// TODO(rustatian) to sync.Pool
 		er := &errorResp{}
+
 		err = json.Unmarshal(p.Data, er)
 		if err != nil {
 			return errors.E(op, err)
@@ -55,8 +63,7 @@ func handleResponse(resp []byte, jb pq.Item, log logger.Logger) error {
 			}
 			return nil
 		}
-
-	case NoError:
+	default:
 		err = jb.Ack()
 		if err != nil {
 			return errors.E(op, err)

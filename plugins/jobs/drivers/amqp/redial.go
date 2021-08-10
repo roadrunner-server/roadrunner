@@ -24,7 +24,7 @@ func (j *JobConsumer) redialer() { //nolint:gocognit
 
 				j.Lock()
 
-				// trash the broken publish channel
+				// trash the broken publishing channel
 				<-j.publishChan
 
 				t := time.Now()
@@ -85,6 +85,7 @@ func (j *JobConsumer) redialer() { //nolint:gocognit
 						return errors.E(op, err)
 					}
 
+					// put the fresh publishing channel
 					j.publishChan <- pch
 					// restart listener
 					j.listener(deliv)

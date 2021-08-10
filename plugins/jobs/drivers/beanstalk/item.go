@@ -103,7 +103,7 @@ func (i *Item) Nack() error {
 	return i.Options.conn.Delete(i.Options.id)
 }
 
-func (i *Item) Requeue(_ uint32) error {
+func (i *Item) Requeue(_ int64) error {
 	return nil
 }
 

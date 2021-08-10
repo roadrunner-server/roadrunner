@@ -156,7 +156,7 @@ func (i *Item) Nack() error {
 	return nil
 }
 
-func (i *Item) Requeue(_ uint32) error {
+func (i *Item) Requeue(_ int64) error {
 	return nil
 }
 

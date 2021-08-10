@@ -29,3 +29,31 @@ type Job struct {
 	// Options contains set of PipelineOptions specific to job execution. Can be empty.
 	Options *Options `json:"options,omitempty"`
 }
+
+func (j Job) ID() string {
+	panic("implement me")
+}
+
+func (j Job) Priority() int64 {
+	panic("implement me")
+}
+
+func (j Job) Body() []byte {
+	panic("implement me")
+}
+
+func (j Job) Context() ([]byte, error) {
+	panic("implement me")
+}
+
+func (j Job) Ack() error {
+	panic("implement me")
+}
+
+func (j Job) Nack() error {
+	panic("implement me")
+}
+
+func (j Job) Requeue(delay uint32) error {
+	panic("implement me")
+}
