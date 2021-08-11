@@ -347,7 +347,7 @@ func TestFileLogger(t *testing.T) {
 }
 
 func httpEcho(t *testing.T) {
-	req, err := http.NewRequest(http.MethodGet, "http://localhost:54224?hello=world", nil)
+	req, err := http.NewRequest(http.MethodGet, "http://127.0.0.1:54224?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)

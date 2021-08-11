@@ -80,7 +80,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 
 				  memcached:
 				    driver: memcached
-				    addr: [ "localhost:11211" ]
+				    addr: [ "127.0.0.1:11211" ]
 
 
 		For this config we should have 3 constructors: memory, boltdb and memcached but 4 KVs: default, boltdb-south, boltdb-north and memcached

@@ -4,15 +4,15 @@ services:
   memcached:
     image: memcached:latest
     ports:
-      - "0.0.0.0:11211:11211"
+      - "127.0.0.1:11211:11211"
   redis:
     image: redis:6
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
   redis2:
     image: redis:6
     ports:
-      - "6378:6379"
+      - "127.0.0.1:6378:6379"
 
   toxicproxy:
     image: shopify/toxiproxy
@@ -23,17 +23,17 @@ services:
       context: .
       dockerfile: Dockerfile-beanstalkd.yaml
     ports:
-      - "11300:11300"
+      - "127.0.0.1:11300:11300"
 
   sqs:
     build:
       context: .
       dockerfile: Dockerfile-elastic-mq.yaml
     ports:
-      - "9324:9324"
+      - "127.0.0.1:9324:9324"
 
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - "127.0.0.1:15672:15672"
+      - "127.0.0.1:5672:5672"

@@ -25,7 +25,6 @@ var itemAttributes = []string{
 	job.RRDelay,
 	job.RRTimeout,
 	job.RRPriority,
-	job.RRMaxAttempts,
 }
 
 type Item struct {

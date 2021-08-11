@@ -154,7 +154,7 @@ func enableProxy(name string, t *testing.T) {
 	buf := new(bytes.Buffer)
 	buf.WriteString(`{"enabled":true}`)
 
-	resp, err := http.Post("http://localhost:8474/proxies/"+name, "application/json", buf) //nolint:noctx
+	resp, err := http.Post("http://127.0.0.1:8474/proxies/"+name, "application/json", buf) //nolint:noctx
 	require.NoError(t, err)
 	require.Equal(t, 200, resp.StatusCode)
 	if resp.Body != nil {
@@ -166,7 +166,7 @@ func disableProxy(name string, t *testing.T) {
 	buf := new(bytes.Buffer)
 	buf.WriteString(`{"enabled":false}`)
 
-	resp, err := http.Post("http://localhost:8474/proxies/"+name, "application/json", buf) //nolint:noctx
+	resp, err := http.Post("http://127.0.0.1:8474/proxies/"+name, "application/json", buf) //nolint:noctx
 	require.NoError(t, err)
 	require.Equal(t, 200, resp.StatusCode)
 	if resp.Body != nil {
@@ -177,7 +177,7 @@ func disableProxy(name string, t *testing.T) {
 func deleteProxy(name string, t *testing.T) {
 	client := &http.Client{}
 
-	req, err := http.NewRequest(http.MethodDelete, "http://localhost:8474/proxies/"+name, nil) //nolint:noctx
+	req, err := http.NewRequest(http.MethodDelete, "http://127.0.0.1:8474/proxies/"+name, nil) //nolint:noctx
 	require.NoError(t, err)
 
 	resp, err := client.Do(req)

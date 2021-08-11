@@ -85,7 +85,7 @@ func TestHandler_Upload_File(t *testing.T) {
 		t.Errorf("error closing the file: error %v", err)
 	}
 
-	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, &mb)
+	req, err := http.NewRequest("POST", "http://127.0.0.1"+hs.Addr, &mb)
 	assert.NoError(t, err)
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
@@ -168,7 +168,7 @@ func TestHandler_Upload_NestedFile(t *testing.T) {
 		t.Errorf("error closing the file: error %v", err)
 	}
 
-	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, &mb)
+	req, err := http.NewRequest("POST", "http://127.0.0.1"+hs.Addr, &mb)
 	assert.NoError(t, err)
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
@@ -251,7 +251,7 @@ func TestHandler_Upload_File_NoTmpDir(t *testing.T) {
 		t.Errorf("error closing the file: error %v", err)
 	}
 
-	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, &mb)
+	req, err := http.NewRequest("POST", "http://127.0.0.1"+hs.Addr, &mb)
 	assert.NoError(t, err)
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
@@ -334,7 +334,7 @@ func TestHandler_Upload_File_Forbids(t *testing.T) {
 		t.Errorf("error closing the file: error %v", err)
 	}
 
-	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, &mb)
+	req, err := http.NewRequest("POST", "http://127.0.0.1"+hs.Addr, &mb)
 	assert.NoError(t, err)
 
 	req.Header.Set("Content-Type", w.FormDataContentType())

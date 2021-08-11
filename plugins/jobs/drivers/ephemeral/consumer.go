@@ -180,7 +180,7 @@ func (j *JobConsumer) Pause(_ context.Context, pipeline string) {
 	}
 
 	j.eh.Push(events.JobEvent{
-		Event:    events.EventPipeStopped,
+		Event:    events.EventPipePaused,
 		Pipeline: pipeline,
 		Start:    time.Now(),
 		Elapsed:  0,

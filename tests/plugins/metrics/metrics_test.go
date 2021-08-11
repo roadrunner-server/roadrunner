@@ -27,7 +27,7 @@ import (
 
 const dialAddr = "127.0.0.1:6001"
 const dialNetwork = "tcp"
-const getAddr = "http://localhost:2112/metrics"
+const getAddr = "http://127.0.0.1:2112/metrics"
 
 // get request and return body
 func get() (string, error) {
@@ -130,7 +130,7 @@ func TestMetricsIssue571(t *testing.T) {
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "services", []string{"metrics"}).MinTimes(1)
-	mockLogger.EXPECT().Debug("200 GET http://localhost:56444/", "remote", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("200 GET http://127.0.0.1:56444/", "remote", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("declaring new metric", "name", "test", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("metric successfully added", "name", "test", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("metric successfully added", "name", "test", "labels", []string{}, "value", gomock.Any()).MinTimes(1)
@@ -209,7 +209,7 @@ func TestMetricsIssue571(t *testing.T) {
 
 // get request and return body
 func issue571Http() (string, error) {
-	r, err := http.Get("http://localhost:56444")
+	r, err := http.Get("http://127.0.0.1:56444")
 	if err != nil {
 		return "", err
 	}
@@ -229,7 +229,7 @@ func issue571Http() (string, error) {
 
 // get request and return body
 func issue571Metrics() (string, error) {
-	r, err := http.Get("http://localhost:23557")
+	r, err := http.Get("http://127.0.0.1:23557")
 	if err != nil {
 		return "", err
 	}
@@ -989,7 +989,7 @@ func TestHTTPMetrics(t *testing.T) {
 
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("200 GET http://localhost:13223/", "remote", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("200 GET http://127.0.0.1:13223/", "remote", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
 
 	err = cont.RegisterAll(
 		cfg,
@@ -1056,7 +1056,7 @@ func TestHTTPMetrics(t *testing.T) {
 }
 
 func echoHTTP(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:13223", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:13223", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)

@@ -56,7 +56,7 @@ func TestHandler_Echo(t *testing.T) {
 	}(hs)
 	time.Sleep(time.Millisecond * 10)
 
-	body, r, err := get("http://localhost:8177/?hello=world")
+	body, r, err := get("http://127.0.0.1:8177/?hello=world")
 	assert.NoError(t, err)
 	defer func() {
 		_ = r.Body.Close()
@@ -111,7 +111,7 @@ func TestHandler_Headers(t *testing.T) {
 	}()
 	time.Sleep(time.Millisecond * 100)
 
-	req, err := http.NewRequest("GET", "http://localhost:8078?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:8078?hello=world", nil)
 	assert.NoError(t, err)
 
 	req.Header.Add("input", "sample")
@@ -172,7 +172,7 @@ func TestHandler_Empty_User_Agent(t *testing.T) {
 	}()
 	time.Sleep(time.Millisecond * 10)
 
-	req, err := http.NewRequest("GET", "http://localhost:19658?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:19658?hello=world", nil)
 	assert.NoError(t, err)
 
 	req.Header.Add("user-agent", "")
@@ -232,7 +232,7 @@ func TestHandler_User_Agent(t *testing.T) {
 	}()
 	time.Sleep(time.Millisecond * 10)
 
-	req, err := http.NewRequest("GET", "http://localhost:25688?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:25688?hello=world", nil)
 	assert.NoError(t, err)
 
 	req.Header.Add("User-Agent", "go-agent")
@@ -292,7 +292,7 @@ func TestHandler_Cookies(t *testing.T) {
 	}()
 	time.Sleep(time.Millisecond * 10)
 
-	req, err := http.NewRequest("GET", "http://localhost:8079", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:8079", nil)
 	assert.NoError(t, err)
 
 	req.AddCookie(&http.Cookie{Name: "input", Value: "input-value"})
@@ -359,7 +359,7 @@ func TestHandler_JsonPayload_POST(t *testing.T) {
 
 	req, err := http.NewRequest(
 		"POST",
-		"http://localhost"+hs.Addr,
+		"http://127.0.0.1"+hs.Addr,
 		bytes.NewBufferString(`{"key":"value"}`),
 	)
 	assert.NoError(t, err)
@@ -421,7 +421,7 @@ func TestHandler_JsonPayload_PUT(t *testing.T) {
 	}()
 	time.Sleep(time.Millisecond * 10)
 
-	req, err := http.NewRequest("PUT", "http://localhost"+hs.Addr, bytes.NewBufferString(`{"key":"value"}`))
+	req, err := http.NewRequest("PUT", "http://127.0.0.1"+hs.Addr, bytes.NewBufferString(`{"key":"value"}`))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/json")
@@ -481,7 +481,7 @@ func TestHandler_JsonPayload_PATCH(t *testing.T) {
 	}()
 	time.Sleep(time.Millisecond * 10)
 
-	req, err := http.NewRequest("PATCH", "http://localhost"+hs.Addr, bytes.NewBufferString(`{"key":"value"}`))
+	req, err := http.NewRequest("PATCH", "http://127.0.0.1"+hs.Addr, bytes.NewBufferString(`{"key":"value"}`))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/json")
@@ -552,7 +552,7 @@ func TestHandler_FormData_POST(t *testing.T) {
 	form.Add("arr[c]p", "l")
 	form.Add("arr[c]z", "")
 
-	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, strings.NewReader(form.Encode()))
+	req, err := http.NewRequest("POST", "http://127.0.0.1"+hs.Addr, strings.NewReader(form.Encode()))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -626,7 +626,7 @@ func TestHandler_FormData_POST_Overwrite(t *testing.T) {
 	form.Add("arr[c]p", "l")
 	form.Add("arr[c]z", "")
 
-	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, strings.NewReader(form.Encode()))
+	req, err := http.NewRequest("POST", "http://127.0.0.1"+hs.Addr, strings.NewReader(form.Encode()))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -698,7 +698,7 @@ func TestHandler_FormData_POST_Form_UrlEncoded_Charset(t *testing.T) {
 	form.Add("arr[c]p", "l")
 	form.Add("arr[c]z", "")
 
-	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, strings.NewReader(form.Encode()))
+	req, err := http.NewRequest("POST", "http://127.0.0.1"+hs.Addr, strings.NewReader(form.Encode()))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
@@ -770,7 +770,7 @@ func TestHandler_FormData_PUT(t *testing.T) {
 	form.Add("arr[c]p", "l")
 	form.Add("arr[c]z", "")
 
-	req, err := http.NewRequest("PUT", "http://localhost"+hs.Addr, strings.NewReader(form.Encode()))
+	req, err := http.NewRequest("PUT", "http://127.0.0.1"+hs.Addr, strings.NewReader(form.Encode()))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -842,7 +842,7 @@ func TestHandler_FormData_PATCH(t *testing.T) {
 	form.Add("arr[c]p", "l")
 	form.Add("arr[c]z", "")
 
-	req, err := http.NewRequest("PATCH", "http://localhost"+hs.Addr, strings.NewReader(form.Encode()))
+	req, err := http.NewRequest("PATCH", "http://127.0.0.1"+hs.Addr, strings.NewReader(form.Encode()))
 	assert.NoError(t, err)
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -956,7 +956,7 @@ func TestHandler_Multipart_POST(t *testing.T) {
 		t.Errorf("error closing the writer: error %v", err)
 	}
 
-	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, &mb)
+	req, err := http.NewRequest("POST", "http://127.0.0.1"+hs.Addr, &mb)
 	assert.NoError(t, err)
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
@@ -1070,7 +1070,7 @@ func TestHandler_Multipart_PUT(t *testing.T) {
 		t.Errorf("error closing the writer: error %v", err)
 	}
 
-	req, err := http.NewRequest("PUT", "http://localhost"+hs.Addr, &mb)
+	req, err := http.NewRequest("PUT", "http://127.0.0.1"+hs.Addr, &mb)
 	assert.NoError(t, err)
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
@@ -1186,7 +1186,7 @@ func TestHandler_Multipart_PATCH(t *testing.T) {
 		t.Errorf("error closing the writer: error %v", err)
 	}
 
-	req, err := http.NewRequest("PATCH", "http://localhost"+hs.Addr, &mb)
+	req, err := http.NewRequest("PATCH", "http://127.0.0.1"+hs.Addr, &mb)
 	assert.NoError(t, err)
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
@@ -1247,7 +1247,7 @@ func TestHandler_Error(t *testing.T) {
 	}()
 	time.Sleep(time.Millisecond * 10)
 
-	_, r, err := get("http://localhost:8177/?hello=world")
+	_, r, err := get("http://127.0.0.1:8177/?hello=world")
 	assert.NoError(t, err)
 	defer func() {
 		_ = r.Body.Close()
@@ -1293,7 +1293,7 @@ func TestHandler_Error2(t *testing.T) {
 	}()
 	time.Sleep(time.Millisecond * 10)
 
-	_, r, err := get("http://localhost:8177/?hello=world")
+	_, r, err := get("http://127.0.0.1:8177/?hello=world")
 	assert.NoError(t, err)
 	defer func() {
 		_ = r.Body.Close()
@@ -1344,7 +1344,7 @@ func TestHandler_Error3(t *testing.T) {
 		b2.Write([]byte("  "))
 	}
 
-	req, err := http.NewRequest("POST", "http://localhost"+hs.Addr, b2)
+	req, err := http.NewRequest("POST", "http://127.0.0.1"+hs.Addr, b2)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -1409,7 +1409,7 @@ func TestHandler_ResponseDuration(t *testing.T) {
 		}
 	})
 
-	body, r, err := get("http://localhost:8177/?hello=world")
+	body, r, err := get("http://127.0.0.1:8177/?hello=world")
 	assert.NoError(t, err)
 	defer func() {
 		_ = r.Body.Close()
@@ -1470,7 +1470,7 @@ func TestHandler_ResponseDurationDelayed(t *testing.T) {
 		}
 	})
 
-	body, r, err := get("http://localhost:8177/?hello=world")
+	body, r, err := get("http://127.0.0.1:8177/?hello=world")
 	assert.NoError(t, err)
 	defer func() {
 		_ = r.Body.Close()
@@ -1530,7 +1530,7 @@ func TestHandler_ErrorDuration(t *testing.T) {
 		}
 	})
 
-	_, r, err := get("http://localhost:8177/?hello=world")
+	_, r, err := get("http://127.0.0.1:8177/?hello=world")
 	assert.NoError(t, err)
 	defer func() {
 		_ = r.Body.Close()
@@ -1838,7 +1838,7 @@ func BenchmarkHandler_Listen_Echo(b *testing.B) {
 	b.ReportAllocs()
 	bb := "WORLD"
 	for n := 0; n < b.N; n++ {
-		r, err := http.Get("http://localhost:8177/?hello=world")
+		r, err := http.Get("http://127.0.0.1:8177/?hello=world")
 		if err != nil {
 			b.Fail()
 		}

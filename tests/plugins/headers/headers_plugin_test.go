@@ -154,7 +154,7 @@ func TestRequestHeaders(t *testing.T) {
 }
 
 func reqHeaders(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:22655?hello=value", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:22655?hello=value", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -239,7 +239,7 @@ func TestResponseHeaders(t *testing.T) {
 }
 
 func resHeaders(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:22455?hello=value", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:22455?hello=value", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -326,7 +326,7 @@ func TestCORSHeaders(t *testing.T) {
 }
 
 func corsHeadersPass(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:22855", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:22855", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -346,7 +346,7 @@ func corsHeadersPass(t *testing.T) {
 }
 
 func corsHeaders(t *testing.T) {
-	req, err := http.NewRequest("OPTIONS", "http://localhost:22855", nil)
+	req, err := http.NewRequest("OPTIONS", "http://127.0.0.1:22855", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)

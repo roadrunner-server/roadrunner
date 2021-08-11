@@ -7,7 +7,7 @@ logs:
 
 redis-rr:
   addrs:
-    - 'localhost:6379'
+    - '127.0.0.1:6379'
 
 kv:
   redis-rr:

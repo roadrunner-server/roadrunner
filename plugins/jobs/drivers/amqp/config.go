@@ -57,6 +57,6 @@ func (c *Config) InitDefault() {
 
 func (c *GlobalCfg) InitDefault() {
 	if c.Addr == "" {
-		c.Addr = "amqp://guest:guest@localhost:5672/"
+		c.Addr = "amqp://guest:guest@127.0.0.1:5672/"
 	}
 }

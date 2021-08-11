@@ -89,7 +89,7 @@ func TestGzipPlugin(t *testing.T) {
 }
 
 func headerCheck(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:18953", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:18953", nil)
 	assert.NoError(t, err)
 	client := &http.Client{
 		Transport: &http.Transport{

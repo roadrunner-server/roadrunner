@@ -7,13 +7,13 @@ server:
   relay_timeout: "20s"
 
 amqp:
-  addr: amqp://guest:guest@localhost:5672/
+  addr: amqp://guest:guest@127.0.0.1:5672/
 
 # beanstalk configuration
 #
 beanstalk:
   # beanstalk address
-  addr: tcp://localhost:11300
+  addr: tcp://127.0.0.1:11300
   # connect timeout
   timeout: 10s
 
@@ -23,7 +23,7 @@ sqs:
   key: api-key
   secret: api-secret
   region: us-west-1
-  endpoint: http://localhost:9324
+  endpoint: http://127.0.0.1:9324
 
 logs:
   level: info

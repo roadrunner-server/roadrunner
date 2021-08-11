@@ -87,7 +87,7 @@ type Config struct {
 
 func (c *GlobalCfg) InitDefault() {
 	if c.Endpoint == "" {
-		c.Endpoint = "http://localhost:9324"
+		c.Endpoint = "http://127.0.0.1:9324"
 	}
 }
 

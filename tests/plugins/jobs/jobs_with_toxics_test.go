@@ -27,9 +27,9 @@ import (
 )
 
 func TestDurabilityAMQP(t *testing.T) {
-	client := toxiproxy.NewClient("localhost:8474")
+	client := toxiproxy.NewClient("127.0.0.1:8474")
 
-	_, err := client.CreateProxy("redial", "localhost:23679", "localhost:5672")
+	_, err := client.CreateProxy("redial", "127.0.0.1:23679", "127.0.0.1:5672")
 	require.NoError(t, err)
 	defer deleteProxy("redial", t)
 
@@ -150,9 +150,9 @@ func TestDurabilityAMQP(t *testing.T) {
 }
 
 func TestDurabilitySQS(t *testing.T) {
-	client := toxiproxy.NewClient("localhost:8474")
+	client := toxiproxy.NewClient("127.0.0.1:8474")
 
-	_, err := client.CreateProxy("redial", "localhost:19324", "localhost:9324")
+	_, err := client.CreateProxy("redial", "127.0.0.1:19324", "127.0.0.1:9324")
 	require.NoError(t, err)
 	defer deleteProxy("redial", t)
 
@@ -273,9 +273,9 @@ func TestDurabilitySQS(t *testing.T) {
 }
 
 func TestDurabilityBeanstalk(t *testing.T) {
-	client := toxiproxy.NewClient("localhost:8474")
+	client := toxiproxy.NewClient("127.0.0.1:8474")
 
-	_, err := client.CreateProxy("redial", "localhost:11400", "localhost:11300")
+	_, err := client.CreateProxy("redial", "127.0.0.1:11400", "127.0.0.1:11300")
 	require.NoError(t, err)
 	defer deleteProxy("redial", t)
 

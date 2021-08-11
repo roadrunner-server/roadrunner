@@ -8,7 +8,7 @@ server:
 
 beanstalk:
   # beanstalk address
-  addr: tcp://localhost:11300
+  addr: tcp://127.0.0.1:11300
   # connect timeout
   timeout: 10s
 

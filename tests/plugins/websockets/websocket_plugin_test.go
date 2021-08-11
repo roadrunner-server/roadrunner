@@ -443,7 +443,7 @@ func RPCWsMemoryStop(port string) func(t *testing.T) {
 			HandshakeTimeout: time.Second * 20,
 		}
 
-		connURL := url.URL{Scheme: "ws", Host: "localhost:" + port, Path: "/ws"}
+		connURL := url.URL{Scheme: "ws", Host: "127.0.0.1:" + port, Path: "/ws"}
 
 		c, resp, err := da.Dial(connURL.String(), nil)
 		assert.NotNil(t, resp)
@@ -613,7 +613,7 @@ func wsInit(t *testing.T) {
 		HandshakeTimeout: time.Second * 20,
 	}
 
-	connURL := url.URL{Scheme: "ws", Host: "localhost:11111", Path: "/ws"}
+	connURL := url.URL{Scheme: "ws", Host: "127.0.0.1:11111", Path: "/ws"}
 
 	c, resp, err := da.Dial(connURL.String(), nil)
 	assert.NoError(t, err)
@@ -648,7 +648,7 @@ func RPCWsPubAsync(port string) func(t *testing.T) {
 			HandshakeTimeout: time.Second * 20,
 		}
 
-		connURL := url.URL{Scheme: "ws", Host: "localhost:" + port, Path: "/ws"}
+		connURL := url.URL{Scheme: "ws", Host: "127.0.0.1:" + port, Path: "/ws"}
 
 		c, resp, err := da.Dial(connURL.String(), nil)
 		assert.NoError(t, err)
@@ -725,7 +725,7 @@ func RPCWsPub(port string) func(t *testing.T) {
 			HandshakeTimeout: time.Second * 20,
 		}
 
-		connURL := url.URL{Scheme: "ws", Host: "localhost:" + port, Path: "/ws"}
+		connURL := url.URL{Scheme: "ws", Host: "127.0.0.1:" + port, Path: "/ws"}
 
 		c, resp, err := da.Dial(connURL.String(), nil)
 		assert.NoError(t, err)
@@ -802,7 +802,7 @@ func RPCWsDeny(port string) func(t *testing.T) {
 			HandshakeTimeout: time.Second * 20,
 		}
 
-		connURL := url.URL{Scheme: "ws", Host: "localhost:" + port, Path: "/ws"}
+		connURL := url.URL{Scheme: "ws", Host: "127.0.0.1:" + port, Path: "/ws"}
 
 		c, resp, err := da.Dial(connURL.String(), nil)
 		assert.NoError(t, err)

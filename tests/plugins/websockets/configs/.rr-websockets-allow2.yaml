@@ -21,13 +21,13 @@ http:
 
 redis:
   addrs:
-    - "localhost:6379"
+    - "127.0.0.1:6379"
 
 broadcast:
    test:
     driver: redis
     addrs:
-      - "localhost:6379"
+      - "127.0.0.1:6379"
 
 websockets:
   broker: test

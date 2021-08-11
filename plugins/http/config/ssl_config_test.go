@@ -101,7 +101,7 @@ func TestSSL_Valid6(t *testing.T) {
 
 func TestSSL_Valid7(t *testing.T) {
 	conf := &SSL{
-		Address:  "localhost:555:1",
+		Address:  "127.0.0.1:555:1",
 		Redirect: false,
 		Key:      "../../../tests/plugins/http/fixtures/server.key",
 		Cert:     "../../../tests/plugins/http/fixtures/server.crt",

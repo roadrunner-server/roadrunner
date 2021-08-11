@@ -21,7 +21,7 @@ func redisConfig(port string) string {
 	cfg := `
 redis:
   addrs:
-    - 'localhost:%s'
+    - '127.0.0.1:%s'
   master_name: ''
   username: ''
   password: ''

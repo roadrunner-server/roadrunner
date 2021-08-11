@@ -345,7 +345,7 @@ func TestReadinessRPCWorkerNotReady(t *testing.T) {
 
 func doHTTPReq(t *testing.T) {
 	go func() {
-		req, err := http.NewRequest("GET", "http://localhost:11933", nil)
+		req, err := http.NewRequest("GET", "http://127.0.0.1:11933", nil)
 		assert.NoError(t, err)
 
 		r, err := http.DefaultClient.Do(req)

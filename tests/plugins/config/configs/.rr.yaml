@@ -1,5 +1,5 @@
 rpc:
-  listen: tcp://localhost:6060
+  listen: tcp://127.0.0.1:6060
 
 logs:
   mode: development

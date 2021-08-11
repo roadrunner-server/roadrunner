@@ -10,7 +10,7 @@ sqs:
   key: api-key
   secret: api-secret
   region: us-west-1
-  endpoint: http://localhost:19324
+  endpoint: http://127.0.0.1:19324
 
 logs:
   level: debug

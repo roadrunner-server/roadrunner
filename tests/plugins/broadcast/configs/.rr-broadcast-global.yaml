@@ -19,7 +19,7 @@ http:
 
 redis:
   addrs:
-    - "localhost:6379"
+    - "127.0.0.1:6379"
 
 broadcast:
   test:
@@ -27,7 +27,7 @@ broadcast:
   test2:
     driver: redis
     addrs:
-      - "localhost:6378"
+      - "127.0.0.1:6378"
   test3:
     driver: memory
   test4:

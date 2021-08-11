@@ -16,7 +16,7 @@ import (
 )
 
 func Test_Tcp_Start2(t *testing.T) {
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			errC := ls.Close()
@@ -45,7 +45,7 @@ func Test_Tcp_Start2(t *testing.T) {
 }
 
 func Test_Tcp_StartCloseFactory2(t *testing.T) {
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 	} else {
 		t.Skip("socket is busy")
@@ -72,7 +72,7 @@ func Test_Tcp_StartCloseFactory2(t *testing.T) {
 }
 
 func Test_Tcp_StartError2(t *testing.T) {
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			errC := ls.Close()
@@ -96,7 +96,7 @@ func Test_Tcp_StartError2(t *testing.T) {
 }
 
 func Test_Tcp_Failboot2(t *testing.T) {
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			err3 := ls.Close()
@@ -128,7 +128,7 @@ func Test_Tcp_Failboot2(t *testing.T) {
 }
 
 func Test_Tcp_Invalid2(t *testing.T) {
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			errC := ls.Close()
@@ -148,7 +148,7 @@ func Test_Tcp_Invalid2(t *testing.T) {
 }
 
 func Test_Tcp_Broken2(t *testing.T) {
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			errC := ls.Close()
@@ -202,7 +202,7 @@ func Test_Tcp_Broken2(t *testing.T) {
 }
 
 func Test_Tcp_Echo2(t *testing.T) {
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			errC := ls.Close()

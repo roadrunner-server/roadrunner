@@ -181,7 +181,7 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Con
 		exchangeName:  pipeline.String(exchangeKey, "amqp.default"),
 		prefetch:      pipeline.Int(prefetch, 10),
 		priority:      int64(pipeline.Int(priority, 10)),
-		exclusive:     pipeline.Bool(exclusive, true),
+		exclusive:     pipeline.Bool(exclusive, false),
 		multipleAck:   pipeline.Bool(multipleAsk, false),
 		requeueOnFail: pipeline.Bool(requeueOnFail, false),
 		requeueCh:     make(chan *Item, 1000),

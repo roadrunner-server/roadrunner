@@ -7,7 +7,7 @@ server:
   relay_timeout: "20s"
 
 amqp:
-  addr: amqp://guest:guest@localhost:5672/
+  addr: amqp://guest:guest@127.0.0.1:5672/
 
 logs:
   level: debug
