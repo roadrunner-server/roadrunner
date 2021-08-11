@@ -23,9 +23,10 @@ type protocol struct {
 }
 
 type errorResp struct {
-	Msg     string `json:"message"`
-	Requeue bool   `json:"requeue"`
-	Delay   int64  `json:"delay_seconds"`
+	Msg     string              `json:"message"`
+	Requeue bool                `json:"requeue"`
+	Delay   int64               `json:"delay_seconds"`
+	Headers map[string][]string `json:"headers"`
 }
 
 func handleResponse(resp []byte, jb pq.Item, log logger.Logger) error {
@@ -57,7 +58,7 @@ func handleResponse(resp []byte, jb pq.Item, log logger.Logger) error {
 		log.Error("error protocol type", "error", er.Msg, "delay", er.Delay, "requeue", er.Requeue)
 
 		if er.Requeue {
-			err = jb.Requeue(er.Delay)
+			err = jb.Requeue(er.Headers, er.Delay)
 			if err != nil {
 				return errors.E(op, err)
 			}

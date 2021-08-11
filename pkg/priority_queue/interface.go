@@ -27,5 +27,5 @@ type Item interface {
 	Nack() error
 
 	// Requeue - put the message back to the queue with the optional delay
-	Requeue(delay int64) error
+	Requeue(headers map[string][]string, delay int64) error
 }

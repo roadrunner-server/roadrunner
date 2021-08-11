@@ -14,10 +14,6 @@ type Options struct {
 	// Delay defines time duration to delay execution for. Defaults to none.
 	Delay int64 `json:"delay,omitempty"`
 
-	// Attempts define maximum job retries. Attention, value 1 will only allow job to execute once (without retry).
-	// Minimum valuable value is 2.
-	Attempts int64 `json:"maxAttempts,omitempty"`
-
 	// RetryDelay defines for how long job should be waiting until next retry. Defaults to none.
 	RetryDelay int64 `json:"retryDelay,omitempty"`
 
@@ -31,10 +27,6 @@ func (o *Options) Merge(from *Options) {
 		o.Pipeline = from.Pipeline
 	}
 
-	if o.Attempts == 0 {
-		o.Attempts = from.Attempts
-	}
-
 	if o.Timeout == 0 {
 		o.Timeout = from.Timeout
 	}
@@ -46,12 +38,6 @@ func (o *Options) Merge(from *Options) {
 	if o.Delay == 0 {
 		o.Delay = from.Delay
 	}
-}
-
-// CanRetry must return true if broker is allowed to re-run the job.
-func (o *Options) CanRetry(attempt int64) bool {
-	// Attempts 1 and 0 has identical effect
-	return o.Attempts > (attempt + 1)
 }
 
 // RetryDuration returns retry delay duration in a form of time.Duration.

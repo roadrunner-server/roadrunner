@@ -140,9 +140,10 @@ func (i *Item) Nack() error {
 	return nil
 }
 
-func (i *Item) Requeue(delay int64) error {
+func (i *Item) Requeue(headers map[string][]string, delay int64) error {
 	// overwrite the delay
 	i.Options.Delay = delay
+	i.Headers = headers
 	select {
 	case i.Options.requeueCh <- i:
 		return nil

@@ -111,9 +111,10 @@ func (i *Item) Nack() error {
 	return i.Options.conn.Delete(i.Options.id)
 }
 
-func (i *Item) Requeue(delay int64) error {
+func (i *Item) Requeue(headers map[string][]string, delay int64) error {
 	// overwrite the delay
 	i.Options.Delay = delay
+	i.Headers = headers
 	select {
 	case i.Options.requeueCh <- i:
 		return nil
@@ -121,6 +122,7 @@ func (i *Item) Requeue(delay int64) error {
 		return errors.E("can't push to the requeue channel, channel either closed or full", "current size", len(i.Options.requeueCh))
 	}
 }
+
 
 func fromJob(job *job.Job) *Item {
 	return &Item{
