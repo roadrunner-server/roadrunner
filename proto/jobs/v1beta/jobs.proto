@@ -38,7 +38,6 @@ message Options {
     int64 priority = 1;
     string pipeline = 2;
     int64 delay = 3;
-    int64 attempts = 4;
     int64 retry_delay = 5;
     int64 timeout = 6;
 }

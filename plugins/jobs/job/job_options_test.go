@@ -7,36 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestOptions_CanRetry(t *testing.T) {
-	opts := &Options{Attempts: 0}
-
-	assert.False(t, opts.CanRetry(0))
-	assert.False(t, opts.CanRetry(1))
-}
-
-func TestOptions_CanRetry_SameValue(t *testing.T) {
-	opts := &Options{Attempts: 1}
-
-	assert.False(t, opts.CanRetry(0))
-	assert.False(t, opts.CanRetry(1))
-}
-
-func TestOptions_CanRetry_Value(t *testing.T) {
-	opts := &Options{Attempts: 2}
-
-	assert.True(t, opts.CanRetry(0))
-	assert.False(t, opts.CanRetry(1))
-	assert.False(t, opts.CanRetry(2))
-}
-
-func TestOptions_CanRetry_Value3(t *testing.T) {
-	opts := &Options{Attempts: 3}
-
-	assert.True(t, opts.CanRetry(0))
-	assert.True(t, opts.CanRetry(1))
-	assert.False(t, opts.CanRetry(2))
-}
-
 func TestOptions_RetryDuration(t *testing.T) {
 	opts := &Options{RetryDelay: 0}
 	assert.Equal(t, time.Duration(0), opts.RetryDuration())
@@ -74,12 +44,10 @@ func TestOptions_Merge(t *testing.T) {
 		Pipeline:   "pipeline",
 		Delay:      2,
 		Timeout:    1,
-		Attempts:   1,
 		RetryDelay: 1,
 	})
 
 	assert.Equal(t, "pipeline", opts.Pipeline)
-	assert.Equal(t, int64(1), opts.Attempts)
 	assert.Equal(t, int64(2), opts.Delay)
 	assert.Equal(t, int64(1), opts.Timeout)
 	assert.Equal(t, int64(1), opts.RetryDelay)
@@ -90,7 +58,6 @@ func TestOptions_MergeKeepOriginal(t *testing.T) {
 		Pipeline:   "default",
 		Delay:      10,
 		Timeout:    10,
-		Attempts:   10,
 		RetryDelay: 10,
 	}
 
@@ -98,12 +65,10 @@ func TestOptions_MergeKeepOriginal(t *testing.T) {
 		Pipeline:   "pipeline",
 		Delay:      2,
 		Timeout:    1,
-		Attempts:   1,
 		RetryDelay: 1,
 	})
 
 	assert.Equal(t, "default", opts.Pipeline)
-	assert.Equal(t, int64(10), opts.Attempts)
 	assert.Equal(t, int64(10), opts.Delay)
 	assert.Equal(t, int64(10), opts.Timeout)
 	assert.Equal(t, int64(10), opts.RetryDelay)

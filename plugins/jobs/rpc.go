@@ -143,7 +143,6 @@ func (r *rpc) from(j *jobsv1beta.Job) *job.Job {
 			Priority:   j.GetOptions().GetPriority(),
 			Pipeline:   j.GetOptions().GetPipeline(),
 			Delay:      j.GetOptions().GetDelay(),
-			Attempts:   j.GetOptions().GetAttempts(),
 			RetryDelay: j.GetOptions().GetRetryDelay(),
 			Timeout:    j.GetOptions().GetTimeout(),
 		},

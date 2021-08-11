@@ -62,7 +62,6 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, eh
 
 	// consume from the queue
 	go jb.consume()
-	jb.requeueListener()
 
 	return jb, nil
 }
@@ -81,7 +80,6 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, eh events.Hand
 
 	// consume from the queue
 	go jb.consume()
-	jb.requeueListener()
 
 	return jb, nil
 }

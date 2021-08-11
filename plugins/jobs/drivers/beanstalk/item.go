@@ -123,7 +123,6 @@ func (i *Item) Requeue(headers map[string][]string, delay int64) error {
 	}
 }
 
-
 func fromJob(job *job.Job) *Item {
 	return &Item{
 		Job:     job.Job,
