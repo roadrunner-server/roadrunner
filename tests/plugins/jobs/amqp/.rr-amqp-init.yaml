@@ -2,7 +2,7 @@ rpc:
   listen: tcp://127.0.0.1:6001
 
 server:
-  command: "php ../../client.php echo pipes"
+  command: "php ../../jobs_ok.php"
   relay: "pipes"
   relay_timeout: "20s"
 
@@ -15,7 +15,7 @@ logs:
   mode: development
 
 jobs:
-  num_pollers: 10
+  num_pollers: 1
   pipeline_size: 100000
   timeout: 1
   pool:

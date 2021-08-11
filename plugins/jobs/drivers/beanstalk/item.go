@@ -2,12 +2,12 @@ package beanstalk
 
 import (
 	"bytes"
+	"context"
 	"encoding/gob"
 	"time"
 
 	"github.com/beanstalkd/go-beanstalk"
 	json "github.com/json-iterator/go"
-	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/utils"
 )
@@ -53,7 +53,7 @@ type Options struct {
 	// Private ================
 	id        uint64
 	conn      *beanstalk.Conn
-	requeueCh chan *Item
+	requeueFn func(context.Context, *Item) error
 }
 
 // DelayDuration returns delay duration in a form of time.Duration.
@@ -115,12 +115,23 @@ func (i *Item) Requeue(headers map[string][]string, delay int64) error {
 	// overwrite the delay
 	i.Options.Delay = delay
 	i.Headers = headers
-	select {
-	case i.Options.requeueCh <- i:
-		return nil
-	default:
-		return errors.E("can't push to the requeue channel, channel either closed or full", "current size", len(i.Options.requeueCh))
+
+	err := i.Options.requeueFn(context.Background(), i)
+	if err != nil {
+		return err
 	}
+
+	// delete old job
+	err = i.Options.conn.Delete(i.Options.id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (i *Item) Recycle() {
+	i.Options = nil
 }
 
 func fromJob(job *job.Job) *Item {
@@ -154,7 +165,7 @@ func (j *JobConsumer) unpack(id uint64, data []byte, out *Item) error {
 	}
 	out.Options.conn = j.pool.conn
 	out.Options.id = id
-	out.Options.requeueCh = j.requeueCh
+	out.Options.requeueFn = j.handleItem
 
 	return nil
 }

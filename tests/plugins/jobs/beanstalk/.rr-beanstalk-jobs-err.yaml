@@ -2,7 +2,7 @@ rpc:
   listen: tcp://127.0.0.1:6001
 
 server:
-  command: "php ../../jobs_ok.php"
+  command: "php ../../jobs_err.php"
   relay: "pipes"
   relay_timeout: "20s"
 

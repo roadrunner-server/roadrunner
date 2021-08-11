@@ -118,6 +118,10 @@ func (i *Item) Requeue(headers map[string][]string, delay int64) error {
 	return nil
 }
 
+func (i *Item) Recycle() {
+	i.Options = nil
+}
+
 func fromJob(job *job.Job) *Item {
 	return &Item{
 		Job:     job.Job,

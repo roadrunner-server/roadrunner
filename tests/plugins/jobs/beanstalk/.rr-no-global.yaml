@@ -6,15 +6,8 @@ server:
   relay: "pipes"
   relay_timeout: "20s"
 
-beanstalk:
-  # beanstalk address
-  addr: tcp://127.0.0.1:11300
-  # connect timeout
-  timeout: 10s
-
 logs:
-  level: debug
-  encoding: console
+  level: error
   mode: development
 
 jobs:
@@ -25,3 +18,14 @@ jobs:
     max_jobs: 0
     allocate_timeout: 60s
     destroy_timeout: 60s
+
+  # list of broker pipelines associated with endpoints
+  pipelines:
+    test-1:
+      driver: beanstalk
+      priority: 11
+      tube_priority: 1
+      tube: default-1
+      reserve_timeout: 10s
+
+  consume: [ "test-1" ]

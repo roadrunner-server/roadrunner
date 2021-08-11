@@ -50,8 +50,7 @@ type JobConsumer struct {
 	client   *sqs.Client
 	queueURL *string
 
-	requeueCh chan *Item
-	pauseCh   chan struct{}
+	pauseCh chan struct{}
 }
 
 func NewSQSConsumer(configKey string, log logger.Logger, cfg cfgPlugin.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
@@ -103,7 +102,6 @@ func NewSQSConsumer(configKey string, log logger.Logger, cfg cfgPlugin.Configure
 		secret:            globalCfg.Secret,
 		endpoint:          globalCfg.Endpoint,
 		pauseCh:           make(chan struct{}, 1),
-		requeueCh:         make(chan *Item, 1000),
 	}
 
 	// PARSE CONFIGURATION -------
@@ -137,8 +135,6 @@ func NewSQSConsumer(configKey string, log logger.Logger, cfg cfgPlugin.Configure
 	// must wait at least one second after the queue is created to be able to use the <------------
 	// queue. To get the queue URL, use the GetQueueUrl action. GetQueueUrl require
 	time.Sleep(time.Second * 2)
-
-	jb.requeueListener()
 
 	return jb, nil
 }
@@ -205,7 +201,6 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg cfgPlugin.Conf
 		secret:            globalCfg.Secret,
 		endpoint:          globalCfg.Endpoint,
 		pauseCh:           make(chan struct{}, 1),
-		requeueCh:         make(chan *Item, 1000),
 	}
 
 	// PARSE CONFIGURATION -------
@@ -239,8 +234,6 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg cfgPlugin.Conf
 	// must wait at least one second after the queue is created to be able to use the <------------
 	// queue. To get the queue URL, use the GetQueueUrl action. GetQueueUrl require
 	time.Sleep(time.Second * 2)
-
-	jb.requeueListener()
 
 	return jb, nil
 }

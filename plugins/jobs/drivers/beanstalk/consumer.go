@@ -48,6 +48,15 @@ func NewBeanstalkConsumer(configKey string, log logger.Logger, cfg config.Config
 	var pipeCfg Config
 	var globalCfg GlobalCfg
 
+	if !cfg.Has(configKey) {
+		return nil, errors.E(op, errors.Errorf("no configuration by provided key: %s", configKey))
+	}
+
+	// if no global section
+	if !cfg.Has(pluginName) {
+		return nil, errors.E(op, errors.Str("no global beanstalk configuration, global configuration should contain beanstalk addrs and timeout"))
+	}
+
 	err := cfg.UnmarshalKey(configKey, &pipeCfg)
 	if err != nil {
 		return nil, errors.E(op, err)
@@ -94,8 +103,6 @@ func NewBeanstalkConsumer(configKey string, log logger.Logger, cfg config.Config
 		reconnectCh: make(chan struct{}, 2),
 	}
 
-	jc.requeueListener()
-
 	return jc, nil
 }
 
@@ -104,6 +111,11 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg config.Configu
 
 	// PARSE CONFIGURATION -------
 	var globalCfg GlobalCfg
+
+	// if no global section
+	if !cfg.Has(pluginName) {
+		return nil, errors.E(op, errors.Str("no global beanstalk configuration, global configuration should contain beanstalk addrs and timeout"))
+	}
 
 	err := cfg.UnmarshalKey(pluginName, &globalCfg)
 	if err != nil {
@@ -143,8 +155,6 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg config.Configu
 		requeueCh:   make(chan *Item, 1000),
 		reconnectCh: make(chan struct{}, 2),
 	}
-
-	jc.requeueListener()
 
 	return jc, nil
 }

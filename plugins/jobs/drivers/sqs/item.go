@@ -64,7 +64,7 @@ type Options struct {
 	queue              *string
 	receiptHandler     *string
 	client             *sqs.Client
-	requeueCh          chan *Item
+	requeueFn          func(context.Context, *Item) error
 }
 
 // DelayDuration returns delay duration in a form of time.Duration.
@@ -144,12 +144,28 @@ func (i *Item) Requeue(headers map[string][]string, delay int64) error {
 	// overwrite the delay
 	i.Options.Delay = delay
 	i.Headers = headers
-	select {
-	case i.Options.requeueCh <- i:
-		return nil
-	default:
-		return errors.E("can't push to the requeue channel, channel either closed or full", "current size", len(i.Options.requeueCh))
+
+	// requeue message
+	err := i.Options.requeueFn(context.Background(), i)
+	if err != nil {
+		return err
 	}
+
+	// Delete job from the queue only after successful requeue
+	_, err = i.Options.client.DeleteMessage(context.Background(), &sqs.DeleteMessageInput{
+		QueueUrl:      i.Options.queue,
+		ReceiptHandle: i.Options.receiptHandler,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (i *Item) Recycle() {
+	i.Options = nil
 }
 
 func fromJob(job *job.Job) *Item {
@@ -227,7 +243,7 @@ func (j *JobConsumer) unpack(msg *types.Message) (*Item, error) {
 			client:             j.client,
 			queue:              j.queue,
 			receiptHandler:     msg.ReceiptHandle,
-			requeueCh:          j.requeueCh,
+			requeueFn:          j.handleItem,
 		},
 	}
 

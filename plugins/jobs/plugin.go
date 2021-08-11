@@ -104,19 +104,6 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	return nil
 }
 
-func (p *Plugin) getPayload(body, context []byte) *payload.Payload {
-	pld := p.pldPool.Get().(*payload.Payload)
-	pld.Body = body
-	pld.Context = context
-	return pld
-}
-
-func (p *Plugin) putPayload(pld *payload.Payload) {
-	pld.Body = nil
-	pld.Context = nil
-	p.pldPool.Put(pld)
-}
-
 func (p *Plugin) Serve() chan error { //nolint:gocognit
 	errCh := make(chan error, 1)
 	const op = errors.Op("jobs_plugin_serve")
@@ -261,6 +248,8 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 							continue
 						}
 
+						// free the resources
+						jb.Recycle()
 						// return payload
 						p.putPayload(exec)
 					}
@@ -564,4 +553,17 @@ func (p *Plugin) collectJobsEvents(event interface{}) {
 			p.log.Info("driver initialized", "driver", jev.Driver, "start", jev.Start.UTC())
 		}
 	}
+}
+
+func (p *Plugin) getPayload(body, context []byte) *payload.Payload {
+	pld := p.pldPool.Get().(*payload.Payload)
+	pld.Body = body
+	pld.Context = context
+	return pld
+}
+
+func (p *Plugin) putPayload(pld *payload.Payload) {
+	pld.Body = nil
+	pld.Context = nil
+	p.pldPool.Put(pld)
 }

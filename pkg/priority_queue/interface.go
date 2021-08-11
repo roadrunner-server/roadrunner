@@ -28,4 +28,7 @@ type Item interface {
 
 	// Requeue - put the message back to the queue with the optional delay
 	Requeue(headers map[string][]string, delay int64) error
+
+	// Recycle frees resources allocated by the Item
+	Recycle()
 }
