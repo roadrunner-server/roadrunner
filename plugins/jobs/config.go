@@ -55,7 +55,7 @@ func (c *Config) InitDefaults() {
 	}
 
 	if c.Timeout == 0 {
-		c.Timeout = 10
+		c.Timeout = 60
 	}
 
 	c.Pool.InitDefaults()

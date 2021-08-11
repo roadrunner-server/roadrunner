@@ -46,7 +46,7 @@ func (j *JobConsumer) listen(ctx context.Context) { //nolint:gocognit
 									j.log.Error("create queue", "error", err)
 								}
 								// To successfully create a new queue, you must provide a
-								// queue name that adheres to the limits related to queues
+								// queue name that adheres to the limits related to the queues
 								// (https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/limits-queues.html)
 								// and is unique within the scope of your queues. After you create a queue, you
 								// must wait at least one second after the queue is created to be able to use the <------------

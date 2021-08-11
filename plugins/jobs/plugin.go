@@ -354,7 +354,7 @@ func (p *Plugin) Push(j *job.Job) error {
 	}
 
 	// if job has no priority, inherit it from the pipeline
-	// TODO merge all options, not only priority
+	// TODO(rustatian) merge all options, not only priority
 	if j.Options.Priority == 0 {
 		j.Options.Priority = ppl.Priority()
 	}
