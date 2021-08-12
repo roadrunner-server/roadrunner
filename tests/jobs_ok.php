@@ -19,12 +19,7 @@ while ($in = $rr->waitPayload()) {
 
         $rr->respond(new RoadRunner\Payload(json_encode([
             'type' => 0,
-            'data' => [
-                'message' => 'error',
-                'requeue' => true,
-                'delay_seconds' => 10,
-                'headers' => $headers
-            ]
+            'data' => []
         ])));
     } catch (\Throwable $e) {
         $rr->error((string)$e);

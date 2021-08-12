@@ -2,19 +2,12 @@ rpc:
   listen: tcp://127.0.0.1:6001
 
 server:
-  command: "php ../../client.php echo pipes"
+  command: "php ../../jobs_ok.php"
   relay: "pipes"
   relay_timeout: "20s"
 
-sqs:
-  key: api-key
-  secret: api-secret
-  region: us-west-1
-  endpoint: http://127.0.0.1:9324
-
 logs:
-  level: debug
-  encoding: console
+  level: error
   mode: development
 
 jobs:
@@ -42,13 +35,5 @@ jobs:
       tags:
         test: "tag"
 
-    test-2:
-      driver: sqs
-      prefetch: 1000
-      queue: default-2
-      attributes:
-        MessageRetentionPeriod: 86400
-      tags:
-        test: "tag"
-  consume: [ "test-1", "test-2" ]
+  consume: [ "test-1" ]
 

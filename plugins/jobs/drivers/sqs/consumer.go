@@ -262,9 +262,11 @@ func (j *JobConsumer) Push(ctx context.Context, jb *job.Job) error {
 }
 
 func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
-	// The new value for the message's visibility timeout (in seconds). Values range: 0
-	// to 43200. Maximum: 12 hours.
-	_, err := j.client.SendMessage(ctx, msg.pack(j.queueURL))
+	d, err := msg.pack(j.queueURL)
+	if err != nil {
+		return err
+	}
+	_, err = j.client.SendMessage(ctx, d)
 	if err != nil {
 		return err
 	}

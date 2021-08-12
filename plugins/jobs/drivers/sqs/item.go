@@ -17,6 +17,7 @@ import (
 const (
 	StringType              string = "String"
 	NumberType              string = "Number"
+	BinaryType              string = "Binary"
 	ApproximateReceiveCount string = "ApproximateReceiveCount"
 )
 
@@ -25,6 +26,7 @@ var itemAttributes = []string{
 	job.RRDelay,
 	job.RRTimeout,
 	job.RRPriority,
+	job.RRHeaders,
 }
 
 type Item struct {
@@ -128,7 +130,13 @@ func (i *Item) Ack() error {
 }
 
 func (i *Item) Nack() error {
-	_, err := i.Options.client.DeleteMessage(context.Background(), &sqs.DeleteMessageInput{
+	// requeue message
+	err := i.Options.requeueFn(context.Background(), i)
+	if err != nil {
+		return err
+	}
+
+	_, err = i.Options.client.DeleteMessage(context.Background(), &sqs.DeleteMessageInput{
 		QueueUrl:      i.Options.queue,
 		ReceiptHandle: i.Options.receiptHandler,
 	})
@@ -183,7 +191,13 @@ func fromJob(job *job.Job) *Item {
 	}
 }
 
-func (i *Item) pack(queue *string) *sqs.SendMessageInput {
+func (i *Item) pack(queue *string) (*sqs.SendMessageInput, error) {
+	// pack headers map
+	data, err := json.Marshal(i.Headers)
+	if err != nil {
+		return nil, err
+	}
+
 	return &sqs.SendMessageInput{
 		MessageBody:  aws.String(i.Payload),
 		QueueUrl:     queue,
@@ -192,9 +206,10 @@ func (i *Item) pack(queue *string) *sqs.SendMessageInput {
 			job.RRJob:      {DataType: aws.String(StringType), BinaryValue: nil, BinaryListValues: nil, StringListValues: nil, StringValue: aws.String(i.Job)},
 			job.RRDelay:    {DataType: aws.String(StringType), BinaryValue: nil, BinaryListValues: nil, StringListValues: nil, StringValue: aws.String(strconv.Itoa(int(i.Options.Delay)))},
 			job.RRTimeout:  {DataType: aws.String(StringType), BinaryValue: nil, BinaryListValues: nil, StringListValues: nil, StringValue: aws.String(strconv.Itoa(int(i.Options.Timeout)))},
+			job.RRHeaders:  {DataType: aws.String(BinaryType), BinaryValue: data, BinaryListValues: nil, StringListValues: nil, StringValue: nil},
 			job.RRPriority: {DataType: aws.String(NumberType), BinaryValue: nil, BinaryListValues: nil, StringListValues: nil, StringValue: aws.String(strconv.Itoa(int(i.Options.Priority)))},
 		},
-	}
+	}, nil
 }
 
 func (j *JobConsumer) unpack(msg *types.Message) (*Item, error) {
@@ -208,6 +223,12 @@ func (j *JobConsumer) unpack(msg *types.Message) (*Item, error) {
 		if _, ok := msg.MessageAttributes[itemAttributes[i]]; !ok {
 			return nil, errors.E(op, errors.Errorf("missing queue attribute: %s", itemAttributes[i]))
 		}
+	}
+
+	var h map[string][]string
+	err := json.Unmarshal(msg.MessageAttributes[job.RRHeaders].BinaryValue, &h)
+	if err != nil {
+		return nil, err
 	}
 
 	delay, err := strconv.Atoi(*msg.MessageAttributes[job.RRDelay].StringValue)
@@ -233,6 +254,7 @@ func (j *JobConsumer) unpack(msg *types.Message) (*Item, error) {
 	item := &Item{
 		Job:     *msg.MessageAttributes[job.RRJob].StringValue,
 		Payload: *msg.Body,
+		Headers: h,
 		Options: &Options{
 			Delay:    int64(delay),
 			Timeout:  int64(to),
@@ -241,7 +263,7 @@ func (j *JobConsumer) unpack(msg *types.Message) (*Item, error) {
 			// private
 			approxReceiveCount: int64(recCount),
 			client:             j.client,
-			queue:              j.queue,
+			queue:              j.queueURL,
 			receiptHandler:     msg.ReceiptHandle,
 			requeueFn:          j.handleItem,
 		},

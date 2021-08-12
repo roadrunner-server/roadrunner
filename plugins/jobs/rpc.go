@@ -13,20 +13,6 @@ type rpc struct {
 	p   *Plugin
 }
 
-/*
-List of the RPC methods:
-1. Release - single job push
-2. PushBatch - push job batch
-
-3. Reset - managed by the Resetter plugin
-
-4. Pause - pauses set of pipelines
-5. Resume - resumes set of pipelines
-
-6. Workers - managed by the Informer plugin.
-7. Stat - jobs statistic
-*/
-
 func (r *rpc) Push(j *jobsv1beta.PushRequest, _ *jobsv1beta.Empty) error {
 	const op = errors.Op("jobs_rpc_push")
 

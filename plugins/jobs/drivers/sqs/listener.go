@@ -30,8 +30,10 @@ func (j *JobConsumer) listen(ctx context.Context) { //nolint:gocognit
 				MaxNumberOfMessages:   j.prefetch,
 				AttributeNames:        []types.QueueAttributeName{types.QueueAttributeName(ApproximateReceiveCount)},
 				MessageAttributeNames: []string{All},
-				VisibilityTimeout:     j.visibilityTimeout,
-				WaitTimeSeconds:       j.waitTime,
+				// The new value for the message's visibility timeout (in seconds). Values range: 0
+				// to 43200. Maximum: 12 hours.
+				VisibilityTimeout: j.visibilityTimeout,
+				WaitTimeSeconds:   j.waitTime,
 			})
 
 			if err != nil {
