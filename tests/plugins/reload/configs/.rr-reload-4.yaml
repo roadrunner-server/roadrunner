@@ -1,16 +1,10 @@
 server:
   command: php ../../psr-worker-bench.php
-  user: ''
-  group: ''
-  env:
-    RR_HTTP: 'true'
   relay: pipes
   relay_timeout: 20s
 http:
   address: '127.0.0.1:22766'
   max_request_size: 1024
-  middleware:
-    - ''
   uploads:
     forbid:
       - .php
@@ -31,9 +25,10 @@ http:
     destroy_timeout: 60s
 logs:
   mode: development
-  level: error
+  level: debug
+
 reload:
-  interval: 2s
+  interval: 1s
   patterns:
     - .aaa
   services:

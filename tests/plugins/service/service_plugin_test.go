@@ -41,11 +41,6 @@ func TestServiceInit(t *testing.T) {
 	// process interrupt error
 	mockLogger.EXPECT().Error("process wait error", gomock.Any()).MinTimes(2)
 
-	mockLogger.EXPECT().Info("Hello 0\n The number is: 0\n").MinTimes(1)
-	mockLogger.EXPECT().Info("Hello 1\n The number is: 1\n").MinTimes(1)
-	mockLogger.EXPECT().Info("Hello 2\n The number is: 2\n").MinTimes(1)
-	mockLogger.EXPECT().Info("Hello 3\n The number is: 3\n").MinTimes(1)
-
 	mockLogger.EXPECT().Info("Hello 0").MinTimes(1)
 	mockLogger.EXPECT().Info("Hello 1").MinTimes(1)
 	mockLogger.EXPECT().Info("Hello 2").MinTimes(1)
@@ -195,10 +190,11 @@ func TestServiceRestarts(t *testing.T) {
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
 
 	// process interrupt error
-	mockLogger.EXPECT().Error("process wait error", gomock.Any()).MinTimes(2)
+	mockLogger.EXPECT().Error("process wait error", gomock.Any()).MinTimes(1)
 
 	// should not be more than Hello 0, because of restarts
 	mockLogger.EXPECT().Info("Hello 0").MinTimes(1)
+	mockLogger.EXPECT().Info("Hello 1").AnyTimes()
 
 	err = cont.RegisterAll(
 		cfg,

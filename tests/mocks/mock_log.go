@@ -1,16 +1,14 @@
 package mocks
 
 import (
-	"reflect"
-	"sync"
+	reflect "reflect"
 
-	"github.com/golang/mock/gomock"
-	"github.com/spiral/roadrunner/v2/plugins/logger"
+	gomock "github.com/golang/mock/gomock"
+	logger "github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
 // MockLogger is a mock of Logger interface.
 type MockLogger struct {
-	sync.Mutex
 	ctrl     *gomock.Controller
 	recorder *MockLoggerMockRecorder
 }
@@ -40,49 +38,12 @@ func (m *MockLogger) Init() error {
 
 // Debug mocks base method.
 func (m *MockLogger) Debug(msg string, keyvals ...interface{}) {
-	m.Lock()
-	defer m.Unlock()
 	m.ctrl.T.Helper()
 	varargs := []interface{}{msg}
-	varargs = append(varargs, keyvals...)
+	for _, a := range keyvals {
+		varargs = append(varargs, a)
+	}
 	m.ctrl.Call(m, "Debug", varargs...)
-}
-
-// Warn mocks base method.
-func (m *MockLogger) Warn(msg string, keyvals ...interface{}) {
-	m.Lock()
-	defer m.Unlock()
-	m.ctrl.T.Helper()
-	varargs := []interface{}{msg}
-	varargs = append(varargs, keyvals...)
-	m.ctrl.Call(m, "Warn", varargs...)
-}
-
-// Info mocks base method.
-func (m *MockLogger) Info(msg string, keyvals ...interface{}) {
-	m.Lock()
-	defer m.Unlock()
-	m.ctrl.T.Helper()
-	varargs := []interface{}{msg}
-	varargs = append(varargs, keyvals...)
-	m.ctrl.Call(m, "Info", varargs...)
-}
-
-// Error mocks base method.
-func (m *MockLogger) Error(msg string, keyvals ...interface{}) {
-	m.Lock()
-	defer m.Unlock()
-	m.ctrl.T.Helper()
-	varargs := []interface{}{msg}
-	varargs = append(varargs, keyvals...)
-	m.ctrl.Call(m, "Error", varargs...)
-}
-
-// Warn indicates an expected call of Warn.
-func (mr *MockLoggerMockRecorder) Warn(msg interface{}, keyvals ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{msg}, keyvals...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Warn", reflect.TypeOf((*MockLogger)(nil).Warn), varargs...)
 }
 
 // Debug indicates an expected call of Debug.
@@ -92,6 +53,16 @@ func (mr *MockLoggerMockRecorder) Debug(msg interface{}, keyvals ...interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Debug", reflect.TypeOf((*MockLogger)(nil).Debug), varargs...)
 }
 
+// Error mocks base method.
+func (m *MockLogger) Error(msg string, keyvals ...interface{}) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{msg}
+	for _, a := range keyvals {
+		varargs = append(varargs, a)
+	}
+	m.ctrl.Call(m, "Error", varargs...)
+}
+
 // Error indicates an expected call of Error.
 func (mr *MockLoggerMockRecorder) Error(msg interface{}, keyvals ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
@@ -99,8 +70,14 @@ func (mr *MockLoggerMockRecorder) Error(msg interface{}, keyvals ...interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Error", reflect.TypeOf((*MockLogger)(nil).Error), varargs...)
 }
 
-func (mr *MockLoggerMockRecorder) Init() error {
-	return nil
+// Info mocks base method.
+func (m *MockLogger) Info(msg string, keyvals ...interface{}) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{msg}
+	for _, a := range keyvals {
+		varargs = append(varargs, a)
+	}
+	m.ctrl.Call(m, "Info", varargs...)
 }
 
 // Info indicates an expected call of Info.
@@ -108,6 +85,23 @@ func (mr *MockLoggerMockRecorder) Info(msg interface{}, keyvals ...interface{}) 
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{msg}, keyvals...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Info", reflect.TypeOf((*MockLogger)(nil).Info), varargs...)
+}
+
+// Warn mocks base method.
+func (m *MockLogger) Warn(msg string, keyvals ...interface{}) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{msg}
+	for _, a := range keyvals {
+		varargs = append(varargs, a)
+	}
+	m.ctrl.Call(m, "Warn", varargs...)
+}
+
+// Warn indicates an expected call of Warn.
+func (mr *MockLoggerMockRecorder) Warn(msg interface{}, keyvals ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{msg}, keyvals...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Warn", reflect.TypeOf((*MockLogger)(nil).Warn), varargs...)
 }
 
 // MockWithLogger is a mock of WithLogger interface.
@@ -137,7 +131,9 @@ func (m *MockWithLogger) EXPECT() *MockWithLoggerMockRecorder {
 func (m *MockWithLogger) With(keyvals ...interface{}) logger.Logger {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{}
-	varargs = append(varargs, keyvals...)
+	for _, a := range keyvals {
+		varargs = append(varargs, a)
+	}
 	ret := m.ctrl.Call(m, "With", varargs...)
 	ret0, _ := ret[0].(logger.Logger)
 	return ret0

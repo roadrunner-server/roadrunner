@@ -553,8 +553,6 @@ func (p *Plugin) collectJobsEvents(event interface{}) {
 			p.log.Error("pipeline error", "pipeline", jev.Pipeline, "error", jev.Error, "start", jev.Start.UTC(), "elapsed", jev.Elapsed)
 		case events.EventDriverReady:
 			p.log.Info("driver ready", "pipeline", jev.Pipeline, "start", jev.Start.UTC(), "elapsed", jev.Elapsed)
-		case events.EventInitialized:
-			p.log.Info("driver initialized", "driver", jev.Driver, "start", jev.Start.UTC())
 		}
 	}
 }
