@@ -5,6 +5,7 @@ run:
   skip-dirs:
     - .github
     - .git
+    - tests/mocks
   modules-download-mode: readonly
   allow-parallel-runners: true
 
