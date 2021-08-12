@@ -16,7 +16,8 @@ import (
 )
 
 const (
-	prefetch string = "prefetch"
+	prefetch      string = "prefetch"
+	goroutinesMax uint64 = 1000
 )
 
 type Config struct {
@@ -32,7 +33,7 @@ type JobConsumer struct {
 	localPrefetch chan *Item
 
 	// time.sleep goroutines max number
-	goroutinesMaxNum uint64
+	goroutines uint64
 
 	stopCh chan struct{}
 }
@@ -41,11 +42,11 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, eh
 	const op = errors.Op("new_ephemeral_pipeline")
 
 	jb := &JobConsumer{
-		log:              log,
-		pq:               pq,
-		eh:               eh,
-		goroutinesMaxNum: 1000,
-		stopCh:           make(chan struct{}, 1),
+		log:        log,
+		pq:         pq,
+		eh:         eh,
+		goroutines: 0,
+		stopCh:     make(chan struct{}, 1),
 	}
 
 	err := cfg.UnmarshalKey(configKey, &jb.cfg)
@@ -68,11 +69,11 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, eh
 
 func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, eh events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
 	jb := &JobConsumer{
-		log:              log,
-		pq:               pq,
-		eh:               eh,
-		goroutinesMaxNum: 1000,
-		stopCh:           make(chan struct{}, 1),
+		log:        log,
+		pq:         pq,
+		eh:         eh,
+		goroutines: 0,
+		stopCh:     make(chan struct{}, 1),
 	}
 
 	// initialize a local queue
@@ -112,18 +113,18 @@ func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
 	// goroutines here. We should limit goroutines here.
 	if msg.Options.Delay > 0 {
 		// if we have 1000 goroutines waiting on the delay - reject 1001
-		if atomic.LoadUint64(&j.goroutinesMaxNum) >= 1000 {
+		if atomic.LoadUint64(&j.goroutines) >= goroutinesMax {
 			return errors.E(op, errors.Str("max concurrency number reached"))
 		}
 
 		go func(jj *Item) {
-			atomic.AddUint64(&j.goroutinesMaxNum, 1)
+			atomic.AddUint64(&j.goroutines, 1)
 			time.Sleep(jj.Options.DelayDuration())
 
 			// send the item after timeout expired
 			j.localPrefetch <- jj
 
-			atomic.AddUint64(&j.goroutinesMaxNum, ^uint64(0))
+			atomic.AddUint64(&j.goroutines, ^uint64(0))
 		}(msg)
 
 		return nil
@@ -149,7 +150,8 @@ func (j *JobConsumer) consume() {
 			}
 
 			// set requeue channel
-			item.Options.requeueCh = j.localPrefetch
+			item.Options.requeueFn = j.handleItem
+
 			j.pq.Insert(item)
 		case <-j.stopCh:
 			return

@@ -6,7 +6,6 @@ const (
 	RRJob      string = "rr_job"
 	RRHeaders  string = "rr_headers"
 	RRPipeline string = "rr_pipeline"
-	RRTimeout  string = "rr_timeout"
 	RRDelay    string = "rr_delay"
 	RRPriority string = "rr_priority"
 )

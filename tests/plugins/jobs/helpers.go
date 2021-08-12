@@ -73,12 +73,9 @@ func pushToPipe(pipeline string) func(t *testing.T) {
 			Payload: `{"hello":"world"}`,
 			Headers: map[string]*jobsv1beta.HeaderValue{"test": {Value: []string{"test2"}}},
 			Options: &jobsv1beta.Options{
-				Priority:   1,
-				Pipeline:   pipeline,
-				Delay:      0,
-				Attempts:   0,
-				RetryDelay: 0,
-				Timeout:    0,
+				Priority: 1,
+				Pipeline: pipeline,
+				Delay:    0,
 			},
 		}}
 
@@ -100,12 +97,9 @@ func pushToPipeErr(pipeline string) func(t *testing.T) {
 			Payload: `{"hello":"world"}`,
 			Headers: map[string]*jobsv1beta.HeaderValue{"test": {Value: []string{"test2"}}},
 			Options: &jobsv1beta.Options{
-				Priority:   1,
-				Pipeline:   pipeline,
-				Delay:      0,
-				Attempts:   0,
-				RetryDelay: 0,
-				Timeout:    0,
+				Priority: 1,
+				Pipeline: pipeline,
+				Delay:    0,
 			},
 		}}
 

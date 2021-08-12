@@ -1,6 +1,7 @@
 package ephemeral
 
 import (
+	"context"
 	"time"
 
 	json "github.com/json-iterator/go"
@@ -37,25 +38,13 @@ type Options struct {
 	// Delay defines time duration to delay execution for. Defaults to none.
 	Delay int64 `json:"delay,omitempty"`
 
-	// Timeout defines for how broker should wait until treating job are failed. Defaults to 30 min.
-	Timeout int64 `json:"timeout,omitempty"`
-
 	// private
-	requeueCh chan *Item
+	requeueFn func(context.Context, *Item) error
 }
 
 // DelayDuration returns delay duration in a form of time.Duration.
 func (o *Options) DelayDuration() time.Duration {
 	return time.Second * time.Duration(o.Delay)
-}
-
-// TimeoutDuration returns timeout duration in a form of time.Duration.
-func (o *Options) TimeoutDuration() time.Duration {
-	if o.Timeout == 0 {
-		return 30 * time.Minute
-	}
-
-	return time.Second * time.Duration(o.Timeout)
 }
 
 func (i *Item) ID() string {
@@ -78,9 +67,8 @@ func (i *Item) Context() ([]byte, error) {
 			ID       string              `json:"id"`
 			Job      string              `json:"job"`
 			Headers  map[string][]string `json:"headers"`
-			Timeout  int64               `json:"timeout"`
 			Pipeline string              `json:"pipeline"`
-		}{ID: i.Ident, Job: i.Job, Headers: i.Headers, Timeout: i.Options.Timeout, Pipeline: i.Options.Pipeline},
+		}{ID: i.Ident, Job: i.Job, Headers: i.Headers, Pipeline: i.Options.Pipeline},
 	)
 
 	if err != nil {
@@ -101,25 +89,16 @@ func (i *Item) Nack() error {
 }
 
 func (i *Item) Requeue(headers map[string][]string, delay int64) error {
-	go func() {
-		time.Sleep(time.Second * time.Duration(delay))
-		// overwrite the delay
-		i.Options.Delay = delay
-		i.Headers = headers
-		select {
-		case i.Options.requeueCh <- i:
-			return
-		default:
-			// TODO(rustatian): logs?
-			return
-		}
-	}()
+	// overwrite the delay
+	i.Options.Delay = delay
+	i.Headers = headers
+
+	err := i.Options.requeueFn(context.Background(), i)
+	if err != nil {
+		return err
+	}
 
 	return nil
-}
-
-func (i *Item) Recycle() {
-	i.Options = nil
 }
 
 func fromJob(job *job.Job) *Item {
@@ -131,7 +110,6 @@ func fromJob(job *job.Job) *Item {
 			Priority: job.Options.Priority,
 			Pipeline: job.Options.Pipeline,
 			Delay:    job.Options.Delay,
-			Timeout:  job.Options.Timeout,
 		},
 	}
 }

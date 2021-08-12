@@ -126,11 +126,9 @@ func (r *rpc) from(j *jobsv1beta.Job) *job.Job {
 		Ident:   j.GetId(),
 		Payload: j.GetPayload(),
 		Options: &job.Options{
-			Priority:   j.GetOptions().GetPriority(),
-			Pipeline:   j.GetOptions().GetPipeline(),
-			Delay:      j.GetOptions().GetDelay(),
-			RetryDelay: j.GetOptions().GetRetryDelay(),
-			Timeout:    j.GetOptions().GetTimeout(),
+			Priority: j.GetOptions().GetPriority(),
+			Pipeline: j.GetOptions().GetPipeline(),
+			Delay:    j.GetOptions().GetDelay(),
 		},
 	}
 

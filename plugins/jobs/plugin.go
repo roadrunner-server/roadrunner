@@ -246,13 +246,14 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 							p.putPayload(exec)
 							errNack := jb.Nack()
 							if errNack != nil {
-								p.log.Error("negatively acknowledge failed, job might be lost", "error", errNack)
+								p.log.Error("negatively acknowledge failed, job might be lost", "root error", err, "error nack", errNack)
+								continue
 							}
+
+							p.log.Error("job negatively acknowledged", "error", err)
 							continue
 						}
 
-						// free the resources
-						jb.Recycle()
 						// return payload
 						p.putPayload(exec)
 					}

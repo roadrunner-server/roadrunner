@@ -41,9 +41,6 @@ type Options struct {
 	// Delay defines time duration to delay execution for. Defaults to none.
 	Delay int64 `json:"delay,omitempty"`
 
-	// Reserve defines for how broker should wait until treating job are failed. Defaults to 30 min.
-	Timeout int64 `json:"timeout,omitempty"`
-
 	// private
 	// Ack delegates an acknowledgement through the Acknowledger interface that the client or server has finished work on a delivery
 	ack func(multiply bool) error
@@ -64,15 +61,6 @@ type Options struct {
 // DelayDuration returns delay duration in a form of time.Duration.
 func (o *Options) DelayDuration() time.Duration {
 	return time.Second * time.Duration(o.Delay)
-}
-
-// TimeoutDuration returns timeout duration in a form of time.Duration.
-func (o *Options) TimeoutDuration() time.Duration {
-	if o.Timeout == 0 {
-		return 30 * time.Minute
-	}
-
-	return time.Second * time.Duration(o.Timeout)
 }
 
 func (i *Item) ID() string {
@@ -96,9 +84,8 @@ func (i *Item) Context() ([]byte, error) {
 			ID       string              `json:"id"`
 			Job      string              `json:"job"`
 			Headers  map[string][]string `json:"headers"`
-			Timeout  int64               `json:"timeout"`
 			Pipeline string              `json:"pipeline"`
-		}{ID: i.Ident, Job: i.Job, Headers: i.Headers, Timeout: i.Options.Timeout, Pipeline: i.Options.Pipeline},
+		}{ID: i.Ident, Job: i.Job, Headers: i.Headers, Pipeline: i.Options.Pipeline},
 	)
 
 	if err != nil {
@@ -141,10 +128,6 @@ func (i *Item) Requeue(headers map[string][]string, delay int64) error {
 	return nil
 }
 
-func (i *Item) Recycle() {
-	i.Options = nil
-}
-
 // fromDelivery converts amqp.Delivery into an Item which will be pushed to the PQ
 func (j *JobConsumer) fromDelivery(d amqp.Delivery) (*Item, error) {
 	const op = errors.Op("from_delivery_convert")
@@ -179,7 +162,6 @@ func fromJob(job *job.Job) *Item {
 			Priority: job.Options.Priority,
 			Pipeline: job.Options.Pipeline,
 			Delay:    job.Options.Delay,
-			Timeout:  job.Options.Timeout,
 		},
 	}
 }
@@ -195,7 +177,6 @@ func pack(id string, j *Item) (amqp.Table, error) {
 		job.RRJob:      j.Job,
 		job.RRPipeline: j.Options.Pipeline,
 		job.RRHeaders:  headers,
-		job.RRTimeout:  j.Options.Timeout,
 		job.RRDelay:    j.Options.Delay,
 		job.RRPriority: j.Options.Priority,
 	}, nil
@@ -230,10 +211,6 @@ func (j *JobConsumer) unpack(d amqp.Delivery) (*Item, error) {
 		if err != nil {
 			return nil, err
 		}
-	}
-
-	if _, ok := d.Headers[job.RRTimeout].(int64); ok {
-		item.Options.Timeout = d.Headers[job.RRTimeout].(int64)
 	}
 
 	if _, ok := d.Headers[job.RRDelay].(int64); ok {

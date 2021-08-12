@@ -26,7 +26,6 @@ func BenchmarkEncodeGob(b *testing.B) {
 			Priority: 10,
 			Pipeline: "test-local-pipe",
 			Delay:    10,
-			Timeout:  5,
 		},
 	}
 
@@ -60,7 +59,6 @@ func BenchmarkEncodeJsonIter(b *testing.B) {
 			Priority: 10,
 			Pipeline: "test-local-pipe",
 			Delay:    10,
-			Timeout:  5,
 		},
 	}
 

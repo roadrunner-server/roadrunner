@@ -30,16 +30,14 @@ message Job {
     string job = 1;
     string id = 2;
     string payload = 3;
-    map<string, HeaderValue> headers = 5;
-    Options options = 4;
+    map<string, HeaderValue> headers = 4;
+    Options options = 5;
 }
 
 message Options {
     int64 priority = 1;
     string pipeline = 2;
     int64 delay = 3;
-    int64 retry_delay = 5;
-    int64 timeout = 6;
 }
 
 message HeaderValue {

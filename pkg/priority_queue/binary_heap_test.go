@@ -40,8 +40,6 @@ func (t Test) Priority() int64 {
 	return int64(t)
 }
 
-func (t Test) Recycle() {}
-
 func TestBinHeap_Init(t *testing.T) {
 	a := []Item{Test(2), Test(23), Test(33), Test(44), Test(1), Test(2), Test(2), Test(2), Test(4), Test(6), Test(99)}
 
