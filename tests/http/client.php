@@ -18,7 +18,7 @@ switch ($goridge) {
         break;
 
     case "tcp":
-        $relay = new Goridge\SocketRelay("localhost", 9007);
+        $relay = new Goridge\SocketRelay("127.0.0.1", 9007);
         break;
 
     case "unix":

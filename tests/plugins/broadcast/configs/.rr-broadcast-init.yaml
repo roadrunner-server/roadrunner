@@ -23,7 +23,7 @@ broadcast:
   default:
     driver: redis
     addrs:
-      - "localhost:6379"
+      - "127.0.0.1:6379"
 
 logs:
   mode: development

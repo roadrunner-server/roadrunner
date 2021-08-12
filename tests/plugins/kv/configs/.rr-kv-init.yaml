@@ -24,7 +24,7 @@ kv:
 
   memcached:
     driver: memcached
-    addr: [ "localhost:11211" ]
+    addr: [ "127.0.0.1:11211" ]
 
 #  redis:
 #    driver: redis

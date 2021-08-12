@@ -19,7 +19,7 @@ func Test_Tcp_Start(t *testing.T) {
 	ctx := context.Background()
 	time.Sleep(time.Millisecond * 10) // to ensure free socket
 
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			err = ls.Close()
@@ -50,7 +50,7 @@ func Test_Tcp_Start(t *testing.T) {
 func Test_Tcp_StartCloseFactory(t *testing.T) {
 	time.Sleep(time.Millisecond * 10) // to ensure free socket
 	ctx := context.Background()
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 	} else {
 		t.Skip("socket is busy")
@@ -79,7 +79,7 @@ func Test_Tcp_StartCloseFactory(t *testing.T) {
 func Test_Tcp_StartError(t *testing.T) {
 	time.Sleep(time.Millisecond * 10) // to ensure free socket
 	ctx := context.Background()
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			err = ls.Close()
@@ -106,7 +106,7 @@ func Test_Tcp_Failboot(t *testing.T) {
 	time.Sleep(time.Millisecond * 10) // to ensure free socket
 	ctx := context.Background()
 
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			err3 := ls.Close()
@@ -140,7 +140,7 @@ func Test_Tcp_Failboot(t *testing.T) {
 func Test_Tcp_Timeout(t *testing.T) {
 	time.Sleep(time.Millisecond * 10) // to ensure free socket
 	ctx := context.Background()
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			err = ls.Close()
@@ -163,7 +163,7 @@ func Test_Tcp_Timeout(t *testing.T) {
 func Test_Tcp_Invalid(t *testing.T) {
 	time.Sleep(time.Millisecond * 10) // to ensure free socket
 	ctx := context.Background()
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			err = ls.Close()
@@ -185,7 +185,7 @@ func Test_Tcp_Invalid(t *testing.T) {
 func Test_Tcp_Broken(t *testing.T) {
 	time.Sleep(time.Millisecond * 10) // to ensure free socket
 	ctx := context.Background()
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			errC := ls.Close()
@@ -231,10 +231,9 @@ func Test_Tcp_Broken(t *testing.T) {
 
 	sw := worker.From(w)
 
-	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 	assert.Error(t, err)
-	assert.Nil(t, res.Body)
-	assert.Nil(t, res.Context)
+	assert.Nil(t, res)
 	wg.Wait()
 	<-finish
 }
@@ -242,7 +241,7 @@ func Test_Tcp_Broken(t *testing.T) {
 func Test_Tcp_Echo(t *testing.T) {
 	time.Sleep(time.Millisecond * 10) // to ensure free socket
 	ctx := context.Background()
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
 			err = ls.Close()
@@ -269,7 +268,7 @@ func Test_Tcp_Echo(t *testing.T) {
 
 	sw := worker.From(w)
 
-	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -434,11 +433,10 @@ func Test_Unix_Broken(t *testing.T) {
 
 	sw := worker.From(w)
 
-	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
-	assert.Nil(t, res.Context)
-	assert.Nil(t, res.Body)
+	assert.Nil(t, res)
 	<-block
 	wg.Wait()
 }
@@ -475,7 +473,7 @@ func Test_Unix_Echo(t *testing.T) {
 
 	sw := worker.From(w)
 
-	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
@@ -487,7 +485,7 @@ func Test_Unix_Echo(t *testing.T) {
 
 func Benchmark_Tcp_SpawnWorker_Stop(b *testing.B) {
 	ctx := context.Background()
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if err == nil {
 		defer func() {
 			err = ls.Close()
@@ -520,7 +518,7 @@ func Benchmark_Tcp_SpawnWorker_Stop(b *testing.B) {
 
 func Benchmark_Tcp_Worker_ExecEcho(b *testing.B) {
 	ctx := context.Background()
-	ls, err := net.Listen("tcp", "localhost:9007")
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if err == nil {
 		defer func() {
 			err = ls.Close()
@@ -548,7 +546,7 @@ func Benchmark_Tcp_Worker_ExecEcho(b *testing.B) {
 	sw := worker.From(w)
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(payload.Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.Exec(&payload.Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}
@@ -613,7 +611,7 @@ func Benchmark_Unix_Worker_ExecEcho(b *testing.B) {
 	sw := worker.From(w)
 
 	for n := 0; n < b.N; n++ {
-		if _, err := sw.Exec(payload.Payload{Body: []byte("hello")}); err != nil {
+		if _, err := sw.Exec(&payload.Payload{Body: []byte("hello")}); err != nil {
 			b.Fail()
 		}
 	}

@@ -29,6 +29,6 @@ type Config struct {
 // InitDefaults initializing fill config with default values
 func (s *Config) InitDefaults() {
 	if s.Addrs == nil {
-		s.Addrs = []string{"localhost:6379"} // default addr is pointing to local storage
+		s.Addrs = []string{"127.0.0.1:6379"} // default addr is pointing to local storage
 	}
 }

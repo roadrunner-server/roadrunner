@@ -57,7 +57,7 @@ func (ev P) String() string {
 	case EventPoolRestart:
 		return "EventPoolRestart"
 	}
-	return "Unknown event type"
+	return UnknownEventType
 }
 
 // PoolEvent triggered by pool on different events. Pool as also trigger WorkerEvent in case of log.

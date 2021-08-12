@@ -1,0 +1,112 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+server:
+  command: "php ../../client.php echo pipes"
+  relay: "pipes"
+  relay_timeout: "20s"
+
+amqp:
+  addr: amqp://guest:guest@127.0.0.1:5672/
+
+# beanstalk configuration
+#
+beanstalk:
+  # beanstalk address
+  addr: tcp://127.0.0.1:11300
+  # connect timeout
+  timeout: 10s
+
+# amazon sqs configuration
+# General section
+sqs:
+  key: api-key
+  secret: api-secret
+  region: us-west-1
+  endpoint: http://127.0.0.1:9324
+
+logs:
+  level: info
+  encoding: console
+  mode: development
+
+jobs:
+  # num logical cores by default
+  num_pollers: 10
+  # 1mi by default
+  pipeline_size: 100000
+  # worker pool configuration
+  pool:
+    num_workers: 10
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+
+  # list of broker pipelines associated with endpoints
+  pipelines:
+    test-local:
+      driver: ephemeral
+      priority: 10
+      prefetch: 10000
+
+    test-local-2:
+      driver: ephemeral
+      priority: 1
+      prefetch: 10000
+
+    test-local-3:
+      driver: ephemeral
+      priority: 2
+      prefetch: 10000
+
+    test-1:
+      driver: amqp
+      # QoS
+      prefetch: 1000000
+      # Queue name
+      queue: test-1-queue
+      # Pipeline jobs priority, 1 - highest
+      priority: 1
+      # Exchange
+      exchange: default
+      # Exchange type: direct, topic, fanout
+      exchange_type: direct
+      # Routing key for the queue
+      routing_key: test
+      # Declare a queue exclusive at the exchange
+      exclusive: false
+      # When multiple is true, this delivery and all prior unacknowledged deliveries
+      # on the same channel will be acknowledged.  This is useful for batch processing
+      # of deliveries
+      multiple_ack: false
+      # When multiple is true, this delivery and all prior unacknowledged deliveries
+      # on the same channel will be acknowledged.  This is useful for batch processing
+      # of deliveries
+      requeue_on_fail: false
+
+    test-2-amqp:
+      driver: amqp
+      priority: 2
+      prefetch: 1000000
+      queue: test-2-queue
+      exchange: default
+      exchange_type: direct
+      routing_key: test-2
+
+    test-2:
+      driver: beanstalk
+      priority: 11
+      tube: default
+
+    test-3:
+      driver: sqs
+      prefetch: 1000000
+      queue: default
+      attributes:
+        MessageRetentionPeriod: 86400
+      tags:
+        test: "tag"
+
+  # list of pipelines to be consumed by the server, keep empty if you want to start consuming manually
+  consume: [ "test-local", "test-local-2", "test-local-3", "test-1", "test-2-amqp", "test-3" ]
+

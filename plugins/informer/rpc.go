@@ -11,7 +11,7 @@ type rpc struct {
 // WorkerList contains list of workers.
 type WorkerList struct {
 	// Workers is list of workers.
-	Workers []process.State `json:"workers"`
+	Workers []*process.State `json:"workers"`
 }
 
 // List all resettable services.
@@ -37,4 +37,18 @@ func (rpc *rpc) Workers(service string, list *WorkerList) error {
 	list.Workers = workers
 
 	return nil
+}
+
+// sort.Sort
+
+func (w *WorkerList) Len() int {
+	return len(w.Workers)
+}
+
+func (w *WorkerList) Less(i, j int) bool {
+	return w.Workers[i].Pid < w.Workers[j].Pid
+}
+
+func (w *WorkerList) Swap(i, j int) {
+	w.Workers[i], w.Workers[j] = w.Workers[j], w.Workers[i]
 }

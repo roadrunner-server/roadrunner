@@ -13,7 +13,7 @@ type Pool interface {
 	GetConfig() interface{}
 
 	// Exec executes task with payload
-	Exec(rqs payload.Payload) (payload.Payload, error)
+	Exec(rqs *payload.Payload) (*payload.Payload, error)
 
 	// Workers returns worker list associated with the pool.
 	Workers() (workers []worker.BaseProcess)
@@ -25,7 +25,7 @@ type Pool interface {
 	Destroy(ctx context.Context)
 
 	// ExecWithContext executes task with context which is used with timeout
-	execWithTTL(ctx context.Context, rqs payload.Payload) (payload.Payload, error)
+	execWithTTL(ctx context.Context, rqs *payload.Payload) (*payload.Payload, error)
 }
 
 // Watcher is an interface for the Sync workers lifecycle
@@ -33,11 +33,11 @@ type Watcher interface {
 	// Watch used to add workers to the container
 	Watch(workers []worker.BaseProcess) error
 
-	// Get provide first free worker
-	Get(ctx context.Context) (worker.BaseProcess, error)
+	// Take takes the first free worker
+	Take(ctx context.Context) (worker.BaseProcess, error)
 
-	// Push enqueues worker back
-	Push(w worker.BaseProcess)
+	// Release releases the worker putting it back to the queue
+	Release(w worker.BaseProcess)
 
 	// Allocate - allocates new worker and put it into the WorkerWatcher
 	Allocate() error

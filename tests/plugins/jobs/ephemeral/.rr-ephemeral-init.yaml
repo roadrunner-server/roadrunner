@@ -1,0 +1,37 @@
+rpc:
+  listen: tcp://127.0.0.1:6001
+
+server:
+  command: "php ../../jobs_ok.php"
+  relay: "pipes"
+  relay_timeout: "20s"
+
+logs:
+  level: debug
+  encoding: console
+  mode: development
+
+jobs:
+  num_pollers: 10
+  pipeline_size: 100000
+  pool:
+    num_workers: 10
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+
+  pipelines:
+    test-1:
+      driver: ephemeral
+      priority: 10
+      prefetch: 10000
+
+    test-2:
+      driver: ephemeral
+      priority: 10
+      prefetch: 10000
+
+
+  # list of pipelines to be consumed by the server, keep empty if you want to start consuming manually
+  consume: [ "test-1", "test-2" ]
+

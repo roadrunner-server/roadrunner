@@ -32,20 +32,20 @@ type State struct {
 }
 
 // WorkerProcessState creates new worker state definition.
-func WorkerProcessState(w worker.BaseProcess) (State, error) {
+func WorkerProcessState(w worker.BaseProcess) (*State, error) {
 	const op = errors.Op("worker_process_state")
 	p, _ := process.NewProcess(int32(w.Pid()))
 	i, err := p.MemoryInfo()
 	if err != nil {
-		return State{}, errors.E(op, err)
+		return nil, errors.E(op, err)
 	}
 
 	percent, err := p.CPUPercent()
 	if err != nil {
-		return State{}, err
+		return nil, err
 	}
 
-	return State{
+	return &State{
 		CPUPercent:  percent,
 		Pid:         int(w.Pid()),
 		Status:      w.State().String(),

@@ -20,7 +20,7 @@ func (ev W) String() string {
 	case EventWorkerStderr:
 		return "EventWorkerStderr"
 	}
-	return "Unknown event type"
+	return UnknownEventType
 }
 
 // WorkerEvent wraps worker events.

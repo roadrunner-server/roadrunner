@@ -4,6 +4,8 @@ import (
 	"sync"
 )
 
+const UnknownEventType string = "Unknown event type"
+
 // HandlerImpl helps to broadcast events to multiple listeners.
 type HandlerImpl struct {
 	listeners    []Listener

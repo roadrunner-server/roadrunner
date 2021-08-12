@@ -3,17 +3,13 @@ rpc:
 
 server:
   command: "php ../../http/client.php env pipes"
-  user: ""
-  group: ""
-  env:
-    "env_key": "ENV_VALUE"
   relay: "pipes"
   relay_timeout: "20s"
 
 http:
   address: 127.0.0.1:12084
   max_request_size: 1024
-  middleware: [ "" ]
+  middleware: []
   env:
     "RR_HTTP": "true"
     "env_key": "ENV_VALUE"

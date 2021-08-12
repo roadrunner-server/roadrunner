@@ -10,7 +10,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/server"
 )
 
-var testPoolConfig = pool.Config{
+var testPoolConfig = &pool.Config{
 	NumWorkers:      10,
 	MaxJobs:         100,
 	AllocateTimeout: time.Second * 10,
@@ -51,13 +51,13 @@ func (p1 *Plugin1) Name() string {
 
 func (p1 *Plugin1) Available() {}
 
-func (p1 *Plugin1) Workers() []process.State {
+func (p1 *Plugin1) Workers() []*process.State {
 	p, err := p1.server.NewWorkerPool(context.Background(), testPoolConfig, nil)
 	if err != nil {
 		panic(err)
 	}
 
-	ps := make([]process.State, 0, len(p.Workers()))
+	ps := make([]*process.State, 0, len(p.Workers()))
 	workers := p.Workers()
 	for i := 0; i < len(workers); i++ {
 		state, err := process.WorkerProcessState(workers[i])

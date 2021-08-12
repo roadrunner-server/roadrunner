@@ -36,7 +36,7 @@ func (s *SSL) Valid() error {
 	parts := strings.Split(s.Address, ":")
 	switch len(parts) {
 	// :443 form
-	// localhost:443 form
+	// 127.0.0.1:443 form
 	// use 0.0.0.0 as host and 443 as port
 	case 2:
 		if parts[0] == "" {

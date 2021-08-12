@@ -18,7 +18,7 @@ import (
 const StopRequest = "{\"stop\":true}"
 
 // ErrorEncoder encode error or make a decision based on the error type
-type ErrorEncoder func(err error, w worker.BaseProcess) (payload.Payload, error)
+type ErrorEncoder func(err error, w worker.BaseProcess) (*payload.Payload, error)
 
 type Options func(p *StaticPool)
 
@@ -26,7 +26,7 @@ type Command func() *exec.Cmd
 
 // StaticPool controls worker creation, destruction and task routing. Pool uses fixed amount of stack.
 type StaticPool struct {
-	cfg Config
+	cfg *Config
 
 	// worker command creator
 	cmd Command
@@ -51,7 +51,7 @@ type StaticPool struct {
 }
 
 // Initialize creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
-func Initialize(ctx context.Context, cmd Command, factory transport.Factory, cfg Config, options ...Options) (Pool, error) {
+func Initialize(ctx context.Context, cmd Command, factory transport.Factory, cfg *Config, options ...Options) (Pool, error) {
 	const op = errors.Op("static_pool_initialize")
 	if factory == nil {
 		return nil, errors.E(op, errors.Str("no factory initialized"))
@@ -135,16 +135,16 @@ func (sp *StaticPool) RemoveWorker(wb worker.BaseProcess) error {
 }
 
 // Exec executes provided payload on the worker
-func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
+func (sp *StaticPool) Exec(p *payload.Payload) (*payload.Payload, error) {
 	const op = errors.Op("static_pool_exec")
 	if sp.cfg.Debug {
 		return sp.execDebug(p)
 	}
 	ctxGetFree, cancel := context.WithTimeout(context.Background(), sp.cfg.AllocateTimeout)
 	defer cancel()
-	w, err := sp.getWorker(ctxGetFree, op)
+	w, err := sp.takeWorker(ctxGetFree, op)
 	if err != nil {
-		return payload.Payload{}, errors.E(op, err)
+		return nil, errors.E(op, err)
 	}
 
 	rsp, err := w.(worker.SyncWorker).Exec(p)
@@ -163,12 +163,12 @@ func (sp *StaticPool) Exec(p payload.Payload) (payload.Payload, error) {
 		return rsp, nil
 	}
 	// return worker back
-	sp.ww.Push(w)
+	sp.ww.Release(w)
 	return rsp, nil
 }
 
 // Be careful, sync with pool.Exec method
-func (sp *StaticPool) execWithTTL(ctx context.Context, p payload.Payload) (payload.Payload, error) {
+func (sp *StaticPool) execWithTTL(ctx context.Context, p *payload.Payload) (*payload.Payload, error) {
 	const op = errors.Op("static_pool_exec_with_context")
 	if sp.cfg.Debug {
 		return sp.execDebugWithTTL(ctx, p)
@@ -176,9 +176,9 @@ func (sp *StaticPool) execWithTTL(ctx context.Context, p payload.Payload) (paylo
 
 	ctxAlloc, cancel := context.WithTimeout(context.Background(), sp.cfg.AllocateTimeout)
 	defer cancel()
-	w, err := sp.getWorker(ctxAlloc, op)
+	w, err := sp.takeWorker(ctxAlloc, op)
 	if err != nil {
-		return payload.Payload{}, errors.E(op, err)
+		return nil, errors.E(op, err)
 	}
 
 	rsp, err := w.(worker.SyncWorker).ExecWithTTL(ctx, p)
@@ -198,7 +198,7 @@ func (sp *StaticPool) execWithTTL(ctx context.Context, p payload.Payload) (paylo
 	}
 
 	// return worker back
-	sp.ww.Push(w)
+	sp.ww.Release(w)
 	return rsp, nil
 }
 
@@ -216,16 +216,16 @@ func (sp *StaticPool) stopWorker(w worker.BaseProcess) {
 func (sp *StaticPool) checkMaxJobs(w worker.BaseProcess) {
 	if w.State().NumExecs() >= sp.cfg.MaxJobs {
 		w.State().Set(worker.StateMaxJobsReached)
-		sp.ww.Push(w)
+		sp.ww.Release(w)
 		return
 	}
 
-	sp.ww.Push(w)
+	sp.ww.Release(w)
 }
 
-func (sp *StaticPool) getWorker(ctxGetFree context.Context, op errors.Op) (worker.BaseProcess, error) {
+func (sp *StaticPool) takeWorker(ctxGetFree context.Context, op errors.Op) (worker.BaseProcess, error) {
 	// Get function consumes context with timeout
-	w, err := sp.ww.Get(ctxGetFree)
+	w, err := sp.ww.Take(ctxGetFree)
 	if err != nil {
 		// if the error is of kind NoFreeWorkers, it means, that we can't get worker from the stack during the allocate timeout
 		if errors.Is(errors.NoFreeWorkers, err) {
@@ -244,7 +244,7 @@ func (sp *StaticPool) Destroy(ctx context.Context) {
 }
 
 func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
-	return func(err error, w worker.BaseProcess) (payload.Payload, error) {
+	return func(err error, w worker.BaseProcess) (*payload.Payload, error) {
 		const op = errors.Op("error_encoder")
 		// just push event if on any stage was timeout error
 		switch {
@@ -253,6 +253,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 
 		case errors.Is(errors.SoftJob, err):
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
+				// TODO suspicious logic, redesign
 				err = sp.ww.Allocate()
 				if err != nil {
 					sp.events.Push(events.PoolEvent{Event: events.EventWorkerConstruct, Payload: errors.E(op, err)})
@@ -265,7 +266,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 				}
 			} else {
 				sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: err})
-				sp.ww.Push(w)
+				sp.ww.Release(w)
 			}
 		}
 
@@ -273,10 +274,10 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 		sp.events.Push(events.PoolEvent{Event: events.EventWorkerDestruct, Payload: w})
 		errS := w.Stop()
 		if errS != nil {
-			return payload.Payload{}, errors.E(op, err, errS)
+			return nil, errors.E(op, err, errS)
 		}
 
-		return payload.Payload{}, errors.E(op, err)
+		return nil, errors.E(op, err)
 	}
 }
 
@@ -289,6 +290,7 @@ func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duratio
 			return nil, err
 		}
 
+		// wrap sync worker
 		sw := worker.From(w)
 
 		sp.events.Push(events.PoolEvent{
@@ -300,26 +302,33 @@ func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duratio
 }
 
 // execDebug used when debug mode was not set and exec_ttl is 0
-func (sp *StaticPool) execDebug(p payload.Payload) (payload.Payload, error) {
+func (sp *StaticPool) execDebug(p *payload.Payload) (*payload.Payload, error) {
+	const op = errors.Op("static_pool_exec_debug")
 	sw, err := sp.allocator()
 	if err != nil {
-		return payload.Payload{}, err
+		return nil, err
 	}
 
-	// redirect call to the workers exec method (without ttl)
+	// redirect call to the workers' exec method (without ttl)
 	r, err := sw.Exec(p)
-	if stopErr := sw.Stop(); stopErr != nil {
-		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: err})
+	if err != nil {
+		return nil, errors.E(op, err)
 	}
 
-	return r, err
+	err = sw.Stop()
+	if err != nil {
+		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: err})
+		return nil, errors.E(op, err)
+	}
+
+	return r, nil
 }
 
 // execDebugWithTTL used when user set debug mode and exec_ttl
-func (sp *StaticPool) execDebugWithTTL(ctx context.Context, p payload.Payload) (payload.Payload, error) {
+func (sp *StaticPool) execDebugWithTTL(ctx context.Context, p *payload.Payload) (*payload.Payload, error) {
 	sw, err := sp.allocator()
 	if err != nil {
-		return payload.Payload{}, err
+		return nil, err
 	}
 
 	// redirect call to the worker with TTL
@@ -333,7 +342,7 @@ func (sp *StaticPool) execDebugWithTTL(ctx context.Context, p payload.Payload) (
 
 // allocate required number of stack
 func (sp *StaticPool) allocateWorkers(numWorkers uint64) ([]worker.BaseProcess, error) {
-	const op = errors.Op("allocate workers")
+	const op = errors.Op("static_pool_allocate_workers")
 	workers := make([]worker.BaseProcess, 0, numWorkers)
 
 	// constant number of stack simplify logic

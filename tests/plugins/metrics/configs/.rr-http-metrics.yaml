@@ -13,7 +13,7 @@ http:
     num_workers: 1
 
 metrics:
-  address: localhost:2112
+  address: 127.0.0.1:2112
 
 logs:
   mode: development

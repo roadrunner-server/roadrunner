@@ -143,7 +143,7 @@ func (p *Plugin) Serve() chan error {
 func (p *Plugin) serve(errCh chan error) {
 	var err error
 	const op = errors.Op("http_plugin_serve")
-	p.pool, err = p.server.NewWorkerPool(context.Background(), pool.Config{
+	p.pool, err = p.server.NewWorkerPool(context.Background(), &pool.Config{
 		Debug:           p.cfg.Pool.Debug,
 		NumWorkers:      p.cfg.Pool.NumWorkers,
 		MaxJobs:         p.cfg.Pool.MaxJobs,
@@ -285,13 +285,13 @@ func (p *Plugin) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // Workers returns slice with the process states for the workers
-func (p *Plugin) Workers() []process.State {
+func (p *Plugin) Workers() []*process.State {
 	p.RLock()
 	defer p.RUnlock()
 
 	workers := p.workers()
 
-	ps := make([]process.State, 0, len(workers))
+	ps := make([]*process.State, 0, len(workers))
 	for i := 0; i < len(workers); i++ {
 		state, err := process.WorkerProcessState(workers[i])
 		if err != nil {
@@ -323,7 +323,7 @@ func (p *Plugin) Reset() error {
 	p.pool = nil
 
 	var err error
-	p.pool, err = p.server.NewWorkerPool(context.Background(), pool.Config{
+	p.pool, err = p.server.NewWorkerPool(context.Background(), &pool.Config{
 		Debug:           p.cfg.Pool.Debug,
 		NumWorkers:      p.cfg.Pool.NumWorkers,
 		MaxJobs:         p.cfg.Pool.MaxJobs,

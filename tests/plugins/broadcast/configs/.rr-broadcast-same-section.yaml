@@ -3,8 +3,6 @@ rpc:
 
 server:
   command: "php ../../psr-worker-bench.php"
-  user: ""
-  group: ""
   relay: "pipes"
   relay_timeout: "20s"
 
@@ -23,11 +21,11 @@ broadcast:
   test:
     driver: redis
     addrs:
-      - "localhost:6379"
+      - "127.0.0.1:6379"
   test2:
     driver: redis
     addrs:
-      - "localhost:6378"
+      - "127.0.0.1:6378"
   test3:
     driver: memory
   test4:
@@ -35,9 +33,4 @@ broadcast:
 
 logs:
   mode: development
-  level: debug
-
-endure:
-  grace_period: 120s
-  print_graph: false
-  log_level: error
+  level: info

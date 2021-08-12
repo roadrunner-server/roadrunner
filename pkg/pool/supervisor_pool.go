@@ -43,11 +43,11 @@ func supervisorWrapper(pool Pool, events events.Handler, cfg *SupervisorConfig) 
 	return sp
 }
 
-func (sp *supervised) execWithTTL(_ context.Context, _ payload.Payload) (payload.Payload, error) {
+func (sp *supervised) execWithTTL(_ context.Context, _ *payload.Payload) (*payload.Payload, error) {
 	panic("used to satisfy pool interface")
 }
 
-func (sp *supervised) Exec(rqs payload.Payload) (payload.Payload, error) {
+func (sp *supervised) Exec(rqs *payload.Payload) (*payload.Payload, error) {
 	const op = errors.Op("supervised_exec_with_context")
 	if sp.cfg.ExecTTL == 0 {
 		return sp.pool.Exec(rqs)
@@ -58,7 +58,7 @@ func (sp *supervised) Exec(rqs payload.Payload) (payload.Payload, error) {
 
 	res, err := sp.pool.execWithTTL(ctx, rqs)
 	if err != nil {
-		return payload.Payload{}, errors.E(op, err)
+		return nil, errors.E(op, err)
 	}
 
 	return res, nil
@@ -136,7 +136,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			/*
 				worker at this point might be in the middle of request execution:
 
-				---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Push
+				---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Release
 											 ^
 				                           TTL Reached, state - invalid                                                |
 																														-----> Worker Stopped here
@@ -156,7 +156,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			/*
 				worker at this point might be in the middle of request execution:
 
-				---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Push
+				---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Release
 											 ^
 				                           TTL Reached, state - invalid                                                |
 																														-----> Worker Stopped here
@@ -211,7 +211,7 @@ func (sp *supervised) control() { //nolint:gocognit
 				/*
 					worker at this point might be in the middle of request execution:
 
-					---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Push
+					---> REQ ---> WORKER -----------------> RESP (at this point we should not set the Ready state) ------> | ----> Worker gets between supervisor checks and get killed in the ww.Release
 												 ^
 					                           TTL Reached, state - invalid                                                |
 																															-----> Worker Stopped here
@@ -221,7 +221,7 @@ func (sp *supervised) control() { //nolint:gocognit
 					workers[i].State().Set(worker.StateInvalid)
 					_ = workers[i].Stop()
 				}
-				// just to double check
+				// just to double-check
 				workers[i].State().Set(worker.StateInvalid)
 				sp.events.Push(events.PoolEvent{Event: events.EventIdleTTL, Payload: workers[i]})
 			}

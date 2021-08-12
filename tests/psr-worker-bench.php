@@ -1,59 +1,28 @@
 <?php
-
-declare(strict_types=1);
-
+/**
+ * @var Goridge\RelayInterface $relay
+ */
+use Spiral\Goridge;
 use Spiral\RoadRunner;
-use Nyholm\Psr7\Factory;
 
 ini_set('display_errors', 'stderr');
-include "vendor/autoload.php";
+require __DIR__ . "/vendor/autoload.php";
 
-$env = \Spiral\RoadRunner\Environment::fromGlobals();
+$worker = RoadRunner\Worker::create();
+$psr7 = new RoadRunner\Http\PSR7Worker(
+    $worker,
+    new \Nyholm\Psr7\Factory\Psr17Factory(),
+    new \Nyholm\Psr7\Factory\Psr17Factory(),
+    new \Nyholm\Psr7\Factory\Psr17Factory()
+);
 
-if ($env->getMode() === 'http') {
-    $worker = new RoadRunner\Http\PSR7Worker(
-        RoadRunner\Worker::create(),
-        new Factory\Psr17Factory(),
-        new Factory\Psr17Factory(),
-        new Factory\Psr17Factory()
-    );
+while ($req = $psr7->waitRequest()) {
+    try {
+        $resp = new \Nyholm\Psr7\Response();
+        $resp->getBody()->write("hello world");
 
-    while ($req = $worker->waitRequest()) {
-        try {
-            $rsp = new \Nyholm\Psr7\Response();
-            $rsp->getBody()->write("hello world");
-            $worker->respond($rsp);
-        } catch (\Throwable $e) {
-            $worker->getWorker()->error((string)$e);
-        }
+        $psr7->respond($resp);
+    } catch (\Throwable $e) {
+        $psr7->getWorker()->error((string)$e);
     }
-} else {
-    /**
-     * @param string $dir
-     * @return array<string>
-     */
-    $getClasses = static function (string $dir): iterable {
-        $files = glob($dir . '/*.php');
-
-        foreach ($files as $file) {
-            yield substr(basename($file), 0, -4);
-        }
-    };
-
-    $factory = \Temporal\WorkerFactory::create();
-
-    $worker = $factory->newWorker('default');
-
-    // register all workflows
-    foreach ($getClasses(__DIR__ . '/src/Workflow') as $name) {
-        $worker->registerWorkflowTypes('Temporal\\Tests\\Workflow\\' . $name);
-    }
-
-     // register all activity
-    foreach ($getClasses(__DIR__ . '/src/Activity') as $name) {
-        $class = 'Temporal\\Tests\\Activity\\' . $name;
-        $worker->registerActivityImplementations(new $class);
-    }
-
-    $factory->run();
 }

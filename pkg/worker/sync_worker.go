@@ -23,7 +23,7 @@ type SyncWorkerImpl struct {
 }
 
 // From creates SyncWorker from BaseProcess
-func From(process *Process) SyncWorker {
+func From(process *Process) *SyncWorkerImpl {
 	return &SyncWorkerImpl{
 		process: process,
 		fPool: sync.Pool{New: func() interface{} {
@@ -36,14 +36,14 @@ func From(process *Process) SyncWorker {
 }
 
 // Exec payload without TTL timeout.
-func (tw *SyncWorkerImpl) Exec(p payload.Payload) (payload.Payload, error) {
+func (tw *SyncWorkerImpl) Exec(p *payload.Payload) (*payload.Payload, error) {
 	const op = errors.Op("sync_worker_exec")
 	if len(p.Body) == 0 && len(p.Context) == 0 {
-		return payload.Payload{}, errors.E(op, errors.Str("payload can not be empty"))
+		return nil, errors.E(op, errors.Str("payload can not be empty"))
 	}
 
 	if tw.process.State().Value() != StateReady {
-		return payload.Payload{}, errors.E(op, errors.Errorf("Process is not ready (%s)", tw.process.State().String()))
+		return nil, errors.E(op, errors.Errorf("Process is not ready (%s)", tw.process.State().String()))
 	}
 
 	// set last used time
@@ -57,7 +57,7 @@ func (tw *SyncWorkerImpl) Exec(p payload.Payload) (payload.Payload, error) {
 			tw.process.State().Set(StateErrored)
 			tw.process.State().RegisterExec()
 		}
-		return payload.Payload{}, errors.E(op, err)
+		return nil, errors.E(op, err)
 	}
 
 	// supervisor may set state of the worker during the work
@@ -74,28 +74,26 @@ func (tw *SyncWorkerImpl) Exec(p payload.Payload) (payload.Payload, error) {
 }
 
 type wexec struct {
-	payload payload.Payload
+	payload *payload.Payload
 	err     error
 }
 
 // ExecWithTTL executes payload without TTL timeout.
-func (tw *SyncWorkerImpl) ExecWithTTL(ctx context.Context, p payload.Payload) (payload.Payload, error) {
+func (tw *SyncWorkerImpl) ExecWithTTL(ctx context.Context, p *payload.Payload) (*payload.Payload, error) {
 	const op = errors.Op("sync_worker_exec_worker_with_timeout")
 	c := make(chan wexec, 1)
 
 	go func() {
 		if len(p.Body) == 0 && len(p.Context) == 0 {
 			c <- wexec{
-				payload: payload.Payload{},
-				err:     errors.E(op, errors.Str("payload can not be empty")),
+				err: errors.E(op, errors.Str("payload can not be empty")),
 			}
 			return
 		}
 
 		if tw.process.State().Value() != StateReady {
 			c <- wexec{
-				payload: payload.Payload{},
-				err:     errors.E(op, errors.Errorf("Process is not ready (%s)", tw.process.State().String())),
+				err: errors.E(op, errors.Errorf("Process is not ready (%s)", tw.process.State().String())),
 			}
 			return
 		}
@@ -112,8 +110,7 @@ func (tw *SyncWorkerImpl) ExecWithTTL(ctx context.Context, p payload.Payload) (p
 				tw.process.State().RegisterExec()
 			}
 			c <- wexec{
-				payload: payload.Payload{},
-				err:     errors.E(op, err),
+				err: errors.E(op, err),
 			}
 			return
 		}
@@ -143,18 +140,18 @@ func (tw *SyncWorkerImpl) ExecWithTTL(ctx context.Context, p payload.Payload) (p
 		if err != nil {
 			// append timeout error
 			err = multierr.Append(err, errors.E(op, errors.ExecTTL))
-			return payload.Payload{}, multierr.Append(err, ctx.Err())
+			return nil, multierr.Append(err, ctx.Err())
 		}
-		return payload.Payload{}, errors.E(op, errors.ExecTTL, ctx.Err())
+		return nil, errors.E(op, errors.ExecTTL, ctx.Err())
 	case res := <-c:
 		if res.err != nil {
-			return payload.Payload{}, res.err
+			return nil, res.err
 		}
 		return res.payload, nil
 	}
 }
 
-func (tw *SyncWorkerImpl) execPayload(p payload.Payload) (payload.Payload, error) {
+func (tw *SyncWorkerImpl) execPayload(p *payload.Payload) (*payload.Payload, error) {
 	const op = errors.Op("sync_worker_exec_payload")
 
 	// get a frame
@@ -162,7 +159,7 @@ func (tw *SyncWorkerImpl) execPayload(p payload.Payload) (payload.Payload, error
 	defer tw.putFrame(fr)
 
 	// can be 0 here
-	fr.WriteVersion(frame.VERSION_1)
+	fr.WriteVersion(fr.Header(), frame.VERSION_1)
 
 	// obtain a buffer
 	buf := tw.get()
@@ -171,18 +168,18 @@ func (tw *SyncWorkerImpl) execPayload(p payload.Payload) (payload.Payload, error
 	buf.Write(p.Body)
 
 	// Context offset
-	fr.WriteOptions(uint32(len(p.Context)))
-	fr.WritePayloadLen(uint32(buf.Len()))
+	fr.WriteOptions(fr.HeaderPtr(), uint32(len(p.Context)))
+	fr.WritePayloadLen(fr.Header(), uint32(buf.Len()))
 	fr.WritePayload(buf.Bytes())
 
-	fr.WriteCRC()
+	fr.WriteCRC(fr.Header())
 
 	// return buffer
 	tw.put(buf)
 
 	err := tw.Relay().Send(fr)
 	if err != nil {
-		return payload.Payload{}, errors.E(op, errors.Network, err)
+		return nil, errors.E(op, errors.Network, err)
 	}
 
 	frameR := tw.getFrame()
@@ -190,34 +187,34 @@ func (tw *SyncWorkerImpl) execPayload(p payload.Payload) (payload.Payload, error
 
 	err = tw.process.Relay().Receive(frameR)
 	if err != nil {
-		return payload.Payload{}, errors.E(op, errors.Network, err)
+		return nil, errors.E(op, errors.Network, err)
 	}
 	if frameR == nil {
-		return payload.Payload{}, errors.E(op, errors.Network, errors.Str("nil fr received"))
+		return nil, errors.E(op, errors.Network, errors.Str("nil fr received"))
 	}
 
-	if !frameR.VerifyCRC() {
-		return payload.Payload{}, errors.E(op, errors.Network, errors.Str("failed to verify CRC"))
+	if !frameR.VerifyCRC(frameR.Header()) {
+		return nil, errors.E(op, errors.Network, errors.Str("failed to verify CRC"))
 	}
 
 	flags := frameR.ReadFlags()
 
 	if flags&frame.ERROR != byte(0) {
-		return payload.Payload{}, errors.E(op, errors.SoftJob, errors.Str(string(frameR.Payload())))
+		return nil, errors.E(op, errors.SoftJob, errors.Str(string(frameR.Payload())))
 	}
 
-	options := frameR.ReadOptions()
+	options := frameR.ReadOptions(frameR.Header())
 	if len(options) != 1 {
-		return payload.Payload{}, errors.E(op, errors.Decode, errors.Str("options length should be equal 1 (body offset)"))
+		return nil, errors.E(op, errors.Decode, errors.Str("options length should be equal 1 (body offset)"))
 	}
 
-	pld := payload.Payload{
+	pld := &payload.Payload{
 		Body:    make([]byte, len(frameR.Payload()[options[0]:])),
 		Context: make([]byte, len(frameR.Payload()[:options[0]])),
 	}
 
 	// by copying we free frame's payload slice
-	// so we do not hold the pointer from the smaller slice to the initial (which is should be in the sync.Pool)
+	// we do not hold the pointer from the smaller slice to the initial (which should be in the sync.Pool)
 	// https://blog.golang.org/slices-intro#TOC_6.
 	copy(pld.Body, frameR.Payload()[options[0]:])
 	copy(pld.Context, frameR.Payload()[:options[0]])

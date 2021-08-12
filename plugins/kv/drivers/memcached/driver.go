@@ -7,7 +7,6 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	kvv1 "github.com/spiral/roadrunner/v2/proto/kv/v1beta"
 )
@@ -21,7 +20,7 @@ type Driver struct {
 // NewMemcachedDriver returns a memcache client using the provided server(s)
 // with equal weight. If a server is listed multiple times,
 // it gets a proportional amount of weight.
-func NewMemcachedDriver(log logger.Logger, key string, cfgPlugin config.Configurer) (kv.Storage, error) {
+func NewMemcachedDriver(log logger.Logger, key string, cfgPlugin config.Configurer) (*Driver, error) {
 	const op = errors.Op("new_memcached_driver")
 
 	s := &Driver{

@@ -83,7 +83,7 @@ func (f *Foo) Serve() chan error {
 		return errCh
 	}
 
-	if allCfg.RPC.Listen != "tcp://localhost:6060" {
+	if allCfg.RPC.Listen != "tcp://127.0.0.1:6060" {
 		errCh <- errors.E(op, errors.Str("RPC.Listen should be parsed"))
 		return errCh
 	}

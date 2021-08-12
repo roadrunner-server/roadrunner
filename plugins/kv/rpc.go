@@ -2,6 +2,7 @@ package kv
 
 import (
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/common/kv"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	kvv1 "github.com/spiral/roadrunner/v2/proto/kv/v1beta"
 )
@@ -9,7 +10,7 @@ import (
 // Wrapper for the plugin
 type rpc struct {
 	// all available storages
-	storages map[string]Storage
+	storages map[string]kv.Storage
 	// svc is a plugin implementing Storage interface
 	srv *Plugin
 	// Logger

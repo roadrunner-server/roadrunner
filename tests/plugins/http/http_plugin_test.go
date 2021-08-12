@@ -251,7 +251,7 @@ func TestHTTPInformerReset(t *testing.T) {
 }
 
 func echoHTTP(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:10084?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:10084?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -371,7 +371,7 @@ func TestSSL(t *testing.T) {
 }
 
 func sslNoRedirect(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:8085?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:8085?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := sslClient.Do(req)
@@ -393,7 +393,7 @@ func sslNoRedirect(t *testing.T) {
 }
 
 func sslEcho(t *testing.T) {
-	req, err := http.NewRequest("GET", "https://localhost:8893?hello=world", nil)
+	req, err := http.NewRequest("GET", "https://127.0.0.1:8893?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := sslClient.Do(req)
@@ -505,7 +505,7 @@ func TestSSLRedirect(t *testing.T) {
 }
 
 func sslRedirect(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:8087?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:8087?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := sslClient.Do(req)
@@ -593,7 +593,7 @@ func TestSSLPushPipes(t *testing.T) {
 }
 
 func sslPush(t *testing.T) {
-	req, err := http.NewRequest("GET", "https://localhost:8894?hello=world", nil)
+	req, err := http.NewRequest("GET", "https://127.0.0.1:8894?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := sslClient.Do(req)
@@ -604,7 +604,7 @@ func sslPush(t *testing.T) {
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
 
-	assert.Equal(t, "", r.Header.Get("Http2-Push"))
+	assert.Equal(t, "", r.Header.Get("Http2-Release"))
 
 	assert.NoError(t, err)
 	assert.Equal(t, 201, r.StatusCode)
@@ -864,7 +864,7 @@ func TestH2CUpgrade(t *testing.T) {
 }
 
 func h2cUpgrade(t *testing.T) {
-	req, err := http.NewRequest("PRI", "http://localhost:8083?hello=world", nil)
+	req, err := http.NewRequest("PRI", "http://127.0.0.1:8083?hello=world", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -955,7 +955,7 @@ func TestH2C(t *testing.T) {
 }
 
 func h2c(t *testing.T) {
-	req, err := http.NewRequest("PRI", "http://localhost:8083?hello=world", nil)
+	req, err := http.NewRequest("PRI", "http://127.0.0.1:8083?hello=world", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1047,7 +1047,7 @@ func TestHttpMiddleware(t *testing.T) {
 }
 
 func middleware(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:18903?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:18903?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -1062,7 +1062,7 @@ func middleware(t *testing.T) {
 	err = r.Body.Close()
 	assert.NoError(t, err)
 
-	req, err = http.NewRequest("GET", "http://localhost:18903/halt", nil)
+	req, err = http.NewRequest("GET", "http://127.0.0.1:18903/halt", nil)
 	assert.NoError(t, err)
 
 	r, err = http.DefaultClient.Do(req)
@@ -1127,7 +1127,7 @@ logs:
 	mockLogger.EXPECT().Debug(gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).MinTimes(1)
-	mockLogger.EXPECT().Debug("201 GET http://localhost:34999/?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("201 GET http://127.0.0.1:34999/?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("WORLD").MinTimes(1)
 	mockLogger.EXPECT().Debug("worker event received", "event", events.EventWorkerLog, "worker state", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes() // placeholder for the workerlogerror
@@ -1193,7 +1193,7 @@ logs:
 }
 
 func echoError(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:34999?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:34999?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -1278,7 +1278,7 @@ func TestHttpEnvVariables(t *testing.T) {
 }
 
 func envVarsTest(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:12084", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:12084", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -1432,7 +1432,7 @@ func TestHTTPSupervisedPool(t *testing.T) {
 }
 
 func echoHTTP2(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:18888?hello=world", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:18888?hello=world", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -1638,7 +1638,7 @@ func bigEchoHTTP(t *testing.T) {
 
 	bt := bytes.NewBuffer(buf)
 
-	req, err := http.NewRequest("GET", "http://localhost:10085?hello=world", bt)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:10085?hello=world", bt)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)
@@ -1723,7 +1723,7 @@ func TestStaticEtagPlugin(t *testing.T) {
 
 func serveStaticSampleEtag(t *testing.T) {
 	// OK 200 response
-	b, r, err := get("http://localhost:21603/sample.txt")
+	b, r, err := get("http://127.0.0.1:21603/sample.txt")
 	assert.NoError(t, err)
 	assert.Equal(t, "sample\n", b)
 	assert.Equal(t, r.StatusCode, http.StatusOK)
@@ -1736,7 +1736,7 @@ func serveStaticSampleEtag(t *testing.T) {
 		Timeout: time.Second * 5,
 	}
 
-	parsedURL, _ := url.Parse("http://localhost:21603/sample.txt")
+	parsedURL, _ := url.Parse("http://127.0.0.1:21603/sample.txt")
 
 	req := &http.Request{
 		Method: http.MethodGet,
@@ -1828,7 +1828,7 @@ func serveStaticSampleNotAllowedPath(t *testing.T) {
 	parsedURL := &url.URL{
 		Scheme: "http",
 		User:   nil,
-		Host:   "localhost:21603",
+		Host:   "127.0.0.1:21603",
 		Path:   "%2e%2e%/tests/",
 	}
 
@@ -1845,7 +1845,7 @@ func serveStaticSampleNotAllowedPath(t *testing.T) {
 	parsedURL = &url.URL{
 		Scheme: "http",
 		User:   nil,
-		Host:   "localhost:21603",
+		Host:   "127.0.0.1:21603",
 		Path:   "%2e%2e%5ctests/",
 	}
 
@@ -1862,7 +1862,7 @@ func serveStaticSampleNotAllowedPath(t *testing.T) {
 	parsedURL = &url.URL{
 		Scheme: "http",
 		User:   nil,
-		Host:   "localhost:21603",
+		Host:   "127.0.0.1:21603",
 		Path:   "..%2ftests/",
 	}
 
@@ -1879,7 +1879,7 @@ func serveStaticSampleNotAllowedPath(t *testing.T) {
 	parsedURL = &url.URL{
 		Scheme: "http",
 		User:   nil,
-		Host:   "localhost:21603",
+		Host:   "127.0.0.1:21603",
 		Path:   "%2e%2e%2ftests/",
 	}
 
@@ -1893,7 +1893,7 @@ func serveStaticSampleNotAllowedPath(t *testing.T) {
 	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 	_ = resp.Body.Close()
 
-	_, r, err := get("http://localhost:21603/../../../../tests/../static/sample.txt")
+	_, r, err := get("http://127.0.0.1:21603/../../../../tests/../static/sample.txt")
 	assert.NoError(t, err)
 	assert.Equal(t, 403, r.StatusCode)
 	_ = r.Body.Close()
@@ -1971,7 +1971,7 @@ func TestStaticPlugin(t *testing.T) {
 }
 
 func staticHeaders(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://localhost:21603/client.php", nil)
+	req, err := http.NewRequest("GET", "http://127.0.0.1:21603/client.php", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1999,7 +1999,7 @@ func staticHeaders(t *testing.T) {
 }
 
 func staticNotForbid(t *testing.T) {
-	b, r, err := get("http://localhost:21603/client.php")
+	b, r, err := get("http://127.0.0.1:21603/client.php")
 	assert.NoError(t, err)
 	assert.Equal(t, all("../../../tests/client.php"), b)
 	assert.Equal(t, all("../../../tests/client.php"), b)
@@ -2007,7 +2007,7 @@ func staticNotForbid(t *testing.T) {
 }
 
 func serveStaticSample(t *testing.T) {
-	b, r, err := get("http://localhost:21603/sample.txt")
+	b, r, err := get("http://127.0.0.1:21603/sample.txt")
 	assert.NoError(t, err)
 	assert.Equal(t, "sample\n", b)
 	_ = r.Body.Close()
@@ -2104,7 +2104,7 @@ func TestStaticFilesDisabled(t *testing.T) {
 }
 
 func staticFilesDisabled(t *testing.T) {
-	b, r, err := get("http://localhost:45877/client.php?hello=world")
+	b, r, err := get("http://127.0.0.1:45877/client.php?hello=world")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2126,9 +2126,9 @@ func TestStaticFilesForbid(t *testing.T) {
 
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/http?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
-	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/client.XXX?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
-	mockLogger.EXPECT().Debug("201 GET http://localhost:34653/client.php?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("201 GET http://127.0.0.1:34653/http?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("201 GET http://127.0.0.1:34653/client.XXX?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Debug("201 GET http://127.0.0.1:34653/client.php?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Error("file open error", "error", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("no such file or directory", "error", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("possible path to dir provided").AnyTimes()
@@ -2198,19 +2198,19 @@ func TestStaticFilesForbid(t *testing.T) {
 }
 
 func staticTestFilesDir(t *testing.T) {
-	b, r, err := get("http://localhost:34653/http?hello=world")
+	b, r, err := get("http://127.0.0.1:34653/http?hello=world")
 	assert.NoError(t, err)
 	assert.Equal(t, "WORLD", b)
 	_ = r.Body.Close()
 }
 
 func staticNotFound(t *testing.T) {
-	b, _, _ := get("http://localhost:34653/client.XXX?hello=world") //nolint:bodyclose
+	b, _, _ := get("http://127.0.0.1:34653/client.XXX?hello=world") //nolint:bodyclose
 	assert.Equal(t, "WORLD", b)
 }
 
 func staticFilesForbid(t *testing.T) {
-	b, r, err := get("http://localhost:34653/client.php?hello=world")
+	b, r, err := get("http://127.0.0.1:34653/client.php?hello=world")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2288,7 +2288,7 @@ func TestHTTPIssue659(t *testing.T) {
 }
 
 func echoIssue659(t *testing.T) {
-	req, err := http.NewRequest(http.MethodGet, "http://localhost:32552", nil)
+	req, err := http.NewRequest(http.MethodGet, "http://127.0.0.1:32552", nil)
 	assert.NoError(t, err)
 
 	r, err := http.DefaultClient.Do(req)

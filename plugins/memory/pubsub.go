@@ -3,8 +3,8 @@ package memory
 import (
 	"sync"
 
+	"github.com/spiral/roadrunner/v2/common/pubsub"
 	"github.com/spiral/roadrunner/v2/pkg/bst"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
@@ -17,7 +17,7 @@ type PubSubDriver struct {
 	log     logger.Logger
 }
 
-func NewPubSubDriver(log logger.Logger, _ string) (pubsub.PubSub, error) {
+func NewPubSubDriver(log logger.Logger, _ string) (*PubSubDriver, error) {
 	ps := &PubSubDriver{
 		pushCh:  make(chan *pubsub.Message, 10),
 		storage: bst.NewBST(),

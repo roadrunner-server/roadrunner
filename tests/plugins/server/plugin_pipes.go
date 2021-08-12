@@ -15,7 +15,7 @@ import (
 const ConfigSection = "server"
 const Response = "test"
 
-var testPoolConfig = pool.Config{
+var testPoolConfig = &pool.Config{
 	NumWorkers:      10,
 	MaxJobs:         100,
 	AllocateTimeout: time.Second * 10,
@@ -45,7 +45,7 @@ func (f *Foo) Serve() chan error {
 	const op = errors.Op("serve")
 
 	// test payload for echo
-	r := payload.Payload{
+	r := &payload.Payload{
 		Context: nil,
 		Body:    []byte(Response),
 	}

@@ -3,7 +3,7 @@ rpc:
 
 metrics:
   # prometheus client address (path /metrics added automatically)
-  address: localhost:2112
+  address: 127.0.0.1:2112
   collect:
     app_metric:
       type: histogram

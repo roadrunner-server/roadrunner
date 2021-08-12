@@ -10,10 +10,10 @@ import (
 	"github.com/google/uuid"
 	json "github.com/json-iterator/go"
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/common/pubsub"
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	phpPool "github.com/spiral/roadrunner/v2/pkg/pool"
 	"github.com/spiral/roadrunner/v2/pkg/process"
-	"github.com/spiral/roadrunner/v2/pkg/pubsub"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	"github.com/spiral/roadrunner/v2/plugins/broadcast"
 	"github.com/spiral/roadrunner/v2/plugins/config"
@@ -109,7 +109,7 @@ func (p *Plugin) Serve() chan error {
 		p.Lock()
 		defer p.Unlock()
 
-		p.phpPool, err = p.server.NewWorkerPool(context.Background(), phpPool.Config{
+		p.phpPool, err = p.server.NewWorkerPool(context.Background(), &phpPool.Config{
 			Debug:           p.cfg.Pool.Debug,
 			NumWorkers:      p.cfg.Pool.NumWorkers,
 			MaxJobs:         p.cfg.Pool.MaxJobs,
@@ -243,13 +243,13 @@ func (p *Plugin) Middleware(next http.Handler) http.Handler {
 }
 
 // Workers returns slice with the process states for the workers
-func (p *Plugin) Workers() []process.State {
+func (p *Plugin) Workers() []*process.State {
 	p.RLock()
 	defer p.RUnlock()
 
 	workers := p.workers()
 
-	ps := make([]process.State, 0, len(workers))
+	ps := make([]*process.State, 0, len(workers))
 	for i := 0; i < len(workers); i++ {
 		state, err := process.WorkerProcessState(workers[i])
 		if err != nil {
@@ -276,7 +276,7 @@ func (p *Plugin) Reset() error {
 	p.phpPool = nil
 
 	var err error
-	p.phpPool, err = p.server.NewWorkerPool(context.Background(), phpPool.Config{
+	p.phpPool, err = p.server.NewWorkerPool(context.Background(), &phpPool.Config{
 		Debug:           p.cfg.Pool.Debug,
 		NumWorkers:      p.cfg.Pool.NumWorkers,
 		MaxJobs:         p.cfg.Pool.MaxJobs,
@@ -337,7 +337,7 @@ func (p *Plugin) defaultAccessValidator(pool phpPool.Pool) validator.AccessValid
 
 func exec(ctx []byte, pool phpPool.Pool) (*validator.AccessValidator, error) {
 	const op = errors.Op("exec")
-	pd := payload.Payload{
+	pd := &payload.Payload{
 		Context: ctx,
 	}
 

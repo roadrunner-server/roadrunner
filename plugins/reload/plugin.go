@@ -117,7 +117,7 @@ func (s *Plugin) Serve() chan error {
 				timer.Stop()
 				// replace previous value in map by more recent without adding new one
 				updated[cfg.service] = cfg.serviceConfig
-				// if we getting a lot of events, we shouldn't restart particular service on each of it (user doing batch move or very fast typing)
+				// if we are getting a lot of events, we shouldn't restart particular service on each of it (user doing batch move or very fast typing)
 				// instead, we are resetting the timer and wait for s.cfg.Interval time
 				// If there is no more events, we restart service only once
 				timer.Reset(s.cfg.Interval)

@@ -24,11 +24,10 @@ func Test_NotStarted_Exec(t *testing.T) {
 
 	sw := From(w)
 
-	res, err := sw.Exec(payload.Payload{Body: []byte("hello")})
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
-	assert.Nil(t, res.Body)
-	assert.Nil(t, res.Context)
+	assert.Nil(t, res)
 
 	assert.Contains(t, err.Error(), "Process is not ready (inactive)")
 }

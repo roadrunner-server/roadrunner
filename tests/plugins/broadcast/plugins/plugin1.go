@@ -3,7 +3,7 @@ package plugins
 import (
 	"fmt"
 
-	"github.com/spiral/roadrunner/v2/pkg/pubsub"
+	"github.com/spiral/roadrunner/v2/common/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/broadcast"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
@@ -14,11 +14,14 @@ type Plugin1 struct {
 	log    logger.Logger
 	b      broadcast.Broadcaster
 	driver pubsub.SubReader
+
+	exit chan struct{}
 }
 
 func (p *Plugin1) Init(log logger.Logger, b broadcast.Broadcaster) error {
 	p.log = log
 	p.b = b
+	p.exit = make(chan struct{}, 1)
 	return nil
 }
 
@@ -39,16 +42,22 @@ func (p *Plugin1) Serve() chan error {
 
 	go func() {
 		for {
-			msg, err := p.driver.Next()
-			if err != nil {
-				panic(err)
-			}
+			select {
+			case <-p.exit:
+				return
+			default:
+				msg, err := p.driver.Next()
+				if err != nil {
+					errCh <- err
+					return
+				}
 
-			if msg == nil {
-				continue
-			}
+				if msg == nil {
+					continue
+				}
 
-			p.log.Info(fmt.Sprintf("%s: %s", Plugin1Name, *msg))
+				p.log.Info(fmt.Sprintf("%s: %s", Plugin1Name, *msg))
+			}
 		}
 	}()
 
@@ -59,6 +68,8 @@ func (p *Plugin1) Stop() error {
 	_ = p.driver.Unsubscribe("1", "foo")
 	_ = p.driver.Unsubscribe("1", "foo2")
 	_ = p.driver.Unsubscribe("1", "foo3")
+
+	p.exit <- struct{}{}
 	return nil
 }
 
