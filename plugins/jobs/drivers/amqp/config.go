@@ -38,6 +38,7 @@ type Config struct {
 }
 
 func (c *Config) InitDefault() {
+	// all options should be in sync with the pipeline defaults in the FromPipeline method
 	if c.ExchangeType == "" {
 		c.ExchangeType = "direct"
 	}
@@ -47,7 +48,7 @@ func (c *Config) InitDefault() {
 	}
 
 	if c.Prefetch == 0 {
-		c.Prefetch = 100
+		c.Prefetch = 10
 	}
 
 	if c.Priority == 0 {

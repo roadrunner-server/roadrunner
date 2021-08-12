@@ -54,6 +54,7 @@ type Options struct {
 	// This method must not be used to select or requeue messages the client wishes not to handle, rather it is to inform the server that the client is incapable of handling this message at this time
 	nack func(multiply bool, requeue bool) error
 
+	// requeueFn used as a pointer to the push function
 	requeueFn func(context.Context, *Item) error
 
 	multipleAsk bool
@@ -123,9 +124,9 @@ func (i *Item) Requeue(headers map[string][]string, delay int64) error {
 
 	err := i.Options.requeueFn(context.Background(), i)
 	if err != nil {
-		errAck := i.Options.nack(false, true)
-		if errAck != nil {
-			return fmt.Errorf("requeue error: %v\nack error: %v", err, errAck)
+		errNack := i.Options.nack(false, true)
+		if errNack != nil {
+			return fmt.Errorf("requeue error: %v\nack error: %v", err, errNack)
 		}
 
 		return err
