@@ -47,6 +47,10 @@ func (c *Config) InitDefault() {
 		c.Exchange = "amqp.default"
 	}
 
+	if c.Queue == "" {
+		c.Queue = "default"
+	}
+
 	if c.Prefetch == 0 {
 		c.Prefetch = 10
 	}
