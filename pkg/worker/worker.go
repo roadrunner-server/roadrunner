@@ -189,6 +189,7 @@ func (w *Process) Stop() error {
 		_ = w.cmd.Process.Signal(os.Kill)
 		return errors.E(op, errors.Network, err)
 	}
+
 	w.state.Set(StateStopped)
 	return nil
 }
