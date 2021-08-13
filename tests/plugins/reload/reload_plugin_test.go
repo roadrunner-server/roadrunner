@@ -208,7 +208,7 @@ func TestReloadHugeNumberOfFiles(t *testing.T) {
 	time.Sleep(time.Second * 3)
 	t.Run("ReloadTestHugeNumberOfFiles", reloadHugeNumberOfFiles)
 	t.Run("ReloadRandomlyChangeFile", randomlyChangeFile)
-	time.Sleep(time.Second * 3)
+	time.Sleep(time.Second * 10)
 
 	stopCh <- struct{}{}
 	wg.Wait()
@@ -318,7 +318,7 @@ func TestReloadFilterFileExt(t *testing.T) {
 	time.Sleep(time.Second * 3)
 	t.Run("ReloadMakeFiles", reloadMakeFiles)
 	t.Run("ReloadFilteredExt", reloadFilteredExt)
-	time.Sleep(time.Second * 3)
+	time.Sleep(time.Second * 10)
 
 	stopCh <- struct{}{}
 	wg.Wait()
@@ -465,7 +465,7 @@ func TestReloadCopy100(t *testing.T) {
 	t.Run("RandomChangesInRecursiveDirs", randomChangesInRecursiveDirs)
 	t.Run("RemoveFilesSupport", removeFilesSupport)
 	t.Run("ReloadMoveSupport", reloadMoveSupport)
-	time.Sleep(time.Second * 3)
+	time.Sleep(time.Second * 10)
 
 	assert.NoError(t, freeResources(testDir))
 	assert.NoError(t, freeResources(testCopyToDir))
@@ -737,7 +737,7 @@ func TestReloadNoRecursion(t *testing.T) {
 	t.Run("ReloadCopyFilesRecursive", reloadCopyFiles)
 	time.Sleep(time.Second * 3)
 	assert.NoError(t, freeResources(testDir))
-	time.Sleep(time.Second * 3)
+	time.Sleep(time.Second * 10)
 
 	stopCh <- struct{}{}
 	wg.Wait()
