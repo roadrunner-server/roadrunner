@@ -151,8 +151,9 @@ func Test_StaticPool_JobError(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
-	res, err := p.Exec(&payload.Payload{Body: []byte("hello")})
+	time.Sleep(time.Second * 2)
 
+	res, err := p.Exec(&payload.Payload{Body: []byte("hello")})
 	assert.Error(t, err)
 	assert.Nil(t, res)
 
