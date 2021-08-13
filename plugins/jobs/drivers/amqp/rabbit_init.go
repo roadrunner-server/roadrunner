@@ -1,10 +1,7 @@
 package amqp
 
 import (
-	"time"
-
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/pkg/events"
 )
 
 func (j *JobConsumer) initRabbitMQ() error {
@@ -56,10 +53,5 @@ func (j *JobConsumer) initRabbitMQ() error {
 		return errors.E(op, err)
 	}
 
-	j.eh.Push(events.JobEvent{
-		Event:  events.EventInitialized,
-		Driver: "amqp",
-		Start:  time.Now(),
-	})
 	return channel.Close()
 }

@@ -22,7 +22,6 @@ import (
 	"github.com/golang/mock/gomock"
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
-	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/pkg/process"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/gzip"
@@ -32,6 +31,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/server"
 	"github.com/spiral/roadrunner/v2/plugins/static"
 	"github.com/spiral/roadrunner/v2/tests/mocks"
+	"github.com/stretchr/testify/require"
 	"github.com/yookoala/gofast"
 
 	httpPlugin "github.com/spiral/roadrunner/v2/plugins/http"
@@ -800,9 +800,7 @@ func TestH2CUpgrade(t *testing.T) {
 	mockLogger := mocks.NewMockLogger(controller)
 
 	mockLogger.EXPECT().Error("server internal error", "message", gomock.Any()).MinTimes(1)
-	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).MinTimes(1)
-	mockLogger.EXPECT().Debug("worker event received", "event", events.EventWorkerLog, "worker state", gomock.Any()).MinTimes(1)
 
 	err = cont.RegisterAll(
 		cfg,
@@ -1088,10 +1086,6 @@ rpc:
 
 server:
   command: "php ../../http/client.php echoerr pipes"
-  user: ""
-  group: ""
-  env:
-    "RR_HTTP": "true"
   relay: "pipes"
   relay_timeout: "20s"
 
@@ -1111,7 +1105,7 @@ http:
 
 logs:
   mode: development
-  level: error
+  level: debug
 `
 
 	cfg := &config.Viper{
@@ -1125,11 +1119,9 @@ logs:
 	mockLogger := mocks.NewMockLogger(controller)
 
 	mockLogger.EXPECT().Debug(gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Debug("201 GET http://127.0.0.1:34999/?hello=world", "remote", "127.0.0.1", "elapsed", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("WORLD").MinTimes(1)
-	mockLogger.EXPECT().Debug("worker event received", "event", events.EventWorkerLog, "worker state", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes() // placeholder for the workerlogerror
 
 	err = cont.RegisterAll(
@@ -1185,7 +1177,8 @@ logs:
 		}
 	}()
 
-	time.Sleep(time.Second * 1)
+	time.Sleep(time.Second * 3)
+
 	t.Run("HttpEchoError", echoError)
 
 	stopCh <- struct{}{}
@@ -1198,6 +1191,7 @@ func echoError(t *testing.T) {
 
 	r, err := http.DefaultClient.Do(req)
 	assert.NoError(t, err)
+	require.NotNil(t, r)
 
 	b, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)

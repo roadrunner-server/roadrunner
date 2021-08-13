@@ -4,10 +4,10 @@ service:
     process_num: 1
     remain_after_exit: true
     restart_delay: 1s
-    exec_timeout: 1s
+    exec_timeout: 2s
 
 logs:
-  level: info
+  level: debug
   mode: raw
 
 endure:

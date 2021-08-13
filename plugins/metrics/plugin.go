@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
@@ -53,24 +54,24 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	p.registry = prometheus.NewRegistry()
 
 	// Default
-	err = p.registry.Register(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
+	err = p.registry.Register(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 	if err != nil {
 		return errors.E(op, err)
 	}
 
 	// Default
-	err = p.registry.Register(prometheus.NewGoCollector())
+	err = p.registry.Register(collectors.NewGoCollector())
 	if err != nil {
 		return errors.E(op, err)
 	}
 
-	collectors, err := p.cfg.getCollectors()
+	cl, err := p.cfg.getCollectors()
 	if err != nil {
 		return errors.E(op, err)
 	}
 
 	// Register invocation will be later in the Serve method
-	for k, v := range collectors {
+	for k, v := range cl {
 		p.collectors.Store(k, v)
 	}
 

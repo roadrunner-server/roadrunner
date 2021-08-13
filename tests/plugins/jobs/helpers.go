@@ -88,7 +88,7 @@ func pushToPipe(pipeline string) func(t *testing.T) {
 func pushToPipeErr(pipeline string) func(t *testing.T) {
 	return func(t *testing.T) {
 		conn, err := net.Dial("tcp", "127.0.0.1:6001")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 		req := &jobsv1beta.PushRequest{Job: &jobsv1beta.Job{

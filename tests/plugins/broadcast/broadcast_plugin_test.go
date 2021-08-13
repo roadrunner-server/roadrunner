@@ -205,8 +205,7 @@ func TestBroadcastSameSubscriber(t *testing.T) {
 		cfg,
 		&broadcast.Plugin{},
 		&rpcPlugin.Plugin{},
-		&logger.ZapLogger{},
-		// mockLogger,
+		mockLogger,
 		&server.Plugin{},
 		&redis.Plugin{},
 		&websockets.Plugin{},
@@ -279,11 +278,11 @@ func TestBroadcastSameSubscriber(t *testing.T) {
 	t.Run("PublishHelloFoo3", BroadcastPublishFoo3("6002"))
 	t.Run("PublishAsyncHelloFooFoo2Foo3", BroadcastPublishAsyncFooFoo2Foo3("6002"))
 
+	time.Sleep(time.Second * 5)
+
 	stopCh <- struct{}{}
 
 	wg.Wait()
-
-	time.Sleep(time.Second * 5)
 }
 
 func TestBroadcastSameSubscriberGlobal(t *testing.T) {
@@ -316,8 +315,7 @@ func TestBroadcastSameSubscriberGlobal(t *testing.T) {
 		cfg,
 		&broadcast.Plugin{},
 		&rpcPlugin.Plugin{},
-		&logger.ZapLogger{},
-		// mockLogger,
+		mockLogger,
 		&server.Plugin{},
 		&redis.Plugin{},
 		&websockets.Plugin{},
@@ -389,6 +387,8 @@ func TestBroadcastSameSubscriberGlobal(t *testing.T) {
 	t.Run("PublishHelloFoo2", BroadcastPublishFoo2("6003"))
 	t.Run("PublishHelloFoo3", BroadcastPublishFoo3("6003"))
 	t.Run("PublishAsyncHelloFooFoo2Foo3", BroadcastPublishAsyncFooFoo2Foo3("6003"))
+
+	time.Sleep(time.Second * 4)
 
 	stopCh <- struct{}{}
 
