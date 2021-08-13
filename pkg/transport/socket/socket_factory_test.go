@@ -78,7 +78,9 @@ func Test_Tcp_StartCloseFactory(t *testing.T) {
 
 func Test_Tcp_StartError(t *testing.T) {
 	time.Sleep(time.Millisecond * 10) // to ensure free socket
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	defer cancel()
+
 	ls, err := net.Listen("tcp", "127.0.0.1:9007")
 	if assert.NoError(t, err) {
 		defer func() {
@@ -97,7 +99,9 @@ func Test_Tcp_StartError(t *testing.T) {
 		t.Errorf("error executing the command: error %v", err)
 	}
 
-	w, err := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd)
+	serv := NewSocketServer(ls, time.Minute)
+	time.Sleep(time.Second * 2)
+	w, err := serv.SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Error(t, err)
 	assert.Nil(t, w)
 }
