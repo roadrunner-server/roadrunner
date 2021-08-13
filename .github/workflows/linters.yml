@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   golangci-lint:
     name: Golang-CI (lint)
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v2
