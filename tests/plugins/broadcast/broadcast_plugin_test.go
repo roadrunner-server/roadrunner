@@ -278,13 +278,11 @@ func TestBroadcastSameSubscriber(t *testing.T) {
 	t.Run("PublishHelloFoo3", BroadcastPublishFoo3("6002"))
 	t.Run("PublishAsyncHelloFooFoo2Foo3", BroadcastPublishAsyncFooFoo2Foo3("6002"))
 
-	time.Sleep(time.Second * 4)
+	time.Sleep(time.Second * 5)
 
 	stopCh <- struct{}{}
 
 	wg.Wait()
-
-	time.Sleep(time.Second * 5)
 }
 
 func TestBroadcastSameSubscriberGlobal(t *testing.T) {
