@@ -73,6 +73,8 @@ func TestSupervisedPool_ExecWithDebugMode(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
+	time.Sleep(time.Second)
+
 	for i := 0; i < 100; i++ {
 		time.Sleep(time.Millisecond * 100)
 		_, err = p.Exec(&payload.Payload{
