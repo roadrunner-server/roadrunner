@@ -9,6 +9,7 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
+	jobState "github.com/spiral/roadrunner/v2/pkg/state/job"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
@@ -106,57 +107,8 @@ func (j *JobConsumer) Push(ctx context.Context, jb *job.Job) error {
 	return nil
 }
 
-func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
-	const op = errors.Op("ephemeral_handle_request")
-	// handle timeouts
-	// theoretically, some bad user may send millions requests with a delay and produce a billion (for example)
-	// goroutines here. We should limit goroutines here.
-	if msg.Options.Delay > 0 {
-		// if we have 1000 goroutines waiting on the delay - reject 1001
-		if atomic.LoadUint64(&j.goroutines) >= goroutinesMax {
-			return errors.E(op, errors.Str("max concurrency number reached"))
-		}
-
-		go func(jj *Item) {
-			atomic.AddUint64(&j.goroutines, 1)
-			time.Sleep(jj.Options.DelayDuration())
-
-			// send the item after timeout expired
-			j.localPrefetch <- jj
-
-			atomic.AddUint64(&j.goroutines, ^uint64(0))
-		}(msg)
-
-		return nil
-	}
-
-	// insert to the local, limited pipeline
-	select {
-	case j.localPrefetch <- msg:
-		return nil
-	case <-ctx.Done():
-		return errors.E(op, errors.Errorf("local pipeline is full, consider to increase prefetch number, current limit: %d, context error: %v", j.cfg.Prefetch, ctx.Err()))
-	}
-}
-
-func (j *JobConsumer) consume() {
-	// redirect
-	for {
-		select {
-		case item, ok := <-j.localPrefetch:
-			if !ok {
-				j.log.Warn("ephemeral local prefetch queue was closed")
-				return
-			}
-
-			// set requeue channel
-			item.Options.requeueFn = j.handleItem
-
-			j.pq.Insert(item)
-		case <-j.stopCh:
-			return
-		}
-	}
+func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
+	return nil, nil
 }
 
 func (j *JobConsumer) Register(_ context.Context, pipeline *pipeline.Pipeline) error {
@@ -240,5 +192,58 @@ func (j *JobConsumer) Stop(ctx context.Context) error {
 
 	case <-ctx.Done():
 		return errors.E(op, ctx.Err())
+	}
+}
+
+func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
+	const op = errors.Op("ephemeral_handle_request")
+	// handle timeouts
+	// theoretically, some bad user may send millions requests with a delay and produce a billion (for example)
+	// goroutines here. We should limit goroutines here.
+	if msg.Options.Delay > 0 {
+		// if we have 1000 goroutines waiting on the delay - reject 1001
+		if atomic.LoadUint64(&j.goroutines) >= goroutinesMax {
+			return errors.E(op, errors.Str("max concurrency number reached"))
+		}
+
+		go func(jj *Item) {
+			atomic.AddUint64(&j.goroutines, 1)
+			time.Sleep(jj.Options.DelayDuration())
+
+			// send the item after timeout expired
+			j.localPrefetch <- jj
+
+			atomic.AddUint64(&j.goroutines, ^uint64(0))
+		}(msg)
+
+		return nil
+	}
+
+	// insert to the local, limited pipeline
+	select {
+	case j.localPrefetch <- msg:
+		return nil
+	case <-ctx.Done():
+		return errors.E(op, errors.Errorf("local pipeline is full, consider to increase prefetch number, current limit: %d, context error: %v", j.cfg.Prefetch, ctx.Err()))
+	}
+}
+
+func (j *JobConsumer) consume() {
+	// redirect
+	for {
+		select {
+		case item, ok := <-j.localPrefetch:
+			if !ok {
+				j.log.Warn("ephemeral local prefetch queue was closed")
+				return
+			}
+
+			// set requeue channel
+			item.Options.requeueFn = j.handleItem
+
+			j.pq.Insert(item)
+		case <-j.stopCh:
+			return
+		}
 	}
 }

@@ -2,7 +2,7 @@ package informer
 
 import (
 	endure "github.com/spiral/endure/pkg/container"
-	"github.com/spiral/roadrunner/v2/pkg/process"
+	"github.com/spiral/roadrunner/v2/pkg/state/process"
 )
 
 const PluginName = "informer"

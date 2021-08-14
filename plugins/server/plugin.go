@@ -97,7 +97,7 @@ func (server *Plugin) CmdFactory(env Env) (func() *exec.Cmd, error) {
 	// try to find a path here
 	err := server.scanCommand(cmdArgs)
 	if err != nil {
-		server.log.Info("scan command", "error", err)
+		server.log.Info("scan command", "reason", err)
 	}
 
 	return func() *exec.Cmd {

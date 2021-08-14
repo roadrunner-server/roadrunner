@@ -1,7 +1,7 @@
 package informer
 
 import (
-	"github.com/spiral/roadrunner/v2/pkg/process"
+	"github.com/spiral/roadrunner/v2/pkg/state/process"
 )
 
 type rpc struct {

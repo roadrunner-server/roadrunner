@@ -10,7 +10,7 @@ import (
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/pool"
-	"github.com/spiral/roadrunner/v2/pkg/process"
+	"github.com/spiral/roadrunner/v2/pkg/state/process"
 	"github.com/spiral/roadrunner/v2/pkg/worker"
 	handler "github.com/spiral/roadrunner/v2/pkg/worker_handler"
 	"github.com/spiral/roadrunner/v2/plugins/config"

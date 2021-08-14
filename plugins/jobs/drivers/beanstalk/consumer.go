@@ -10,6 +10,7 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
+	jobState "github.com/spiral/roadrunner/v2/pkg/state/job"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
@@ -213,10 +214,14 @@ func (j *JobConsumer) handleItem(ctx context.Context, item *Item) error {
 	return nil
 }
 
-func (j *JobConsumer) Register(ctx context.Context, p *pipeline.Pipeline) error {
+func (j *JobConsumer) Register(_ context.Context, p *pipeline.Pipeline) error {
 	// register the pipeline
 	j.pipeline.Store(p)
 	return nil
+}
+
+func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
+	return nil, nil
 }
 
 func (j *JobConsumer) Run(_ context.Context, p *pipeline.Pipeline) error {

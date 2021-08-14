@@ -15,6 +15,7 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
+	jobState "github.com/spiral/roadrunner/v2/pkg/state/job"
 	cfgPlugin "github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
@@ -261,17 +262,8 @@ func (j *JobConsumer) Push(ctx context.Context, jb *job.Job) error {
 	return nil
 }
 
-func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
-	d, err := msg.pack(j.queueURL)
-	if err != nil {
-		return err
-	}
-	_, err = j.client.SendMessage(ctx, d)
-	if err != nil {
-		return err
-	}
-
-	return nil
+func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
+	return nil, nil
 }
 
 func (j *JobConsumer) Register(_ context.Context, p *pipeline.Pipeline) error {
@@ -373,4 +365,17 @@ func (j *JobConsumer) Resume(_ context.Context, p string) {
 		Pipeline: pipe.Name(),
 		Start:    time.Now(),
 	})
+}
+
+func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
+	d, err := msg.pack(j.queueURL)
+	if err != nil {
+		return err
+	}
+	_, err = j.client.SendMessage(ctx, d)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

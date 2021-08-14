@@ -29,5 +29,5 @@ func (server *Plugin) scanCommand(cmd []string) error {
 			return nil
 		}
 	}
-	return errors.E(errors.Str("scan failed, possible path not found"), op)
+	return errors.E(errors.Str("scan failed, possible path not found, this is not an error"), op)
 }

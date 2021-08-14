@@ -9,6 +9,8 @@ import (
 	"github.com/spiral/roadrunner/v2/common/pubsub"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	redis_kv "github.com/spiral/roadrunner/v2/plugins/redis/kv"
+	redis_pubsub "github.com/spiral/roadrunner/v2/plugins/redis/pubsub"
 )
 
 const PluginName = "redis"
@@ -62,7 +64,7 @@ func (p *Plugin) Available() {}
 // KVConstruct provides KV storage implementation over the redis plugin
 func (p *Plugin) KVConstruct(key string) (kv.Storage, error) {
 	const op = errors.Op("redis_plugin_provide")
-	st, err := NewRedisDriver(p.log, key, p.cfgPlugin)
+	st, err := redis_kv.NewRedisDriver(p.log, key, p.cfgPlugin)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
@@ -71,5 +73,5 @@ func (p *Plugin) KVConstruct(key string) (kv.Storage, error) {
 }
 
 func (p *Plugin) PSConstruct(key string) (pubsub.PubSub, error) {
-	return NewPubSubDriver(p.log, key, p.cfgPlugin, p.stopCh)
+	return redis_pubsub.NewPubSubDriver(p.log, key, p.cfgPlugin, p.stopCh)
 }
