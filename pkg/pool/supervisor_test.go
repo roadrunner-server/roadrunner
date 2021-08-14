@@ -39,6 +39,8 @@ func TestSupervisedPool_Exec(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
+	time.Sleep(time.Second)
+
 	pidBefore := p.Workers()[0].Pid()
 
 	for i := 0; i < 100; i++ {

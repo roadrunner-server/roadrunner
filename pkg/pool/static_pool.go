@@ -272,7 +272,9 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 
 		w.State().Set(worker.StateInvalid)
 		sp.events.Push(events.PoolEvent{Event: events.EventWorkerDestruct, Payload: w})
-		errS := w.Stop()
+		// kill worker instead of stop, because worker here might be in the broken state (network) which leads us
+		// to the error
+		errS := w.Kill()
 		if errS != nil {
 			return nil, errors.E(op, err, errS)
 		}
