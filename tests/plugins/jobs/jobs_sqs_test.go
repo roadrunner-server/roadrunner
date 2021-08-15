@@ -51,7 +51,8 @@ func TestSQSInit(t *testing.T) {
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-1", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
-	mockLogger.EXPECT().Warn("sqs listener stopped").Times(2)
+	mockLogger.EXPECT().Warn("sqs listener stopped").AnyTimes()
+	mockLogger.EXPECT().Info("------> job poller stopped <------").AnyTimes()
 
 	err = cont.RegisterAll(
 		cfg,
@@ -136,7 +137,8 @@ func TestSQSDeclare(t *testing.T) {
 	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Info("pipeline paused", "pipeline", "test-3", "driver", "sqs", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Warn("sqs listener stopped").Times(1)
+	mockLogger.EXPECT().Warn("sqs listener stopped").AnyTimes()
+	mockLogger.EXPECT().Info("------> job poller stopped <------").AnyTimes()
 
 	err = cont.RegisterAll(
 		cfg,
@@ -233,7 +235,8 @@ func TestSQSJobsError(t *testing.T) {
 
 	mockLogger.EXPECT().Info("pipeline paused", "pipeline", "test-3", "driver", "sqs", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Warn("sqs listener stopped").Times(1)
+	mockLogger.EXPECT().Warn("sqs listener stopped").AnyTimes()
+	mockLogger.EXPECT().Info("------> job poller stopped <------").AnyTimes()
 
 	err = cont.RegisterAll(
 		cfg,
