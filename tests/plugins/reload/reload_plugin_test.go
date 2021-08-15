@@ -460,10 +460,15 @@ func TestReloadCopy100(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 	t.Run("ReloadMake100Files", reloadMake100Files)
+	time.Sleep(time.Second)
 	t.Run("ReloadCopyFiles", reloadCopyFiles)
+	time.Sleep(time.Second)
 	t.Run("ReloadRecursiveDirsSupport", copyFilesRecursive)
+	time.Sleep(time.Second)
 	t.Run("RandomChangesInRecursiveDirs", randomChangesInRecursiveDirs)
+	time.Sleep(time.Second)
 	t.Run("RemoveFilesSupport", removeFilesSupport)
+	time.Sleep(time.Second)
 	t.Run("ReloadMoveSupport", reloadMoveSupport)
 	time.Sleep(time.Second * 10)
 
