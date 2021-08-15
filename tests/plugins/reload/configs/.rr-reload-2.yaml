@@ -27,7 +27,7 @@ logs:
   mode: development
   level: debug
 reload:
-  interval: 2s
+  interval: 1s
   patterns:
     - .txt
   services:
