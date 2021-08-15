@@ -317,6 +317,7 @@ func TestReloadFilterFileExt(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 	t.Run("ReloadMakeFiles", reloadMakeFiles)
+	time.Sleep(time.Second * 2)
 	t.Run("ReloadFilteredExt", reloadFilteredExt)
 	time.Sleep(time.Second * 10)
 
@@ -460,15 +461,15 @@ func TestReloadCopy100(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 	t.Run("ReloadMake100Files", reloadMake100Files)
-	time.Sleep(time.Second)
+	time.Sleep(time.Second * 2)
 	t.Run("ReloadCopyFiles", reloadCopyFiles)
-	time.Sleep(time.Second)
+	time.Sleep(time.Second * 2)
 	t.Run("ReloadRecursiveDirsSupport", copyFilesRecursive)
-	time.Sleep(time.Second)
+	time.Sleep(time.Second * 2)
 	t.Run("RandomChangesInRecursiveDirs", randomChangesInRecursiveDirs)
-	time.Sleep(time.Second)
+	time.Sleep(time.Second * 2)
 	t.Run("RemoveFilesSupport", removeFilesSupport)
-	time.Sleep(time.Second)
+	time.Sleep(time.Second * 2)
 	t.Run("ReloadMoveSupport", reloadMoveSupport)
 	time.Sleep(time.Second * 10)
 
@@ -738,7 +739,7 @@ func TestReloadNoRecursion(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 	t.Run("ReloadMakeFiles", reloadMakeFiles) // make files in the testDir
-	time.Sleep(time.Second * 3)
+	time.Sleep(time.Second * 2)
 	t.Run("ReloadCopyFilesRecursive", reloadCopyFiles)
 	time.Sleep(time.Second * 3)
 	assert.NoError(t, freeResources(testDir))
