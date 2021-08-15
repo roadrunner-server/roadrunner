@@ -65,7 +65,7 @@ func TestSupervisedPool_ExecWithDebugMode(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/memleak.php", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "../../tests/supervised.php") },
 		pipe.NewPipeFactory(),
 		cfgSupervised,
 	)
