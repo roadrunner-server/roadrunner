@@ -4,7 +4,6 @@ go 1.17
 
 require (
 	github.com/Shopify/toxiproxy v2.1.4+incompatible
-	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/alicebob/miniredis/v2 v2.15.1
 	// ========= AWS SDK v2
 	github.com/aws/aws-sdk-go-v2 v1.8.0
@@ -34,7 +33,6 @@ require (
 	github.com/spiral/goridge/v3 v3.2.0
 	// ===========
 	github.com/stretchr/testify v1.7.0
-	github.com/tklauser/go-sysconf v0.3.7 // indirect
 	github.com/valyala/tcplisten v1.0.0
 	github.com/yookoala/gofast v0.6.0
 	go.etcd.io/bbolt v1.3.6
@@ -42,12 +40,13 @@ require (
 	go.uber.org/zap v1.19.0
 	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20210809222454-d867a43fc93e
+	golang.org/x/sys v0.0.0-20210816074244-15123e1e1f71
 	google.golang.org/protobuf v1.27.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
 require (
+	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
 	github.com/andybalholm/brotli v1.0.2 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.4.0 // indirect
@@ -81,6 +80,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
+	github.com/tklauser/go-sysconf v0.3.8 // indirect
 	github.com/tklauser/numcpus v0.2.3 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.26.0 // indirect
