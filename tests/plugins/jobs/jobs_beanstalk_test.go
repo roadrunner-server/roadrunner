@@ -403,8 +403,9 @@ func TestBeanstalkStats(t *testing.T) {
 	time.Sleep(time.Second * 2)
 	t.Run("PausePipeline", pausePipelines("test-3"))
 	time.Sleep(time.Second * 3)
-	t.Run("PushPipelineDelayed", pushToPipeDelayed("test-3", 5))
+	t.Run("PushPipelineDelayed", pushToPipeDelayed("test-3", 6))
 	t.Run("PushPipeline", pushToPipe("test-3"))
+	time.Sleep(time.Second * 2)
 
 	out := &jobState.State{}
 	stats(t, out)
