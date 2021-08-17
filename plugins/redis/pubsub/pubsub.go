@@ -172,6 +172,12 @@ func (p *PubSubDriver) Connections(topic string, res map[string]struct{}) {
 }
 
 // Next return next message
-func (p *PubSubDriver) Next() (*pubsub.Message, error) {
-	return p.channel.message(), nil
+func (p *PubSubDriver) Next(ctx context.Context) (*pubsub.Message, error) {
+	const op = errors.Op("redis_driver_next")
+	select {
+	case msg := <-p.channel.message():
+		return msg, nil
+	case <-ctx.Done():
+		return nil, errors.E(op, errors.TimeOut, ctx.Err())
+	}
 }

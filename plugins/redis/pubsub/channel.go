@@ -92,6 +92,6 @@ func (r *redisChannel) stop() error {
 	return nil
 }
 
-func (r *redisChannel) message() *pubsub.Message {
-	return <-r.out
+func (r *redisChannel) message() chan *pubsub.Message {
+	return r.out
 }

@@ -1,5 +1,7 @@
 package pubsub
 
+import "context"
+
 /*
 This interface is in BETA. It might be changed.
 */
@@ -45,7 +47,7 @@ type Publisher interface {
 
 // Reader interface should return next message
 type Reader interface {
-	Next() (*Message, error)
+	Next(ctx context.Context) (*Message, error)
 }
 
 // Constructor is a special pub-sub interface made to return a constructed PubSub type
