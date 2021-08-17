@@ -118,7 +118,8 @@ func (p *Plugin) Serve() chan error {
 			Supervisor:      p.cfg.Pool.Supervisor,
 		}, map[string]string{RrMode: "http", RrBroadcastPath: p.cfg.Path})
 		if err != nil {
-			errCh <- err
+			errCh <- errors.E(op, err)
+			return
 		}
 
 		p.accessValidator = p.defaultAccessValidator(p.phpPool)
@@ -135,7 +136,7 @@ func (p *Plugin) Serve() chan error {
 			default:
 				data, err := ps.Next()
 				if err != nil {
-					errCh <- err
+					errCh <- errors.E(op, err)
 					return
 				}
 				p.workersPool.Queue(data)

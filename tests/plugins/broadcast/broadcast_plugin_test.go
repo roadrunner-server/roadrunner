@@ -279,8 +279,11 @@ func TestBroadcastSameSubscriber(t *testing.T) {
 	time.Sleep(time.Second * 2)
 
 	t.Run("PublishHelloFooFoo2Foo3", BroadcastPublishFooFoo2Foo3("6002"))
+	time.Sleep(time.Second)
 	t.Run("PublishHelloFoo2", BroadcastPublishFoo2("6002"))
+	time.Sleep(time.Second)
 	t.Run("PublishHelloFoo3", BroadcastPublishFoo3("6002"))
+	time.Sleep(time.Second)
 	t.Run("PublishAsyncHelloFooFoo2Foo3", BroadcastPublishAsyncFooFoo2Foo3("6002"))
 
 	time.Sleep(time.Second * 5)
@@ -291,6 +294,8 @@ func TestBroadcastSameSubscriber(t *testing.T) {
 
 	t.Run("RedisFlush", redisFlushAll("127.0.0.1:6379"))
 	t.Run("RedisFlush", redisFlushAll("127.0.0.1:6378"))
+
+	time.Sleep(time.Second * 5)
 }
 
 func TestBroadcastSameSubscriberGlobal(t *testing.T) {
@@ -395,8 +400,11 @@ func TestBroadcastSameSubscriberGlobal(t *testing.T) {
 	time.Sleep(time.Second * 2)
 
 	t.Run("PublishHelloFooFoo2Foo3", BroadcastPublishFooFoo2Foo3("6003"))
+	time.Sleep(time.Second)
 	t.Run("PublishHelloFoo2", BroadcastPublishFoo2("6003"))
+	time.Sleep(time.Second)
 	t.Run("PublishHelloFoo3", BroadcastPublishFoo3("6003"))
+	time.Sleep(time.Second)
 	t.Run("PublishAsyncHelloFooFoo2Foo3", BroadcastPublishAsyncFooFoo2Foo3("6003"))
 
 	time.Sleep(time.Second * 4)
@@ -404,6 +412,7 @@ func TestBroadcastSameSubscriberGlobal(t *testing.T) {
 	stopCh <- struct{}{}
 
 	wg.Wait()
+
 	time.Sleep(time.Second * 5)
 
 	t.Run("RedisFlush", redisFlushAll("127.0.0.1:6379"))

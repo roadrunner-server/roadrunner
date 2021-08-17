@@ -43,3 +43,17 @@ message Options {
 message HeaderValue {
     repeated string value = 1;
 }
+
+message Stats {
+    repeated Stat Stats = 1;
+}
+
+// Stats used as a response for the Stats RPC call
+message Stat {
+    string pipeline = 1;
+    string driver = 2;
+    string queue = 3;
+    int64 active = 4;
+    int64 delayed = 5;
+    int64 reserved = 6;
+}

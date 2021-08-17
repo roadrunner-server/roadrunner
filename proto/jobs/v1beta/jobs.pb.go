@@ -440,6 +440,141 @@ func (x *HeaderValue) GetValue() []string {
 	return nil
 }
 
+type Stats struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Stats []*Stat `protobuf:"bytes,1,rep,name=Stats,proto3" json:"Stats,omitempty"`
+}
+
+func (x *Stats) Reset() {
+	*x = Stats{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_jobs_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Stats) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Stats) ProtoMessage() {}
+
+func (x *Stats) ProtoReflect() protoreflect.Message {
+	mi := &file_jobs_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Stats.ProtoReflect.Descriptor instead.
+func (*Stats) Descriptor() ([]byte, []int) {
+	return file_jobs_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *Stats) GetStats() []*Stat {
+	if x != nil {
+		return x.Stats
+	}
+	return nil
+}
+
+// Stats used as a response for the Stats RPC call
+type Stat struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Pipeline string `protobuf:"bytes,1,opt,name=pipeline,proto3" json:"pipeline,omitempty"`
+	Driver   string `protobuf:"bytes,2,opt,name=driver,proto3" json:"driver,omitempty"`
+	Queue    string `protobuf:"bytes,3,opt,name=queue,proto3" json:"queue,omitempty"`
+	Active   int64  `protobuf:"varint,4,opt,name=active,proto3" json:"active,omitempty"`
+	Delayed  int64  `protobuf:"varint,5,opt,name=delayed,proto3" json:"delayed,omitempty"`
+	Reserved int64  `protobuf:"varint,6,opt,name=reserved,proto3" json:"reserved,omitempty"`
+}
+
+func (x *Stat) Reset() {
+	*x = Stat{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_jobs_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Stat) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Stat) ProtoMessage() {}
+
+func (x *Stat) ProtoReflect() protoreflect.Message {
+	mi := &file_jobs_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Stat.ProtoReflect.Descriptor instead.
+func (*Stat) Descriptor() ([]byte, []int) {
+	return file_jobs_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *Stat) GetPipeline() string {
+	if x != nil {
+		return x.Pipeline
+	}
+	return ""
+}
+
+func (x *Stat) GetDriver() string {
+	if x != nil {
+		return x.Driver
+	}
+	return ""
+}
+
+func (x *Stat) GetQueue() string {
+	if x != nil {
+		return x.Queue
+	}
+	return ""
+}
+
+func (x *Stat) GetActive() int64 {
+	if x != nil {
+		return x.Active
+	}
+	return 0
+}
+
+func (x *Stat) GetDelayed() int64 {
+	if x != nil {
+		return x.Delayed
+	}
+	return 0
+}
+
+func (x *Stat) GetReserved() int64 {
+	if x != nil {
+		return x.Reserved
+	}
+	return 0
+}
+
 var File_jobs_proto protoreflect.FileDescriptor
 
 var file_jobs_proto_rawDesc = []byte{
@@ -488,8 +623,21 @@ var file_jobs_proto_rawDesc = []byte{
 	0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x22, 0x23, 0x0a,
 	0x0b, 0x48, 0x65, 0x61, 0x64, 0x65, 0x72, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x14, 0x0a, 0x05,
 	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c,
-	0x75, 0x65, 0x42, 0x0f, 0x5a, 0x0d, 0x2e, 0x2f, 0x3b, 0x6a, 0x6f, 0x62, 0x73, 0x76, 0x31, 0x62,
-	0x65, 0x74, 0x61, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x75, 0x65, 0x22, 0x30, 0x0a, 0x05, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x27, 0x0a, 0x05, 0x53,
+	0x74, 0x61, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x6a, 0x6f, 0x62,
+	0x73, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x52, 0x05, 0x53,
+	0x74, 0x61, 0x74, 0x73, 0x22, 0x9e, 0x01, 0x0a, 0x04, 0x53, 0x74, 0x61, 0x74, 0x12, 0x1a, 0x0a,
+	0x08, 0x70, 0x69, 0x70, 0x65, 0x6c, 0x69, 0x6e, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x70, 0x69, 0x70, 0x65, 0x6c, 0x69, 0x6e, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x64, 0x72, 0x69,
+	0x76, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x64, 0x72, 0x69, 0x76, 0x65,
+	0x72, 0x12, 0x14, 0x0a, 0x05, 0x71, 0x75, 0x65, 0x75, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x71, 0x75, 0x65, 0x75, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x76,
+	0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x12,
+	0x18, 0x0a, 0x07, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x65, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x07, 0x64, 0x65, 0x6c, 0x61, 0x79, 0x65, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x72, 0x65, 0x73,
+	0x65, 0x72, 0x76, 0x65, 0x64, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x72, 0x65, 0x73,
+	0x65, 0x72, 0x76, 0x65, 0x64, 0x42, 0x0f, 0x5a, 0x0d, 0x2e, 0x2f, 0x3b, 0x6a, 0x6f, 0x62, 0x73,
+	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -504,7 +652,7 @@ func file_jobs_proto_rawDescGZIP() []byte {
 	return file_jobs_proto_rawDescData
 }
 
-var file_jobs_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_jobs_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_jobs_proto_goTypes = []interface{}{
 	(*PushRequest)(nil),      // 0: jobs.v1beta.PushRequest
 	(*PushBatchRequest)(nil), // 1: jobs.v1beta.PushBatchRequest
@@ -514,21 +662,24 @@ var file_jobs_proto_goTypes = []interface{}{
 	(*Job)(nil),              // 5: jobs.v1beta.Job
 	(*Options)(nil),          // 6: jobs.v1beta.Options
 	(*HeaderValue)(nil),      // 7: jobs.v1beta.HeaderValue
-	nil,                      // 8: jobs.v1beta.DeclareRequest.PipelineEntry
-	nil,                      // 9: jobs.v1beta.Job.HeadersEntry
+	(*Stats)(nil),            // 8: jobs.v1beta.Stats
+	(*Stat)(nil),             // 9: jobs.v1beta.Stat
+	nil,                      // 10: jobs.v1beta.DeclareRequest.PipelineEntry
+	nil,                      // 11: jobs.v1beta.Job.HeadersEntry
 }
 var file_jobs_proto_depIdxs = []int32{
-	5, // 0: jobs.v1beta.PushRequest.job:type_name -> jobs.v1beta.Job
-	5, // 1: jobs.v1beta.PushBatchRequest.jobs:type_name -> jobs.v1beta.Job
-	8, // 2: jobs.v1beta.DeclareRequest.pipeline:type_name -> jobs.v1beta.DeclareRequest.PipelineEntry
-	9, // 3: jobs.v1beta.Job.headers:type_name -> jobs.v1beta.Job.HeadersEntry
-	6, // 4: jobs.v1beta.Job.options:type_name -> jobs.v1beta.Options
-	7, // 5: jobs.v1beta.Job.HeadersEntry.value:type_name -> jobs.v1beta.HeaderValue
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	5,  // 0: jobs.v1beta.PushRequest.job:type_name -> jobs.v1beta.Job
+	5,  // 1: jobs.v1beta.PushBatchRequest.jobs:type_name -> jobs.v1beta.Job
+	10, // 2: jobs.v1beta.DeclareRequest.pipeline:type_name -> jobs.v1beta.DeclareRequest.PipelineEntry
+	11, // 3: jobs.v1beta.Job.headers:type_name -> jobs.v1beta.Job.HeadersEntry
+	6,  // 4: jobs.v1beta.Job.options:type_name -> jobs.v1beta.Options
+	9,  // 5: jobs.v1beta.Stats.Stats:type_name -> jobs.v1beta.Stat
+	7,  // 6: jobs.v1beta.Job.HeadersEntry.value:type_name -> jobs.v1beta.HeaderValue
+	7,  // [7:7] is the sub-list for method output_type
+	7,  // [7:7] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_jobs_proto_init() }
@@ -633,6 +784,30 @@ func file_jobs_proto_init() {
 				return nil
 			}
 		}
+		file_jobs_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Stats); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_jobs_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Stat); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -640,7 +815,7 @@ func file_jobs_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_jobs_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

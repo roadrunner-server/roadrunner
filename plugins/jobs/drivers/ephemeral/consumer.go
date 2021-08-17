@@ -2,7 +2,6 @@ package ephemeral
 
 import (
 	"context"
-	"sync"
 	"sync/atomic"
 	"time"
 
@@ -14,6 +13,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/jobs/job"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/utils"
 )
 
 const (
@@ -29,14 +29,18 @@ type JobConsumer struct {
 	cfg           *Config
 	log           logger.Logger
 	eh            events.Handler
-	pipeline      sync.Map
+	pipeline      atomic.Value
 	pq            priorityqueue.Queue
 	localPrefetch chan *Item
 
 	// time.sleep goroutines max number
 	goroutines uint64
 
-	stopCh chan struct{}
+	delayed *int64
+	active  *int64
+
+	listeners uint32
+	stopCh    chan struct{}
 }
 
 func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, eh events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
@@ -47,6 +51,8 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, eh
 		pq:         pq,
 		eh:         eh,
 		goroutines: 0,
+		active:     utils.Int64(0),
+		delayed:    utils.Int64(0),
 		stopCh:     make(chan struct{}, 1),
 	}
 
@@ -62,9 +68,6 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, eh
 	// initialize a local queue
 	jb.localPrefetch = make(chan *Item, jb.cfg.Prefetch)
 
-	// consume from the queue
-	go jb.consume()
-
 	return jb, nil
 }
 
@@ -74,14 +77,13 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, eh events.Hand
 		pq:         pq,
 		eh:         eh,
 		goroutines: 0,
+		active:     utils.Int64(0),
+		delayed:    utils.Int64(0),
 		stopCh:     make(chan struct{}, 1),
 	}
 
 	// initialize a local queue
 	jb.localPrefetch = make(chan *Item, pipeline.Int(prefetch, 100_000))
-
-	// consume from the queue
-	go jb.consume()
 
 	return jb, nil
 }
@@ -90,13 +92,9 @@ func (j *JobConsumer) Push(ctx context.Context, jb *job.Job) error {
 	const op = errors.Op("ephemeral_push")
 
 	// check if the pipeline registered
-	b, ok := j.pipeline.Load(jb.Options.Pipeline)
+	_, ok := j.pipeline.Load().(*pipeline.Pipeline)
 	if !ok {
 		return errors.E(op, errors.Errorf("no such pipeline: %s", jb.Options.Pipeline))
-	}
-
-	if !b.(bool) {
-		return errors.E(op, errors.Errorf("pipeline disabled: %s", jb.Options.Pipeline))
 	}
 
 	err := j.handleItem(ctx, fromJob(jb))
@@ -107,53 +105,69 @@ func (j *JobConsumer) Push(ctx context.Context, jb *job.Job) error {
 	return nil
 }
 
-func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
-	return nil, nil
+func (j *JobConsumer) State(_ context.Context) (*jobState.State, error) {
+	pipe := j.pipeline.Load().(*pipeline.Pipeline)
+	return &jobState.State{
+		Pipeline: pipe.Name(),
+		Driver:   pipe.Driver(),
+		Queue:    pipe.Name(),
+		Active:   atomic.LoadInt64(j.active),
+		Delayed:  atomic.LoadInt64(j.delayed),
+	}, nil
 }
 
 func (j *JobConsumer) Register(_ context.Context, pipeline *pipeline.Pipeline) error {
-	const op = errors.Op("ephemeral_register")
-	if _, ok := j.pipeline.Load(pipeline.Name()); ok {
-		return errors.E(op, errors.Errorf("queue %s has already been registered", pipeline))
-	}
-
-	j.pipeline.Store(pipeline.Name(), true)
-
+	j.pipeline.Store(pipeline)
 	return nil
 }
 
-func (j *JobConsumer) Pause(_ context.Context, pipeline string) {
-	if q, ok := j.pipeline.Load(pipeline); ok {
-		if q == true {
-			// mark pipeline as turned off
-			j.pipeline.Store(pipeline, false)
-		}
-		// if not true - do not send the EventPipeStopped, because pipe already stopped
+func (j *JobConsumer) Pause(_ context.Context, p string) {
+	pipe := j.pipeline.Load().(*pipeline.Pipeline)
+	if pipe.Name() != p {
+		j.log.Error("no such pipeline", "requested pause on: ", p)
+	}
+
+	l := atomic.LoadUint32(&j.listeners)
+	// no active listeners
+	if l == 0 {
+		j.log.Warn("no active listeners, nothing to pause")
 		return
 	}
 
+	atomic.AddUint32(&j.listeners, ^uint32(0))
+
+	// stop the consumer
+	j.stopCh <- struct{}{}
+
 	j.eh.Push(events.JobEvent{
 		Event:    events.EventPipePaused,
-		Pipeline: pipeline,
+		Driver:   pipe.Driver(),
+		Pipeline: pipe.Name(),
 		Start:    time.Now(),
 		Elapsed:  0,
 	})
 }
 
-func (j *JobConsumer) Resume(_ context.Context, pipeline string) {
-	if q, ok := j.pipeline.Load(pipeline); ok {
-		if q == false {
-			// mark pipeline as turned on
-			j.pipeline.Store(pipeline, true)
-		}
+func (j *JobConsumer) Resume(_ context.Context, p string) {
+	pipe := j.pipeline.Load().(*pipeline.Pipeline)
+	if pipe.Name() != p {
+		j.log.Error("no such pipeline", "requested resume on: ", p)
+	}
 
-		// if not true - do not send the EventPipeActive, because pipe already active
+	l := atomic.LoadUint32(&j.listeners)
+	// listener already active
+	if l == 1 {
+		j.log.Warn("listener already in the active state")
 		return
 	}
 
+	// resume the consumer on the same channel
+	j.consume()
+
+	atomic.StoreUint32(&j.listeners, 1)
 	j.eh.Push(events.JobEvent{
 		Event:    events.EventPipeActive,
-		Pipeline: pipeline,
+		Pipeline: pipe.Name(),
 		Start:    time.Now(),
 		Elapsed:  0,
 	})
@@ -172,22 +186,19 @@ func (j *JobConsumer) Run(_ context.Context, pipe *pipeline.Pipeline) error {
 
 func (j *JobConsumer) Stop(ctx context.Context) error {
 	const op = errors.Op("ephemeral_plugin_stop")
-	var pipe string
-	j.pipeline.Range(func(key, _ interface{}) bool {
-		pipe = key.(string)
-		j.pipeline.Delete(key)
-		return true
-	})
+
+	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 
 	select {
 	// return from the consumer
 	case j.stopCh <- struct{}{}:
 		j.eh.Push(events.JobEvent{
 			Event:    events.EventPipeStopped,
-			Pipeline: pipe,
+			Pipeline: pipe.Name(),
 			Start:    time.Now(),
 			Elapsed:  0,
 		})
+
 		return nil
 
 	case <-ctx.Done():
@@ -208,6 +219,8 @@ func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
 
 		go func(jj *Item) {
 			atomic.AddUint64(&j.goroutines, 1)
+			atomic.AddInt64(j.delayed, 1)
+
 			time.Sleep(jj.Options.DelayDuration())
 
 			// send the item after timeout expired
@@ -219,6 +232,9 @@ func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
 		return nil
 	}
 
+	// increase number of the active jobs
+	atomic.AddInt64(j.active, 1)
+
 	// insert to the local, limited pipeline
 	select {
 	case j.localPrefetch <- msg:
@@ -229,21 +245,25 @@ func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
 }
 
 func (j *JobConsumer) consume() {
-	// redirect
-	for {
-		select {
-		case item, ok := <-j.localPrefetch:
-			if !ok {
-				j.log.Warn("ephemeral local prefetch queue was closed")
+	go func() {
+		// redirect
+		for {
+			select {
+			case item, ok := <-j.localPrefetch:
+				if !ok {
+					j.log.Warn("ephemeral local prefetch queue was closed")
+					return
+				}
+
+				// set requeue channel
+				item.Options.requeueFn = j.handleItem
+				item.Options.active = j.active
+				item.Options.delayed = j.delayed
+
+				j.pq.Insert(item)
+			case <-j.stopCh:
 				return
 			}
-
-			// set requeue channel
-			item.Options.requeueFn = j.handleItem
-
-			j.pq.Insert(item)
-		case <-j.stopCh:
-			return
 		}
-	}
+	}()
 }

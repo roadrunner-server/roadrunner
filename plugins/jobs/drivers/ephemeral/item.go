@@ -2,6 +2,7 @@ package ephemeral
 
 import (
 	"context"
+	"sync/atomic"
 	"time"
 
 	json "github.com/json-iterator/go"
@@ -40,6 +41,8 @@ type Options struct {
 
 	// private
 	requeueFn func(context.Context, *Item) error
+	active    *int64
+	delayed   *int64
 }
 
 // DelayDuration returns delay duration in a form of time.Duration.
@@ -79,12 +82,12 @@ func (i *Item) Context() ([]byte, error) {
 }
 
 func (i *Item) Ack() error {
-	// noop for the in-memory
+	i.atomicallyReduceCount()
 	return nil
 }
 
 func (i *Item) Nack() error {
-	// noop for the in-memory
+	i.atomicallyReduceCount()
 	return nil
 }
 
@@ -93,12 +96,27 @@ func (i *Item) Requeue(headers map[string][]string, delay int64) error {
 	i.Options.Delay = delay
 	i.Headers = headers
 
+	i.atomicallyReduceCount()
+
 	err := i.Options.requeueFn(context.Background(), i)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+// atomicallyReduceCount reduces counter of active or delayed jobs
+func (i *Item) atomicallyReduceCount() {
+	// if job was delayed, reduce number of the delayed jobs
+	if i.Options.Delay > 0 {
+		atomic.AddInt64(i.Options.delayed, ^int64(0))
+		return
+	}
+
+	// otherwise, reduce number of the active jobs
+	atomic.AddInt64(i.Options.active, ^int64(0))
+	// noop for the in-memory
 }
 
 func fromJob(job *job.Job) *Item {
