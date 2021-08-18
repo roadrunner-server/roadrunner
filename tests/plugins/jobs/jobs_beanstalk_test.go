@@ -415,9 +415,9 @@ func TestBeanstalkStats(t *testing.T) {
 	time.Sleep(time.Second * 2)
 	t.Run("PausePipeline", pausePipelines("test-3"))
 	time.Sleep(time.Second * 3)
-	t.Run("PushPipelineDelayed", pushToPipeDelayed("test-3", 6))
+	t.Run("PushPipelineDelayed", pushToPipeDelayed("test-3", 10))
 	t.Run("PushPipeline", pushToPipe("test-3"))
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 5)
 
 	out := &jobState.State{}
 	t.Run("Stats", stats(out))
@@ -432,7 +432,7 @@ func TestBeanstalkStats(t *testing.T) {
 
 	time.Sleep(time.Second)
 	t.Run("ResumePipeline", resumePipes("test-3"))
-	time.Sleep(time.Second * 7)
+	time.Sleep(time.Second * 15)
 
 	out = &jobState.State{}
 	t.Run("Stats", stats(out))
