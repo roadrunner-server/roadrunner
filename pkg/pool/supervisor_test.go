@@ -39,6 +39,8 @@ func TestSupervisedPool_Exec(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
+	time.Sleep(time.Second)
+
 	pidBefore := p.Workers()[0].Pid()
 
 	for i := 0; i < 100; i++ {
@@ -63,7 +65,7 @@ func TestSupervisedPool_ExecWithDebugMode(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/memleak.php", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "../../tests/supervised.php") },
 		pipe.NewPipeFactory(),
 		cfgSupervised,
 	)
@@ -71,8 +73,10 @@ func TestSupervisedPool_ExecWithDebugMode(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
+	time.Sleep(time.Second)
+
 	for i := 0; i < 100; i++ {
-		time.Sleep(time.Millisecond * 100)
+		time.Sleep(time.Millisecond * 500)
 		_, err = p.Exec(&payload.Payload{
 			Context: []byte(""),
 			Body:    []byte("foo"),

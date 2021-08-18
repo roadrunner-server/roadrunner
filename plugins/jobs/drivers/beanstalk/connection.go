@@ -67,7 +67,7 @@ func (cp *ConnPool) Put(_ context.Context, body []byte, pri uint32, delay, ttr t
 		// errN contains both, err and internal checkAndRedial error
 		errN := cp.checkAndRedial(err)
 		if errN != nil {
-			return 0, errN
+			return 0, errors.Errorf("err: %s\nerr redial: %s", err, errN)
 		} else {
 			// retry put only when we redialed
 			return cp.t.Put(body, pri, delay, ttr)
@@ -92,7 +92,7 @@ func (cp *ConnPool) Reserve(reserveTimeout time.Duration) (uint64, []byte, error
 		// errN contains both, err and internal checkAndRedial error
 		errN := cp.checkAndRedial(err)
 		if errN != nil {
-			return 0, nil, errN
+			return 0, nil, errors.Errorf("err: %s\nerr redial: %s", err, errN)
 		} else {
 			// retry Reserve only when we redialed
 			return cp.ts.Reserve(reserveTimeout)
@@ -102,7 +102,7 @@ func (cp *ConnPool) Reserve(reserveTimeout time.Duration) (uint64, []byte, error
 	return id, body, nil
 }
 
-func (cp *ConnPool) Delete(ctx context.Context, id uint64) error {
+func (cp *ConnPool) Delete(_ context.Context, id uint64) error {
 	cp.RLock()
 	defer cp.RUnlock()
 
@@ -111,13 +111,30 @@ func (cp *ConnPool) Delete(ctx context.Context, id uint64) error {
 		// errN contains both, err and internal checkAndRedial error
 		errN := cp.checkAndRedial(err)
 		if errN != nil {
-			return errN
+			return errors.Errorf("err: %s\nerr redial: %s", err, errN)
 		} else {
 			// retry Delete only when we redialed
 			return cp.conn.Delete(id)
 		}
 	}
 	return nil
+}
+
+func (cp *ConnPool) Stats(_ context.Context) (map[string]string, error) {
+	cp.RLock()
+	defer cp.RUnlock()
+
+	stat, err := cp.conn.Stats()
+	if err != nil {
+		errR := cp.checkAndRedial(err)
+		if errR != nil {
+			return nil, errors.Errorf("err: %s\nerr redial: %s", err, errR)
+		} else {
+			return cp.conn.Stats()
+		}
+	}
+
+	return stat, nil
 }
 
 func (cp *ConnPool) redial() error {

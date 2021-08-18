@@ -10,7 +10,6 @@ const PluginName = "gzip"
 
 type Plugin struct{}
 
-// Init needed for the Endure
 func (g *Plugin) Init() error {
 	return nil
 }

@@ -1,7 +1,8 @@
 package informer
 
 import (
-	"github.com/spiral/roadrunner/v2/pkg/process"
+	"github.com/spiral/roadrunner/v2/pkg/state/job"
+	"github.com/spiral/roadrunner/v2/pkg/state/process"
 )
 
 type rpc struct {
@@ -10,7 +11,7 @@ type rpc struct {
 
 // WorkerList contains list of workers.
 type WorkerList struct {
-	// Workers is list of workers.
+	// Workers are list of workers.
 	Workers []*process.State `json:"workers"`
 }
 
@@ -29,13 +30,17 @@ func (rpc *rpc) List(_ bool, list *[]string) error {
 func (rpc *rpc) Workers(service string, list *WorkerList) error {
 	workers := rpc.srv.Workers(service)
 	if workers == nil {
-		list = nil
 		return nil
 	}
 
 	// write actual processes
 	list.Workers = workers
 
+	return nil
+}
+
+func (rpc *rpc) Jobs(service string, out *[]*job.State) error {
+	*out = rpc.srv.Jobs(service)
 	return nil
 }
 

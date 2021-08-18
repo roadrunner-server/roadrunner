@@ -15,7 +15,7 @@ Types are:
 - `NO_ERROR`: contains only `type` and empty `data`.
 - `ERROR` : contains `type`: 1, and `data` field with: `message` describing the error, `requeue` flag to requeue the
   job,
-  `dalay_seconds`: to delay a queue for a provided amount of seconds, `headers` - job's headers represented as hashmap
+  `delay_seconds`: to delay a queue for a provided amount of seconds, `headers` - job's headers represented as hashmap
   with string key and array of strings as a value.
 
 For example:

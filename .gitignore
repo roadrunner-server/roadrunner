@@ -12,7 +12,7 @@
 unit_tests
 unit_tests_copied
 dir1
-coverage
+coverage-ci
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out

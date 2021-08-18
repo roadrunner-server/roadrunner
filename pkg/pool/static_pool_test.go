@@ -227,9 +227,9 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 		AddListeners(listener),
 	)
 	assert.NoError(t, err)
-	defer p.Destroy(ctx)
-
 	assert.NotNil(t, p)
+	defer p.Destroy(ctx)
+	time.Sleep(time.Second)
 
 	res, err := p.Exec(&payload.Payload{Body: []byte("hello")})
 
@@ -290,9 +290,11 @@ func Test_StaticPool_Replace_Worker(t *testing.T) {
 		},
 	)
 	assert.NoError(t, err)
-	defer p.Destroy(ctx)
-
 	assert.NotNil(t, p)
+
+	defer p.Destroy(ctx)
+	// prevent process is not ready
+	time.Sleep(time.Second)
 
 	var lastPID string
 	lastPID = strconv.Itoa(int(p.Workers()[0].Pid()))
@@ -326,10 +328,12 @@ func Test_StaticPool_Debug_Worker(t *testing.T) {
 		},
 	)
 	assert.NoError(t, err)
-	defer p.Destroy(ctx)
-
 	assert.NotNil(t, p)
 
+	defer p.Destroy(ctx)
+
+	// prevent process is not ready
+	time.Sleep(time.Second)
 	assert.Len(t, p.Workers(), 0)
 
 	var lastPID string
@@ -366,9 +370,10 @@ func Test_StaticPool_Stop_Worker(t *testing.T) {
 		},
 	)
 	assert.NoError(t, err)
-	defer p.Destroy(ctx)
-
 	assert.NotNil(t, p)
+
+	defer p.Destroy(ctx)
+	time.Sleep(time.Second)
 
 	var lastPID string
 	lastPID = strconv.Itoa(int(p.Workers()[0].Pid()))
@@ -460,6 +465,7 @@ func Test_Static_Pool_Handle_Dead(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, p)
 
+	time.Sleep(time.Second)
 	for i := range p.Workers() {
 		p.Workers()[i].State().Set(worker.StateErrored)
 	}

@@ -41,11 +41,6 @@ func TestResetterInit(t *testing.T) {
 
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 
-	mockLogger.EXPECT().Debug("started List method").MinTimes(1)
-	mockLogger.EXPECT().Debug("services list", "services", []string{"resetter.plugin1"}).MinTimes(1)
-	mockLogger.EXPECT().Debug("finished List method").MinTimes(1)
-	mockLogger.EXPECT().Debug("started Reset method for the service", "service", "resetter.plugin1").MinTimes(1)
-	mockLogger.EXPECT().Debug("finished Reset method for the service", "service", "resetter.plugin1").MinTimes(1)
 	mockLogger.EXPECT().Warn("listener accept error, connection closed", "error", gomock.Any()).AnyTimes()
 
 	err = cont.RegisterAll(

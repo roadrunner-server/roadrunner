@@ -6,7 +6,7 @@ import (
 
 const (
 	// EventPushOK thrown when new job has been added. JobEvent is passed as context.
-	EventPushOK = iota + 12000
+	EventPushOK J = iota + 12000
 
 	// EventPushError caused when job can not be registered.
 	EventPushError
@@ -58,6 +58,8 @@ func (ev J) String() string {
 		return "EventPipeError"
 	case EventDriverReady:
 		return "EventDriverReady"
+	case EventPipePaused:
+		return "EventPipePaused"
 	}
 	return UnknownEventType
 }
@@ -67,16 +69,12 @@ type JobEvent struct {
 	Event J
 	// String is job id.
 	ID string
-
 	// Pipeline name
 	Pipeline string
-
 	// Associated driver name (amqp, ephemeral, etc)
 	Driver string
-
 	// Error for the jobs/pipes errors
 	Error error
-
 	// event timings
 	Start   time.Time
 	Elapsed time.Duration

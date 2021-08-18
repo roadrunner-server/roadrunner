@@ -56,6 +56,12 @@ func TestDurabilityAMQP(t *testing.T) {
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-1", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
+	mockLogger.EXPECT().Info("job pushed to the queue", "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("job processing started", "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("job processed without errors", "ID", gomock.Any(), "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Error("job push error, job might be lost", "error", gomock.Any(), "pipeline", "test-1", "ID", gomock.Any(), "driver", "amqp", "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Error("job push error, job might be lost", "error", gomock.Any(), "pipeline", "test-2", "ID", gomock.Any(), "driver", "amqp", "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
+
 	mockLogger.EXPECT().Info("delivery channel closed, leaving the rabbit listener").Times(4)
 
 	// redial errors
@@ -176,13 +182,16 @@ func TestDurabilitySQS(t *testing.T) {
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-1", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
-	mockLogger.EXPECT().Info("------> job poller stopped <------").AnyTimes()
-	mockLogger.EXPECT().Warn("sqs listener stopped").MinTimes(2)
-
+	mockLogger.EXPECT().Info("job pushed to the queue", "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("job processing started", "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("job processed without errors", "ID", gomock.Any(), "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
 	// redial errors
 	mockLogger.EXPECT().Error("pipeline error", "pipeline", "test-1", "error", gomock.Any(), "start", gomock.Any(), "elapsed", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Error("pipeline error", "pipeline", "test-2", "error", gomock.Any(), "start", gomock.Any(), "elapsed", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Info("queues and subscribers redeclared successfully").AnyTimes()
+
+	// stop
+	mockLogger.EXPECT().Warn("sqs listener stopped").AnyTimes()
+	mockLogger.EXPECT().Info("------> job poller stopped <------").AnyTimes()
 
 	err = cont.RegisterAll(
 		cfg,
@@ -246,8 +255,9 @@ func TestDurabilitySQS(t *testing.T) {
 	time.Sleep(time.Second * 3)
 
 	go func() {
-		time.Sleep(time.Second * 2)
+		time.Sleep(time.Second)
 		t.Run("PushPipelineWhileRedialing-1", pushToPipe("test-1"))
+		time.Sleep(time.Second)
 		t.Run("PushPipelineWhileRedialing-2", pushToPipe("test-2"))
 	}()
 
@@ -291,9 +301,12 @@ func TestDurabilityBeanstalk(t *testing.T) {
 
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 
+	mockLogger.EXPECT().Info("job pushed to the queue", "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-1", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
+	mockLogger.EXPECT().Info("job processing started", "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
+	mockLogger.EXPECT().Info("job processed without errors", "ID", gomock.Any(), "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
 	// redial errors
 	mockLogger.EXPECT().Info("beanstalk redial was successful").MinTimes(2)
 	mockLogger.EXPECT().Error("pipeline error", "pipeline", "test-1", "error", gomock.Any(), "start", gomock.Any(), "elapsed", gomock.Any()).AnyTimes()

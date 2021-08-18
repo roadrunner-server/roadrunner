@@ -20,12 +20,12 @@ type Plugin struct {
 	log      logger.Logger
 	watcher  *Watcher
 	services map[string]interface{}
-	res      resetter.Resetter
+	res      *resetter.Plugin
 	stopc    chan struct{}
 }
 
 // Init controller service
-func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, res resetter.Resetter) error {
+func (s *Plugin) Init(cfg config.Configurer, log logger.Logger, res *resetter.Plugin) error {
 	const op = errors.Op("reload_plugin_init")
 	if !cfg.Has(PluginName) {
 		return errors.E(op, errors.Disabled)
@@ -86,9 +86,9 @@ func (s *Plugin) Serve() chan error {
 	}
 
 	// make a map with unique services
-	// so, if we would have a 100 events from http service
-	// in map we would see only 1 key and it's config
-	treshholdc := make(chan struct {
+	// so, if we would have 100 events from http service
+	// in map we would see only 1 key, and it's config
+	thCh := make(chan struct {
 		serviceConfig ServiceConfig
 		service       string
 	}, thresholdChanBuffer)
@@ -98,7 +98,7 @@ func (s *Plugin) Serve() chan error {
 
 	go func() {
 		for e := range s.watcher.Event {
-			treshholdc <- struct {
+			thCh <- struct {
 				serviceConfig ServiceConfig
 				service       string
 			}{serviceConfig: s.cfg.Services[e.service], service: e.service}
@@ -111,7 +111,7 @@ func (s *Plugin) Serve() chan error {
 	go func() {
 		for {
 			select {
-			case cfg := <-treshholdc:
+			case cfg := <-thCh:
 				// logic is following:
 				// restart
 				timer.Stop()
@@ -124,7 +124,7 @@ func (s *Plugin) Serve() chan error {
 			case <-timer.C:
 				if len(updated) > 0 {
 					for name := range updated {
-						err := s.res.ResetByName(name)
+						err := s.res.Reset(name)
 						if err != nil {
 							timer.Stop()
 							errCh <- errors.E(op, err)
