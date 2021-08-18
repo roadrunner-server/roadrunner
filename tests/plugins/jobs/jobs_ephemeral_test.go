@@ -493,7 +493,7 @@ func TestEphemeralStats(t *testing.T) {
 
 	time.Sleep(time.Second)
 	out := &jobState.State{}
-	stats(t, out)
+	t.Run("Stats", stats(out))
 
 	assert.Equal(t, out.Pipeline, "test-3")
 	assert.Equal(t, out.Driver, "ephemeral")
@@ -508,7 +508,7 @@ func TestEphemeralStats(t *testing.T) {
 	time.Sleep(time.Second * 7)
 
 	out = &jobState.State{}
-	stats(t, out)
+	t.Run("Stats", stats(out))
 
 	assert.Equal(t, out.Pipeline, "test-3")
 	assert.Equal(t, out.Driver, "ephemeral")

@@ -428,7 +428,8 @@ func TestAMQPStats(t *testing.T) {
 	t.Run("PushPipelineDelayed", pushToPipeDelayed("test-3", 5))
 
 	out := &jobState.State{}
-	stats(t, out)
+	t.Run("Stats", stats(out))
+
 	assert.Equal(t, out.Pipeline, "test-3")
 	assert.Equal(t, out.Driver, "amqp")
 	assert.Equal(t, out.Queue, "default")
@@ -442,7 +443,7 @@ func TestAMQPStats(t *testing.T) {
 	time.Sleep(time.Second * 7)
 
 	out = &jobState.State{}
-	stats(t, out)
+	t.Run("Stats", stats(out))
 
 	assert.Equal(t, out.Pipeline, "test-3")
 	assert.Equal(t, out.Driver, "amqp")

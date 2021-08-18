@@ -210,22 +210,24 @@ func deleteProxy(name string, t *testing.T) {
 	}
 }
 
-func stats(t *testing.T, state *jobState.State) {
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
-	assert.NoError(t, err)
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+func stats(state *jobState.State) func(t *testing.T) {
+	return func(t *testing.T) {
+		conn, err := net.Dial("tcp", "127.0.0.1:6001")
+		assert.NoError(t, err)
+		client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
-	st := &jobsv1beta.Stats{}
-	er := &jobsv1beta.Empty{}
+		st := &jobsv1beta.Stats{}
+		er := &jobsv1beta.Empty{}
 
-	err = client.Call(stat, er, st)
-	require.NoError(t, err)
-	require.NotNil(t, st)
+		err = client.Call(stat, er, st)
+		require.NoError(t, err)
+		require.NotNil(t, st)
 
-	state.Queue = st.Stats[0].Queue
-	state.Pipeline = st.Stats[0].Pipeline
-	state.Driver = st.Stats[0].Driver
-	state.Active = st.Stats[0].Active
-	state.Delayed = st.Stats[0].Delayed
-	state.Reserved = st.Stats[0].Reserved
+		state.Queue = st.Stats[0].Queue
+		state.Pipeline = st.Stats[0].Pipeline
+		state.Driver = st.Stats[0].Driver
+		state.Active = st.Stats[0].Active
+		state.Delayed = st.Stats[0].Delayed
+		state.Reserved = st.Stats[0].Reserved
+	}
 }

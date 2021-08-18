@@ -408,22 +408,22 @@ func TestBeanstalkStats(t *testing.T) {
 	time.Sleep(time.Second * 2)
 
 	out := &jobState.State{}
-	stats(t, out)
+	t.Run("Stats", stats(out))
 
 	assert.Equal(t, out.Pipeline, "test-3")
 	assert.Equal(t, out.Driver, "beanstalk")
 	assert.Equal(t, out.Queue, "default")
 
-	assert.Equal(t, int64(0), out.Active)
+	assert.Equal(t, int64(1), out.Active)
 	assert.Equal(t, int64(1), out.Delayed)
-	assert.Equal(t, int64(1), out.Reserved)
+	assert.Equal(t, int64(0), out.Reserved)
 
 	time.Sleep(time.Second)
 	t.Run("ResumePipeline", resumePipes("test-3"))
 	time.Sleep(time.Second * 7)
 
 	out = &jobState.State{}
-	stats(t, out)
+	t.Run("Stats", stats(out))
 
 	assert.Equal(t, out.Pipeline, "test-3")
 	assert.Equal(t, out.Driver, "beanstalk")
@@ -436,7 +436,7 @@ func TestBeanstalkStats(t *testing.T) {
 	time.Sleep(time.Second)
 	t.Run("DestroyPipeline", destroyPipelines("test-3"))
 
-	time.Sleep(time.Second * 5)
+	time.Sleep(time.Second)
 	stopCh <- struct{}{}
 	wg.Wait()
 }

@@ -240,14 +240,13 @@ func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
 	// set stat, skip errors (replace with 0)
 	// https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L523
 	if v, err := strconv.Atoi(stat["current-jobs-ready"]); err == nil {
-		// this is not an error, ready in terms of beanstalk means reserved in the tube
-		out.Reserved = int64(v)
+		out.Active = int64(v)
 	}
 
 	// https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L525
 	if v, err := strconv.Atoi(stat["current-jobs-reserved"]); err == nil {
 		// this is not an error, reserved in beanstalk behaves like an active jobs
-		out.Active = int64(v)
+		out.Reserved = int64(v)
 	}
 
 	// https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L528
