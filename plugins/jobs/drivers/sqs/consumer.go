@@ -285,6 +285,7 @@ func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
 		Pipeline: pipe.Name(),
 		Driver:   pipe.Driver(),
 		Queue:    *j.queueURL,
+		Ready:    ready(atomic.LoadUint32(&j.listeners)),
 	}
 
 	nom, err := strconv.Atoi(attr.Attributes[string(types.QueueAttributeNameApproximateNumberOfMessages)])
@@ -417,4 +418,8 @@ func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
 	}
 
 	return nil
+}
+
+func ready(r uint32) bool {
+	return r > 0
 }

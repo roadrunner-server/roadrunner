@@ -14,4 +14,6 @@ type State struct {
 	Delayed int64
 	// Reserved jobs which are in the driver but not consumed yet
 	Reserved int64
+	// Status - 1 Ready, 0 - Paused
+	Ready bool
 }

@@ -88,7 +88,7 @@ func (b *BST) Remove(uuid string, topic string) {
 	b.removeHelper(uuid, topic, nil)
 }
 
-func (b *BST) removeHelper(uuid string, topic string, parent *BST) { //nolint:gocognit
+func (b *BST) removeHelper(uuid string, topic string, parent *BST) {
 	curr := b
 	for curr != nil {
 		if topic < curr.topic { //nolint:gocritic

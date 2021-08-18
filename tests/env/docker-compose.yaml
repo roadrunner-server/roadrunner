@@ -37,3 +37,8 @@ services:
     ports:
       - "127.0.0.1:15672:15672"
       - "127.0.0.1:5672:5672"
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"

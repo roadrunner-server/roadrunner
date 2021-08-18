@@ -113,6 +113,7 @@ func (j *JobConsumer) State(_ context.Context) (*jobState.State, error) {
 		Queue:    pipe.Name(),
 		Active:   atomic.LoadInt64(j.active),
 		Delayed:  atomic.LoadInt64(j.delayed),
+		Ready:    ready(atomic.LoadUint32(&j.listeners)),
 	}, nil
 }
 
@@ -266,4 +267,8 @@ func (j *JobConsumer) consume() {
 			}
 		}
 	}()
+}
+
+func ready(r uint32) bool {
+	return r > 0
 }

@@ -307,7 +307,8 @@ func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
 			Driver:   pipe.Driver(),
 			Queue:    q.Name,
 			Active:   int64(q.Messages),
-			Delayed:  *j.delayed,
+			Delayed:  atomic.LoadInt64(j.delayed),
+			Ready:    ready(atomic.LoadUint32(&j.listeners)),
 		}, nil
 
 	case <-ctx.Done():
@@ -500,4 +501,8 @@ func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
 	case <-ctx.Done():
 		return errors.E(op, errors.TimeOut, ctx.Err())
 	}
+}
+
+func ready(r uint32) bool {
+	return r > 0
 }

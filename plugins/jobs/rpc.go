@@ -129,6 +129,7 @@ func (r *rpc) Stat(_ *jobsv1beta.Empty, resp *jobsv1beta.Stats) error {
 			Active:   state[i].Active,
 			Delayed:  state[i].Delayed,
 			Reserved: state[i].Reserved,
+			Ready:    state[i].Ready,
 		})
 	}
 

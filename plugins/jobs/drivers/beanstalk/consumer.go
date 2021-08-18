@@ -235,6 +235,7 @@ func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
 		Pipeline: pipe.Name(),
 		Driver:   pipe.Driver(),
 		Queue:    j.tName,
+		Ready:    ready(atomic.LoadUint32(&j.listeners)),
 	}
 
 	// set stat, skip errors (replace with 0)
@@ -352,4 +353,8 @@ func (j *JobConsumer) Resume(_ context.Context, p string) {
 		Pipeline: pipe.Name(),
 		Start:    time.Now(),
 	})
+}
+
+func ready(r uint32) bool {
+	return r > 0
 }
