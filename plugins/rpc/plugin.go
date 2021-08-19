@@ -62,7 +62,7 @@ func (s *Plugin) Serve() chan error {
 
 	s.rpc = rpc.NewServer()
 
-	services := make([]string, 0, len(s.plugins))
+	plugins := make([]string, 0, len(s.plugins))
 
 	// Attach all services
 	for name := range s.plugins {
@@ -72,7 +72,7 @@ func (s *Plugin) Serve() chan error {
 			return errCh
 		}
 
-		services = append(services, name)
+		plugins = append(plugins, name)
 	}
 
 	var err error
@@ -82,7 +82,7 @@ func (s *Plugin) Serve() chan error {
 		return errCh
 	}
 
-	s.log.Debug("Started RPC service", "address", s.cfg.Listen, "services", services)
+	s.log.Debug("Started RPC service", "address", s.cfg.Listen, "plugins", plugins)
 
 	go func() {
 		for {

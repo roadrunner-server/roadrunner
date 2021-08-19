@@ -1,9 +1,7 @@
 status = [
-    'Linux / Build (Go 1.16, PHP 7.4, OS ubuntu-20.04)',
-    'Linux / Build (Go 1.15, PHP 7.4, OS ubuntu-20.04)',
-    'Linux / Build (Go 1.16, PHP 8.0, OS ubuntu-20.04)',
-    'Linux / Build (Go 1.15, PHP 8.0, OS ubuntu-20.04)',
-    'Linux / Golang-CI (lint) ',
+    'Linux / Build (Go 1.17, PHP 7.4, OS ubuntu-20.04)',
+    'Linux / Build (Go 1.17, PHP 8.0, OS ubuntu-20.04)',
+    'Linters / Golang-CI (lint) ',
 ]
 required_approvals = 0
 delete_merged_branches = true

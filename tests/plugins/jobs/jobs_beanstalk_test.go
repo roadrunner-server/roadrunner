@@ -43,7 +43,7 @@ func TestBeanstalkInit(t *testing.T) {
 	// general
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "services", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "plugins", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 
 	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
@@ -132,7 +132,7 @@ func TestBeanstalkDeclare(t *testing.T) {
 	// general
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "services", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "plugins", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 
 	mockLogger.EXPECT().Info("job pushed to the queue", "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
@@ -233,7 +233,7 @@ func TestBeanstalkJobsError(t *testing.T) {
 	// general
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "services", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "plugins", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 
 	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
@@ -336,7 +336,7 @@ func TestBeanstalkStats(t *testing.T) {
 	// general
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "services", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "plugins", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 
 	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(2)
@@ -415,9 +415,9 @@ func TestBeanstalkStats(t *testing.T) {
 	time.Sleep(time.Second * 2)
 	t.Run("PausePipeline", pausePipelines("test-3"))
 	time.Sleep(time.Second * 3)
-	t.Run("PushPipelineDelayed", pushToPipeDelayed("test-3", 10))
+	t.Run("PushPipelineDelayed", pushToPipeDelayed("test-3", 5))
 	t.Run("PushPipeline", pushToPipe("test-3"))
-	time.Sleep(time.Second * 5)
+	time.Sleep(time.Second)
 
 	out := &jobState.State{}
 	t.Run("Stats", stats(out))
@@ -425,6 +425,18 @@ func TestBeanstalkStats(t *testing.T) {
 	assert.Equal(t, out.Pipeline, "test-3")
 	assert.Equal(t, out.Driver, "beanstalk")
 	assert.Equal(t, out.Queue, "default")
+
+	// try 5 times
+	if out.Active == 0 {
+		for i := 0; i < 5; i++ {
+			time.Sleep(time.Second)
+			out = &jobState.State{}
+			t.Run("Stats", stats(out))
+			if out.Active == 1 {
+				break
+			}
+		}
+	}
 
 	assert.Equal(t, int64(1), out.Active)
 	assert.Equal(t, int64(1), out.Delayed)

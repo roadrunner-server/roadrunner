@@ -33,3 +33,4 @@ ignore:
   - "pkg/events/pool_events.go"
   - "pkg/events/worker_events.go"
   - "systemd"
+  - "utils/to_ptr.go"

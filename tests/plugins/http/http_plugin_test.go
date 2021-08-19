@@ -250,56 +250,6 @@ func TestHTTPInformerReset(t *testing.T) {
 	wg.Wait()
 }
 
-func echoHTTP(t *testing.T) {
-	req, err := http.NewRequest("GET", "http://127.0.0.1:10084?hello=world", nil)
-	assert.NoError(t, err)
-
-	r, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err)
-	b, err := ioutil.ReadAll(r.Body)
-	assert.NoError(t, err)
-	assert.Equal(t, 201, r.StatusCode)
-	assert.Equal(t, "WORLD", string(b))
-
-	err = r.Body.Close()
-	assert.NoError(t, err)
-}
-
-func resetTest(t *testing.T) {
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
-	assert.NoError(t, err)
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-	// WorkerList contains list of workers.
-
-	var ret bool
-	err = client.Call("resetter.Reset", "http", &ret)
-	assert.NoError(t, err)
-	assert.True(t, ret)
-	ret = false
-
-	var services []string
-	err = client.Call("resetter.List", nil, &services)
-	assert.NoError(t, err)
-	if services[0] != "http" {
-		t.Fatal("no enough services")
-	}
-}
-
-func informerTest(t *testing.T) {
-	conn, err := net.Dial("tcp", "127.0.0.1:6001")
-	assert.NoError(t, err)
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-	// WorkerList contains list of workers.
-	list := struct {
-		// Workers is list of workers.
-		Workers []process.State `json:"workers"`
-	}{}
-
-	err = client.Call("informer.Workers", "http", &list)
-	assert.NoError(t, err)
-	assert.Len(t, list.Workers, 2)
-}
-
 func TestSSL(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
@@ -2281,6 +2231,158 @@ func TestHTTPIssue659(t *testing.T) {
 	wg.Wait()
 }
 
+func TestHTTPIPv6Long(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-http-ipv6.yaml",
+		Prefix: "rr",
+	}
+
+	controller := gomock.NewController(t)
+	mockLogger := mocks.NewMockLogger(controller)
+	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://[0:0:0:0:0:0:0:1]:6001", "plugins", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Debug("201 GET http://[0:0:0:0:0:0:0:1]:10684/?hello=world", "remote", "::1", "elapsed", gomock.Any()).Times(1)
+
+	err = cont.RegisterAll(
+		cfg,
+		&rpcPlugin.Plugin{},
+		mockLogger,
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	stopCh := make(chan struct{}, 1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second * 1)
+	t.Run("HTTPEchoIPv6-long", echoHTTPIPv6Long)
+
+	stopCh <- struct{}{}
+
+	wg.Wait()
+}
+
+func TestHTTPIPv6Short(t *testing.T) {
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
+	assert.NoError(t, err)
+
+	cfg := &config.Viper{
+		Path:   "configs/.rr-http-ipv6-2.yaml",
+		Prefix: "rr",
+	}
+
+	controller := gomock.NewController(t)
+	mockLogger := mocks.NewMockLogger(controller)
+	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://[::1]:6001", "plugins", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Debug("201 GET http://[::1]:10784/?hello=world", "remote", "::1", "elapsed", gomock.Any()).Times(1)
+
+	err = cont.RegisterAll(
+		cfg,
+		&rpcPlugin.Plugin{},
+		mockLogger,
+		&server.Plugin{},
+		&httpPlugin.Plugin{},
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ch, err := cont.Serve()
+	assert.NoError(t, err)
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	stopCh := make(chan struct{}, 1)
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				// timeout
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	}()
+
+	time.Sleep(time.Second * 1)
+	t.Run("HTTPEchoIPv6-short", echoHTTPIPv6Short)
+
+	stopCh <- struct{}{}
+
+	wg.Wait()
+}
+
 func echoIssue659(t *testing.T) {
 	req, err := http.NewRequest(http.MethodGet, "http://127.0.0.1:32552", nil)
 	assert.NoError(t, err)
@@ -2294,6 +2396,86 @@ func echoIssue659(t *testing.T) {
 
 	err = r.Body.Close()
 	assert.NoError(t, err)
+}
+
+func echoHTTP(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://127.0.0.1:10084?hello=world", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Equal(t, 201, r.StatusCode)
+	assert.Equal(t, "WORLD", string(b))
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
+}
+
+func echoHTTPIPv6Long(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://[0:0:0:0:0:0:0:1]:10684?hello=world", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Equal(t, 201, r.StatusCode)
+	assert.Equal(t, "WORLD", string(b))
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
+}
+
+func echoHTTPIPv6Short(t *testing.T) {
+	req, err := http.NewRequest("GET", "http://[::1]:10784?hello=world", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	b, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	assert.Equal(t, 201, r.StatusCode)
+	assert.Equal(t, "WORLD", string(b))
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
+}
+
+func resetTest(t *testing.T) {
+	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	assert.NoError(t, err)
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+	// WorkerList contains list of workers.
+
+	var ret bool
+	err = client.Call("resetter.Reset", "http", &ret)
+	assert.NoError(t, err)
+	assert.True(t, ret)
+	ret = false
+
+	var services []string
+	err = client.Call("resetter.List", nil, &services)
+	assert.NoError(t, err)
+	if services[0] != "http" {
+		t.Fatal("no enough services")
+	}
+}
+
+func informerTest(t *testing.T) {
+	conn, err := net.Dial("tcp", "127.0.0.1:6001")
+	assert.NoError(t, err)
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+	// WorkerList contains list of workers.
+	list := struct {
+		// Workers is list of workers.
+		Workers []process.State `json:"workers"`
+	}{}
+
+	err = client.Call("informer.Workers", "http", &list)
+	assert.NoError(t, err)
+	assert.Len(t, list.Workers, 2)
 }
 
 // HELPERS
