@@ -426,6 +426,18 @@ func TestBeanstalkStats(t *testing.T) {
 	assert.Equal(t, out.Driver, "beanstalk")
 	assert.Equal(t, out.Queue, "default")
 
+	// try 5 times
+	if out.Active == 0 {
+		for i := 0; i < 5; i++ {
+			time.Sleep(time.Second)
+			out = &jobState.State{}
+			t.Run("Stats", stats(out))
+			if out.Active == 1 {
+				break
+			}
+		}
+	}
+
 	assert.Equal(t, int64(1), out.Active)
 	assert.Equal(t, int64(1), out.Delayed)
 	assert.Equal(t, int64(0), out.Reserved)
