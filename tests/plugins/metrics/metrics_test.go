@@ -28,26 +28,7 @@ import (
 const dialAddr = "127.0.0.1:6001"
 const dialNetwork = "tcp"
 const getAddr = "http://127.0.0.1:2112/metrics"
-
-// get request and return body
-func get() (string, error) {
-	r, err := http.Get(getAddr)
-	if err != nil {
-		return "", err
-	}
-
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return "", err
-	}
-
-	err = r.Body.Close()
-	if err != nil {
-		return "", err
-	}
-	// unsafe
-	return string(b), err
-}
+const getIPV6Addr = "http://[::1]:2112/metrics"
 
 func TestMetricsInit(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
@@ -83,7 +64,7 @@ func TestMetricsInit(t *testing.T) {
 	defer tt.Stop()
 
 	time.Sleep(time.Second * 2)
-	out, err := get()
+	out, err := getIPV6()
 	assert.NoError(t, err)
 
 	assert.Contains(t, out, "go_gc_duration_seconds")
@@ -129,7 +110,7 @@ func TestMetricsIssue571(t *testing.T) {
 
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "services", []string{"metrics"}).MinTimes(1)
+	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "plugins", []string{"metrics"}).MinTimes(1)
 	mockLogger.EXPECT().Debug("200 GET http://127.0.0.1:56444/", "remote", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("declaring new metric", "name", "test", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("metric successfully added", "name", "test", "type", gomock.Any(), "namespace", gomock.Any()).MinTimes(1)
@@ -282,12 +263,12 @@ func TestMetricsGaugeCollector(t *testing.T) {
 	defer tt.Stop()
 
 	time.Sleep(time.Second * 2)
-	out, err := get()
+	out, err := getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, out, "my_gauge 100")
 	assert.Contains(t, out, "my_gauge2 100")
 
-	out, err = get()
+	out, err = getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, out, "go_gc_duration_seconds")
 
@@ -331,7 +312,7 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 
 	mockLogger.EXPECT().Debug("worker destructed", "pid", gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Debug("worker constructed", "pid", gomock.Any()).AnyTimes()
-	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "services", []string{"metrics"}).MinTimes(1)
+	mockLogger.EXPECT().Debug("Started RPC service", "address", "tcp://127.0.0.1:6001", "plugins", []string{"metrics"}).MinTimes(1)
 
 	mockLogger.EXPECT().Info("adding metric", "name", "counter_CounterMetric", "value", gomock.Any(), "labels", []string{"type2", "section2"}).MinTimes(1)
 	mockLogger.EXPECT().Info("adding metric", "name", "histogram_registerHistogram", "value", gomock.Any(), "labels", gomock.Any()).MinTimes(1)
@@ -444,22 +425,22 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 
 	time.Sleep(time.Second * 2)
 	t.Run("DeclareMetric", declareMetricsTest)
-	genericOut, err := get()
+	genericOut, err := getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "test_metrics_named_collector")
 
 	t.Run("AddMetric", addMetricsTest)
-	genericOut, err = get()
+	genericOut, err = getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "test_metrics_named_collector 10000")
 
 	t.Run("SetMetric", setMetric)
-	genericOut, err = get()
+	genericOut, err = getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "user_gauge_collector 100")
 
 	t.Run("VectorMetric", vectorMetric)
-	genericOut, err = get()
+	genericOut, err = getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "gauge_2_collector{section=\"first\",type=\"core\"} 100")
 
@@ -467,18 +448,18 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 	t.Run("SetWithoutLabels", setWithoutLabels)
 	t.Run("SetOnHistogram", setOnHistogram)
 	t.Run("MetricSub", subMetric)
-	genericOut, err = get()
+	genericOut, err = getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "sub_gauge_subMetric 1")
 
 	t.Run("SubVector", subVector)
-	genericOut, err = get()
+	genericOut, err = getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "sub_gauge_subVector{section=\"first\",type=\"core\"} 1")
 
 	t.Run("RegisterHistogram", registerHistogram)
 
-	genericOut, err = get()
+	genericOut, err = getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, `TYPE histogram_registerHistogram`)
 
@@ -491,20 +472,20 @@ func TestMetricsDifferentRPCCalls(t *testing.T) {
 	assert.Contains(t, genericOut, `histogram_registerHistogram_count 0`)
 
 	t.Run("CounterMetric", counterMetric)
-	genericOut, err = get()
+	genericOut, err = getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "HELP default_default_counter_CounterMetric test_counter")
 	assert.Contains(t, genericOut, `default_default_counter_CounterMetric{section="section2",type="type2"}`)
 
 	t.Run("ObserveMetric", observeMetric)
-	genericOut, err = get()
+	genericOut, err = getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "observe_observeMetric")
 
 	t.Run("ObserveMetricNotEnoughLabels", observeMetricNotEnoughLabels)
 
 	t.Run("ConfiguredCounterMetric", configuredCounterMetric)
-	genericOut, err = get()
+	genericOut, err = getIPV6()
 	assert.NoError(t, err)
 	assert.Contains(t, genericOut, "HELP app_metric_counter Custom application counter.")
 	assert.Contains(t, genericOut, `app_metric_counter 100`)
@@ -1067,4 +1048,44 @@ func echoHTTP(t *testing.T) {
 
 	err = r.Body.Close()
 	assert.NoError(t, err)
+}
+
+// get request and return body
+func get() (string, error) {
+	r, err := http.Get(getAddr)
+	if err != nil {
+		return "", err
+	}
+
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return "", err
+	}
+
+	err = r.Body.Close()
+	if err != nil {
+		return "", err
+	}
+	// unsafe
+	return string(b), err
+}
+
+// get request and return body
+func getIPV6() (string, error) {
+	r, err := http.Get(getIPV6Addr)
+	if err != nil {
+		return "", err
+	}
+
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return "", err
+	}
+
+	err = r.Body.Close()
+	if err != nil {
+		return "", err
+	}
+	// unsafe
+	return string(b), err
 }

@@ -1,7 +1,6 @@
 package rpc
 
 import (
-	"runtime"
 	"testing"
 
 	"github.com/spiral/roadrunner/v2/plugins/rpc"
@@ -22,11 +21,41 @@ func TestConfig_Listener(t *testing.T) {
 	}()
 
 	assert.Equal(t, "tcp", ln.Addr().Network())
-	if runtime.GOOS == "windows" {
-		assert.Equal(t, "[::]:18001", ln.Addr().String())
-	} else {
-		assert.Equal(t, "0.0.0.0:18001", ln.Addr().String())
-	}
+	assert.Equal(t, "0.0.0.0:18001", ln.Addr().String())
+}
+
+func TestConfig_Listener2(t *testing.T) {
+	cfg := &rpc.Config{Listen: ":18001"}
+
+	ln, err := cfg.Listener()
+	assert.NoError(t, err)
+	assert.NotNil(t, ln)
+	defer func() {
+		err := ln.Close()
+		if err != nil {
+			t.Errorf("error closing the listener: error %v", err)
+		}
+	}()
+
+	assert.Equal(t, "tcp", ln.Addr().Network())
+	assert.Equal(t, "0.0.0.0:18001", ln.Addr().String())
+}
+
+func TestConfig_ListenerIPV6(t *testing.T) {
+	cfg := &rpc.Config{Listen: "tcp://[::]:18001"}
+
+	ln, err := cfg.Listener()
+	assert.NoError(t, err)
+	assert.NotNil(t, ln)
+	defer func() {
+		err := ln.Close()
+		if err != nil {
+			t.Errorf("error closing the listener: error %v", err)
+		}
+	}()
+
+	assert.Equal(t, "tcp", ln.Addr().Network())
+	assert.Equal(t, "[::]:18001", ln.Addr().String())
 }
 
 func TestConfig_ListenerUnix(t *testing.T) {
