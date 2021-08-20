@@ -160,30 +160,16 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg cfgPlugin.Conf
 
 	globalCfg.InitDefault()
 
-	res := make(map[string]interface{})
-	pipe.Map(attributes, res)
-
 	attr := make(map[string]string)
-	// accept only string values
-	for i := range res {
-		if v, ok := res[i].(string); ok {
-			attr[i] = v
-		}
+	err = pipe.Map(attributes, attr)
+	if err != nil {
+		return nil, errors.E(op, err)
 	}
-
-	// delete all values with map.clear to reuse for the tags
-	for k := range res {
-		delete(res, k)
-	}
-
-	pipe.Map(tags, res)
 
 	tg := make(map[string]string)
-	// accept only string values
-	for i := range res {
-		if v, ok := res[i].(string); ok {
-			attr[i] = v
-		}
+	err = pipe.Map(tags, tg)
+	if err != nil {
+		return nil, errors.E(op, err)
 	}
 
 	// initialize job consumer

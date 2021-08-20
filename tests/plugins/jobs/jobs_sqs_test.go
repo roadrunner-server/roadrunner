@@ -494,6 +494,7 @@ func declareSQSPipe(t *testing.T) {
 		"priority":           "3",
 		"visibility_timeout": "0",
 		"wait_time_seconds":  "3",
+		"tags":               `{"key":"value"}`,
 	}}
 
 	er := &jobsv1beta.Empty{}
