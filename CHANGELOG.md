@@ -6,16 +6,16 @@ v2.4.0 (_.08.2021)
 
 ## 💔 Internal BC:
 
-- 🔨 Pool, worker interfaces: payload now passed and returned by pointer.
+- 🔨 Pool, worker interfaces: payload now passed and returned by the pointer.
 
 ## 👀 New:
 
-- ✏️ Long awaited, reworked `Jobs` plugin with pluggable drivers. Now you can allocate/destroy pipelines in the runtime.
+- ✏️ Long-awaited, reworked `Jobs` plugin with pluggable drivers. Now you can allocate/destroy pipelines in the runtime.
   Drivers included in the initial release: `RabbitMQ (0-9-1)`, `SQS v2`, `beanstalk`, `ephemeral`. [PR](https://github.com/spiral/roadrunner/pull/726)
 - Support for the IPv6 (`tcp|http(s)|empty [::]:port`, `tcp|http(s)|empty [::1]:port`, `tcp|http(s)|empty :// [0:0:0:0:0:0:0:1]:port`) for RPC, HTTP and other plugins. [RFC](https://datatracker.ietf.org/doc/html/rfc2732#section-2)
 ## 🩹 Fixes:
 
-- 🐛 Fix: fixed bug with waiting goroutines on the internal worker's container channel.
+- 🐛 Fix: fixed bug with goroutines waiting on the internal worker's container channel.
 
 ## 📈 Summary:
 
