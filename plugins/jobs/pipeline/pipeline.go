@@ -1,5 +1,10 @@
 package pipeline
 
+import (
+	json "github.com/json-iterator/go"
+	"github.com/spiral/roadrunner/v2/utils"
+)
+
 // Pipeline defines pipeline options.
 type Pipeline map[string]interface{}
 
@@ -68,14 +73,17 @@ func (p Pipeline) Bool(name string, d bool) bool {
 
 // Map must return nested map value or empty config.
 // Here might be sqs attributes or tags for example
-func (p Pipeline) Map(name string, out map[string]interface{}) {
+func (p Pipeline) Map(name string, out map[string]string) error {
 	if value, ok := p[name]; ok {
-		if m, ok := value.(map[string]interface{}); ok {
-			for k, v := range m {
-				out[k] = v
+		if m, ok := value.(string); ok {
+			err := json.Unmarshal(utils.AsBytes(m), &out)
+			if err != nil {
+				return err
 			}
 		}
 	}
+
+	return nil
 }
 
 // Priority returns default pipeline priority
