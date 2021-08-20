@@ -3,9 +3,9 @@ package amqp
 // pipeline rabbitmq info
 const (
 	exchangeKey   string = "exchange"
-	exchangeType  string = "exchange-type"
+	exchangeType  string = "exchange_type"
 	queue         string = "queue"
-	routingKey    string = "routing-key"
+	routingKey    string = "routing_key"
 	prefetch      string = "prefetch"
 	exclusive     string = "exclusive"
 	priority      string = "priority"

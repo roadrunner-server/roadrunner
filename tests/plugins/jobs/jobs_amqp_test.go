@@ -482,9 +482,9 @@ func declareAMQPPipe(t *testing.T) {
 	pipe := &jobsv1beta.DeclareRequest{Pipeline: map[string]string{
 		"driver":          "amqp",
 		"name":            "test-3",
-		"routing-key":     "test-3",
+		"routing_key":     "test-3",
 		"queue":           "default",
-		"exchange-type":   "direct",
+		"exchange_type":   "direct",
 		"exchange":        "amqp.default",
 		"prefetch":        "100",
 		"priority":        "3",
