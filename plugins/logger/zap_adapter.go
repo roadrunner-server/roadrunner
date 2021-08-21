@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"go.uber.org/zap"
+	core "go.uber.org/zap/zapcore"
 )
 
 type ZapAdapter struct {
@@ -17,13 +18,30 @@ func NewZapAdapter(zapLogger *zap.Logger) *ZapAdapter {
 	}
 }
 
+func separateFields(keyVals []interface{}) (fields []zap.Field, individualKeyVals []interface{}) {
+	for _, value := range keyVals {
+		switch value.(type) {
+		case zap.Field:
+			fields = append(fields, value.(zap.Field))
+		case core.ObjectMarshaler:
+			fields = append(fields, zap.Inline(value.(core.ObjectMarshaler)))
+		default:
+			individualKeyVals = append(individualKeyVals, value)
+		}
+	}
+	return
+}
+
 func (log *ZapAdapter) fields(keyvals []interface{}) []zap.Field {
+	// separate any zap fields from other structs
+	zapFields, keyvals := separateFields(keyvals)
+
 	// we should have even number of keys and values
 	if len(keyvals)%2 != 0 {
 		return []zap.Field{zap.Error(fmt.Errorf("odd number of keyvals pairs: %v", keyvals))}
 	}
 
-	fields := make([]zap.Field, 0, len(keyvals)/2)
+	fields := make([]zap.Field, 0, len(keyvals)/2 + len(zapFields))
 	for i := 0; i < len(keyvals); i += 2 {
 		key, ok := keyvals[i].(string)
 		if !ok {
@@ -31,6 +49,8 @@ func (log *ZapAdapter) fields(keyvals []interface{}) []zap.Field {
 		}
 		fields = append(fields, zap.Any(key, keyvals[i+1]))
 	}
+	// add all the fields
+	fields = append(fields, zapFields...)
 
 	return fields
 }
