@@ -33,11 +33,6 @@ const (
 	HTTPSScheme = "https"
 )
 
-// Middleware interface
-type Middleware interface {
-	Middleware(f http.Handler) http.Handler
-}
-
 type middleware map[string]Middleware
 
 // Plugin manages pool, http servers. The main http plugin structure
@@ -48,7 +43,8 @@ type Plugin struct {
 	server server.Server
 	log    logger.Logger
 	// stdlog passed to the http/https/fcgi servers to log their internal messages
-	stdLog *log.Logger
+	stdLog             *log.Logger
+	callbackLogHandler LogHandler
 
 	// http configuration
 	cfg *httpConfig.HTTP `mapstructure:"http"`
@@ -97,6 +93,8 @@ func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server serv
 
 	p.mdwr = make(map[string]Middleware)
 
+	p.callbackLogHandler = logCallbackHandler
+
 	if !p.cfg.EnableHTTP() && !p.cfg.EnableTLS() && !p.cfg.EnableFCGI() {
 		return errors.E(op, errors.Disabled)
 	}
@@ -117,13 +115,21 @@ func (p *Plugin) Init(cfg config.Configurer, rrLogger logger.Logger, server serv
 	return nil
 }
 
+func logCallbackHandler(ev handler.ResponseEvent, log logger.Logger) {
+	log.Debug(fmt.Sprintf("%d %s %s", ev.Response.Status, ev.Request.Method, ev.Request.URI),
+		"remote", ev.Request.RemoteAddr,
+		"elapsed", ev.Elapsed().String(),
+	)
+}
+
 func (p *Plugin) logCallback(event interface{}) {
 	if ev, ok := event.(handler.ResponseEvent); ok {
-		p.log.Debug(fmt.Sprintf("%d %s %s", ev.Response.Status, ev.Request.Method, ev.Request.URI),
-			"remote", ev.Request.RemoteAddr,
-			"elapsed", ev.Elapsed().String(),
-		)
+		p.callbackLogHandler(ev, p.log)
 	}
+}
+
+func (p *Plugin) SetCallbackHandler(handler LogHandler)  {
+	p.callbackLogHandler = handler
 }
 
 // Serve serves the svc.
