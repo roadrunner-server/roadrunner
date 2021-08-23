@@ -63,6 +63,7 @@ func (se *statsExporter) metricsCallback(event interface{}) {
 
 func (se *statsExporter) Describe(d chan<- *prometheus.Desc) {
 	// send description
+	d <- worker
 	d <- pushErr
 	d <- pushOk
 	d <- jobsErr
