@@ -24,7 +24,7 @@ require (
 	github.com/json-iterator/go v1.1.11
 	github.com/klauspost/compress v1.13.4
 	github.com/prometheus/client_golang v1.11.0
-	github.com/rabbitmq/amqp091-go v0.0.0-20210812094702-b2a427eb7d17
+	github.com/rabbitmq/amqp091-go v0.0.0-20210823000215-c428a6150891
 	github.com/shirou/gopsutil v3.21.7+incompatible
 	github.com/spf13/viper v1.8.1
 	// SPIRAL ====
@@ -40,7 +40,7 @@ require (
 	go.uber.org/zap v1.19.0
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20210820121016-41cdb8703e55
+	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf
 	google.golang.org/protobuf v1.27.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
@@ -55,10 +55,10 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.3.3 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.6.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/cespare/xxhash/v2 v2.1.1 // indirect
+	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/fsnotify/fsnotify v1.5.0 // indirect
+	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-ole/go-ole v1.2.5 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
