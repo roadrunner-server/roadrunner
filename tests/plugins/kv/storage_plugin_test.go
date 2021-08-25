@@ -12,9 +12,9 @@ import (
 
 	endure "github.com/spiral/endure/pkg/container"
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
+	"github.com/spiral/roadrunner/v2/plugins/boltdb"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/kv"
-	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/boltdb"
 	"github.com/spiral/roadrunner/v2/plugins/kv/drivers/memcached"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 	"github.com/spiral/roadrunner/v2/plugins/memory"

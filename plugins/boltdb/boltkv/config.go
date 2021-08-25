@@ -1,4 +1,4 @@
-package boltdb
+package boltkv
 
 type Config struct {
 	// File is boltDB file. No need to create it by your own,

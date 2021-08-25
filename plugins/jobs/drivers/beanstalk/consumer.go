@@ -19,7 +19,7 @@ import (
 	"github.com/spiral/roadrunner/v2/utils"
 )
 
-type JobConsumer struct {
+type consumer struct {
 	log logger.Logger
 	eh  events.Handler
 	pq  priorityqueue.Queue
@@ -43,7 +43,7 @@ type JobConsumer struct {
 	requeueCh chan *Item
 }
 
-func NewBeanstalkConsumer(configKey string, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
+func NewBeanstalkConsumer(configKey string, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*consumer, error) {
 	const op = errors.Op("new_beanstalk_consumer")
 
 	// PARSE CONFIGURATION -------
@@ -86,7 +86,7 @@ func NewBeanstalkConsumer(configKey string, log logger.Logger, cfg config.Config
 	}
 
 	// initialize job consumer
-	jc := &JobConsumer{
+	jc := &consumer{
 		pq:             pq,
 		log:            log,
 		eh:             e,
@@ -108,7 +108,7 @@ func NewBeanstalkConsumer(configKey string, log logger.Logger, cfg config.Config
 	return jc, nil
 }
 
-func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
+func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*consumer, error) {
 	const op = errors.Op("new_beanstalk_consumer")
 
 	// PARSE CONFIGURATION -------
@@ -139,7 +139,7 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg config.Configu
 	}
 
 	// initialize job consumer
-	jc := &JobConsumer{
+	jc := &consumer{
 		pq:             pq,
 		log:            log,
 		eh:             e,
@@ -160,7 +160,7 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg config.Configu
 
 	return jc, nil
 }
-func (j *JobConsumer) Push(ctx context.Context, jb *job.Job) error {
+func (j *consumer) Push(ctx context.Context, jb *job.Job) error {
 	const op = errors.Op("beanstalk_push")
 	// check if the pipeline registered
 
@@ -178,7 +178,7 @@ func (j *JobConsumer) Push(ctx context.Context, jb *job.Job) error {
 	return nil
 }
 
-func (j *JobConsumer) handleItem(ctx context.Context, item *Item) error {
+func (j *consumer) handleItem(ctx context.Context, item *Item) error {
 	const op = errors.Op("beanstalk_handle_item")
 
 	bb := new(bytes.Buffer)
@@ -215,14 +215,14 @@ func (j *JobConsumer) handleItem(ctx context.Context, item *Item) error {
 	return nil
 }
 
-func (j *JobConsumer) Register(_ context.Context, p *pipeline.Pipeline) error {
+func (j *consumer) Register(_ context.Context, p *pipeline.Pipeline) error {
 	// register the pipeline
 	j.pipeline.Store(p)
 	return nil
 }
 
 // State https://github.com/beanstalkd/beanstalkd/blob/master/doc/protocol.txt#L514
-func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
+func (j *consumer) State(ctx context.Context) (*jobState.State, error) {
 	const op = errors.Op("beanstalk_state")
 	stat, err := j.pool.Stats(ctx)
 	if err != nil {
@@ -258,7 +258,7 @@ func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
 	return out, nil
 }
 
-func (j *JobConsumer) Run(_ context.Context, p *pipeline.Pipeline) error {
+func (j *consumer) Run(_ context.Context, p *pipeline.Pipeline) error {
 	const op = errors.Op("beanstalk_run")
 	// check if the pipeline registered
 
@@ -282,7 +282,7 @@ func (j *JobConsumer) Run(_ context.Context, p *pipeline.Pipeline) error {
 	return nil
 }
 
-func (j *JobConsumer) Stop(context.Context) error {
+func (j *consumer) Stop(context.Context) error {
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 
 	if atomic.LoadUint32(&j.listeners) == 1 {
@@ -299,7 +299,7 @@ func (j *JobConsumer) Stop(context.Context) error {
 	return nil
 }
 
-func (j *JobConsumer) Pause(_ context.Context, p string) {
+func (j *consumer) Pause(_ context.Context, p string) {
 	// load atomic value
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
@@ -326,7 +326,7 @@ func (j *JobConsumer) Pause(_ context.Context, p string) {
 	})
 }
 
-func (j *JobConsumer) Resume(_ context.Context, p string) {
+func (j *consumer) Resume(_ context.Context, p string) {
 	// load atomic value
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {

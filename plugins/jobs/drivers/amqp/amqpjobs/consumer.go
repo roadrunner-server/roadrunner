@@ -1,4 +1,4 @@
-package amqp
+package amqpjobs
 
 import (
 	"context"
@@ -20,7 +20,11 @@ import (
 	"github.com/spiral/roadrunner/v2/utils"
 )
 
-type JobConsumer struct {
+const (
+	pluginName string = "amqp"
+)
+
+type consumer struct {
 	sync.Mutex
 	log logger.Logger
 	pq  priorityqueue.Queue
@@ -58,7 +62,7 @@ type JobConsumer struct {
 }
 
 // NewAMQPConsumer initializes rabbitmq pipeline
-func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
+func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*consumer, error) {
 	const op = errors.Op("new_amqp_consumer")
 	// we need to obtain two parts of the amqp information here.
 	// firs part - address to connect, it is located in the global section under the amqp pluginName
@@ -92,7 +96,7 @@ func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer,
 	globalCfg.InitDefault()
 	// PARSE CONFIGURATION END -------
 
-	jb := &JobConsumer{
+	jb := &consumer{
 		log:       log,
 		pq:        pq,
 		eh:        e,
@@ -140,7 +144,7 @@ func NewAMQPConsumer(configKey string, log logger.Logger, cfg config.Configurer,
 	return jb, nil
 }
 
-func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
+func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Configurer, e events.Handler, pq priorityqueue.Queue) (*consumer, error) {
 	const op = errors.Op("new_amqp_consumer_from_pipeline")
 	// we need to obtain two parts of the amqp information here.
 	// firs part - address to connect, it is located in the global section under the amqp pluginName
@@ -163,7 +167,7 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Con
 
 	// PARSE CONFIGURATION -------
 
-	jb := &JobConsumer{
+	jb := &consumer{
 		log:          log,
 		eh:           e,
 		pq:           pq,
@@ -214,7 +218,7 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Con
 	return jb, nil
 }
 
-func (j *JobConsumer) Push(ctx context.Context, job *job.Job) error {
+func (j *consumer) Push(ctx context.Context, job *job.Job) error {
 	const op = errors.Op("rabbitmq_push")
 	// check if the pipeline registered
 
@@ -232,12 +236,12 @@ func (j *JobConsumer) Push(ctx context.Context, job *job.Job) error {
 	return nil
 }
 
-func (j *JobConsumer) Register(_ context.Context, p *pipeline.Pipeline) error {
+func (j *consumer) Register(_ context.Context, p *pipeline.Pipeline) error {
 	j.pipeline.Store(p)
 	return nil
 }
 
-func (j *JobConsumer) Run(_ context.Context, p *pipeline.Pipeline) error {
+func (j *consumer) Run(_ context.Context, p *pipeline.Pipeline) error {
 	const op = errors.Op("rabbit_consume")
 
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
@@ -287,7 +291,7 @@ func (j *JobConsumer) Run(_ context.Context, p *pipeline.Pipeline) error {
 	return nil
 }
 
-func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
+func (j *consumer) State(ctx context.Context) (*jobState.State, error) {
 	const op = errors.Op("amqp_driver_state")
 	select {
 	case pch := <-j.publishChan:
@@ -316,7 +320,7 @@ func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
 	}
 }
 
-func (j *JobConsumer) Pause(_ context.Context, p string) {
+func (j *consumer) Pause(_ context.Context, p string) {
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
 		j.log.Error("no such pipeline", "requested pause on: ", p)
@@ -354,7 +358,7 @@ func (j *JobConsumer) Pause(_ context.Context, p string) {
 	})
 }
 
-func (j *JobConsumer) Resume(_ context.Context, p string) {
+func (j *consumer) Resume(_ context.Context, p string) {
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
 		j.log.Error("no such pipeline", "requested resume on: ", p)
@@ -413,7 +417,7 @@ func (j *JobConsumer) Resume(_ context.Context, p string) {
 	})
 }
 
-func (j *JobConsumer) Stop(context.Context) error {
+func (j *consumer) Stop(context.Context) error {
 	j.stopCh <- struct{}{}
 
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
@@ -427,7 +431,7 @@ func (j *JobConsumer) Stop(context.Context) error {
 }
 
 // handleItem
-func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
+func (j *consumer) handleItem(ctx context.Context, msg *Item) error {
 	const op = errors.Op("rabbitmq_handle_item")
 	select {
 	case pch := <-j.publishChan:

@@ -1,10 +1,10 @@
-package amqp
+package amqpjobs
 
 import (
 	"github.com/spiral/errors"
 )
 
-func (j *JobConsumer) initRabbitMQ() error {
+func (j *consumer) initRabbitMQ() error {
 	const op = errors.Op("jobs_plugin_rmq_init")
 	// Channel opens a unique, concurrent server channel to process the bulk of AMQP
 	// messages.  Any error from methods on this receiver will render the receiver

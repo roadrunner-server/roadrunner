@@ -24,7 +24,7 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
-type JobConsumer struct {
+type consumer struct {
 	sync.Mutex
 	pq       priorityqueue.Queue
 	log      logger.Logger
@@ -56,7 +56,7 @@ type JobConsumer struct {
 	pauseCh chan struct{}
 }
 
-func NewSQSConsumer(configKey string, log logger.Logger, cfg cfgPlugin.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
+func NewSQSConsumer(configKey string, log logger.Logger, cfg cfgPlugin.Configurer, e events.Handler, pq priorityqueue.Queue) (*consumer, error) {
 	const op = errors.Op("new_sqs_consumer")
 
 	// if no such key - error
@@ -88,7 +88,7 @@ func NewSQSConsumer(configKey string, log logger.Logger, cfg cfgPlugin.Configure
 	globalCfg.InitDefault()
 
 	// initialize job consumer
-	jb := &JobConsumer{
+	jb := &consumer{
 		pq:                pq,
 		log:               log,
 		eh:                e,
@@ -142,7 +142,7 @@ func NewSQSConsumer(configKey string, log logger.Logger, cfg cfgPlugin.Configure
 	return jb, nil
 }
 
-func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg cfgPlugin.Configurer, e events.Handler, pq priorityqueue.Queue) (*JobConsumer, error) {
+func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg cfgPlugin.Configurer, e events.Handler, pq priorityqueue.Queue) (*consumer, error) {
 	const op = errors.Op("new_sqs_consumer")
 
 	// if no global section
@@ -173,7 +173,7 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg cfgPlugin.Conf
 	}
 
 	// initialize job consumer
-	jb := &JobConsumer{
+	jb := &consumer{
 		pq:                pq,
 		log:               log,
 		eh:                e,
@@ -227,7 +227,7 @@ func FromPipeline(pipe *pipeline.Pipeline, log logger.Logger, cfg cfgPlugin.Conf
 	return jb, nil
 }
 
-func (j *JobConsumer) Push(ctx context.Context, jb *job.Job) error {
+func (j *consumer) Push(ctx context.Context, jb *job.Job) error {
 	const op = errors.Op("sqs_push")
 	// check if the pipeline registered
 
@@ -250,7 +250,7 @@ func (j *JobConsumer) Push(ctx context.Context, jb *job.Job) error {
 	return nil
 }
 
-func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
+func (j *consumer) State(ctx context.Context) (*jobState.State, error) {
 	const op = errors.Op("sqs_state")
 	attr, err := j.client.GetQueueAttributes(ctx, &sqs.GetQueueAttributesInput{
 		QueueUrl: j.queueURL,
@@ -292,12 +292,12 @@ func (j *JobConsumer) State(ctx context.Context) (*jobState.State, error) {
 	return out, nil
 }
 
-func (j *JobConsumer) Register(_ context.Context, p *pipeline.Pipeline) error {
+func (j *consumer) Register(_ context.Context, p *pipeline.Pipeline) error {
 	j.pipeline.Store(p)
 	return nil
 }
 
-func (j *JobConsumer) Run(_ context.Context, p *pipeline.Pipeline) error {
+func (j *consumer) Run(_ context.Context, p *pipeline.Pipeline) error {
 	const op = errors.Op("sqs_run")
 
 	j.Lock()
@@ -323,7 +323,7 @@ func (j *JobConsumer) Run(_ context.Context, p *pipeline.Pipeline) error {
 	return nil
 }
 
-func (j *JobConsumer) Stop(context.Context) error {
+func (j *consumer) Stop(context.Context) error {
 	j.pauseCh <- struct{}{}
 
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
@@ -336,7 +336,7 @@ func (j *JobConsumer) Stop(context.Context) error {
 	return nil
 }
 
-func (j *JobConsumer) Pause(_ context.Context, p string) {
+func (j *consumer) Pause(_ context.Context, p string) {
 	// load atomic value
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
@@ -364,7 +364,7 @@ func (j *JobConsumer) Pause(_ context.Context, p string) {
 	})
 }
 
-func (j *JobConsumer) Resume(_ context.Context, p string) {
+func (j *consumer) Resume(_ context.Context, p string) {
 	// load atomic value
 	pipe := j.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
@@ -393,7 +393,7 @@ func (j *JobConsumer) Resume(_ context.Context, p string) {
 	})
 }
 
-func (j *JobConsumer) handleItem(ctx context.Context, msg *Item) error {
+func (j *consumer) handleItem(ctx context.Context, msg *Item) error {
 	d, err := msg.pack(j.queueURL)
 	if err != nil {
 		return err

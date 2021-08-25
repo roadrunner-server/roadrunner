@@ -18,7 +18,7 @@ const (
 	NonExistentQueue string = "AWS.SimpleQueueService.NonExistentQueue"
 )
 
-func (j *JobConsumer) listen(ctx context.Context) { //nolint:gocognit
+func (j *consumer) listen(ctx context.Context) { //nolint:gocognit
 	for {
 		select {
 		case <-j.pauseCh:

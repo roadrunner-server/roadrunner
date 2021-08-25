@@ -1,4 +1,4 @@
-package boltdb
+package boltkv
 
 import (
 	"bytes"
@@ -16,6 +16,10 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+const (
+	RootPluginName string = "kv"
+)
+
 type Driver struct {
 	clearMu sync.RWMutex
 	// db instance
@@ -24,7 +28,8 @@ type Driver struct {
 	bucket []byte
 	log    logger.Logger
 	cfg    *Config
-	// gc contains key which are contain timeouts
+
+	// gc contains keys with timeouts
 	gc sync.Map
 	// default timeout for cache cleanup is 1 minute
 	timeout time.Duration
@@ -35,6 +40,10 @@ type Driver struct {
 
 func NewBoltDBDriver(log logger.Logger, key string, cfgPlugin config.Configurer, stop chan struct{}) (*Driver, error) {
 	const op = errors.Op("new_boltdb_driver")
+
+	if !cfgPlugin.Has(RootPluginName) {
+		return nil, errors.E(op, errors.Str("no kv section in the configuration"))
+	}
 
 	d := &Driver{
 		log:  log,
@@ -157,7 +166,7 @@ func (d *Driver) Get(key string) ([]byte, error) {
 			}
 
 			// set the value
-			val = []byte(i)
+			val = utils.AsBytes(i)
 		}
 		return nil
 	})

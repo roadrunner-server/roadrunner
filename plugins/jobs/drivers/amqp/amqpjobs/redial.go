@@ -1,4 +1,4 @@
-package amqp
+package amqpjobs
 
 import (
 	"time"
@@ -11,7 +11,7 @@ import (
 )
 
 // redialer used to redial to the rabbitmq in case of the connection interrupts
-func (j *JobConsumer) redialer() { //nolint:gocognit
+func (j *consumer) redialer() { //nolint:gocognit
 	go func() {
 		const op = errors.Op("rabbitmq_redial")
 

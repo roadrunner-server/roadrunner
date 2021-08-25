@@ -192,7 +192,7 @@ func (i *Item) pack(queue *string) (*sqs.SendMessageInput, error) {
 	}, nil
 }
 
-func (j *JobConsumer) unpack(msg *types.Message) (*Item, error) {
+func (j *consumer) unpack(msg *types.Message) (*Item, error) {
 	const op = errors.Op("sqs_unpack")
 	// reserved
 	if _, ok := msg.Attributes[ApproximateReceiveCount]; !ok {

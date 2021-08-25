@@ -1,4 +1,4 @@
-package amqp
+package amqpjobs
 
 import (
 	"context"
@@ -139,7 +139,7 @@ func (i *Item) Requeue(headers map[string][]string, delay int64) error {
 }
 
 // fromDelivery converts amqp.Delivery into an Item which will be pushed to the PQ
-func (j *JobConsumer) fromDelivery(d amqp.Delivery) (*Item, error) {
+func (j *consumer) fromDelivery(d amqp.Delivery) (*Item, error) {
 	const op = errors.Op("from_delivery_convert")
 	item, err := j.unpack(d)
 	if err != nil {
@@ -194,7 +194,7 @@ func pack(id string, j *Item) (amqp.Table, error) {
 }
 
 // unpack restores jobs.Options
-func (j *JobConsumer) unpack(d amqp.Delivery) (*Item, error) {
+func (j *consumer) unpack(d amqp.Delivery) (*Item, error) {
 	item := &Item{Payload: utils.AsString(d.Body), Options: &Options{
 		multipleAsk: j.multipleAck,
 		requeue:     j.requeueOnFail,

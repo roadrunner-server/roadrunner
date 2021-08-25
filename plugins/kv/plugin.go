@@ -109,6 +109,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 		// config key for the particular sub-driver kv.memcached
 		configKey := fmt.Sprintf("%s.%s", PluginName, k)
 		// at this point we know, that driver field present in the configuration
+		// TODO(rustatian): refactor, made generic, with checks like in the broadcast, websockets or jobs
 		switch v.(map[string]interface{})[driver] {
 		case memcached:
 			if _, ok := p.constructors[memcached]; !ok {
@@ -220,5 +221,4 @@ func (p *Plugin) Name() string {
 }
 
 // Available interface implementation
-func (p *Plugin) Available() {
-}
+func (p *Plugin) Available() {}

@@ -1,4 +1,4 @@
-package amqp
+package amqpjobs
 
 // pipeline rabbitmq info
 const (

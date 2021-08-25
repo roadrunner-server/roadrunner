@@ -4,7 +4,7 @@ import (
 	"github.com/beanstalkd/go-beanstalk"
 )
 
-func (j *JobConsumer) listen() {
+func (j *consumer) listen() {
 	for {
 		select {
 		case <-j.stopCh:
