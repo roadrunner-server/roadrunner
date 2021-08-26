@@ -16,11 +16,6 @@ const PluginName string = "kv"
 const (
 	// driver is the mandatory field which should present in every storage
 	driver string = "driver"
-
-	memcached string = "memcached"
-	boltdb    string = "boltdb"
-	redis     string = "redis"
-	memory    string = "memory"
 )
 
 // Plugin for the unified storage
@@ -52,40 +47,14 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	return nil
 }
 
-func (p *Plugin) Serve() chan error { //nolint:gocognit
+func (p *Plugin) Serve() chan error {
 	errCh := make(chan error, 1)
 	const op = errors.Op("kv_plugin_serve")
 	// key - storage name in the config
 	// value - storage
-	/*
-			For example we can have here 2 storages (but they are not pre-configured)
-			for the boltdb and memcached
-			We should provide here the actual configs for the all requested storages
-				kv:
-				  boltdb-south:
-				    driver: boltdb
-				    dir: "tests/rr-bolt"
-				    file: "rr.db"
-				    bucket: "rr"
-				    permissions: 777
-				    ttl: 40s
+	// For this config we should have 3 constructors: memory, boltdb and memcached but 4 KVs: default, boltdb-south, boltdb-north and memcached
+	// when user requests for example boltdb-south, we should provide that particular preconfigured storage
 
-				  boltdb-north:
-					driver: boltdb
-					dir: "tests/rr-bolt"
-					file: "rr.db"
-					bucket: "rr"
-					permissions: 777
-					ttl: 40s
-
-				  memcached:
-				    driver: memcached
-				    addr: [ "127.0.0.1:11211" ]
-
-
-		For this config we should have 3 constructors: memory, boltdb and memcached but 4 KVs: default, boltdb-south, boltdb-north and memcached
-		when user requests for example boltdb-south, we should provide that particular preconfigured storage
-	*/
 	for k, v := range p.cfg.Data {
 		// for example if the key not properly formatted (yaml)
 		if v == nil {
@@ -109,15 +78,16 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 		// config key for the particular sub-driver kv.memcached
 		configKey := fmt.Sprintf("%s.%s", PluginName, k)
 		// at this point we know, that driver field present in the configuration
-		// TODO(rustatian): refactor, made generic, with checks like in the broadcast, websockets or jobs
-		switch v.(map[string]interface{})[driver] {
-		case memcached:
-			if _, ok := p.constructors[memcached]; !ok {
-				p.log.Warn("no memcached constructors registered", "registered", p.constructors)
+		drName := v.(map[string]interface{})[driver]
+
+		// driver name should be a string
+		if drStr, ok := drName.(string); ok {
+			if _, ok := p.constructors[drStr]; !ok {
+				p.log.Warn("no constructors registered", "requested constructor", drStr, "registered", p.constructors)
 				continue
 			}
 
-			storage, err := p.constructors[memcached].KVConstruct(configKey)
+			storage, err := p.constructors[drStr].KVConstruct(configKey)
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return errCh
@@ -125,71 +95,9 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 
 			// save the storage
 			p.storages[k] = storage
-
-		case boltdb:
-			if _, ok := p.constructors[boltdb]; !ok {
-				p.log.Warn("no boltdb constructors registered", "registered", p.constructors)
-				continue
-			}
-
-			storage, err := p.constructors[boltdb].KVConstruct(configKey)
-			if err != nil {
-				errCh <- errors.E(op, err)
-				return errCh
-			}
-
-			// save the storage
-			p.storages[k] = storage
-		case memory:
-			if _, ok := p.constructors[memory]; !ok {
-				p.log.Warn("no in-memory constructors registered", "registered", p.constructors)
-				continue
-			}
-
-			storage, err := p.constructors[memory].KVConstruct(configKey)
-			if err != nil {
-				errCh <- errors.E(op, err)
-				return errCh
-			}
-
-			// save the storage
-			p.storages[k] = storage
-		case redis:
-			if _, ok := p.constructors[redis]; !ok {
-				p.log.Warn("no redis constructors registered", "registered", p.constructors)
-				continue
-			}
-
-			// first - try local configuration
-			switch {
-			case p.cfgPlugin.Has(configKey):
-				storage, err := p.constructors[redis].KVConstruct(configKey)
-				if err != nil {
-					errCh <- errors.E(op, err)
-					return errCh
-				}
-
-				// save the storage
-				p.storages[k] = storage
-			case p.cfgPlugin.Has(redis):
-				storage, err := p.constructors[redis].KVConstruct(configKey)
-				if err != nil {
-					errCh <- errors.E(op, err)
-					return errCh
-				}
-
-				// save the storage
-				p.storages[k] = storage
-				continue
-			default:
-				// otherwise - error, no local or global config
-				p.log.Warn("no global or local redis configuration provided", "key", configKey)
-				continue
-			}
-
-		default:
-			p.log.Error("unknown storage", errors.E(op, errors.Errorf("unknown storage %s", v.(map[string]interface{})[driver])))
 		}
+
+		continue
 	}
 
 	return errCh

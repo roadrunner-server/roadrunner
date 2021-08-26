@@ -4,8 +4,8 @@ import (
 	"github.com/spiral/roadrunner/v2/common/jobs"
 	"github.com/spiral/roadrunner/v2/pkg/events"
 	priorityqueue "github.com/spiral/roadrunner/v2/pkg/priority_queue"
+	"github.com/spiral/roadrunner/v2/plugins/amqp/amqpjobs"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/jobs/drivers/amqp/amqpjobs"
 	"github.com/spiral/roadrunner/v2/plugins/jobs/pipeline"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )

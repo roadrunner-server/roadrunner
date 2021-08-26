@@ -11,7 +11,7 @@ func (c *consumer) listener() {
 			if err != nil {
 				panic(err)
 			}
-			//cursor := tx.Cursor()
+			// cursor := tx.Cursor()
 
 			err = tx.Commit()
 			if err != nil {

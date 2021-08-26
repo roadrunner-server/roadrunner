@@ -15,14 +15,11 @@ type Vec struct {
 	destroy uint64
 	// channel with the workers
 	workers chan worker.BaseProcess
-
-	len uint64
 }
 
 func NewVector(len uint64) *Vec {
 	vec := &Vec{
 		destroy: 0,
-		len:     len,
 		workers: make(chan worker.BaseProcess, len),
 	}
 
@@ -48,7 +45,7 @@ func (v *Vec) Push(w worker.BaseProcess) {
 			1. TTL is set with no requests during the TTL
 			2. Violated Get <-> Release operation (how ??)
 		*/
-		for i := uint64(0); i < v.len; i++ {
+		for i := 0; i < len(v.workers); i++ {
 			/*
 				We need to drain vector until we found a worker in the Invalid/Killing/Killed/etc states.
 			*/

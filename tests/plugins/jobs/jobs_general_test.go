@@ -12,11 +12,11 @@ import (
 
 	"github.com/golang/mock/gomock"
 	endure "github.com/spiral/endure/pkg/container"
+	"github.com/spiral/roadrunner/v2/plugins/amqp"
 	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/ephemeral"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
 	"github.com/spiral/roadrunner/v2/plugins/jobs"
-	"github.com/spiral/roadrunner/v2/plugins/jobs/drivers/amqp"
-	"github.com/spiral/roadrunner/v2/plugins/jobs/drivers/ephemeral"
 	"github.com/spiral/roadrunner/v2/plugins/metrics"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"

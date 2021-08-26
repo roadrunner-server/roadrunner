@@ -2,6 +2,7 @@ package pool
 
 import (
 	"context"
+	"os"
 	"os/exec"
 	"testing"
 	"time"
@@ -360,4 +361,53 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 
 	<-block
 	p.Destroy(context.Background())
+}
+
+func TestSupervisedPool_AllocateFailedOK(t *testing.T) {
+	var cfgExecTTL = &Config{
+		NumWorkers:      uint64(2),
+		AllocateTimeout: time.Second * 15,
+		DestroyTimeout:  time.Second * 5,
+		Supervisor: &SupervisorConfig{
+			WatchTick: 1 * time.Second,
+			TTL:       5 * time.Second,
+		},
+	}
+
+	ctx := context.Background()
+	p, err := Initialize(
+		ctx,
+		func() *exec.Cmd { return exec.Command("php", "../../tests/allocate-failed.php") },
+		pipe.NewPipeFactory(),
+		cfgExecTTL,
+	)
+
+	assert.NoError(t, err)
+	require.NotNil(t, p)
+
+	time.Sleep(time.Second)
+
+	// should be ok
+	_, err = p.Exec(&payload.Payload{
+		Context: []byte(""),
+		Body:    []byte("foo"),
+	})
+
+	require.NoError(t, err)
+
+	// after creating this file, PHP will fail
+	file, err := os.Create("break")
+	require.NoError(t, err)
+
+	time.Sleep(time.Second * 5)
+	assert.NoError(t, file.Close())
+	assert.NoError(t, os.Remove("break"))
+
+	defer func() {
+		if r := recover(); r != nil {
+			assert.Fail(t, "panic should not be fired!")
+		} else {
+			p.Destroy(context.Background())
+		}
+	}()
 }
