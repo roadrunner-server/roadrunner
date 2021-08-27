@@ -77,11 +77,11 @@ func (ww *workerWatcher) Take(ctx context.Context) (worker.BaseProcess, error) {
 
 	// thread safe operation
 	w, err := ww.container.Pop(ctx)
-	if errors.Is(errors.WatcherStopped, err) {
-		return nil, errors.E(op, errors.WatcherStopped)
-	}
-
 	if err != nil {
+		if errors.Is(errors.WatcherStopped, err) {
+			return nil, errors.E(op, errors.WatcherStopped)
+		}
+
 		return nil, errors.E(op, err)
 	}
 
@@ -97,9 +97,11 @@ func (ww *workerWatcher) Take(ctx context.Context) (worker.BaseProcess, error) {
 	// try to continuously get free one
 	for {
 		w, err = ww.container.Pop(ctx)
-
-		if errors.Is(errors.WatcherStopped, err) {
-			return nil, errors.E(op, errors.WatcherStopped)
+		if err != nil {
+			if errors.Is(errors.WatcherStopped, err) {
+				return nil, errors.E(op, errors.WatcherStopped)
+			}
+			return nil, errors.E(op, err)
 		}
 
 		if err != nil {
@@ -237,11 +239,8 @@ func (ww *workerWatcher) Destroy(_ context.Context) {
 				ww.Unlock()
 				continue
 			}
-			ww.Unlock()
-			// unnecessary mutex, but
-			// just to make sure. All container at this moment are in the container
+			// All container at this moment are in the container
 			// Pop operation is blocked, push can't be done, since it's not possible to pop
-			ww.Lock()
 			for i := 0; i < len(ww.workers); i++ {
 				ww.workers[i].State().Set(worker.StateDestroyed)
 				// kill the worker
