@@ -151,15 +151,20 @@ func (ww *workerWatcher) Allocate() error {
 			return errors.E(op, errors.WorkerAllocate, err)
 		}
 
+		// every half of a second
+		allocateFreq := time.NewTicker(time.Millisecond * 500)
+
 		tt := time.After(ww.allocateTimeout)
 		for {
 			select {
 			case <-tt:
 				// reduce number of workers
 				atomic.AddUint64(ww.numWorkers, ^uint64(0))
+				allocateFreq.Stop()
 				// timeout exceed, worker can't be allocated
 				return errors.E(op, errors.WorkerAllocate, err)
-			default:
+
+			case <-allocateFreq.C:
 				sw, err = ww.allocator()
 				if err != nil {
 					// log incident
@@ -172,6 +177,7 @@ func (ww *workerWatcher) Allocate() error {
 				}
 
 				// reallocated
+				allocateFreq.Stop()
 				goto done
 			}
 		}
