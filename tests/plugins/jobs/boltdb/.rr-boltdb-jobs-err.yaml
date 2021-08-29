@@ -6,8 +6,8 @@ server:
   relay: "pipes"
   relay_timeout: "20s"
 
-amqp:
-  addr: amqp://guest:guest@127.0.0.1:5672/
+boltdb:
+  permissions: 0777
 
 logs:
   level: debug

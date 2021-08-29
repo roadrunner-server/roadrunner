@@ -7,7 +7,7 @@ server:
   relay_timeout: "20s"
 
 boltdb:
-  permissions: 0666
+  permissions: 0777
 
 logs:
   level: debug
