@@ -1,16 +1,39 @@
 package boltjobs
 
-type Config struct {
-	// File is boltDB file. No need to create it by your own,
-	// boltdb driver is able to create the file, or read existing
-	File string
-	// Bucket to store data in boltDB
-	bucket string
+const (
+	file     string = "file"
+	priority string = "priority"
+	prefetch string = "prefetch"
+)
+
+type GlobalCfg struct {
 	// db file permissions
-	Permissions int
+	Permissions int `mapstructure:"permissions"`
 	// consume timeout
 }
 
-func (c *Config) InitDefaults() {
+func (c *GlobalCfg) InitDefaults() {
+	if c.Permissions == 0 {
+		c.Permissions = 0777
+	}
+}
 
+type Config struct {
+	File     string `mapstructure:"file"`
+	Priority int    `mapstructure:"priority"`
+	Prefetch int    `mapstructure:"prefetch"`
+}
+
+func (c *Config) InitDefaults() {
+	if c.File == "" {
+		c.File = "rr.db"
+	}
+
+	if c.Priority == 0 {
+		c.Priority = 10
+	}
+
+	if c.Prefetch == 0 {
+		c.Prefetch = 1000
+	}
 }

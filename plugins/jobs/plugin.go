@@ -178,7 +178,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 	})
 
 	var err error
-	p.workersPool, err = p.server.NewWorkerPool(context.Background(), p.cfg.Pool, map[string]string{RrMode: "jobs"})
+	p.workersPool, err = p.server.NewWorkerPool(context.Background(), p.cfg.Pool, map[string]string{RrMode: RrModeJobs})
 	if err != nil {
 		errCh <- err
 		return errCh
