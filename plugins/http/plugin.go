@@ -128,7 +128,7 @@ func (p *Plugin) logCallback(event interface{}) {
 	}
 }
 
-func (p *Plugin) SetCallbackHandler(handler LogHandler)  {
+func (p *Plugin) SetCallbackHandler(handler LogHandler) {
 	p.callbackLogHandler = handler
 }
 
