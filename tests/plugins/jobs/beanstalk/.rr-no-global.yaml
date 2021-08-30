@@ -29,3 +29,6 @@ jobs:
       reserve_timeout: 10s
 
   consume: [ "test-1" ]
+
+endure:
+  log_level: debug

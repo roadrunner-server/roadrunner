@@ -420,7 +420,9 @@ func (c *consumer) Resume(_ context.Context, p string) {
 }
 
 func (c *consumer) Stop(context.Context) error {
-	c.stopCh <- struct{}{}
+	if atomic.LoadUint32(&c.listeners) > 0 {
+		c.stopCh <- struct{}{}
+	}
 
 	pipe := c.pipeline.Load().(*pipeline.Pipeline)
 	c.eh.Push(events.JobEvent{

@@ -171,9 +171,12 @@ func TestJOBSMetrics(t *testing.T) {
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	tt := time.NewTimer(time.Minute * 3)
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
 
 	go func() {
 		defer tt.Stop()
+		defer wg.Done()
 		for {
 			select {
 			case e := <-ch:
@@ -220,7 +223,7 @@ func TestJOBSMetrics(t *testing.T) {
 	assert.Contains(t, genericOut, "workers_memory_bytes")
 
 	close(sig)
-	time.Sleep(time.Second * 2)
+	wg.Wait()
 }
 
 const getAddr = "http://127.0.0.1:2112/metrics"

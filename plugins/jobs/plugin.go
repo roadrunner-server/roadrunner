@@ -177,6 +177,11 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 		return true
 	})
 
+	// do not continue processing, immediately stop if channel contains an error
+	if len(errCh) > 0 {
+		return errCh
+	}
+
 	var err error
 	p.workersPool, err = p.server.NewWorkerPool(context.Background(), p.cfg.Pool, map[string]string{RrMode: RrModeJobs})
 	if err != nil {
@@ -279,6 +284,8 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 								Start:   start,
 								Elapsed: time.Since(start),
 							})
+
+							continue
 						}
 
 						// handle the response protocol
@@ -330,6 +337,10 @@ func (p *Plugin) Stop() error {
 		cancel()
 	}
 
+	p.Lock()
+	p.workersPool.Destroy(context.Background())
+	p.Unlock()
+
 	// this function can block forever, but we don't care, because we might have a chance to exit from the pollers,
 	// but if not, this is not a problem at all.
 	// The main target is to stop the drivers
@@ -342,7 +353,6 @@ func (p *Plugin) Stop() error {
 
 	// just wait pollers for 5 seconds before exit
 	time.Sleep(time.Second * 5)
-
 	return nil
 }
 

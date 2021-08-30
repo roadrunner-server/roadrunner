@@ -192,7 +192,7 @@ func (i *Item) pack(queue *string) (*sqs.SendMessageInput, error) {
 	}, nil
 }
 
-func (j *consumer) unpack(msg *types.Message) (*Item, error) {
+func (c *consumer) unpack(msg *types.Message) (*Item, error) {
 	const op = errors.Op("sqs_unpack")
 	// reserved
 	if _, ok := msg.Attributes[ApproximateReceiveCount]; !ok {
@@ -236,10 +236,10 @@ func (j *consumer) unpack(msg *types.Message) (*Item, error) {
 
 			// private
 			approxReceiveCount: int64(recCount),
-			client:             j.client,
-			queue:              j.queueURL,
+			client:             c.client,
+			queue:              c.queueURL,
 			receiptHandler:     msg.ReceiptHandle,
-			requeueFn:          j.handleItem,
+			requeueFn:          c.handleItem,
 		},
 	}
 

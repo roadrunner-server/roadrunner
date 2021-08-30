@@ -26,15 +26,15 @@ jobs:
   pipelines:
     test-1:
       driver: boltdb
-        prefetch: 100
-        file: "rr1.db"
-        priority: 1
+      prefetch: 100
+      file: "rr1.db"
+      priority: 1
 
     test-2:
       driver: boltdb
-        prefetch: 100
-        file: "rr2.db"
-        priority: 1
+      prefetch: 100
+      file: "rr2.db"
+      priority: 1
 
   # list of pipelines to be consumed by the server, keep empty if you want to start consuming manually
   consume: [ "test-1", "test-2" ]

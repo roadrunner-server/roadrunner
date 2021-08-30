@@ -437,15 +437,15 @@ func TestSQSStat(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 
-	t.Run("DeclareSQSPipeline", declareSQSPipe)
-	t.Run("ConsumeSQSPipeline", resumePipes("test-3"))
-	t.Run("PushSQSPipeline", pushToPipe("test-3"))
+	t.Run("DeclarePipeline", declareSQSPipe)
+	t.Run("ConsumePipeline", resumePipes("test-3"))
+	t.Run("PushPipeline", pushToPipe("test-3"))
 	time.Sleep(time.Second)
-	t.Run("PauseSQSPipeline", pausePipelines("test-3"))
+	t.Run("PausePipeline", pausePipelines("test-3"))
 	time.Sleep(time.Second)
 
-	t.Run("PushSQSPipelineDelayed", pushToPipeDelayed("test-3", 5))
-	t.Run("PushSQSPipeline", pushToPipe("test-3"))
+	t.Run("PushPipelineDelayed", pushToPipeDelayed("test-3", 5))
+	t.Run("PushPipeline", pushToPipe("test-3"))
 	time.Sleep(time.Second)
 
 	out := &jobState.State{}
@@ -474,7 +474,7 @@ func TestSQSStat(t *testing.T) {
 	assert.Equal(t, int64(0), out.Delayed)
 	assert.Equal(t, int64(0), out.Reserved)
 
-	t.Run("DestroyEphemeralPipeline", destroyPipelines("test-3"))
+	t.Run("DestroyPipeline", destroyPipelines("test-3"))
 
 	time.Sleep(time.Second * 5)
 	stopCh <- struct{}{}

@@ -18,22 +18,22 @@ const (
 	NonExistentQueue string = "AWS.SimpleQueueService.NonExistentQueue"
 )
 
-func (j *consumer) listen(ctx context.Context) { //nolint:gocognit
+func (c *consumer) listen(ctx context.Context) { //nolint:gocognit
 	for {
 		select {
-		case <-j.pauseCh:
-			j.log.Warn("sqs listener stopped")
+		case <-c.pauseCh:
+			c.log.Warn("sqs listener stopped")
 			return
 		default:
-			message, err := j.client.ReceiveMessage(ctx, &sqs.ReceiveMessageInput{
-				QueueUrl:              j.queueURL,
-				MaxNumberOfMessages:   j.prefetch,
+			message, err := c.client.ReceiveMessage(ctx, &sqs.ReceiveMessageInput{
+				QueueUrl:              c.queueURL,
+				MaxNumberOfMessages:   c.prefetch,
 				AttributeNames:        []types.QueueAttributeName{types.QueueAttributeName(ApproximateReceiveCount)},
 				MessageAttributeNames: []string{All},
 				// The new value for the message's visibility timeout (in seconds). Values range: 0
 				// to 43200. Maximum: 12 hours.
-				VisibilityTimeout: j.visibilityTimeout,
-				WaitTimeSeconds:   j.waitTime,
+				VisibilityTimeout: c.visibilityTimeout,
+				WaitTimeSeconds:   c.waitTime,
 			})
 
 			if err != nil {
@@ -42,10 +42,10 @@ func (j *consumer) listen(ctx context.Context) { //nolint:gocognit
 						if apiErr, ok := rErr.Err.(*smithy.GenericAPIError); ok {
 							// in case of NonExistentQueue - recreate the queue
 							if apiErr.Code == NonExistentQueue {
-								j.log.Error("receive message", "error code", apiErr.ErrorCode(), "message", apiErr.ErrorMessage(), "error fault", apiErr.ErrorFault())
-								_, err = j.client.CreateQueue(context.Background(), &sqs.CreateQueueInput{QueueName: j.queue, Attributes: j.attributes, Tags: j.tags})
+								c.log.Error("receive message", "error code", apiErr.ErrorCode(), "message", apiErr.ErrorMessage(), "error fault", apiErr.ErrorFault())
+								_, err = c.client.CreateQueue(context.Background(), &sqs.CreateQueueInput{QueueName: c.queue, Attributes: c.attributes, Tags: c.tags})
 								if err != nil {
-									j.log.Error("create queue", "error", err)
+									c.log.Error("create queue", "error", err)
 								}
 								// To successfully create a new queue, you must provide a
 								// queue name that adheres to the limits related to the queues
@@ -60,27 +60,27 @@ func (j *consumer) listen(ctx context.Context) { //nolint:gocognit
 					}
 				}
 
-				j.log.Error("receive message", "error", err)
+				c.log.Error("receive message", "error", err)
 				continue
 			}
 
 			for i := 0; i < len(message.Messages); i++ {
 				m := message.Messages[i]
-				item, err := j.unpack(&m)
+				item, err := c.unpack(&m)
 				if err != nil {
-					_, errD := j.client.DeleteMessage(context.Background(), &sqs.DeleteMessageInput{
-						QueueUrl:      j.queueURL,
+					_, errD := c.client.DeleteMessage(context.Background(), &sqs.DeleteMessageInput{
+						QueueUrl:      c.queueURL,
 						ReceiptHandle: m.ReceiptHandle,
 					})
 					if errD != nil {
-						j.log.Error("message unpack, failed to delete the message from the queue", "error", err)
+						c.log.Error("message unpack, failed to delete the message from the queue", "error", err)
 					}
 
-					j.log.Error("message unpack", "error", err)
+					c.log.Error("message unpack", "error", err)
 					continue
 				}
 
-				j.pq.Insert(item)
+				c.pq.Insert(item)
 			}
 		}
 	}
