@@ -224,6 +224,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 						if err != nil {
 							p.events.Push(events.JobEvent{
 								Event:   events.EventJobError,
+								Error:   err,
 								ID:      jb.ID(),
 								Start:   start,
 								Elapsed: time.Since(start),
@@ -248,6 +249,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 							p.events.Push(events.JobEvent{
 								Event:   events.EventJobError,
 								ID:      jb.ID(),
+								Error:   err,
 								Start:   start,
 								Elapsed: time.Since(start),
 							})
@@ -271,6 +273,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 								p.events.Push(events.JobEvent{
 									Event:   events.EventJobError,
 									ID:      jb.ID(),
+									Error:   err,
 									Start:   start,
 									Elapsed: time.Since(start),
 								})
@@ -295,6 +298,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 								Event:   events.EventJobError,
 								ID:      jb.ID(),
 								Start:   start,
+								Error:   err,
 								Elapsed: time.Since(start),
 							})
 							p.putPayload(exec)
