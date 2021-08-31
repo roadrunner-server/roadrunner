@@ -329,7 +329,9 @@ func (sp *StaticPool) execDebug(p *payload.Payload) (*payload.Payload, error) {
 		return nil, errors.E(op, err)
 	}
 
-	err = sw.Stop()
+	// destroy the worker
+	sw.State().Set(worker.StateDestroyed)
+	err = sw.Kill()
 	if err != nil {
 		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: err})
 		return nil, errors.E(op, err)

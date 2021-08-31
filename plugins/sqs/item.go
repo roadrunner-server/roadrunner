@@ -22,6 +22,7 @@ const (
 )
 
 var itemAttributes = []string{
+	job.RRID,
 	job.RRJob,
 	job.RRDelay,
 	job.RRPriority,
@@ -184,6 +185,7 @@ func (i *Item) pack(queue *string) (*sqs.SendMessageInput, error) {
 		QueueUrl:     queue,
 		DelaySeconds: int32(i.Options.Delay),
 		MessageAttributes: map[string]types.MessageAttributeValue{
+			job.RRID:       {DataType: aws.String(StringType), BinaryValue: nil, BinaryListValues: nil, StringListValues: nil, StringValue: aws.String(i.Ident)},
 			job.RRJob:      {DataType: aws.String(StringType), BinaryValue: nil, BinaryListValues: nil, StringListValues: nil, StringValue: aws.String(i.Job)},
 			job.RRDelay:    {DataType: aws.String(StringType), BinaryValue: nil, BinaryListValues: nil, StringListValues: nil, StringValue: aws.String(strconv.Itoa(int(i.Options.Delay)))},
 			job.RRHeaders:  {DataType: aws.String(BinaryType), BinaryValue: data, BinaryListValues: nil, StringListValues: nil, StringValue: nil},
@@ -228,6 +230,7 @@ func (c *consumer) unpack(msg *types.Message) (*Item, error) {
 
 	item := &Item{
 		Job:     *msg.MessageAttributes[job.RRJob].StringValue,
+		Ident:   *msg.MessageAttributes[job.RRID].StringValue,
 		Payload: *msg.Body,
 		Headers: h,
 		Options: &Options{

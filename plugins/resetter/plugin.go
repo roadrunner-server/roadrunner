@@ -21,7 +21,7 @@ func (p *Plugin) Reset(name string) error {
 	const op = errors.Op("resetter_plugin_reset_by_name")
 	svc, ok := p.registry[name]
 	if !ok {
-		return errors.E(op, errors.Errorf("no such service: %s", name))
+		return errors.E(op, errors.Errorf("no such plugin: %s", name))
 	}
 
 	return svc.Reset()
