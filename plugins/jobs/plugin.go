@@ -177,8 +177,13 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 		return true
 	})
 
+	// do not continue processing, immediately stop if channel contains an error
+	if len(errCh) > 0 {
+		return errCh
+	}
+
 	var err error
-	p.workersPool, err = p.server.NewWorkerPool(context.Background(), p.cfg.Pool, map[string]string{RrMode: "jobs"})
+	p.workersPool, err = p.server.NewWorkerPool(context.Background(), p.cfg.Pool, map[string]string{RrMode: RrModeJobs})
 	if err != nil {
 		errCh <- err
 		return errCh
@@ -219,6 +224,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 						if err != nil {
 							p.events.Push(events.JobEvent{
 								Event:   events.EventJobError,
+								Error:   err,
 								ID:      jb.ID(),
 								Start:   start,
 								Elapsed: time.Since(start),
@@ -243,6 +249,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 							p.events.Push(events.JobEvent{
 								Event:   events.EventJobError,
 								ID:      jb.ID(),
+								Error:   err,
 								Start:   start,
 								Elapsed: time.Since(start),
 							})
@@ -266,6 +273,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 								p.events.Push(events.JobEvent{
 									Event:   events.EventJobError,
 									ID:      jb.ID(),
+									Error:   err,
 									Start:   start,
 									Elapsed: time.Since(start),
 								})
@@ -279,6 +287,8 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 								Start:   start,
 								Elapsed: time.Since(start),
 							})
+
+							continue
 						}
 
 						// handle the response protocol
@@ -288,6 +298,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 								Event:   events.EventJobError,
 								ID:      jb.ID(),
 								Start:   start,
+								Error:   err,
 								Elapsed: time.Since(start),
 							})
 							p.putPayload(exec)
@@ -307,6 +318,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 							Start:   start,
 							Elapsed: time.Since(start),
 						})
+
 						// return payload
 						p.putPayload(exec)
 					}
@@ -342,6 +354,10 @@ func (p *Plugin) Stop() error {
 
 	// just wait pollers for 5 seconds before exit
 	time.Sleep(time.Second * 5)
+
+	p.Lock()
+	p.workersPool.Destroy(context.Background())
+	p.Unlock()
 
 	return nil
 }

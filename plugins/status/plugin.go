@@ -85,7 +85,7 @@ func (c *Plugin) status(name string) (Status, error) {
 	const op = errors.Op("checker_plugin_status")
 	svc, ok := c.statusRegistry[name]
 	if !ok {
-		return Status{}, errors.E(op, errors.Errorf("no such service: %s", name))
+		return Status{}, errors.E(op, errors.Errorf("no such plugin: %s", name))
 	}
 
 	return svc.Status(), nil
@@ -96,7 +96,7 @@ func (c *Plugin) ready(name string) (Status, error) {
 	const op = errors.Op("checker_plugin_ready")
 	svc, ok := c.readyRegistry[name]
 	if !ok {
-		return Status{}, errors.E(op, errors.Errorf("no such service: %s", name))
+		return Status{}, errors.E(op, errors.Errorf("no such plugin: %s", name))
 	}
 
 	return svc.Ready(), nil

@@ -78,7 +78,7 @@ func Initialize(ctx context.Context, cmd Command, factory transport.Factory, cfg
 	// set up workers allocator
 	p.allocator = p.newPoolAllocator(ctx, p.cfg.AllocateTimeout, factory, cmd)
 	// set up workers watcher
-	p.ww = workerWatcher.NewSyncWorkerWatcher(p.allocator, p.cfg.NumWorkers, p.events)
+	p.ww = workerWatcher.NewSyncWorkerWatcher(p.allocator, p.cfg.NumWorkers, p.events, p.cfg.AllocateTimeout)
 
 	// allocate requested number of workers
 	workers, err := p.allocateWorkers(p.cfg.NumWorkers)
@@ -329,7 +329,9 @@ func (sp *StaticPool) execDebug(p *payload.Payload) (*payload.Payload, error) {
 		return nil, errors.E(op, err)
 	}
 
-	err = sw.Stop()
+	// destroy the worker
+	sw.State().Set(worker.StateDestroyed)
+	err = sw.Kill()
 	if err != nil {
 		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: err})
 		return nil, errors.E(op, err)

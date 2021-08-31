@@ -95,7 +95,7 @@ func pushToPipeDelayed(pipeline string, delay int64) func(t *testing.T) {
 
 		req := &jobsv1beta.PushRequest{Job: &jobsv1beta.Job{
 			Job:     "some/php/namespace",
-			Id:      "1",
+			Id:      "2",
 			Payload: `{"hello":"world"}`,
 			Headers: map[string]*jobsv1beta.HeaderValue{"test": {Value: []string{"test2"}}},
 			Options: &jobsv1beta.Options{

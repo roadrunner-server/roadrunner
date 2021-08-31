@@ -194,7 +194,7 @@ func (w *Process) Stop() error {
 }
 
 // Kill kills underlying process, make sure to call Wait() func to gather
-// error log from the stderr. Does not waits for process completion!
+// error log from the stderr. Does not wait for process completion!
 func (w *Process) Kill() error {
 	if w.State().Value() == StateDestroyed {
 		err := w.cmd.Process.Signal(os.Kill)

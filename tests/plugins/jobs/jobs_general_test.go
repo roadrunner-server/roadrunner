@@ -12,11 +12,11 @@ import (
 
 	"github.com/golang/mock/gomock"
 	endure "github.com/spiral/endure/pkg/container"
+	"github.com/spiral/roadrunner/v2/plugins/amqp"
 	"github.com/spiral/roadrunner/v2/plugins/config"
+	"github.com/spiral/roadrunner/v2/plugins/ephemeral"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
 	"github.com/spiral/roadrunner/v2/plugins/jobs"
-	"github.com/spiral/roadrunner/v2/plugins/jobs/drivers/amqp"
-	"github.com/spiral/roadrunner/v2/plugins/jobs/drivers/ephemeral"
 	"github.com/spiral/roadrunner/v2/plugins/metrics"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
@@ -171,9 +171,12 @@ func TestJOBSMetrics(t *testing.T) {
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	tt := time.NewTimer(time.Minute * 3)
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
 
 	go func() {
 		defer tt.Stop()
+		defer wg.Done()
 		for {
 			select {
 			case e := <-ch:
@@ -220,7 +223,7 @@ func TestJOBSMetrics(t *testing.T) {
 	assert.Contains(t, genericOut, "workers_memory_bytes")
 
 	close(sig)
-	time.Sleep(time.Second * 2)
+	wg.Wait()
 }
 
 const getAddr = "http://127.0.0.1:2112/metrics"
