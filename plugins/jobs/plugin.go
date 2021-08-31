@@ -318,6 +318,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 							Start:   start,
 							Elapsed: time.Since(start),
 						})
+
 						// return payload
 						p.putPayload(exec)
 					}
