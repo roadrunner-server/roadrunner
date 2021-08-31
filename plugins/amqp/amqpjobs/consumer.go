@@ -479,7 +479,7 @@ func (c *consumer) handleItem(ctx context.Context, msg *Item) error {
 			err = pch.Publish(c.exchangeName, tmpQ, false, false, amqp.Publishing{
 				Headers:      table,
 				ContentType:  contentType,
-				Timestamp:    time.Now().UTC(),
+				Timestamp:    time.Now(),
 				DeliveryMode: amqp.Persistent,
 				Body:         msg.Body(),
 			})

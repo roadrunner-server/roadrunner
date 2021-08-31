@@ -466,7 +466,7 @@ func TestBeanstalkStats(t *testing.T) {
 }
 
 func TestBeanstalkNoGlobalSection(t *testing.T) {
-	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.DebugLevel))
+	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{

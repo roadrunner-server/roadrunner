@@ -27,7 +27,7 @@ func (c *consumer) redialer() { //nolint:gocognit
 				// trash the broken publishing channel
 				<-c.publishChan
 
-				t := time.Now()
+				t := time.Now().UTC()
 				pipe := c.pipeline.Load().(*pipeline.Pipeline)
 
 				c.eh.Push(events.JobEvent{
@@ -35,7 +35,7 @@ func (c *consumer) redialer() { //nolint:gocognit
 					Pipeline: pipe.Name(),
 					Driver:   pipe.Driver(),
 					Error:    err,
-					Start:    time.Now(),
+					Start:    time.Now().UTC(),
 				})
 
 				expb := backoff.NewExponentialBackOff()
