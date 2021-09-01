@@ -43,17 +43,18 @@ type Options struct {
 	Delay int64 `json:"delay,omitempty"`
 
 	// private
-	// Ack delegates an acknowledgement through the Acknowledger interface that the client or server has finished work on a delivery
+	// ack delegates an acknowledgement through the Acknowledger interface that the client or server has finished work on a delivery
 	ack func(multiply bool) error
 
-	// Nack negatively acknowledge the delivery of message(s) identified by the delivery tag from either the client or server.
+	// nack negatively acknowledge the delivery of message(s) identified by the delivery tag from either the client or server.
 	// When multiple is true, nack messages up to and including delivered messages up until the delivery tag delivered on the same channel.
 	// When requeue is true, request the server to deliver this message to a different consumer. If it is not possible or requeue is false, the message will be dropped or delivered to a server configured dead-letter queue.
 	// This method must not be used to select or requeue messages the client wishes not to handle, rather it is to inform the server that the client is incapable of handling this message at this time
 	nack func(multiply bool, requeue bool) error
 
 	// requeueFn used as a pointer to the push function
-	requeueFn   func(context.Context, *Item) error
+	requeueFn func(context.Context, *Item) error
+	// delayed jobs TODO(rustatian): figure out how to get stats from the DLX
 	delayed     *int64
 	multipleAsk bool
 	requeue     bool

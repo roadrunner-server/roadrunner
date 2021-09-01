@@ -113,25 +113,22 @@ func (c *consumer) redialer() { //nolint:gocognit
 				c.Unlock()
 
 			case <-c.stopCh:
-				if c.publishChan != nil {
-					pch := <-c.publishChan
-					err := pch.Close()
-					if err != nil {
-						c.log.Error("publish channel close", "error", err)
-					}
+				pch := <-c.publishChan
+				err := pch.Close()
+				if err != nil {
+					c.log.Error("publish channel close", "error", err)
 				}
 
 				if c.consumeChan != nil {
-					err := c.consumeChan.Close()
+					err = c.consumeChan.Close()
 					if err != nil {
 						c.log.Error("consume channel close", "error", err)
 					}
 				}
-				if c.conn != nil {
-					err := c.conn.Close()
-					if err != nil {
-						c.log.Error("amqp connection close", "error", err)
-					}
+
+				err = c.conn.Close()
+				if err != nil {
+					c.log.Error("amqp connection close", "error", err)
 				}
 
 				return
