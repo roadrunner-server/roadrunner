@@ -615,7 +615,6 @@ func (p *Plugin) Declare(pipeline *pipeline.Pipeline) error {
 
 	// save the pipeline
 	p.pipelines.Store(pipeline.Name(), pipeline)
-	p.log.Debug("pipeline declared", "driver", pipeline.Driver(), "name", pipeline.Name())
 
 	return nil
 }
