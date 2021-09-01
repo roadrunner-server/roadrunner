@@ -222,7 +222,7 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, cfg config.Con
 	return &consumer{
 		file:        pipeline.String(file, rrDB),
 		priority:    pipeline.Int(priority, 10),
-		prefetch:    pipeline.Int(prefetch, 100),
+		prefetch:    pipeline.Int(prefetch, 1000),
 		permissions: conf.Permissions,
 
 		bPool: sync.Pool{New: func() interface{} {

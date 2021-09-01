@@ -1,4 +1,4 @@
-package memcached
+package memcachedkv
 
 type Config struct {
 	// Addr is url for memcached, 11211 port is used by default

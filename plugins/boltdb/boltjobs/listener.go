@@ -3,6 +3,7 @@ package boltjobs
 import (
 	"bytes"
 	"encoding/gob"
+	"sync/atomic"
 	"time"
 
 	"github.com/spiral/roadrunner/v2/utils"
@@ -18,6 +19,10 @@ func (c *consumer) listener() {
 			c.log.Info("boltdb listener stopped")
 			return
 		case <-tt.C:
+			if atomic.LoadUint64(c.active) > uint64(c.prefetch) {
+				time.Sleep(time.Second)
+				continue
+			}
 			tx, err := c.db.Begin(true)
 			if err != nil {
 				c.log.Error("failed to begin writable transaction, job will be read on the next attempt", "error", err)

@@ -35,7 +35,6 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/headers.txt -covermode=atomic ./tests/plugins/headers
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/logger.txt -covermode=atomic ./tests/plugins/logger
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/metrics.txt -covermode=atomic ./tests/plugins/metrics
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/redis.txt -covermode=atomic ./tests/plugins/redis
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/resetter.txt -covermode=atomic ./tests/plugins/resetter
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/rpc.txt -covermode=atomic ./tests/plugins/rpc
 	cat ./coverage-ci/*.txt > ./coverage-ci/summary.txt
@@ -50,10 +49,15 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./pkg/worker_watcher
 	go test -v -race -tags=debug ./pkg/bst
 	go test -v -race -tags=debug ./pkg/priority_queue
-	go test -v -race -tags=debug ./plugins/jobs/job
 	go test -v -race -tags=debug ./plugins/jobs/pipeline
 	go test -v -race -tags=debug ./plugins/http/config
 	go test -v -race -tags=debug ./plugins/server
+	go test -v -race -tags=debug ./plugins/jobs/job
+	go test -v -race -tags=debug ./tests/plugins/jobs
+	go test -v -race -tags=debug ./tests/plugins/kv
+	go test -v -race -tags=debug ./tests/plugins/broadcast
+	go test -v -race -tags=debug ./tests/plugins/websockets
+	go test -v -race -tags=debug ./plugins/websockets
 	go test -v -race -tags=debug ./tests/plugins/http
 	go test -v -race -tags=debug ./tests/plugins/informer
 	go test -v -race -tags=debug ./tests/plugins/reload
@@ -65,12 +69,6 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./tests/plugins/headers
 	go test -v -race -tags=debug ./tests/plugins/logger
 	go test -v -race -tags=debug ./tests/plugins/metrics
-	go test -v -race -tags=debug ./tests/plugins/redis
 	go test -v -race -tags=debug ./tests/plugins/resetter
 	go test -v -race -tags=debug ./tests/plugins/rpc
-	go test -v -race -tags=debug ./tests/plugins/kv
-	go test -v -race -tags=debug ./tests/plugins/broadcast
-	go test -v -race -tags=debug ./tests/plugins/websockets
-	go test -v -race -tags=debug ./plugins/websockets
-	go test -v -race -tags=debug ./tests/plugins/jobs
 	docker-compose -f tests/env/docker-compose.yaml down

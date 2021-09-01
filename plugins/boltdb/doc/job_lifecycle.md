@@ -7,4 +7,3 @@ There are several boltdb buckets:
 get into the `InQueueBucket` waiting to acknowledgement.
 3. `DelayBucket` - used for delayed jobs. RFC3339 used as a timestamp to track delay expiration.
 
-``

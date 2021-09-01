@@ -1,4 +1,4 @@
-package memcached
+package memcachedkv
 
 import (
 	"strings"
@@ -246,3 +246,5 @@ func (d *Driver) Clear() error {
 
 	return nil
 }
+
+func (d *Driver) Stop() {}

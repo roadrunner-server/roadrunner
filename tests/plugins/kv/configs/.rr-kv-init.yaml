@@ -1,6 +1,9 @@
 rpc:
   listen: tcp://127.0.0.1:6001
 
+logs:
+  mode: development
+  level: error
 
 kv:
   default:
@@ -25,6 +28,3 @@ kv:
   memcached:
     driver: memcached
     addr: [ "127.0.0.1:11211" ]
-
-#  redis:
-#    driver: redis

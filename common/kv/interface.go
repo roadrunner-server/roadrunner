@@ -30,6 +30,9 @@ type Storage interface {
 
 	// Delete one or multiple keys.
 	Delete(keys ...string) error
+
+	// Stop the storage driver
+	Stop()
 }
 
 // Constructor provides storage based on the config

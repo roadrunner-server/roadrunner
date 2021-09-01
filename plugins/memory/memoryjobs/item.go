@@ -1,4 +1,4 @@
-package ephemeral
+package memoryjobs
 
 import (
 	"context"

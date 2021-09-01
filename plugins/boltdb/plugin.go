@@ -19,19 +19,14 @@ const (
 
 // Plugin BoltDB K/V storage.
 type Plugin struct {
-	cfgPlugin config.Configurer
+	cfg config.Configurer
 	// logger
 	log logger.Logger
-	// stop is used to stop keys GC and close boltdb connection
-	stop chan struct{}
-
-	drivers uint
 }
 
 func (p *Plugin) Init(log logger.Logger, cfg config.Configurer) error {
-	p.stop = make(chan struct{})
 	p.log = log
-	p.cfgPlugin = cfg
+	p.cfg = cfg
 	return nil
 }
 
@@ -41,12 +36,6 @@ func (p *Plugin) Serve() chan error {
 }
 
 func (p *Plugin) Stop() error {
-	if p.drivers > 0 {
-		for i := uint(0); i < p.drivers; i++ {
-			// send close signal to every driver
-			p.stop <- struct{}{}
-		}
-	}
 	return nil
 }
 
@@ -60,13 +49,10 @@ func (p *Plugin) Available() {}
 
 func (p *Plugin) KVConstruct(key string) (kv.Storage, error) {
 	const op = errors.Op("boltdb_plugin_provide")
-	st, err := boltkv.NewBoltDBDriver(p.log, key, p.cfgPlugin, p.stop)
+	st, err := boltkv.NewBoltDBDriver(p.log, key, p.cfg)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}
-
-	// save driver number to release resources after Stop
-	p.drivers++
 
 	return st, nil
 }
@@ -74,9 +60,9 @@ func (p *Plugin) KVConstruct(key string) (kv.Storage, error) {
 // JOBS bbolt implementation
 
 func (p *Plugin) JobsConstruct(configKey string, e events.Handler, queue priorityqueue.Queue) (jobs.Consumer, error) {
-	return boltjobs.NewBoltDBJobs(configKey, p.log, p.cfgPlugin, e, queue)
+	return boltjobs.NewBoltDBJobs(configKey, p.log, p.cfg, e, queue)
 }
 
 func (p *Plugin) FromPipeline(pipe *pipeline.Pipeline, e events.Handler, queue priorityqueue.Queue) (jobs.Consumer, error) {
-	return boltjobs.FromPipeline(pipe, p.log, p.cfgPlugin, e, queue)
+	return boltjobs.FromPipeline(pipe, p.log, p.cfg, e, queue)
 }
