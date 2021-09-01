@@ -41,7 +41,7 @@ type Plugin struct {
 	server      server.Server
 
 	jobConstructors map[string]jobs.Constructor
-	consumers       map[string]jobs.Consumer
+	consumers       sync.Map // map[string]jobs.Consumer
 
 	// events handler
 	events events.Handler
@@ -82,7 +82,6 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	p.events.AddListener(p.collectJobsEvents)
 
 	p.jobConstructors = make(map[string]jobs.Constructor)
-	p.consumers = make(map[string]jobs.Consumer)
 	p.consume = make(map[string]struct{})
 	p.stopCh = make(chan struct{}, 1)
 
@@ -142,7 +141,7 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 			}
 
 			// add driver to the set of the consumers (name - pipeline name, value - associated driver)
-			p.consumers[name] = initializedDriver
+			p.consumers.Store(name, initializedDriver)
 
 			// register pipeline for the initialized driver
 			err = initializedDriver.Register(context.Background(), pipe)
@@ -331,16 +330,19 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 }
 
 func (p *Plugin) Stop() error {
-	for k, v := range p.consumers {
+	// range over all consumers and call stop
+	p.consumers.Range(func(key, value interface{}) bool {
+		consumer := value.(jobs.Consumer)
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(p.cfg.Timeout))
-		err := v.Stop(ctx)
+		err := consumer.Stop(ctx)
 		if err != nil {
 			cancel()
-			p.log.Error("stop job driver", "driver", k)
-			continue
+			p.log.Error("stop job driver", "driver", key)
+			return true
 		}
 		cancel()
-	}
+		return true
+	})
 
 	// this function can block forever, but we don't care, because we might have a chance to exit from the pollers,
 	// but if not, this is not a problem at all.
@@ -394,18 +396,26 @@ func (p *Plugin) Workers() []*process.State {
 
 func (p *Plugin) JobsState(ctx context.Context) ([]*jobState.State, error) {
 	const op = errors.Op("jobs_plugin_drivers_state")
-	jst := make([]*jobState.State, 0, len(p.consumers))
-	for k := range p.consumers {
-		d := p.consumers[k]
+	jst := make([]*jobState.State, 0, 2)
+	var err error
+	p.consumers.Range(func(key, value interface{}) bool {
+		consumer := value.(jobs.Consumer)
 		newCtx, cancel := context.WithTimeout(ctx, time.Second*time.Duration(p.cfg.Timeout))
-		state, err := d.State(newCtx)
+
+		var state *jobState.State
+		state, err = consumer.State(newCtx)
 		if err != nil {
 			cancel()
-			return nil, errors.E(op, err)
+			return false
 		}
 
 		jst = append(jst, state)
 		cancel()
+		return true
+	})
+
+	if err != nil {
+		return nil, errors.E(op, err)
 	}
 	return jst, nil
 }
@@ -449,7 +459,7 @@ func (p *Plugin) Push(j *job.Job) error {
 	// type conversion
 	ppl := pipe.(*pipeline.Pipeline)
 
-	d, ok := p.consumers[ppl.Name()]
+	d, ok := p.consumers.Load(ppl.Name())
 	if !ok {
 		return errors.E(op, errors.Errorf("consumer not registered for the requested driver: %s", ppl.Driver()))
 	}
@@ -462,7 +472,7 @@ func (p *Plugin) Push(j *job.Job) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(p.cfg.Timeout))
 	defer cancel()
 
-	err := d.Push(ctx, j)
+	err := d.(jobs.Consumer).Push(ctx, j)
 	if err != nil {
 		p.events.Push(events.JobEvent{
 			Event:    events.EventPushError,
@@ -502,7 +512,7 @@ func (p *Plugin) PushBatch(j []*job.Job) error {
 
 		ppl := pipe.(*pipeline.Pipeline)
 
-		d, ok := p.consumers[ppl.Name()]
+		d, ok := p.consumers.Load(ppl.Name())
 		if !ok {
 			return errors.E(op, errors.Errorf("consumer not registered for the requested driver: %s", ppl.Driver()))
 		}
@@ -513,7 +523,7 @@ func (p *Plugin) PushBatch(j []*job.Job) error {
 		}
 
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(p.cfg.Timeout))
-		err := d.Push(ctx, j[i])
+		err := d.(jobs.Consumer).Push(ctx, j[i])
 		if err != nil {
 			cancel()
 			p.events.Push(events.JobEvent{
@@ -543,7 +553,7 @@ func (p *Plugin) Pause(pp string) {
 
 	ppl := pipe.(*pipeline.Pipeline)
 
-	d, ok := p.consumers[ppl.Name()]
+	d, ok := p.consumers.Load(ppl.Name())
 	if !ok {
 		p.log.Warn("driver for the pipeline not found", "pipeline", pp)
 		return
@@ -551,7 +561,7 @@ func (p *Plugin) Pause(pp string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(p.cfg.Timeout))
 	defer cancel()
 	// redirect call to the underlying driver
-	d.Pause(ctx, ppl.Name())
+	d.(jobs.Consumer).Pause(ctx, ppl.Name())
 }
 
 func (p *Plugin) Resume(pp string) {
@@ -562,7 +572,7 @@ func (p *Plugin) Resume(pp string) {
 
 	ppl := pipe.(*pipeline.Pipeline)
 
-	d, ok := p.consumers[ppl.Name()]
+	d, ok := p.consumers.Load(ppl.Name())
 	if !ok {
 		p.log.Warn("driver for the pipeline not found", "pipeline", pp)
 		return
@@ -571,7 +581,7 @@ func (p *Plugin) Resume(pp string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(p.cfg.Timeout))
 	defer cancel()
 	// redirect call to the underlying driver
-	d.Resume(ctx, ppl.Name())
+	d.(jobs.Consumer).Resume(ctx, ppl.Name())
 }
 
 // Declare a pipeline.
@@ -593,7 +603,7 @@ func (p *Plugin) Declare(pipeline *pipeline.Pipeline) error {
 		}
 
 		// add driver to the set of the consumers (name - pipeline name, value - associated driver)
-		p.consumers[pipeline.Name()] = initializedDriver
+		p.consumers.Store(pipeline.Name(), initializedDriver)
 
 		// register pipeline for the initialized driver
 		err = initializedDriver.Register(context.Background(), pipeline)
@@ -630,24 +640,22 @@ func (p *Plugin) Destroy(pp string) error {
 	// type conversion
 	ppl := pipe.(*pipeline.Pipeline)
 
-	d, ok := p.consumers[ppl.Name()]
+	// delete consumer
+	d, ok := p.consumers.LoadAndDelete(ppl.Name())
 	if !ok {
 		return errors.E(op, errors.Errorf("consumer not registered for the requested driver: %s", ppl.Driver()))
 	}
 
-	// delete consumer
-	delete(p.consumers, ppl.Name())
 	// delete old pipeline
 	p.pipelines.LoadAndDelete(pp)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(p.cfg.Timeout))
-	err := d.Stop(ctx)
+	err := d.(jobs.Consumer).Stop(ctx)
 	if err != nil {
 		cancel()
 		return errors.E(op, err)
 	}
 
-	d = nil
 	cancel()
 	return nil
 }

@@ -27,7 +27,7 @@ require (
 	github.com/shirou/gopsutil v3.21.8+incompatible
 	github.com/spf13/viper v1.8.1
 	// SPIRAL ====
-	github.com/spiral/endure v1.0.3
+	github.com/spiral/endure v1.0.4
 	github.com/spiral/errors v1.0.12
 	github.com/spiral/goridge/v3 v3.2.1
 	// ===========
