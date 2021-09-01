@@ -4,7 +4,6 @@ go 1.17
 
 require (
 	github.com/Shopify/toxiproxy v2.1.4+incompatible
-	github.com/alicebob/miniredis/v2 v2.15.1
 	// ========= AWS SDK v2
 	github.com/aws/aws-sdk-go-v2 v1.9.0
 	github.com/aws/aws-sdk-go-v2/config v1.7.0
@@ -47,7 +46,6 @@ require (
 
 require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
-	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
 	github.com/andybalholm/brotli v1.0.3 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.5.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.2.2 // indirect

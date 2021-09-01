@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-v2.4.0 (_.08.2021)
+v2.4.0 (02.09.2021)
 -------------------
 
 ## 💔 Internal BC:
@@ -10,20 +10,27 @@ v2.4.0 (_.08.2021)
 
 ## 👀 New:
 
-- ✏️ Long-awaited, reworked `Jobs` plugin with pluggable drivers. Now you can allocate/destroy pipelines in the runtime.
-  Drivers included in the initial release: `RabbitMQ (0-9-1)`, `SQS v2`, `beanstalk`, `ephemeral` and local queue powered by the `boltdb`. [PR](https://github.com/spiral/roadrunner/pull/726)
+- ✏️ Long-awaited, reworked `Jobs` plugin with pluggable drivers. Now you can allocate/destroy pipelines in the runtime. Drivers included in the initial release: `RabbitMQ (0-9-1)`, `SQS v2`, `beanstalk`, `memory` and local queue powered by the `boltdb`. [PR](https://github.com/spiral/roadrunner/pull/726)
 - ✏️ Support for the IPv6 (`tcp|http(s)|empty [::]:port`, `tcp|http(s)|empty [::1]:port`, `tcp|http(s)|empty :// [0:0:0:0:0:0:0:1]:port`) for RPC, HTTP and other plugins. [RFC](https://datatracker.ietf.org/doc/html/rfc2732#section-2)
 - ✏️ Support for the Docker images via GitHub packages.
-- ✏️ Go 1.17 support.
+- ✏️ Go 1.17 support for the all spiral packages.
 
 ## 🩹 Fixes:
 
 - 🐛 Fix: fixed bug with goroutines waiting on the internal worker's container channel, [issue](https://github.com/spiral/roadrunner/issues/750).
 - 🐛 Fix: RR become unresponsive when new workers failed to re-allocate, [issue](https://github.com/spiral/roadrunner/issues/772).
+- 🐛 Fix: add `debug` pool config key to the `.rr.yaml` configuration [reference](https://github.com/spiral/roadrunner-binary/issues/79).
+
+## 📦 Packages:
+
+- 📦 Update goridge to `v3.2.1`
+- 📦 Update temporal to `v1.0.9`
+- 📦 Update endure to `v1.0.3`
 
 ## 📈 Summary:
 
-- RR Milestone [2.4.0](https://github.com/spiral/roadrunner/milestone/29)
+- RR Milestone [2.4.0](https://github.com/spiral/roadrunner/milestone/29?closed=1)
+- RR-Binary Milestone [2.4.0](https://github.com/spiral/roadrunner-binary/milestone/10?closed=1)
 
 ---
 
