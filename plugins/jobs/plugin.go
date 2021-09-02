@@ -129,12 +129,12 @@ func (p *Plugin) Serve() chan error { //nolint:gocognit
 
 		// jobConstructors contains constructors for the drivers
 		// we need here to initialize these drivers for the pipelines
-		if c, ok := p.jobConstructors[dr]; ok {
+		if _, ok := p.jobConstructors[dr]; ok {
 			// config key for the particular sub-driver jobs.pipelines.test-local
 			configKey := fmt.Sprintf("%s.%s.%s", PluginName, pipelines, name)
 
 			// init the driver
-			initializedDriver, err := c.JobsConstruct(configKey, p.events, p.queue)
+			initializedDriver, err := p.jobConstructors[dr].JobsConstruct(configKey, p.events, p.queue)
 			if err != nil {
 				errCh <- errors.E(op, err)
 				return false
@@ -595,15 +595,12 @@ func (p *Plugin) Declare(pipeline *pipeline.Pipeline) error {
 
 	// jobConstructors contains constructors for the drivers
 	// we need here to initialize these drivers for the pipelines
-	if c, ok := p.jobConstructors[dr]; ok {
+	if _, ok := p.jobConstructors[dr]; ok {
 		// init the driver from pipeline
-		initializedDriver, err := c.FromPipeline(pipeline, p.events, p.queue)
+		initializedDriver, err := p.jobConstructors[dr].FromPipeline(pipeline, p.events, p.queue)
 		if err != nil {
 			return errors.E(op, err)
 		}
-
-		// add driver to the set of the consumers (name - pipeline name, value - associated driver)
-		p.consumers.Store(pipeline.Name(), initializedDriver)
 
 		// register pipeline for the initialized driver
 		err = initializedDriver.Register(context.Background(), pipeline)
@@ -621,10 +618,12 @@ func (p *Plugin) Declare(pipeline *pipeline.Pipeline) error {
 				return errors.E(op, err)
 			}
 		}
-	}
 
-	// save the pipeline
-	p.pipelines.Store(pipeline.Name(), pipeline)
+		// add driver to the set of the consumers (name - pipeline name, value - associated driver)
+		p.consumers.Store(pipeline.Name(), initializedDriver)
+		// save the pipeline
+		p.pipelines.Store(pipeline.Name(), pipeline)
+	}
 
 	return nil
 }

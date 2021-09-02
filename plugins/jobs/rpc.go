@@ -25,7 +25,7 @@ func (r *rpc) Push(j *jobsv1beta.PushRequest, _ *jobsv1beta.Empty) error {
 		return errors.E(op, errors.Str("empty ID field not allowed"))
 	}
 
-	err := r.p.Push(r.from(j.GetJob()))
+	err := r.p.Push(from(j.GetJob()))
 	if err != nil {
 		return errors.E(op, err)
 	}
@@ -43,7 +43,7 @@ func (r *rpc) PushBatch(j *jobsv1beta.PushBatchRequest, _ *jobsv1beta.Empty) err
 	for i := 0; i < l; i++ {
 		// convert transport entity into domain
 		// how we can do this quickly
-		batch[i] = r.from(j.GetJobs()[i])
+		batch[i] = from(j.GetJobs()[i])
 	}
 
 	err := r.p.PushBatch(batch)
@@ -137,7 +137,7 @@ func (r *rpc) Stat(_ *jobsv1beta.Empty, resp *jobsv1beta.Stats) error {
 }
 
 // from converts from transport entity to domain
-func (r *rpc) from(j *jobsv1beta.Job) *job.Job {
+func from(j *jobsv1beta.Job) *job.Job {
 	headers := make(map[string][]string, len(j.GetHeaders()))
 
 	for k, v := range j.GetHeaders() {
