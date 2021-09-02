@@ -53,7 +53,7 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, eh
 		goroutines: 0,
 		active:     utils.Int64(0),
 		delayed:    utils.Int64(0),
-		stopCh:     make(chan struct{}, 1),
+		stopCh:     make(chan struct{}),
 	}
 
 	err := cfg.UnmarshalKey(configKey, &jb.cfg)
@@ -62,7 +62,7 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, eh
 	}
 
 	if jb.cfg.Prefetch == 0 {
-		jb.cfg.Prefetch = 100_000
+		jb.cfg.Prefetch = 100
 	}
 
 	// initialize a local queue
@@ -72,20 +72,16 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, eh
 }
 
 func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, eh events.Handler, pq priorityqueue.Queue) (*consumer, error) {
-	jb := &consumer{
-		log:        log,
-		pq:         pq,
-		eh:         eh,
-		goroutines: 0,
-		active:     utils.Int64(0),
-		delayed:    utils.Int64(0),
-		stopCh:     make(chan struct{}, 1),
-	}
-
-	// initialize a local queue
-	jb.localPrefetch = make(chan *Item, pipeline.Int(prefetch, 100_000))
-
-	return jb, nil
+	return &consumer{
+		log:           log,
+		pq:            pq,
+		eh:            eh,
+		localPrefetch: make(chan *Item, pipeline.Int(prefetch, 100)),
+		goroutines:    0,
+		active:        utils.Int64(0),
+		delayed:       utils.Int64(0),
+		stopCh:        make(chan struct{}),
+	}, nil
 }
 
 func (c *consumer) Push(ctx context.Context, jb *job.Job) error {
@@ -123,6 +119,7 @@ func (c *consumer) Register(_ context.Context, pipeline *pipeline.Pipeline) erro
 }
 
 func (c *consumer) Pause(_ context.Context, p string) {
+	start := time.Now()
 	pipe := c.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
 		c.log.Error("no such pipeline", "requested pause on: ", p)
@@ -144,12 +141,13 @@ func (c *consumer) Pause(_ context.Context, p string) {
 		Event:    events.EventPipePaused,
 		Driver:   pipe.Driver(),
 		Pipeline: pipe.Name(),
-		Start:    time.Now(),
-		Elapsed:  0,
+		Start:    start,
+		Elapsed:  time.Since(start),
 	})
 }
 
 func (c *consumer) Resume(_ context.Context, p string) {
+	start := time.Now()
 	pipe := c.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
 		c.log.Error("no such pipeline", "requested resume on: ", p)
@@ -169,8 +167,9 @@ func (c *consumer) Resume(_ context.Context, p string) {
 	c.eh.Push(events.JobEvent{
 		Event:    events.EventPipeActive,
 		Pipeline: pipe.Name(),
-		Start:    time.Now(),
-		Elapsed:  0,
+		Driver:   pipe.Driver(),
+		Start:    start,
+		Elapsed:  time.Since(start),
 	})
 }
 
@@ -186,17 +185,26 @@ func (c *consumer) Run(_ context.Context, pipe *pipeline.Pipeline) error {
 }
 
 func (c *consumer) Stop(_ context.Context) error {
+	start := time.Now()
 	pipe := c.pipeline.Load().(*pipeline.Pipeline)
 
-	if atomic.LoadUint32(&c.listeners) > 0 {
-		c.stopCh <- struct{}{}
+	select {
+	case c.stopCh <- struct{}{}:
+	default:
+		break
+	}
+
+	for i := 0; i < len(c.localPrefetch); i++ {
+		// drain all jobs from the channel
+		<-c.localPrefetch
 	}
 
 	c.eh.Push(events.JobEvent{
 		Event:    events.EventPipeStopped,
 		Pipeline: pipe.Name(),
-		Start:    time.Now(),
-		Elapsed:  0,
+		Driver:   pipe.Driver(),
+		Start:    start,
+		Elapsed:  time.Since(start),
 	})
 
 	return nil
@@ -219,10 +227,12 @@ func (c *consumer) handleItem(ctx context.Context, msg *Item) error {
 
 			time.Sleep(jj.Options.DelayDuration())
 
-			// send the item after timeout expired
-			c.localPrefetch <- jj
-
-			atomic.AddUint64(&c.goroutines, ^uint64(0))
+			select {
+			case c.localPrefetch <- jj:
+				atomic.AddUint64(&c.goroutines, ^uint64(0))
+			default:
+				c.log.Warn("can't push job", "error", "local queue closed or full")
+			}
 		}(msg)
 
 		return nil
@@ -247,7 +257,7 @@ func (c *consumer) consume() {
 			select {
 			case item, ok := <-c.localPrefetch:
 				if !ok {
-					c.log.Warn("ephemeral local prefetch queue was closed")
+					c.log.Warn("ephemeral local prefetch queue closed")
 					return
 				}
 

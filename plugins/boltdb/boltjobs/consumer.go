@@ -300,6 +300,7 @@ func (c *consumer) Register(_ context.Context, pipeline *pipeline.Pipeline) erro
 
 func (c *consumer) Run(_ context.Context, p *pipeline.Pipeline) error {
 	const op = errors.Op("boltdb_run")
+	start := time.Now()
 
 	pipe := c.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p.Name() {
@@ -317,13 +318,15 @@ func (c *consumer) Run(_ context.Context, p *pipeline.Pipeline) error {
 		Event:    events.EventPipeActive,
 		Driver:   pipe.Driver(),
 		Pipeline: pipe.Name(),
-		Start:    time.Now(),
+		Start:    start,
+		Elapsed:  time.Since(start),
 	})
 
 	return nil
 }
 
 func (c *consumer) Stop(_ context.Context) error {
+	start := time.Now()
 	if atomic.LoadUint32(&c.listeners) > 0 {
 		c.stopCh <- struct{}{}
 		c.stopCh <- struct{}{}
@@ -334,12 +337,14 @@ func (c *consumer) Stop(_ context.Context) error {
 		Event:    events.EventPipeStopped,
 		Driver:   pipe.Driver(),
 		Pipeline: pipe.Name(),
-		Start:    time.Now(),
+		Start:    start,
+		Elapsed:  time.Since(start),
 	})
 	return nil
 }
 
 func (c *consumer) Pause(_ context.Context, p string) {
+	start := time.Now()
 	pipe := c.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
 		c.log.Error("no such pipeline", "requested pause on: ", p)
@@ -361,11 +366,13 @@ func (c *consumer) Pause(_ context.Context, p string) {
 		Event:    events.EventPipePaused,
 		Driver:   pipe.Driver(),
 		Pipeline: pipe.Name(),
-		Start:    time.Now(),
+		Start:    start,
+		Elapsed:  time.Since(start),
 	})
 }
 
 func (c *consumer) Resume(_ context.Context, p string) {
+	start := time.Now()
 	pipe := c.pipeline.Load().(*pipeline.Pipeline)
 	if pipe.Name() != p {
 		c.log.Error("no such pipeline", "requested resume on: ", p)
@@ -389,7 +396,8 @@ func (c *consumer) Resume(_ context.Context, p string) {
 		Event:    events.EventPipeActive,
 		Driver:   pipe.Driver(),
 		Pipeline: pipe.Name(),
-		Start:    time.Now(),
+		Start:    start,
+		Elapsed:  time.Since(start),
 	})
 }
 
