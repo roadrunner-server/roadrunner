@@ -138,7 +138,7 @@ func (r *rpc) Stat(_ *jobsv1beta.Empty, resp *jobsv1beta.Stats) error {
 
 // from converts from transport entity to domain
 func (r *rpc) from(j *jobsv1beta.Job) *job.Job {
-	headers := map[string][]string{}
+	headers := make(map[string][]string, len(j.GetHeaders()))
 
 	for k, v := range j.GetHeaders() {
 		headers[k] = v.GetValue()

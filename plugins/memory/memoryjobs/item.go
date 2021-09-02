@@ -124,6 +124,7 @@ func fromJob(job *job.Job) *Item {
 		Job:     job.Job,
 		Ident:   job.Ident,
 		Payload: job.Payload,
+		Headers: job.Headers,
 		Options: &Options{
 			Priority: job.Options.Priority,
 			Pipeline: job.Options.Pipeline,

@@ -62,7 +62,7 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, eh
 	}
 
 	if jb.cfg.Prefetch == 0 {
-		jb.cfg.Prefetch = 100
+		jb.cfg.Prefetch = 100_000
 	}
 
 	// initialize a local queue
@@ -76,7 +76,7 @@ func FromPipeline(pipeline *pipeline.Pipeline, log logger.Logger, eh events.Hand
 		log:           log,
 		pq:            pq,
 		eh:            eh,
-		localPrefetch: make(chan *Item, pipeline.Int(prefetch, 100)),
+		localPrefetch: make(chan *Item, pipeline.Int(prefetch, 100_000)),
 		goroutines:    0,
 		active:        utils.Int64(0),
 		delayed:       utils.Int64(0),
@@ -198,6 +198,8 @@ func (c *consumer) Stop(_ context.Context) error {
 		// drain all jobs from the channel
 		<-c.localPrefetch
 	}
+
+	c.localPrefetch = nil
 
 	c.eh.Push(events.JobEvent{
 		Event:    events.EventPipeStopped,
