@@ -25,7 +25,7 @@ v2.4.0 (02.09.2021)
 
 - 📦 Update goridge to `v3.2.1`
 - 📦 Update temporal to `v1.0.9`
-- 📦 Update endure to `v1.0.3`
+- 📦 Update endure to `v1.0.4`
 
 ## 📈 Summary:
 
