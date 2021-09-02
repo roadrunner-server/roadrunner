@@ -45,17 +45,17 @@ jobs:
   # list of broker pipelines associated with endpoints
   pipelines:
     test-local:
-      driver: ephemeral
+      driver: memory
       priority: 10
       prefetch: 10000
 
     test-local-2:
-      driver: ephemeral
+      driver: memory
       priority: 1
       prefetch: 10000
 
     test-local-3:
-      driver: ephemeral
+      driver: memory
       priority: 2
       prefetch: 10000
 

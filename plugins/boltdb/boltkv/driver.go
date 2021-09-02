@@ -38,7 +38,7 @@ type Driver struct {
 	stop chan struct{}
 }
 
-func NewBoltDBDriver(log logger.Logger, key string, cfgPlugin config.Configurer, stop chan struct{}) (*Driver, error) {
+func NewBoltDBDriver(log logger.Logger, key string, cfgPlugin config.Configurer) (*Driver, error) {
 	const op = errors.Op("new_boltdb_driver")
 
 	if !cfgPlugin.Has(RootPluginName) {
@@ -47,7 +47,7 @@ func NewBoltDBDriver(log logger.Logger, key string, cfgPlugin config.Configurer,
 
 	d := &Driver{
 		log:  log,
-		stop: stop,
+		stop: make(chan struct{}),
 	}
 
 	err := cfgPlugin.UnmarshalKey(key, &d.cfg)
@@ -409,6 +409,10 @@ func (d *Driver) Clear() error {
 	d.clearMu.Unlock()
 
 	return nil
+}
+
+func (d *Driver) Stop() {
+	d.stop <- struct{}{}
 }
 
 // ========================= PRIVATE =================================

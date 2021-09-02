@@ -1,4 +1,4 @@
-package memory
+package memorykv
 
 import (
 	"strings"
@@ -20,11 +20,11 @@ type Driver struct {
 	cfg  *Config
 }
 
-func NewInMemoryDriver(log logger.Logger, key string, cfgPlugin config.Configurer, stop chan struct{}) (*Driver, error) {
+func NewInMemoryDriver(key string, log logger.Logger, cfgPlugin config.Configurer) (*Driver, error) {
 	const op = errors.Op("new_in_memory_driver")
 
 	d := &Driver{
-		stop: stop,
+		stop: make(chan struct{}),
 		log:  log,
 	}
 
@@ -40,7 +40,7 @@ func NewInMemoryDriver(log logger.Logger, key string, cfgPlugin config.Configure
 	return d, nil
 }
 
-func (s *Driver) Has(keys ...string) (map[string]bool, error) {
+func (d *Driver) Has(keys ...string) (map[string]bool, error) {
 	const op = errors.Op("in_memory_plugin_has")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -52,7 +52,7 @@ func (s *Driver) Has(keys ...string) (map[string]bool, error) {
 			return nil, errors.E(op, errors.EmptyKey)
 		}
 
-		if _, ok := s.heap.Load(keys[i]); ok {
+		if _, ok := d.heap.Load(keys[i]); ok {
 			m[keys[i]] = true
 		}
 	}
@@ -60,7 +60,7 @@ func (s *Driver) Has(keys ...string) (map[string]bool, error) {
 	return m, nil
 }
 
-func (s *Driver) Get(key string) ([]byte, error) {
+func (d *Driver) Get(key string) ([]byte, error) {
 	const op = errors.Op("in_memory_plugin_get")
 	// to get cases like "  "
 	keyTrimmed := strings.TrimSpace(key)
@@ -68,7 +68,7 @@ func (s *Driver) Get(key string) ([]byte, error) {
 		return nil, errors.E(op, errors.EmptyKey)
 	}
 
-	if data, exist := s.heap.Load(key); exist {
+	if data, exist := d.heap.Load(key); exist {
 		// here might be a panic
 		// but data only could be a string, see Set function
 		return data.(*kvv1.Item).Value, nil
@@ -76,7 +76,7 @@ func (s *Driver) Get(key string) ([]byte, error) {
 	return nil, nil
 }
 
-func (s *Driver) MGet(keys ...string) (map[string][]byte, error) {
+func (d *Driver) MGet(keys ...string) (map[string][]byte, error) {
 	const op = errors.Op("in_memory_plugin_mget")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -93,7 +93,7 @@ func (s *Driver) MGet(keys ...string) (map[string][]byte, error) {
 	m := make(map[string][]byte, len(keys))
 
 	for i := range keys {
-		if value, ok := s.heap.Load(keys[i]); ok {
+		if value, ok := d.heap.Load(keys[i]); ok {
 			m[keys[i]] = value.(*kvv1.Item).Value
 		}
 	}
@@ -101,7 +101,7 @@ func (s *Driver) MGet(keys ...string) (map[string][]byte, error) {
 	return m, nil
 }
 
-func (s *Driver) Set(items ...*kvv1.Item) error {
+func (d *Driver) Set(items ...*kvv1.Item) error {
 	const op = errors.Op("in_memory_plugin_set")
 	if items == nil {
 		return errors.E(op, errors.NoKeys)
@@ -120,14 +120,14 @@ func (s *Driver) Set(items ...*kvv1.Item) error {
 			}
 		}
 
-		s.heap.Store(items[i].Key, items[i])
+		d.heap.Store(items[i].Key, items[i])
 	}
 	return nil
 }
 
 // MExpire sets the expiration time to the key
 // If key already has the expiration time, it will be overwritten
-func (s *Driver) MExpire(items ...*kvv1.Item) error {
+func (d *Driver) MExpire(items ...*kvv1.Item) error {
 	const op = errors.Op("in_memory_plugin_mexpire")
 	for i := range items {
 		if items[i] == nil {
@@ -138,7 +138,7 @@ func (s *Driver) MExpire(items ...*kvv1.Item) error {
 		}
 
 		// if key exist, overwrite it value
-		if pItem, ok := s.heap.LoadAndDelete(items[i].Key); ok {
+		if pItem, ok := d.heap.LoadAndDelete(items[i].Key); ok {
 			// check that time is correct
 			_, err := time.Parse(time.RFC3339, items[i].Timeout)
 			if err != nil {
@@ -148,7 +148,7 @@ func (s *Driver) MExpire(items ...*kvv1.Item) error {
 			// guess that t is in the future
 			// in memory is just FOR TESTING PURPOSES
 			// LOGIC ISN'T IDEAL
-			s.heap.Store(items[i].Key, &kvv1.Item{
+			d.heap.Store(items[i].Key, &kvv1.Item{
 				Key:     items[i].Key,
 				Value:   tmp.Value,
 				Timeout: items[i].Timeout,
@@ -159,7 +159,7 @@ func (s *Driver) MExpire(items ...*kvv1.Item) error {
 	return nil
 }
 
-func (s *Driver) TTL(keys ...string) (map[string]string, error) {
+func (d *Driver) TTL(keys ...string) (map[string]string, error) {
 	const op = errors.Op("in_memory_plugin_ttl")
 	if keys == nil {
 		return nil, errors.E(op, errors.NoKeys)
@@ -176,14 +176,14 @@ func (s *Driver) TTL(keys ...string) (map[string]string, error) {
 	m := make(map[string]string, len(keys))
 
 	for i := range keys {
-		if item, ok := s.heap.Load(keys[i]); ok {
+		if item, ok := d.heap.Load(keys[i]); ok {
 			m[keys[i]] = item.(*kvv1.Item).Timeout
 		}
 	}
 	return m, nil
 }
 
-func (s *Driver) Delete(keys ...string) error {
+func (d *Driver) Delete(keys ...string) error {
 	const op = errors.Op("in_memory_plugin_delete")
 	if keys == nil {
 		return errors.E(op, errors.NoKeys)
@@ -198,34 +198,38 @@ func (s *Driver) Delete(keys ...string) error {
 	}
 
 	for i := range keys {
-		s.heap.Delete(keys[i])
+		d.heap.Delete(keys[i])
 	}
 	return nil
 }
 
-func (s *Driver) Clear() error {
-	s.clearMu.Lock()
-	s.heap = sync.Map{}
-	s.clearMu.Unlock()
+func (d *Driver) Clear() error {
+	d.clearMu.Lock()
+	d.heap = sync.Map{}
+	d.clearMu.Unlock()
 
 	return nil
 }
 
+func (d *Driver) Stop() {
+	d.stop <- struct{}{}
+}
+
 // ================================== PRIVATE ======================================
 
-func (s *Driver) gc() {
-	ticker := time.NewTicker(time.Duration(s.cfg.Interval) * time.Second)
+func (d *Driver) gc() {
+	ticker := time.NewTicker(time.Duration(d.cfg.Interval) * time.Second)
+	defer ticker.Stop()
 	for {
 		select {
-		case <-s.stop:
-			ticker.Stop()
+		case <-d.stop:
 			return
 		case now := <-ticker.C:
 			// mutes needed to clear the map
-			s.clearMu.RLock()
+			d.clearMu.RLock()
 
 			// check every second
-			s.heap.Range(func(key, value interface{}) bool {
+			d.heap.Range(func(key, value interface{}) bool {
 				v := value.(*kvv1.Item)
 				if v.Timeout == "" {
 					return true
@@ -237,13 +241,13 @@ func (s *Driver) gc() {
 				}
 
 				if now.After(t) {
-					s.log.Debug("key deleted", "key", key)
-					s.heap.Delete(key)
+					d.log.Debug("key deleted", "key", key)
+					d.heap.Delete(key)
 				}
 				return true
 			})
 
-			s.clearMu.RUnlock()
+			d.clearMu.RUnlock()
 		}
 	}
 }

@@ -125,15 +125,6 @@ func fromJob(job *job.Job) *Item {
 	}
 }
 
-func (i *Item) pack(b *bytes.Buffer) error {
-	err := gob.NewEncoder(b).Encode(i)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (j *consumer) unpack(id uint64, data []byte, out *Item) error {
 	err := gob.NewDecoder(bytes.NewBuffer(data)).Decode(out)
 	if err != nil {

@@ -4,7 +4,6 @@ go 1.17
 
 require (
 	github.com/Shopify/toxiproxy v2.1.4+incompatible
-	github.com/alicebob/miniredis/v2 v2.15.1
 	// ========= AWS SDK v2
 	github.com/aws/aws-sdk-go-v2 v1.9.0
 	github.com/aws/aws-sdk-go-v2/config v1.7.0
@@ -25,10 +24,10 @@ require (
 	github.com/klauspost/compress v1.13.5
 	github.com/prometheus/client_golang v1.11.0
 	github.com/rabbitmq/amqp091-go v0.0.0-20210823000215-c428a6150891
-	github.com/shirou/gopsutil v3.21.7+incompatible
+	github.com/shirou/gopsutil v3.21.8+incompatible
 	github.com/spf13/viper v1.8.1
 	// SPIRAL ====
-	github.com/spiral/endure v1.0.3
+	github.com/spiral/endure v1.0.4
 	github.com/spiral/errors v1.0.12
 	github.com/spiral/goridge/v3 v3.2.1
 	// ===========
@@ -40,14 +39,13 @@ require (
 	go.uber.org/zap v1.19.0
 	golang.org/x/net v0.0.0-20210825183410-e898025ed96a
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf
+	golang.org/x/sys v0.0.0-20210831042530-f4d43177bf5e
 	google.golang.org/protobuf v1.27.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
 require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
-	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
 	github.com/andybalholm/brotli v1.0.3 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.5.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.2.2 // indirect
@@ -86,7 +84,6 @@ require (
 	github.com/valyala/fasthttp v1.29.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.4 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
-	github.com/yuin/gopher-lua v0.0.0-20210529063254-f4c35e4016d9 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.5 // indirect

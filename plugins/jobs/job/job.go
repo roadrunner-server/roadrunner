@@ -45,17 +45,6 @@ type Options struct {
 	Delay int64 `json:"delay,omitempty"`
 }
 
-// Merge merges job options.
-func (o *Options) Merge(from *Options) {
-	if o.Pipeline == "" {
-		o.Pipeline = from.Pipeline
-	}
-
-	if o.Delay == 0 {
-		o.Delay = from.Delay
-	}
-}
-
 // DelayDuration returns delay duration in a form of time.Duration.
 func (o *Options) DelayDuration() time.Duration {
 	return time.Second * time.Duration(o.Delay)

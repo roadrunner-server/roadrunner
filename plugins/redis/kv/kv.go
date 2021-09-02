@@ -248,3 +248,5 @@ func (d *Driver) Clear() error {
 
 	return nil
 }
+
+func (d *Driver) Stop() {}

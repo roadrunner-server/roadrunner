@@ -1,4 +1,4 @@
-package memory
+package memorykv
 
 // Config is default config for the in-memory driver
 type Config struct {

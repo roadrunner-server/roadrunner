@@ -7,9 +7,7 @@ server:
   relay_timeout: "20s"
 
 beanstalk:
-  # beanstalk address
   addr: tcp://127.0.0.1:11300
-  # connect timeout
   timeout: 10s
 
 logs:

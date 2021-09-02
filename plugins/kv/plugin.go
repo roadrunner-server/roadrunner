@@ -104,6 +104,10 @@ func (p *Plugin) Serve() chan error {
 }
 
 func (p *Plugin) Stop() error {
+	// stop all attached storages
+	for k := range p.storages {
+		p.storages[k].Stop()
+	}
 	return nil
 }
 

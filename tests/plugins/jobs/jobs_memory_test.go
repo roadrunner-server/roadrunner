@@ -15,9 +15,9 @@ import (
 	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
 	jobState "github.com/spiral/roadrunner/v2/pkg/state/job"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/ephemeral"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
 	"github.com/spiral/roadrunner/v2/plugins/jobs"
+	"github.com/spiral/roadrunner/v2/plugins/memory"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
 	"github.com/spiral/roadrunner/v2/plugins/server"
@@ -26,12 +26,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEphemeralInit(t *testing.T) {
+func TestMemoryInit(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "ephemeral/.rr-ephemeral-init.yaml",
+		Path:   "memory/.rr-memory-init.yaml",
 		Prefix: "rr",
 	}
 
@@ -58,7 +58,7 @@ func TestEphemeralInit(t *testing.T) {
 		&jobs.Plugin{},
 		&resetter.Plugin{},
 		&informer.Plugin{},
-		&ephemeral.Plugin{},
+		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -112,12 +112,12 @@ func TestEphemeralInit(t *testing.T) {
 	wg.Wait()
 }
 
-func TestEphemeralDeclare(t *testing.T) {
+func TestMemoryDeclare(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "ephemeral/.rr-ephemeral-declare.yaml",
+		Path:   "memory/.rr-memory-declare.yaml",
 		Prefix: "rr",
 	}
 
@@ -135,7 +135,7 @@ func TestEphemeralDeclare(t *testing.T) {
 	mockLogger.EXPECT().Info("job processed without errors", "ID", gomock.Any(), "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
 
 	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Info("pipeline paused", "pipeline", "test-3", "driver", "ephemeral", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Info("pipeline paused", "pipeline", "test-3", "driver", "memory", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
 	err = cont.RegisterAll(
@@ -146,7 +146,7 @@ func TestEphemeralDeclare(t *testing.T) {
 		&jobs.Plugin{},
 		&resetter.Plugin{},
 		&informer.Plugin{},
-		&ephemeral.Plugin{},
+		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -197,25 +197,25 @@ func TestEphemeralDeclare(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 
-	t.Run("DeclareEphemeralPipeline", declareEphemeralPipe)
-	t.Run("ConsumeEphemeralPipeline", consumeEphemeralPipe)
-	t.Run("PushEphemeralPipeline", pushToPipe("test-3"))
+	t.Run("DeclarePipeline", declareMemoryPipe)
+	t.Run("ConsumePipeline", consumeMemoryPipe)
+	t.Run("PushPipeline", pushToPipe("test-3"))
 	time.Sleep(time.Second)
-	t.Run("PauseEphemeralPipeline", pausePipelines("test-3"))
+	t.Run("PausePipeline", pausePipelines("test-3"))
 	time.Sleep(time.Second)
-	t.Run("DestroyEphemeralPipeline", destroyPipelines("test-3"))
+	t.Run("DestroyPipeline", destroyPipelines("test-3"))
 
 	time.Sleep(time.Second * 5)
 	stopCh <- struct{}{}
 	wg.Wait()
 }
 
-func TestEphemeralPauseResume(t *testing.T) {
+func TestMemoryPauseResume(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "ephemeral/.rr-ephemeral-pause-resume.yaml",
+		Path:   "memory/.rr-memory-pause-resume.yaml",
 		Prefix: "rr",
 	}
 
@@ -231,7 +231,7 @@ func TestEphemeralPauseResume(t *testing.T) {
 	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-local-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-local", "start", gomock.Any(), "elapsed", gomock.Any()).Times(3)
 
-	mockLogger.EXPECT().Info("pipeline paused", "pipeline", "test-local", "driver", "ephemeral", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Info("pipeline paused", "pipeline", "test-local", "driver", "memory", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
 	mockLogger.EXPECT().Info("job pushed to the queue", "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
 	mockLogger.EXPECT().Info("job processing started", "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
@@ -249,7 +249,7 @@ func TestEphemeralPauseResume(t *testing.T) {
 		&jobs.Plugin{},
 		&resetter.Plugin{},
 		&informer.Plugin{},
-		&ephemeral.Plugin{},
+		&memory.Plugin{},
 	)
 
 	assert.NoError(t, err)
@@ -301,10 +301,10 @@ func TestEphemeralPauseResume(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 
-	t.Run("ephemeralResume", resumePipes("test-local"))
-	t.Run("ephemeralPause", pausePipelines("test-local"))
+	t.Run("Resume", resumePipes("test-local"))
+	t.Run("Pause", pausePipelines("test-local"))
 	t.Run("pushToDisabledPipe", pushToDisabledPipe("test-local"))
-	t.Run("ephemeralResume", resumePipes("test-local"))
+	t.Run("Resume", resumePipes("test-local"))
 	t.Run("pushToEnabledPipe", pushToPipe("test-local"))
 	time.Sleep(time.Second * 1)
 
@@ -313,12 +313,12 @@ func TestEphemeralPauseResume(t *testing.T) {
 	wg.Wait()
 }
 
-func TestEphemeralJobsError(t *testing.T) {
+func TestMemoryJobsError(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "ephemeral/.rr-ephemeral-jobs-err.yaml",
+		Path:   "memory/.rr-memory-jobs-err.yaml",
 		Prefix: "rr",
 	}
 
@@ -336,7 +336,7 @@ func TestEphemeralJobsError(t *testing.T) {
 	mockLogger.EXPECT().Info("job processed without errors", "ID", gomock.Any(), "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
 
 	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Info("pipeline paused", "pipeline", "test-3", "driver", "ephemeral", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Info("pipeline paused", "pipeline", "test-3", "driver", "memory", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Error("jobs protocol error", "error", "error", "delay", gomock.Any(), "requeue", gomock.Any()).Times(3)
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
@@ -348,7 +348,7 @@ func TestEphemeralJobsError(t *testing.T) {
 		&jobs.Plugin{},
 		&resetter.Plugin{},
 		&informer.Plugin{},
-		&ephemeral.Plugin{},
+		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -399,25 +399,25 @@ func TestEphemeralJobsError(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 
-	t.Run("DeclareEphemeralPipeline", declareEphemeralPipe)
-	t.Run("ConsumeEphemeralPipeline", resumePipes("test-3"))
-	t.Run("PushEphemeralPipeline", pushToPipe("test-3"))
+	t.Run("DeclarePipeline", declareMemoryPipe)
+	t.Run("ConsumePipeline", resumePipes("test-3"))
+	t.Run("PushPipeline", pushToPipe("test-3"))
 	time.Sleep(time.Second * 25)
-	t.Run("PauseEphemeralPipeline", pausePipelines("test-3"))
+	t.Run("PausePipeline", pausePipelines("test-3"))
 	time.Sleep(time.Second)
-	t.Run("DestroyEphemeralPipeline", destroyPipelines("test-3"))
+	t.Run("DestroyPipeline", destroyPipelines("test-3"))
 
 	time.Sleep(time.Second * 5)
 	stopCh <- struct{}{}
 	wg.Wait()
 }
 
-func TestEphemeralStats(t *testing.T) {
+func TestMemoryStats(t *testing.T) {
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	assert.NoError(t, err)
 
 	cfg := &config.Viper{
-		Path:   "ephemeral/.rr-ephemeral-declare.yaml",
+		Path:   "memory/.rr-memory-declare.yaml",
 		Prefix: "rr",
 	}
 
@@ -435,7 +435,7 @@ func TestEphemeralStats(t *testing.T) {
 	mockLogger.EXPECT().Info("job processed without errors", "ID", gomock.Any(), "start", gomock.Any(), "elapsed", gomock.Any()).MinTimes(1)
 
 	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(2)
-	mockLogger.EXPECT().Info("pipeline paused", "pipeline", "test-3", "driver", "ephemeral", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
+	mockLogger.EXPECT().Info("pipeline paused", "pipeline", "test-3", "driver", "memory", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 	mockLogger.EXPECT().Warn("pipeline stopped", "pipeline", "test-3", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
 	err = cont.RegisterAll(
@@ -446,7 +446,7 @@ func TestEphemeralStats(t *testing.T) {
 		&jobs.Plugin{},
 		&resetter.Plugin{},
 		&informer.Plugin{},
-		&ephemeral.Plugin{},
+		&memory.Plugin{},
 	)
 	assert.NoError(t, err)
 
@@ -497,22 +497,22 @@ func TestEphemeralStats(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 
-	t.Run("DeclareEphemeralPipeline", declareEphemeralPipe)
-	t.Run("ConsumeEphemeralPipeline", consumeEphemeralPipe)
-	t.Run("PushEphemeralPipeline", pushToPipe("test-3"))
+	t.Run("DeclarePipeline", declareMemoryPipe)
+	t.Run("ConsumePipeline", consumeMemoryPipe)
+	t.Run("PushPipeline", pushToPipe("test-3"))
 	time.Sleep(time.Second)
-	t.Run("PauseEphemeralPipeline", pausePipelines("test-3"))
+	t.Run("PausePipeline", pausePipelines("test-3"))
 	time.Sleep(time.Second)
 
-	t.Run("PushEphemeralPipeline", pushToPipeDelayed("test-3", 5))
-	t.Run("PushEphemeralPipeline", pushToPipe("test-3"))
+	t.Run("PushPipeline", pushToPipeDelayed("test-3", 5))
+	t.Run("PushPipeline", pushToPipe("test-3"))
 
 	time.Sleep(time.Second)
 	out := &jobState.State{}
 	t.Run("Stats", stats(out))
 
 	assert.Equal(t, out.Pipeline, "test-3")
-	assert.Equal(t, out.Driver, "ephemeral")
+	assert.Equal(t, out.Driver, "memory")
 	assert.Equal(t, out.Queue, "test-3")
 
 	assert.Equal(t, out.Active, int64(1))
@@ -520,14 +520,14 @@ func TestEphemeralStats(t *testing.T) {
 	assert.Equal(t, out.Reserved, int64(0))
 
 	time.Sleep(time.Second)
-	t.Run("ConsumeEphemeralPipeline", consumeEphemeralPipe)
+	t.Run("ConsumePipeline", consumeMemoryPipe)
 	time.Sleep(time.Second * 7)
 
 	out = &jobState.State{}
 	t.Run("Stats", stats(out))
 
 	assert.Equal(t, out.Pipeline, "test-3")
-	assert.Equal(t, out.Driver, "ephemeral")
+	assert.Equal(t, out.Driver, "memory")
 	assert.Equal(t, out.Queue, "test-3")
 
 	assert.Equal(t, out.Active, int64(0))
@@ -541,13 +541,13 @@ func TestEphemeralStats(t *testing.T) {
 	wg.Wait()
 }
 
-func declareEphemeralPipe(t *testing.T) {
+func declareMemoryPipe(t *testing.T) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
 
 	pipe := &jobsv1beta.DeclareRequest{Pipeline: map[string]string{
-		"driver":   "ephemeral",
+		"driver":   "memory",
 		"name":     "test-3",
 		"prefetch": "10000",
 	}}
@@ -557,7 +557,7 @@ func declareEphemeralPipe(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func consumeEphemeralPipe(t *testing.T) {
+func consumeMemoryPipe(t *testing.T) {
 	conn, err := net.Dial("tcp", "127.0.0.1:6001")
 	assert.NoError(t, err)
 	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))

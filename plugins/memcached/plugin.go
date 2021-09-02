@@ -5,6 +5,7 @@ import (
 	"github.com/spiral/roadrunner/v2/common/kv"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"github.com/spiral/roadrunner/v2/plugins/memcached/memcachedkv"
 )
 
 const (
@@ -39,7 +40,7 @@ func (s *Plugin) Available() {}
 
 func (s *Plugin) KVConstruct(key string) (kv.Storage, error) {
 	const op = errors.Op("boltdb_plugin_provide")
-	st, err := NewMemcachedDriver(s.log, key, s.cfgPlugin)
+	st, err := memcachedkv.NewMemcachedDriver(s.log, key, s.cfgPlugin)
 	if err != nil {
 		return nil, errors.E(op, err)
 	}

@@ -14,9 +14,9 @@ import (
 	endure "github.com/spiral/endure/pkg/container"
 	"github.com/spiral/roadrunner/v2/plugins/amqp"
 	"github.com/spiral/roadrunner/v2/plugins/config"
-	"github.com/spiral/roadrunner/v2/plugins/ephemeral"
 	"github.com/spiral/roadrunner/v2/plugins/informer"
 	"github.com/spiral/roadrunner/v2/plugins/jobs"
+	"github.com/spiral/roadrunner/v2/plugins/memory"
 	"github.com/spiral/roadrunner/v2/plugins/metrics"
 	"github.com/spiral/roadrunner/v2/plugins/resetter"
 	rpcPlugin "github.com/spiral/roadrunner/v2/plugins/rpc"
@@ -68,7 +68,7 @@ func TestJobsInit(t *testing.T) {
 		&jobs.Plugin{},
 		&resetter.Plugin{},
 		&informer.Plugin{},
-		&ephemeral.Plugin{},
+		&memory.Plugin{},
 		&amqp.Plugin{},
 	)
 	assert.NoError(t, err)
@@ -154,7 +154,7 @@ func TestJOBSMetrics(t *testing.T) {
 		&server.Plugin{},
 		&jobs.Plugin{},
 		&metrics.Plugin{},
-		&ephemeral.Plugin{},
+		&memory.Plugin{},
 		mockLogger,
 	)
 	assert.NoError(t, err)
@@ -204,8 +204,8 @@ func TestJOBSMetrics(t *testing.T) {
 
 	time.Sleep(time.Second * 2)
 
-	t.Run("DeclareEphemeralPipeline", declareEphemeralPipe)
-	t.Run("ConsumeEphemeralPipeline", consumeEphemeralPipe)
+	t.Run("DeclareEphemeralPipeline", declareMemoryPipe)
+	t.Run("ConsumeEphemeralPipeline", consumeMemoryPipe)
 	t.Run("PushEphemeralPipeline", pushToPipe("test-3"))
 	time.Sleep(time.Second)
 	t.Run("PushEphemeralPipeline", pushToPipeDelayed("test-3", 5))
