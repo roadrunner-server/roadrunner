@@ -18,18 +18,21 @@ func NewZapAdapter(zapLogger *zap.Logger) *ZapAdapter {
 	}
 }
 
-func separateFields(keyVals []interface{}) (fields []zap.Field, individualKeyVals []interface{}) {
-	for _, value := range keyVals {
-		switch value := value.(type) {
+func separateFields(keyVals []interface{}) ([]zap.Field, []interface{}) {
+	fields := []zap.Field{}
+	pairedKeyVals := []interface{}{}
+
+	for key := range keyVals {
+		switch value := keyVals[key].(type) {
 		case zap.Field:
 			fields = append(fields, value)
 		case core.ObjectMarshaler:
 			fields = append(fields, zap.Inline(value))
 		default:
-			individualKeyVals = append(individualKeyVals, value)
+			pairedKeyVals = append(pairedKeyVals, value)
 		}
 	}
-	return
+	return fields, pairedKeyVals
 }
 
 func (log *ZapAdapter) fields(keyvals []interface{}) []zap.Field {
