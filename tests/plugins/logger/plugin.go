@@ -43,7 +43,7 @@ func (p1 *Plugin) Serve() chan error {
 	p1.log.Debug("error", field)
 	p1.log.Warn("error", field)
 
-	marshalledObject := Loggable{}
+	marshalledObject := &Loggable{}
 
 	p1.log.Error("error", marshalledObject)
 	p1.log.Info("error", marshalledObject)
