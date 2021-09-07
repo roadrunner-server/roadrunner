@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package testPhpNamespace;
+
+option php_namespace = "Test\\CustomNamespace";
+
+service Service {
+    rpc SimpleMethod (SimpleMessage) returns (SimpleMessage) {
+    }
+}
+
+message SimpleMessage {
+    int32 id = 1;
+    string name = 2;
+}

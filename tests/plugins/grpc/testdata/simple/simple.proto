@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package testSimple;
+
+service SimpleService {
+    rpc SimpleMethod (SimpleMessage) returns (SimpleMessage) {
+    }
+}
+
+message SimpleMessage {
+    int32 id = 1;
+    string name = 2;
+}

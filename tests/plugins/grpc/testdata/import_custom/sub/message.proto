@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package import.sub;
+option php_namespace = "Test\\CustomImport\\Message";
+
+
+service Service {
+    rpc AnotherMethod (Message) returns (Message) {
+    }
+}
+
+message Message {
+    int64 id = 1;
+}
