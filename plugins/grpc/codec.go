@@ -4,6 +4,7 @@ import "google.golang.org/grpc/encoding"
 
 type rawMessage []byte
 
+const cName string = "proto"
 const rm string = "rawMessage"
 
 func (r rawMessage) Reset()       {}
@@ -29,6 +30,10 @@ func (c *codec) Unmarshal(data []byte, v interface{}) error {
 	}
 
 	return c.base.Unmarshal(data, v)
+}
+
+func (c *codec) Name() string {
+	return cName
 }
 
 // String return codec name.

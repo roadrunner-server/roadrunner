@@ -19,7 +19,7 @@ func init() {
 }
 
 func build() error {
-	cmd := exec.Command("go", "build", "-o", "plugin", "../../../plugins/grpc/protoc-gen-php-grpc")
+	cmd := exec.Command("go", "build", "-o", "plugin", "../../../plugins/grpc/protoc_plugins/protoc-gen-php-grpc")
 	return cmd.Run()
 }
 

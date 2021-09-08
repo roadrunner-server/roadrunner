@@ -346,18 +346,6 @@ func TestFileLogger(t *testing.T) {
 	wg.Wait()
 }
 
-func httpEcho(t *testing.T) {
-	req, err := http.NewRequest(http.MethodGet, "http://127.0.0.1:54224?hello=world", nil)
-	assert.NoError(t, err)
-
-	r, err := http.DefaultClient.Do(req)
-	assert.NoError(t, err)
-	assert.Equal(t, http.StatusCreated, r.StatusCode)
-
-	err = r.Body.Close()
-	assert.NoError(t, err)
-}
-
 func TestMarshalObjectLogging(t *testing.T) {
 	container, err := endure.NewContainer(nil, endure.RetryOnFail(true), endure.SetLogLevel(endure.ErrorLevel))
 	if err != nil {
@@ -427,4 +415,16 @@ func TestMarshalObjectLogging(t *testing.T) {
 
 	stopCh <- struct{}{}
 	wg.Wait()
+}
+
+func httpEcho(t *testing.T) {
+	req, err := http.NewRequest(http.MethodGet, "http://127.0.0.1:54224?hello=world", nil)
+	assert.NoError(t, err)
+
+	r, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusCreated, r.StatusCode)
+
+	err = r.Body.Close()
+	assert.NoError(t, err)
 }

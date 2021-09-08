@@ -4,6 +4,8 @@ import (
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/plugins/config"
 	"github.com/spiral/roadrunner/v2/plugins/logger"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/encoding"
 )
 
 const (
@@ -11,12 +13,18 @@ const (
 )
 
 type Plugin struct {
+	config *Config
+	opts   []grpc.ServerOption
+
 	cfg config.Configurer
 	log logger.Logger
 }
 
 func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 	const op = errors.Op("grpc_plugin_init")
+
+	// register the codec
+	encoding.RegisterCodec(&codec{})
 
 	return nil
 }
