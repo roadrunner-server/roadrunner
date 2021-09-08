@@ -19,8 +19,8 @@ func NewZapAdapter(zapLogger *zap.Logger) *ZapAdapter {
 }
 
 func separateFields(keyVals []interface{}) ([]zap.Field, []interface{}) {
-	fields := []zap.Field{}
-	pairedKeyVals := []interface{}{}
+	var fields []zap.Field
+	var pairedKeyVals []interface{}
 
 	for key := range keyVals {
 		switch value := keyVals[key].(type) {
