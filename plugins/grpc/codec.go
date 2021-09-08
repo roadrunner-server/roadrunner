@@ -4,9 +4,11 @@ import "google.golang.org/grpc/encoding"
 
 type rawMessage []byte
 
+const rm string = "rawMessage"
+
 func (r rawMessage) Reset()       {}
 func (rawMessage) ProtoMessage()  {}
-func (rawMessage) String() string { return "rawMessage" }
+func (rawMessage) String() string { return rm }
 
 type codec struct{ base encoding.Codec }
 
