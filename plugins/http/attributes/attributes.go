@@ -37,9 +37,14 @@ func (v attrs) del(key string) {
 	delete(v, key)
 }
 
-// Init returns request with new context and attribute bag.
+// Init is idempotent returns request with new context and attribute bag.
 func Init(r *http.Request) *http.Request {
-	return r.WithContext(context.WithValue(r.Context(), PsrContextKey, attrs{}))
+	// do not overwrite the PsrContextKey payload
+	if val := r.Context().Value(PsrContextKey); val == nil {
+		return r.WithContext(context.WithValue(r.Context(), PsrContextKey, attrs{}))
+	}
+
+	return r
 }
 
 // All returns all context attributes.

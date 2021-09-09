@@ -10,6 +10,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/keepalive"
+	"google.golang.org/grpc/reflection"
+	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 func (p *Plugin) createGRPCserver() (*grpc.Server, error) {
@@ -20,6 +22,14 @@ func (p *Plugin) createGRPCserver() (*grpc.Server, error) {
 	}
 
 	server := grpc.NewServer(opts...)
+	reflection.Register(server)
+
+	fd, err := protoregistry.GlobalFiles.FindFileByPath("file")
+	if err != nil {
+		return nil, errors.E(op, err)
+	}
+
+	_ = fd
 
 	/*
 		proto descriptors parser
@@ -114,6 +124,7 @@ func (p *Plugin) serverOptions() ([]grpc.ServerOption, error) {
 	return append(
 		opts,
 		grpc.UnaryInterceptor(p.interceptor),
+		// TODO(rustatian): check deprecation
 		// grpc.CustomCodec(&codec{encoding.GetCodec(encCodec)}),
 	), nil
 }
