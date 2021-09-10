@@ -1,15 +1,25 @@
 {
     "cSpell.words": [
+        "addrs",
         "AMQP",
         "extendee",
+        "Goridge",
         "Idxs",
         "Itestdata",
         "jobsv",
         "mdwr",
+        "Nyholm",
         "prefetch",
         "protobuf",
+        "protoc",
         "protoimpl",
+        "stretchr",
         "tcreds",
-        "tmpdir"
-    ]
+        "tmpdir",
+        "websockets",
+        "websocketsv"
+    ],
+    "files.associations": {
+        "Dockerfile-*.yaml": "dockerfile"
+    }
 }
