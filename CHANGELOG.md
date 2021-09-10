@@ -4,7 +4,7 @@
 
 ## 🩹 Fixes:
 
--   🐛 Fix: bug with not-idempotent call to the `attributes.Init`
+-   🐛 Fix: bug with not-idempotent call to the `attributes.Init`.
 
 ## v2.4.0 (02.09.2021)
 
