@@ -24,6 +24,7 @@ redis:
 broadcast:
   test:
     driver: redis
+    use: global
   test2:
     driver: redis
     addrs:

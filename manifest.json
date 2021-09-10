@@ -1,0 +1,79 @@
+[
+  {
+    "title": "RoadRunner",
+    "links": {
+      "readme": "Table of Contents",
+      "intro/about": "What is it?",
+      "intro/features": "Features",
+      "intro/install": "Installation",
+      "intro/config": "Configuration Reference",
+      "license": "LICENSE"
+    }
+  },
+  {
+    "title": "PHP Workers",
+    "links": {
+      "php/worker": "Worker",
+      "php/environment": "Environment",
+      "php/developer": "Developer Mode",
+      "php/error-handling": "Error Handling",
+      "php/restarting": "Restarting",
+      "php/limit": "Process Supervisor",
+      "php/rpc": "RPC to App Server",
+      "php/caveats": "Caveats",
+      "php/debugging": "Debugging"
+    }
+  },
+  {
+    "title": "HTTPs and HTTP2",
+    "links": {
+      "http/https": "HTTPs and HTTP/2",
+      "http/static": "Static Content",
+      "http/headers": "Headers",
+      "http/middleware": "Middleware"
+    }
+  },
+  {
+    "title": "App Server",
+    "links": {
+      "beep-beep/cli": "CLI Commands",
+      "beep-beep/logging": "Logging",
+      "beep-beep/reload": "Auto-Reloading",
+      "beep-beep/production": "Production Usage",
+      "beep-beep/systemd": "Writing a RR systemd unit file",
+      "beep-beep/metrics": "Prometheus Metrics",
+      "beep-beep/health": "Healthcheck",
+      "beep-beep/build": "Building a Server",
+      "beep-beep/kv": "KeyValue Storage",
+      "beep-beep/jobs": "Jobs (Queues)",
+      "beep-beep/rpc": "RPC",
+      "beep-beep/plugin": "Write a Plugin",
+      "beep-beep/service": "Service plugin"
+    }
+  },
+  {
+    "title": "Integrations",
+    "links": {
+      "integration/migration": "Migration from V1 to V2",
+      "integration/cake": "CakePHP",
+      "integration/laravel": "Laravel",
+      "integration/slim": "Slim",
+      "integration/spiral": "Spiral Framework",
+      "integration/symfony": "Symfony Framework",
+      "integration/symlex": "Symlex Framework",
+      "integration/ubiquity": "Ubiquity Framework",
+      "integration/zend": "Zend Expressive",
+      "integration/yii": "Yii2 and Yii3",
+      "integration/phalcon": "Phalcon3 and Phalcon4",
+      "integration/mezzio": "Mezzio",
+      "integration/chubbyphp": "Chubbyphp Framework"
+    }
+  },
+  {
+    "title": "Docker",
+    "links": {
+      "docker/ports": "Ports and Containers",
+      "docker/images": "Available Images"
+    }
+  }
+]
