@@ -31,14 +31,6 @@ http:
 broadcast:
     default:
         driver: memory
-        # %YAML 1.1
-        #---
-        # !!map {
-        #    ? !!str "key"
-        #    : !!null "null",
-        #}
-        config:
-            placeholder: ""
 
 websockets:
     broker: default

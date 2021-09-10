@@ -35,8 +35,6 @@ redis:
 broadcast:
     test:
         driver: memory
-        config:
-            placeholder: ""
 
 websockets:
     broker: test

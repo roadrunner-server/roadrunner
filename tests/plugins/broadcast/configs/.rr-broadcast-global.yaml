@@ -40,12 +40,8 @@ broadcast:
                 - "127.0.0.1:6378"
     test3:
         driver: memory
-        config:
-            placeholder: ""
     test4:
         driver: memory
-        config:
-            placeholder: ""
 
 logs:
     mode: development
