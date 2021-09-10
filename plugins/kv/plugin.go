@@ -99,7 +99,8 @@ func (p *Plugin) Serve() chan error {
 
 				// save the storage
 				p.storages[k] = storage
-			default:
+				// try global then
+			case p.cfgPlugin.Has(k):
 				if _, ok := p.constructors[drStr]; !ok {
 					p.log.Warn("no constructors registered", "requested constructor", drStr, "registered", p.constructors)
 					continue
@@ -114,9 +115,11 @@ func (p *Plugin) Serve() chan error {
 
 				// save the storage
 				p.storages[k] = storage
+			default:
+				p.log.Error("can't find local or global configuration, this section will be skipped", "local: ", configKey, "global: ", k)
+				continue
 			}
 		}
-
 		continue
 	}
 

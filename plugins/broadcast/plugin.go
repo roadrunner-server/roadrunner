@@ -53,7 +53,7 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 }
 
 func (p *Plugin) Serve() chan error {
-	return make(chan error)
+	return make(chan error, 1)
 }
 
 func (p *Plugin) Stop() error {
@@ -158,7 +158,7 @@ func (p *Plugin) GetDriver(key string) (pubsub.SubReader, error) {
 				p.publishers[configKey] = ps
 
 				return ps, nil
-			default:
+			case p.cfgPlugin.Has(key):
 				// try global driver section after local
 				ps, err := p.constructors[drStr].PSConstruct(key)
 				if err != nil {
@@ -170,6 +170,8 @@ func (p *Plugin) GetDriver(key string) (pubsub.SubReader, error) {
 				p.publishers[configKey] = ps
 
 				return ps, nil
+			default:
+				p.log.Error("can't find local or global configuration, this section will be skipped", "local: ", configKey, "global: ", key)
 			}
 		}
 	}

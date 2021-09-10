@@ -21,7 +21,7 @@ type PubSubDriver struct {
 
 func NewPubSubDriver(log logger.Logger, _ string) (*PubSubDriver, error) {
 	ps := &PubSubDriver{
-		pushCh:  make(chan *pubsub.Message, 10),
+		pushCh:  make(chan *pubsub.Message, 100),
 		storage: bst.NewBST(),
 		log:     log,
 	}

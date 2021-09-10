@@ -35,6 +35,7 @@ redis:
 broadcast:
     test:
         driver: memory
+        config: {}
 
 websockets:
     broker: test

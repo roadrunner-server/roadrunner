@@ -3,16 +3,19 @@ coverage:
     project:
       default:
         target: auto
-        threshold: 0%
+        threshold: 50%
         informational: true
     patch:
       default:
         target: auto
-        threshold: 0%
+        threshold: 50%
         informational: true
 
 # do not include tests folders
 ignore:
+  - "common"
+  - "internal"
+  - "proto"
   - "tests"
   - "plugins/metrics/config_test.go"
   - "plugins/websockets/storage/storage_test.go"
