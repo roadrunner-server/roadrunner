@@ -3,6 +3,8 @@ package broadcast
 /*
 
 # Global redis config (priority - 2)
+default:
+   # redis configuration here
 
 websockets: # <----- one of possible subscribers
   path: /ws

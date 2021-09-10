@@ -1,11 +1,12 @@
 rpc:
-  listen: tcp://127.0.0.1:6001
+    listen: tcp://127.0.0.1:6001
 
 logs:
-  mode: development
-  level: error
+    mode: development
+    level: error
 
 kv:
-  memory-rr:
-    driver: memory
-    interval: 1
+    memory-rr:
+        driver: memory
+        config:
+            interval: 1

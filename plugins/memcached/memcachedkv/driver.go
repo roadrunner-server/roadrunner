@@ -32,6 +32,10 @@ func NewMemcachedDriver(log logger.Logger, key string, cfgPlugin config.Configur
 		return nil, errors.E(op, err)
 	}
 
+	if s.cfg == nil {
+		return nil, errors.E(op, errors.Errorf("config not found by provided key: %s", key))
+	}
+
 	s.cfg.InitDefaults()
 
 	m := memcache.New(s.cfg.Addr...)

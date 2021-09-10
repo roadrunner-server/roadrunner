@@ -61,6 +61,10 @@ func NewJobBroker(configKey string, log logger.Logger, cfg config.Configurer, eh
 		return nil, errors.E(op, err)
 	}
 
+	if jb.cfg == nil {
+		return nil, errors.E(op, errors.Errorf("config not found by provided key: %s", configKey))
+	}
+
 	if jb.cfg.Prefetch == 0 {
 		jb.cfg.Prefetch = 100_000
 	}

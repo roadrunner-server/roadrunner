@@ -1,6 +1,13 @@
 {
 	"cSpell.words": [
 		"addrs",
-		"websockets"
+		"amqp",
+		"boltdb",
+		"gomemcache",
+		"goridge",
+		"memorykv",
+		"Upgrader",
+		"websockets",
+		"websocketsv"
 	]
 }
