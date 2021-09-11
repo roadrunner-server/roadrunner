@@ -67,7 +67,7 @@ func TestBinHeap_MaxLen(t *testing.T) {
 	bh := NewBinHeap(1)
 
 	go func() {
-		expected := []Item{Test(1), Test(2), Test(2), Test(2), Test(2), Test(4), Test(6), Test(23), Test(33), Test(44), Test(99)}
+		expected := []Item{Test(2), Test(23), Test(33), Test(44), Test(1), Test(2), Test(2), Test(2), Test(4), Test(6), Test(99)}
 
 		res := make([]Item, 0, 12)
 
@@ -79,11 +79,12 @@ func TestBinHeap_MaxLen(t *testing.T) {
 		return
 	}()
 
+	time.Sleep(time.Second)
 	for i := 0; i < len(a); i++ {
 		bh.Insert(a[i])
 	}
 
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second)
 }
 
 func TestNewPriorityQueue(t *testing.T) {
