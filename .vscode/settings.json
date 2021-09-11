@@ -2,6 +2,7 @@
 	"cSpell.words": [
 		"addrs",
 		"amqp",
+		"amqpjobs",
 		"boltdb",
 		"gomemcache",
 		"goridge",
