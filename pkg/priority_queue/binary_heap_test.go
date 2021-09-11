@@ -76,11 +76,14 @@ func TestBinHeap_MaxLen(t *testing.T) {
 			res = append(res, item)
 		}
 		require.Equal(t, expected, res)
+		return
 	}()
 
 	for i := 0; i < len(a); i++ {
 		bh.Insert(a[i])
 	}
+
+	time.Sleep(time.Second * 2)
 }
 
 func TestNewPriorityQueue(t *testing.T) {
