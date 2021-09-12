@@ -37,7 +37,8 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/metrics.out -covermode=atomic ./tests/plugins/metrics
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/resetter.out -covermode=atomic ./tests/plugins/resetter
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/rpc.out -covermode=atomic ./tests/plugins/rpc
-	cat ./coverage-ci/*.out > ./coverage-ci/summary.out
+	echo 'mode: atomic' > ./coverage-ci/summary.txt
+	tail -q -n +2 ./coverage-ci/*.out >> ./coverage-ci/summary.txt
 	docker-compose -f tests/env/docker-compose.yaml down
 
 test: ## Run application tests
