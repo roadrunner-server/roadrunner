@@ -107,7 +107,7 @@ func TestMemoryInit(t *testing.T) {
 		}
 	}()
 
-	time.Sleep(time.Second * 3)
+	time.Sleep(time.Second * 1)
 	stopCh <- struct{}{}
 	wg.Wait()
 }
@@ -229,7 +229,7 @@ func TestMemoryPauseResume(t *testing.T) {
 	mockLogger.EXPECT().Error(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 
 	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-local-2", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
-	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-local", "start", gomock.Any(), "elapsed", gomock.Any()).Times(3)
+	mockLogger.EXPECT().Info("pipeline active", "pipeline", "test-local", "start", gomock.Any(), "elapsed", gomock.Any()).Times(2)
 
 	mockLogger.EXPECT().Info("pipeline paused", "pipeline", "test-local", "driver", "memory", "start", gomock.Any(), "elapsed", gomock.Any()).Times(1)
 
@@ -301,7 +301,6 @@ func TestMemoryPauseResume(t *testing.T) {
 
 	time.Sleep(time.Second * 3)
 
-	t.Run("Resume", resumePipes("test-local"))
 	t.Run("Pause", pausePipelines("test-local"))
 	t.Run("pushToDisabledPipe", pushToDisabledPipe("test-local"))
 	t.Run("Resume", resumePipes("test-local"))
