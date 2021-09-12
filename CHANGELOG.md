@@ -1,10 +1,11 @@
 # CHANGELOG
 
-## v2.4.1 (10.09.2021)
+## v2.4.1 (13.09.2021)
 
 ## 🩹 Fixes:
 
 -   🐛 Fix: bug with not-idempotent call to the `attributes.Init`.
+-   🐛 Fix: memory jobs driver behavior. Now memory driver starts consuming automatically if the user consumes the pipeline in the configuration.
 
 ## v2.4.0 (02.09.2021)
 
