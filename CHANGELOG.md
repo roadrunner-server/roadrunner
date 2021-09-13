@@ -1,5 +1,93 @@
 # CHANGELOG
 
+## v2.5.0 (-.-.2021)
+
+## 💔 BC:
+
+-   🔨 All drivers now uses new `config` key to handle local configuration. Involved plugins and drivers:
+-   `plugins`: broadcast, kv
+-   `drivers`: memory, redis, memcached, boltdb.
+
+## ATTENTION!!!, this is configuration BC, please, update your configuration:
+
+### Old style:
+
+```yaml
+broadcast:
+    default:
+        driver: memory
+        interval: 1
+```
+
+### New style:
+
+```yaml
+broadcast:
+    default:
+        driver: memory
+        config: {} <--------------- NEW
+```
+
+```yaml
+kv:
+    memory-rr:
+        driver: memory
+        config: <--------------- NEW
+            interval: 1
+
+kv:
+    memcached-rr:
+        driver: memcached
+        config: <--------------- NEW
+            addr:
+                - "127.0.0.1:11211"
+```
+
+## 👀 New:
+
+-   ✏️
+
+## 🩹 Fixes:
+
+-   🐛 Fix: local and global configuration parsing
+
+## 📦 Packages:
+
+-   📦
+
+## 📈 Summary:
+
+-   RR Milestone [2.5.0]()
+-   RR-Binary Milestone [2.5.0]()## v2.5.0 (-.-.2021)
+
+## 💔 Internal BC:
+
+-   🔨
+
+## 👀 New:
+
+-   ✏️ Long-awaited, reworked `Jobs` plugin with pluggable drivers. Now you can allocate/destroy pipelines in the runtime. Drivers included in the initial release: `RabbitMQ (0-9-1)`, `SQS v2`, `beanstalk`, `memory` and local queue powered by the `boltdb`. [PR](https://github.com/spiral/roadrunner/pull/726)
+-   ✏️ Support for the IPv6 (`tcp|http(s)|empty [::]:port`, `tcp|http(s)|empty [::1]:port`, `tcp|http(s)|empty :// [0:0:0:0:0:0:0:1]:port`) for RPC, HTTP and other plugins. [RFC](https://datatracker.ietf.org/doc/html/rfc2732#section-2)
+-   ✏️ Support for the Docker images via GitHub packages.
+-   ✏️ Go 1.17 support for the all spiral packages.
+
+## 🩹 Fixes:
+
+-   🐛 Fix: fixed bug with goroutines waiting on the internal worker's container channel, [issue](https://github.com/spiral/roadrunner/issues/750).
+-   🐛 Fix: RR become unresponsive when new workers failed to re-allocate, [issue](https://github.com/spiral/roadrunner/issues/772).
+-   🐛 Fix: add `debug` pool config key to the `.rr.yaml` configuration [reference](https://github.com/spiral/roadrunner-binary/issues/79).
+
+## 📦 Packages:
+
+-   📦 Update goridge to `v3.2.1`
+-   📦 Update temporal to `v1.0.9`
+-   📦 Update endure to `v1.0.4`
+
+## 📈 Summary:
+
+-   RR Milestone [2.4.0](https://github.com/spiral/roadrunner/milestone/29?closed=1)
+-   RR-Binary Milestone [2.4.0](https://github.com/spiral/roadrunner-binary/milestone/10?closed=1)
+
 ## v2.4.1 (13.09.2021)
 
 ## 🩹 Fixes:
