@@ -1,38 +1,48 @@
 rpc:
-  listen: tcp://127.0.0.1:6001
+    listen: tcp://127.0.0.1:6001
 
 server:
-  command: "php ../../worker-stop.php"
-  user: ""
-  group: ""
-  relay: "pipes"
-  relay_timeout: "20s"
+    command: "php ../../worker-stop.php"
+    user: ""
+    group: ""
+    relay: "pipes"
+    relay_timeout: "20s"
 
 http:
-  address: 127.0.0.1:11114
-  max_request_size: 1024
-  middleware: [ "websockets" ]
-  trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
-  pool:
-    num_workers: 2
-    max_jobs: 0
-    allocate_timeout: 60s
-    destroy_timeout: 60s
+    address: 127.0.0.1:11114
+    max_request_size: 1024
+    middleware: ["websockets"]
+    trusted_subnets:
+        [
+            "10.0.0.0/8",
+            "127.0.0.0/8",
+            "172.16.0.0/12",
+            "192.168.0.0/16",
+            "::1/128",
+            "fc00::/7",
+            "fe80::/10",
+        ]
+    pool:
+        num_workers: 2
+        max_jobs: 0
+        allocate_timeout: 60s
+        destroy_timeout: 60s
 
 broadcast:
-  test:
-    driver: memory
+    test:
+        driver: memory
+        config: {}
 
 websockets:
-  broker: test
-  allowed_origin: "*"
-  path: "/ws"
+    broker: test
+    allowed_origin: "*"
+    path: "/ws"
 
 logs:
-  mode: development
-  level: error
+    mode: development
+    level: error
 
 endure:
-  grace_period: 120s
-  print_graph: false
-  log_level: error
+    grace_period: 120s
+    print_graph: false
+    log_level: error

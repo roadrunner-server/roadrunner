@@ -3,25 +3,33 @@ coverage:
     project:
       default:
         target: auto
-        threshold: 0%
+        threshold: 50%
         informational: true
     patch:
       default:
         target: auto
-        threshold: 0%
+        threshold: 50%
         informational: true
 
 # do not include tests folders
 ignore:
+  - "common"
+  - "internal"
+  - "proto"
   - "tests"
+  - "systemd"
+  - "utils/to_ptr.go"
   - "plugins/metrics/config_test.go"
   - "plugins/websockets/storage/storage_test.go"
   - "plugins/websockets/config.go"
-  - "pkg/bst/bst_test.go"
+  - "plugins/amqp/amqpjobs/config.go"
+  - "plugins/beanstalk/config.go"
+  - "plugins/redis/config.go"
+  - "plugins/redis/kv/config.go"
   - "pkg/doc"
+  - "pkg/bst/bst_test.go"
   - "pkg/pool/static_pool_test.go"
   - "pkg/pool/supervisor_test.go"
-  - "pkg/pubsub"
   - "pkg/transport/pipe/pipe_factory_spawn_test.go"
   - "pkg/transport/pipe/pipe_factory_test.go"
   - "pkg/transport/socket/socket_factory_spawn_test.go"
@@ -32,5 +40,4 @@ ignore:
   - "pkg/worker/worker_test.go"
   - "pkg/events/pool_events.go"
   - "pkg/events/worker_events.go"
-  - "systemd"
-  - "utils/to_ptr.go"
+  - "pkg/events/jobs_events.go"

@@ -1,16 +1,18 @@
 rpc:
-  listen: tcp://127.0.0.1:6001
+    listen: tcp://127.0.0.1:6001
 
 logs:
-  mode: development
-  level: error
+    mode: development
+    level: error
 
 kv:
-  boltdb-south:
-    driver: boltdb
-    file: "rr.db"
+    boltdb-south:
+        driver: boltdb
+        config:
+            file: "rr.db"
 
-  boltdb-africa:
-    driver: boltdb
-    file: "africa.db"
-    permissions: 0777
+    boltdb-africa:
+        driver: boltdb
+        config:
+            file: "africa.db"
+            permissions: 0777

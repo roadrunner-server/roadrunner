@@ -49,7 +49,7 @@ func (p *Plugin) PSConstruct(key string) (pubsub.PubSub, error) {
 }
 
 func (p *Plugin) KVConstruct(key string) (kv.Storage, error) {
-	const op = errors.Op("inmemory_plugin_provide")
+	const op = errors.Op("memory_plugin_construct")
 	st, err := memorykv.NewInMemoryDriver(key, p.log, p.cfg)
 	if err != nil {
 		return nil, errors.E(op, err)

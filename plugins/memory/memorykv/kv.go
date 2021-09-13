@@ -33,6 +33,10 @@ func NewInMemoryDriver(key string, log logger.Logger, cfgPlugin config.Configure
 		return nil, errors.E(op, err)
 	}
 
+	if d.cfg == nil {
+		return nil, errors.E(op, errors.Errorf("config not found by provided key: %s", key))
+	}
+
 	d.cfg.InitDefaults()
 
 	go d.gc()

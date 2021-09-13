@@ -1,10 +1,29 @@
 {
     "cSpell.words": [
+        "addrs",
+        "amqp",
+        "amqpjobs",
+        "boltdb",
+        "codecov",
+        "golangci",
+        "gomemcache",
         "goridge",
-        "goroutines",
-        "jobsv",
-        "pluggable",
+        "hget",
+        "hset",
+        "INMEMORY",
+        "memcachedkv",
+        "memorykv",
+        "mexpire",
+        "mget",
         "prefetch",
-        "stretchr"
+        "proto",
+        "SETEX",
+        "shivammathur",
+        "srem",
+        "stretchr",
+        "unsub",
+        "Upgrader",
+        "websockets",
+        "websocketsv"
     ]
 }

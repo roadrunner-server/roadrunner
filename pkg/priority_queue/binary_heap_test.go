@@ -61,6 +61,32 @@ func TestBinHeap_Init(t *testing.T) {
 	require.Equal(t, expected, res)
 }
 
+func TestBinHeap_MaxLen(t *testing.T) {
+	a := []Item{Test(2), Test(23), Test(33), Test(44), Test(1), Test(2), Test(2), Test(2), Test(4), Test(6), Test(99)}
+
+	bh := NewBinHeap(1)
+
+	go func() {
+		expected := []Item{Test(2), Test(23), Test(33), Test(44), Test(1), Test(2), Test(2), Test(2), Test(4), Test(6), Test(99)}
+
+		res := make([]Item, 0, 12)
+
+		for i := 0; i < 11; i++ {
+			item := bh.ExtractMin()
+			res = append(res, item)
+		}
+		require.Equal(t, expected, res)
+		return
+	}()
+
+	time.Sleep(time.Second)
+	for i := 0; i < len(a); i++ {
+		bh.Insert(a[i])
+	}
+
+	time.Sleep(time.Second)
+}
+
 func TestNewPriorityQueue(t *testing.T) {
 	insertsPerSec := uint64(0)
 	getPerSec := uint64(0)

@@ -16,6 +16,7 @@ import (
 )
 
 func Test_GetState(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
 
@@ -36,6 +37,7 @@ func Test_GetState(t *testing.T) {
 }
 
 func Test_Kill(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
 
@@ -60,6 +62,7 @@ func Test_Kill(t *testing.T) {
 }
 
 func Test_Pipe_Start(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
 
@@ -75,6 +78,7 @@ func Test_Pipe_Start(t *testing.T) {
 }
 
 func Test_Pipe_StartError(t *testing.T) {
+	t.Parallel()
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
 	err := cmd.Start()
 	if err != nil {
@@ -88,6 +92,7 @@ func Test_Pipe_StartError(t *testing.T) {
 }
 
 func Test_Pipe_PipeError(t *testing.T) {
+	t.Parallel()
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
 	_, err := cmd.StdinPipe()
 	if err != nil {
@@ -101,6 +106,7 @@ func Test_Pipe_PipeError(t *testing.T) {
 }
 
 func Test_Pipe_PipeError2(t *testing.T) {
+	t.Parallel()
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
 	// error cause
 	_, err := cmd.StdinPipe()
@@ -115,6 +121,7 @@ func Test_Pipe_PipeError2(t *testing.T) {
 }
 
 func Test_Pipe_Failboot(t *testing.T) {
+	t.Parallel()
 	cmd := exec.Command("php", "../../../tests/failboot.php")
 	ctx := context.Background()
 
@@ -137,6 +144,7 @@ func Test_Pipe_Failboot(t *testing.T) {
 }
 
 func Test_Pipe_Invalid(t *testing.T) {
+	t.Parallel()
 	cmd := exec.Command("php", "../../../tests/invalid.php")
 	ctx := context.Background()
 	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
@@ -145,6 +153,7 @@ func Test_Pipe_Invalid(t *testing.T) {
 }
 
 func Test_Pipe_Echo(t *testing.T) {
+	t.Parallel()
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
 	ctx := context.Background()
 	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
@@ -171,6 +180,7 @@ func Test_Pipe_Echo(t *testing.T) {
 }
 
 func Test_Pipe_Broken(t *testing.T) {
+	t.Parallel()
 	cmd := exec.Command("php", "../../../tests/client.php", "broken", "pipes")
 	ctx := context.Background()
 	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
@@ -286,6 +296,7 @@ func Benchmark_Pipe_Worker_ExecEchoWithoutContext(b *testing.B) {
 }
 
 func Test_Echo(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
 
@@ -316,6 +327,7 @@ func Test_Echo(t *testing.T) {
 }
 
 func Test_BadPayload(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
 
@@ -342,6 +354,7 @@ func Test_BadPayload(t *testing.T) {
 }
 
 func Test_String(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
 
@@ -362,6 +375,7 @@ func Test_String(t *testing.T) {
 }
 
 func Test_Echo_Slow(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../../tests/slow-client.php", "echo", "pipes", "10", "10")
 
@@ -389,6 +403,7 @@ func Test_Echo_Slow(t *testing.T) {
 }
 
 func Test_Broken(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../../tests/client.php", "broken", "pipes")
 	data := ""
@@ -422,6 +437,7 @@ func Test_Broken(t *testing.T) {
 }
 
 func Test_Error(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../../tests/client.php", "error", "pipes")
 
@@ -450,6 +466,7 @@ func Test_Error(t *testing.T) {
 }
 
 func Test_NumExecs(t *testing.T) {
+	t.Parallel()
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
 

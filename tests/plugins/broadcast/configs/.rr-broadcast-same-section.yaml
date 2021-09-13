@@ -1,36 +1,48 @@
 rpc:
-  listen: tcp://127.0.0.1:6002
+    listen: tcp://127.0.0.1:6002
 
 server:
-  command: "php ../../psr-worker-bench.php"
-  relay: "pipes"
-  relay_timeout: "20s"
+    command: "php ../../psr-worker-bench.php"
+    relay: "pipes"
+    relay_timeout: "20s"
 
 http:
-  address: 127.0.0.1:21345
-  max_request_size: 1024
-  middleware: [ "websockets" ]
-  trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
-  pool:
-    num_workers: 2
-    max_jobs: 0
-    allocate_timeout: 60s
-    destroy_timeout: 60s
+    address: 127.0.0.1:21345
+    max_request_size: 1024
+    middleware: ["websockets"]
+    trusted_subnets:
+        [
+            "10.0.0.0/8",
+            "127.0.0.0/8",
+            "172.16.0.0/12",
+            "192.168.0.0/16",
+            "::1/128",
+            "fc00::/7",
+            "fe80::/10",
+        ]
+    pool:
+        num_workers: 2
+        max_jobs: 0
+        allocate_timeout: 60s
+        destroy_timeout: 60s
 
 broadcast:
-  test:
-    driver: redis
-    addrs:
-      - "127.0.0.1:6379"
-  test2:
-    driver: redis
-    addrs:
-      - "127.0.0.1:6378"
-  test3:
-    driver: memory
-  test4:
-    driver: memory
-
+    test:
+        driver: redis
+        config:
+            addrs:
+                - "127.0.0.1:6379"
+    test2:
+        driver: redis
+        config:
+            addrs:
+                - "127.0.0.1:6378"
+    test3:
+        driver: memory
+        config: {}
+    test4:
+        driver: memory
+        config: {}
 logs:
-  mode: development
-  level: info
+    mode: development
+    level: info

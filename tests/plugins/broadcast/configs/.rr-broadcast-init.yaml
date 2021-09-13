@@ -22,8 +22,9 @@ http:
 broadcast:
   default:
     driver: redis
-    addrs:
-      - "127.0.0.1:6379"
+    config:
+      addrs:
+        - "127.0.0.1:6379"
 
 logs:
   mode: development

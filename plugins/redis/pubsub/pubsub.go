@@ -13,7 +13,7 @@ import (
 
 type PubSubDriver struct {
 	sync.RWMutex
-	cfg *Config `mapstructure:"redis"`
+	cfg *Config
 
 	log             logger.Logger
 	channel         *redisChannel
@@ -32,6 +32,10 @@ func NewPubSubDriver(log logger.Logger, key string, cfgPlugin config.Configurer,
 	err := cfgPlugin.UnmarshalKey(key, &ps.cfg)
 	if err != nil {
 		return nil, errors.E(op, err)
+	}
+
+	if ps.cfg == nil {
+		return nil, errors.E(op, errors.Errorf("config not found by provided key: %s", key))
 	}
 
 	ps.cfg.InitDefaults()

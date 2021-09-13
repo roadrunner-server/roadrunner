@@ -15,6 +15,9 @@ const (
 	PluginName string = "broadcast"
 	// driver is the mandatory field which should present in every storage
 	driver string = "driver"
+
+	// every driver should have config section for the local configuration
+	conf string = "config"
 )
 
 type Plugin struct {
@@ -50,7 +53,7 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger) error {
 }
 
 func (p *Plugin) Serve() chan error {
-	return make(chan error)
+	return make(chan error, 1)
 }
 
 func (p *Plugin) Stop() error {
@@ -130,8 +133,8 @@ func (p *Plugin) GetDriver(key string) (pubsub.SubReader, error) {
 			return nil, errors.E(op, errors.Str("wrong type detected in the configuration, please, check yaml indentation"))
 		}
 
-		// config key for the particular sub-driver kv.memcached
-		configKey := fmt.Sprintf("%s.%s", PluginName, key)
+		// config key for the particular sub-driver broadcast.memcached.config
+		configKey := fmt.Sprintf("%s.%s.%s", PluginName, key, conf)
 
 		drName := val.(map[string]interface{})[driver]
 
@@ -141,8 +144,10 @@ func (p *Plugin) GetDriver(key string) (pubsub.SubReader, error) {
 				return nil, errors.E(op, errors.Errorf("no drivers with the requested name registered, registered: %s, requested: %s", p.publishers, drStr))
 			}
 
+			switch {
 			// try local config first
-			if p.cfgPlugin.Has(configKey) {
+			case p.cfgPlugin.Has(configKey):
+				// we found a local configuration
 				ps, err := p.constructors[drStr].PSConstruct(configKey)
 				if err != nil {
 					return nil, errors.E(op, err)
@@ -153,9 +158,9 @@ func (p *Plugin) GetDriver(key string) (pubsub.SubReader, error) {
 				p.publishers[configKey] = ps
 
 				return ps, nil
-			} else {
-				// try global driver section
-				ps, err := p.constructors[drStr].PSConstruct(drStr)
+			case p.cfgPlugin.Has(key):
+				// try global driver section after local
+				ps, err := p.constructors[drStr].PSConstruct(key)
 				if err != nil {
 					return nil, errors.E(op, err)
 				}
@@ -165,6 +170,8 @@ func (p *Plugin) GetDriver(key string) (pubsub.SubReader, error) {
 				p.publishers[configKey] = ps
 
 				return ps, nil
+			default:
+				p.log.Error("can't find local or global configuration, this section will be skipped", "local: ", configKey, "global: ", key)
 			}
 		}
 	}
