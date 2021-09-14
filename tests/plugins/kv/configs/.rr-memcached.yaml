@@ -1,12 +1,13 @@
 rpc:
-  listen: tcp://127.0.0.1:6001
+    listen: tcp://127.0.0.1:6001
 
 logs:
-  mode: development
-  level: error
+    mode: development
+    level: error
 
 kv:
-  memcached-rr:
-    driver: memcached
-    addr:
-      - "127.0.0.1:11211"
+    memcached-rr:
+        driver: memcached
+        config:
+            addr:
+                - "127.0.0.1:11211"

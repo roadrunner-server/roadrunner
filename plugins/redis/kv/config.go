@@ -1,6 +1,8 @@
 package kv
 
-import "time"
+import (
+	"time"
+)
 
 type Config struct {
 	Addrs            []string      `mapstructure:"addrs"`

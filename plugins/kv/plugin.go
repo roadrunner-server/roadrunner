@@ -10,12 +10,13 @@ import (
 	"github.com/spiral/roadrunner/v2/plugins/logger"
 )
 
-// PluginName linked to the memory, boltdb, memcached, redis plugins. DO NOT change w/o sync.
-const PluginName string = "kv"
-
 const (
+	// PluginName linked to the memory, boltdb, memcached, redis plugins. DO NOT change w/o sync.
+	PluginName string = "kv"
 	// driver is the mandatory field which should present in every storage
 	driver string = "driver"
+	// config key used to detect local configuration for the driver
+	cfg string = "config"
 )
 
 // Plugin for the unified storage
@@ -75,28 +76,50 @@ func (p *Plugin) Serve() chan error {
 			continue
 		}
 
-		// config key for the particular sub-driver kv.memcached
-		configKey := fmt.Sprintf("%s.%s", PluginName, k)
+		// config key for the particular sub-driver kv.memcached.config
+		configKey := fmt.Sprintf("%s.%s.%s", PluginName, k, cfg)
 		// at this point we know, that driver field present in the configuration
 		drName := v.(map[string]interface{})[driver]
 
 		// driver name should be a string
 		if drStr, ok := drName.(string); ok {
-			if _, ok := p.constructors[drStr]; !ok {
-				p.log.Warn("no constructors registered", "requested constructor", drStr, "registered", p.constructors)
+			switch {
+			// local configuration section key
+			case p.cfgPlugin.Has(configKey):
+				if _, ok := p.constructors[drStr]; !ok {
+					p.log.Warn("no constructors registered", "requested constructor", drStr, "registered", p.constructors)
+					continue
+				}
+
+				storage, err := p.constructors[drStr].KVConstruct(configKey)
+				if err != nil {
+					errCh <- errors.E(op, err)
+					return errCh
+				}
+
+				// save the storage
+				p.storages[k] = storage
+				// try global then
+			case p.cfgPlugin.Has(k):
+				if _, ok := p.constructors[drStr]; !ok {
+					p.log.Warn("no constructors registered", "requested constructor", drStr, "registered", p.constructors)
+					continue
+				}
+
+				// use only key for the driver registration, for example rr-boltdb should be globally available
+				storage, err := p.constructors[drStr].KVConstruct(k)
+				if err != nil {
+					errCh <- errors.E(op, err)
+					return errCh
+				}
+
+				// save the storage
+				p.storages[k] = storage
+			default:
+				p.log.Error("can't find local or global configuration, this section will be skipped", "local: ", configKey, "global: ", k)
 				continue
 			}
-
-			storage, err := p.constructors[drStr].KVConstruct(configKey)
-			if err != nil {
-				errCh <- errors.E(op, err)
-				return errCh
-			}
-
-			// save the storage
-			p.storages[k] = storage
 		}
-
 		continue
 	}
 

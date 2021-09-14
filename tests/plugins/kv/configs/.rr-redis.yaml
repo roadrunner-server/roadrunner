@@ -1,12 +1,13 @@
 rpc:
-  listen: tcp://127.0.0.1:6001
+    listen: tcp://127.0.0.1:6001
 
 logs:
-  mode: development
-  level: error
+    mode: development
+    level: error
 
 kv:
-  redis-rr:
-    driver: redis
-    addrs:
-      - '127.0.0.1:6379'
+    redis-rr:
+        driver: redis
+        config:
+            addrs:
+                - "127.0.0.1:6379"

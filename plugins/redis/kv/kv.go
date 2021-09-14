@@ -20,7 +20,7 @@ type Driver struct {
 }
 
 func NewRedisDriver(log logger.Logger, key string, cfgPlugin config.Configurer) (*Driver, error) {
-	const op = errors.Op("new_boltdb_driver")
+	const op = errors.Op("new_redis_driver")
 
 	d := &Driver{
 		log: log,
@@ -32,8 +32,11 @@ func NewRedisDriver(log logger.Logger, key string, cfgPlugin config.Configurer) 
 		return nil, errors.E(op, err)
 	}
 
+	if d.cfg == nil {
+		return nil, errors.E(op, errors.Errorf("config not found by provided key: %s", key))
+	}
+
 	d.cfg.InitDefaults()
-	d.log = log
 
 	d.universalClient = redis.NewUniversalClient(&redis.UniversalOptions{
 		Addrs:              d.cfg.Addrs,
