@@ -182,7 +182,7 @@ func wrapError(err error) error {
 		chunks := strings.Split(err.Error(), "|:|")
 		code := codes.Internal
 
-		if phpCode, errConv := strconv.Atoi(chunks[0]); errConv == nil {
+		if phpCode, errConv := strconv.ParseUint(chunks[0], 10, 32); errConv == nil {
 			code = codes.Code(phpCode)
 		}
 
