@@ -4,14 +4,16 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
 	"os"
+	"path"
 
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/plugins/grpc/parser"
+	"github.com/spiral/roadrunner/v2/plugins/grpc/proxy"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/keepalive"
-	"google.golang.org/grpc/reflection"
-	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 func (p *Plugin) createGRPCserver() (*grpc.Server, error) {
@@ -22,18 +24,28 @@ func (p *Plugin) createGRPCserver() (*grpc.Server, error) {
 	}
 
 	server := grpc.NewServer(opts...)
-	reflection.Register(server)
 
-	fd, err := protoregistry.GlobalFiles.FindFileByPath("file")
-	if err != nil {
-		return nil, errors.E(op, err)
+	if p.config.Proto != "" {
+		// php proxy services
+		services, err := parser.File(p.config.Proto, path.Dir(p.config.Proto))
+		if err != nil {
+			return nil, err
+		}
+
+		for _, service := range services {
+			p := proxy.NewProxy(fmt.Sprintf("%s.%s", service.Package, service.Name), p.config.Proto, p.gPool)
+			for _, m := range service.Methods {
+				p.RegisterMethod(m.Name)
+			}
+
+			server.RegisterService(p.ServiceDesc(), p)
+		}
 	}
 
-	_ = fd
-
-	/*
-		proto descriptors parser
-	*/
+	// external and native  services
+	for _, r := range p.services {
+		r(server)
+	}
 
 	return server, nil
 }

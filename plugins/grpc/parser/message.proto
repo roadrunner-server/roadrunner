@@ -1,0 +1,7 @@
+syntax = "proto3";
+package app.namespace;
+
+message Message {
+    string msg = 1;
+    int64 value = 2;
+}

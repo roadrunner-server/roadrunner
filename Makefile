@@ -17,11 +17,15 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker_stack.out -covermode=atomic ./pkg/worker_watcher
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/ws_origin.out -covermode=atomic ./plugins/websockets
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/http_config.out -covermode=atomic ./plugins/http/config
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/grpc_codec.out -covermode=atomic ./plugins/grpc/codec
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/grpc_parser.out -covermode=atomic ./plugins/grpc/parser
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/grpc_proxy.out -covermode=atomic ./plugins/grpc/proxy
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/server_cmd.out -covermode=atomic ./plugins/server
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/struct_jobs.out -covermode=atomic ./plugins/jobs/job
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipeline_jobs.out -covermode=atomic ./plugins/jobs/pipeline
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/jobs_core.out -covermode=atomic ./tests/plugins/jobs
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/kv_plugin.out -covermode=atomic ./tests/plugins/kv
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/grpc_plugin.out -covermode=atomic ./tests/plugins/grpc
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/broadcast_plugin.out -covermode=atomic ./tests/plugins/broadcast
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/websockets.out -covermode=atomic ./tests/plugins/websockets
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/http.out -covermode=atomic ./tests/plugins/http
@@ -54,14 +58,17 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./plugins/http/config
 	go test -v -race -tags=debug ./plugins/server
 	go test -v -race -tags=debug ./plugins/jobs/job
-	go test -v -race -tags=debug ./tests/plugins/grpc
+	go test -v -race -tags=debug ./plugins/websockets
+	go test -v -race -tags=debug ./plugins/grpc
+	go test -v -race -tags=debug ./plugins/grpc/codec
+	go test -v -race -tags=debug ./plugins/grpc/parser
+	go test -v -race -tags=debug ./plugins/grpc/proxy
+	go test -v -race -tags=debug ./tests/plugins/jobs
 	go test -v -race -tags=debug ./tests/plugins/kv
 	go test -v -race -tags=debug ./tests/plugins/broadcast
 	go test -v -race -tags=debug ./tests/plugins/websockets
-	go test -v -race -tags=debug ./tests/plugins/jobs
-	go test -v -race -tags=debug ./plugins/websockets
-	go test -v -race -tags=debug ./plugins/grpc
 	go test -v -race -tags=debug ./tests/plugins/http
+	go test -v -race -tags=debug ./tests/plugins/grpc
 	go test -v -race -tags=debug ./tests/plugins/informer
 	go test -v -race -tags=debug ./tests/plugins/reload
 	go test -v -race -tags=debug ./tests/plugins/server

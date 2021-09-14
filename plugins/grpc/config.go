@@ -12,7 +12,7 @@ type Config struct {
 
 	TLS *TLS
 
-	grpcPool              pool.Pool
+	grpcPool              pool.Config
 	MaxSendMsgSize        int64         `mapstructure:"max_send_msg_size"`
 	MaxRecvMsgSize        int64         `mapstructure:"max_recv_msg_size"`
 	MaxConnectionIdle     time.Duration `mapstructure:"max_connection_idle"`

@@ -1,0 +1,10 @@
+syntax = "proto3";
+package app.namespace;
+
+import "message.proto";
+
+// Pong service.
+service PongService {
+    rpc Pong (stream Message) returns (stream Message) {
+    }
+}

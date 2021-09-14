@@ -1,4 +1,4 @@
-package grpc
+package codec
 
 import (
 	"testing"
@@ -22,18 +22,18 @@ func (jsonCodec) Name() string {
 }
 
 func TestCodec_String(t *testing.T) {
-	c := codec{jsonCodec{}}
+	c := Codec{jsonCodec{}}
 
 	assert.Equal(t, "raw:json", c.String())
 
-	r := rawMessage{}
+	r := RawMessage{}
 	r.Reset()
 	r.ProtoMessage()
 	assert.Equal(t, "rawMessage", r.String())
 }
 
 func TestCodec_Unmarshal_ByPass(t *testing.T) {
-	c := codec{jsonCodec{}}
+	c := Codec{jsonCodec{}}
 
 	s := struct {
 		Name string
@@ -44,7 +44,7 @@ func TestCodec_Unmarshal_ByPass(t *testing.T) {
 }
 
 func TestCodec_Marshal_ByPass(t *testing.T) {
-	c := codec{jsonCodec{}}
+	c := Codec{jsonCodec{}}
 
 	s := struct {
 		Name string
@@ -59,18 +59,18 @@ func TestCodec_Marshal_ByPass(t *testing.T) {
 }
 
 func TestCodec_Unmarshal_Raw(t *testing.T) {
-	c := codec{jsonCodec{}}
+	c := Codec{jsonCodec{}}
 
-	s := rawMessage{}
+	s := RawMessage{}
 
 	assert.NoError(t, c.Unmarshal([]byte(`{"name":"name"}`), &s))
 	assert.Equal(t, `{"name":"name"}`, string(s))
 }
 
 func TestCodec_Marshal_Raw(t *testing.T) {
-	c := codec{jsonCodec{}}
+	c := Codec{jsonCodec{}}
 
-	s := rawMessage(`{"Name":"name"}`)
+	s := RawMessage(`{"Name":"name"}`)
 
 	d, err := c.Marshal(s)
 	assert.NoError(t, err)
