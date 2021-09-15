@@ -182,6 +182,11 @@ func wrapError(err error) error {
 		chunks := strings.Split(err.Error(), "|:|")
 		code := codes.Internal
 
+		// protect the slice access
+		if len(chunks) < 2 {
+			return err
+		}
+
 		if phpCode, errConv := strconv.ParseUint(chunks[0], 10, 32); errConv == nil {
 			code = codes.Code(phpCode)
 		}
