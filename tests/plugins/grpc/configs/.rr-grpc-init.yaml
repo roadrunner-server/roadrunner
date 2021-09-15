@@ -1,10 +1,18 @@
+rpc:
+    listen: "tcp://127.0.0.1:6001"
+
+server:
+    command: "php ../../psr-worker-bench.php"
+    relay: "pipes"
+    relay_timeout: "20s"
+
 # GRPC service configuration
 grpc:
     # socket to listen
     listen: "tcp://localhost:9001"
 
     # proto root file
-    proto: "test.proto"
+    proto: "configs/test.proto"
 
     # max send limit (MB)
     max_send_msg_size: 50
@@ -36,7 +44,7 @@ grpc:
     #	pings the client to see if the transport is still alive.
     #	If set below 1s, a minimum value of 1s will be used instead.
     ping_time: 1s
-    
+
     # After having pinged for keepalive check, the server waits for a duration
     #	of Timeout and if no activity is seen even after that the connection is
     #	closed.
@@ -44,7 +52,7 @@ grpc:
 
     # Usual workers pool configuration
     pool:
-      num_workers: 2
-      max_jobs: 0
-      allocate_timeout: 60s
-      destroy_timeout: 60
+        num_workers: 2
+        max_jobs: 0
+        allocate_timeout: 60s
+        destroy_timeout: 60

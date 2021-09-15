@@ -45,7 +45,12 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	// register the codec
 	encoding.RegisterCodec(&codec.Codec{})
 
-	err := cfg.UnmarshalKey(name, p.config)
+	err := cfg.UnmarshalKey(name, &p.config)
+	if err != nil {
+		return errors.E(op, err)
+	}
+
+	err = p.config.InitDefaults()
 	if err != nil {
 		return errors.E(op, err)
 	}
@@ -57,9 +62,13 @@ func (p *Plugin) Init(cfg config.Configurer, log logger.Logger, server server.Se
 	p.rrServer = server
 
 	// worker's GRPC mode
+	if p.config.Env == nil {
+		p.config.Env = make(map[string]string)
+	}
 	p.config.Env[RrGrpc] = "true"
 
 	p.log = log
+	p.mu = &sync.RWMutex{}
 
 	return nil
 }
@@ -85,7 +94,6 @@ func (p *Plugin) Serve() chan error {
 	go func() {
 		var err error
 		p.mu.Lock()
-		defer p.mu.Unlock()
 		p.server, err = p.createGRPCserver()
 		if err != nil {
 			p.log.Error("create grpc server", "error", err)
@@ -100,6 +108,7 @@ func (p *Plugin) Serve() chan error {
 		}
 
 		// protect serve
+		p.mu.Unlock()
 		err = p.server.Serve(l)
 		if err != nil {
 			// skip errors when stopping the server
@@ -121,7 +130,7 @@ func (p *Plugin) Stop() error {
 	defer p.mu.Unlock()
 
 	if p.server != nil {
-		p.server.GracefulStop()
+		p.server.Stop()
 	}
 	return nil
 }
