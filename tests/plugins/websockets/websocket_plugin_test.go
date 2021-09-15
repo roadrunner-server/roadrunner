@@ -660,7 +660,7 @@ func RPCWsPubAsync(port string) func(t *testing.T) {
 		}()
 
 		go func() {
-			messagesToVerify := make([]string, 0, 10)
+			messagesToVerify := make([]string, 0, 4)
 			messagesToVerify = append(messagesToVerify, `{"topic":"@join","payload":["foo","foo2"]}`)
 			messagesToVerify = append(messagesToVerify, `{"topic":"foo","payload":"hello, PHP"}`)
 			messagesToVerify = append(messagesToVerify, `{"topic":"@leave","payload":["foo"]}`)
