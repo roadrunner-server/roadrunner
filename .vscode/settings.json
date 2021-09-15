@@ -19,6 +19,7 @@
         "mget",
         "prefetch",
         "proto",
+        "protobuf",
         "SETEX",
         "shivammathur",
         "srem",

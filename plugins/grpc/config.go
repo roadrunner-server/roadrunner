@@ -12,7 +12,10 @@ type Config struct {
 
 	TLS *TLS
 
-	grpcPool              pool.Config
+	// Env is environment variables passed to the http pool
+	Env map[string]string
+
+	GrpcPool              pool.Config
 	MaxSendMsgSize        int64         `mapstructure:"max_send_msg_size"`
 	MaxRecvMsgSize        int64         `mapstructure:"max_recv_msg_size"`
 	MaxConnectionIdle     time.Duration `mapstructure:"max_connection_idle"`

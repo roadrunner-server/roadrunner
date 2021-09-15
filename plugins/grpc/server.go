@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"time"
 
 	"github.com/spiral/errors"
+	"github.com/spiral/roadrunner/v2/pkg/events"
 	"github.com/spiral/roadrunner/v2/plugins/grpc/parser"
 	"github.com/spiral/roadrunner/v2/plugins/grpc/proxy"
 	"google.golang.org/grpc"
@@ -33,7 +35,7 @@ func (p *Plugin) createGRPCserver() (*grpc.Server, error) {
 		}
 
 		for _, service := range services {
-			p := proxy.NewProxy(fmt.Sprintf("%s.%s", service.Package, service.Name), p.config.Proto, p.gPool)
+			p := proxy.NewProxy(fmt.Sprintf("%s.%s", service.Package, service.Name), p.config.Proto, p.gPool, p.mu)
 			for _, m := range service.Methods {
 				p.RegisterMethod(m.Name)
 			}
@@ -50,19 +52,29 @@ func (p *Plugin) createGRPCserver() (*grpc.Server, error) {
 	return server, nil
 }
 
-func (p *Plugin) interceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-	// start := time.Now()
-	resp, err = handler(ctx, req)
+func (p *Plugin) interceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	start := time.Now()
+	resp, err := handler(ctx, req)
+	if err != nil {
+		p.events.Push(events.GRPCEvent{
+			Event:   events.EventUnaryCallErr,
+			Info:    info,
+			Error:   err,
+			Start:   start,
+			Elapsed: time.Since(start),
+		})
 
-	// svc.throw(EventUnaryCall, &UnaryCallEvent{
-	// Info:    info,
-	// Context: ctx,
-	// Error:   err,
-	// 	start:   start,
-	// 	elapsed: time.Since(start),
-	// })
+		return nil, err
+	}
 
-	return resp, err
+	p.events.Push(events.GRPCEvent{
+		Event:   events.EventUnaryCallOk,
+		Info:    info,
+		Start:   start,
+		Elapsed: time.Since(start),
+	})
+
+	return resp, nil
 }
 
 func (p *Plugin) serverOptions() ([]grpc.ServerOption, error) {

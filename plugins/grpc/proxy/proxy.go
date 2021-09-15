@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/spiral/roadrunner/v2/pkg/payload"
 	"github.com/spiral/roadrunner/v2/pkg/pool"
@@ -17,6 +18,12 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
+)
+
+const (
+	peerAddr     string = ":peer.address"
+	peerAuthType string = ":peer.auth-type"
+	delimiter    string = "|:|"
 )
 
 // base interface for Proxy class
@@ -37,6 +44,7 @@ type rpcContext struct {
 
 // Proxy manages GRPC/RoadRunner bridge.
 type Proxy struct {
+	mu       *sync.RWMutex
 	grpcPool pool.Pool
 	name     string
 	metadata string
@@ -44,8 +52,9 @@ type Proxy struct {
 }
 
 // NewProxy creates new service proxy object.
-func NewProxy(name string, metadata string, grpcPool pool.Pool) *Proxy {
+func NewProxy(name string, metadata string, grpcPool pool.Pool, mu *sync.RWMutex) *Proxy {
 	return &Proxy{
+		mu:       mu,
 		grpcPool: grpcPool,
 		name:     name,
 		metadata: metadata,
@@ -110,7 +119,9 @@ func (p *Proxy) invoke(ctx context.Context, method string, in codec.RawMessage) 
 		return nil, err
 	}
 
+	p.mu.RLock()
 	resp, err := p.grpcPool.Exec(payload)
+	p.mu.RUnlock()
 
 	if err != nil {
 		return nil, wrapError(err)
@@ -160,9 +171,9 @@ func (p *Proxy) makePayload(ctx context.Context, method string, body codec.RawMe
 	}
 
 	if pr, ok := peer.FromContext(ctx); ok {
-		ctxMD[":peer.address"] = []string{pr.Addr.String()}
+		ctxMD[peerAddr] = []string{pr.Addr.String()}
 		if pr.AuthInfo != nil {
-			ctxMD[":peer.auth-type"] = []string{pr.AuthInfo.AuthType()}
+			ctxMD[peerAuthType] = []string{pr.AuthInfo.AuthType()}
 		}
 	}
 
@@ -178,8 +189,8 @@ func (p *Proxy) makePayload(ctx context.Context, method string, body codec.RawMe
 // mounts proper error code for the error
 func wrapError(err error) error {
 	// internal agreement
-	if strings.Contains(err.Error(), "|:|") {
-		chunks := strings.Split(err.Error(), "|:|")
+	if strings.Contains(err.Error(), delimiter) {
+		chunks := strings.Split(err.Error(), delimiter)
 		code := codes.Internal
 
 		// protect the slice access
