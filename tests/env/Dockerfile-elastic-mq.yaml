@@ -1,9 +1,0 @@
-FROM openjdk:16
-
-ADD https://s3-eu-west-1.amazonaws.com/softwaremill-public/elasticmq-server-1.2.0.jar /
-COPY custom.conf /
-ENTRYPOINT ["java", "-Dconfig.file=custom.conf", "-jar", "/elasticmq-server-1.2.0.jar"]
-
-EXPOSE 9324
-
-CMD ["-help"]

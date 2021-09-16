@@ -3,9 +3,11 @@
         "addrs",
         "amqp",
         "amqpjobs",
+        "anypb",
         "boltdb",
         "codecov",
         "Errored",
+        "Conv",
         "golangci",
         "gomemcache",
         "goridge",
@@ -13,19 +15,26 @@
         "hset",
         "INMEMORY",
         "keyvals",
+        "Itestdata",
         "memcachedkv",
         "memorykv",
         "mexpire",
         "mget",
         "prefetch",
         "proto",
+        "protobuf",
+        "protoc",
         "SETEX",
         "shivammathur",
         "srem",
         "stretchr",
+        "tmpdir",
         "unsub",
         "Upgrader",
         "websockets",
         "websocketsv"
-    ]
+    ],
+    "files.associations": {
+        "Dockerfile-*.yaml": "dockerfile"
+    }
 }
