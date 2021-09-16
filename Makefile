@@ -8,24 +8,24 @@ test_coverage:
 	docker-compose -f tests/env/docker-compose.yaml up -d --remove-orphans
 	rm -rf coverage-ci
 	mkdir ./coverage-ci
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipe.out -covermode=atomic ./pkg/transport/pipe
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/socket.out -covermode=atomic ./pkg/transport/socket
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pool.out -covermode=atomic ./pkg/pool
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker.out -covermode=atomic ./pkg/worker
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/bst.out -covermode=atomic ./pkg/bst
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pq.out -covermode=atomic ./pkg/priority_queue
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker_stack.out -covermode=atomic ./pkg/worker_watcher
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipe.out -covermode=atomic ./transport/pipe
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/socket.out -covermode=atomic ./transport/socket
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pool.out -covermode=atomic ./pool
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker.out -covermode=atomic ./worker
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/bst.out -covermode=atomic ./bst
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pq.out -covermode=atomic ./priority_queue
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker_stack.out -covermode=atomic ./worker_watcher
 	echo 'mode: atomic' > ./coverage-ci/summary.txt
 	tail -q -n +2 ./coverage-ci/*.out >> ./coverage-ci/summary.txt
 	docker-compose -f tests/env/docker-compose.yaml down
 
 test: ## Run application tests
 	docker-compose -f tests/env/docker-compose.yaml up -d
-	go test -v -race -tags=debug ./pkg/transport/pipe
-	go test -v -race -tags=debug ./pkg/transport/socket
-	go test -v -race -tags=debug ./pkg/pool
-	go test -v -race -tags=debug ./pkg/worker
-	go test -v -race -tags=debug ./pkg/worker_watcher
-	go test -v -race -tags=debug ./pkg/bst
-	go test -v -race -tags=debug ./pkg/priority_queue
+	go test -v -race -tags=debug ./transport/pipe
+	go test -v -race -tags=debug ./transport/socket
+	go test -v -race -tags=debug ./pool
+	go test -v -race -tags=debug ./worker
+	go test -v -race -tags=debug ./worker_watcher
+	go test -v -race -tags=debug ./bst
+	go test -v -race -tags=debug ./priority_queue
 	docker-compose -f tests/env/docker-compose.yaml down
