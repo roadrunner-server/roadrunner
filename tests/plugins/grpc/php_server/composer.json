@@ -1,0 +1,23 @@
+{
+    "name": "app/example-grpc-server",
+    "description": "Example GRPC Server",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../.."
+        }
+    ],
+    "require": {
+        "spiral/php-grpc": "*"
+    },
+    "require-dev": {
+        "grpc/grpc": "^1.36"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

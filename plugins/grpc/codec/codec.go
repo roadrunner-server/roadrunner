@@ -4,6 +4,8 @@ import "google.golang.org/grpc/encoding"
 
 type RawMessage []byte
 
+// By default, gRPC registers and uses the "proto" codec, so it is not necessary to do this in your own code to send and receive proto messages.
+// https://github.com/grpc/grpc-go/blob/master/Documentation/encoding.md#using-a-codec
 const cName string = "proto"
 const rm string = "rawMessage"
 
