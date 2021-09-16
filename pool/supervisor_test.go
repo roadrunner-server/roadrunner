@@ -32,7 +32,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/memleak.php", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "../tests/memleak.php", "pipes") },
 		pipe.NewPipeFactory(),
 		cfgSupervised,
 	)
@@ -66,7 +66,7 @@ func TestSupervisedPool_ExecWithDebugMode(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/supervised.php") },
+		func() *exec.Cmd { return exec.Command("php", "../tests/supervised.php") },
 		pipe.NewPipeFactory(),
 		cfgSupervised,
 	)
@@ -104,7 +104,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep.php", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "../tests/sleep.php", "pipes") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)
@@ -139,7 +139,7 @@ func TestSupervisedPool_ExecTTL_WorkerRestarted(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/sleep-ttl.php") },
+		func() *exec.Cmd { return exec.Command("php", "../tests/sleep-ttl.php") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)
@@ -196,7 +196,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/idle.php", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "../tests/idle.php", "pipes") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)
@@ -243,7 +243,7 @@ func TestSupervisedPool_IdleTTL_StateAfterTimeout(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/exec_ttl.php", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "../tests/exec_ttl.php", "pipes") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)
@@ -286,7 +286,7 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/exec_ttl.php", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "../tests/exec_ttl.php", "pipes") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)
@@ -341,7 +341,7 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/memleak.php", "pipes") },
+		func() *exec.Cmd { return exec.Command("php", "../tests/memleak.php", "pipes") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
 		AddListeners(listener),
@@ -377,7 +377,7 @@ func TestSupervisedPool_AllocateFailedOK(t *testing.T) {
 	ctx := context.Background()
 	p, err := Initialize(
 		ctx,
-		func() *exec.Cmd { return exec.Command("php", "../../tests/allocate-failed.php") },
+		func() *exec.Cmd { return exec.Command("php", "../tests/allocate-failed.php") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
 	)

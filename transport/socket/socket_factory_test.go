@@ -31,7 +31,7 @@ func Test_Tcp_Start(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/client.php", "echo", "tcp")
+	cmd := exec.Command("php", "../../tests/client.php", "echo", "tcp")
 
 	w, err := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd)
 	assert.NoError(t, err)
@@ -56,7 +56,7 @@ func Test_Tcp_StartCloseFactory(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/client.php", "echo", "tcp")
+	cmd := exec.Command("php", "../../tests/client.php", "echo", "tcp")
 
 	f := NewSocketServer(ls, time.Minute)
 	defer func() {
@@ -93,7 +93,7 @@ func Test_Tcp_StartError(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/client.php", "echo", "pipes")
+	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 	err = cmd.Start()
 	if err != nil {
 		t.Errorf("error executing the command: error %v", err)
@@ -122,7 +122,7 @@ func Test_Tcp_Failboot(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/failboot.php")
+	cmd := exec.Command("php", "../../tests/failboot.php")
 
 	finish := make(chan struct{}, 10)
 	listener := func(event interface{}) {
@@ -156,7 +156,7 @@ func Test_Tcp_Timeout(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/slow-client.php", "echo", "tcp", "200", "0")
+	cmd := exec.Command("php", "../../tests/slow-client.php", "echo", "tcp", "200", "0")
 
 	w, err := NewSocketServer(ls, time.Millisecond*1).SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Nil(t, w)
@@ -179,7 +179,7 @@ func Test_Tcp_Invalid(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/invalid.php")
+	cmd := exec.Command("php", "../../tests/invalid.php")
 
 	w, err := NewSocketServer(ls, time.Second*1).SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Error(t, err)
@@ -201,7 +201,7 @@ func Test_Tcp_Broken(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/client.php", "broken", "tcp")
+	cmd := exec.Command("php", "../../tests/client.php", "broken", "tcp")
 
 	finish := make(chan struct{}, 10)
 	listener := func(event interface{}) {
@@ -257,7 +257,7 @@ func Test_Tcp_Echo(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/client.php", "echo", "tcp")
+	cmd := exec.Command("php", "../../tests/client.php", "echo", "tcp")
 
 	w, _ := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd)
 	go func() {
@@ -296,7 +296,7 @@ func Test_Unix_Start(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/client.php", "echo", "unix")
+	cmd := exec.Command("php", "../../tests/client.php", "echo", "unix")
 
 	w, err := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd)
 	assert.NoError(t, err)
@@ -326,7 +326,7 @@ func Test_Unix_Failboot(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/failboot.php")
+	cmd := exec.Command("php", "../../tests/failboot.php")
 
 	finish := make(chan struct{}, 10)
 	listener := func(event interface{}) {
@@ -359,7 +359,7 @@ func Test_Unix_Timeout(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/slow-client.php", "echo", "unix", "200", "0")
+	cmd := exec.Command("php", "../../tests/slow-client.php", "echo", "unix", "200", "0")
 
 	w, err := NewSocketServer(ls, time.Millisecond*100).SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Nil(t, w)
@@ -381,7 +381,7 @@ func Test_Unix_Invalid(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/invalid.php")
+	cmd := exec.Command("php", "../../tests/invalid.php")
 
 	w, err := NewSocketServer(ls, time.Second*10).SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Error(t, err)
@@ -402,7 +402,7 @@ func Test_Unix_Broken(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/client.php", "broken", "unix")
+	cmd := exec.Command("php", "../../tests/client.php", "broken", "unix")
 
 	block := make(chan struct{}, 10)
 	listener := func(event interface{}) {
@@ -459,7 +459,7 @@ func Test_Unix_Echo(t *testing.T) {
 		t.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/client.php", "echo", "unix")
+	cmd := exec.Command("php", "../../tests/client.php", "echo", "unix")
 
 	w, err := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
@@ -503,7 +503,7 @@ func Benchmark_Tcp_SpawnWorker_Stop(b *testing.B) {
 
 	f := NewSocketServer(ls, time.Minute)
 	for n := 0; n < b.N; n++ {
-		cmd := exec.Command("php", "../../../tests/client.php", "echo", "tcp")
+		cmd := exec.Command("php", "../../tests/client.php", "echo", "tcp")
 
 		w, err := f.SpawnWorkerWithTimeout(ctx, cmd)
 		if err != nil {
@@ -534,7 +534,7 @@ func Benchmark_Tcp_Worker_ExecEcho(b *testing.B) {
 		b.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/client.php", "echo", "tcp")
+	cmd := exec.Command("php", "../../tests/client.php", "echo", "tcp")
 
 	w, err := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
@@ -572,7 +572,7 @@ func Benchmark_Unix_SpawnWorker_Stop(b *testing.B) {
 
 	f := NewSocketServer(ls, time.Minute)
 	for n := 0; n < b.N; n++ {
-		cmd := exec.Command("php", "../../../tests/client.php", "echo", "unix")
+		cmd := exec.Command("php", "../../tests/client.php", "echo", "unix")
 
 		w, err := f.SpawnWorkerWithTimeout(ctx, cmd)
 		if err != nil {
@@ -599,7 +599,7 @@ func Benchmark_Unix_Worker_ExecEcho(b *testing.B) {
 		b.Skip("socket is busy")
 	}
 
-	cmd := exec.Command("php", "../../../tests/client.php", "echo", "unix")
+	cmd := exec.Command("php", "../../tests/client.php", "echo", "unix")
 
 	w, err := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {

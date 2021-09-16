@@ -5,7 +5,6 @@
 SHELL = /bin/sh
 
 test_coverage:
-	docker-compose -f tests/env/docker-compose.yaml up -d --remove-orphans
 	rm -rf coverage-ci
 	mkdir ./coverage-ci
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipe.out -covermode=atomic ./transport/pipe
@@ -17,10 +16,8 @@ test_coverage:
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker_stack.out -covermode=atomic ./worker_watcher
 	echo 'mode: atomic' > ./coverage-ci/summary.txt
 	tail -q -n +2 ./coverage-ci/*.out >> ./coverage-ci/summary.txt
-	docker-compose -f tests/env/docker-compose.yaml down
 
 test: ## Run application tests
-	docker-compose -f tests/env/docker-compose.yaml up -d
 	go test -v -race -tags=debug ./transport/pipe
 	go test -v -race -tags=debug ./transport/socket
 	go test -v -race -tags=debug ./pool
@@ -28,4 +25,3 @@ test: ## Run application tests
 	go test -v -race -tags=debug ./worker_watcher
 	go test -v -race -tags=debug ./bst
 	go test -v -race -tags=debug ./priority_queue
-	docker-compose -f tests/env/docker-compose.yaml down
