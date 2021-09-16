@@ -21,7 +21,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
 	github.com/json-iterator/go v1.1.11
-	github.com/klauspost/compress v1.13.5
+	github.com/klauspost/compress v1.13.6
 	github.com/prometheus/client_golang v1.11.0
 	github.com/rabbitmq/amqp091-go v0.0.0-20210823000215-c428a6150891
 	github.com/shirou/gopsutil v3.21.8+incompatible
