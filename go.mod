@@ -36,7 +36,7 @@ require (
 	github.com/yookoala/gofast v0.6.0
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/multierr v1.7.0
-	go.uber.org/zap v1.19.0
+	go.uber.org/zap v1.19.1
 	golang.org/x/net v0.0.0-20210903162142-ad29c8ab022f
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/sys v0.0.0-20210906170528-6f6e22806c34
