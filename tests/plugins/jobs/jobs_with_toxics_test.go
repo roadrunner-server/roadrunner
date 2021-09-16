@@ -27,10 +27,18 @@ import (
 
 func TestDurabilityAMQP(t *testing.T) {
 	client := toxiproxy.NewClient("127.0.0.1:8474")
-
-	_, err := client.CreateProxy("redial", "127.0.0.1:23679", "127.0.0.1:5672")
+	proxies, err := client.Proxies()
 	require.NoError(t, err)
-	defer deleteProxy("redial", t)
+
+	for p := range proxies {
+		_ = proxies[p].Delete()
+	}
+
+	proxy, err := client.CreateProxy("redial", "127.0.0.1:23679", "127.0.0.1:5672")
+	require.NoError(t, err)
+	defer func() {
+		_ = proxy.Delete()
+	}()
 
 	cont, err := endure.NewContainer(nil, endure.SetLogLevel(endure.ErrorLevel))
 	require.NoError(t, err)

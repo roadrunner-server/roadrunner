@@ -64,6 +64,11 @@ jobs:
       - name: Install Go dependencies
         run: go mod download
 
+      - name: Install protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: '3.17.3'
+
       - name: Run golang tests with coverage
         run: make test_coverage
 

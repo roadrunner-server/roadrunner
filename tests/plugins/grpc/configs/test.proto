@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package service;
+option go_package = "./;";
+
+service Test {
+    rpc Echo (Message) returns (Message) {
+    }
+
+    rpc Throw (Message) returns (Message) {
+    }
+
+    rpc Die (Message) returns (Message) {
+    }
+
+    rpc Info (Message) returns (Message) {
+    }
+
+    rpc Ping (EmptyMessage) returns (EmptyMessage) {
+    }
+}
+
+message Message {
+    string msg = 1;
+}
+
+message EmptyMessage {
+}
+
+message DetailsMessageForException {
+    uint64 code = 1;
+    string message = 2;
+}

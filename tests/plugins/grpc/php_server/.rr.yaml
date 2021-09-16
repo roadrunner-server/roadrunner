@@ -1,0 +1,22 @@
+grpc:
+  listen: "tcp://:9001"
+  proto: "service.proto"
+  tls:
+    key:  "server.key"
+    cert: "server.crt"
+  workers:
+    command: "php worker.php"
+    pool:
+      numWorkers: 4
+
+metrics:
+  address: localhost:2112
+
+limit:
+  interval: 1
+  services:
+    grpc:
+      maxMemory: 100
+      TTL: 0
+      idleTTL: 0
+      execTTL: 60

@@ -1,0 +1,12 @@
+syntax = "proto3";
+package app.namespace;
+
+import "message.proto";
+import "pong.proto";
+
+// Ping Service.
+service PingService {
+    // Ping Method.
+    rpc Ping (Message) returns (Message) {
+    }
+}

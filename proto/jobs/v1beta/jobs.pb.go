@@ -487,7 +487,7 @@ func (x *Stats) GetStats() []*Stat {
 	return nil
 }
 
-// Stats used as a response for the Stats RPC call
+// Stat used as a response for the Stats RPC call
 type Stat struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

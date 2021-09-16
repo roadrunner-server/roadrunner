@@ -91,3 +91,4 @@ issues:
         - noctx
         - gosimple
         - revive
+        - gochecknoinits

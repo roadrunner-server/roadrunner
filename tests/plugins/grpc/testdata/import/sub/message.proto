@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package import.sub;
+
+message Message {
+    int64 id = 1;
+}
