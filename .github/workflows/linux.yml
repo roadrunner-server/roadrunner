@@ -7,12 +7,12 @@ on:
       - beta
       - stable
     tags-ignore:
-      - '**'
+      - "**"
     paths-ignore:
-      - '**.md'
+      - "**.md"
   pull_request:
     paths-ignore:
-      - '**.md'
+      - "**.md"
 
 jobs:
   golang:
@@ -22,9 +22,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [ "7.4", "8.0" ]
-        go: [ "1.17" ]
-        os: [ 'ubuntu-latest' ]
+        php: ["7.4", "8.0", "8.1"]
+        go: ["1.17.1"]
+        os: ["ubuntu-latest"]
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
@@ -76,4 +76,3 @@ jobs:
         with:
           file: ./coverage-ci/summary.txt
           fail_ci_if_error: false
-
