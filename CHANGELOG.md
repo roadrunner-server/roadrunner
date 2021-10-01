@@ -6,7 +6,7 @@
 
 - 🔨 Some drivers now use a new `config` key to handle local configuration. Involved plugins and drivers:
 - `plugins`: broadcast, kv
-- `drivers`: memory, redis, memcached, boltdb.
+- `drivers`: `memory`, `redis`, `memcached`, boltdb.
 
 ## ATTENTION!!!, this is the configuration BC release, please, update your configuration:
 
@@ -73,7 +73,7 @@ ssl:
         ]
 ```
 
-- ✏️ Add new option to the `service` plugin. Service plugin will not use std rr logger as output in flavor of raw output.
+- ✏️ Add a new option to the `service` plugin. Service plugin will not use std RR logger as output in the flavor of raw output.
 
 New options:
 ```yaml
@@ -111,7 +111,7 @@ you need to serialize data on the `executable` (in the command) side.
 
 - 🐛 Fix: local and global configuration parsing.
 - 🐛 Fix: bug with the `boltdb-jobs` connection left open after RPC close command.
-- 🐛 Fix: close `beanstalk` connection and release associated resources after pipeline stop.
+- 🐛 Fix: close `beanstalk` connection and release associated resources after pipeline stopped.
 
 ## 📦 Packages:
 
