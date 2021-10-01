@@ -6,8 +6,10 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/json-iterator/go v1.1.12
 	github.com/shirou/gopsutil v3.21.8+incompatible
+	// spiral
 	github.com/spiral/errors v1.0.12
-	github.com/spiral/goridge/v3 v3.2.1
+	github.com/spiral/goridge/v3 v3.2.2-beta.1
+	// spiral
 	github.com/stretchr/testify v1.7.0
 	github.com/valyala/tcplisten v1.0.0
 	go.uber.org/multierr v1.7.0
@@ -28,10 +30,10 @@ require (
 	github.com/tklauser/go-sysconf v0.3.9 // indirect
 	github.com/tklauser/numcpus v0.3.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
-	golang.org/x/net v0.0.0-20210916014120-12bc252f5db8 // indirect
-	golang.org/x/sys v0.0.0-20210915083310-ed5796bab164 // indirect
+	golang.org/x/net v0.0.0-20210929193557-e81a3d93ecf6 // indirect
+	golang.org/x/sys v0.0.0-20211001092434-39dca1131b70 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/genproto v0.0.0-20210916144049-3192f974c780 // indirect
+	google.golang.org/genproto v0.0.0-20210930144712-2e2e1008e8a3 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
