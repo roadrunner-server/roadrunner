@@ -44,8 +44,8 @@ func TestSupervisedPool_Exec(t *testing.T) {
 
 	pidBefore := p.Workers()[0].Pid()
 
-	for i := 0; i < 100; i++ {
-		time.Sleep(time.Millisecond * 100)
+	for i := 0; i < 10; i++ {
+		time.Sleep(time.Second)
 		_, err = p.Exec(&payload.Payload{
 			Context: []byte(""),
 			Body:    []byte("foo"),
