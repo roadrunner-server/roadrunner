@@ -76,8 +76,8 @@ func TestSupervisedPool_ExecWithDebugMode(t *testing.T) {
 
 	time.Sleep(time.Second)
 
-	for i := 0; i < 100; i++ {
-		time.Sleep(time.Millisecond * 500)
+	for i := 0; i < 10; i++ {
+		time.Sleep(time.Second)
 		_, err = p.Exec(&payload.Payload{
 			Context: []byte(""),
 			Body:    []byte("foo"),
