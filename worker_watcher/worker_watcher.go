@@ -24,7 +24,7 @@ type Vector interface {
 	// Destroy used to stop releasing the workers
 	Destroy()
 
-	// TODO Add Replace method, and remove `Remove` method. Replace will do removal and allocation
+	// TODO(rustatian) Add Replace method, and remove `Remove` method. Replace will do removal and allocation
 	// Replace(prevPid int64, newWorker worker.BaseProcess)
 }
 
