@@ -86,10 +86,6 @@ logs:
     line_ending: "\n"
 ```
 
-**!!!**
-Be careful, now, there is no logger plugin dependency for the `service` plugin. That means, that if you used `json` output, now,
-you need to serialize data on the `executable` (in the command) side.
-
 - ✏️ [Access log support](https://github.com/spiral/roadrunner-plugins/issues/34) at the `Info` log level.
 ```yaml
 http:
