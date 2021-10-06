@@ -73,13 +73,12 @@ ssl:
         ]
 ```
 
-- ✏️ Add a new option to the `service` plugin to configure line ending. By default, used `\n`.
+- ✏️ Add a new option to the `log` plugin to configure the line ending. By default, used `\n`.
 
 New options:
 ```yaml
-# Service plugin settings
-service:
-  some_service_1:
+# Logs plugin settings
+logs:
     (....)
     # Line ending
     #
