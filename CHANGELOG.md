@@ -73,39 +73,55 @@ ssl:
         ]
 ```
 
-- ✏️ Add a new option to the `service` plugin. Service plugin will not use std RR logger as output in the flavor of raw output.
+- ✏️ Add a new option to the `log` plugin to configure the line ending. By default, used `\n`.
 
-New options:
+**New option**:
 ```yaml
-# Service plugin settings
-service:
-  some_service_1:
+# Logs plugin settings
+logs:
     (....)
-    # Console output
+    # Line ending
     #
-    # Default: stderr. Available options: stderr, stdout
-    output: "stderr"
-
-    # Endings for the stderr/stdout output
-    #
-    # Default: "\n". Available options: any.
+    # Default: "\n".
     line_ending: "\n"
-
-    # Color for regular output
-    #
-    # Default: none. Available options: white, red, green, yellow, blue, magenta
-    color: "green"
-
-    # Color for the process errors
-    #
-    # Default: none. Available options: white, red, green, yellow, blue, magenta
-    err_color: "red"
 ```
 
-**!!!**
-Be careful, now, there is no logger plugin dependency for the `service` plugin. That means, that if you used `json` output, now,
-you need to serialize data on the `executable` (in the command) side.
+- ✏️ [Access log support](https://github.com/spiral/roadrunner-plugins/issues/34) at the `Info` log level.
+```yaml
+http:
+  address: 127.0.0.1:55555
+  max_request_size: 1024
+  access_logs: true <-------- Access Logs ON/OFF
+  middleware: []
 
+  pool:
+    num_workers: 2
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+```
+- ✏️ HTTP middleware to handle Symfony's `X-Sendfile` [header](https://github.com/spiral/roadrunner-plugins/issues/9).
+```yaml
+http:
+  address: 127.0.0.1:44444
+  max_request_size: 1024
+  middleware: ["sendfile"] <----- NEW MIDDLEWARE
+
+  pool:
+    num_workers: 2
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+```
+
+- ✏️ Server plugin can accept scripts (sh, bash, etc) in it's `command` configuration key:
+```yaml
+server:
+    command: "./script.sh OR sh script.sh" <--- UPDATED
+    relay: "pipes"
+    relay_timeout: "20s"
+```
+The script should start a worker as the last command. For the `pipes`, scripts should not contain programs, which can close `stdin`, `stdout` or `stderr`.
 
 ## 🩹 Fixes:
 

@@ -66,7 +66,7 @@ func (f *Factory) listen() error {
 			}
 
 			rl := socket.NewSocketRelay(conn)
-			pid, err := internal.FetchPID(rl)
+			pid, err := internal.Pid(rl)
 			if err != nil {
 				return err
 			}
@@ -189,7 +189,8 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*wor
 	w.AttachRelay(rl)
 
 	// errors bundle
-	if pid, err := internal.FetchPID(rl); pid != w.Pid() {
+	_, err = internal.Pid(rl)
+	if err != nil {
 		err = multierr.Combine(
 			err,
 			w.Kill(),
@@ -222,11 +223,20 @@ func (f *Factory) findRelayWithContext(ctx context.Context, w worker.BaseProcess
 				return nil, err
 			}
 		default:
-			tmp, ok := f.relays.LoadAndDelete(w.Pid())
-			if !ok {
+			// find first pid and attach relay to it
+			var r *socket.Relay
+			f.relays.Range(func(k, val interface{}) bool {
+				r = val.(*socket.Relay)
+				f.relays.Delete(k)
+				return false
+			})
+
+			// no relay exists
+			if r == nil {
 				continue
 			}
-			return tmp.(*socket.Relay), nil
+
+			return r, nil
 		}
 	}
 }
