@@ -29,7 +29,7 @@ type sr struct {
 
 // SpawnWorkerWithTimeout creates new Process and connects it to goridge relay,
 // method Wait() must be handled on level above.
-func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.Listener) (*worker.Process, error) { //nolint:gocognit
+func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.Listener) (*worker.Process, error) {
 	spCh := make(chan sr)
 	const op = errors.Op("factory_spawn_worker_with_timeout")
 	go func() {
@@ -90,7 +90,8 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 			}
 		}
 
-		pid, err := internal.FetchPID(relay)
+		// used as a ping
+		_, err = internal.Pid(relay)
 		if err != nil {
 			err = multierr.Combine(
 				err,
@@ -101,19 +102,6 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 			case spCh <- sr{
 				w:   nil,
 				err: errors.E(op, err),
-			}:
-				return
-			default:
-				_ = w.Kill()
-				return
-			}
-		}
-
-		if pid != w.Pid() {
-			select {
-			case spCh <- sr{
-				w:   nil,
-				err: errors.E(op, errors.Errorf("pid mismatches, get: %d, want: %d", pid, w.Pid())),
 			}:
 				return
 			default:
@@ -177,7 +165,8 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*wor
 	}
 
 	// errors bundle
-	if pid, err := internal.FetchPID(relay); pid != w.Pid() {
+	_, err = internal.Pid(relay)
+	if err != nil {
 		err = multierr.Combine(
 			err,
 			w.Kill(),

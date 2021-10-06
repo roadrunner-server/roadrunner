@@ -66,7 +66,7 @@ func (f *Factory) listen() error {
 			}
 
 			rl := socket.NewSocketRelay(conn)
-			pid, err := internal.FetchPID(rl)
+			pid, err := internal.Pid(rl)
 			if err != nil {
 				return err
 			}
@@ -189,7 +189,8 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*wor
 	w.AttachRelay(rl)
 
 	// errors bundle
-	if pid, err := internal.FetchPID(rl); pid != w.Pid() {
+	_, err = internal.Pid(rl)
+	if err != nil {
 		err = multierr.Combine(
 			err,
 			w.Kill(),
