@@ -68,8 +68,7 @@ func SendControl(rl relay.Relay, payload interface{}) error {
 	fr.WritePayload(data)
 	fr.WriteCRC(fr.Header())
 
-	// hold a pointer to a frame
-	// Do we need a copy here????
+	// we don't need a copy here, because frame copy the data before send
 	err = rl.Send(fr)
 	if err != nil {
 		return errors.E(op, err)
@@ -78,7 +77,7 @@ func SendControl(rl relay.Relay, payload interface{}) error {
 	return nil
 }
 
-func FetchPID(rl relay.Relay) (int64, error) {
+func Pid(rl relay.Relay) (int64, error) {
 	const op = errors.Op("fetch_pid")
 	err := SendControl(rl, pidCommand{Pid: os.Getpid()})
 	if err != nil {
@@ -109,6 +108,10 @@ func FetchPID(rl relay.Relay) (int64, error) {
 	err = json.Unmarshal(fr.Payload(), link)
 	if err != nil {
 		return 0, errors.E(op, err)
+	}
+
+	if link.Pid <= 0 {
+		return 0, errors.E(op, errors.Str("pid should be greater than 0"))
 	}
 
 	return int64(link.Pid), nil
