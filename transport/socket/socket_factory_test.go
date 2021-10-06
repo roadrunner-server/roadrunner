@@ -282,6 +282,46 @@ func Test_Tcp_Echo(t *testing.T) {
 	assert.Equal(t, "hello", res.String())
 }
 
+func Test_Tcp_Echo_Script(t *testing.T) {
+	time.Sleep(time.Millisecond * 10) // to ensure free socket
+	ctx := context.Background()
+	ls, err := net.Listen("tcp", "127.0.0.1:9007")
+	if assert.NoError(t, err) {
+		defer func() {
+			err = ls.Close()
+			if err != nil {
+				t.Errorf("error closing the listener: error %v", err)
+			}
+		}()
+	} else {
+		t.Skip("socket is busy")
+	}
+
+	cmd := exec.Command("sh", "../../tests/socket_test_script.sh")
+
+	w, _ := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd)
+	go func() {
+		assert.NoError(t, w.Wait())
+	}()
+	defer func() {
+		err = w.Stop()
+		if err != nil {
+			t.Errorf("error stopping the Process: error %v", err)
+		}
+	}()
+
+	sw := worker.From(w)
+
+	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
+
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+	assert.NotNil(t, res.Body)
+	assert.Empty(t, res.Context)
+
+	assert.Equal(t, "hello", res.String())
+}
+
 func Test_Unix_Start(t *testing.T) {
 	ctx := context.Background()
 	ls, err := net.Listen("unix", "sock.unix")
