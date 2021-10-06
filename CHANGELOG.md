@@ -75,7 +75,7 @@ ssl:
 
 - ✏️ Add a new option to the `log` plugin to configure the line ending. By default, used `\n`.
 
-New options:
+**New option**:
 ```yaml
 # Logs plugin settings
 logs:
