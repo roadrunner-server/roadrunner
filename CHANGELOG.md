@@ -123,11 +123,25 @@ server:
 ```
 The script should start a worker as the last command. For the `pipes`, scripts should not contain programs, which can close `stdin`, `stdout` or `stderr`.
 
+- ✏️ Service plugin now supports env variables passing to the script/executable/binary/any:
+```yaml
+service:
+  some_service_1:
+    command: "php test_files/loop_env.php"
+    process_num: 1
+    exec_timeout: 5s # s,m,h (seconds, minutes, hours)
+    remain_after_exit: true
+    env:  <----------------- NEW
+      foo: "BAR"
+    restart_sec: 1
+```
+
 ## 🩹 Fixes:
 
 - 🐛 Fix: local and global configuration parsing.
 - 🐛 Fix: bug with the `boltdb-jobs` connection left open after RPC close command.
 - 🐛 Fix: close `beanstalk` connection and release associated resources after pipeline stopped.
+- 🐛 Fix: grpc plugin fails to handle requests after calling `reset`.
 
 ## 📦 Packages:
 
