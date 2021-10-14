@@ -76,8 +76,8 @@ github.com/shirou/gopsutil v3.21.9+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu
 github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72/go.mod h1:JwIasOWyU6f++ZhiEuf87xNszmSA2myDM2Kzu9HwQUA=
 github.com/spiral/errors v1.0.12 h1:38Waf8ZL/Xvxg4HTYGmrUbvi7TCHivmuatNQZlBhQ8s=
 github.com/spiral/errors v1.0.12/go.mod h1:j5UReqxZxfkwXkI9mFY87VhEXcXmSg7kAk5Sswy1eEA=
-github.com/spiral/goridge/v3 v3.2.2-beta.1 h1:UoCrUTLXz3dshg94qkWamUz6DOEQaJOVt0aOu9QFxPc=
-github.com/spiral/goridge/v3 v3.2.2-beta.1/go.mod h1:DA4Ekw9qVcTvVouUNJgxESXURBHZ2SfkliCEIpEl9lA=
+github.com/spiral/goridge/v3 v3.2.2 h1:plrzrISm3Q3Z74p+tsi90XwU9n4859LWDXK0PtGNoFE=
+github.com/spiral/goridge/v3 v3.2.2/go.mod h1:DA4Ekw9qVcTvVouUNJgxESXURBHZ2SfkliCEIpEl9lA=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
