@@ -12,18 +12,6 @@ import (
 
 type Test int
 
-func (t Test) Ack() error {
-	return nil
-}
-
-func (t Test) Nack() error {
-	return nil
-}
-
-func (t Test) Requeue(_ map[string][]string, _ int64) error {
-	return nil
-}
-
 func (t Test) Body() []byte {
 	return nil
 }
