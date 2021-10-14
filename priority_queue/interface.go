@@ -19,13 +19,4 @@ type Item interface {
 
 	// Context is the Item meta information
 	Context() ([]byte, error)
-
-	// Ack - acknowledge the Item after processing
-	Ack() error
-
-	// Nack - discard the Item
-	Nack() error
-
-	// Requeue - put the message back to the queue with the optional delay
-	Requeue(headers map[string][]string, delay int64) error
 }
