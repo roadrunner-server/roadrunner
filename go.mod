@@ -8,7 +8,7 @@ require (
 	github.com/shirou/gopsutil v3.21.9+incompatible
 	// spiral
 	github.com/spiral/errors v1.0.12
-	github.com/spiral/goridge/v3 v3.2.2-beta.1
+	github.com/spiral/goridge/v3 v3.2.2
 	// spiral
 	github.com/stretchr/testify v1.7.0
 	github.com/valyala/tcplisten v1.0.0
