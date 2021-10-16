@@ -23,31 +23,31 @@ broadcast:
 
 ```yaml
 broadcast:
-    default:
-        driver: memory
-        config: {} <--------------- NEW
+  default:
+    driver: memory
+    config: {} <--------------- NEW
 ```
 
 ```yaml
 kv:
-    memory-rr:
-        driver: memory
-        config: <--------------- NEW
-            interval: 1
+  memory-rr:
+    driver: memory
+    config: <--------------- NEW
+      interval: 1
 
 kv:
-    memcached-rr:
-        driver: memcached
-        config: <--------------- NEW
-            addr:
-                - "127.0.0.1:11211"
+  memcached-rr:
+    driver: memcached
+    config: <--------------- NEW
+      addr:
+        - "127.0.0.1:11211"
 
 broadcast:
-    default:
-        driver: redis
-        config: <------------------ NEW
-            addrs:
-                - "127.0.0.1:6379"
+  default:
+    driver: redis
+    config: <------------------ NEW
+      addrs:
+        - "127.0.0.1:6379"
 ```
 
 ## 👀 New:
@@ -56,17 +56,48 @@ broadcast:
 - ✏️ [Roadrunner-plugins](https://github.com/spiral/roadrunner-plugins) repository. This is the new home for the roadrunner plugins with documentation, configuration samples, and common problems.
 - ✏️ **[BETA]** Let's Encrypt support. RR now can obtain an SSL certificate/PK for your domain automatically. Here is the new configuration:
 ```yaml
-ssl:
-    address: '0.0.0.0:443'
-    acme:
+    ssl:
+      # Host and port to listen on (eg.: `127.0.0.1:443`).
+      #
+      # Default: ":443"
+      address: "127.0.0.1:443"
+
+      # Use ACME certificates provider (Let's encrypt)
+      acme:
+        # Directory to use as a certificate/pk, account info storage
+        #
+        # Optional. Default: rr_cache
         certs_dir: rr_le_certs
+
+        # User email
+        #
+        # Used to create LE account. Mandatory. Error on empty.
         email: you-email-here@email
-        # alternate port for the http challenge
-        "alt_http_port": 80,
-        # alternate port for the tls-alpn challenge
-        "alt_tlsalpn_port": 443,
+
+        # Alternate port for the http challenge. Challenge traffic should be redirected to this port if overridden.
+        #
+        # Optional. Default: 80
+        alt_http_port: 80,
+
+
+        # Alternate port for the tls-alpn-01 challenge. Challenge traffic should be redirected to this port if overridden.
+        #
+        # Optional. Default: 443.
+        alt_tlsalpn_port: 443,
+
+        # Challenge types
+        #
+        # Optional. Default: http-01. Possible values: http-01, tlsalpn-01
         challenge_type: http-01
+
+        # Use production or staging endpoints. NOTE, try to use the staging endpoint (`use_production_endpoint`: `false`) to make sure, that everything works correctly.
+        #
+        # Optional, but for production should be set to true. Default: false
         use_production_endpoint: true
+
+        # List of your domains to obtain certificates
+        #
+        # Mandatory. Error on empty.
         domains: [
             "your-cool-domain.here",
             "your-second-domain.here"
@@ -100,7 +131,8 @@ http:
     allocate_timeout: 60s
     destroy_timeout: 60s
 ```
-- ✏️ HTTP middleware to handle Symfony's `X-Sendfile` [header](https://github.com/spiral/roadrunner-plugins/issues/9).
+- ✏️ HTTP middleware to handle `X-Sendfile` [header](https://github.com/spiral/roadrunner-plugins/issues/9).
+  Middleware reads the file in 10mb chunks. If the file size is smaller than 10mb, the middleware fits the buffer to the file size.
 ```yaml
 http:
   address: 127.0.0.1:44444
@@ -113,15 +145,6 @@ http:
     allocate_timeout: 60s
     destroy_timeout: 60s
 ```
-
-- ✏️ Server plugin can accept scripts (sh, bash, etc) in it's `command` configuration key:
-```yaml
-server:
-    command: "./script.sh OR sh script.sh" <--- UPDATED
-    relay: "pipes"
-    relay_timeout: "20s"
-```
-The script should start a worker as the last command. For the `pipes`, scripts should not contain programs, which can close `stdin`, `stdout` or `stderr`.
 
 - ✏️ Service plugin now supports env variables passing to the script/executable/binary/any:
 ```yaml
@@ -136,6 +159,51 @@ service:
     restart_sec: 1
 ```
 
+- ✏️ Server plugin can accept scripts (sh, bash, etc) in it's `command` configuration key:
+```yaml
+server:
+    command: "./script.sh OR sh script.sh" <--- UPDATED
+    relay: "pipes"
+    relay_timeout: "20s"
+```
+The script should start a worker as the last command. For the `pipes`, scripts should not contain programs, which can close `stdin`, `stdout` or `stderr`.
+
+- ✏️ Nats jobs driver support - [PR](https://github.com/spiral/roadrunner-plugins/pull/68).
+```yaml
+nats:
+  addr: "demo.nats.io"
+
+jobs:
+  num_pollers: 10
+  pipeline_size: 100000
+  pool:
+    num_workers: 10
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+
+  pipelines:
+    test-1:
+      driver: nats
+      prefetch: 100
+      subject: "default"
+      stream: "foo"
+      deliver_new: "true"
+      rate_limit: 100
+      delete_stream_on_stop: false
+      delete_after_ack: false
+      priority: 2
+
+  consume: [ "test-1" ]
+```
+- Driver uses NATS JetStream API and not compatible with non-js API.
+
+
+- ✏️ Response API for the NATS, RabbitMQ, SQS and Beanstalk drivers. This means, that you'll be able to respond to a specified in the response queue.
+  Limitations:
+    - To send a response to the queue maintained by the RR, you should send it as a `Job` type. There is no limitation for the other queues (tubes, subjects) responses.
+    - Driver uses the same endpoint (address) to send the response as specified in the configuration.
+
 ## 🩹 Fixes:
 
 - 🐛 Fix: local and global configuration parsing.
@@ -148,6 +216,7 @@ service:
 - 📦 roadrunner `v2.5.0`
 - 📦 roadrunner-plugins `v2.5.0`
 - 📦 roadrunner-temporal `v1.0.10`
+- 📦 endure `v1.0.5`
 - 📦 goridge `v3.2.2`
 
 ## v2.4.1 (13.09.2021)
