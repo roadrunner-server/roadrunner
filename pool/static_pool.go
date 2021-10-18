@@ -361,7 +361,7 @@ func (sp *StaticPool) allocateWorkers(numWorkers uint64) ([]worker.BaseProcess, 
 	for i := uint64(0); i < numWorkers; i++ {
 		w, err := sp.allocator()
 		if err != nil {
-			return nil, err
+			return nil, errors.E(errors.WorkerAllocate, err)
 		}
 
 		workers = append(workers, w)
