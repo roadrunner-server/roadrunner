@@ -34,8 +34,6 @@ func putFrame(f *frame.Frame) {
 }
 
 func SendControl(rl relay.Relay, payload interface{}) error {
-	const op = errors.Op("send_control")
-
 	fr := getFrame()
 	defer putFrame(fr)
 
@@ -45,7 +43,7 @@ func SendControl(rl relay.Relay, payload interface{}) error {
 	if data, ok := payload.([]byte); ok {
 		// check if payload no more that 4Gb
 		if uint32(len(data)) > ^uint32(0) {
-			return errors.E(op, errors.Str("payload is more that 4gb"))
+			return errors.Str("payload is more that 4gb")
 		}
 
 		fr.WritePayloadLen(fr.Header(), uint32(len(data)))
@@ -54,14 +52,14 @@ func SendControl(rl relay.Relay, payload interface{}) error {
 
 		err := rl.Send(fr)
 		if err != nil {
-			return errors.E(op, err)
+			return err
 		}
 		return nil
 	}
 
 	data, err := json.Marshal(payload)
 	if err != nil {
-		return errors.E(op, errors.Errorf("invalid payload: %s", err))
+		return errors.Errorf("invalid payload: %s", err)
 	}
 
 	fr.WritePayloadLen(fr.Header(), uint32(len(data)))
@@ -71,47 +69,47 @@ func SendControl(rl relay.Relay, payload interface{}) error {
 	// we don't need a copy here, because frame copy the data before send
 	err = rl.Send(fr)
 	if err != nil {
-		return errors.E(op, err)
+		return errors.E(errors.FileNotFound, err)
 	}
 
 	return nil
 }
 
 func Pid(rl relay.Relay) (int64, error) {
-	const op = errors.Op("fetch_pid")
 	err := SendControl(rl, pidCommand{Pid: os.Getpid()})
 	if err != nil {
-		return 0, errors.E(op, err)
+		return 0, err
 	}
 
 	fr := getFrame()
 	defer putFrame(fr)
 
 	err = rl.Receive(fr)
-	if !fr.VerifyCRC(fr.Header()) {
-		return 0, errors.E(op, errors.Str("CRC mismatch"))
-	}
 	if err != nil {
-		return 0, errors.E(op, err)
+		return 0, err
+	}
+
+	if !fr.VerifyCRC(fr.Header()) {
+		return 0, errors.Str("CRC mismatch")
 	}
 	if fr == nil {
-		return 0, errors.E(op, errors.Str("nil frame received"))
+		return 0, errors.Str("nil frame received")
 	}
 
 	flags := fr.ReadFlags()
 
 	if flags&frame.CONTROL == 0 {
-		return 0, errors.E(op, errors.Str("unexpected response, header is missing, no CONTROL flag"))
+		return 0, errors.Str("unexpected response, header is missing, no CONTROL flag")
 	}
 
 	link := &pidCommand{}
 	err = json.Unmarshal(fr.Payload(), link)
 	if err != nil {
-		return 0, errors.E(op, err)
+		return 0, err
 	}
 
 	if link.Pid <= 0 {
-		return 0, errors.E(op, errors.Str("pid should be greater than 0"))
+		return 0, errors.Str("pid should be greater than 0")
 	}
 
 	return int64(link.Pid), nil

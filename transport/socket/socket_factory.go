@@ -16,7 +16,6 @@ import (
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/worker"
 
-	"go.uber.org/multierr"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -85,7 +84,6 @@ type socketSpawn struct {
 
 // SpawnWorkerWithTimeout creates Process and connects it to appropriate relay or return an error
 func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.Listener) (*worker.Process, error) {
-	const op = errors.Op("factory_spawn_worker_with_timeout")
 	c := make(chan socketSpawn)
 	go func() {
 		ctxT, cancel := context.WithTimeout(ctx, f.tout)
@@ -95,7 +93,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 			select {
 			case c <- socketSpawn{
 				w:   nil,
-				err: errors.E(op, err),
+				err: err,
 			}:
 				return
 			default:
@@ -108,7 +106,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 			select {
 			case c <- socketSpawn{
 				w:   nil,
-				err: errors.E(op, err),
+				err: err,
 			}:
 				return
 			default:
@@ -118,17 +116,12 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 
 		rl, err := f.findRelayWithContext(ctxT, w)
 		if err != nil {
-			err = multierr.Combine(
-				err,
-				w.Kill(),
-				w.Wait(),
-			)
-
+			_ = w.Kill()
 			select {
 			// try to write result
 			case c <- socketSpawn{
 				w:   nil,
-				err: errors.E(op, err),
+				err: err,
 			}:
 				return
 				// if no receivers - return
@@ -165,7 +158,6 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 }
 
 func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*worker.Process, error) {
-	const op = errors.Op("factory_spawn_worker")
 	w, err := worker.InitBaseWorker(cmd, worker.AddListeners(listeners...))
 	if err != nil {
 		return nil, err
@@ -173,16 +165,12 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*wor
 
 	err = w.Start()
 	if err != nil {
-		return nil, errors.E(op, err)
+		return nil, err
 	}
 
 	rl, err := f.findRelay(w)
 	if err != nil {
-		err = multierr.Combine(
-			err,
-			w.Kill(),
-			w.Wait(),
-		)
+		_ = w.Kill()
 		return nil, err
 	}
 
@@ -191,12 +179,8 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*wor
 	// errors bundle
 	_, err = internal.Pid(rl)
 	if err != nil {
-		err = multierr.Combine(
-			err,
-			w.Kill(),
-			w.Wait(),
-		)
-		return nil, errors.E(op, err)
+		_ = w.Kill()
+		return nil, err
 	}
 
 	w.State().Set(worker.StateReady)
