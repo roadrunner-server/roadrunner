@@ -4,12 +4,10 @@ import (
 	"context"
 	"os/exec"
 
-	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v3/pkg/pipe"
 	"github.com/spiral/roadrunner/v2/events"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/worker"
-	"go.uber.org/multierr"
 )
 
 // Factory connects to stack using standard
@@ -31,14 +29,13 @@ type sr struct {
 // method Wait() must be handled on level above.
 func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.Listener) (*worker.Process, error) {
 	spCh := make(chan sr)
-	const op = errors.Op("factory_spawn_worker_with_timeout")
 	go func() {
 		w, err := worker.InitBaseWorker(cmd, worker.AddListeners(listeners...))
 		if err != nil {
 			select {
 			case spCh <- sr{
 				w:   nil,
-				err: errors.E(op, err),
+				err: err,
 			}:
 				return
 			default:
@@ -51,7 +48,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 			select {
 			case spCh <- sr{
 				w:   nil,
-				err: errors.E(op, err),
+				err: err,
 			}:
 				return
 			default:
@@ -64,7 +61,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 			select {
 			case spCh <- sr{
 				w:   nil,
-				err: errors.E(op, err),
+				err: err,
 			}:
 				return
 			default:
@@ -82,7 +79,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 			select {
 			case spCh <- sr{
 				w:   nil,
-				err: errors.E(op, err),
+				err: err,
 			}:
 				return
 			default:
@@ -93,15 +90,11 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 		// used as a ping
 		_, err = internal.Pid(relay)
 		if err != nil {
-			err = multierr.Combine(
-				err,
-				w.Kill(),
-				w.Wait(),
-			)
+			_ = w.Kill()
 			select {
 			case spCh <- sr{
 				w:   nil,
-				err: errors.E(op, err),
+				err: err,
 			}:
 				return
 			default:
@@ -138,20 +131,19 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 }
 
 func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*worker.Process, error) {
-	const op = errors.Op("factory_spawn_worker")
 	w, err := worker.InitBaseWorker(cmd, worker.AddListeners(listeners...))
 	if err != nil {
-		return nil, errors.E(op, err)
+		return nil, err
 	}
 
 	in, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, errors.E(op, err)
+		return nil, err
 	}
 
 	out, err := cmd.StdinPipe()
 	if err != nil {
-		return nil, errors.E(op, err)
+		return nil, err
 	}
 
 	// Init new PIPE relay
@@ -161,18 +153,14 @@ func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*wor
 	// Start the worker
 	err = w.Start()
 	if err != nil {
-		return nil, errors.E(op, err)
+		return nil, err
 	}
 
 	// errors bundle
 	_, err = internal.Pid(relay)
 	if err != nil {
-		err = multierr.Combine(
-			err,
-			w.Kill(),
-			w.Wait(),
-		)
-		return nil, errors.E(op, err)
+		_ = w.Kill()
+		return nil, err
 	}
 
 	// everything ok, set ready state
