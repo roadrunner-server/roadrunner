@@ -7,6 +7,8 @@ const (
 	EventWorkerLog
 	// EventWorkerStderr is the worker standard error output
 	EventWorkerStderr
+	// EventWorkerWaitExit is the worker exit event
+	EventWorkerWaitExit
 )
 
 type W int64
@@ -19,6 +21,8 @@ func (ev W) String() string {
 		return "EventWorkerLog"
 	case EventWorkerStderr:
 		return "EventWorkerStderr"
+	case EventWorkerWaitExit:
+		return "EventWorkerWaitExit"
 	}
 	return UnknownEventType
 }

@@ -202,11 +202,10 @@ func (sp *StaticPool) execWithTTL(ctx context.Context, p *payload.Payload) (*pay
 }
 
 func (sp *StaticPool) stopWorker(w worker.BaseProcess) {
-	const op = errors.Op("static_pool_stop_worker")
 	w.State().Set(worker.StateInvalid)
 	err := w.Stop()
 	if err != nil {
-		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: errors.E(op, err)})
+		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: err})
 	}
 }
 
