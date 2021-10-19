@@ -205,10 +205,10 @@ jobs:
 ## 🩹 Fixes:
 
 - 🐛 Fix: local and global configuration parsing.
-- 🐛 Fix: bug with the `boltdb-jobs` connection left open after RPC close command.
+- 🐛 Fix: `boltdb-jobs` connection left open after RPC close command.
 - 🐛 Fix: close `beanstalk` connection and release associated resources after pipeline stopped.
 - 🐛 Fix: grpc plugin fails to handle requests after calling `reset`.
-- 🐛 Fix: bug with superfluous response.WriteHeader call when connection is broken.
+- 🐛 Fix: superfluous response.WriteHeader call when connection is broken.
 
 ## 📦 Packages:
 
