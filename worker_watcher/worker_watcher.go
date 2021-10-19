@@ -279,9 +279,8 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 	err := w.Wait()
 	if err != nil {
 		ww.events.Push(events.WorkerEvent{
-			Event:   events.EventWorkerError,
-			Worker:  w,
-			Payload: errors.E(op, err),
+			Event:   events.EventWorkerWaitExit,
+			Payload: err,
 		})
 	}
 
