@@ -69,7 +69,7 @@ $ ./vendor/bin/rr get-binary
 > image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/))
 
 Configuration can be located in `.rr.yaml`
-file ([full sample](https://github.com/spiral/roadrunner/blob/master/.rr.yaml)):
+file ([full sample](https://github.com/spiral/roadrunner-binary/blob/master/.rr.yaml)):
 
 ```yaml
 rpc:
