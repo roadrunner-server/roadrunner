@@ -326,14 +326,10 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 		},
 	}
 
-	block := make(chan struct{}, 10)
-	listener := func(event interface{}) {
-		if ev, ok := event.(events.PoolEvent); ok {
-			if ev.Event == events.EventMaxMemory {
-				block <- struct{}{}
-			}
-		}
-	}
+	eb, id := events.Bus()
+	ch := make(chan events.Event, 10)
+	err := eb.SubscribeP(id, "supervisor.EventMaxMemory", ch)
+	require.NoError(t, err)
 
 	// constructed
 	// max memory
@@ -344,7 +340,6 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 		func() *exec.Cmd { return exec.Command("php", "../tests/memleak.php", "pipes") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
-		AddListeners(listener),
 	)
 
 	assert.NoError(t, err)
@@ -359,7 +354,7 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 	assert.Empty(t, resp.Body)
 	assert.Empty(t, resp.Context)
 
-	<-block
+	<-ch
 	p.Destroy(context.Background())
 }
 

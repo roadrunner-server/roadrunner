@@ -12,6 +12,7 @@ import (
 	"github.com/spiral/roadrunner/v2/payload"
 	"github.com/spiral/roadrunner/v2/worker"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_GetState2(t *testing.T) {
@@ -105,21 +106,20 @@ func Test_Pipe_PipeError4(t *testing.T) {
 
 func Test_Pipe_Failboot2(t *testing.T) {
 	cmd := exec.Command("php", "../../tests/failboot.php")
-	finish := make(chan struct{}, 10)
-	listener := func(event interface{}) {
-		if ev, ok := event.(events.WorkerEvent); ok {
-			if ev.Event == events.EventWorkerStderr {
-				if strings.Contains(string(ev.Payload.([]byte)), "failboot") {
-					finish <- struct{}{}
-				}
-			}
-		}
-	}
-	w, err := NewPipeFactory().SpawnWorker(cmd, listener)
+
+	eb, id := events.Bus()
+	ch := make(chan events.Event, 10)
+	err := eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
+	require.NoError(t, err)
+
+	w, err := NewPipeFactory().SpawnWorker(cmd)
 
 	assert.Nil(t, w)
 	assert.Error(t, err)
-	<-finish
+	ev := <-ch
+	if !strings.Contains(ev.Message(), "failboot") {
+		t.Fatal("should contain failboot string")
+	}
 }
 
 func Test_Pipe_Invalid2(t *testing.T) {
@@ -368,17 +368,13 @@ func Test_Echo_Slow2(t *testing.T) {
 
 func Test_Broken2(t *testing.T) {
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "pipes")
-	data := ""
-	mu := &sync.Mutex{}
-	listener := func(event interface{}) {
-		if wev, ok := event.(events.WorkerEvent); ok {
-			mu.Lock()
-			data = string(wev.Payload.([]byte))
-			mu.Unlock()
-		}
-	}
 
-	w, err := NewPipeFactory().SpawnWorker(cmd, listener)
+	eb, id := events.Bus()
+	ch := make(chan events.Event, 10)
+	err := eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
+	require.NoError(t, err)
+
+	w, err := NewPipeFactory().SpawnWorker(cmd)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -390,11 +386,11 @@ func Test_Broken2(t *testing.T) {
 	assert.Nil(t, res)
 
 	time.Sleep(time.Second * 3)
-	mu.Lock()
-	if strings.ContainsAny(data, "undefined_function()") == false {
+
+	msg := <-ch
+	if strings.ContainsAny(msg.Message(), "undefined_function()") == false {
 		t.Fail()
 	}
-	mu.Unlock()
 	assert.Error(t, w.Stop())
 }
 

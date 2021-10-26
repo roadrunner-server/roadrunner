@@ -13,6 +13,7 @@ import (
 	"github.com/spiral/roadrunner/v2/payload"
 	"github.com/spiral/roadrunner/v2/worker"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_Tcp_Start(t *testing.T) {
@@ -124,21 +125,19 @@ func Test_Tcp_Failboot(t *testing.T) {
 
 	cmd := exec.Command("php", "../../tests/failboot.php")
 
-	finish := make(chan struct{}, 10)
-	listener := func(event interface{}) {
-		if ev, ok := event.(events.WorkerEvent); ok {
-			if ev.Event == events.EventWorkerStderr {
-				if strings.Contains(string(ev.Payload.([]byte)), "failboot") {
-					finish <- struct{}{}
-				}
-			}
-		}
-	}
+	eb, id := events.Bus()
+	ch := make(chan events.Event, 10)
+	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
+	require.NoError(t, err)
 
-	w, err2 := NewSocketServer(ls, time.Second*5).SpawnWorkerWithTimeout(ctx, cmd, listener)
+	w, err2 := NewSocketServer(ls, time.Second*5).SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Nil(t, w)
 	assert.Error(t, err2)
-	<-finish
+
+	ev := <-ch
+	if !strings.Contains(ev.Message(), "failboot") {
+		t.Fatal("should contain failboot string")
+	}
 }
 
 func Test_Tcp_Timeout(t *testing.T) {
@@ -203,18 +202,12 @@ func Test_Tcp_Broken(t *testing.T) {
 
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "tcp")
 
-	finish := make(chan struct{}, 10)
-	listener := func(event interface{}) {
-		if ev, ok := event.(events.WorkerEvent); ok {
-			if ev.Event == events.EventWorkerStderr {
-				if strings.Contains(string(ev.Payload.([]byte)), "undefined_function()") {
-					finish <- struct{}{}
-				}
-			}
-		}
-	}
+	eb, id := events.Bus()
+	ch := make(chan events.Event, 10)
+	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
+	require.NoError(t, err)
 
-	w, err := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd, listener)
+	w, err := NewSocketServer(ls, time.Second*10).SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -239,7 +232,11 @@ func Test_Tcp_Broken(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, res)
 	wg.Wait()
-	<-finish
+
+	ev := <-ch
+	if !strings.Contains(ev.Message(), "undefined_function()") {
+		t.Fatal("should contain undefined_function string")
+	}
 }
 
 func Test_Tcp_Echo(t *testing.T) {
@@ -368,21 +365,19 @@ func Test_Unix_Failboot(t *testing.T) {
 
 	cmd := exec.Command("php", "../../tests/failboot.php")
 
-	finish := make(chan struct{}, 10)
-	listener := func(event interface{}) {
-		if ev, ok := event.(events.WorkerEvent); ok {
-			if ev.Event == events.EventWorkerStderr {
-				if strings.Contains(string(ev.Payload.([]byte)), "failboot") {
-					finish <- struct{}{}
-				}
-			}
-		}
-	}
+	eb, id := events.Bus()
+	ch := make(chan events.Event, 10)
+	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
+	require.NoError(t, err)
 
-	w, err := NewSocketServer(ls, time.Second*5).SpawnWorkerWithTimeout(ctx, cmd, listener)
+	w, err := NewSocketServer(ls, time.Second*5).SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Nil(t, w)
 	assert.Error(t, err)
-	<-finish
+
+	ev := <-ch
+	if !strings.Contains(ev.Message(), "failboot") {
+		t.Fatal("should contain failboot string")
+	}
 }
 
 func Test_Unix_Timeout(t *testing.T) {
@@ -444,20 +439,12 @@ func Test_Unix_Broken(t *testing.T) {
 
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "unix")
 
-	block := make(chan struct{}, 10)
-	listener := func(event interface{}) {
-		if wev, ok := event.(events.WorkerEvent); ok {
-			if wev.Event == events.EventWorkerStderr {
-				e := string(wev.Payload.([]byte))
-				if strings.ContainsAny(e, "undefined_function()") {
-					block <- struct{}{}
-					return
-				}
-			}
-		}
-	}
+	eb, id := events.Bus()
+	ch := make(chan events.Event, 10)
+	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
+	require.NoError(t, err)
 
-	w, err := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd, listener)
+	w, err := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -481,7 +468,12 @@ func Test_Unix_Broken(t *testing.T) {
 
 	assert.Error(t, err)
 	assert.Nil(t, res)
-	<-block
+
+	ev := <-ch
+	if !strings.Contains(ev.Message(), "undefined_function()") {
+		t.Fatal("should contain undefined_function string")
+	}
+
 	wg.Wait()
 }
 

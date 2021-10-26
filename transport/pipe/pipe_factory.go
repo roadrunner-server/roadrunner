@@ -5,7 +5,6 @@ import (
 	"os/exec"
 
 	"github.com/spiral/goridge/v3/pkg/pipe"
-	"github.com/spiral/roadrunner/v2/events"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/worker"
 )
@@ -27,10 +26,10 @@ type sr struct {
 
 // SpawnWorkerWithTimeout creates new Process and connects it to goridge relay,
 // method Wait() must be handled on level above.
-func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, listeners ...events.Listener) (*worker.Process, error) {
+func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (*worker.Process, error) {
 	spCh := make(chan sr)
 	go func() {
-		w, err := worker.InitBaseWorker(cmd, worker.AddListeners(listeners...))
+		w, err := worker.InitBaseWorker(cmd)
 		if err != nil {
 			select {
 			case spCh <- sr{
@@ -130,8 +129,8 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd, lis
 	}
 }
 
-func (f *Factory) SpawnWorker(cmd *exec.Cmd, listeners ...events.Listener) (*worker.Process, error) {
-	w, err := worker.InitBaseWorker(cmd, worker.AddListeners(listeners...))
+func (f *Factory) SpawnWorker(cmd *exec.Cmd) (*worker.Process, error) {
+	w, err := worker.InitBaseWorker(cmd)
 	if err != nil {
 		return nil, err
 	}
