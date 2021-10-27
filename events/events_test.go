@@ -9,6 +9,7 @@ import (
 
 func TestEvenHandler(t *testing.T) {
 	eh, id := Bus()
+	defer eh.Unsubscribe(id)
 
 	ch := make(chan Event, 100)
 	err := eh.SubscribeP(id, "http.EventJobOK", ch)
@@ -25,6 +26,8 @@ func TestEvenHandler(t *testing.T) {
 func TestEvenHandler2(t *testing.T) {
 	eh, id := Bus()
 	eh2, id2 := Bus()
+	defer eh.Unsubscribe(id)
+	defer eh2.Unsubscribe(id2)
 
 	ch := make(chan Event, 100)
 	ch2 := make(chan Event, 100)
@@ -59,6 +62,7 @@ func TestEvenHandler2(t *testing.T) {
 
 func TestEvenHandler3(t *testing.T) {
 	eh, id := Bus()
+	defer eh.Unsubscribe(id)
 
 	ch := make(chan Event, 100)
 	err := eh.SubscribeP(id, "EventJobOK", ch)
@@ -67,6 +71,7 @@ func TestEvenHandler3(t *testing.T) {
 
 func TestEvenHandler4(t *testing.T) {
 	eh, id := Bus()
+	defer eh.Unsubscribe(id)
 
 	err := eh.SubscribeP(id, "EventJobOK", nil)
 	require.Error(t, err)
@@ -74,6 +79,7 @@ func TestEvenHandler4(t *testing.T) {
 
 func TestEvenHandler5(t *testing.T) {
 	eh, id := Bus()
+	defer eh.Unsubscribe(id)
 
 	ch := make(chan Event, 100)
 	err := eh.SubscribeP(id, "http.EventJobOK", ch)
