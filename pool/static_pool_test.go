@@ -170,6 +170,7 @@ func Test_StaticPool_Broken_Replace(t *testing.T) {
 	ctx := context.Background()
 
 	eb, id := events.Bus()
+	defer eb.Unsubscribe(id)
 	ch := make(chan events.Event, 10)
 	err := eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
 	require.NoError(t, err)
@@ -201,6 +202,7 @@ func Test_StaticPool_Broken_FromOutside(t *testing.T) {
 
 	// Run pool events
 	eb, id := events.Bus()
+	defer eb.Unsubscribe(id)
 	ch := make(chan events.Event, 10)
 	err := eb.SubscribeP(id, "pool.EventWorkerConstruct", ch)
 	require.NoError(t, err)
@@ -489,6 +491,7 @@ func Test_StaticPool_NoFreeWorkers(t *testing.T) {
 	ctx := context.Background()
 
 	eb, id := events.Bus()
+	defer eb.Unsubscribe(id)
 	ch := make(chan events.Event, 10)
 	err := eb.SubscribeP(id, "pool.EventNoFreeWorkers", ch)
 	require.NoError(t, err)

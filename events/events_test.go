@@ -15,7 +15,7 @@ func TestEvenHandler(t *testing.T) {
 	err := eh.SubscribeP(id, "http.EventJobOK", ch)
 	require.NoError(t, err)
 
-	eh.Send(NewRREvent(EventJobOK, "foo", "http"))
+	eh.Send(NewEvent(EventJobOK, "http", "foo"))
 
 	evt := <-ch
 	require.Equal(t, "foo", evt.Message())
@@ -37,7 +37,7 @@ func TestEvenHandler2(t *testing.T) {
 	err = eh.SubscribeP(id, "http.EventJobOK", ch2)
 	require.NoError(t, err)
 
-	eh.Send(NewRREvent(EventJobOK, "foo", "http"))
+	eh.Send(NewEvent(EventJobOK, "http", "foo"))
 
 	evt := <-ch2
 	require.Equal(t, "foo", evt.Message())
@@ -85,7 +85,7 @@ func TestEvenHandler5(t *testing.T) {
 	err := eh.SubscribeP(id, "http.EventJobOK", ch)
 	require.NoError(t, err)
 
-	eh.Send(NewRREvent(EventJobOK, "foo", "http"))
+	eh.Send(NewEvent(EventJobOK, "http", "foo"))
 
 	evt := <-ch
 	require.Equal(t, "foo", evt.Message())

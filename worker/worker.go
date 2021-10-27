@@ -135,6 +135,7 @@ func (w *Process) Wait() error {
 	const op = errors.Op("process_wait")
 	var err error
 	err = w.cmd.Wait()
+	defer w.events.Unsubscribe(w.eventsID)
 
 	// If worker was destroyed, just exit
 	if w.State().Value() == StateDestroyed {
@@ -161,8 +162,6 @@ func (w *Process) Wait() error {
 		w.State().Set(StateStopped)
 		return nil
 	}
-
-	w.events.Unsubscribe(w.eventsID)
 
 	return err
 }
@@ -221,11 +220,6 @@ func (w *Process) Kill() error {
 
 // Worker stderr
 func (w *Process) Write(p []byte) (n int, err error) {
-	w.events.Send(&events.RREvent{
-		T: events.EventWorkerStderr,
-		P: workerEventsName,
-		M: utils.AsString(p),
-	})
-
+	w.events.Send(events.NewEvent(events.EventWorkerStderr, workerEventsName, utils.AsString(p)))
 	return len(p), nil
 }

@@ -148,11 +148,7 @@ func (ww *workerWatcher) Allocate() error {
 	sw, err := ww.allocator()
 	if err != nil {
 		// log incident
-		ww.events.Send(&events.RREvent{
-			T: events.EventWorkerError,
-			P: wwName,
-			M: fmt.Sprintf("can't allocate the worker: %v", err),
-		})
+		ww.events.Send(events.NewEvent(events.EventWorkerError, wwName, fmt.Sprintf("can't allocate the worker: %v", err)))
 
 		// if no timeout, return error immediately
 		if ww.allocateTimeout == 0 {
@@ -176,11 +172,7 @@ func (ww *workerWatcher) Allocate() error {
 				sw, err = ww.allocator()
 				if err != nil {
 					// log incident
-					ww.events.Send(&events.RREvent{
-						T: events.EventWorkerError,
-						P: wwName,
-						M: fmt.Sprintf("can't allocate the worker, retry attempt failed: %v", err),
-					})
+					ww.events.Send(events.NewEvent(events.EventWorkerError, wwName, fmt.Sprintf("can't allocate the worker, retry attempt failed: %v", err)))
 					continue
 				}
 
@@ -287,11 +279,7 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 	const op = errors.Op("worker_watcher_wait")
 	err := w.Wait()
 	if err != nil {
-		ww.events.Send(&events.RREvent{
-			T: events.EventWorkerWaitExit,
-			P: wwName,
-			M: fmt.Sprintf("error: %v", err),
-		})
+		ww.events.Send(events.NewEvent(events.EventWorkerWaitExit, wwName, fmt.Sprintf("error: %v", err)))
 	}
 
 	// remove worker
@@ -299,11 +287,7 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 
 	if w.State().Value() == worker.StateDestroyed {
 		// worker was manually destroyed, no need to replace
-		ww.events.Send(&events.RREvent{
-			T: events.EventWorkerDestruct,
-			P: wwName,
-			M: fmt.Sprintf("pid: %d", w.Pid()),
-		})
+		ww.events.Send(events.NewEvent(events.EventWorkerDestruct, wwName, fmt.Sprintf("pid: %d", w.Pid())))
 
 		return
 	}
@@ -313,11 +297,7 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 
 	err = ww.Allocate()
 	if err != nil {
-		ww.events.Send(&events.RREvent{
-			T: events.EventWorkerProcessExit,
-			P: wwName,
-			M: fmt.Sprintf("error: %v", err),
-		})
+		ww.events.Send(events.NewEvent(events.EventWorkerProcessExit, wwName, fmt.Sprintf("error: %v", err)))
 
 		// no workers at all, panic
 		if len(ww.workers) == 0 && atomic.LoadUint64(ww.numWorkers) == 0 {

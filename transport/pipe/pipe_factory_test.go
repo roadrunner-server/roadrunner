@@ -127,6 +127,7 @@ func Test_Pipe_Failboot(t *testing.T) {
 	ctx := context.Background()
 
 	eb, id := events.Bus()
+	defer eb.Unsubscribe(id)
 	ch := make(chan events.Event, 10)
 	err := eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
 	require.NoError(t, err)
@@ -434,6 +435,7 @@ func Test_Broken(t *testing.T) {
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "pipes")
 
 	eb, id := events.Bus()
+	defer eb.Unsubscribe(id)
 	ch := make(chan events.Event, 10)
 	err := eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
 	require.NoError(t, err)

@@ -332,6 +332,7 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 	}
 
 	eb, id := events.Bus()
+	defer eb.Unsubscribe(id)
 	ch := make(chan events.Event, 10)
 	err := eb.SubscribeP(id, "supervisor.EventMaxMemory", ch)
 	require.NoError(t, err)

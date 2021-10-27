@@ -28,23 +28,20 @@ type Supervised interface {
 }
 
 type supervised struct {
-	cfg      *SupervisorConfig
-	events   events.EventBus
-	eventsID string
-	pool     Pool
-	stopCh   chan struct{}
-	mu       *sync.RWMutex
+	cfg    *SupervisorConfig
+	events events.EventBus
+	pool   Pool
+	stopCh chan struct{}
+	mu     *sync.RWMutex
 }
 
-func supervisorWrapper(pool Pool, cfg *SupervisorConfig) Supervised {
-	eb, id := events.Bus()
+func supervisorWrapper(pool Pool, eb events.EventBus, cfg *SupervisorConfig) Supervised {
 	sp := &supervised{
-		cfg:      cfg,
-		events:   eb,
-		eventsID: id,
-		pool:     pool,
-		mu:       &sync.RWMutex{},
-		stopCh:   make(chan struct{}),
+		cfg:    cfg,
+		events: eb,
+		pool:   pool,
+		mu:     &sync.RWMutex{},
+		stopCh: make(chan struct{}),
 	}
 
 	return sp
@@ -155,11 +152,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			}
 			// just to double check
 			workers[i].State().Set(worker.StateInvalid)
-			sp.events.Send(&events.RREvent{
-				T: events.EventTTL,
-				P: supervisorName,
-				M: fmt.Sprintf("worker's pid: %d", workers[i].Pid()),
-			})
+			sp.events.Send(events.NewEvent(events.EventTTL, supervisorName, fmt.Sprintf("worker's pid: %d", workers[i].Pid())))
 			continue
 		}
 
@@ -179,11 +172,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			}
 			// just to double check
 			workers[i].State().Set(worker.StateInvalid)
-			sp.events.Send(&events.RREvent{
-				T: events.EventMaxMemory,
-				P: supervisorName,
-				M: fmt.Sprintf("worker's pid: %d", workers[i].Pid()),
-			})
+			sp.events.Send(events.NewEvent(events.EventMaxMemory, supervisorName, fmt.Sprintf("worker's pid: %d", workers[i].Pid())))
 			continue
 		}
 
@@ -238,11 +227,7 @@ func (sp *supervised) control() { //nolint:gocognit
 				}
 				// just to double-check
 				workers[i].State().Set(worker.StateInvalid)
-				sp.events.Send(&events.RREvent{
-					T: events.EventIdleTTL,
-					P: supervisorName,
-					M: fmt.Sprintf("worker's pid: %d", workers[i].Pid()),
-				})
+				sp.events.Send(events.NewEvent(events.EventIdleTTL, supervisorName, fmt.Sprintf("worker's pid: %d", workers[i].Pid())))
 			}
 		}
 	}
