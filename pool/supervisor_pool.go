@@ -2,6 +2,7 @@ package pool
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 
@@ -12,7 +13,10 @@ import (
 	"github.com/spiral/roadrunner/v2/worker"
 )
 
-const MB = 1024 * 1024
+const (
+	MB                    = 1024 * 1024
+	supervisorName string = "supervisor"
+)
 
 // NSEC_IN_SEC nanoseconds in second
 const NSEC_IN_SEC int64 = 1000000000 //nolint:stylecheck
@@ -25,16 +29,16 @@ type Supervised interface {
 
 type supervised struct {
 	cfg    *SupervisorConfig
-	events events.Handler
+	events events.EventBus
 	pool   Pool
 	stopCh chan struct{}
 	mu     *sync.RWMutex
 }
 
-func supervisorWrapper(pool Pool, events events.Handler, cfg *SupervisorConfig) Supervised {
+func supervisorWrapper(pool Pool, eb events.EventBus, cfg *SupervisorConfig) Supervised {
 	sp := &supervised{
 		cfg:    cfg,
-		events: events,
+		events: eb,
 		pool:   pool,
 		mu:     &sync.RWMutex{},
 		stopCh: make(chan struct{}),
@@ -148,7 +152,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			}
 			// just to double check
 			workers[i].State().Set(worker.StateInvalid)
-			sp.events.Push(events.PoolEvent{Event: events.EventTTL, Payload: workers[i]})
+			sp.events.Send(events.NewEvent(events.EventTTL, supervisorName, fmt.Sprintf("worker's pid: %d", workers[i].Pid())))
 			continue
 		}
 
@@ -168,7 +172,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			}
 			// just to double check
 			workers[i].State().Set(worker.StateInvalid)
-			sp.events.Push(events.PoolEvent{Event: events.EventMaxMemory, Payload: workers[i]})
+			sp.events.Send(events.NewEvent(events.EventMaxMemory, supervisorName, fmt.Sprintf("worker's pid: %d", workers[i].Pid())))
 			continue
 		}
 
@@ -223,7 +227,7 @@ func (sp *supervised) control() { //nolint:gocognit
 				}
 				// just to double-check
 				workers[i].State().Set(worker.StateInvalid)
-				sp.events.Push(events.PoolEvent{Event: events.EventIdleTTL, Payload: workers[i]})
+				sp.events.Send(events.NewEvent(events.EventIdleTTL, supervisorName, fmt.Sprintf("worker's pid: %d", workers[i].Pid())))
 			}
 		}
 	}

@@ -265,6 +265,11 @@ func TestSupervisedPool_IdleTTL_StateAfterTimeout(t *testing.T) {
 	assert.Empty(t, resp.Context)
 
 	time.Sleep(time.Second * 2)
+
+	if len(p.Workers()) < 1 {
+		t.Fatal("should be at least 1 worker")
+		return
+	}
 	// should be destroyed, state should be Ready, not Invalid
 	assert.NotEqual(t, pid, p.Workers()[0].Pid())
 	assert.Equal(t, int64(1), p.Workers()[0].State().Value())
@@ -326,14 +331,11 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 		},
 	}
 
-	block := make(chan struct{}, 10)
-	listener := func(event interface{}) {
-		if ev, ok := event.(events.PoolEvent); ok {
-			if ev.Event == events.EventMaxMemory {
-				block <- struct{}{}
-			}
-		}
-	}
+	eb, id := events.Bus()
+	defer eb.Unsubscribe(id)
+	ch := make(chan events.Event, 10)
+	err := eb.SubscribeP(id, "supervisor.EventMaxMemory", ch)
+	require.NoError(t, err)
 
 	// constructed
 	// max memory
@@ -344,7 +346,6 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 		func() *exec.Cmd { return exec.Command("php", "../tests/memleak.php", "pipes") },
 		pipe.NewPipeFactory(),
 		cfgExecTTL,
-		AddListeners(listener),
 	)
 
 	assert.NoError(t, err)
@@ -359,7 +360,7 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 	assert.Empty(t, resp.Body)
 	assert.Empty(t, resp.Context)
 
-	<-block
+	<-ch
 	p.Destroy(context.Background())
 }
 

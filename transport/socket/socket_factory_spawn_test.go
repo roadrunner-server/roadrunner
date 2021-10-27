@@ -13,6 +13,7 @@ import (
 	"github.com/spiral/roadrunner/v2/payload"
 	"github.com/spiral/roadrunner/v2/worker"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_Tcp_Start2(t *testing.T) {
@@ -110,21 +111,20 @@ func Test_Tcp_Failboot2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../tests/failboot.php")
 
-	finish := make(chan struct{}, 10)
-	listener := func(event interface{}) {
-		if ev, ok := event.(events.WorkerEvent); ok {
-			if ev.Event == events.EventWorkerStderr {
-				if strings.Contains(string(ev.Payload.([]byte)), "failboot") {
-					finish <- struct{}{}
-				}
-			}
-		}
-	}
+	eb, id := events.Bus()
+	defer eb.Unsubscribe(id)
+	ch := make(chan events.Event, 10)
+	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
+	require.NoError(t, err)
 
-	w, err2 := NewSocketServer(ls, time.Second*5).SpawnWorker(cmd, listener)
+	w, err2 := NewSocketServer(ls, time.Second*5).SpawnWorker(cmd)
 	assert.Nil(t, w)
 	assert.Error(t, err2)
-	<-finish
+
+	ev := <-ch
+	if !strings.Contains(ev.Message(), "failboot") {
+		t.Fatal("should contain failboot string")
+	}
 }
 
 func Test_Tcp_Invalid2(t *testing.T) {
@@ -162,18 +162,13 @@ func Test_Tcp_Broken2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "tcp")
 
-	finish := make(chan struct{}, 10)
-	listener := func(event interface{}) {
-		if ev, ok := event.(events.WorkerEvent); ok {
-			if ev.Event == events.EventWorkerStderr {
-				if strings.Contains(string(ev.Payload.([]byte)), "undefined_function()") {
-					finish <- struct{}{}
-				}
-			}
-		}
-	}
+	eb, id := events.Bus()
+	defer eb.Unsubscribe(id)
+	ch := make(chan events.Event, 10)
+	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
+	require.NoError(t, err)
 
-	w, err := NewSocketServer(ls, time.Minute).SpawnWorker(cmd, listener)
+	w, err := NewSocketServer(ls, time.Minute).SpawnWorker(cmd)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -198,7 +193,11 @@ func Test_Tcp_Broken2(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, res)
 	wg.Wait()
-	<-finish
+
+	ev := <-ch
+	if !strings.Contains(ev.Message(), "undefined_function()") {
+		t.Fatal("should contain undefined_function() string")
+	}
 }
 
 func Test_Tcp_Echo2(t *testing.T) {
@@ -273,21 +272,20 @@ func Test_Unix_Failboot2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../tests/failboot.php")
 
-	finish := make(chan struct{}, 10)
-	listener := func(event interface{}) {
-		if ev, ok := event.(events.WorkerEvent); ok {
-			if ev.Event == events.EventWorkerStderr {
-				if strings.Contains(string(ev.Payload.([]byte)), "failboot") {
-					finish <- struct{}{}
-				}
-			}
-		}
-	}
+	eb, id := events.Bus()
+	defer eb.Unsubscribe(id)
+	ch := make(chan events.Event, 10)
+	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
+	require.NoError(t, err)
 
-	w, err := NewSocketServer(ls, time.Second*5).SpawnWorker(cmd, listener)
+	w, err := NewSocketServer(ls, time.Second*5).SpawnWorker(cmd)
 	assert.Nil(t, w)
 	assert.Error(t, err)
-	<-finish
+
+	ev := <-ch
+	if !strings.Contains(ev.Message(), "failboot") {
+		t.Fatal("should contain failboot string")
+	}
 }
 
 func Test_Unix_Timeout2(t *testing.T) {
@@ -331,18 +329,13 @@ func Test_Unix_Broken2(t *testing.T) {
 
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "unix")
 
-	finish := make(chan struct{}, 10)
-	listener := func(event interface{}) {
-		if ev, ok := event.(events.WorkerEvent); ok {
-			if ev.Event == events.EventWorkerStderr {
-				if strings.Contains(string(ev.Payload.([]byte)), "undefined_function()") {
-					finish <- struct{}{}
-				}
-			}
-		}
-	}
+	eb, id := events.Bus()
+	defer eb.Unsubscribe(id)
+	ch := make(chan events.Event, 10)
+	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
+	require.NoError(t, err)
 
-	w, err := NewSocketServer(ls, time.Minute).SpawnWorker(cmd, listener)
+	w, err := NewSocketServer(ls, time.Minute).SpawnWorker(cmd)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -367,7 +360,11 @@ func Test_Unix_Broken2(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, res)
 	wg.Wait()
-	<-finish
+
+	ev := <-ch
+	if !strings.Contains(ev.Message(), "undefined_function()") {
+		t.Fatal("should contain undefined_function string")
+	}
 }
 
 func Test_Unix_Echo2(t *testing.T) {

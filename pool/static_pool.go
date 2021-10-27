@@ -2,6 +2,7 @@ package pool
 
 import (
 	"context"
+	"fmt"
 	"os/exec"
 	"time"
 
@@ -14,8 +15,12 @@ import (
 	workerWatcher "github.com/spiral/roadrunner/v2/worker_watcher"
 )
 
-// StopRequest can be sent by worker to indicate that restart is required.
-const StopRequest = "{\"stop\":true}"
+const (
+	// StopRequest can be sent by worker to indicate that restart is required.
+	StopRequest = `{"stop":true}`
+	// pluginName ...
+	pluginName = "pool"
+)
 
 // ErrorEncoder encode error or make a decision based on the error type
 type ErrorEncoder func(err error, w worker.BaseProcess) (*payload.Payload, error)
@@ -34,11 +39,8 @@ type StaticPool struct {
 	// creates and connects to stack
 	factory transport.Factory
 
-	// distributes the events
-	events events.Handler
-
-	// saved list of event listeners
-	listeners []events.Listener
+	events   events.EventBus
+	eventsID string
 
 	// manages worker states and TTLs
 	ww Watcher
@@ -62,11 +64,13 @@ func Initialize(ctx context.Context, cmd Command, factory transport.Factory, cfg
 		cfg.MaxJobs = 1
 	}
 
+	eb, id := events.Bus()
 	p := &StaticPool{
-		cfg:     cfg,
-		cmd:     cmd,
-		factory: factory,
-		events:  events.NewEventsHandler(),
+		cfg:      cfg,
+		cmd:      cmd,
+		factory:  factory,
+		events:   eb,
+		eventsID: id,
 	}
 
 	// add pool options
@@ -77,7 +81,7 @@ func Initialize(ctx context.Context, cmd Command, factory transport.Factory, cfg
 	// set up workers allocator
 	p.allocator = p.newPoolAllocator(ctx, p.cfg.AllocateTimeout, factory, cmd)
 	// set up workers watcher
-	p.ww = workerWatcher.NewSyncWorkerWatcher(p.allocator, p.cfg.NumWorkers, p.events, p.cfg.AllocateTimeout)
+	p.ww = workerWatcher.NewSyncWorkerWatcher(p.allocator, p.cfg.NumWorkers, p.cfg.AllocateTimeout)
 
 	// allocate requested number of workers
 	workers, err := p.allocateWorkers(p.cfg.NumWorkers)
@@ -95,27 +99,13 @@ func Initialize(ctx context.Context, cmd Command, factory transport.Factory, cfg
 
 	// if supervised config not nil, guess, that pool wanted to be supervised
 	if cfg.Supervisor != nil {
-		sp := supervisorWrapper(p, p.events, p.cfg.Supervisor)
+		sp := supervisorWrapper(p, eb, p.cfg.Supervisor)
 		// start watcher timer
 		sp.Start()
 		return sp, nil
 	}
 
 	return p, nil
-}
-
-func AddListeners(listeners ...events.Listener) Options {
-	return func(p *StaticPool) {
-		p.listeners = listeners
-		for i := 0; i < len(listeners); i++ {
-			p.addListener(listeners[i])
-		}
-	}
-}
-
-// AddListener connects event listener to the pool.
-func (sp *StaticPool) addListener(listener events.Listener) {
-	sp.events.AddListener(listener)
 }
 
 // GetConfig returns associated pool configuration. Immutable.
@@ -205,7 +195,7 @@ func (sp *StaticPool) stopWorker(w worker.BaseProcess) {
 	w.State().Set(worker.StateInvalid)
 	err := w.Stop()
 	if err != nil {
-		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: err})
+		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %v, pid: %d", err.Error(), w.Pid())))
 	}
 }
 
@@ -227,7 +217,7 @@ func (sp *StaticPool) takeWorker(ctxGetFree context.Context, op errors.Op) (work
 	if err != nil {
 		// if the error is of kind NoFreeWorkers, it means, that we can't get worker from the stack during the allocate timeout
 		if errors.Is(errors.NoFreeWorkers, err) {
-			sp.events.Push(events.PoolEvent{Event: events.EventNoFreeWorkers, Error: errors.E(op, err)})
+			sp.events.Send(events.NewEvent(events.EventNoFreeWorkers, pluginName, fmt.Sprintf("error: %s", err)))
 			return nil, errors.E(op, err)
 		}
 		// else if err not nil - return error
@@ -238,6 +228,7 @@ func (sp *StaticPool) takeWorker(ctxGetFree context.Context, op errors.Op) (work
 
 // Destroy all underlying stack (but let them complete the task).
 func (sp *StaticPool) Destroy(ctx context.Context) {
+	sp.events.Unsubscribe(sp.eventsID)
 	sp.ww.Destroy(ctx)
 }
 
@@ -246,12 +237,12 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 		// just push event if on any stage was timeout error
 		switch {
 		case errors.Is(errors.ExecTTL, err):
-			sp.events.Push(events.PoolEvent{Event: events.EventExecTTL, Error: err})
+			sp.events.Send(events.NewEvent(events.EventExecTTL, pluginName, fmt.Sprintf("error: %s", err)))
 			w.State().Set(worker.StateInvalid)
 			return nil, err
 
 		case errors.Is(errors.SoftJob, err):
-			sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: err})
+			sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, pid: %d", err, w.Pid())))
 
 			// if max jobs exceed
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
@@ -272,7 +263,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 		case errors.Is(errors.Network, err):
 			// in case of network error, we can't stop the worker, we should kill it
 			w.State().Set(worker.StateInvalid)
-			sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: w, Payload: err})
+			sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, pid: %d", err, w.Pid())))
 
 			// kill the worker instead of sending net packet to it
 			_ = w.Kill()
@@ -280,7 +271,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 			return nil, err
 		default:
 			w.State().Set(worker.StateInvalid)
-			sp.events.Push(events.PoolEvent{Event: events.EventWorkerDestruct, Payload: w})
+			sp.events.Send(events.NewEvent(events.EventWorkerDestruct, pluginName, fmt.Sprintf("error: %s, pid: %d", err, w.Pid())))
 			// stop the worker, worker here might be in the broken state (network)
 			errS := w.Stop()
 			if errS != nil {
@@ -296,7 +287,7 @@ func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duratio
 	return func() (worker.SyncWorker, error) {
 		ctxT, cancel := context.WithTimeout(ctx, timeout)
 		defer cancel()
-		w, err := factory.SpawnWorkerWithTimeout(ctxT, cmd(), sp.listeners...)
+		w, err := factory.SpawnWorkerWithTimeout(ctxT, cmd())
 		if err != nil {
 			return nil, err
 		}
@@ -304,10 +295,7 @@ func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duratio
 		// wrap sync worker
 		sw := worker.From(w)
 
-		sp.events.Push(events.PoolEvent{
-			Event:   events.EventWorkerConstruct,
-			Payload: sw,
-		})
+		sp.events.Send(events.NewEvent(events.EventWorkerConstruct, pluginName, fmt.Sprintf("pid: %d", sw.Pid())))
 		return sw, nil
 	}
 }
@@ -329,7 +317,7 @@ func (sp *StaticPool) execDebug(p *payload.Payload) (*payload.Payload, error) {
 	sw.State().Set(worker.StateDestroyed)
 	err = sw.Kill()
 	if err != nil {
-		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: err})
+		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, pid: %d", err, sw.Pid())))
 		return nil, err
 	}
 
@@ -346,7 +334,7 @@ func (sp *StaticPool) execDebugWithTTL(ctx context.Context, p *payload.Payload) 
 	// redirect call to the worker with TTL
 	r, err := sw.ExecWithTTL(ctx, p)
 	if stopErr := sw.Stop(); stopErr != nil {
-		sp.events.Push(events.WorkerEvent{Event: events.EventWorkerError, Worker: sw, Payload: err})
+		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, pid: %d", err, sw.Pid())))
 	}
 
 	return r, err
