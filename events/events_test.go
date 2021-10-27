@@ -2,6 +2,7 @@ package events
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 )
@@ -44,11 +45,13 @@ func TestEvenHandler2(t *testing.T) {
 	require.Equal(t, uint(2), l)
 
 	eh.Unsubscribe(id)
+	time.Sleep(time.Second)
 
 	l = eh.Len()
 	require.Equal(t, uint(1), l)
 
 	eh2.Unsubscribe(id2)
+	time.Sleep(time.Second)
 
 	l = eh.Len()
 	require.Equal(t, uint(0), l)
