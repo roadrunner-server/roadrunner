@@ -1,19 +1,15 @@
 package events
 
-import (
-	"fmt"
-)
-
 type EventBus interface {
 	SubscribeAll(subID string, ch chan<- Event) error
 	SubscribeP(subID string, pattern string, ch chan<- Event) error
 	Unsubscribe(subID string)
 	UnsubscribeP(subID, pattern string)
+	Len() uint
 	Send(ev Event)
 }
 
 type Event interface {
-	fmt.Stringer
 	Plugin() string
 	Type() EventType
 	Message() string
@@ -30,15 +26,12 @@ type RREvent struct {
 
 // NewRREvent initializes new event
 func NewRREvent(t EventType, msg string, plugin string) *RREvent {
+	// get
 	return &RREvent{
 		T: t,
 		P: plugin,
 		M: msg,
 	}
-}
-
-func (r *RREvent) String() string {
-	return "RoadRunner event"
 }
 
 func (r *RREvent) Type() EventType {

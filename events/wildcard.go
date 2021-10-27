@@ -26,7 +26,7 @@ func newWildcard(pattern string) (*wildcard, error) {
 
 		if dotI == -1 {
 			// http.SuperEvent
-			return nil, errors.Str("wrong wildcard, no * or .")
+			return nil, errors.Str("wrong wildcard, no * or . Usage: http.Event or *.Event or http.*")
 		}
 
 		return &wildcard{origin[0:dotI], origin[dotI+1:]}, nil
