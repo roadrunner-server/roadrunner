@@ -1,6 +1,13 @@
 # CHANGELOG
 
-## v2.5.0 (20.10.2021)
+# v2.6.0 (-.-.2021)
+
+### 👀 New:
+
+- ✏️ New internal message bus. Available globally. Supports wildcard subscriptions (for example: `http.*` will subscribe you to the all events coming from the `http` plugin). The subscriptions can be made from any RR plugin to any RR plugin.
+
+
+# v2.5.0 (20.10.2021)
 
 # 💔 Breaking change:
 
