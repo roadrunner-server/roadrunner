@@ -1,5 +1,9 @@
 package events
 
+import (
+	"fmt"
+)
+
 type EventBus interface {
 	SubscribeAll(subID string, ch chan<- Event) error
 	SubscribeP(subID string, pattern string, ch chan<- Event) error
@@ -10,14 +14,14 @@ type EventBus interface {
 }
 
 type Event interface {
+	Type() fmt.Stringer
 	Plugin() string
-	Type() EventType
 	Message() string
 }
 
-type RREvent struct {
+type event struct {
 	// event typ
-	typ EventType
+	typ fmt.Stringer
 	// plugin
 	plugin string
 	// message
@@ -25,22 +29,26 @@ type RREvent struct {
 }
 
 // NewEvent initializes new event
-func NewEvent(t EventType, plugin string, msg string) *RREvent {
-	return &RREvent{
+func NewEvent(t fmt.Stringer, plugin string, message string) *event {
+	if t.String() == "" || plugin == "" {
+		return nil
+	}
+
+	return &event{
 		typ:     t,
 		plugin:  plugin,
-		message: msg,
+		message: message,
 	}
 }
 
-func (r *RREvent) Type() EventType {
+func (r *event) Type() fmt.Stringer {
 	return r.typ
 }
 
-func (r *RREvent) Message() string {
+func (r *event) Message() string {
 	return r.message
 }
 
-func (r *RREvent) Plugin() string {
+func (r *event) Plugin() string {
 	return r.plugin
 }

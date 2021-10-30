@@ -200,7 +200,6 @@ func (sp *StaticPool) stopWorker(w worker.BaseProcess) {
 }
 
 // checkMaxJobs check for worker number of executions and kill workers if that number more than sp.cfg.MaxJobs
-//go:inline
 func (sp *StaticPool) checkMaxJobs(w worker.BaseProcess) {
 	if w.State().NumExecs() >= sp.cfg.MaxJobs {
 		w.State().Set(worker.StateMaxJobsReached)

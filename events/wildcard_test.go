@@ -45,4 +45,10 @@ func TestWildcard(t *testing.T) {
 	assert.False(t, w.match("****"))
 	assert.False(t, w.match("http.****"))
 	assert.True(t, w.match("http.WorkerError"))
+
+	w, err = newWildcard("http.Worker*")
+	assert.NoError(t, err)
+	assert.True(t, w.match("http.WorkerFoo"))
+	assert.False(t, w.match("h*.SuperEvent"))
+	assert.False(t, w.match("h*.Worker"))
 }

@@ -92,3 +92,35 @@ func TestEvenHandler5(t *testing.T) {
 	require.Equal(t, "http", evt.Plugin())
 	require.Equal(t, "EventJobOK", evt.Type().String())
 }
+
+type MySuperEvent uint32
+
+const (
+	// EventHTTPError represents success unary call response
+	EventHTTPError MySuperEvent = iota
+)
+
+func (mse MySuperEvent) String() string {
+	switch mse {
+	case EventHTTPError:
+		return "EventHTTPError"
+	default:
+		return "UnknownEventType"
+	}
+}
+
+func TestEvenHandler6(t *testing.T) {
+	eh, id := Bus()
+	defer eh.Unsubscribe(id)
+
+	ch := make(chan Event, 100)
+	err := eh.SubscribeP(id, "http.EventHTTPError", ch)
+	require.NoError(t, err)
+
+	eh.Send(NewEvent(EventHTTPError, "http", "foo"))
+
+	evt := <-ch
+	require.Equal(t, "foo", evt.Message())
+	require.Equal(t, "http", evt.Plugin())
+	require.Equal(t, "EventHTTPError", evt.Type().String())
+}
