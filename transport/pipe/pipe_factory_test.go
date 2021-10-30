@@ -122,7 +122,6 @@ func Test_Pipe_PipeError2(t *testing.T) {
 }
 
 func Test_Pipe_Failboot(t *testing.T) {
-	t.Parallel()
 	cmd := exec.Command("php", "../../tests/failboot.php")
 	ctx := context.Background()
 
@@ -430,7 +429,6 @@ func Test_Echo_Slow(t *testing.T) {
 }
 
 func Test_Broken(t *testing.T) {
-	t.Parallel()
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "pipes")
 
