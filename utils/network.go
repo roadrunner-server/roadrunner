@@ -64,7 +64,7 @@ func CreateListener(address string) (net.Listener, error) {
 func createTCPListener(addr string) (net.Listener, error) {
 	cfg := tcplisten.Config{
 		ReusePort:   true,
-		DeferAccept: true,
+		DeferAccept: false,
 		FastOpen:    true,
 	}
 
