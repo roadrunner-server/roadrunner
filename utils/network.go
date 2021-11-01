@@ -10,7 +10,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/valyala/tcplisten"
+	"github.com/spiral/tcplisten"
 )
 
 const (
