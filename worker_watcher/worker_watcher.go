@@ -279,7 +279,7 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 	const op = errors.Op("worker_watcher_wait")
 	err := w.Wait()
 	if err != nil {
-		ww.events.Send(events.NewEvent(events.EventWorkerWaitExit, wwName, fmt.Sprintf("error: %v", err)))
+		ww.events.Send(events.NewEvent(events.EventWorkerWaitExit, wwName, fmt.Sprintf("worker stopped, error: %v", err)))
 	}
 
 	// remove worker
@@ -287,7 +287,7 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 
 	if w.State().Value() == worker.StateDestroyed {
 		// worker was manually destroyed, no need to replace
-		ww.events.Send(events.NewEvent(events.EventWorkerDestruct, wwName, fmt.Sprintf("pid: %d", w.Pid())))
+		ww.events.Send(events.NewEvent(events.EventWorkerDestruct, wwName, fmt.Sprintf("worker destroyed, pid: %d", w.Pid())))
 
 		return
 	}
@@ -297,11 +297,11 @@ func (ww *workerWatcher) wait(w worker.BaseProcess) {
 
 	err = ww.Allocate()
 	if err != nil {
-		ww.events.Send(events.NewEvent(events.EventWorkerProcessExit, wwName, fmt.Sprintf("error: %v", err)))
+		ww.events.Send(events.NewEvent(events.EventWorkerProcessExit, wwName, fmt.Sprintf("failed to allocate worker, error: %v", err)))
 
 		// no workers at all, panic
 		if len(ww.workers) == 0 && atomic.LoadUint64(ww.numWorkers) == 0 {
-			panic(errors.E(op, errors.WorkerAllocate, errors.Errorf("can't allocate workers: %v", err)))
+			panic(errors.E(op, errors.WorkerAllocate, errors.Errorf("can't allocate workers: %v, no workers in the pool", err)))
 		}
 	}
 }

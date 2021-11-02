@@ -195,7 +195,7 @@ func (sp *StaticPool) stopWorker(w worker.BaseProcess) {
 	w.State().Set(worker.StateInvalid)
 	err := w.Stop()
 	if err != nil {
-		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %v, pid: %d", err.Error(), w.Pid())))
+		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %v, worker's pid: %d", err.Error(), w.Pid())))
 	}
 }
 
@@ -216,7 +216,7 @@ func (sp *StaticPool) takeWorker(ctxGetFree context.Context, op errors.Op) (work
 	if err != nil {
 		// if the error is of kind NoFreeWorkers, it means, that we can't get worker from the stack during the allocate timeout
 		if errors.Is(errors.NoFreeWorkers, err) {
-			sp.events.Send(events.NewEvent(events.EventNoFreeWorkers, pluginName, fmt.Sprintf("error: %s", err)))
+			sp.events.Send(events.NewEvent(events.EventNoFreeWorkers, pluginName, fmt.Sprintf("no free workers in the pool, error: %s", err)))
 			return nil, errors.E(op, err)
 		}
 		// else if err not nil - return error
@@ -236,12 +236,12 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 		// just push event if on any stage was timeout error
 		switch {
 		case errors.Is(errors.ExecTTL, err):
-			sp.events.Send(events.NewEvent(events.EventExecTTL, pluginName, fmt.Sprintf("error: %s", err)))
+			sp.events.Send(events.NewEvent(events.EventExecTTL, pluginName, fmt.Sprintf("worker stopped, execTTL timeout elapsed, error: %s", err)))
 			w.State().Set(worker.StateInvalid)
 			return nil, err
 
 		case errors.Is(errors.SoftJob, err):
-			sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, pid: %d", err, w.Pid())))
+			sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, worker's pid: %d", err, w.Pid())))
 
 			// if max jobs exceed
 			if sp.cfg.MaxJobs != 0 && w.State().NumExecs() >= sp.cfg.MaxJobs {
@@ -262,7 +262,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 		case errors.Is(errors.Network, err):
 			// in case of network error, we can't stop the worker, we should kill it
 			w.State().Set(worker.StateInvalid)
-			sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, pid: %d", err, w.Pid())))
+			sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, worker's pid: %d", err, w.Pid())))
 
 			// kill the worker instead of sending net packet to it
 			_ = w.Kill()
@@ -270,7 +270,7 @@ func defaultErrEncoder(sp *StaticPool) ErrorEncoder {
 			return nil, err
 		default:
 			w.State().Set(worker.StateInvalid)
-			sp.events.Send(events.NewEvent(events.EventWorkerDestruct, pluginName, fmt.Sprintf("error: %s, pid: %d", err, w.Pid())))
+			sp.events.Send(events.NewEvent(events.EventWorkerDestruct, pluginName, fmt.Sprintf("error: %s, worker's pid: %d", err, w.Pid())))
 			// stop the worker, worker here might be in the broken state (network)
 			errS := w.Stop()
 			if errS != nil {
@@ -294,7 +294,7 @@ func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duratio
 		// wrap sync worker
 		sw := worker.From(w)
 
-		sp.events.Send(events.NewEvent(events.EventWorkerConstruct, pluginName, fmt.Sprintf("pid: %d", sw.Pid())))
+		sp.events.Send(events.NewEvent(events.EventWorkerConstruct, pluginName, fmt.Sprintf("worker allocated, pid: %d", sw.Pid())))
 		return sw, nil
 	}
 }
@@ -316,7 +316,7 @@ func (sp *StaticPool) execDebug(p *payload.Payload) (*payload.Payload, error) {
 	sw.State().Set(worker.StateDestroyed)
 	err = sw.Kill()
 	if err != nil {
-		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, pid: %d", err, sw.Pid())))
+		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, worker's pid: %d", err, sw.Pid())))
 		return nil, err
 	}
 
