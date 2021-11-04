@@ -227,7 +227,7 @@ func (ww *workerWatcher) Release(w worker.BaseProcess) {
 }
 
 // Destroy all underlying container (but let them complete the task)
-func (ww *workerWatcher) Destroy(_ context.Context) {
+func (ww *workerWatcher) Destroy(ctx context.Context) {
 	// destroy container, we don't use ww mutex here, since we should be able to push worker
 	ww.Lock()
 	// do not release new workers
@@ -237,7 +237,7 @@ func (ww *workerWatcher) Destroy(_ context.Context) {
 	ww.events.Unsubscribe(ww.eventsID)
 	tt := time.NewTicker(time.Millisecond * 100)
 	defer tt.Stop()
-	for { //nolint:gosimple
+	for {
 		select {
 		case <-tt.C:
 			ww.Lock()
@@ -254,6 +254,14 @@ func (ww *workerWatcher) Destroy(_ context.Context) {
 				_ = ww.workers[i].Kill()
 			}
 			return
+		case <-ctx.Done():
+			// kill workers
+			ww.Lock()
+			for i := 0; i < len(ww.workers); i++ {
+				ww.workers[i].State().Set(worker.StateDestroyed)
+				_ = ww.workers[i].Kill()
+			}
+			ww.Unlock()
 		}
 	}
 }
