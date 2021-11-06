@@ -104,10 +104,6 @@ func (ww *workerWatcher) Take(ctx context.Context) (worker.BaseProcess, error) {
 			return nil, errors.E(op, err)
 		}
 
-		if err != nil {
-			return nil, errors.E(op, err)
-		}
-
 		switch w.State().Value() {
 		// return only workers in the Ready state
 		// check first
