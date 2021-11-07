@@ -6,6 +6,11 @@
 
 - ✏️ New internal message bus. Available globally. Supports wildcard subscriptions (for example: `http.*` will subscribe you to the all events coming from the `http` plugin). The subscriptions can be made from any RR plugin to any RR plugin.
 
+# v2.5.1 (07.11.2021)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: worker's channel deadlock when using [TTL](https://github.com/spiral/roadrunner/issues/853). Thanks @dstrop
 
 # v2.5.0 (20.10.2021)
 
