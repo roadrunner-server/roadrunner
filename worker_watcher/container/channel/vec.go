@@ -49,6 +49,7 @@ func (v *Vec) Push(w worker.BaseProcess) {
 				We need to drain vector until we found a worker in the Invalid/Killing/Killed/etc states.
 			*/
 			wrk := <-v.workers
+
 			switch wrk.State().Value() {
 			// good states
 			case worker.StateWorking, worker.StateReady:
@@ -62,6 +63,10 @@ func (v *Vec) Push(w worker.BaseProcess) {
 					// kill the new worker and reallocate it
 					w.State().Set(worker.StateInvalid)
 					_ = w.Kill()
+
+					// kill the worker from the channel
+					wrk.State().Set(worker.StateInvalid)
+					_ = wrk.Kill()
 					continue
 				}
 				/*
