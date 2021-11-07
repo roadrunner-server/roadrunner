@@ -69,8 +69,16 @@ func (v *Vec) Push(w worker.BaseProcess) {
 				// replace with the new one and return from the loop
 				// new worker can be ttl-ed at this moment, it's possible to replace TTL-ed worker with new TTL-ed worker
 				// But this case will be handled in the worker_watcher::Get
-				v.workers <- w
-				return
+				select {
+				case v.workers <- w:
+					return
+					// the place for the new worker was occupied before
+				default:
+					// kill the new worker and reallocate it
+					w.State().Set(worker.StateInvalid)
+					_ = w.Kill()
+					return
+				}
 			}
 		}
 	}
