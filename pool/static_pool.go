@@ -312,6 +312,11 @@ func (sp *StaticPool) execDebug(p *payload.Payload) (*payload.Payload, error) {
 		return nil, err
 	}
 
+	go func() {
+		// read the exit status to prevent process to be a zombie
+		_ = sw.Wait()
+	}()
+
 	// destroy the worker
 	sw.State().Set(worker.StateDestroyed)
 	err = sw.Kill()
