@@ -1,7 +1,7 @@
 status = [
-    'Linux / Build (Go 1.17, PHP 7.4, OS ubuntu-latest)',
-    'Linux / Build (Go 1.17, PHP 8.0, OS ubuntu-latest)',
-    'Linux / Build (Go 1.17, PHP 8.1, OS ubuntu-latest)',
+    'Linux / Build (Go 1.17.3, PHP 7.4, OS ubuntu-latest)',
+    'Linux / Build (Go 1.17.3, PHP 8.0, OS ubuntu-latest)',
+    'Linux / Build (Go 1.17.3, PHP 8.1, OS ubuntu-latest)',
     'Linters / Golang-CI (lint) ',
 ]
 required_approvals = 0
