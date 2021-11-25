@@ -89,9 +89,6 @@ func Pid(rl relay.Relay) (int64, error) {
 		return 0, err
 	}
 
-	if !fr.VerifyCRC(fr.Header()) {
-		return 0, errors.Str("CRC mismatch")
-	}
 	if fr == nil {
 		return 0, errors.Str("nil frame received")
 	}

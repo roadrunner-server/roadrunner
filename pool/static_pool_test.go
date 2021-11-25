@@ -23,8 +23,8 @@ import (
 
 var cfg = &Config{
 	NumWorkers:      uint64(runtime.NumCPU()),
-	AllocateTimeout: time.Second * 5,
-	DestroyTimeout:  time.Second * 5,
+	AllocateTimeout: time.Second * 500,
+	DestroyTimeout:  time.Second * 500,
 }
 
 func Test_NewPool(t *testing.T) {
@@ -558,6 +558,19 @@ func Test_Static_Pool_WrongCommand2(t *testing.T) {
 
 	assert.Error(t, err)
 	assert.Nil(t, p)
+}
+
+func Test_CRC_WithPayload(t *testing.T) {
+	ctx := context.Background()
+	_, err := Initialize(
+		ctx,
+		func() *exec.Cmd { return exec.Command("php", "../tests/crc_error.php") },
+		pipe.NewPipeFactory(),
+		cfg,
+	)
+	assert.Error(t, err)
+	data := err.Error()
+	assert.Contains(t, data, "warning: some weird php erro")
 }
 
 /* PTR:

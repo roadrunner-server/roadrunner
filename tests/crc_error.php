@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+use Spiral\Goridge\StreamRelay;
+use Spiral\RoadRunner\Worker as RoadRunner;
+
+require __DIR__ . "/vendor/autoload.php";
+
+fwrite(STDOUT, "warning: some weird php error");
+
+$rr = new RoadRunner(new StreamRelay(\STDIN, \STDOUT));
+
+while($rr->waitPayload()){
+    sleep(3);
+    $rr->respond(new \Spiral\RoadRunner\Payload(""));
+}

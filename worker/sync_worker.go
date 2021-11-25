@@ -190,11 +190,7 @@ func (tw *SyncWorkerImpl) execPayload(p *payload.Payload) (*payload.Payload, err
 		return nil, errors.E(op, errors.Network, err)
 	}
 	if frameR == nil {
-		return nil, errors.E(op, errors.Network, errors.Str("nil fr received"))
-	}
-
-	if !frameR.VerifyCRC(frameR.Header()) {
-		return nil, errors.E(op, errors.Network, errors.Str("failed to verify CRC"))
+		return nil, errors.E(op, errors.Network, errors.Str("nil frame received"))
 	}
 
 	flags := frameR.ReadFlags()
