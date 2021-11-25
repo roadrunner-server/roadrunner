@@ -338,7 +338,7 @@ func Test_String2(t *testing.T) {
 
 	assert.Contains(t, w.String(), "php ../../tests/client.php echo pipes")
 	assert.Contains(t, w.String(), "ready")
-	assert.Contains(t, w.String(), "numExecs: 0")
+	assert.Contains(t, w.String(), "num_execs: 0")
 }
 
 func Test_Echo_Slow2(t *testing.T) {
