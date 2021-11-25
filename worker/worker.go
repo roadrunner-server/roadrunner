@@ -111,7 +111,7 @@ func (w *Process) String() string {
 	}
 
 	return fmt.Sprintf(
-		"(`%s` [%s], numExecs: %v)",
+		"(`%s` [%s], num_execs: %v)",
 		strings.Join(w.cmd.Args, " "),
 		st,
 		w.state.NumExecs(),

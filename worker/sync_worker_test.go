@@ -14,7 +14,7 @@ func Test_NotStarted_String(t *testing.T) {
 	w, _ := InitBaseWorker(cmd)
 	assert.Contains(t, w.String(), "php tests/client.php echo pipes")
 	assert.Contains(t, w.String(), "inactive")
-	assert.Contains(t, w.String(), "numExecs: 0")
+	assert.Contains(t, w.String(), "num_execs: 0")
 }
 
 func Test_NotStarted_Exec(t *testing.T) {

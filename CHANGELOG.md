@@ -5,6 +5,7 @@
 ### 👀 New:
 
 - ✏️ New internal message bus. Available globally. Supports wildcard subscriptions (for example: `http.*` will subscribe you to the all events coming from the `http` plugin). The subscriptions can be made from any RR plugin to any RR plugin.
+- ✏️ Now, RR will show in the returned error the bad header content in case of CRC mismatch error. More info in the [PR](https://github.com/spiral/roadrunner/pull/863).
 
 ## 🩹 Fixes:
 
