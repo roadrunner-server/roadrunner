@@ -44,9 +44,12 @@ func (v *Vec) Push(w worker.BaseProcess) {
 			1. TTL is set with no requests during the TTL
 			2. Violated Get <-> Release operation (how ??)
 		*/
+
 		for i := 0; i < len(v.workers); i++ {
 			/*
 				We need to drain vector until we found a worker in the Invalid/Killing/Killed/etc states.
+				BUT while we are draining the vector, some worker might be reallocated and pushed into the v.workers
+				so, down by the code, we might have a problem when pushing the new worker to the v.workers
 			*/
 			wrk := <-v.workers
 
@@ -60,13 +63,10 @@ func (v *Vec) Push(w worker.BaseProcess) {
 				case v.workers <- wrk:
 					continue
 				default:
-					// kill the new worker and reallocate it
-					w.State().Set(worker.StateInvalid)
-					_ = w.Kill()
-
 					// kill the worker from the channel
 					wrk.State().Set(worker.StateInvalid)
 					_ = wrk.Kill()
+
 					continue
 				}
 				/*
