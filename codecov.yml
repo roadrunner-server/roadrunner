@@ -14,13 +14,17 @@ coverage:
 # do not include tests folders
 ignore:
   - "common"
-  - "internal"
+  - "internal/protocol.go"
   - "proto"
   - "utils"
   - "tests"
   - "systemd"
   - "doc"
+  # is not ready yet
+  - "worker_watcher/container/queue"
   - "bst/bst_test.go"
+  - "bst/doc.go"
+  - "bst/interface.go"
   - "pool/static_pool_test.go"
   - "pool/supervisor_test.go"
   - "transport/pipe/pipe_factory_spawn_test.go"

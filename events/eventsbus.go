@@ -130,7 +130,7 @@ func (eb *eventsBus) subscribe(subID string, pattern string, ch chan<- Event) er
 		return nil
 	}
 
-	subArr := make([]*sub, 0, 5)
+	subArr := make([]*sub, 0, 1)
 	subArr = append(subArr, &sub{
 		pattern: pattern,
 		w:       w,

@@ -7,8 +7,6 @@ const (
 	EventWorkerConstruct EventType = iota
 	// EventWorkerDestruct thrown after worker destruction.
 	EventWorkerDestruct
-	// EventSupervisorError triggered when supervisor can not complete work.
-	EventSupervisorError
 	// EventWorkerProcessExit triggered on process wait exit
 	EventWorkerProcessExit
 	// EventNoFreeWorkers triggered when there are no free workers in the stack and timeout for worker allocate elapsed
@@ -21,12 +19,8 @@ const (
 	EventIdleTTL
 	// EventExecTTL triggered when worker spends too much time doing the task (max_execution_time).
 	EventExecTTL
-	// EventPoolRestart triggered when pool restart is needed
-	EventPoolRestart
 	// EventWorkerError triggered after WorkerProcess. Except payload to be error.
 	EventWorkerError
-	// EventWorkerLog triggered on every write to WorkerProcess StdErr pipe (batched). Except payload to be []byte string.
-	EventWorkerLog
 	// EventWorkerStderr is the worker standard error output
 	EventWorkerStderr
 	// EventWorkerWaitExit is the worker exit event
@@ -41,8 +35,6 @@ func (et EventType) String() string {
 		return "EventWorkerConstruct"
 	case EventWorkerDestruct:
 		return "EventWorkerDestruct"
-	case EventSupervisorError:
-		return "EventSupervisorError"
 	case EventNoFreeWorkers:
 		return "EventNoFreeWorkers"
 	case EventMaxMemory:
@@ -53,12 +45,8 @@ func (et EventType) String() string {
 		return "EventIdleTTL"
 	case EventExecTTL:
 		return "EventExecTTL"
-	case EventPoolRestart:
-		return "EventPoolRestart"
 	case EventWorkerError:
 		return "EventWorkerError"
-	case EventWorkerLog:
-		return "EventWorkerLog"
 	case EventWorkerStderr:
 		return "EventWorkerStderr"
 	case EventWorkerWaitExit:
