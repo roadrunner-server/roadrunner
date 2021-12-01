@@ -54,23 +54,3 @@ func WorkerProcessState(w worker.BaseProcess) (*State, error) {
 		MemoryUsage: i.RSS,
 	}, nil
 }
-
-func GeneralProcessState(pid int, command string) (State, error) {
-	const op = errors.Op("process_state")
-	p, _ := process.NewProcess(int32(pid))
-	i, err := p.MemoryInfo()
-	if err != nil {
-		return State{}, errors.E(op, err)
-	}
-	percent, err := p.CPUPercent()
-	if err != nil {
-		return State{}, err
-	}
-
-	return State{
-		CPUPercent:  percent,
-		Pid:         pid,
-		MemoryUsage: i.RSS,
-		Command:     command,
-	}, nil
-}

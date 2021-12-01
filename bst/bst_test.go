@@ -40,6 +40,49 @@ func TestNewBST(t *testing.T) {
 	assert.Len(t, exist3, 100)
 }
 
+func TestBSTContains(t *testing.T) {
+	// create a new bst
+	g := NewBST()
+
+	for i := 0; i < 100; i++ {
+		g.Insert(uuid.NewString(), "comments")
+	}
+
+	for i := 0; i < 100; i++ {
+		g.Insert(uuid.NewString(), "comments2")
+	}
+
+	for i := 0; i < 100; i++ {
+		g.Insert(uuid.NewString(), "comments3")
+	}
+
+	exist := g.Contains("comments")
+	assert.True(t, exist)
+
+	exist2 := g.Contains("comments2")
+	assert.True(t, exist2)
+
+	exist3 := g.Contains("comments3")
+	assert.True(t, exist3)
+
+	exist4 := g.Contains("comments5")
+	assert.False(t, exist4)
+
+	exist5 := g.Contains("comments6")
+	assert.False(t, exist5)
+}
+
+func TestBSTRemove(t *testing.T) {
+	// create a new bst
+	g := NewBST()
+	u := uuid.NewString()
+	g.Insert(u, "comments")
+	g.Remove(u, "comments")
+
+	res := g.Contains("comments")
+	assert.False(t, res)
+}
+
 func BenchmarkGraph(b *testing.B) {
 	g := NewBST()
 
