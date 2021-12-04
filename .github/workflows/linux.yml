@@ -10,9 +10,13 @@ on:
       - "**"
     paths-ignore:
       - "**.md"
+      - "**.yaml"
+      - "**.yml"
   pull_request:
     paths-ignore:
       - "**.md"
+      - "**.yaml"
+      - "**.yml"
 
 jobs:
   golang:
