@@ -1,0 +1,38 @@
+name: Feauture request
+description: 💡 Suggest an idea for this project
+title: "[💡 FEATURE REQUEST]: "
+labels: ["C-feature-request"]
+assignees:
+  - rustatian
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your idea!
+
+  - type: dropdown
+    id: plugin
+    attributes:
+      label: Plugin
+      description: What plugin is affected?
+      options:
+        - GRPC
+        - HTTP
+        - JOBS
+        - TCP
+        - File server
+        - Config
+        - KV
+        - Service
+        - Server
+        - Status
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: I have an idea!
+      description: Clear and concise description of your idea.
+      placeholder: Tell us what you see!
+      value: "I have an idea, listen to me!!"
+    validations:
+      required: true
