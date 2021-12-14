@@ -318,7 +318,6 @@ func (sp *StaticPool) execDebug(p *payload.Payload) (*payload.Payload, error) {
 	}()
 
 	// destroy the worker
-	sw.State().Set(worker.StateDestroyed)
 	err = sw.Stop()
 	if err != nil {
 		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, worker's pid: %d", err, sw.Pid())))
@@ -346,9 +345,10 @@ func (sp *StaticPool) execDebugWithTTL(ctx context.Context, p *payload.Payload) 
 		_ = sw.Wait()
 	}()
 
-	sw.State().Set(worker.StateDestroyed)
-	if stopErr := sw.Stop(); stopErr != nil {
-		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, pid: %d", err, sw.Pid())))
+	err = sw.Stop()
+	if err != nil {
+		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, worker's pid: %d", err, sw.Pid())))
+		return nil, err
 	}
 
 	return r, err

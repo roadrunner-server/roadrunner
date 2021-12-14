@@ -182,24 +182,24 @@ func (w *Process) closeRelay() error {
 // Stop sends soft termination command to the Process and waits for process completion.
 func (w *Process) Stop() error {
 	const op = errors.Op("process_stop")
-	w.state.Set(StateStopping)
+	defer w.events.Unsubscribe(w.eventsID)
+
 	select {
 	// finished
 	case <-w.doneCh:
 		return nil
 	default:
+		w.state.Set(StateStopping)
 		err := internal.SendControl(w.relay, &internal.StopCommand{Stop: true})
 		if err != nil {
 			w.state.Set(StateKilling)
 			_ = w.cmd.Process.Signal(os.Kill)
 
-			w.events.Unsubscribe(w.eventsID)
 			return errors.E(op, errors.Network, err)
 		}
 
 		<-w.doneCh
 		w.state.Set(StateStopped)
-		w.events.Unsubscribe(w.eventsID)
 		return nil
 	}
 }
