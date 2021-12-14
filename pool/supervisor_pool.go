@@ -160,7 +160,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			}
 			// just to double check
 			workers[i].State().Set(worker.StateInvalid)
-			sp.events.Send(events.NewEvent(events.EventTTL, supervisorName, fmt.Sprintf("worker's pid: %d", workers[i].Pid())))
+			sp.events.Send(events.NewEvent(events.EventTTL, supervisorName, fmt.Sprintf("ttl reached, worker's pid: %d", workers[i].Pid())))
 			continue
 		}
 
@@ -180,7 +180,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			}
 			// just to double check
 			workers[i].State().Set(worker.StateInvalid)
-			sp.events.Send(events.NewEvent(events.EventMaxMemory, supervisorName, fmt.Sprintf("worker's pid: %d", workers[i].Pid())))
+			sp.events.Send(events.NewEvent(events.EventMaxMemory, supervisorName, fmt.Sprintf("max memory reached, worker's pid: %d", workers[i].Pid())))
 			continue
 		}
 
@@ -235,7 +235,7 @@ func (sp *supervised) control() { //nolint:gocognit
 				}
 				// just to double-check
 				workers[i].State().Set(worker.StateInvalid)
-				sp.events.Send(events.NewEvent(events.EventIdleTTL, supervisorName, fmt.Sprintf("worker's pid: %d", workers[i].Pid())))
+				sp.events.Send(events.NewEvent(events.EventIdleTTL, supervisorName, fmt.Sprintf("idle ttl reached, worker's pid: %d", workers[i].Pid())))
 			}
 		}
 	}
