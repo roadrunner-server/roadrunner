@@ -54,12 +54,16 @@ func (sp *supervised) execWithTTL(_ context.Context, _ *payload.Payload) (*paylo
 func (sp *supervised) Exec(rqs *payload.Payload) (*payload.Payload, error) {
 	const op = errors.Op("supervised_exec_with_context")
 	if sp.cfg.ExecTTL == 0 {
+		sp.mu.RLock()
+		defer sp.mu.RUnlock()
 		return sp.pool.Exec(rqs)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), sp.cfg.ExecTTL)
 	defer cancel()
 
+	sp.mu.RLock()
+	defer sp.mu.RUnlock()
 	res, err := sp.pool.execWithTTL(ctx, rqs)
 	if err != nil {
 		return nil, errors.E(op, err)
