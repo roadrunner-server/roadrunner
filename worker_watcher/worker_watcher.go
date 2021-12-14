@@ -236,19 +236,22 @@ func (ww *workerWatcher) Destroy(ctx context.Context) {
 	for {
 		select {
 		case <-tt.C:
-			ww.Lock()
+			ww.RLock()
 			// that might be one of the workers is working
 			if atomic.LoadUint64(ww.numWorkers) != uint64(len(ww.workers)) {
-				ww.Unlock()
+				ww.RUnlock()
 				continue
 			}
+			ww.RUnlock()
 			// All container at this moment are in the container
 			// Pop operation is blocked, push can't be done, since it's not possible to pop
+			ww.Lock()
 			for i := 0; i < len(ww.workers); i++ {
 				ww.workers[i].State().Set(worker.StateDestroyed)
 				// kill the worker
 				_ = ww.workers[i].Kill()
 			}
+			ww.Unlock()
 			return
 		case <-ctx.Done():
 			// kill workers
