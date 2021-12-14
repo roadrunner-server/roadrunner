@@ -87,8 +87,10 @@ func (sp *supervised) RemoveWorker(worker worker.BaseProcess) error {
 }
 
 func (sp *supervised) Destroy(ctx context.Context) {
-	sp.pool.Destroy(ctx)
 	sp.Stop()
+	sp.mu.Lock()
+	sp.pool.Destroy(ctx)
+	sp.mu.Unlock()
 }
 
 func (sp *supervised) Start() {
