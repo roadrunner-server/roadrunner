@@ -133,18 +133,9 @@ func Test_Pipe_Invalid2(t *testing.T) {
 func Test_Pipe_Echo2(t *testing.T) {
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "pipes")
 	w, err := NewPipeFactory().SpawnWorker(cmd)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer func() {
-		err = w.Stop()
-		if err != nil {
-			t.Errorf("error stopping the Process: error %v", err)
-		}
-	}()
+	assert.NoError(t, err)
 
 	sw := worker.From(w)
-
 	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.NoError(t, err)
@@ -152,27 +143,31 @@ func Test_Pipe_Echo2(t *testing.T) {
 	assert.NotNil(t, res.Body)
 	assert.Empty(t, res.Context)
 
+	go func() {
+		if w.Wait() != nil {
+			t.Fail()
+		}
+	}()
+
 	assert.Equal(t, "hello", res.String())
+	err = w.Stop()
+	assert.NoError(t, err)
 }
 
 func Test_Pipe_Broken2(t *testing.T) {
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "pipes")
 	w, err := NewPipeFactory().SpawnWorker(cmd)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer func() {
-		time.Sleep(time.Second)
-		err = w.Stop()
-		assert.Error(t, err)
-	}()
+	assert.NoError(t, err)
+	require.NotNil(t, w)
 
 	sw := worker.From(w)
-
 	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
-
 	assert.Error(t, err)
 	assert.Nil(t, res)
+
+	time.Sleep(time.Second)
+	err = w.Stop()
+	assert.Error(t, err)
 }
 
 func Benchmark_Pipe_SpawnWorker_Stop2(b *testing.B) {
@@ -315,7 +310,6 @@ func Test_BadPayload2(t *testing.T) {
 	}()
 
 	res, err := sw.Exec(&payload.Payload{})
-
 	assert.Error(t, err)
 	assert.Nil(t, res)
 

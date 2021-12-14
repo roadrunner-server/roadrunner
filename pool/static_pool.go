@@ -318,8 +318,7 @@ func (sp *StaticPool) execDebug(p *payload.Payload) (*payload.Payload, error) {
 	}()
 
 	// destroy the worker
-	sw.State().Set(worker.StateDestroyed)
-	err = sw.Kill()
+	err = sw.Stop()
 	if err != nil {
 		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, worker's pid: %d", err, sw.Pid())))
 		return nil, err
@@ -337,8 +336,19 @@ func (sp *StaticPool) execDebugWithTTL(ctx context.Context, p *payload.Payload) 
 
 	// redirect call to the worker with TTL
 	r, err := sw.ExecWithTTL(ctx, p)
-	if stopErr := sw.Stop(); stopErr != nil {
-		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, pid: %d", err, sw.Pid())))
+	if err != nil {
+		return nil, err
+	}
+
+	go func() {
+		// read the exit status to prevent process to be a zombie
+		_ = sw.Wait()
+	}()
+
+	err = sw.Stop()
+	if err != nil {
+		sp.events.Send(events.NewEvent(events.EventWorkerError, pluginName, fmt.Sprintf("error: %s, worker's pid: %d", err, sw.Pid())))
+		return nil, err
 	}
 
 	return r, err

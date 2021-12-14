@@ -58,7 +58,6 @@ func Test_Tcp_StartCloseFactory(t *testing.T) {
 	}
 
 	cmd := exec.Command("php", "../../tests/client.php", "echo", "tcp")
-
 	f := NewSocketServer(ls, time.Minute)
 	defer func() {
 		err = ls.Close()
@@ -70,6 +69,10 @@ func Test_Tcp_StartCloseFactory(t *testing.T) {
 	w, err := f.SpawnWorkerWithTimeout(ctx, cmd)
 	assert.NoError(t, err)
 	assert.NotNil(t, w)
+
+	go func() {
+		require.NoError(t, w.Wait())
+	}()
 
 	err = w.Stop()
 	if err != nil {
@@ -221,15 +224,7 @@ func Test_Tcp_Broken(t *testing.T) {
 		assert.Error(t, errW)
 	}()
 
-	defer func() {
-		time.Sleep(time.Second)
-		err2 := w.Stop()
-		// write tcp 127.0.0.1:9007->127.0.0.1:34204: use of closed network connection
-		assert.Error(t, err2)
-	}()
-
 	sw := worker.From(w)
-
 	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 	assert.Error(t, err)
 	assert.Nil(t, res)
@@ -239,6 +234,12 @@ func Test_Tcp_Broken(t *testing.T) {
 	if !strings.Contains(ev.Message(), "undefined_function()") {
 		t.Fatal("should contain undefined_function string")
 	}
+
+	time.Sleep(time.Second)
+	err2 := w.Stop()
+	// write tcp 127.0.0.1:9007->127.0.0.1:34204: use of closed network connection
+	// but process is stopped
+	assert.NoError(t, err2)
 }
 
 func Test_Tcp_Echo(t *testing.T) {
@@ -460,14 +461,7 @@ func Test_Unix_Broken(t *testing.T) {
 		assert.Error(t, errW)
 	}()
 
-	defer func() {
-		time.Sleep(time.Second)
-		err = w.Stop()
-		assert.Error(t, err)
-	}()
-
 	sw := worker.From(w)
-
 	res, err := sw.Exec(&payload.Payload{Body: []byte("hello")})
 
 	assert.Error(t, err)
@@ -477,6 +471,10 @@ func Test_Unix_Broken(t *testing.T) {
 	if !strings.Contains(ev.Message(), "undefined_function()") {
 		t.Fatal("should contain undefined_function string")
 	}
+
+	time.Sleep(time.Second)
+	err = w.Stop()
+	assert.NoError(t, err)
 
 	wg.Wait()
 }

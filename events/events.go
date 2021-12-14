@@ -25,6 +25,8 @@ const (
 	EventWorkerStderr
 	// EventWorkerWaitExit is the worker exit event
 	EventWorkerWaitExit
+	// EventWorkerStopped triggered when worker gracefully stopped
+	EventWorkerStopped
 )
 
 func (et EventType) String() string {
@@ -51,7 +53,8 @@ func (et EventType) String() string {
 		return "EventWorkerStderr"
 	case EventWorkerWaitExit:
 		return "EventWorkerWaitExit"
-
+	case EventWorkerStopped:
+		return "EventWorkerStopped"
 	default:
 		return "UnknownEventType"
 	}
