@@ -84,15 +84,17 @@ func (sp *supervised) RemoveWorker(worker worker.BaseProcess) error {
 
 func (sp *supervised) Destroy(ctx context.Context) {
 	sp.pool.Destroy(ctx)
+	sp.Stop()
 }
 
 func (sp *supervised) Start() {
 	go func() {
 		watchTout := time.NewTicker(sp.cfg.WatchTick)
+		defer watchTout.Stop()
+
 		for {
 			select {
 			case <-sp.stopCh:
-				watchTout.Stop()
 				return
 			// stop here
 			case <-watchTout.C:
