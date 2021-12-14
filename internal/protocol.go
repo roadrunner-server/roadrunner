@@ -4,13 +4,11 @@ import (
 	"os"
 	"sync"
 
-	j "github.com/json-iterator/go"
+	json "github.com/json-iterator/go"
 	"github.com/spiral/errors"
 	"github.com/spiral/goridge/v3/pkg/frame"
 	"github.com/spiral/goridge/v3/pkg/relay"
 )
-
-var json = j.ConfigCompatibleWithStandardLibrary
 
 type StopCommand struct {
 	Stop bool `json:"stop"`

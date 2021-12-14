@@ -44,7 +44,8 @@ type Process struct {
 
 	// pid of the process, points to pid of underlying process and
 	// can be nil while process is not started.
-	pid int
+	pid    int
+	doneCh chan struct{}
 
 	// communication bus with underlying process.
 	relay relay.Relay
@@ -63,6 +64,7 @@ func InitBaseWorker(cmd *exec.Cmd, options ...Options) (*Process, error) {
 		eventsID: id,
 		cmd:      cmd,
 		state:    NewWorkerState(StateInactive),
+		doneCh:   make(chan struct{}, 1),
 	}
 
 	// set self as stderr implementation (Writer interface)
@@ -136,6 +138,7 @@ func (w *Process) Wait() error {
 	var err error
 	err = w.cmd.Wait()
 	defer w.events.Unsubscribe(w.eventsID)
+	w.doneCh <- struct{}{}
 
 	// If worker was destroyed, just exit
 	if w.State().Value() == StateDestroyed {
@@ -180,18 +183,25 @@ func (w *Process) closeRelay() error {
 func (w *Process) Stop() error {
 	const op = errors.Op("process_stop")
 	w.state.Set(StateStopping)
-	err := internal.SendControl(w.relay, &internal.StopCommand{Stop: true})
-	if err != nil {
-		w.state.Set(StateKilling)
-		_ = w.cmd.Process.Signal(os.Kill)
+	select {
+	// finished
+	case <-w.doneCh:
+		return nil
+	default:
+		err := internal.SendControl(w.relay, &internal.StopCommand{Stop: true})
+		if err != nil {
+			w.state.Set(StateKilling)
+			_ = w.cmd.Process.Signal(os.Kill)
 
+			w.events.Unsubscribe(w.eventsID)
+			return errors.E(op, errors.Network, err)
+		}
+
+		<-w.doneCh
+		w.state.Set(StateStopped)
 		w.events.Unsubscribe(w.eventsID)
-		return errors.E(op, errors.Network, err)
+		return nil
 	}
-
-	w.state.Set(StateStopped)
-	w.events.Unsubscribe(w.eventsID)
-	return nil
 }
 
 // Kill kills underlying process, make sure to call Wait() func to gather

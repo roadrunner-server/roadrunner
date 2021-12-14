@@ -20,6 +20,7 @@ type SyncWorkerImpl struct {
 	process *Process
 	fPool   sync.Pool
 	bPool   sync.Pool
+	chPool  sync.Pool
 }
 
 // From creates SyncWorker from BaseProcess
@@ -32,12 +33,17 @@ func From(process *Process) *SyncWorkerImpl {
 		bPool: sync.Pool{New: func() interface{} {
 			return new(bytes.Buffer)
 		}},
+
+		chPool: sync.Pool{New: func() interface{} {
+			return make(chan wexec, 1)
+		}},
 	}
 }
 
 // Exec payload without TTL timeout.
 func (tw *SyncWorkerImpl) Exec(p *payload.Payload) (*payload.Payload, error) {
 	const op = errors.Op("sync_worker_exec")
+
 	if len(p.Body) == 0 && len(p.Context) == 0 {
 		return nil, errors.E(op, errors.Str("payload can not be empty"))
 	}
@@ -81,7 +87,13 @@ type wexec struct {
 // ExecWithTTL executes payload without TTL timeout.
 func (tw *SyncWorkerImpl) ExecWithTTL(ctx context.Context, p *payload.Payload) (*payload.Payload, error) {
 	const op = errors.Op("sync_worker_exec_worker_with_timeout")
-	c := make(chan wexec, 1)
+
+	if len(p.Body) == 0 && len(p.Context) == 0 {
+		return nil, errors.E(op, errors.Str("payload can not be empty"))
+	}
+
+	c := tw.getCh()
+	defer tw.putCh(c)
 
 	// worker was killed before it started to work (supervisor)
 	if tw.process.State().Value() != StateReady {
@@ -90,10 +102,6 @@ func (tw *SyncWorkerImpl) ExecWithTTL(ctx context.Context, p *payload.Payload) (
 	// set last used time
 	tw.process.State().SetLastUsed(uint64(time.Now().UnixNano()))
 	tw.process.State().Set(StateWorking)
-
-	if len(p.Body) == 0 && len(p.Context) == 0 {
-		return nil, errors.E(op, errors.Str("payload can not be empty"))
-	}
 
 	go func() {
 		rsp, err := tw.execPayload(p)
@@ -270,4 +278,18 @@ func (tw *SyncWorkerImpl) getFrame() *frame.Frame {
 func (tw *SyncWorkerImpl) putFrame(f *frame.Frame) {
 	f.Reset()
 	tw.fPool.Put(f)
+}
+
+func (tw *SyncWorkerImpl) getCh() chan wexec {
+	return tw.chPool.Get().(chan wexec)
+}
+
+func (tw *SyncWorkerImpl) putCh(ch chan wexec) {
+	// just check if the chan is not empty
+	select {
+	case <-ch:
+		tw.chPool.Put(ch)
+	default:
+		tw.chPool.Put(ch)
+	}
 }

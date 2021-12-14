@@ -211,18 +211,21 @@ func TestSupervisedPool_Idle(t *testing.T) {
 		Body:    []byte("foo"),
 	})
 
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Empty(t, resp.Body)
 	assert.Empty(t, resp.Context)
 
 	time.Sleep(time.Second * 5)
 
 	// worker should be marked as invalid and reallocated
-	_, err = p.Exec(&payload.Payload{
+	rsp, err := p.Exec(&payload.Payload{
 		Context: []byte(""),
 		Body:    []byte("foo"),
 	})
 	assert.NoError(t, err)
+	require.NotNil(t, rsp)
+	time.Sleep(time.Second * 2)
+	require.Len(t, p.Workers(), 1)
 	// should be new worker with new pid
 	assert.NotEqual(t, pid, p.Workers()[0].Pid())
 	p.Destroy(context.Background())
