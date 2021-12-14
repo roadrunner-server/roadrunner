@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# v2.6.1 (14.12.2021)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: memory leak when supervised static pool used. [PR](https://github.com/spiral/roadrunner/pull/870).
+
+
 # v2.6.0 (30.11.2021)
 
 ### 👀 New:

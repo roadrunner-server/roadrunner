@@ -83,25 +83,19 @@ func (tw *SyncWorkerImpl) ExecWithTTL(ctx context.Context, p *payload.Payload) (
 	const op = errors.Op("sync_worker_exec_worker_with_timeout")
 	c := make(chan wexec, 1)
 
+	// worker was killed before it started to work (supervisor)
+	if tw.process.State().Value() != StateReady {
+		return nil, errors.E(op, errors.Errorf("Process is not ready (%s)", tw.process.State().String()))
+	}
+	// set last used time
+	tw.process.State().SetLastUsed(uint64(time.Now().UnixNano()))
+	tw.process.State().Set(StateWorking)
+
+	if len(p.Body) == 0 && len(p.Context) == 0 {
+		return nil, errors.E(op, errors.Str("payload can not be empty"))
+	}
+
 	go func() {
-		if len(p.Body) == 0 && len(p.Context) == 0 {
-			c <- wexec{
-				err: errors.E(op, errors.Str("payload can not be empty")),
-			}
-			return
-		}
-
-		if tw.process.State().Value() != StateReady {
-			c <- wexec{
-				err: errors.E(op, errors.Errorf("Process is not ready (%s)", tw.process.State().String())),
-			}
-			return
-		}
-
-		// set last used time
-		tw.process.State().SetLastUsed(uint64(time.Now().UnixNano()))
-		tw.process.State().Set(StateWorking)
-
 		rsp, err := tw.execPayload(p)
 		if err != nil {
 			// just to be more verbose
