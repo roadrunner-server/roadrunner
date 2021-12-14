@@ -1,11 +1,20 @@
 # CHANGELOG
 
+# v2.6.2 (15.12.2021)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: worker exited immediately after obtaining the response. [BUG](https://github.com/spiral/roadrunner/issues/871) (reporter: @samdark).
+
+---
+
 # v2.6.1 (14.12.2021)
 
 ## 🩹 Fixes:
 
 - 🐛 Fix: memory leak when supervised static pool used. [PR](https://github.com/spiral/roadrunner/pull/870).
 
+---
 
 # v2.6.0 (30.11.2021)
 
@@ -17,6 +26,8 @@
 ## 🩹 Fixes:
 
 - 🐛 Fix: zombie processes in the `pool.debug` mode.
+
+---
 
 # v2.5.1 (07.11.2021)
 
