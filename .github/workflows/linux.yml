@@ -27,7 +27,7 @@ jobs:
       fail-fast: true
       matrix:
         php: ["7.4", "8.0", "8.1"]
-        go: ["1.17.4"]
+        go: ["1.17.5"]
         os: ["ubuntu-latest"]
     steps:
       - name: Set up Go ${{ matrix.go }}
