@@ -58,6 +58,33 @@ func TestSupervisedPool_Exec(t *testing.T) {
 	p.Destroy(context.Background())
 }
 
+func Test_SupervisedPoolReset(t *testing.T) {
+	ctx := context.Background()
+	p, err := Initialize(
+		ctx,
+		func() *exec.Cmd { return exec.Command("php", "../tests/client.php", "echo", "pipes") },
+		pipe.NewPipeFactory(),
+		cfgSupervised,
+	)
+	assert.NoError(t, err)
+	assert.NotNil(t, p)
+
+	w := p.Workers()
+	if len(w) == 0 {
+		t.Fatal("should be workers inside")
+	}
+
+	pid := w[0].Pid()
+	require.NoError(t, p.Reset(context.Background()))
+
+	w2 := p.Workers()
+	if len(w2) == 0 {
+		t.Fatal("should be workers inside")
+	}
+
+	require.NotEqual(t, pid, w2[0].Pid())
+}
+
 // This test should finish without freezes
 func TestSupervisedPool_ExecWithDebugMode(t *testing.T) {
 	var cfgSupervised = cfgSupervised

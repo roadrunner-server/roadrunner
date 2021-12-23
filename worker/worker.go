@@ -223,7 +223,6 @@ func (w *Process) Kill() error {
 		return err
 	}
 	w.state.Set(StateStopped)
-
 	w.events.Unsubscribe(w.eventsID)
 	return nil
 }

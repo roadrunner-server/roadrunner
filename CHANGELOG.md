@@ -1,5 +1,13 @@
 # CHANGELOG
 
+# v2.6.3 (23.12.2021)
+
+## 👀 New:
+
+- ✏️ Add `Reset` method to the static pool interface. Should be used to reset the pool instead of destroying and replacing it.
+
+---
+
 # v2.6.2 (15.12.2021)
 
 ## 🩹 Fixes:

@@ -42,6 +42,34 @@ func Test_NewPool(t *testing.T) {
 	assert.NotNil(t, p)
 }
 
+func Test_NewPoolReset(t *testing.T) {
+	ctx := context.Background()
+	p, err := Initialize(
+		ctx,
+		func() *exec.Cmd { return exec.Command("php", "../tests/client.php", "echo", "pipes") },
+		pipe.NewPipeFactory(),
+		cfg,
+	)
+	assert.NoError(t, err)
+	assert.NotNil(t, p)
+
+	w := p.Workers()
+	if len(w) == 0 {
+		t.Fatal("should be workers inside")
+	}
+
+	pid := w[0].Pid()
+	require.NoError(t, p.Reset(context.Background()))
+
+	w2 := p.Workers()
+	if len(w2) == 0 {
+		t.Fatal("should be workers inside")
+	}
+
+	require.NotEqual(t, pid, w2[0].Pid())
+	p.Destroy(ctx)
+}
+
 func Test_StaticPool_Invalid(t *testing.T) {
 	p, err := Initialize(
 		context.Background(),
@@ -67,6 +95,7 @@ func Test_ConfigNoErrorInitDefaults(t *testing.T) {
 
 	assert.NotNil(t, p)
 	assert.NoError(t, err)
+	p.Destroy(context.Background())
 }
 
 func Test_StaticPool_Echo(t *testing.T) {
@@ -562,7 +591,7 @@ func Test_Static_Pool_WrongCommand2(t *testing.T) {
 
 func Test_CRC_WithPayload(t *testing.T) {
 	ctx := context.Background()
-	_, err := Initialize(
+	p, err := Initialize(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../tests/crc_error.php") },
 		pipe.NewPipeFactory(),
@@ -571,6 +600,7 @@ func Test_CRC_WithPayload(t *testing.T) {
 	assert.Error(t, err)
 	data := err.Error()
 	assert.Contains(t, data, "warning: some weird php erro")
+	require.Nil(t, p)
 }
 
 /* PTR:
