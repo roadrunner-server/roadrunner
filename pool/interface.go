@@ -21,6 +21,9 @@ type Pool interface {
 	// RemoveWorker removes worker from the pool.
 	RemoveWorker(worker worker.BaseProcess) error
 
+	// Reset kill all workers inside the watcher and replaces with new
+	Reset(ctx context.Context) error
+
 	// Destroy all underlying stack (but let them to complete the task).
 	Destroy(ctx context.Context)
 
@@ -44,6 +47,9 @@ type Watcher interface {
 
 	// Destroy destroys the underlying container
 	Destroy(ctx context.Context)
+
+	// Reset will replace container and workers array, kill all workers
+	Reset(ctx context.Context)
 
 	// List return all container w/o removing it from internal storage
 	List() []worker.BaseProcess

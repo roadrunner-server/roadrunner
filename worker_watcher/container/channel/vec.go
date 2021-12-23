@@ -98,15 +98,16 @@ func (v *Vec) Push(w worker.BaseProcess) {
 func (v *Vec) Remove(_ int64) {}
 
 func (v *Vec) Pop(ctx context.Context) (worker.BaseProcess, error) {
-	/*
-		if *addr == old {
-			*addr = new
-			return true
-		}
-	*/
-
 	if atomic.LoadUint64(&v.destroy) == 1 {
-		return nil, errors.E(errors.WatcherStopped)
+		// drain channel
+		for {
+			select {
+			case <-v.workers:
+				continue
+			default:
+				return nil, errors.E(errors.WatcherStopped)
+			}
+		}
 	}
 
 	// used only for the TTL-ed workers

@@ -51,6 +51,12 @@ func (sp *supervised) execWithTTL(_ context.Context, _ *payload.Payload) (*paylo
 	panic("used to satisfy pool interface")
 }
 
+func (sp *supervised) Reset(ctx context.Context) error {
+	sp.mu.Lock()
+	defer sp.mu.Unlock()
+	return sp.pool.Reset(ctx)
+}
+
 func (sp *supervised) Exec(rqs *payload.Payload) (*payload.Payload, error) {
 	const op = errors.Op("supervised_exec_with_context")
 	if sp.cfg.ExecTTL == 0 {
