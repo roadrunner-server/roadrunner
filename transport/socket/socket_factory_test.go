@@ -4,12 +4,10 @@ import (
 	"context"
 	"net"
 	"os/exec"
-	"strings"
 	"sync"
 	"testing"
 	"time"
 
-	"github.com/spiral/roadrunner/v2/events"
 	"github.com/spiral/roadrunner/v2/payload"
 	"github.com/spiral/roadrunner/v2/worker"
 	"github.com/stretchr/testify/assert"
@@ -128,20 +126,9 @@ func Test_Tcp_Failboot(t *testing.T) {
 
 	cmd := exec.Command("php", "../../tests/failboot.php")
 
-	eb, id := events.Bus()
-	defer eb.Unsubscribe(id)
-	ch := make(chan events.Event, 10)
-	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
-	require.NoError(t, err)
-
 	w, err2 := NewSocketServer(ls, time.Second*5).SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Nil(t, w)
 	assert.Error(t, err2)
-
-	ev := <-ch
-	if !strings.Contains(ev.Message(), "failboot") {
-		t.Fatal("should contain failboot string")
-	}
 }
 
 func Test_Tcp_Timeout(t *testing.T) {
@@ -206,12 +193,6 @@ func Test_Tcp_Broken(t *testing.T) {
 
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "tcp")
 
-	eb, id := events.Bus()
-	defer eb.Unsubscribe(id)
-	ch := make(chan events.Event, 10)
-	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
-	require.NoError(t, err)
-
 	w, err := NewSocketServer(ls, time.Second*10).SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
 		t.Fatal(err)
@@ -229,11 +210,6 @@ func Test_Tcp_Broken(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, res)
 	wg.Wait()
-
-	ev := <-ch
-	if !strings.Contains(ev.Message(), "undefined_function()") {
-		t.Fatal("should contain undefined_function string")
-	}
 
 	time.Sleep(time.Second)
 	err2 := w.Stop()
@@ -368,20 +344,9 @@ func Test_Unix_Failboot(t *testing.T) {
 
 	cmd := exec.Command("php", "../../tests/failboot.php")
 
-	eb, id := events.Bus()
-	defer eb.Unsubscribe(id)
-	ch := make(chan events.Event, 10)
-	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
-	require.NoError(t, err)
-
 	w, err := NewSocketServer(ls, time.Second*5).SpawnWorkerWithTimeout(ctx, cmd)
 	assert.Nil(t, w)
 	assert.Error(t, err)
-
-	ev := <-ch
-	if !strings.Contains(ev.Message(), "failboot") {
-		t.Fatal("should contain failboot string")
-	}
 }
 
 func Test_Unix_Timeout(t *testing.T) {
@@ -442,13 +407,6 @@ func Test_Unix_Broken(t *testing.T) {
 	}
 
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "unix")
-
-	eb, id := events.Bus()
-	defer eb.Unsubscribe(id)
-	ch := make(chan events.Event, 10)
-	err = eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
-	require.NoError(t, err)
-
 	w, err := NewSocketServer(ls, time.Minute).SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
 		t.Fatal(err)
@@ -466,11 +424,6 @@ func Test_Unix_Broken(t *testing.T) {
 
 	assert.Error(t, err)
 	assert.Nil(t, res)
-
-	ev := <-ch
-	if !strings.Contains(ev.Message(), "undefined_function()") {
-		t.Fatal("should contain undefined_function string")
-	}
 
 	time.Sleep(time.Second)
 	err = w.Stop()

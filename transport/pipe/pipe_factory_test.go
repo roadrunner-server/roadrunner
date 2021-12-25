@@ -3,13 +3,11 @@ package pipe
 import (
 	"context"
 	"os/exec"
-	"strings"
 	"sync"
 	"testing"
 	"time"
 
 	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner/v2/events"
 	"github.com/spiral/roadrunner/v2/payload"
 	"github.com/spiral/roadrunner/v2/worker"
 	"github.com/stretchr/testify/assert"
@@ -125,21 +123,10 @@ func Test_Pipe_Failboot(t *testing.T) {
 	cmd := exec.Command("php", "../../tests/failboot.php")
 	ctx := context.Background()
 
-	eb, id := events.Bus()
-	defer eb.Unsubscribe(id)
-	ch := make(chan events.Event, 10)
-	err := eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
-	require.NoError(t, err)
-
 	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 
 	assert.Nil(t, w)
 	assert.Error(t, err)
-
-	ev := <-ch
-	if !strings.Contains(ev.Message(), "failboot") {
-		t.Fatal("should contain failboot string")
-	}
 }
 
 func Test_Pipe_Invalid(t *testing.T) {
@@ -442,12 +429,6 @@ func Test_Broken(t *testing.T) {
 	ctx := context.Background()
 	cmd := exec.Command("php", "../../tests/client.php", "broken", "pipes")
 
-	eb, id := events.Bus()
-	defer eb.Unsubscribe(id)
-	ch := make(chan events.Event, 10)
-	err := eb.SubscribeP(id, "worker.EventWorkerStderr", ch)
-	require.NoError(t, err)
-
 	w, err := NewPipeFactory().SpawnWorkerWithTimeout(ctx, cmd)
 	if err != nil {
 		t.Fatal(err)
@@ -460,10 +441,6 @@ func Test_Broken(t *testing.T) {
 	assert.Nil(t, res)
 
 	time.Sleep(time.Second * 3)
-	msg := <-ch
-	if strings.ContainsAny(msg.Message(), "undefined_function()") == false {
-		t.Fail()
-	}
 	assert.Error(t, w.Stop())
 }
 
