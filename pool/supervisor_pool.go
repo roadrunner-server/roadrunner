@@ -2,7 +2,6 @@ package pool
 
 import (
 	"context"
-	"fmt"
 	"sync"
 	"time"
 
@@ -11,11 +10,11 @@ import (
 	"github.com/spiral/roadrunner/v2/payload"
 	"github.com/spiral/roadrunner/v2/state/process"
 	"github.com/spiral/roadrunner/v2/worker"
+	"go.uber.org/zap"
 )
 
 const (
-	MB                    = 1024 * 1024
-	supervisorName string = "supervisor"
+	MB = 1024 * 1024
 )
 
 // NSEC_IN_SEC nanoseconds in second
@@ -29,17 +28,17 @@ type Supervised interface {
 
 type supervised struct {
 	cfg    *SupervisorConfig
-	events events.EventBus
 	pool   Pool
+	log    *zap.Logger
 	stopCh chan struct{}
 	mu     *sync.RWMutex
 }
 
-func supervisorWrapper(pool Pool, eb events.EventBus, cfg *SupervisorConfig) Supervised {
+func supervisorWrapper(pool Pool, log *zap.Logger, cfg *SupervisorConfig) *supervised {
 	sp := &supervised{
 		cfg:    cfg,
-		events: eb,
 		pool:   pool,
+		log:    log,
 		mu:     &sync.RWMutex{},
 		stopCh: make(chan struct{}),
 	}
@@ -166,7 +165,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			}
 			// just to double check
 			workers[i].State().Set(worker.StateInvalid)
-			sp.events.Send(events.NewEvent(events.EventTTL, supervisorName, fmt.Sprintf("ttl reached, worker's pid: %d", workers[i].Pid())))
+			sp.log.Debug("ttl", zap.String("reason", "ttl is reached"), zap.Int64("pid", workers[i].Pid()), zap.String("internal_event_name", events.EventTTL.String()))
 			continue
 		}
 
@@ -186,7 +185,7 @@ func (sp *supervised) control() { //nolint:gocognit
 			}
 			// just to double check
 			workers[i].State().Set(worker.StateInvalid)
-			sp.events.Send(events.NewEvent(events.EventMaxMemory, supervisorName, fmt.Sprintf("max memory reached, worker's pid: %d", workers[i].Pid())))
+			sp.log.Debug("memory_limit", zap.String("reason", "max memory is reached"), zap.Int64("pid", workers[i].Pid()), zap.String("internal_event_name", events.EventMaxMemory.String()))
 			continue
 		}
 
@@ -241,7 +240,7 @@ func (sp *supervised) control() { //nolint:gocognit
 				}
 				// just to double-check
 				workers[i].State().Set(worker.StateInvalid)
-				sp.events.Send(events.NewEvent(events.EventIdleTTL, supervisorName, fmt.Sprintf("idle ttl reached, worker's pid: %d", workers[i].Pid())))
+				sp.log.Debug("idle_ttl", zap.String("reason", "idle ttl is reached"), zap.Int64("pid", workers[i].Pid()), zap.String("internal_event_name", events.EventTTL.String()))
 			}
 		}
 	}

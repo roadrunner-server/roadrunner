@@ -1,5 +1,18 @@
 # CHANGELOG
 
+# v2.7.0 (?.?.2022)
+
+## 👀 New:
+
+- ✏️ RR `workers pool`, `worker`, `worker_watcher` now has their own log levels. `stderr/stdout` logged as before at the `info` log level. All other messages moved to the `debug` log level except a few events from the `worker_watcher` when RR can't allocate the new worker which are moved to the `warn`.
+- ✏️ Use the common logger for the whole roadrunner-sdk and roadrunner-plugins.
+
+## 🩹 Fixes:
+
+- 🐛 Fix: RR may have missed the message from the `stderr` when the PHP script failed to start immediately after RR starts.
+
+---
+
 # v2.6.3 (23.12.2021)
 
 ## 👀 New:
