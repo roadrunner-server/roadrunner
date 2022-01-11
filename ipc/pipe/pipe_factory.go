@@ -7,16 +7,21 @@ import (
 	"github.com/spiral/goridge/v3/pkg/pipe"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/worker"
+	"go.uber.org/zap"
 )
 
 // Factory connects to stack using standard
 // streams (STDIN, STDOUT pipes).
-type Factory struct{}
+type Factory struct {
+	log *zap.Logger
+}
 
 // NewPipeFactory returns new factory instance and starts
 // listening
-func NewPipeFactory() *Factory {
-	return &Factory{}
+func NewPipeFactory(log *zap.Logger) *Factory {
+	return &Factory{
+		log: log,
+	}
 }
 
 type sr struct {
@@ -29,7 +34,7 @@ type sr struct {
 func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (*worker.Process, error) {
 	spCh := make(chan sr)
 	go func() {
-		w, err := worker.InitBaseWorker(cmd)
+		w, err := worker.InitBaseWorker(cmd, worker.WithLog(f.log))
 		if err != nil {
 			select {
 			case spCh <- sr{
@@ -130,7 +135,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (*w
 }
 
 func (f *Factory) SpawnWorker(cmd *exec.Cmd) (*worker.Process, error) {
-	w, err := worker.InitBaseWorker(cmd)
+	w, err := worker.InitBaseWorker(cmd, worker.WithLog(f.log))
 	if err != nil {
 		return nil, err
 	}

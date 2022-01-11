@@ -14,6 +14,7 @@ import (
 	"github.com/spiral/goridge/v3/pkg/socket"
 	"github.com/spiral/roadrunner/v2/internal"
 	"github.com/spiral/roadrunner/v2/worker"
+	"go.uber.org/zap"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -28,15 +29,18 @@ type Factory struct {
 
 	// sockets which are waiting for process association
 	relays sync.Map
+
+	log *zap.Logger
 }
 
 // NewSocketServer returns Factory attached to a given socket listener.
 // tout specifies for how long factory should serve for incoming relay connection
-func NewSocketServer(ls net.Listener, tout time.Duration) *Factory {
+func NewSocketServer(ls net.Listener, tout time.Duration, log *zap.Logger) *Factory {
 	f := &Factory{
 		ls:     ls,
 		tout:   tout,
 		relays: sync.Map{},
+		log:    log,
 	}
 
 	// Be careful
@@ -87,7 +91,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (*w
 	go func() {
 		ctxT, cancel := context.WithTimeout(ctx, f.tout)
 		defer cancel()
-		w, err := worker.InitBaseWorker(cmd)
+		w, err := worker.InitBaseWorker(cmd, worker.WithLog(f.log))
 		if err != nil {
 			select {
 			case c <- socketSpawn{
@@ -157,7 +161,7 @@ func (f *Factory) SpawnWorkerWithTimeout(ctx context.Context, cmd *exec.Cmd) (*w
 }
 
 func (f *Factory) SpawnWorker(cmd *exec.Cmd) (*worker.Process, error) {
-	w, err := worker.InitBaseWorker(cmd)
+	w, err := worker.InitBaseWorker(cmd, worker.WithLog(f.log))
 	if err != nil {
 		return nil, err
 	}
