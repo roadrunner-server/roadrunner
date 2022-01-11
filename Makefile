@@ -7,8 +7,8 @@ SHELL = /bin/sh
 test_coverage:
 	rm -rf coverage-ci
 	mkdir ./coverage-ci
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipe.out -covermode=atomic ./transport/pipe
-	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/socket.out -covermode=atomic ./transport/socket
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pipe.out -covermode=atomic ./ipc/pipe
+	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/socket.out -covermode=atomic ./ipc/socket
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/pool.out -covermode=atomic ./pool
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/worker.out -covermode=atomic ./worker
 	go test -v -race -cover -tags=debug -coverpkg=./... -coverprofile=./coverage-ci/bst.out -covermode=atomic ./bst
@@ -19,8 +19,8 @@ test_coverage:
 	tail -q -n +2 ./coverage-ci/*.out >> ./coverage-ci/summary.txt
 
 test: ## Run application tests
-	go test -v -race -tags=debug ./transport/pipe
-	go test -v -race -tags=debug ./transport/socket
+	go test -v -race -tags=debug ./ipc/pipe
+	go test -v -race -tags=debug ./ipc/socket
 	go test -v -race -tags=debug ./pool
 	go test -v -race -tags=debug ./worker
 	go test -v -race -tags=debug ./worker_watcher

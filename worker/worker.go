@@ -62,7 +62,7 @@ func InitBaseWorker(cmd *exec.Cmd, options ...Options) (*Process, error) {
 	}
 
 	if w.log == nil {
-		z, err := zap.NewDevelopment()
+		z, err := zap.NewProduction()
 		if err != nil {
 			return nil, err
 		}

@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/spiral/roadrunner/v2/ipc/pipe"
 	"github.com/spiral/roadrunner/v2/payload"
-	"github.com/spiral/roadrunner/v2/transport/pipe"
 	"github.com/spiral/roadrunner/v2/worker"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -32,7 +32,7 @@ func TestSupervisedPool_Exec(t *testing.T) {
 	p, err := NewStaticPool(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../tests/memleak.php", "pipes") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(log),
 		cfgSupervised,
 	)
 
@@ -62,7 +62,7 @@ func Test_SupervisedPoolReset(t *testing.T) {
 	p, err := NewStaticPool(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../tests/client.php", "echo", "pipes") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(log),
 		cfgSupervised,
 	)
 	assert.NoError(t, err)
@@ -93,7 +93,7 @@ func TestSupervisedPool_ExecWithDebugMode(t *testing.T) {
 	p, err := NewStaticPool(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../tests/supervised.php") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(log),
 		cfgSupervised,
 	)
 
@@ -131,7 +131,7 @@ func TestSupervisedPool_ExecTTL_TimedOut(t *testing.T) {
 	p, err := NewStaticPool(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../tests/sleep.php", "pipes") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(log),
 		cfgExecTTL,
 	)
 
@@ -166,7 +166,7 @@ func TestSupervisedPool_ExecTTL_WorkerRestarted(t *testing.T) {
 	p, err := NewStaticPool(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../tests/sleep-ttl.php") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(log),
 		cfgExecTTL,
 	)
 
@@ -223,7 +223,7 @@ func TestSupervisedPool_Idle(t *testing.T) {
 	p, err := NewStaticPool(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../tests/idle.php", "pipes") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(log),
 		cfgExecTTL,
 	)
 
@@ -273,7 +273,7 @@ func TestSupervisedPool_IdleTTL_StateAfterTimeout(t *testing.T) {
 	p, err := NewStaticPool(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../tests/exec_ttl.php", "pipes") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(log),
 		cfgExecTTL,
 	)
 
@@ -321,7 +321,7 @@ func TestSupervisedPool_ExecTTL_OK(t *testing.T) {
 	p, err := NewStaticPool(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../tests/exec_ttl.php", "pipes") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(log),
 		cfgExecTTL,
 	)
 
@@ -367,7 +367,7 @@ func TestSupervisedPool_MaxMemoryReached(t *testing.T) {
 	p, err := NewStaticPool(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../tests/memleak.php", "pipes") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(log),
 		cfgExecTTL,
 	)
 
@@ -402,7 +402,7 @@ func TestSupervisedPool_AllocateFailedOK(t *testing.T) {
 	p, err := NewStaticPool(
 		ctx,
 		func() *exec.Cmd { return exec.Command("php", "../tests/allocate-failed.php") },
-		pipe.NewPipeFactory(),
+		pipe.NewPipeFactory(log),
 		cfgExecTTL,
 	)
 

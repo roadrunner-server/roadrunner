@@ -7,8 +7,8 @@ import (
 
 	"github.com/spiral/errors"
 	"github.com/spiral/roadrunner/v2/events"
+	"github.com/spiral/roadrunner/v2/ipc"
 	"github.com/spiral/roadrunner/v2/payload"
-	"github.com/spiral/roadrunner/v2/transport"
 	"github.com/spiral/roadrunner/v2/utils"
 	"github.com/spiral/roadrunner/v2/worker"
 	workerWatcher "github.com/spiral/roadrunner/v2/worker_watcher"
@@ -36,7 +36,7 @@ type StaticPool struct {
 	cmd Command
 
 	// creates and connects to stack
-	factory transport.Factory
+	factory ipc.Factory
 
 	// manages worker states and TTLs
 	ww Watcher
@@ -49,7 +49,7 @@ type StaticPool struct {
 }
 
 // NewStaticPool creates new worker pool and task multiplexer. StaticPool will initiate with one worker.
-func NewStaticPool(ctx context.Context, cmd Command, factory transport.Factory, cfg *Config, options ...Options) (Pool, error) {
+func NewStaticPool(ctx context.Context, cmd Command, factory ipc.Factory, cfg *Config, options ...Options) (Pool, error) {
 	if factory == nil {
 		return nil, errors.Str("no factory initialized")
 	}
@@ -303,7 +303,7 @@ func (sp *StaticPool) takeWorker(ctxGetFree context.Context, op errors.Op) (work
 	return w, nil
 }
 
-func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duration, factory transport.Factory, cmd func() *exec.Cmd) worker.Allocator {
+func (sp *StaticPool) newPoolAllocator(ctx context.Context, timeout time.Duration, factory ipc.Factory, cmd func() *exec.Cmd) worker.Allocator {
 	return func() (worker.SyncWorker, error) {
 		ctxT, cancel := context.WithTimeout(ctx, timeout)
 		defer cancel()
