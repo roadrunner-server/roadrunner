@@ -6,6 +6,7 @@
 
 - ✏️ RR `workers pool`, `worker`, `worker_watcher` now has their own log levels. `stderr/stdout` logged as before at the `info` log level. All other messages moved to the `debug` log level except a few events from the `worker_watcher` when RR can't allocate the new worker which are moved to the `warn`.
 - ✏️ Use the common logger for the whole roadrunner-sdk and roadrunner-plugins.
+- ✏️ Add `codec` field to the `protocol` structure **[internal change]**.
 
 ## 🩹 Fixes:
 
