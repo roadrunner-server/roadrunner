@@ -12,6 +12,9 @@ type Payload struct {
 
 	// body contains binary payload to be processed by WorkerProcess.
 	Body []byte
+
+	// Type of codec used to decode/encode payload
+	Codec byte
 }
 
 // String returns payload body as string
