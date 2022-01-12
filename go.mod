@@ -8,7 +8,7 @@ require (
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	// spiral
 	github.com/spiral/errors v1.0.12
-	github.com/spiral/goridge/v3 v3.2.4
+	github.com/spiral/goridge/v3 v3.2.6
 	// spiral
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/multierr v1.7.0

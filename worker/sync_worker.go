@@ -162,6 +162,7 @@ func (tw *SyncWorkerImpl) execPayload(p *payload.Payload) (*payload.Payload, err
 
 	// can be 0 here
 	fr.WriteVersion(fr.Header(), frame.VERSION_1)
+	fr.WriteFlags(fr.Header(), p.Codec)
 
 	// obtain a buffer
 	buf := tw.get()
@@ -207,6 +208,7 @@ func (tw *SyncWorkerImpl) execPayload(p *payload.Payload) (*payload.Payload, err
 	}
 
 	pld := &payload.Payload{
+		Codec:   flags,
 		Body:    make([]byte, len(frameR.Payload()[options[0]:])),
 		Context: make([]byte, len(frameR.Payload()[:options[0]])),
 	}
