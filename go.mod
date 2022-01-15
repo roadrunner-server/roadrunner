@@ -3,7 +3,7 @@ module github.com/roadrunner-server/roadrunner/v2
 go 1.17
 
 require (
-	github.com/buger/goterm v1.0.1
+	github.com/buger/goterm v1.0.3
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.13.0
 	github.com/joho/godotenv v1.4.0
