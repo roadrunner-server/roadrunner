@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: ❓ Start a discussion or ask a question.
+    url: https://github.com/roadrunner-server/roadrunner/discussions
+    about: Please ask and answer questions here.
