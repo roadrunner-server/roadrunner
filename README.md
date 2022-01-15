@@ -2,16 +2,13 @@
  <img src="https://user-images.githubusercontent.com/796136/50286124-6f7f3780-046f-11e9-9f45-e8fedd4f786d.png" height="75px" alt="RoadRunner">
 </p>
 <p align="center">
- <a href="https://packagist.org/packages/spiral/roadrunner"><img src="https://poser.pugx.org/spiral/roadrunner/version"></a>
-	<a href="https://pkg.go.dev/github.com/spiral/roadrunner/v2?tab=doc"><img src="https://godoc.org/github.com/spiral/roadrunner/v2?status.svg"></a>
-	<a href="https://github.com/spiral/roadrunner/actions"><img src="https://github.com/spiral/roadrunner/workflows/Linux/badge.svg" alt=""></a>
-	<a href="https://github.com/spiral/roadrunner/actions"><img src="https://github.com/spiral/roadrunner/workflows/Linters/badge.svg" alt=""></a>
-	<a href="https://goreportcard.com/report/github.com/spiral/roadrunner"><img src="https://goreportcard.com/badge/github.com/spiral/roadrunner"></a>
-	<a href="https://scrutinizer-ci.com/g/spiral/roadrunner/?branch=master"><img src="https://scrutinizer-ci.com/g/spiral/roadrunner/badges/quality-score.png"></a>
-	<a href="https://codecov.io/gh/spiral/roadrunner/"><img src="https://codecov.io/gh/spiral/roadrunner/branch/master/graph/badge.svg"></a>
-	<a href="https://lgtm.com/projects/g/spiral/roadrunner/alerts/"><img alt="Total alerts" src="https://img.shields.io/lgtm/alerts/g/spiral/roadrunner.svg?logo=lgtm&logoWidth=18"/></a>
+ <a href="https://github.com/spiral/roadrunner-binary/releases"><img src="https://img.shields.io/github/v/release/spiral/roadrunner-binary.svg?maxAge=30"></a>
+	<a href="https://pkg.go.dev/github.com/spiral/roadrunner-binary/v2"><img src="https://godoc.org/github.com/spiral/roadrunner-binary/v2?status.svg"></a>
+	<a href="https://github.com/spiral/roadrunner-binary/actions"><img src="https://github.com/spiral/roadrunner-binary/workflows/tests/badge.svg"></a>
+	<a href="https://goreportcard.com/report/github.com/spiral/roadrunner-binary"><img src="https://goreportcard.com/badge/github.com/spiral/roadrunner-binary"></a>
+	<a href="https://lgtm.com/projects/g/spiral/roadrunner-binary/alerts/"><img alt="Total alerts" src="https://img.shields.io/lgtm/alerts/g/spiral/roadrunner-binary.svg?logo=lgtm&logoWidth=18"/></a>
 	<a href="https://discord.gg/TFeEmCs"><img src="https://img.shields.io/badge/discord-chat-magenta.svg"></a>
-	<a href="https://packagist.org/packages/spiral/roadrunner"><img src="https://img.shields.io/packagist/dd/spiral/roadrunner?style=flat-square"></a>
+    <img alt="All releases" src="https://img.shields.io/github/downloads/spiral/roadrunner-binary/total">
 </p>
 
 RoadRunner is an open-source (MIT licensed) high-performance PHP application server, load balancer, and process manager.
@@ -23,8 +20,7 @@ with much greater performance and flexibility.
 <p align="center">
 	<a href="https://roadrunner.dev/"><b>Official Website</b></a> |
 	<a href="https://roadrunner.dev/docs"><b>Documentation</b></a> |
-    <a href="https://github.com/orgs/spiral/projects/2"><b>Release schedule</b></a> |
-    <a href="https://github.com/spiral/roadrunner-plugins"><b>Plugins</b></a>
+    <a href="https://github.com/orgs/spiral/projects/2"><b>Release schedule</b></a>
 </p>
 
 Features:
@@ -66,10 +62,12 @@ $ ./vendor/bin/rr get-binary
 ```
 
 > For getting roadrunner binary file you can use our docker image: `spiralscout/roadrunner:X.X.X` (more information about
-> image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/))
+> image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/)).
+>
+> Important notice: we strongly recommend to use a versioned tag (like `1.2.3`) instead `latest`.
 
 Configuration can be located in `.rr.yaml`
-file ([full sample](https://github.com/spiral/roadrunner-binary/blob/master/.rr.yaml)):
+file ([full sample](https://github.com/spiral/roadrunner/blob/master/.rr.yaml)):
 
 ```yaml
 rpc:
@@ -127,11 +125,3 @@ License:
 --------
 The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained
 by [Spiral Scout](https://spiralscout.com).
-
-## Contributors
-
-Thanks to all the people who already contributed!
-
-<a href="https://github.com/spiral/roadrunner/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=spiral/roadrunner" />
-</a>

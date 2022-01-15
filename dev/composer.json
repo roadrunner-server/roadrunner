@@ -1,0 +1,19 @@
+{
+    "minimum-stability": "beta",
+    "prefer-stable": true,
+    "require": {
+        "nyholm/psr7": "^1.3",
+        "spiral/roadrunner": "^2.0",
+        "spiral/roadrunner-http": "^2.0",
+        "temporal/sdk": ">=1.0",
+        "spiral/tokenizer": ">=2.7",
+        "spiral/roadrunner-metrics": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Temporal\\Tests\\": "src"
+        }
+    },
+    "name": "test/test",
+    "description": "test"
+}
