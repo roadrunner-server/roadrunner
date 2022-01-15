@@ -1,0 +1,33 @@
+rpc:
+  listen: tcp://0.0.0.0:6001
+
+server:
+  command: "php /etc/psr-worker.php"
+
+
+http:
+  address: 0.0.0.0:15395
+  max_request_size: 1024
+  middleware: [ "websockets" ]
+  uploads:
+    forbid: [ ".php", ".exe", ".bat" ]
+  trusted_subnets: [ "10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "::1/128", "fc00::/7", "fe80::/10" ]
+  pool:
+    num_workers: 1
+
+redis:
+  addrs:
+    - "redis:6379"
+
+websockets:
+  pubsubs: [ "memory" ]
+  path: "/ws"
+
+logs:
+  mode: production
+  level: error
+
+endure:
+  grace_period: 10s
+  print_graph: false
+  log_level: panic

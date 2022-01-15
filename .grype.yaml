@@ -1,0 +1,3 @@
+ignore:
+  # temporary ignore this CVE as false positive on the Go package
+  - vulnerability: CVE-2015-5237

@@ -1,0 +1,278 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Version 1.0 is deprecated. Please, upgrade RR up to version 2",
+  "type": "object",
+  "properties": {
+    "env": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        }
+      }
+    },
+    "rpc": {
+      "type": "object",
+      "properties": {
+        "enable": {
+          "type": "boolean"
+        },
+        "listen": {
+          "type": "string"
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "collect": {
+          "type": "object",
+          "patternProperties": {
+            "[a-zA-Z0-9-_]": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "help": {
+                  "type": "string"
+                },
+                "labels": {
+                  "type": "array",
+                  "items": {}
+                },
+                "buckets": {
+                  "type": "array",
+                  "items": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "http": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "ssl": {
+          "type": "object",
+          "properties": {
+            "port": {
+              "type": "integer"
+            },
+            "redirect": {
+              "type": "boolean"
+            },
+            "cert": {
+              "type": "string"
+            },
+            "key": {
+              "type": "string"
+            },
+            "rootCa": {
+              "type": "string"
+            }
+          }
+        },
+        "fcgi": {
+          "type": "object",
+          "properties": {
+            "address": {
+              "type": "string"
+            }
+          }
+        },
+        "http2": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "h2c": {
+              "type": "boolean"
+            },
+            "maxConcurrentStreams": {
+              "type": "integer"
+            }
+          }
+        },
+        "maxRequestSize": {
+          "type": "integer"
+        },
+        "uploads": {
+          "type": "object",
+          "properties": {
+            "forbid": {
+              "type": "array",
+              "items": {}
+            }
+          }
+        },
+        "trustedSubnets": {
+          "type": "array",
+          "items": {}
+        },
+        "workers": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string"
+            },
+            "relay": {
+              "type": "string"
+            },
+            "user": {
+              "type": "string"
+            },
+            "pool": {
+              "type": "object",
+              "properties": {
+                "numWorkers": {
+                  "type": "integer"
+                },
+                "maxJobs": {
+                  "type": "integer"
+                },
+                "allocateTimeout": {
+                  "type": "integer"
+                },
+                "destroyTimeout": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "headers": {
+      "type": "object",
+      "properties": {
+        "cors": {
+          "type": "object",
+          "properties": {
+            "allowedOrigin": {
+              "type": "string"
+            },
+            "allowedHeaders": {
+              "type": "string"
+            },
+            "allowedMethods": {
+              "type": "string"
+            },
+            "allowCredentials": {
+              "type": "boolean"
+            },
+            "exposedHeaders": {
+              "type": "string"
+            },
+            "maxAge": {
+              "type": "integer"
+            }
+          }
+        },
+        "request": {
+          "type": "object",
+          "patternProperties": {
+            "[a-zA-Z0-9-_]": {
+              "type": "string"
+            }
+          }
+        },
+        "response": {
+          "type": "object",
+          "patternProperties": {
+            "[a-zA-Z0-9-_]": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "limit": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "type": "integer"
+        },
+        "services": {
+          "type": "object",
+          "properties": {
+            "http": {
+              "type": "object",
+              "properties": {
+                "maxMemory": {
+                  "type": "integer"
+                },
+                "TTL": {
+                  "type": "integer"
+                },
+                "idleTTL": {
+                  "type": "integer"
+                },
+                "execTTL": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "static": {
+      "type": "object",
+      "properties": {
+        "dir": {
+          "type": "string"
+        },
+        "forbid": {
+          "type": "array",
+          "items": {}
+        }
+      }
+    },
+    "health": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        }
+      }
+    },
+    "reload": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "type": "string"
+        },
+        "patterns": {
+          "type": "array",
+          "items": {}
+        },
+        "services": {
+          "type": "object",
+          "properties": {
+            "http": {
+              "type": "object",
+              "properties": {
+                "dirs": {
+                  "type": "array",
+                  "items": {}
+                },
+                "recursive": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

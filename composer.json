@@ -10,7 +10,7 @@
         },
         {
             "name": "RoadRunner Community",
-            "homepage": "https://github.com/spiral/roadrunner/graphs/contributors"
+            "homepage": "https://github.com/roadrunner-server/roadrunner/graphs/contributors"
         }
     ],
     "require": {

@@ -3,38 +3,10 @@ coverage:
     project:
       default:
         target: auto
-        threshold: 50%
+        threshold: 0%
         informational: true
     patch:
       default:
         target: auto
-        threshold: 50%
+        threshold: 0%
         informational: true
-
-# do not include tests folders
-ignore:
-  - "common"
-  - "internal/protocol.go"
-  - "proto"
-  - "utils"
-  - "tests"
-  - "systemd"
-  - "doc"
-  # is not ready yet
-  - "worker_watcher/container/queue"
-  - "bst/bst_test.go"
-  - "bst/doc.go"
-  - "bst/interface.go"
-  - "pool/static_pool_test.go"
-  - "pool/supervisor_test.go"
-  - "transport/pipe/pipe_factory_spawn_test.go"
-  - "transport/pipe/pipe_factory_test.go"
-  - "transport/socket/socket_factory_spawn_test.go"
-  - "transport/socket/socket_factory_test.go"
-  - "transport/interface.go"
-  - "worker/state_test.go"
-  - "worker/sync_worker_test.go"
-  - "worker/worker_test.go"
-  - "events/pool_events.go"
-  - "events/worker_events.go"
-  - "events/jobs_events.go"
