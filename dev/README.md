@@ -4,7 +4,7 @@
 1. Build the RR binary with the following command: `make build`. As the result you'll see a RR binary.
 2. If you are testing you own plugin (Go), you may use `replace` directive in the root `go.mod` file, for example:
 ```go
-module github.com/spiral/roadrunner-binary/v2
+module github.com/roadrunner-server/roadrunner/v2
 
 go 1.17
 
@@ -18,10 +18,10 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.2.1
 	// SPIRAL ------------
-	github.com/spiral/endure v1.0.3
-	github.com/spiral/errors v1.0.12
+	github.com/roadrunner-server/endure v1.2.1
+	github.com/roadrunner-server/errors v1.1.0
 	github.com/spiral/goridge/v3 v3.2.1
-	github.com/spiral/roadrunner/v2 v2.4.0-rc.1
+	github.com/roadrunner-server/roadrunner/v2 v2.4.0-rc.1
 	// ---------------------
 	github.com/stretchr/testify v1.7.0
 	// SPIRAL --------------
@@ -30,7 +30,7 @@ require (
 	github.com/vbauerster/mpb/v5 v5.4.0
 )
 
-replace github.com/spiral/roadrunner/v2 => ../roadrunner <----- SAMPLE
+replace github.com/roadrunner-server/roadrunner/v2 => ../roadrunner <----- SAMPLE
 ```
 
 3. Replace sample worker `psr-worker.php` with your application. You can do that by putting all `dev` env into the folder

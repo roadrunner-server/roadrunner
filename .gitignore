@@ -9,10 +9,6 @@
 
 # Test binary, built with `go test -c`
 *.test
-unit_tests
-unit_tests_copied
-dir1
-coverage-ci
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
@@ -20,11 +16,15 @@ coverage-ci
 # Dependency directories (remove the comment below to include it)
 # vendor/
 .idea
-composer.lock
-vendor
 builds/
 tests/vendor/
+unit_tests
+unit_tests_copied
+dir1
+coverage
+/rr
+rr.exe
+.rr-sample-bench.yaml
+.rr-with-temporal.yaml
 .rr-sample.yaml
-cmd
-rr
-**/old
+.rr-sample-bench-*

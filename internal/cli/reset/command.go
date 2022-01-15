@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"sync"
 
-	internalRpc "github.com/spiral/roadrunner-binary/v2/internal/rpc"
+	internalRpc "github.com/roadrunner-server/roadrunner/v2/internal/rpc"
 
 	"github.com/fatih/color"
 	"github.com/mattn/go-runewidth"
+	"github.com/roadrunner-server/config/v2"
+	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
-	"github.com/spiral/errors"
-	"github.com/spiral/roadrunner-plugins/v2/config"
 	"github.com/vbauerster/mpb/v5"
 	"github.com/vbauerster/mpb/v5/decor"
 )

@@ -2,13 +2,15 @@
  <img src="https://user-images.githubusercontent.com/796136/50286124-6f7f3780-046f-11e9-9f45-e8fedd4f786d.png" height="75px" alt="RoadRunner">
 </p>
 <p align="center">
- <a href="https://github.com/spiral/roadrunner-binary/releases"><img src="https://img.shields.io/github/v/release/spiral/roadrunner-binary.svg?maxAge=30"></a>
-	<a href="https://pkg.go.dev/github.com/spiral/roadrunner-binary/v2"><img src="https://godoc.org/github.com/spiral/roadrunner-binary/v2?status.svg"></a>
-	<a href="https://github.com/spiral/roadrunner-binary/actions"><img src="https://github.com/spiral/roadrunner-binary/workflows/tests/badge.svg"></a>
-	<a href="https://goreportcard.com/report/github.com/spiral/roadrunner-binary"><img src="https://goreportcard.com/badge/github.com/spiral/roadrunner-binary"></a>
-	<a href="https://lgtm.com/projects/g/spiral/roadrunner-binary/alerts/"><img alt="Total alerts" src="https://img.shields.io/lgtm/alerts/g/spiral/roadrunner-binary.svg?logo=lgtm&logoWidth=18"/></a>
+ <a href="https://packagist.org/packages/spiral/roadrunner"><img src="https://poser.pugx.org/spiral/roadrunner/version"></a>
+	<a href="https://pkg.go.dev/github.com/roadrunner-server/roadrunner/v2?tab=doc"><img src="https://godoc.org/github.com/roadrunner-server/roadrunner/v2?status.svg"></a>
+	<a href="https://github.com/roadrunner-server/roadrunner/actions"><img src="https://github.com/roadrunner-server/roadrunner/workflows/Linux/badge.svg" alt=""></a>
+	<a href="https://github.com/roadrunner-server/roadrunner/actions"><img src="https://github.com/roadrunner-server/roadrunner/workflows/Linters/badge.svg" alt=""></a>
+	<a href="https://goreportcard.com/report/github.com/roadrunner-server/roadrunner"><img src="https://goreportcard.com/badge/github.com/roadrunner-server/roadrunner"></a>
+	<a href="https://codecov.io/gh/roadrunner-server/roadrunner/"><img src="https://codecov.io/gh/roadrunner-server/roadrunner/branch/master/graph/badge.svg"></a>
+	<a href="https://lgtm.com/projects/g/roadrunner-server/roadrunner/alerts/"><img alt="Total alerts" src="https://img.shields.io/lgtm/alerts/g/roadrunner-server/roadrunner.svg?logo=lgtm&logoWidth=18"/></a>
 	<a href="https://discord.gg/TFeEmCs"><img src="https://img.shields.io/badge/discord-chat-magenta.svg"></a>
-    <img alt="All releases" src="https://img.shields.io/github/downloads/spiral/roadrunner-binary/total">
+	<a href="https://packagist.org/packages/spiral/roadrunner"><img src="https://img.shields.io/packagist/dd/spiral/roadrunner?style=flat-square"></a>
 </p>
 
 RoadRunner is an open-source (MIT licensed) high-performance PHP application server, load balancer, and process manager.
@@ -31,7 +33,7 @@ Features:
 - HTTPS and HTTP/2 support (including HTTP/2 Push, H2C)
 - A Fully customizable server, FastCGI support
 - Flexible environment configuration
-- No external PHP dependencies (64bit version required), drop-in (based on [Goridge](https://github.com/spiral/goridge))
+- No external PHP dependencies (64bit version required), drop-in (based on [Goridge](https://github.com/roadrunner-server/goridge))
 - Load balancer, process manager and task pipeline
 - Integrated metrics (Prometheus)
 - [Workflow engine](https://github.com/temporalio/sdk-php) by [Temporal.io](https://temporal.io)
@@ -40,14 +42,14 @@ Features:
 - Worker create/allocate/destroy timeouts
 - Max jobs per worker
 - Worker lifecycle management (controller)
-  - maxMemory (graceful stop)
-  - TTL (graceful stop)
-  - idleTTL (graceful stop)
-  - execTTL (brute, max_execution_time)
+    - maxMemory (graceful stop)
+    - TTL (graceful stop)
+    - idleTTL (graceful stop)
+    - execTTL (brute, max_execution_time)
 - Payload context and body
 - Protocol, worker and job level error management (including PHP errors)
 - Development Mode
-- Integrations with Symfony, [Laravel](https://github.com/spiral/roadrunner-laravel), Slim, CakePHP, Zend Expressive
+- Integrations with Symfony, [Laravel](https://github.com/roadrunner-server/roadrunner-laravel), Slim, CakePHP, Zend Expressive
 - Application server for [Spiral](https://github.com/spiral/framework)
 - Included in Laravel Octane
 - Automatic reloading on file changes
@@ -57,17 +59,15 @@ Installation:
 --------
 
 ```bash
-$ composer require spiral/roadrunner:v2.0 nyholm/psr7
+$ composer require roadrunner-server/roadrunner:v2.0 nyholm/psr7
 $ ./vendor/bin/rr get-binary
 ```
 
 > For getting roadrunner binary file you can use our docker image: `spiralscout/roadrunner:X.X.X` (more information about
-> image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/)).
->
-> Important notice: we strongly recommend to use a versioned tag (like `1.2.3`) instead `latest`.
+> image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/))
 
 Configuration can be located in `.rr.yaml`
-file ([full sample](https://github.com/spiral/roadrunner/blob/master/.rr.yaml)):
+file ([full sample](https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml)):
 
 ```yaml
 rpc:
@@ -125,3 +125,11 @@ License:
 --------
 The MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained
 by [Spiral Scout](https://spiralscout.com).
+
+## Contributors
+
+Thanks to all the people who already contributed!
+
+<a href="https://github.com/roadrunner-server/roadrunner/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=roadrunner-server/roadrunner" />
+</a>

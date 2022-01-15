@@ -1,7 +1,7 @@
 package container
 
 import (
-	endure "github.com/spiral/endure/pkg/container"
+	endure "github.com/roadrunner-server/endure/pkg/container"
 )
 
 // NewContainer creates endure container with all required options (based on container Config). Logger is nil by

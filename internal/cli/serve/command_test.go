@@ -3,9 +3,9 @@ package serve_test
 import (
 	"testing"
 
-	"github.com/spiral/roadrunner-binary/v2/internal/cli/serve"
+	"github.com/roadrunner-server/roadrunner/v2/internal/cli/serve"
 
-	"github.com/spiral/roadrunner-plugins/v2/config"
+	"github.com/roadrunner-server/config/v2"
 	"github.com/stretchr/testify/assert"
 )
 

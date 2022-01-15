@@ -518,7 +518,7 @@ http:
 
 ## 🩹 Fixes:
 
-- 🐛 Fix: ASLR builds causes [problems](https://github.com/spiral/roadrunner-binary/issues/120) in the docker.
+- 🐛 Fix: ASLR builds causes [problems](https://github.com/roadrunner-server/roadrunner/issues/120) in the docker.
 
 
 ## v2.5.1 (22.10.2021)
@@ -769,7 +769,7 @@ jobs:
 
 -   🐛 Fix: fixed bug with goroutines waiting on the internal worker's container channel, [issue](https://github.com/spiral/roadrunner/issues/750).
 -   🐛 Fix: RR become unresponsive when new workers failed to re-allocate, [issue](https://github.com/spiral/roadrunner/issues/772).
--   🐛 Fix: add `debug` pool config key to the `.rr.yaml` configuration [reference](https://github.com/spiral/roadrunner-binary/issues/79).
+-   🐛 Fix: add `debug` pool config key to the `.rr.yaml` configuration [reference](https://github.com/roadrunner-server/roadrunner/issues/79).
 
 ## 📦 Packages:
 
@@ -780,7 +780,7 @@ jobs:
 ## 📈 Summary:
 
 -   RR Milestone [2.4.0](https://github.com/spiral/roadrunner/milestone/29?closed=1)
--   RR-Binary Milestone [2.4.0](https://github.com/spiral/roadrunner-binary/milestone/10?closed=1)
+-   RR-Binary Milestone [2.4.0](https://github.com/roadrunner-server/roadrunner/milestone/10?closed=1)
 
 ---
 

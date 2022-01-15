@@ -3,7 +3,7 @@ package cli_test
 import (
 	"testing"
 
-	"github.com/spiral/roadrunner-binary/v2/internal/cli"
+	"github.com/roadrunner-server/roadrunner/v2/internal/cli"
 
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"

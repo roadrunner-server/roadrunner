@@ -1,0 +1,157 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - master
+      - beta
+      - stable
+    tags-ignore:
+      - '**'
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  validate-config-file:
+    name: Validate config file
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup nodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install linter
+        run: npm install -g ajv-cli # Package page: <https://www.npmjs.com/package/ajv-cli>
+
+      - name: Run linter
+        run: ajv validate --all-errors --verbose -s ./schemas/config/2.0.schema.json -d ./.rr.yaml
+
+  golangci-lint:
+    name: Golang-CI (lint)
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v2 # Action page: <https://github.com/golangci/golangci-lint-action>
+        with:
+          version: v1.43 # without patch version
+          only-new-issues: false # show only new issues if it's a pull request
+          args: --build-tags=safe --timeout=10m
+
+  go-test:
+    name: Unit tests
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17.5
+
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2 # Fixes codecov error 'Issue detecting commit SHA'
+
+      - name: Init Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Install Go dependencies
+        run: go mod download
+
+      - name: Run Unit tests
+        run: go test -race -covermode=atomic -coverprofile /tmp/coverage.txt ./...
+
+      - name: Upload Coverage report to CodeCov
+        continue-on-error: true
+        uses: codecov/codecov-action@v2.1.0 # https://github.com/codecov/codecov-action
+        with:
+          file: /tmp/coverage.txt
+
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ubuntu-20.04
+    needs: [ golangci-lint, go-test ]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ linux, darwin, windows ]
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
+        with:
+          go-version: 1.17.5
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Init Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Install Go dependencies
+        run: go mod download && go mod verify
+
+      - name: Generate version value
+        id: values # for PR this value will be `merge@__hash__`, SO: <https://stackoverflow.com/a/59780579/2252921>
+        run: |
+          echo "::set-output name=version::`echo ${GITHUB_REF##*/}`@`echo ${GITHUB_SHA} | cut -c1-8`"
+          echo "::set-output name=timestamp::`date +%FT%T%z`"
+
+      - name: Compile binary file
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: amd64
+          CGO_ENABLED: 0
+          LDFLAGS: -s
+            -X github.com/roadrunner-server/roadrunner/v2/internal/meta.version=${{ steps.values.outputs.version }}
+            -X github.com/roadrunner-server/roadrunner/v2/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
+        run: go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr
+
+      - name: Try to execute
+        if: matrix.os == 'linux'
+        run: ./rr -v
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: rr-${{ matrix.os }}
+          path: ./rr
+          if-no-files-found: error
+          retention-days: 90
+
+  docker-image:
+    name: Build docker image
+    runs-on: ubuntu-20.04
+    needs: [ golangci-lint, go-test ]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build -t rr:local -f ./Dockerfile .
+
+      - name: Try to execute
+        run: docker run --rm rr:local -v
+
+      - name: Scan image
+        uses: anchore/scan-action@v3 # action page: <https://github.com/anchore/scan-action>
+        with:
+          image: rr:local
+          fail-build: true
+          severity-cutoff: low # negligible, low, medium, high or critical

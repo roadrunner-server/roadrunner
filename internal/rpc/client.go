@@ -4,10 +4,10 @@ package rpc
 import (
 	"net/rpc"
 
-	"github.com/spiral/errors"
-	goridgeRpc "github.com/spiral/goridge/v3/pkg/rpc"
-	"github.com/spiral/roadrunner-plugins/v2/config"
-	rpcPlugin "github.com/spiral/roadrunner-plugins/v2/rpc"
+	"github.com/roadrunner-server/config/v2"
+	"github.com/roadrunner-server/errors"
+	goridgeRpc "github.com/roadrunner-server/goridge/v3/pkg/rpc"
+	rpcPlugin "github.com/roadrunner-server/rpc/v2"
 )
 
 // NewClient creates client ONLY for internal usage (communication between our application with RR side).

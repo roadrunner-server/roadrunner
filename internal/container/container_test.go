@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/spiral/roadrunner-binary/v2/internal/container"
+	"github.com/roadrunner-server/roadrunner/v2/internal/container"
 
-	endure "github.com/spiral/endure/pkg/container"
+	endure "github.com/roadrunner-server/endure/pkg/container"
 	"github.com/stretchr/testify/assert"
 )
 

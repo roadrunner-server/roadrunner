@@ -3,9 +3,9 @@ package workers_test
 import (
 	"testing"
 
-	"github.com/spiral/roadrunner-binary/v2/internal/cli/workers"
+	"github.com/roadrunner-server/roadrunner/v2/internal/cli/workers"
 
-	"github.com/spiral/roadrunner-plugins/v2/config"
+	"github.com/roadrunner-server/config/v2"
 	"github.com/stretchr/testify/assert"
 )
 

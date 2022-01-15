@@ -6,12 +6,12 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/spiral/roadrunner-binary/v2/internal/container"
-	"github.com/spiral/roadrunner-binary/v2/internal/meta"
+	"github.com/roadrunner-server/roadrunner/v2/internal/container"
+	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
 
+	configImpl "github.com/roadrunner-server/config/v2"
+	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
-	"github.com/spiral/errors"
-	configImpl "github.com/spiral/roadrunner-plugins/v2/config"
 )
 
 // NewCommand creates `serve` command.
