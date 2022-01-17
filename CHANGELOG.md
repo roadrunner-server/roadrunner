@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v2.7.2 (17.01.2022)
+
+## 👀 New:
+- Moved to the new organization.
+
+---
+
 ## v2.7.0 (14.01.2022)
 
 ## 👀 New:
