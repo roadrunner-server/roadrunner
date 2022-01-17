@@ -166,3 +166,5 @@ jobs:
             spiralscout/roadrunner:${{ steps.values.outputs.version }}
             ghcr.io/spiral/roadrunner:latest
             ghcr.io/spiral/roadrunner:${{ steps.values.outputs.version }}
+            ghcr.io/roadrunner-server/roadrunner:latest
+            ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version }}
