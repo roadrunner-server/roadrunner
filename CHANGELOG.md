@@ -3,7 +3,7 @@
 ## v2.7.2 (17.01.2022)
 
 ## 👀 New:
-- Moved to a new organization.
+- Moved to the new organization.
 
 ---
 
