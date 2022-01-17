@@ -66,7 +66,7 @@ jobs:
           LDFLAGS: >-
             -s
         run: |
-          go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" grpc/protoc_plugins/protoc-gen-php-grpc/main.go
+          go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" protoc_plugins/protoc-gen-php-grpc/main.go
           stat "./${{ steps.values.outputs.binary-name }}"
 
       - name: Generate distributive directory name
