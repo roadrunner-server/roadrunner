@@ -41,7 +41,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
         with:
-          repository: 'spiral/roadrunner-plugins'
+          repository: 'roadrunner-server/grpc'
 
       - name: Install musl
         if: matrix.compiler == 'musl-gcc'

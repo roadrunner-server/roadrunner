@@ -21,13 +21,13 @@ require (
 	github.com/roadrunner-server/goridge/v3 v3.3.0
 	github.com/roadrunner-server/grpc/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/gzip/v2 v2.0.0-rc.1
-	github.com/roadrunner-server/headers/v2 v2.0.0-20220117140810-15bf9c17145d
+	github.com/roadrunner-server/headers/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/http/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/informer/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/jobs/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/kv/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/logger/v2 v2.0.0-rc.3
-	github.com/roadrunner-server/memcached/v2 v2.0.0-20220117143318-51a176c660b7
+	github.com/roadrunner-server/memcached/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/memory/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/metrics/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/nats/v2 v2.0.0-rc.1
