@@ -34,7 +34,7 @@ require (
 	github.com/roadrunner-server/new_relic/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/prometheus/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/redis/v2 v2.0.0-rc.2
-	github.com/roadrunner-server/reload/v2 v2.0.0-rc.1
+	github.com/roadrunner-server/reload/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/resetter/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/rpc/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/sdk/v2 v2.0.0-rc.1
