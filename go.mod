@@ -44,7 +44,7 @@ require (
 	github.com/roadrunner-server/static/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/status/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/tcp/v2 v2.0.0-rc.1
-	github.com/roadrunner-server/websockets/v2 v2.0.0-rc.1
+	github.com/roadrunner-server/websockets/v2 v2.0.0-rc.2
 	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.0
 	github.com/temporalio/roadrunner-temporal v1.2.0-rc.2
