@@ -16,9 +16,11 @@ ENV LDFLAGS="-s \
 -X github.com/roadrunner-server/roadrunner/v2/internal/meta.buildTime=$BUILD_TIME"
 
 # compile binary file
-RUN set -x \
-    && CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr \
-    && ./rr -v
+RUN set -x
+RUN go mod download
+RUN go mod tidy
+RUN CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr
+RUN ./rr -v
 
 # Image page: <https://hub.docker.com/_/alpine>
 # https://alpinelinux.org/posts/Alpine-3.13.4-released.html
@@ -31,7 +33,7 @@ ARG BUILD_TIME="undefined"
 
 LABEL \
     org.opencontainers.image.title="roadrunner" \
-    org.opencontainers.image.description="High-performance PHP application server, load-balancer and process manager" \
+    org.opencontainers.image.description="High-performance PHP application server, load-balancer, process manager written in Go and powered with plugins" \
     org.opencontainers.image.url="https://github.com/roadrunner-server/roadrunner" \
     org.opencontainers.image.source="https://github.com/roadrunner-server/roadrunner" \
     org.opencontainers.image.vendor="SpiralScout" \

@@ -33,7 +33,7 @@ import (
 	"github.com/roadrunner-server/kv/v2"
 	"github.com/roadrunner-server/memcached/v2"
 	"github.com/roadrunner-server/tcp/v2"
-	roadrunner_temporal "github.com/temporalio/roadrunner-temporal"
+	rrt "github.com/temporalio/roadrunner-temporal"
 )
 
 // Plugins returns active plugins for the endure container. Feel free to add or remove any plugins.
@@ -101,6 +101,6 @@ func Plugins() []interface{} { //nolint:funlen
 		&tcp.Plugin{},
 
 		// temporal plugins
-		&roadrunner_temporal.Plugin{},
+		&rrt.Plugin{},
 	}
 }
