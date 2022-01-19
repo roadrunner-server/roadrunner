@@ -19,32 +19,32 @@ require (
 	github.com/roadrunner-server/errors v1.1.0
 	github.com/roadrunner-server/fileserver/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/goridge/v3 v3.3.0
-	github.com/roadrunner-server/grpc/v2 v2.0.0-rc.1
+	github.com/roadrunner-server/grpc/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/gzip/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/headers/v2 v2.0.0-rc.1
-	github.com/roadrunner-server/http/v2 v2.0.0-rc.1
+	github.com/roadrunner-server/http/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/informer/v2 v2.0.0-rc.2
-	github.com/roadrunner-server/jobs/v2 v2.0.0-rc.1
+	github.com/roadrunner-server/jobs/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/kv/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/logger/v2 v2.0.0-rc.3
 	github.com/roadrunner-server/memcached/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/memory/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/metrics/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/nats/v2 v2.0.0-rc.1
-	github.com/roadrunner-server/new_relic/v2 v2.0.0-rc.1
+	github.com/roadrunner-server/new_relic/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/prometheus/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/redis/v2 v2.0.0-rc.2
-	github.com/roadrunner-server/reload/v2 v2.0.0-rc.1
+	github.com/roadrunner-server/reload/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/resetter/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/rpc/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/sdk/v2 v2.0.0-rc.1
-	github.com/roadrunner-server/server/v2 v2.0.0-rc.1
+	github.com/roadrunner-server/server/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/service/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/sqs/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/static/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/status/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/tcp/v2 v2.0.0-rc.1
-	github.com/roadrunner-server/websockets/v2 v2.0.0-rc.1
+	github.com/roadrunner-server/websockets/v2 v2.0.0-rc.2
 	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.0
 	github.com/temporalio/roadrunner-temporal v1.2.0-rc.2
@@ -160,7 +160,7 @@ require (
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
 	golang.org/x/tools v0.1.8 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/genproto v0.0.0-20220114231437-d2e6a121cae0 // indirect
+	google.golang.org/genproto v0.0.0-20220118154757-00ab72f36ad5 // indirect
 	google.golang.org/grpc v1.43.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect

@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2.7.3 (19.01.2022)
+
+## 🩹 Fixes:
+
+-   🐛 Fix: `jobs` pipeline shadowing if registering the pipeline with the existing name [BUG](https://github.com/roadrunner-server/roadrunner/issues/943)
+-   🐛 Fix: `reload` plugin doesn't collect a resettable plugins [BUG](https://github.com/roadrunner-server/roadrunner/issues/942)
+
+---
+
 ## v2.7.2 (17.01.2022)
 
 ## 👀 New:
