@@ -115,6 +115,7 @@ func TestCommandNoEnvFileNoError(t *testing.T) {
 	require.NoError(t, err)
 	f2, err := os.Create(path.Join(tmp, ".rr.yaml"))
 	require.NoError(t, err)
+
 	defer func() {
 		_ = f.Close()
 		_ = f2.Close()
