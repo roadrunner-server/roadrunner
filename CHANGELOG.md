@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2.7.4 (27.01.2022)
+
+## 👀 New:
+
+- ✏️ Return an error if the user uses the `.env` file, but it doesn't exist. [BUG](https://github.com/roadrunner-server/roadrunner/issues/954), (reporter @O00O0O)
+- ✏️ Parallel workers allocation withing the plugin. [FR](https://github.com/roadrunner-server/roadrunner/issues/951), (reporter @roquie)
+
+---
+
 ## 2.7.3 (19.01.2022)
 
 ## 🩹 Fixes:
