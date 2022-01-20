@@ -1,9 +1,12 @@
 package cli_test
 
 import (
+	"os"
+	"path"
 	"testing"
 
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli"
+	"github.com/stretchr/testify/require"
 
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
@@ -82,4 +85,52 @@ func TestCommandSimpleExecuting(t *testing.T) {
 
 	assert.NoError(t, cmd.Execute())
 	assert.True(t, executed)
+}
+
+func TestCommandNoEnvFileError(t *testing.T) {
+	cmd := cli.NewCommand("unit test")
+	cmd.SetArgs([]string{"-c", "./../../.rr.yaml", "--dotenv", "foo/bar"})
+
+	var executed bool
+
+	if cmd.Run == nil { // override "Run" property for test (if it was not set)
+		cmd.Run = func(cmd *cobra.Command, args []string) {
+			executed = true
+		}
+	}
+
+	assert.Error(t, cmd.Execute())
+	assert.False(t, executed)
+}
+
+func TestCommandNoEnvFileNoError(t *testing.T) {
+	tmp := os.TempDir()
+
+	cmd := cli.NewCommand("unit test")
+	cmd.SetArgs([]string{"-c", path.Join(tmp, ".rr.yaml"), "--dotenv", path.Join(tmp, ".env")})
+
+	var executed bool
+
+	f, err := os.Create(path.Join(tmp, ".env"))
+	require.NoError(t, err)
+	f2, err := os.Create(path.Join(tmp, ".rr.yaml"))
+	require.NoError(t, err)
+	defer func() {
+		_ = f.Close()
+		_ = f2.Close()
+	}()
+
+	if cmd.Run == nil { // override "Run" property for test (if it was not set)
+		cmd.Run = func(cmd *cobra.Command, args []string) {
+			executed = true
+		}
+	}
+
+	assert.NoError(t, cmd.Execute())
+	assert.True(t, executed)
+
+	t.Cleanup(func() {
+		_ = os.RemoveAll(path.Join(tmp, ".env"))
+		_ = os.RemoveAll(path.Join(tmp, ".rr.yaml"))
+	})
 }

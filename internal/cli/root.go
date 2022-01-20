@@ -60,7 +60,10 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen
 			}
 
 			if dotenv != "" {
-				_ = godotenv.Load(dotenv) // error ignored because dotenv is optional feature
+				err := godotenv.Load(dotenv)
+				if err != nil {
+					return err
+				}
 			}
 
 			cfg := &config.Plugin{Path: cfgFile, Prefix: "rr", Flags: override}
