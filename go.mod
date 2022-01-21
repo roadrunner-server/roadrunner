@@ -10,20 +10,20 @@ require (
 	github.com/mattn/go-runewidth v0.0.13
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v2 v2.0.0-rc.1
-	github.com/roadrunner-server/api/v2 v2.0.0-rc.2
+	github.com/roadrunner-server/api/v2 v2.8.0-rc.1
 	github.com/roadrunner-server/beanstalk/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/boltdb/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/broadcast/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/config/v2 v2.0.0-rc.3
 	github.com/roadrunner-server/endure v1.2.1
-	github.com/roadrunner-server/errors v1.1.0
+	github.com/roadrunner-server/errors v1.1.1
 	github.com/roadrunner-server/fileserver/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/goridge/v3 v3.3.0
 	github.com/roadrunner-server/grpc/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/gzip/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/headers/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/http/v2 v2.0.0-rc.2
-	github.com/roadrunner-server/informer/v2 v2.0.0-rc.2
+	github.com/roadrunner-server/informer/v2 v2.8.0-rc.1
 	github.com/roadrunner-server/jobs/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/kv/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/logger/v2 v2.0.0-rc.4
@@ -37,7 +37,7 @@ require (
 	github.com/roadrunner-server/reload/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/resetter/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/rpc/v2 v2.0.0-rc.2
-	github.com/roadrunner-server/sdk/v2 v2.0.0-rc.1
+	github.com/roadrunner-server/sdk/v2 v2.8.0-rc.1
 	github.com/roadrunner-server/server/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/service/v2 v2.0.0-rc.1
 	github.com/roadrunner-server/sqs/v2 v2.0.0-rc.1
@@ -83,7 +83,7 @@ require (
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.1.0 // indirect
-	github.com/goccy/go-json v0.9.3 // indirect
+	github.com/goccy/go-json v0.9.4 // indirect
 	github.com/gofiber/fiber/v2 v2.24.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -118,7 +118,7 @@ require (
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/prometheus/client_golang v1.11.0 // indirect
+	github.com/prometheus/client_golang v1.12.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
