@@ -5,7 +5,11 @@
 ## 👀 New:
 
 - ✏️ Return an error if the user uses the `.env` file, but it doesn't exist. [BUG](https://github.com/roadrunner-server/roadrunner/issues/954), (reporter @O00O0O)
-- ✏️ Parallel workers allocation withing the plugin. [FR](https://github.com/roadrunner-server/roadrunner/issues/951), (reporter @roquie)
+- ✏️ Parallel workers allocation within the plugin. [FR](https://github.com/roadrunner-server/roadrunner/issues/951), (reporter @roquie)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: RR workers are blocked when one of them should send a big (> 100mb) response and when the time to send the response is bigger than the supervisor's `watch_tick` [BUG](https://github.com/roadrunner-server/roadrunner/issues/957) (reported by: @OO00O0O)
 
 ---
 
