@@ -506,8 +506,8 @@ github.com/roadrunner-server/fileserver/v2 v2.8.0-rc.1 h1:vAfSfdOUMEyFnJRkbDhGGc
 github.com/roadrunner-server/fileserver/v2 v2.8.0-rc.1/go.mod h1:RHBqs6OHvoXe3C3hDIoJIrUmN/NFJS5gDxMcWspuB30=
 github.com/roadrunner-server/goridge/v3 v3.3.0 h1:Zrftjk2xNGzNnrma31ZrlPmwTJQIAa0Kmdeb58v+BQ4=
 github.com/roadrunner-server/goridge/v3 v3.3.0/go.mod h1:nOtQp0LEx2vxfnVT8/1PQIyK0BpFGhg8S0OCdlKdXbI=
-github.com/roadrunner-server/grpc/v2 v2.8.0-rc.1 h1:6o5KLhCnNXWbUZUl4jhGFYz+BRzg17VuDsCHb6+7ezk=
-github.com/roadrunner-server/grpc/v2 v2.8.0-rc.1/go.mod h1:0hLLW07xxlG72GZ99CT3oYk9sb4keFV8a4Cf1ZI7K+o=
+github.com/roadrunner-server/grpc/v2 v2.8.0-rc.2 h1:lXbiSe7ZNwTCj5+MzvMBaajSXKkAug3Nzwl/WmQ7lKc=
+github.com/roadrunner-server/grpc/v2 v2.8.0-rc.2/go.mod h1:CQ2VXXzAvhxGM5g/s6N6xqUAkYhz9W3xbuKRyjsY6tI=
 github.com/roadrunner-server/gzip/v2 v2.8.0-rc.1 h1:FCW99xCj2NcipqlpXA2BT4MP0mw/35CJVJa96dvXxYM=
 github.com/roadrunner-server/gzip/v2 v2.8.0-rc.1/go.mod h1:ckTwl1QUoQ0SMF+/FXnlT9JMlhkCfhmgA02lu8aYFTM=
 github.com/roadrunner-server/headers/v2 v2.8.0-rc.1 h1:98OZPdwNuRwRiVkGczUb0vI7JOOBHZa+ezMjimAcIXg=
@@ -1132,8 +1132,9 @@ google.golang.org/grpc v1.40.0/go.mod h1:ogyxbiOoUXAkP+4+xa6PZSE9DZgIHtSpzjDTB9K
 google.golang.org/grpc v1.40.1/go.mod h1:ogyxbiOoUXAkP+4+xa6PZSE9DZgIHtSpzjDTB9KAK34=
 google.golang.org/grpc v1.41.0/go.mod h1:U3l9uK9J0sini8mHphKoXyaqDA/8VyGnDee1zzIUK6k=
 google.golang.org/grpc v1.42.0/go.mod h1:k+4IHHFw41K8+bbowsex27ge2rCb65oeWqe4jJ590SU=
-google.golang.org/grpc v1.43.0 h1:Eeu7bZtDZ2DpRCsLhUlcrLnvYaMK1Gz86a+hMVvELmM=
 google.golang.org/grpc v1.43.0/go.mod h1:k+4IHHFw41K8+bbowsex27ge2rCb65oeWqe4jJ590SU=
+google.golang.org/grpc v1.44.0 h1:weqSxi/TMs1SqFRMHCtBgXRs8k3X39QIDEZ0pRcttUg=
+google.golang.org/grpc v1.44.0/go.mod h1:k+4IHHFw41K8+bbowsex27ge2rCb65oeWqe4jJ590SU=
 google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0/go.mod h1:6Kw0yEErY5E/yWrBtf03jp27GLLJujG4z/JK95pnjjw=
 google.golang.org/protobuf v0.0.0-20200109180630-ec00e32a8dfd/go.mod h1:DFci5gLYBciE7Vtevhsrf46CRTquxDuWsQurQQe4oz8=
 google.golang.org/protobuf v0.0.0-20200221191635-4d8936d0db64/go.mod h1:kwYJMbMJ01Woi6D6+Kah6886xMZcty6N08ah7+eCXa0=
