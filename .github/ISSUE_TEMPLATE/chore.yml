@@ -1,5 +1,5 @@
 name: Chore
-description: Enhancement or chore of the existing code
+description: 🧹 Enhancement or chore of the existing code
 title: "[🧹 CHORE]: "
 labels: ["C-enhancement"]
 assignees:
@@ -23,6 +23,5 @@ body:
       label: What should be improved or cleaned up?
       description: Also tell us, what did you expect to happen?
       placeholder: Tell us what you see!
-      value: "Improvement"
     validations:
       required: true
