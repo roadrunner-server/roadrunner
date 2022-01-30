@@ -18,11 +18,15 @@ body:
       options:
         - GRPC
         - HTTP
+        - HTTP Middleware (any)
         - JOBS
         - TCP
         - File server
         - Config
         - KV
+        - Logger
+        - Metrics
+        - Temporal
         - Service
         - Server
         - Status

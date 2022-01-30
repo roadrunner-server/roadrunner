@@ -5,9 +5,6 @@
   "type": "object",
   "additionalProperties": true,
   "minProperties": 1,
-  "required": [
-    "server"
-  ],
   "properties": {
     "rpc": {
       "type": "object",
