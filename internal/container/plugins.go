@@ -46,7 +46,7 @@ func Plugins() []interface{} { //nolint:funlen
 		&resetter.Plugin{},
 
 		// logger plugin
-		&logger.ZapLogger{},
+		&logger.Plugin{},
 		// metrics plugin
 		&metrics.Plugin{},
 		// reload plugin
