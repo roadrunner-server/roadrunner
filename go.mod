@@ -20,7 +20,7 @@ require (
 	github.com/roadrunner-server/fileserver/v2 v2.8.0-rc.1
 	github.com/roadrunner-server/goridge/v3 v3.3.1
 	github.com/roadrunner-server/grpc/v2 v2.8.0-rc.2
-	github.com/roadrunner-server/gzip/v2 v2.8.0-rc.1
+	github.com/roadrunner-server/gzip/v2 v2.8.0-rc.2
 	github.com/roadrunner-server/headers/v2 v2.8.0-rc.1
 	github.com/roadrunner-server/http/v2 v2.8.0-rc.3
 	github.com/roadrunner-server/informer/v2 v2.8.0-rc.1
