@@ -37,7 +37,7 @@ require (
 	github.com/roadrunner-server/reload/v2 v2.8.0-rc.1
 	github.com/roadrunner-server/resetter/v2 v2.8.0-rc.1
 	github.com/roadrunner-server/rpc/v2 v2.8.0-rc.1
-	github.com/roadrunner-server/sdk/v2 v2.8.0-rc.2
+	github.com/roadrunner-server/sdk/v2 v2.8.0-rc.3
 	github.com/roadrunner-server/server/v2 v2.8.0-rc.1
 	github.com/roadrunner-server/service/v2 v2.8.0-rc.1
 	github.com/roadrunner-server/sqs/v2 v2.8.0-rc.1
