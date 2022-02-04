@@ -137,7 +137,7 @@ jobs:
 
   docker-image:
     name: Build docker image
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [ golangci-lint, go-test ]
     steps:
       - name: Check out code
@@ -149,9 +149,8 @@ jobs:
       - name: Try to execute
         run: docker run --rm rr:local -v
 
-      - name: Scan image
-        uses: anchore/scan-action@v3 # action page: <https://github.com/anchore/scan-action>
-        with:
-          image: rr:local
-          fail-build: true
-          severity-cutoff: low # negligible, low, medium, high or critical
+      - name: Install grype
+        run: curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Scan Image
+        run: grype rr:local
