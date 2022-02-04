@@ -148,3 +148,9 @@ jobs:
 
       - name: Try to execute
         run: docker run --rm rr:local -v
+
+      - name: Install grype
+        run: curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Scan Image
+        run: grype rr:local
