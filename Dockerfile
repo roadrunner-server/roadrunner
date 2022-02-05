@@ -31,15 +31,15 @@ FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3
 ARG APP_VERSION="undefined"
 ARG BUILD_TIME="undefined"
 
-LABEL \
-    org.opencontainers.image.title="roadrunner" \
-    org.opencontainers.image.description="High-performance PHP application server, load-balancer, process manager written in Go and powered with plugins" \
-    org.opencontainers.image.url="https://github.com/roadrunner-server/roadrunner" \
-    org.opencontainers.image.source="https://github.com/roadrunner-server/roadrunner" \
-    org.opencontainers.image.vendor="SpiralScout" \
-    org.opencontainers.image.version="$APP_VERSION" \
-    org.opencontainers.image.created="$BUILD_TIME" \
-    org.opencontainers.image.licenses="MIT"
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.title="roadrunner"
+LABEL org.opencontainers.image.description="High-performance PHP application server, load-balancer, process manager written in Go and powered with plugins"
+LABEL org.opencontainers.image.url="https://github.com/roadrunner-server/roadrunner"
+LABEL org.opencontainers.image.source="https://github.com/roadrunner-server/roadrunner"
+LABEL org.opencontainers.image.vendor="SpiralScout"
+LABEL org.opencontainers.image.version="$APP_VERSION"
+LABEL org.opencontainers.image.created="$BUILD_TIME"
+LABEL org.opencontainers.image.licenses="MIT"
 
 # copy required files from builder image
 COPY --from=builder /src/rr /usr/bin/rr
