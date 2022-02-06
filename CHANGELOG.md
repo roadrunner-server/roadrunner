@@ -1,10 +1,21 @@
 # CHANGELOG
 
+## 2.7.6 (06.02.2022)
+
+## 🩹 Fixes:
+
+-   🐛 Fix: temporal: `ActivityNotRegisteredError` on the local activity workers [BUG](https://github.com/temporalio/roadrunner-temporal/issues/163) (reporter @Zylius)
+
+---
+
+
 ## 2.7.5 (04.02.2022)
 
 ## 👀 New:
 
-- ✏️ Better workers statistic. Add `worker state`, per-worker memory usage and worker's PID stats for the `JOBS`, `GRPC`, `HTTP` plugins [FR](https://github.com/roadrunner-server/roadrunner/issues/970)
+- ✏️ Better workers' statistic. Add `worker state`, per-worker memory usage and worker's PID stats for the `JOBS`, `GRPC`, `HTTP` plugins [FR](https://github.com/roadrunner-server/roadrunner/issues/970)
+
+---
 
 ## 2.7.4 (27.01.2022)
 
