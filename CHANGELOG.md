@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2.7.7 (10.02.2022)
+
+## 🩹 Fixes:
+
+-   🐛 Fix: case-sensitive attributes for SQS [BUG](https://github.com/roadrunner-server/roadrunner/issues/994), (reporter @paulermo)
+-   🐛 Fix: grpc plugin incorrectly parses the error response from the worker [BUG](https://github.com/roadrunner-server/roadrunner/issues/995), (reporter @rauanmayemir)
+-   🐛 Fix: destroy operation hangs if the number of workers is 0 [BUG](https://github.com/roadrunner-server/roadrunner/issues/1003), (reporter @benalf)
+
+---
+
 ## 2.7.6 (06.02.2022)
 
 ## 🩹 Fixes:
