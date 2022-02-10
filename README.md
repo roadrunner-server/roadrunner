@@ -58,13 +58,28 @@ Features:
 Installation:
 --------
 
+> For getting roadrunner binary file you can use our docker image: `spiralscout/roadrunner:2.X.X` (more information about
+> image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/)) or use the GitHub package: `ghcr.io/roadrunner-server/roadrunner:2.7.7`
+>
+
+- Docker:
+
+```docker
+FROM ghcr.io/roadrunner-server/roadrunner:2.7.7 AS roadrunner
+FROM php:8.1-cli
+
+COPY --from=roadrunner /usr/bin/rr /usr/local/bin/rr
+
+# USE THE RR
+```
+
+- CLI
+
 ```bash
 $ composer require roadrunner-server/roadrunner:v2.0 nyholm/psr7
 $ ./vendor/bin/rr get-binary
 ```
 
-> For getting roadrunner binary file you can use our docker image: `spiralscout/roadrunner:X.X.X` (more information about
-> image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/))
 
 Configuration can be located in `.rr.yaml`
 file ([full sample](https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml)):
