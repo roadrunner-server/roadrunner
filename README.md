@@ -64,7 +64,7 @@ Installation:
 
 - Docker:
 
-```docker
+```dockerfile
 FROM ghcr.io/roadrunner-server/roadrunner:2.7.7 AS roadrunner
 FROM php:8.1-cli
 
