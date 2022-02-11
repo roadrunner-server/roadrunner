@@ -76,7 +76,7 @@ COPY --from=roadrunner /usr/bin/rr /usr/local/bin/rr
 - CLI
 
 ```bash
-$ composer require roadrunner-server/roadrunner:v2.0 nyholm/psr7
+$ composer require spiral/roadrunner:v2.0 nyholm/psr7
 $ ./vendor/bin/rr get-binary
 ```
 
