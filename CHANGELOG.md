@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2.7.8 (12.02.2022)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: worker sometimes panics when `unix/tcp sockets` transport used: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1006), (reporter @tarampampam)
+
+---
+
 ## 2.7.7 (10.02.2022)
 
 ## 🩹 Fixes:
