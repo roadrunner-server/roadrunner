@@ -59,13 +59,13 @@ Installation:
 --------
 
 To get the roadrunner binary file you can use our docker image: `spiralscout/roadrunner:2.X.X` (more information about
-image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/)) or use the GitHub package: `ghcr.io/roadrunner-server/roadrunner:2.7.7`
+image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunner/)) or use the GitHub package: `ghcr.io/roadrunner-server/roadrunner:2.X.X`
 
 
 - Docker:
 
 ```dockerfile
-FROM ghcr.io/roadrunner-server/roadrunner:2.7.7 AS roadrunner
+FROM ghcr.io/roadrunner-server/roadrunner:2.X.X AS roadrunner
 FROM php:8.1-cli
 
 COPY --from=roadrunner /usr/bin/rr /usr/local/bin/rr
