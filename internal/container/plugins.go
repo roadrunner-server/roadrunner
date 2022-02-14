@@ -1,12 +1,14 @@
 package container
 
 import (
+	"github.com/roadrunner-server/cache/v2"
 	"github.com/roadrunner-server/informer/v2"
 	"github.com/roadrunner-server/logger/v2"
 	"github.com/roadrunner-server/metrics/v2"
 	"github.com/roadrunner-server/reload/v2"
 	"github.com/roadrunner-server/resetter/v2"
 	rpcPlugin "github.com/roadrunner-server/rpc/v2"
+	"github.com/roadrunner-server/send/v2"
 	"github.com/roadrunner-server/server/v2"
 	"github.com/roadrunner-server/service/v2"
 
@@ -74,6 +76,8 @@ func Plugins() []interface{} { //nolint:funlen
 		&status.Plugin{},
 		&gzip.Plugin{},
 		&prometheus.Plugin{},
+		&cache.Plugin{},
+		&send.Plugin{},
 
 		&fileserver.Plugin{},
 		// ===================
