@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v2.7.10 (15.02.2022)
+
+## 👀 New:
+
+- ✏️ Add build for FreeBSD/amd64
+
+---
+
 ## v2.7.9 (14.02.2022)
 
 ## 🩹 Fixes:

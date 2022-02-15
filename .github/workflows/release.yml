@@ -24,6 +24,10 @@ jobs:
             compiler: gcc
             archiver: tar
             arch: arm64
+          - os: freebsd
+            compiler: gcc
+            archiver: tar
+            arch: amd64
           - os: darwin
             compiler: gcc
             archiver: tar
