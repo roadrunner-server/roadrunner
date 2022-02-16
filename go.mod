@@ -20,10 +20,10 @@ require (
 	github.com/roadrunner-server/errors v1.1.1
 	github.com/roadrunner-server/fileserver/v2 v2.9.0
 	github.com/roadrunner-server/goridge/v3 v3.3.1
-	github.com/roadrunner-server/grpc/v2 v2.10.0
+	github.com/roadrunner-server/grpc/v2 v2.10.1
 	github.com/roadrunner-server/gzip/v2 v2.8.0
 	github.com/roadrunner-server/headers/v2 v2.9.0
-	github.com/roadrunner-server/http/v2 v2.9.1
+	github.com/roadrunner-server/http/v2 v2.9.2
 	github.com/roadrunner-server/informer/v2 v2.9.0
 	github.com/roadrunner-server/jobs/v2 v2.9.0
 	github.com/roadrunner-server/kv/v2 v2.9.0
