@@ -20,7 +20,7 @@ require (
 	github.com/roadrunner-server/errors v1.1.1
 	github.com/roadrunner-server/fileserver/v2 v2.9.0
 	github.com/roadrunner-server/goridge/v3 v3.3.1
-	github.com/roadrunner-server/grpc/v2 v2.9.0
+	github.com/roadrunner-server/grpc/v2 v2.10.0
 	github.com/roadrunner-server/gzip/v2 v2.8.0
 	github.com/roadrunner-server/headers/v2 v2.9.0
 	github.com/roadrunner-server/http/v2 v2.9.1
@@ -159,7 +159,7 @@ require (
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
 	golang.org/x/tools v0.1.9 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/genproto v0.0.0-20220215190005-e57b466719ef // indirect
+	google.golang.org/genproto v0.0.0-20220216160803-4663080d8bc8 // indirect
 	google.golang.org/grpc v1.44.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
