@@ -191,6 +191,11 @@ temporal:
     # Default: false
     debug: false
 
+    # Override server's command
+    #
+    # Default: empty
+    command: "php my-super-app.php"
+
     # How many worker processes will be started. Zero (or nothing) means the number of logical CPUs.
     #
     # Default: 0
