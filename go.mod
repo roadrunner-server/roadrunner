@@ -20,7 +20,7 @@ require (
 	github.com/roadrunner-server/errors v1.1.1
 	github.com/roadrunner-server/fileserver/v2 v2.9.0
 	github.com/roadrunner-server/goridge/v3 v3.3.1
-	github.com/roadrunner-server/grpc/v2 v2.10.1
+	github.com/roadrunner-server/grpc/v2 v2.10.2
 	github.com/roadrunner-server/gzip/v2 v2.8.0
 	github.com/roadrunner-server/headers/v2 v2.9.0
 	github.com/roadrunner-server/http/v2 v2.9.2
@@ -32,7 +32,7 @@ require (
 	github.com/roadrunner-server/memory/v2 v2.9.0
 	github.com/roadrunner-server/metrics/v2 v2.9.0
 	github.com/roadrunner-server/nats/v2 v2.9.0
-	github.com/roadrunner-server/new_relic/v2 v2.10.0
+	github.com/roadrunner-server/new_relic/v2 v2.10.1
 	github.com/roadrunner-server/prometheus/v2 v2.8.0
 	github.com/roadrunner-server/redis/v2 v2.9.0
 	github.com/roadrunner-server/reload/v2 v2.9.0
