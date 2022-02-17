@@ -609,6 +609,11 @@ http:
     # Default: false
     debug: false
 
+    # Override server's command
+    #
+    # Default: empty
+    command: "php my-super-app.php"
+
     # How many worker processes will be started. Zero (or nothing) means the number of logical CPUs.
     #
     # Default: 0
@@ -1013,6 +1018,7 @@ jobs:
 
   # worker pool configuration
   pool:
+    command: ""
     num_workers: 10
     max_jobs: 0
     allocate_timeout: 60s
@@ -1415,6 +1421,7 @@ tcp:
       read_buf_size: 1
 
   pool:
+    command: ""
     num_workers: 5
     max_jobs: 0
     allocate_timeout: 60s
