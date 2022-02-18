@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## v2.8.0 (17.02.2022)
+
+### ⚠️  For the RR `v2.8.0` your `.rr.yaml` configuration version should be [`2.7`](https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml), so please update your config and add `version: '2.7'` at the top.
+
+## 👀 New:
+
+- ✏️ Timeout for the SQS create/get queue operations (30seconds) [FR](https://github.com/roadrunner-server/roadrunner/issues/903) (reporter @sergey-telpuk)
+- ✏️ New workers pool option -> `command`:
+```yaml
+http:
+    address: 127.0.0.1:8080
+    max_request_size: 256
+    middleware: ["headers", "gzip"]
+    trusted_subnets: []
+
+    # Workers pool settings.
+    pool:
+        command: "php app.php" <---- NEW
+```
+This option is used to override the `server`'s command with the new one. The new command will inherit all server options. It can be used in any plugin (`jobs`, `grpc`, `tcp`, `http`, etc) using workers pool (`http` used here as a sample). No need to update your config. By default server command will be used as in the previous RR versions. Note, you can't leave the `server` command option empty. If you wanted to override the command in every plugin you use, put a placeholder in the `server.command`.
+- ✏️  Add `Rr_newrelic_ignore` header support. Now you can send the `Rr_newrelic_ignore:true` header and RR will ignore such transactions. No data will be sent to the `newrelic` server. [FR](https://github.com/roadrunner-server/roadrunner/issues/900) (reporter @arku31)
+- ✏️ Add support for the SQS FIFO queues [FR](https://github.com/roadrunner-server/roadrunner/issues/906) (reporter @paulermo)
+- ✏️ Add support for the gRPC Healthcheck protocol v1 in the `grpc` plugin.  [Doc](https://github.com/grpc/grpc/blob/master/doc/health-checking.md), [FR](https://github.com/roadrunner-server/roadrunner/issues/928) (reporter @porozhnyy)
+
+---
+
 ## v2.7.9 (14.02.2022)
 
 ## 🩹 Fixes:
