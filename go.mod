@@ -10,7 +10,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.13
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v2 v2.9.0
-	github.com/roadrunner-server/api/v2 v2.9.0
+	github.com/roadrunner-server/api/v2 v2.10.0
 	github.com/roadrunner-server/beanstalk/v2 v2.9.0
 	github.com/roadrunner-server/boltdb/v2 v2.9.0
 	github.com/roadrunner-server/broadcast/v2 v2.9.0
@@ -122,7 +122,7 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rabbitmq/amqp091-go v1.3.0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/roadrunner-server/sdk/v2 v2.9.1 // indirect
+	github.com/roadrunner-server/sdk/v2 v2.10.0 // indirect
 	github.com/roadrunner-server/tcplisten v1.1.1 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
