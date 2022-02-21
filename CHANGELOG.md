@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v2.8.2 (22.02.2022)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: **CONFIG**: `version` can't be passed as inline option: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1021), (reporter @nunomaduro)
+
+---
+
 ## v2.8.1 (21.02.2022)
 
 ## 🩹 Fixes:
