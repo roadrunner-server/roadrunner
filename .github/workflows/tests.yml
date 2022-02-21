@@ -149,8 +149,14 @@ jobs:
       - name: Try to execute
         run: docker run --rm rr:local -v
 
-      - name: Install grype
-        run: curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+      - uses: aquasecurity/trivy-action@0.2.2 # action page: <https://github.com/aquasecurity/trivy-action>
+        with:
+          image-ref: rr:local
+          format: sarif
+          severity: MEDIUM,HIGH,CRITICAL
+          exit-code: 1
+          output: trivy-results.sarif
 
-      - name: Scan Image
-        run: grype rr:local
+      - uses: github/codeql-action/upload-sarif@v1
+        if: always()
+        with: {sarif_file: trivy-results.sarif}
