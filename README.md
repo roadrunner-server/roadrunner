@@ -88,6 +88,8 @@ Configuration can be located in `.rr.yaml`
 file ([full sample](https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml)):
 
 ```yaml
+version: '2.7'
+
 rpc:
   listen: tcp://127.0.0.1:6001
 
