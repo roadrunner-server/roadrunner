@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v2.8.2 (22.02.2022)
+
+## 🧹 Chore:
+
+- Docker: migrate to the `trivy` action instead of `grype` [PR](https://github.com/roadrunner-server/roadrunner/pull/1020), (contributor: @tarampampam)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: **CONFIG**: `version` can't be passed as inline option: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1021), (reporter @nunomaduro)
+
+---
+
 ## v2.8.1 (21.02.2022)
 
 ## 🩹 Fixes:

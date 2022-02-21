@@ -15,7 +15,7 @@ require (
 	github.com/roadrunner-server/boltdb/v2 v2.9.1
 	github.com/roadrunner-server/broadcast/v2 v2.9.1
 	github.com/roadrunner-server/cache/v2 v2.9.1
-	github.com/roadrunner-server/config/v2 v2.9.1
+	github.com/roadrunner-server/config/v2 v2.9.2
 	github.com/roadrunner-server/endure v1.2.1
 	github.com/roadrunner-server/errors v1.1.1
 	github.com/roadrunner-server/fileserver/v2 v2.9.2
@@ -23,7 +23,7 @@ require (
 	github.com/roadrunner-server/grpc/v2 v2.10.4
 	github.com/roadrunner-server/gzip/v2 v2.8.2
 	github.com/roadrunner-server/headers/v2 v2.9.1
-	github.com/roadrunner-server/http/v2 v2.10.5
+	github.com/roadrunner-server/http/v2 v2.11.0
 	github.com/roadrunner-server/informer/v2 v2.9.1
 	github.com/roadrunner-server/jobs/v2 v2.9.1
 	github.com/roadrunner-server/kv/v2 v2.9.1
