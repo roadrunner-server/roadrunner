@@ -48,7 +48,7 @@ require (
 	github.com/roadrunner-server/websockets/v2 v2.9.1
 	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.0
-	github.com/temporalio/roadrunner-temporal v1.3.0
+	github.com/temporalio/roadrunner-temporal v1.3.1
 	github.com/vbauerster/mpb/v5 v5.4.0
 )
 
