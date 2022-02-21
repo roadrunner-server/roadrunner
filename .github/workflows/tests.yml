@@ -136,7 +136,7 @@ jobs:
           retention-days: 10
 
   docker-image:
-    name: Build and scan docker image
+    name: Build docker image
     runs-on: ubuntu-latest
     needs: [ golangci-lint, go-test ]
     steps:
