@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## v2.8.1 (21.02.2022)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: **HTTP**: incorrect middleware chain order [BUG](https://github.com/roadrunner-server/roadrunner/issues/1017), (reporter @nitrogenium)
+```yaml
+http:
+  middleware: ["static", "gzip"]
+```
+
+Middleware applied from the right to left, i.e. first will be `gzip` and then `static`.
+
+## 👀 New:
+
+- ✏️ **HTTP**: Properly parse `Forwarder` header, [RFC](https://datatracker.ietf.org/doc/html/rfc7239), [FR](https://github.com/roadrunner-server/roadrunner/issues/1018) (reporter @digitalkaoz)
+- ✏️ **TEMPORAL**:  Add `rr_activities_pool_queue_size` and `rr_workflows_pool_queue_size` metrics. These metrics shows the number of activities/workflows waiting for the worker [BUG](https://github.com/temporalio/roadrunner-temporal/issues/183), (reporter @Zylius)
+- ✏️ **API**: `Queuer` interface for the workers pool to show the number of requests waiting for the worker. Implemented in **SDK**.
+
+---
+
 ## v2.8.0 (17.02.2022)
 
 ### ⚠️  For the RR `v2.8.0` your `.rr.yaml` configuration version should be [`2.7`](https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml), so please update your config and add `version: '2.7'` at the top.

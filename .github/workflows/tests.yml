@@ -17,7 +17,7 @@ on:
 jobs:
   validate-config-file:
     name: Validate config file
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
 
   golangci-lint:
     name: Golang-CI (lint)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -43,13 +43,13 @@ jobs:
       - name: Run linter
         uses: golangci/golangci-lint-action@v2 # Action page: <https://github.com/golangci/golangci-lint-action>
         with:
-          version: v1.43 # without patch version
+          version: v1.44 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
           args: --build-tags=safe --timeout=10m
 
   go-test:
     name: Unit tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Set up Go
         uses: actions/setup-go@v2
@@ -82,7 +82,7 @@ jobs:
 
   build:
     name: Build for ${{ matrix.os }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [ golangci-lint, go-test ]
     strategy:
       fail-fast: false
@@ -133,7 +133,7 @@ jobs:
           name: rr-${{ matrix.os }}
           path: ./rr
           if-no-files-found: error
-          retention-days: 90
+          retention-days: 10
 
   docker-image:
     name: Build docker image
