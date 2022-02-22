@@ -34,7 +34,7 @@ require (
 	github.com/roadrunner-server/nats/v2 v2.9.1
 	github.com/roadrunner-server/new_relic/v2 v2.10.3
 	github.com/roadrunner-server/prometheus/v2 v2.8.0
-	github.com/roadrunner-server/redis/v2 v2.9.1
+	github.com/roadrunner-server/redis/v2 v2.10.0
 	github.com/roadrunner-server/reload/v2 v2.9.1
 	github.com/roadrunner-server/resetter/v2 v2.9.1
 	github.com/roadrunner-server/rpc/v2 v2.9.1
