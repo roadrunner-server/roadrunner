@@ -12,40 +12,40 @@ require (
 	github.com/roadrunner-server/amqp/v2 v2.9.1
 	github.com/roadrunner-server/api/v2 v2.10.0
 	github.com/roadrunner-server/beanstalk/v2 v2.9.1
-	github.com/roadrunner-server/boltdb/v2 v2.9.1
+	github.com/roadrunner-server/boltdb/v2 v2.9.2
 	github.com/roadrunner-server/broadcast/v2 v2.9.1
 	github.com/roadrunner-server/cache/v2 v2.9.1
-	github.com/roadrunner-server/config/v2 v2.9.2
+	github.com/roadrunner-server/config/v2 v2.9.3
 	github.com/roadrunner-server/endure v1.2.1
 	github.com/roadrunner-server/errors v1.1.1
-	github.com/roadrunner-server/fileserver/v2 v2.9.2
+	github.com/roadrunner-server/fileserver/v2 v2.9.3
 	github.com/roadrunner-server/goridge/v3 v3.3.1
-	github.com/roadrunner-server/grpc/v2 v2.10.4
-	github.com/roadrunner-server/gzip/v2 v2.8.2
+	github.com/roadrunner-server/grpc/v2 v2.10.5
+	github.com/roadrunner-server/gzip/v2 v2.8.3
 	github.com/roadrunner-server/headers/v2 v2.9.1
-	github.com/roadrunner-server/http/v2 v2.11.0
+	github.com/roadrunner-server/http/v2 v2.11.1
 	github.com/roadrunner-server/informer/v2 v2.9.1
-	github.com/roadrunner-server/jobs/v2 v2.9.1
+	github.com/roadrunner-server/jobs/v2 v2.9.2
 	github.com/roadrunner-server/kv/v2 v2.9.1
-	github.com/roadrunner-server/logger/v2 v2.9.1
+	github.com/roadrunner-server/logger/v2 v2.9.2
 	github.com/roadrunner-server/memcached/v2 v2.9.1
 	github.com/roadrunner-server/memory/v2 v2.9.1
-	github.com/roadrunner-server/metrics/v2 v2.9.1
+	github.com/roadrunner-server/metrics/v2 v2.9.2
 	github.com/roadrunner-server/nats/v2 v2.9.1
-	github.com/roadrunner-server/new_relic/v2 v2.10.3
-	github.com/roadrunner-server/prometheus/v2 v2.8.0
-	github.com/roadrunner-server/redis/v2 v2.10.0
+	github.com/roadrunner-server/new_relic/v2 v2.10.4
+	github.com/roadrunner-server/prometheus/v2 v2.8.1
+	github.com/roadrunner-server/redis/v2 v2.10.1
 	github.com/roadrunner-server/reload/v2 v2.9.1
 	github.com/roadrunner-server/resetter/v2 v2.9.1
 	github.com/roadrunner-server/rpc/v2 v2.9.1
 	github.com/roadrunner-server/send/v2 v2.8.0
-	github.com/roadrunner-server/server/v2 v2.9.3
-	github.com/roadrunner-server/service/v2 v2.9.1
+	github.com/roadrunner-server/server/v2 v2.9.4
+	github.com/roadrunner-server/service/v2 v2.9.2
 	github.com/roadrunner-server/sqs/v2 v2.10.1
 	github.com/roadrunner-server/static/v2 v2.9.1
-	github.com/roadrunner-server/status/v2 v2.9.2
-	github.com/roadrunner-server/tcp/v2 v2.9.1
-	github.com/roadrunner-server/websockets/v2 v2.9.1
+	github.com/roadrunner-server/status/v2 v2.9.3
+	github.com/roadrunner-server/tcp/v2 v2.9.2
+	github.com/roadrunner-server/websockets/v2 v2.9.2
 	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.0
 	github.com/temporalio/roadrunner-temporal v1.3.1
@@ -96,10 +96,10 @@ require (
 	github.com/hashicorp/go-version v1.4.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/klauspost/compress v1.14.3 // indirect
+	github.com/klauspost/compress v1.14.4 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.11 // indirect
 	github.com/libdns/libdns v0.2.1 // indirect
-	github.com/magiconair/properties v1.8.5 // indirect
+	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
@@ -154,12 +154,12 @@ require (
 	golang.org/x/mod v0.5.1 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
+	golang.org/x/sys v0.0.0-20220222200937-f2425489ef4c // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
 	golang.org/x/tools v0.1.9 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/genproto v0.0.0-20220218161850-94dd64e39d7c // indirect
+	google.golang.org/genproto v0.0.0-20220222213610-43724f9ea8cf // indirect
 	google.golang.org/grpc v1.44.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
