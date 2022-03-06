@@ -8,7 +8,6 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/mattn/go-runewidth"
-	"github.com/roadrunner-server/config/v2"
 	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
 	"github.com/vbauerster/mpb/v5"
@@ -18,7 +17,7 @@ import (
 var spinnerStyle = []string{"∙∙∙", "●∙∙", "∙●∙", "∙∙●", "∙∙∙"} //nolint:gochecknoglobals
 
 // NewCommand creates `reset` command.
-func NewCommand(cfgPlugin *config.Plugin) *cobra.Command { //nolint:funlen
+func NewCommand(cfgFile *string) *cobra.Command { //nolint:funlen
 	return &cobra.Command{
 		Use:   "reset",
 		Short: "Reset workers of all or specific RoadRunner service",
@@ -29,7 +28,11 @@ func NewCommand(cfgPlugin *config.Plugin) *cobra.Command { //nolint:funlen
 				resetterReset = "resetter.Reset"
 			)
 
-			client, err := internalRpc.NewClient(cfgPlugin)
+			if cfgFile == nil {
+				return errors.E(op, errors.Str("no configuration file provided"))
+			}
+
+			client, err := internalRpc.NewClient(*cfgFile)
 			if err != nil {
 				return err
 			}

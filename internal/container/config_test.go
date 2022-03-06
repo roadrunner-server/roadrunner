@@ -4,24 +4,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/roadrunner-server/roadrunner/v2/internal/container"
-
 	"github.com/roadrunner-server/config/v2"
 	endure "github.com/roadrunner-server/endure/pkg/container"
+	"github.com/roadrunner-server/roadrunner/v2/internal/container"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewConfig_SuccessfulReading(t *testing.T) {
-	cfgPlugin := &config.Plugin{Type: "yaml", ReadInCfg: []byte(`
-endure:
-  grace_period: 10s
-  print_graph: true
-  retry_on_fail: true
-  log_level: warn
-`)}
-	assert.NoError(t, cfgPlugin.Init())
-
-	c, err := container.NewConfig(cfgPlugin)
+	c, err := container.NewConfig("test/endure_ok.yaml")
 	assert.NoError(t, err)
 	assert.NotNil(t, c)
 
@@ -35,7 +25,7 @@ func TestNewConfig_WithoutEndureKey(t *testing.T) {
 	cfgPlugin := &config.Plugin{Type: "yaml", ReadInCfg: []byte{}}
 	assert.NoError(t, cfgPlugin.Init())
 
-	c, err := container.NewConfig(cfgPlugin)
+	c, err := container.NewConfig("test/without_endure_ok.yaml")
 	assert.NoError(t, err)
 	assert.NotNil(t, c)
 
@@ -47,26 +37,25 @@ func TestNewConfig_WithoutEndureKey(t *testing.T) {
 
 func TestNewConfig_LoggingLevels(t *testing.T) {
 	for _, tt := range []struct {
+		path      string
 		giveLevel string
 		wantLevel endure.Level
 		wantError bool
 	}{
-		{giveLevel: "debug", wantLevel: endure.DebugLevel},
-		{giveLevel: "info", wantLevel: endure.InfoLevel},
-		{giveLevel: "warn", wantLevel: endure.WarnLevel},
-		{giveLevel: "warning", wantLevel: endure.WarnLevel},
-		{giveLevel: "error", wantLevel: endure.ErrorLevel},
-		{giveLevel: "panic", wantLevel: endure.PanicLevel},
-		{giveLevel: "fatal", wantLevel: endure.FatalLevel},
+		{path: "test/endure_ok_debug.yaml", giveLevel: "debug", wantLevel: endure.DebugLevel},
+		{path: "test/endure_ok_info.yaml", giveLevel: "info", wantLevel: endure.InfoLevel},
+		{path: "test/endure_ok_warn.yaml", giveLevel: "warn", wantLevel: endure.WarnLevel},
+		{path: "test/endure_ok_panic.yaml", giveLevel: "panic", wantLevel: endure.PanicLevel},
+		{path: "test/endure_ok_fatal.yaml", giveLevel: "fatal", wantLevel: endure.FatalLevel},
 
-		{giveLevel: "foobar", wantError: true},
+		{path: "test/endure_ok_foobar.yaml", giveLevel: "foobar", wantError: true},
 	} {
 		tt := tt
 		t.Run(tt.giveLevel, func(t *testing.T) {
 			cfgPlugin := &config.Plugin{Type: "yaml", ReadInCfg: []byte("endure:\n  log_level: " + tt.giveLevel)}
 			assert.NoError(t, cfgPlugin.Init())
 
-			c, err := container.NewConfig(cfgPlugin)
+			c, err := container.NewConfig(tt.path)
 
 			if tt.wantError {
 				assert.Nil(t, c)

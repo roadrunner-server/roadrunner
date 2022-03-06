@@ -13,14 +13,13 @@ import (
 
 	tm "github.com/buger/goterm"
 	"github.com/fatih/color"
-	"github.com/roadrunner-server/config/v2"
 	"github.com/roadrunner-server/errors"
 	"github.com/roadrunner-server/informer/v2"
 	"github.com/spf13/cobra"
 )
 
 // NewCommand creates `workers` command.
-func NewCommand(cfgPlugin *config.Plugin) *cobra.Command { //nolint:funlen
+func NewCommand(cfgFile *string) *cobra.Command { //nolint:funlen
 	var (
 		// interactive workers updates
 		interactive bool
@@ -35,7 +34,11 @@ func NewCommand(cfgPlugin *config.Plugin) *cobra.Command { //nolint:funlen
 				informerList = "informer.List"
 			)
 
-			client, err := internalRpc.NewClient(cfgPlugin)
+			if cfgFile == nil {
+				return errors.E(op, errors.Str("no configuration file provided"))
+			}
+
+			client, err := internalRpc.NewClient(*cfgFile)
 			if err != nil {
 				return err
 			}

@@ -5,19 +5,18 @@ import (
 
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli/workers"
 
-	"github.com/roadrunner-server/config/v2"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCommandProperties(t *testing.T) {
-	cmd := workers.NewCommand(&config.Plugin{})
+	cmd := workers.NewCommand(nil)
 
 	assert.Equal(t, "workers", cmd.Use)
 	assert.NotNil(t, cmd.RunE)
 }
 
 func TestCommandFlags(t *testing.T) {
-	cmd := workers.NewCommand(&config.Plugin{})
+	cmd := workers.NewCommand(nil)
 
 	cases := []struct {
 		giveName      string

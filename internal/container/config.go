@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/roadrunner-server/config/v2"
 	endure "github.com/roadrunner-server/endure/pkg/container"
+	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -21,8 +21,16 @@ const (
 )
 
 // NewConfig creates endure container configuration.
-func NewConfig(cfgPlugin *config.Plugin) (*Config, error) {
-	if !cfgPlugin.Has(endureKey) {
+func NewConfig(cfgFile string) (*Config, error) {
+	v := viper.New()
+	v.SetConfigFile(cfgFile)
+
+	err := v.ReadInConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	if !v.IsSet(endureKey) {
 		return &Config{ // return config with defaults
 			GracePeriod: defaultGracePeriod,
 			PrintGraph:  false,
@@ -38,7 +46,8 @@ func NewConfig(cfgPlugin *config.Plugin) (*Config, error) {
 		LogLevel    string        `mapstructure:"log_level"`
 	}{}
 
-	if err := cfgPlugin.UnmarshalKey(endureKey, &rrCfgEndure); err != nil {
+	err = v.UnmarshalKey(endureKey, &rrCfgEndure)
+	if err != nil {
 		return nil, err
 	}
 

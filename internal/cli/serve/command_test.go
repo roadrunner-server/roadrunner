@@ -5,12 +5,19 @@ import (
 
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli/serve"
 
-	"github.com/roadrunner-server/config/v2"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCommandProperties(t *testing.T) {
-	cmd := serve.NewCommand(&config.Plugin{})
+	path := ""
+	cmd := serve.NewCommand(nil, &path, nil)
+
+	assert.Equal(t, "serve", cmd.Use)
+	assert.NotNil(t, cmd.RunE)
+}
+
+func TestCommandNil(t *testing.T) {
+	cmd := serve.NewCommand(nil, nil, nil)
 
 	assert.Equal(t, "serve", cmd.Use)
 	assert.NotNil(t, cmd.RunE)
