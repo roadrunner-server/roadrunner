@@ -5,12 +5,12 @@ import (
 
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli/reset"
 
-	"github.com/roadrunner-server/config/v2"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCommandProperties(t *testing.T) {
-	cmd := reset.NewCommand(&config.Plugin{})
+	path := ""
+	cmd := reset.NewCommand(&path)
 
 	assert.Equal(t, "reset", cmd.Use)
 	assert.NotNil(t, cmd.RunE)

@@ -14,23 +14,35 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	rrPrefix string = "rr"
+)
+
 // NewCommand creates `serve` command.
-func NewCommand(cfgPlugin *configImpl.Plugin) *cobra.Command { //nolint:funlen
+func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Command { //nolint:funlen,gocognit
 	return &cobra.Command{
 		Use:   "serve",
 		Short: "Start RoadRunner server",
 		RunE: func(*cobra.Command, []string) error {
 			const op = errors.Op("handle_serve_command")
+			// just to be safe
+			if cfgFile == nil {
+				return errors.E(op, errors.Str("no configuration file provided"))
+			}
 
 			// create endure container config
-			containerCfg, err := container.NewConfig(cfgPlugin)
+			containerCfg, err := container.NewConfig(*cfgFile)
 			if err != nil {
 				return errors.E(op, err)
 			}
 
-			// set the grace period which would be same for all the plugins
-			cfgPlugin.Timeout = containerCfg.GracePeriod
-			cfgPlugin.Version = meta.Version()
+			cfg := &configImpl.Plugin{
+				Path:    *cfgFile,
+				Prefix:  rrPrefix,
+				Timeout: containerCfg.GracePeriod,
+				Flags:   *override,
+				Version: meta.Version(),
+			}
 
 			// create endure container
 			endureContainer, err := container.NewContainer(*containerCfg)
@@ -39,7 +51,7 @@ func NewCommand(cfgPlugin *configImpl.Plugin) *cobra.Command { //nolint:funlen
 			}
 
 			// register config plugin
-			if err = endureContainer.Register(cfgPlugin); err != nil {
+			if err = endureContainer.Register(cfg); err != nil {
 				return errors.E(op, err)
 			}
 
@@ -77,7 +89,9 @@ func NewCommand(cfgPlugin *configImpl.Plugin) *cobra.Command { //nolint:funlen
 				os.Exit(1)
 			}()
 
-			fmt.Printf("[INFO] RoadRunner server started; version: %s, buildtime: %s\n", meta.Version(), meta.BuildTime())
+			if !*silent {
+				fmt.Printf("[INFO] RoadRunner server started; version: %s, buildtime: %s\n", meta.Version(), meta.BuildTime())
+			}
 
 			for {
 				select {

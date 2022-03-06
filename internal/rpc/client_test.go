@@ -14,28 +14,22 @@ func TestNewClient_RpcServiceDisabled(t *testing.T) {
 	cfgPlugin := &config.Plugin{Type: "yaml", ReadInCfg: []byte{}}
 	assert.NoError(t, cfgPlugin.Init())
 
-	c, err := rpc.NewClient(cfgPlugin)
+	c, err := rpc.NewClient("test/config_rpc_empty.yaml")
 
 	assert.Nil(t, c)
 	assert.EqualError(t, err, "rpc service disabled")
 }
 
 func TestNewClient_WrongRcpConfiguration(t *testing.T) {
-	cfgPlugin := &config.Plugin{Type: "yaml", ReadInCfg: []byte("rpc:\n  $foo bar")}
-	assert.NoError(t, cfgPlugin.Init())
-
-	c, err := rpc.NewClient(cfgPlugin)
+	c, err := rpc.NewClient("test/config_rpc_wrong.yaml")
 
 	assert.Nil(t, c)
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "config_plugin_unmarshal_key")
+	assert.Contains(t, err.Error(), "'' expected a map, got 'string'")
 }
 
 func TestNewClient_ConnectionError(t *testing.T) {
-	cfgPlugin := &config.Plugin{Type: "yaml", ReadInCfg: []byte("rpc:\n  listen: tcp://127.0.0.1:0")}
-	assert.NoError(t, cfgPlugin.Init())
-
-	c, err := rpc.NewClient(cfgPlugin)
+	c, err := rpc.NewClient("test/config_rpc_conn_err.yaml")
 
 	assert.Nil(t, c)
 	assert.Error(t, err)
@@ -43,15 +37,12 @@ func TestNewClient_ConnectionError(t *testing.T) {
 }
 
 func TestNewClient_SuccessfullyConnected(t *testing.T) {
-	l, err := net.Listen("tcp", "127.0.0.1:0")
+	l, err := net.Listen("tcp", "127.0.0.1:55555")
 	assert.NoError(t, err)
 
 	defer func() { assert.NoError(t, l.Close()) }()
 
-	cfgPlugin := &config.Plugin{Type: "yaml", ReadInCfg: []byte("rpc:\n  listen: tcp://" + l.Addr().String())}
-	assert.NoError(t, cfgPlugin.Init())
-
-	c, err := rpc.NewClient(cfgPlugin)
+	c, err := rpc.NewClient("test/config_rpc_ok.yaml")
 
 	assert.NotNil(t, c)
 	assert.NoError(t, err)
