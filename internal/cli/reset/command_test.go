@@ -10,7 +10,7 @@ import (
 
 func TestCommandProperties(t *testing.T) {
 	path := ""
-	cmd := reset.NewCommand(&path)
+	cmd := reset.NewCommand(&path, nil)
 
 	assert.Equal(t, "reset", cmd.Use)
 	assert.NotNil(t, cmd.RunE)

@@ -17,7 +17,7 @@ import (
 var spinnerStyle = []string{"∙∙∙", "●∙∙", "∙●∙", "∙∙●", "∙∙∙"} //nolint:gochecknoglobals
 
 // NewCommand creates `reset` command.
-func NewCommand(cfgFile *string) *cobra.Command { //nolint:funlen
+func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:funlen
 	return &cobra.Command{
 		Use:   "reset",
 		Short: "Reset workers of all or specific RoadRunner service",
@@ -32,7 +32,7 @@ func NewCommand(cfgFile *string) *cobra.Command { //nolint:funlen
 				return errors.E(op, errors.Str("no configuration file provided"))
 			}
 
-			client, err := internalRpc.NewClient(*cfgFile)
+			client, err := internalRpc.NewClient(*cfgFile, *override)
 			if err != nil {
 				return err
 			}
