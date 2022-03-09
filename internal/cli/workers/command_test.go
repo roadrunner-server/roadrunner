@@ -9,14 +9,14 @@ import (
 )
 
 func TestCommandProperties(t *testing.T) {
-	cmd := workers.NewCommand(nil)
+	cmd := workers.NewCommand(nil, nil)
 
 	assert.Equal(t, "workers", cmd.Use)
 	assert.NotNil(t, cmd.RunE)
 }
 
 func TestCommandFlags(t *testing.T) {
-	cmd := workers.NewCommand(nil)
+	cmd := workers.NewCommand(nil, nil)
 
 	cases := []struct {
 		giveName      string

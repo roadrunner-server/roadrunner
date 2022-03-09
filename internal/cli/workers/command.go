@@ -19,7 +19,7 @@ import (
 )
 
 // NewCommand creates `workers` command.
-func NewCommand(cfgFile *string) *cobra.Command { //nolint:funlen
+func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:funlen
 	var (
 		// interactive workers updates
 		interactive bool
@@ -38,7 +38,7 @@ func NewCommand(cfgFile *string) *cobra.Command { //nolint:funlen
 				return errors.E(op, errors.Str("no configuration file provided"))
 			}
 
-			client, err := internalRpc.NewClient(*cfgFile)
+			client, err := internalRpc.NewClient(*cfgFile, *override)
 			if err != nil {
 				return err
 			}

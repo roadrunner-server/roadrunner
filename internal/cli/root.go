@@ -91,8 +91,8 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen
 	f.StringArrayVarP(override, "override", "o", nil, "override config value (dot.notation=value)")
 
 	cmd.AddCommand(
-		workers.NewCommand(cfgFile),
-		reset.NewCommand(cfgFile),
+		workers.NewCommand(cfgFile, override),
+		reset.NewCommand(cfgFile, override),
 		serve.NewCommand(override, cfgFile, silent),
 	)
 
