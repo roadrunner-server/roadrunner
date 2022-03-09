@@ -19,7 +19,7 @@ func TestNewClient_RpcServiceDisabled(t *testing.T) {
 	c, err := rpc.NewClient("test/config_rpc_empty.yaml", nil)
 
 	assert.Nil(t, c)
-	assert.EqualError(t, err, "rpc service not specified")
+	assert.EqualError(t, err, "rpc service not specified in the configuration. Tip: add\n rpc:\n\r listen: rr_rpc_address")
 }
 
 func TestNewClient_WrongRcpConfiguration(t *testing.T) {
