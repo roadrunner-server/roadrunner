@@ -10,7 +10,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.13
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v2 v2.9.1
-	github.com/roadrunner-server/api/v2 v2.10.0
+	github.com/roadrunner-server/api/v2 v2.11.0
 	github.com/roadrunner-server/beanstalk/v2 v2.9.1
 	github.com/roadrunner-server/boltdb/v2 v2.9.2
 	github.com/roadrunner-server/broadcast/v2 v2.9.1
@@ -40,7 +40,7 @@ require (
 	github.com/roadrunner-server/rpc/v2 v2.9.1
 	github.com/roadrunner-server/send/v2 v2.8.0
 	github.com/roadrunner-server/server/v2 v2.9.4
-	github.com/roadrunner-server/service/v2 v2.9.2
+	github.com/roadrunner-server/service/v2 v2.10.0
 	github.com/roadrunner-server/sqs/v2 v2.10.1
 	github.com/roadrunner-server/static/v2 v2.9.1
 	github.com/roadrunner-server/status/v2 v2.9.3
