@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## UNRELEASED
+
+## 👀 New:
+
+- ✏️ [**API**](https://github.com/roadrunner-server/api): add service proto api to manage services, [FR](https://github.com/roadrunner-server/roadrunner/issues/1009) (reporter @butschster)
+
+
+## v2.8.3 (13.03.2022)
+
+## 👀 New:
+
+- ✏️ Better env variables parser. Now RR is able to parse the sentences like: `"mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?serverVersion=5.7"` and get all environment variables. [FR](https://github.com/roadrunner-server/roadrunner/issues/1035), (reporter @Tony-Sol)
+
+## 🧹 Chore:
+
+- 🧑‍🏭 Update all dependencies to the most recent versions.
+- 🧑‍🏭 Remove `configuration` plugin from the `root.go` and other files. Used only in the `serve` where it should be.
+
+## 🩹 Fixes:
+
+- 🐛 Fix: call of the `kv.TTL` for the Redis drivers returns non RFC3339 time format [BUG](https://github.com/roadrunner-server/roadrunner/issues/1024), (reporter @antikirra)
+- 🐛 Fix: `rr workers` command doesn't work for the `service` plugin [BUG](https://github.com/roadrunner-server/roadrunner/issues/1033), (reporter @OO00O0O)
+
+---
+
 ## v2.8.2 (22.02.2022)
 
 ## 🧹 Chore:
