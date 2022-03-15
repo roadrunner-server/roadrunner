@@ -20,10 +20,10 @@ require (
 	github.com/roadrunner-server/errors v1.1.1
 	github.com/roadrunner-server/fileserver/v2 v2.10.1
 	github.com/roadrunner-server/goridge/v3 v3.3.1
-	github.com/roadrunner-server/grpc/v2 v2.11.1
+	github.com/roadrunner-server/grpc/v2 v2.11.2
 	github.com/roadrunner-server/gzip/v2 v2.9.0
 	github.com/roadrunner-server/headers/v2 v2.10.1
-	github.com/roadrunner-server/http/v2 v2.12.1
+	github.com/roadrunner-server/http/v2 v2.12.2
 	github.com/roadrunner-server/informer/v2 v2.10.1
 	github.com/roadrunner-server/jobs/v2 v2.10.1
 	github.com/roadrunner-server/kv/v2 v2.10.0
@@ -31,8 +31,8 @@ require (
 	github.com/roadrunner-server/memcached/v2 v2.10.0
 	github.com/roadrunner-server/memory/v2 v2.10.0
 	github.com/roadrunner-server/metrics/v2 v2.10.1
-	github.com/roadrunner-server/nats/v2 v2.10.1
-	github.com/roadrunner-server/new_relic/v2 v2.11.1
+	github.com/roadrunner-server/nats/v2 v2.10.2
+	github.com/roadrunner-server/new_relic/v2 v2.11.2
 	github.com/roadrunner-server/prometheus/v2 v2.9.0
 	github.com/roadrunner-server/redis/v2 v2.11.0
 	github.com/roadrunner-server/reload/v2 v2.10.1
@@ -40,7 +40,7 @@ require (
 	github.com/roadrunner-server/rpc/v2 v2.10.1
 	github.com/roadrunner-server/send/v2 v2.9.0
 	github.com/roadrunner-server/server/v2 v2.11.1
-	github.com/roadrunner-server/service/v2 v2.10.1
+	github.com/roadrunner-server/service/v2 v2.10.2
 	github.com/roadrunner-server/sqs/v2 v2.11.1
 	github.com/roadrunner-server/static/v2 v2.10.1
 	github.com/roadrunner-server/status/v2 v2.10.1
@@ -150,7 +150,7 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
-	golang.org/x/crypto v0.0.0-20220313003712-b769efc7c000 // indirect
+	golang.org/x/crypto v0.0.0-20220314234724-5d542ad81a58 // indirect
 	golang.org/x/mod v0.5.1 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
@@ -159,7 +159,7 @@ require (
 	golang.org/x/time v0.0.0-20220224211638-0e9765cccd65 // indirect
 	golang.org/x/tools v0.1.9 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/genproto v0.0.0-20220310185008-1973136f34c6 // indirect
+	google.golang.org/genproto v0.0.0-20220314164441-57ef72a4c106 // indirect
 	google.golang.org/grpc v1.45.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
