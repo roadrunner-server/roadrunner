@@ -11,7 +11,7 @@ import (
 )
 
 func Test_Main(t *testing.T) {
-	os.Args = []string{"", "--help"}
+	os.Args = []string{"rr", "--help"}
 	exitFn = func(code int) { assert.Equal(t, 0, code) }
 
 	r, w, err := os.Pipe()
@@ -30,7 +30,7 @@ func Test_Main(t *testing.T) {
 }
 
 func Test_MainWithoutCommands(t *testing.T) {
-	os.Args = []string{""}
+	os.Args = []string{"rr"}
 	exitFn = func(code int) { assert.Equal(t, 0, code) }
 
 	r, w, err := os.Pipe()
