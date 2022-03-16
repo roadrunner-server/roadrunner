@@ -46,7 +46,7 @@ jobs:
           go-version: 1.17.8
 
       - name: Run linter
-        uses: golangci/golangci-lint-action@v3.1.0 # Action page: <https://github.com/golangci/golangci-lint-action>
+        uses: golangci/golangci-lint-action@v3.1.0
         with:
           version: v1.44 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
