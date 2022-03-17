@@ -6,6 +6,21 @@
 
 - ✏️ [**API**](https://github.com/roadrunner-server/api): add service proto api to manage services, [FR](https://github.com/roadrunner-server/roadrunner/issues/1009) (reporter @butschster)
 
+## v2.8.4 (17.03.2022)
+
+## 👀 New:
+
+- Go update to version `1.18`
+
+## 🧹 Chore:
+
+- 🧑‍🏭 Update all dependencies to the most recent versions.
+
+## 🩹 Fixes:
+
+- 🐛 Fix: No longer able to set environment variables for service [BUG](https://github.com/roadrunner-server/roadrunner/issues/1055), (reporter @andrei-dascalu)
+
+---
 
 ## v2.8.3 (13.03.2022)
 
