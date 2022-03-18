@@ -16,7 +16,7 @@ require (
 	github.com/roadrunner-server/broadcast/v2 v2.10.2
 	github.com/roadrunner-server/cache/v2 v2.10.2
 	github.com/roadrunner-server/config/v2 v2.10.3
-	github.com/roadrunner-server/endure v1.2.1
+	github.com/roadrunner-server/endure v1.2.2
 	github.com/roadrunner-server/errors v1.1.2
 	github.com/roadrunner-server/fileserver/v2 v2.10.2
 	github.com/roadrunner-server/goridge/v3 v3.4.0
