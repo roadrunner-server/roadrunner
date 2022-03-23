@@ -47,7 +47,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen
 			}
 
 			if absPath, err := filepath.Abs(*cfgFile); err == nil {
-				cfgFile = &absPath // switch config path to the absolute
+				*cfgFile = absPath // switch config path to the absolute
 
 				// force working absPath related to config file
 				if err = os.Chdir(filepath.Dir(absPath)); err != nil {
