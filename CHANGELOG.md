@@ -4,8 +4,60 @@
 
 ## 👀 New:
 
+- ✏️ **[ALPHA]** HTTP response streaming. Starting from the `v2.9.0` RR is capable to stream responses.
+To turn on that feature, please, add the following lines to the configuration:
+```yaml
+experimental:
+    response_streams: true
+```
+
+Worker sample:
+```php
+<?php
+
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7\Response;
+use Nyholm\Psr7\Stream;
+use Spiral\RoadRunner;
+
+ini_set('display_errors', 'stderr');
+require __DIR__ . "/vendor/autoload.php";
+
+$worker = RoadRunner\Worker::create();
+$psr7 = new RoadRunner\Http\PSR7Worker(
+    $worker,
+    new Psr17Factory(),
+    new Psr17Factory(),
+    new Psr17Factory()
+);
+
+$psr7->chunk_size = 10 * 10 * 1024;
+$filename = 'file.tmp'; // big file or response
+
+while ($req = $psr7->waitRequest()) {
+    try {
+        $fp = \fopen($filename, 'rb');
+        \flock($fp, LOCK_SH);
+        $resp = (new Response())->withBody(Stream::create($fp));
+        $psr7->respond($resp);
+    } catch (\Throwable $e) {
+        $psr7->getWorker()->error((string)$e);
+    }
+
+```
+
+Known issues:
+1. RR will not notify a worker if HTTP connection was interrupted. RR will read all response from the worker and drop it. That will be fixed in the stable streaming release.
+2. Sometimes RR may miss the immediate error from the worker and send a 0 payload with 200 status. This is related only to the http response.
+
 - ✏️ [**API**](https://github.com/roadrunner-server/api): add service proto api to manage services, [FR](https://github.com/roadrunner-server/roadrunner/issues/1009) (reporter @butschster)
--
+
+## 🧹 Chore:
+
+- 🧑‍🏭 Update all dependencies to the most recent versions.
+
+---
+
 ## v2.8.5 (23.03.2022)
 
 ## 🧹 Chore:
