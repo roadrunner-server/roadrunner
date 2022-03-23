@@ -5,6 +5,18 @@
 ## 👀 New:
 
 - ✏️ [**API**](https://github.com/roadrunner-server/api): add service proto api to manage services, [FR](https://github.com/roadrunner-server/roadrunner/issues/1009) (reporter @butschster)
+-
+## v2.8.5 (23.03.2022)
+
+## 🧹 Chore:
+
+- 🧑‍🏭 Update all dependencies to the most recent versions.
+
+## 🩹 Fixes:
+
+- 🐛 Fix: Incorrect pointer assign to read the configuration [BUG](https://github.com/roadrunner-server/roadrunner/issues/1066)
+
+---
 
 ## v2.8.4 (17.03.2022)
 
