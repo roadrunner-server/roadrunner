@@ -41,11 +41,11 @@ require (
 	github.com/roadrunner-server/send/v2 v2.10.0
 	github.com/roadrunner-server/server/v2 v2.12.0
 	github.com/roadrunner-server/service/v2 v2.11.0
-	github.com/roadrunner-server/sqs/v2 v2.12.0
+	github.com/roadrunner-server/sqs/v2 v2.12.1
 	github.com/roadrunner-server/static/v2 v2.11.0
 	github.com/roadrunner-server/status/v2 v2.11.0
 	github.com/roadrunner-server/tcp/v2 v2.11.0
-	github.com/roadrunner-server/websockets/v2 v2.11.0
+	github.com/roadrunner-server/websockets/v2 v2.11.1
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
@@ -65,7 +65,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.1 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.8 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.18.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.18.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.11.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.1 // indirect
 	github.com/aws/smithy-go v1.11.1 // indirect
