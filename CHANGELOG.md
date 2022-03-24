@@ -1,11 +1,13 @@
 # CHANGELOG
 
-## UNRELEASED
+## v2.8.6 (24.03.2022)
 
-## 👀 New:
+## 🩹 Fixes:
 
-- ✏️ [**API**](https://github.com/roadrunner-server/api): add service proto api to manage services, [FR](https://github.com/roadrunner-server/roadrunner/issues/1009) (reporter @butschster)
--
+- 🐛 Fix: Websocket access validator requests don't send cookies [BUG](https://github.com/roadrunner-server/roadrunner/issues/1064), (@steffendietz)
+
+---
+
 ## v2.8.5 (23.03.2022)
 
 ## 🧹 Chore:
