@@ -40,12 +40,12 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2 # action page: <https://github.com/actions/setup-go>
         with:
-          go-version: 1.18
+          go-version: 1.17
 
       - name: Run linter
         uses: golangci/golangci-lint-action@v3.1.0
         with:
-          version: v1.45 # without patch version
+          version: v1.44 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
           args: --build-tags=safe --timeout=10m
 
