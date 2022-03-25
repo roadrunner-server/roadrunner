@@ -1,6 +1,7 @@
 # Documentation: <https://github.com/golangci/golangci-lint#config-file>
 
 run:
+  go: '1.17'
   timeout: 1m
   skip-dirs:
     - .github
