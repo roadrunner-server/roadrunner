@@ -46,17 +46,17 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen
 				return errors.Str("no configuration file provided")
 			}
 
+			if workDir != "" {
+				if err := os.Chdir(workDir); err != nil {
+					return err
+				}
+			}
+
 			if absPath, err := filepath.Abs(*cfgFile); err == nil {
 				*cfgFile = absPath // switch config path to the absolute
 
 				// force working absPath related to config file
 				if err = os.Chdir(filepath.Dir(absPath)); err != nil {
-					return err
-				}
-			}
-
-			if workDir != "" {
-				if err := os.Chdir(workDir); err != nil {
 					return err
 				}
 			}
