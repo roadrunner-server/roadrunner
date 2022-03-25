@@ -57,18 +57,18 @@ require (
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/aws/aws-sdk-go-v2 v1.16.0 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.15.1 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.11.0 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.1 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.7 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.1 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.8 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.18.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.11.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.16.1 // indirect
-	github.com/aws/smithy-go v1.11.1 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.16.1 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.15.2 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.11.1 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.2 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.8 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.2 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.9 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.18.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.11.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.16.2 // indirect
+	github.com/aws/smithy-go v1.11.2 // indirect
 	github.com/beanstalkd/go-beanstalk v0.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d // indirect
@@ -159,7 +159,7 @@ require (
 	golang.org/x/time v0.0.0-20220224211638-0e9765cccd65 // indirect
 	golang.org/x/tools v0.1.10 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/genproto v0.0.0-20220323144105-ec3c684e5b14 // indirect
+	google.golang.org/genproto v0.0.0-20220324131243-acbaeb5b85eb // indirect
 	google.golang.org/grpc v1.45.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
