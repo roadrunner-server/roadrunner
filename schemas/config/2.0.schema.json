@@ -329,7 +329,8 @@
                             "sendfile",
                             "new_relic",
                             "http_metrics",
-                            "cache"
+                            "cache",
+                            "proxy_ip_parser"
                         ],
                         "pattern": "^[0-9a-zA-Z_]+$"
                     }
