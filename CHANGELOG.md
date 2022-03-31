@@ -58,6 +58,18 @@ Known issues:
 
 ---
 
+## v2.8.8 (31.03.2022)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: Chdir (if the user sets the `-w` flag) before searching for the configuration.
+
+## 📦 Packages:
+
+- 📦 Update SQS and Go deps to the most recent versions.
+
+---
+
 ## v2.8.6 (24.03.2022)
 
 ## 🩹 Fixes:
