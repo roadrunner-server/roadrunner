@@ -1,9 +1,9 @@
-name: release
+name: release_nightly
 
 on:
   release: # Docs: <https://help.github.com/en/articles/events-that-trigger-workflows#release-event-release>
     types:
-      - released
+      - prereleased
 
 jobs:
   build:
@@ -67,7 +67,7 @@ jobs:
             -X github.com/roadrunner-server/roadrunner/v2/internal/meta.version=${{ steps.values.outputs.version }}
             -X github.com/roadrunner-server/roadrunner/v2/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
         run: |
-          go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr
+          go build -trimpath -tags=nightly -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr
           stat "./${{ steps.values.outputs.binary-name }}"
 
       - name: Generate distributive directory name

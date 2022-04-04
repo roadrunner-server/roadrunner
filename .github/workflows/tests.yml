@@ -1,4 +1,4 @@
-name: tests
+name: rr_cli_tests
 
 on:
   push:
