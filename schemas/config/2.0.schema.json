@@ -6,6 +6,14 @@
     "additionalProperties": true,
     "minProperties": 1,
     "properties": {
+        "version": {
+            "description": "configuration version",
+            "type": "string",
+            "default": "2.7",
+            "enum": [
+                "2.7"
+            ]
+        },
         "rpc": {
             "type": "object",
             "properties": {
