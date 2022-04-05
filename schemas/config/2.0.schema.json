@@ -168,6 +168,32 @@
                             }
                         }
                     }
+                },
+                "file_logger_options": {
+                    "description": "file logger options",
+                    "type": "object",
+                    "properties": {
+                        "log_output": {
+                            "type": "string",
+                            "description": "path to the file"
+                        },
+                        "max_size": {
+                            "type": "integer",
+                            "description": "maximum file size in MB"
+                        },
+                        "max_age": {
+                            "type": "integer",
+                            "description": "The maximum number of days to retain old log files based on the timestamp encoded in their filename"
+                        },
+                        "max_backups" : {
+                            "type": "integer",
+                            "description": "The maximum number of old log files to retain"
+                        },
+                        "compress" : {
+                            "type": "boolean",
+                            "description": "compress files to save a disk space"
+                        }
+                    }
                 }
             }
         },

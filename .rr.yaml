@@ -109,6 +109,36 @@ logs:
   # Default: "stderr"
   err_output: stderr
 
+  # File logger options
+  #
+  # Default: null
+  file_logger_options:
+
+    # Path to the file
+    #
+    # Default: It uses <processname>-lumberjack.log name in the os tempdir if empty.
+    log_output: "/tmp/my.log"
+
+    # Max file size in MB
+    #
+    # Default: 100
+    max_size: 100
+
+    # max_age is the maximum number of days to retain old log files based on the timestamp encoded in their filename.
+    #
+    # Default: 1 (day)
+    max_age: 1
+
+    # max_backups is the maximum number of old log files to retain.
+    #
+    # Default: retain all (if set to 0)
+    max_backups : 5
+
+    # Compress determines if the rotated log files should be compressed using gzip.
+    #
+    # Default: false
+    compress: false
+
   # You can configure each plugin log messages individually (key is plugin name, and value is logging options in same
   # format as above).
   #
