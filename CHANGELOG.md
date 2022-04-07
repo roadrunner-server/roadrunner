@@ -1,11 +1,14 @@
 # CHANGELOG
 
-## v2.9.0-alpha.1 (23.03.2022)
+<details>
+    <summary>v2.10.0-alpha.1</summary>
+
+## v2.10.0-alpha.1 (07.04.2022)
 
 ## 👀 New:
 
 - ✏️ **[ALPHA]** HTTP response streaming. Starting from the `v2.9.0` RR is capable to stream responses.
-To turn on that feature, please, add the following lines to the configuration:
+  To turn on that feature, please, add the following lines to the configuration:
 ```yaml
 experimental:
     response_streams: true
@@ -50,12 +53,43 @@ Known issues:
 1. RR will not notify a worker if HTTP connection was interrupted. RR will read all response from the worker and drop it. That will be fixed in the stable streaming release.
 2. Sometimes RR may miss the immediate error from the worker and send a 0 payload with 200 status. This is related only to the http response.
 
-- ✏️ [**API**](https://github.com/roadrunner-server/api): add service proto api to manage services, [FR](https://github.com/roadrunner-server/roadrunner/issues/1009) (reporter @butschster)
+---
+</details>
+
+## v2.9.0 (23.03.2022)
+
+## 👀 New:
+
+- ✏️ [**API**](https://github.com/roadrunner-server/api): add service proto api to manage services, [FR](https://github.com/roadrunner-server/roadrunner/issues/1009) (thanks @butschster). Documentation is here: [link](https://roadrunner.dev/docs/beep-beep-service).
+- ✏️ Grafana dashboard [PATH](grafana/RR_Dashboard.json). Exposed metrics:
+1. **General**:
+   1. Uptime (seconds).
+   2. Memory used by RR (MB).
+   3. Number of active goroutines.
+2. **HTTP**:
+   1. Number of workers by its state (ready, working, invalid).
+   2. Total RSS memory used by workers.
+   3. Memory used by each worker individually (with PID).
+   4. Latency (ms).
+   5. Requests queue size.
+   6. Requests per minute.
+3. **JOBS**:
+   1. Number of workers by its state (ready, working, invalid).
+   2. Total RSS memory used by workers.
+   3. Memory used by each worker individually (with PID).
+   4. Successfully processed jobs (rate, 5m).
+   5. Failed jobs (rate, 5m).
+
+## 🩹 Fixes:
+
+- 🐛 Fix: Goroutines leak in the `amqp` plugin when destroying pipelines.
 
 ## 🧹 Chore:
 
 - 🧑‍🏭 Update all dependencies to the most recent versions.
 
+
+🇺🇦🇺🇦🇺🇦 `#StandWithUkraine` 🇺🇦🇺🇦🇺🇦
 ---
 
 ## v2.8.8 (31.03.2022)
