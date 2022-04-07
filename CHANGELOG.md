@@ -7,12 +7,7 @@
 
 ## 👀 New:
 
-- ✏️ **[ALPHA]** HTTP response streaming. Starting from the `v2.9.0` RR is capable to stream responses.
-  To turn on that feature, please, add the following lines to the configuration:
-```yaml
-experimental:
-    response_streams: true
-```
+- ✏️ **[ALPHA]** HTTP response streaming. Available only in the alfa builds.
 
 Worker sample:
 ```php
@@ -55,6 +50,7 @@ Known issues:
 
 ---
 </details>
+
 
 ## v2.9.0 (23.03.2022)
 
