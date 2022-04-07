@@ -54,6 +54,11 @@ Known issues:
 
 ## v2.9.0 (23.03.2022)
 
+---
+🇺🇦🇺🇦🇺🇦 `#StandWithUkraine` 🇺🇦🇺🇦🇺🇦
+
+---
+
 ## 👀 New:
 
 - ✏️ [**API**](https://github.com/roadrunner-server/api): add service proto api to manage services, [FR](https://github.com/roadrunner-server/roadrunner/issues/1009) (thanks @butschster). Documentation is here: [link](https://roadrunner.dev/docs/beep-beep-service).
@@ -84,8 +89,6 @@ Known issues:
 
 - 🧑‍🏭 Update all dependencies to the most recent versions.
 
-
-🇺🇦🇺🇦🇺🇦 `#StandWithUkraine` 🇺🇦🇺🇦🇺🇦
 ---
 
 ## v2.8.8 (31.03.2022)
