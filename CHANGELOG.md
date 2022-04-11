@@ -61,7 +61,7 @@ Known issues:
 
 ## 👀 New:
 
-- ✏️ Add `proxy_ip_parser` HTTP middleware responsible for parsing `X-Forwarded-For`, `Forwarded`, `True-Client-IP` and `X-Real-Ip`.
+- ✏️ Add [`proxy_ip_parser`](https://github.com/roadrunner-server/proxy_ip_parser) HTTP middleware responsible for parsing `X-Forwarded-For`, `Forwarded`, `True-Client-IP` and `X-Real-Ip`.
 
 ---
 
