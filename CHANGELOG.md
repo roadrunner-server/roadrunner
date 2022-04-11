@@ -53,6 +53,8 @@ Known issues:
 
 ## v2.9.1 (11.04.2022)
 
+### ⚠️ This is important. `trusted_subnets` HTTP option will work only when `proxy_ip_parser` was added to the list of the middlewares.
+
 ## 🩹 Fixes:
 
 - 🐛 Fix: incorrect usage of the `ExecWithTTL` SDK method which leads to skipping the `exec_ttl` supervisor option [BUG](https://github.com/laravel/octane/issues/504) (thanks @Baiquette)
