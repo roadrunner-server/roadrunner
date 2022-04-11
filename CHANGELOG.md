@@ -51,8 +51,19 @@ Known issues:
 ---
 </details>
 
+## v2.9.1 (11.04.2022)
 
-## v2.9.0 (23.03.2022)
+## 🩹 Fixes:
+
+- 🐛 Fix: incorrect usage of the `ExecWithTTL` SDK method which leads to skipping the `exec_ttl` supervisor option [BUG](https://github.com/laravel/octane/issues/504) (thanks @Baiquette)
+
+## 👀 New:
+
+- ✏️ Add `proxy_ip_parser` HTTP middleware responsible for parsing `X-Forwarded-For`, `Forwarded`, `True-Client-IP` and `X-Real-Ip`.
+
+---
+
+## v2.9.0 (07.04.2022)
 
 ---
 🇺🇦🇺🇦🇺🇦 `#StandWithUkraine` 🇺🇦🇺🇦🇺🇦
