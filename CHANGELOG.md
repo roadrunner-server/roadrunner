@@ -1,8 +1,5 @@
 # CHANGELOG
 
-<details>
-    <summary>v2.10.0-alpha.1</summary>
-
 ## v2.10.0-alpha.1 (07.04.2022)
 
 ## 👀 New:
@@ -48,8 +45,12 @@ Known issues:
 1. RR will not notify a worker if HTTP connection was interrupted. RR will read all response from the worker and drop it. That will be fixed in the stable streaming release.
 2. Sometimes RR may miss the immediate error from the worker and send a 0 payload with 200 status. This is related only to the http response.
 
+
+- ✏️ **[BETA]** Local activities support [link](https://docs.temporal.io/docs/concepts/what-is-a-local-activity).
+
+
 ---
-</details>
+
 
 ## v2.9.1 (11.04.2022)
 
