@@ -19,7 +19,7 @@ require (
 	github.com/roadrunner-server/endure v1.2.3
 	github.com/roadrunner-server/errors v1.1.2
 	github.com/roadrunner-server/fileserver/v2 v2.12.1
-	github.com/roadrunner-server/goridge/v3 v3.4.0
+	github.com/roadrunner-server/goridge/v3 v3.4.1
 	github.com/roadrunner-server/grpc/v2 v2.13.1
 	github.com/roadrunner-server/gzip/v2 v2.10.0
 	github.com/roadrunner-server/headers/v2 v2.11.0
