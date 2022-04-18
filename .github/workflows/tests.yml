@@ -151,7 +151,7 @@ jobs:
       - name: Try to execute
         run: docker run --rm rr:local -v
 
-      - uses: aquasecurity/trivy-action@0.2.3 # action page: <https://github.com/aquasecurity/trivy-action>
+      - uses: aquasecurity/trivy-action@0.2.5 # action page: <https://github.com/aquasecurity/trivy-action>
         with:
           image-ref: rr:local
           format: 'table'
