@@ -50,7 +50,7 @@ require (
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.11.0
 	github.com/stretchr/testify v1.7.1
-	github.com/temporalio/roadrunner-temporal v1.4.0-beta.1
+	github.com/temporalio/roadrunner-temporal v1.4.0-rc.1
 	github.com/vbauerster/mpb/v5 v5.4.0
 )
 
