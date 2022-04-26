@@ -35,7 +35,7 @@ require (
 	github.com/roadrunner-server/new_relic/v2 v2.13.1
 	github.com/roadrunner-server/prometheus/v2 v2.12.1
 	github.com/roadrunner-server/proxy_ip_parser/v2 v2.4.0
-	github.com/roadrunner-server/redis/v2 v2.13.1
+	github.com/roadrunner-server/redis/v2 v2.13.2
 	github.com/roadrunner-server/reload/v2 v2.11.0
 	github.com/roadrunner-server/resetter/v2 v2.11.1
 	github.com/roadrunner-server/rpc/v2 v2.12.1
@@ -125,7 +125,7 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rabbitmq/amqp091-go v1.3.4 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/roadrunner-server/sdk/v2 v2.13.2 // indirect
+	github.com/roadrunner-server/sdk/v2 v2.13.3 // indirect
 	github.com/roadrunner-server/tcplisten v1.1.2 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
