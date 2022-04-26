@@ -14,7 +14,7 @@ require (
 	github.com/roadrunner-server/beanstalk/v2 v2.12.1
 	github.com/roadrunner-server/boltdb/v2 v2.12.1
 	github.com/roadrunner-server/broadcast/v2 v2.11.1
-	github.com/roadrunner-server/cache/v2 v2.12.1
+	github.com/roadrunner-server/cache/v2 v2.12.2
 	github.com/roadrunner-server/config/v2 v2.13.1
 	github.com/roadrunner-server/endure v1.2.3
 	github.com/roadrunner-server/errors v1.1.2
@@ -125,7 +125,7 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rabbitmq/amqp091-go v1.3.4 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/roadrunner-server/sdk/v2 v2.13.2 // indirect
+	github.com/roadrunner-server/sdk/v2 v2.13.3 // indirect
 	github.com/roadrunner-server/tcplisten v1.1.2 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
@@ -146,6 +146,8 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
+	go.opentelemetry.io/otel v1.6.3 // indirect
+	go.opentelemetry.io/otel/trace v1.6.3 // indirect
 	go.temporal.io/api v1.7.1-0.20220223032354-6e6fe738916a // indirect
 	go.temporal.io/sdk v1.14.0 // indirect
 	go.temporal.io/sdk/contrib/tally v0.1.0 // indirect
