@@ -24,7 +24,7 @@ require (
 	github.com/roadrunner-server/gzip/v2 v2.10.0
 	github.com/roadrunner-server/headers/v2 v2.11.0
 	github.com/roadrunner-server/http/v2 v2.15.0
-	github.com/roadrunner-server/informer/v2 v2.11.1
+	github.com/roadrunner-server/informer/v2 v2.11.2
 	github.com/roadrunner-server/jobs/v2 v2.12.1
 	github.com/roadrunner-server/kv/v2 v2.11.1
 	github.com/roadrunner-server/logger/v2 v2.12.1
