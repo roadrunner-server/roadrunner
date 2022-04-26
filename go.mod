@@ -45,7 +45,7 @@ require (
 	github.com/roadrunner-server/sqs/v2 v2.13.1
 	github.com/roadrunner-server/static/v2 v2.12.1
 	github.com/roadrunner-server/status/v2 v2.11.3
-	github.com/roadrunner-server/tcp/v2 v2.12.1
+	github.com/roadrunner-server/tcp/v2 v2.12.2
 	github.com/roadrunner-server/websockets/v2 v2.12.1
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.11.0
@@ -125,7 +125,7 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rabbitmq/amqp091-go v1.3.4 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/roadrunner-server/sdk/v2 v2.13.2 // indirect
+	github.com/roadrunner-server/sdk/v2 v2.13.3 // indirect
 	github.com/roadrunner-server/tcplisten v1.1.2 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
