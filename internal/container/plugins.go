@@ -18,6 +18,7 @@ import (
 	"github.com/roadrunner-server/metrics/v2"
 	"github.com/roadrunner-server/nats/v2"
 	newrelic "github.com/roadrunner-server/new_relic/v2"
+	rrOtel "github.com/roadrunner-server/otel/v2"
 	"github.com/roadrunner-server/prometheus/v2"
 	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v2"
 	"github.com/roadrunner-server/redis/v2"
@@ -79,8 +80,8 @@ func Plugins() []interface{} { //nolint:funlen
 		&cache.Plugin{},
 		&send.Plugin{},
 		&proxyIP.Plugin{},
-
 		&fileserver.Plugin{},
+		&rrOtel.Plugin{},
 		// ===================
 
 		&grpcPlugin.Plugin{},
