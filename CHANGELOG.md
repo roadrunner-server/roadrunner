@@ -51,6 +51,14 @@ Known issues:
 ---
 </details>
 
+## v2.9.2 (28.04.2022)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: incorrect `-w` flag behavior (set working dir). [BUG](https://github.com/roadrunner-server/roadrunner/issues/1101), (thanks @rauanmayemir)
+
+---
+
 ## v2.9.1 (11.04.2022)
 
 ### ⚠️ This is important. `trusted_subnets` HTTP option will work only when `proxy_ip_parser` was added to the list of the middlewares.
