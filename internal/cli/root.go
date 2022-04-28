@@ -46,18 +46,22 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen
 				return errors.Str("no configuration file provided")
 			}
 
+			// if user set the wd, change the current wd
 			if workDir != "" {
 				if err := os.Chdir(workDir); err != nil {
 					return err
 				}
 			}
 
+			// try to get the absolute path to the configuration
 			if absPath, err := filepath.Abs(*cfgFile); err == nil {
 				*cfgFile = absPath // switch config path to the absolute
 
-				// force working absPath related to config file
-				if err = os.Chdir(filepath.Dir(absPath)); err != nil {
-					return err
+				// if workDir is empty - force working absPath related to config file
+				if workDir == "" {
+					if err = os.Chdir(filepath.Dir(absPath)); err != nil {
+						return err
+					}
 				}
 			}
 
