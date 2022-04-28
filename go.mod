@@ -33,7 +33,7 @@ require (
 	github.com/roadrunner-server/metrics/v2 v2.12.2
 	github.com/roadrunner-server/nats/v2 v2.12.2
 	github.com/roadrunner-server/new_relic/v2 v2.13.2
-	github.com/roadrunner-server/otel/v2 v2.0.0
+	github.com/roadrunner-server/otel/v2 v2.0.1
 	github.com/roadrunner-server/prometheus/v2 v2.12.2
 	github.com/roadrunner-server/proxy_ip_parser/v2 v2.4.0
 	github.com/roadrunner-server/redis/v2 v2.13.2
