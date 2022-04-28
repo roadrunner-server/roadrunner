@@ -55,8 +55,6 @@ require (
 	github.com/vbauerster/mpb/v5 v5.4.0
 )
 
-replace github.com/roadrunner-server/config/v2 => ../plugins/config
-
 require (
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d // indirect
