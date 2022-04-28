@@ -373,6 +373,7 @@ github.com/roadrunner-server/amqp/v2 v2.12.1 h1:IxAhcGun1NNooiwY/Sy3PI6wTv0EeQB+
 github.com/roadrunner-server/amqp/v2 v2.12.1/go.mod h1:j6ANaANaUMleHFoI1o+SWDTJITxiq5zifc4cjzYEURs=
 github.com/roadrunner-server/api/v2 v2.14.0 h1:U7CrMXv5h8qlO9vvqdvPDK0g+zMLwcERUAPcoLy6tYs=
 github.com/roadrunner-server/api/v2 v2.14.0/go.mod h1:COjb3T7DYHydaKIfino/N8gVa8op1jGAXFF+qKHMnk0=
+<<<<<<< HEAD
 github.com/roadrunner-server/beanstalk/v2 v2.12.1 h1:RnReSyyspD2Zg9o80oyPZYhy7J2n5Bo6UfdRJujFaao=
 github.com/roadrunner-server/beanstalk/v2 v2.12.1/go.mod h1:IuFIPRJalRwfv9RJBb2hAso8oGKzENS8/oV1EC59uS8=
 github.com/roadrunner-server/boltdb/v2 v2.12.1 h1:Mkaz0t4qpJ2obpododQFssQnnL4o5Tq6794SMS3Zkw4=
@@ -383,6 +384,14 @@ github.com/roadrunner-server/cache/v2 v2.12.1 h1:h+x6V9xwWrQub0ux2lcEFHHtVK+b+Kz
 github.com/roadrunner-server/cache/v2 v2.12.1/go.mod h1:XG6WnobhCJmvX6MhqePYo4nPfzK8HvNSzIAoJ9spfGc=
 github.com/roadrunner-server/config/v2 v2.13.1 h1:p7dSAvjQmE7umHQ3QxSv/j0VUvNyXTOfNT2iYVSXC3M=
 github.com/roadrunner-server/config/v2 v2.13.1/go.mod h1:OxUdPzKTgkNVsBGpaJlPjC6l2Bxyf3jbGvYE/ybNqS8=
+github.com/roadrunner-server/beanstalk/v2 v2.12.2 h1:/U4s5tJdtK/f7rucCsm/PLvaksc3Jj2fGTUKWiDlJcw=
+github.com/roadrunner-server/beanstalk/v2 v2.12.2/go.mod h1:QitrdRD4wpEvXMptzorS37qmYQ2oQ5gBDyJqVkUR+mM=
+github.com/roadrunner-server/boltdb/v2 v2.12.2 h1:Z9zhfvCiM3qriWLY0grEpViz6m2/RPxv+y2wRPHf890=
+github.com/roadrunner-server/boltdb/v2 v2.12.2/go.mod h1:VwLSrIGe/aP3cP0x7vPydcidJ54KL/07+qOkfSvDtiM=
+github.com/roadrunner-server/broadcast/v2 v2.11.2 h1:rYq0umlXrbIwleWS41W+c96SakPMz89UNt1LfyBea+o=
+github.com/roadrunner-server/broadcast/v2 v2.11.2/go.mod h1:6XAE7LRQToEB/zv0iEbBI2APPbjmIHd4kN6AwJLdW9A=
+github.com/roadrunner-server/cache/v2 v2.12.2 h1:OePy9morZOgwjymRvZZl/g5gO/EsIRohz95jIcbyIjk=
+github.com/roadrunner-server/cache/v2 v2.12.2/go.mod h1:h0HH+9MiIVLwMvSMmp3S20e+8HHsbzynTXbVREKh/r4=
 github.com/roadrunner-server/endure v1.2.3 h1:Smm+pHDERzeqXsLO602oe5iy0q+w94jAH3UT1pqgZiY=
 github.com/roadrunner-server/endure v1.2.3/go.mod h1:Yahi4Uoabla2o+0N+pbjWwIJnAigYWppGwbLU3D6cLc=
 github.com/roadrunner-server/errors v1.1.2 h1:+LPw9Akgg+8LAGM4wASMWLAoBIbyP+mhNfR+FBS2Slw=

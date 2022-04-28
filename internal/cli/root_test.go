@@ -135,3 +135,33 @@ func TestCommandNoEnvFileNoError(t *testing.T) {
 		_ = os.RemoveAll(path.Join(tmp, ".rr.yaml"))
 	})
 }
+
+func TestCommandWorkingDir(t *testing.T) {
+	tmp := os.TempDir()
+
+	cmd := cli.NewCommand("serve")
+	cmd.SetArgs([]string{"-w", tmp})
+
+	var executed bool
+
+	var wd string
+
+	f2, err := os.Create(path.Join(tmp, ".rr.yaml"))
+	require.NoError(t, err)
+
+	if cmd.Run == nil { // override "Run" property for test (if it was not set)
+		cmd.Run = func(cmd *cobra.Command, args []string) {
+			executed = true
+			wd, _ = os.Getwd()
+		}
+	}
+
+	assert.NoError(t, cmd.Execute())
+	assert.True(t, executed)
+	assert.Equal(t, "/tmp", wd)
+
+	t.Cleanup(func() {
+		_ = f2.Close()
+		_ = os.RemoveAll(path.Join(tmp, ".rr.yaml"))
+	})
+}
