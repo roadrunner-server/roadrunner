@@ -1,23 +1,17 @@
 package reset
 
 import (
-	"fmt"
+	"log"
 	"sync"
 
 	internalRpc "github.com/roadrunner-server/roadrunner/v2/internal/rpc"
 
-	"github.com/fatih/color"
-	"github.com/mattn/go-runewidth"
 	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
-	"github.com/vbauerster/mpb/v5"
-	"github.com/vbauerster/mpb/v5/decor"
 )
 
-var spinnerStyle = []string{"∙∙∙", "●∙∙", "∙●∙", "∙∙●", "∙∙∙"} //nolint:gochecknoglobals
-
 // NewCommand creates `reset` command.
-func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:funlen
+func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Command {
 	return &cobra.Command{
 		Use:   "reset",
 		Short: "Reset workers of all or specific RoadRunner service",
@@ -39,69 +33,42 @@ func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:f
 
 			defer func() { _ = client.Close() }()
 
-			services := args        // by default we expect services list from user
-			if len(services) == 0 { // but if nothing was passed - request all services list
-				if err = client.Call(resetterList, true, &services); err != nil {
+			plugins := args        // by default we expect services list from user
+			if len(plugins) == 0 { // but if nothing was passed - request all services list
+				if err = client.Call(resetterList, true, &plugins); err != nil {
 					return err
 				}
 			}
 
 			var wg sync.WaitGroup
-			wg.Add(len(services))
+			wg.Add(len(plugins))
 
-			pr := mpb.New(mpb.WithWaitGroup(&wg), mpb.WithWidth(6)) //nolint:gomnd
-
-			for _, service := range services {
-				var (
-					bar    *mpb.Bar
-					name   = runewidth.FillRight(fmt.Sprintf("Resetting plugin: [%s]", color.HiYellowString(service)), 27)
-					result = make(chan interface{})
-				)
-
-				bar = pr.AddSpinner(
-					1,
-					mpb.SpinnerOnMiddle,
-					mpb.SpinnerStyle(spinnerStyle),
-					mpb.PrependDecorators(decor.Name(name)),
-					mpb.AppendDecorators(onComplete(result)),
-				)
-
+			for _, plugin := range plugins {
 				// simulating some work
-				go func(service string, result chan interface{}) {
+				go func(p string) {
+					if !*silent {
+						log.Printf("resetting plugin: [%s] ", p)
+					}
 					defer wg.Done()
-					defer bar.Increment()
 
 					var done bool
-					<-client.Go(resetterReset, service, &done, nil).Done
+					<-client.Go(resetterReset, p, &done, nil).Done
 
 					if err != nil {
-						result <- errors.E(op, err)
+						log.Println(err)
 
 						return
 					}
 
-					result <- nil
-				}(service, result)
+					if !*silent {
+						log.Printf("plugin reset: [%s]", p)
+					}
+				}(plugin)
 			}
 
-			pr.Wait()
+			wg.Wait()
 
 			return nil
 		},
 	}
-}
-
-func onComplete(result chan interface{}) decor.Decorator {
-	return decor.Any(func(s decor.Statistics) string {
-		select {
-		case r := <-result:
-			if err, ok := r.(error); ok {
-				return color.HiRedString(err.Error())
-			}
-
-			return color.HiGreenString("done")
-		default:
-			return ""
-		}
-	})
 }
