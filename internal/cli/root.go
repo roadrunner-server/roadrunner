@@ -96,7 +96,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen
 
 	cmd.AddCommand(
 		workers.NewCommand(cfgFile, override),
-		reset.NewCommand(cfgFile, override),
+		reset.NewCommand(cfgFile, override, silent),
 		serve.NewCommand(override, cfgFile, silent),
 	)
 
