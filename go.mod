@@ -10,7 +10,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v2 v2.14.0
 	github.com/roadrunner-server/api/v2 v2.17.0
-	github.com/roadrunner-server/beanstalk/v2 v2.12.2
+	github.com/roadrunner-server/beanstalk/v2 v2.13.0
 	github.com/roadrunner-server/boltdb/v2 v2.13.0
 	github.com/roadrunner-server/broadcast/v2 v2.12.0
 	github.com/roadrunner-server/cache/v2 v2.13.0
@@ -30,7 +30,7 @@ require (
 	github.com/roadrunner-server/memcached/v2 v2.12.0
 	github.com/roadrunner-server/memory/v2 v2.13.0
 	github.com/roadrunner-server/metrics/v2 v2.12.2
-	github.com/roadrunner-server/nats/v2 v2.12.2
+	github.com/roadrunner-server/nats/v2 v2.13.0
 	github.com/roadrunner-server/new_relic/v2 v2.13.2
 	github.com/roadrunner-server/otel/v2 v2.0.1
 	github.com/roadrunner-server/prometheus/v2 v2.12.2
@@ -41,8 +41,8 @@ require (
 	github.com/roadrunner-server/rpc/v2 v2.12.2
 	github.com/roadrunner-server/send/v2 v2.11.0
 	github.com/roadrunner-server/server/v2 v2.13.2
-	github.com/roadrunner-server/service/v2 v2.14.0
-	github.com/roadrunner-server/sqs/v2 v2.13.2
+	github.com/roadrunner-server/service/v2 v2.14.1
+	github.com/roadrunner-server/sqs/v2 v2.14.0
 	github.com/roadrunner-server/static/v2 v2.12.2
 	github.com/roadrunner-server/status/v2 v2.12.0
 	github.com/roadrunner-server/tcp/v2 v2.12.2
@@ -50,7 +50,7 @@ require (
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.11.0
 	github.com/stretchr/testify v1.7.1
-	github.com/temporalio/roadrunner-temporal v1.4.0-rc.1
+	github.com/temporalio/roadrunner-temporal v1.4.0-rc.2
 )
 
 require (
@@ -171,7 +171,7 @@ require (
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 //indirect
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20220429233432-b5fbb4746d32 // indirect
+	golang.org/x/sys v0.0.0-20220502124256-b6088ccd6cba // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
 	golang.org/x/tools v0.1.10 // indirect
