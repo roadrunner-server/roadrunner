@@ -90,6 +90,7 @@ Configuration can be located in `.rr.yaml`
 file ([full sample](https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml)):
 
 ```yaml
+# configuration version: https://roadrunner.dev/docs/beep-beep-config/2.x/en
 version: '2.7'
 
 rpc:
