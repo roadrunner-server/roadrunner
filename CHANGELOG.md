@@ -1,55 +1,17 @@
 # CHANGELOG
 
-<details>
-    <summary>v2.10.0-alpha.1</summary>
+## v2.9.3 (06.05.2022)
 
-## v2.10.0-alpha.1 (07.04.2022)
+## 🩹 Fixes:
 
-## 👀 New:
+- 🐛 Fix: **AMQP** driver didn't reconnect on timeouts, which led to stopping consuming messages w/o a proper notification. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1103), (thanks @hustlahusky)
+- 🐛 Fix: `reset` command (`./rr reset`) gets stuck when using output redirects. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1108), (thanks @maximal)
 
-- ✏️ **[ALPHA]** HTTP response streaming. Available only in the alfa builds.
+## 🧹 Chore:
 
-Worker sample:
-```php
-<?php
-
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Nyholm\Psr7\Response;
-use Nyholm\Psr7\Stream;
-use Spiral\RoadRunner;
-
-ini_set('display_errors', 'stderr');
-require __DIR__ . "/vendor/autoload.php";
-
-$worker = RoadRunner\Worker::create();
-$psr7 = new RoadRunner\Http\PSR7Worker(
-    $worker,
-    new Psr17Factory(),
-    new Psr17Factory(),
-    new Psr17Factory()
-);
-
-$psr7->chunk_size = 10 * 10 * 1024;
-$filename = 'file.tmp'; // big file or response
-
-while ($req = $psr7->waitRequest()) {
-    try {
-        $fp = \fopen($filename, 'rb');
-        \flock($fp, LOCK_SH);
-        $resp = (new Response())->withBody(Stream::create($fp));
-        $psr7->respond($resp);
-    } catch (\Throwable $e) {
-        $psr7->getWorker()->error((string)$e);
-    }
-
-```
-
-Known issues:
-1. RR will not notify a worker if HTTP connection was interrupted. RR will read all response from the worker and drop it. That will be fixed in the stable streaming release.
-2. Sometimes RR may miss the immediate error from the worker and send a 0 payload with 200 status. This is related only to the http response.
+- 🏗️ **HTTP** plugin: better looking error message on wrong status code. [ISSUE](https://github.com/roadrunner-server/roadrunner/issues/1107), (thanks @gam6itko)
 
 ---
-</details>
 
 ## v2.9.2 (28.04.2022)
 
