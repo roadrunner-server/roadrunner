@@ -22,7 +22,7 @@ require (
 	github.com/roadrunner-server/grpc/v2 v2.13.2
 	github.com/roadrunner-server/gzip/v2 v2.11.0
 	github.com/roadrunner-server/headers/v2 v2.11.1
-	github.com/roadrunner-server/http/v2 v2.15.2
+	github.com/roadrunner-server/http/v2 v2.15.3
 	github.com/roadrunner-server/informer/v2 v2.11.2
 	github.com/roadrunner-server/jobs/v2 v2.13.0
 	github.com/roadrunner-server/kv/v2 v2.12.0
@@ -171,7 +171,7 @@ require (
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 //indirect
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20220502124256-b6088ccd6cba // indirect
+	golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
 	golang.org/x/tools v0.1.10 // indirect
