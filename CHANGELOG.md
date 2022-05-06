@@ -2,6 +2,10 @@
 
 ## v2.9.3 (06.05.2022)
 
+## 👀 New:
+
+- ✏️: `--silent` flag. This flag will hide startup message and `./rr reset` output.
+
 ## 🩹 Fixes:
 
 - 🐛 Fix: **AMQP** driver didn't reconnect on timeouts, which led to stopping consuming messages w/o a proper notification. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1103), (thanks @hustlahusky)
