@@ -40,13 +40,6 @@ github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
-github.com/VividCortex/ewma v1.1.1/go.mod h1:2Tkkvm3sRDVXaiyucHiACn4cqf7DpdyLvmxzcbUokwA=
-github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1ow=
-github.com/VividCortex/ewma v1.2.0/go.mod h1:nz4BbCtbLyFDeC9SUHbtcT5644juEuWfUAUnGx7j5l4=
-github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d h1:licZJFw2RwpHMqeKTCYkitsPqHNxTmd4SNR5r94FGM8=
-github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d/go.mod h1:asat636LX7Bqt5lYEZ27JNDcqxfjdBQuJ/MM4CN/Lzo=
-github.com/Shopify/sarama v1.30.0/go.mod h1:zujlQQx1kzHsh4jfV1USnptCQrHAEZ2Hk8fTKCulPVs=
-github.com/Shopify/toxiproxy/v2 v2.1.6-0.20210914104332-15ea381dcdae/go.mod h1:/cvHQkZ1fst0EmZnA5dFtiQdWCNCFYzb+uE2vqVgvx0=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf/go.mod h1:ybxpYRFXyAe+OPACYpWeL0wqObRcbAqCMya13uyzqw0=
@@ -398,8 +391,8 @@ github.com/roadrunner-server/gzip/v2 v2.10.0 h1:/2dpoNU5SJBsrOBIk5dBHaIEk57NQ0X9
 github.com/roadrunner-server/gzip/v2 v2.10.0/go.mod h1:+ZK6ae1O41kNJcsIGh6Vcu91caWcGq6cscWx/zugo60=
 github.com/roadrunner-server/headers/v2 v2.11.0 h1:NYjgGMjQgLTscVJTDe77zAz9gmb5/An6Y9HUUnlUIvQ=
 github.com/roadrunner-server/headers/v2 v2.11.0/go.mod h1:C+QmP9csKz4nFUsRFaRbPTKwHK2cR6UhYb8TIuIGDHk=
-github.com/roadrunner-server/http/v2 v2.14.2 h1:+xPmhv6wi6H0HQx7ftcAfHstFXyaPtKAafWyVHk88O4=
-github.com/roadrunner-server/http/v2 v2.14.2/go.mod h1:RVvJZzG4gKLLrJdZ2awU5N+35Ge0KMoABuRWv5S+GDM=
+github.com/roadrunner-server/http/v2 v2.14.3 h1:9kMROiwHbkIVUnN+jp+ZyojJKLVNgiv01g3QgMYSGwI=
+github.com/roadrunner-server/http/v2 v2.14.3/go.mod h1:RVvJZzG4gKLLrJdZ2awU5N+35Ge0KMoABuRWv5S+GDM=
 github.com/roadrunner-server/informer/v2 v2.11.1 h1:EPgZsDqAmrxCGtdNZZ/KMwsLGJqjRAOK9ACa2RkPbR0=
 github.com/roadrunner-server/informer/v2 v2.11.1/go.mod h1:S3C4h0LRX2apsf7OQyRu6TULAdACBIc5fk2cftw9PlQ=
 github.com/roadrunner-server/jobs/v2 v2.12.1 h1:OlgJ5lqZeU/ZqfMGVWKZt9PI4s8koU9wcTzY7b4EfNs=

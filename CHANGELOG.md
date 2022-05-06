@@ -1,5 +1,14 @@
 # CHANGELOG
 
+
+## v2.9.3 (06.05.2022)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: **HTTP plugin:** request max body size incorrectly parsed. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1115), (thanks, @Opekunov)
+
+---
+
 ## v2.9.3 (06.05.2022)
 
 ## 👀 New:
