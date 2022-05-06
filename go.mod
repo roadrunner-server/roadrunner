@@ -11,7 +11,7 @@ require (
 	github.com/roadrunner-server/amqp/v2 v2.14.0
 	github.com/roadrunner-server/api/v2 v2.17.0
 	github.com/roadrunner-server/beanstalk/v2 v2.13.0
-	github.com/roadrunner-server/boltdb/v2 v2.13.0
+	github.com/roadrunner-server/boltdb/v2 v2.14.0
 	github.com/roadrunner-server/broadcast/v2 v2.12.0
 	github.com/roadrunner-server/cache/v2 v2.13.0
 	github.com/roadrunner-server/config/v2 v2.13.2
@@ -22,7 +22,7 @@ require (
 	github.com/roadrunner-server/grpc/v2 v2.13.2
 	github.com/roadrunner-server/gzip/v2 v2.11.0
 	github.com/roadrunner-server/headers/v2 v2.11.1
-	github.com/roadrunner-server/http/v2 v2.15.3
+	github.com/roadrunner-server/http/v2 v2.15.5
 	github.com/roadrunner-server/informer/v2 v2.11.2
 	github.com/roadrunner-server/jobs/v2 v2.13.0
 	github.com/roadrunner-server/kv/v2 v2.12.0
@@ -87,7 +87,7 @@ require (
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.1.0 // indirect
 	github.com/goccy/go-json v0.9.7 // indirect
-	github.com/gofiber/fiber/v2 v2.32.0 // indirect
+	github.com/gofiber/fiber/v2 v2.33.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/gogo/status v1.1.0 // indirect
@@ -99,7 +99,7 @@ require (
 	github.com/hashicorp/go-version v1.4.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/klauspost/compress v1.15.2 // indirect
+	github.com/klauspost/compress v1.15.3 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.12 // indirect
 	github.com/libdns/libdns v0.2.1 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
@@ -112,7 +112,7 @@ require (
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nats-io/jwt/v2 v2.2.1-0.20220113022732-58e87895b296 // indirect
-	github.com/nats-io/nats.go v1.14.0 // indirect
+	github.com/nats-io/nats.go v1.15.0 // indirect
 	github.com/nats-io/nkeys v0.3.0 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/newrelic/go-agent/v3 v3.15.2 // indirect
@@ -176,7 +176,7 @@ require (
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
 	golang.org/x/tools v0.1.10 // indirect
 	golang.org/x/xerrors v0.0.0-20220411194840-2f41105eb62f // indirect
-	google.golang.org/genproto v0.0.0-20220429170224-98d788798c3e // indirect
+	google.golang.org/genproto v0.0.0-20220505152158-f39f71e6c8f3 // indirect
 	google.golang.org/grpc v1.46.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
