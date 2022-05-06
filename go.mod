@@ -11,7 +11,7 @@ require (
 	github.com/roadrunner-server/amqp/v2 v2.14.0
 	github.com/roadrunner-server/api/v2 v2.17.0
 	github.com/roadrunner-server/beanstalk/v2 v2.13.0
-	github.com/roadrunner-server/boltdb/v2 v2.13.0
+	github.com/roadrunner-server/boltdb/v2 v2.14.0
 	github.com/roadrunner-server/broadcast/v2 v2.12.0
 	github.com/roadrunner-server/cache/v2 v2.13.0
 	github.com/roadrunner-server/config/v2 v2.13.2
