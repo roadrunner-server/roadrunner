@@ -89,7 +89,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ linux, darwin, windows ]
+        os: [ linux, darwin, windows, freebsd ]
     steps:
       - name: Set up Go
         uses: actions/setup-go@v3 # action page: <https://github.com/actions/setup-go>

@@ -29,6 +29,10 @@ jobs:
             compiler: gcc
             archiver: tar
             arch: arm64
+          - os: freebsd
+            compiler: gcc
+            archiver: tar
+            arch: amd64
           - os: ''
             compiler: musl-gcc # more info: <https://musl.libc.org/>
             archiver: zip
@@ -55,12 +59,27 @@ jobs:
           echo "::set-output name=version::`echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//'`"
           echo "::set-output name=timestamp::`date +%FT%T%z`"
           echo "::set-output name=binary-name::rr`[ ${{ matrix.os }} = 'windows' ] && echo '.exe'`"
+          if [ ${{ matrix.os }} == "windows" ]; then
+            echo "::set-output name=sign-cert-name::rr.exe.asc"
+          else
+            echo "::set-output name=sign-cert-name::rr.asc"
+          fi
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_SIGNING_KEY }}
+          passphrase: ${{ secrets.GPG_PASS }}
+          git_user_signingkey: true
+          git_commit_gpgsign: false
 
       - name: Compile binary file
         env:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CC: ${{ matrix.compiler }}
+          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+          GPG_PASS: ${{secrets.GPG_PASS}}
           CGO_ENABLED: 0
           LDFLAGS: >-
             -s
@@ -69,6 +88,7 @@ jobs:
         run: |
           go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr
           stat "./${{ steps.values.outputs.binary-name }}"
+          gpg --detach-sign --armor "./${{ steps.values.outputs.binary-name }}"
 
       - name: Generate distributive directory name
         id: dist-dir
@@ -93,8 +113,8 @@ jobs:
       - name: Create distributive
         run: |
           mkdir ${{ steps.dist-dir.outputs.name }}
-          mv "./${{ steps.values.outputs.binary-name }}" ./${{ steps.dist-dir.outputs.name }}/
-          cp ./README.md ./CHANGELOG.md ./LICENSE ./${{ steps.dist-dir.outputs.name }}/
+          mv "./${{ steps.values.outputs.binary-name }}"  "./${{ steps.values.outputs.sign-cert-name }}" ./${{ steps.dist-dir.outputs.name }}/
+          cp  ./README.md ./CHANGELOG.md ./LICENSE ./${{ steps.dist-dir.outputs.name }}
 
       - name: Pack distributive using tar
         if: matrix.archiver == 'tar'
