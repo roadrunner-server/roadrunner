@@ -1,0 +1,96 @@
+name: release_dep
+
+on:
+  release: # Docs: <https://help.github.com/en/articles/events-that-trigger-workflows#release-event-release>
+    types:
+      - released
+      - prereleased
+
+jobs:
+  build:
+    name: Build for ${{ matrix.os }} (${{ matrix.arch }}, ${{ matrix.compiler }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ linux ]
+        compiler: [ gcc ]
+        archiver: [ zip ]
+        arch: [ amd64 ]
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Generate builder values
+        id: values
+        run: |
+          echo "::set-output name=version::`echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//'`"
+          echo "::set-output name=timestamp::`date +%FT%T%z`"
+          echo "::set-output name=binary-name::rr"
+          echo "::set-output name=sign-cert-name::rr.asc"
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_SIGNING_KEY }}
+          passphrase: ${{ secrets.GPG_PASS }}
+          git_user_signingkey: true
+          git_commit_gpgsign: false
+
+      - name: Compile binary file
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+          CC: ${{ matrix.compiler }}
+          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+          GPG_PASS: ${{secrets.GPG_PASS}}
+          CGO_ENABLED: 0
+          LDFLAGS: >-
+            -s
+            -X github.com/roadrunner-server/roadrunner/v2/internal/meta.version=${{ steps.values.outputs.version }}
+            -X github.com/roadrunner-server/roadrunner/v2/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
+        run: |
+          go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr
+          stat "./${{ steps.values.outputs.binary-name }}"
+          gpg --detach-sign --armor "./${{ steps.values.outputs.binary-name }}"
+
+      - name: Create DEB dirs
+        run: |
+          mkdir -p dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/DEBIAN
+          mkdir -p dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/usr/bin
+          ls -la dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64
+
+      - name: Create DEB control file
+        run: touch dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/DEBIAN/control
+
+      - name: Build Debian package
+        run: |
+          echo "Package: roadrunner-${{ steps.values.outputs.version }}-linux-amd64.deb" >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/DEBIAN/control
+          echo "Version: ${{ steps.values.outputs.version }}" >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/DEBIAN/control
+          echo "Section: custom" >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/DEBIAN/control
+          echo "Priority: optional" >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/DEBIAN/control
+          echo "Architecture: amd64" >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/DEBIAN/control
+          echo "Maintainer: roadrunner.dev" >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/DEBIAN/control
+          echo "Description: High-performance PHP application server, load-balancer, process manager written in Go and powered with plugins." >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/DEBIAN/control
+
+          cat dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/DEBIAN/control
+
+          cp "./${{ steps.values.outputs.binary-name }}" dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64/usr/bin/
+          dpkg --build dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64
+
+      - name: Upload dep to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-amd64.deb
+          asset_name: roadrunner-${{ steps.values.outputs.version }}-linux-amd64.deb
+          tag: ${{ github.ref }}
