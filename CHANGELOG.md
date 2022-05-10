@@ -1,5 +1,105 @@
 # CHANGELOG
 
+## v2.10.0-rc.1 (10.05.2022)
+
+## 👀 New:
+
+- ✏️ **RoadRunner-Temporal plugin now supports local activities**. Here is the brief overview: [link](https://docs.temporal.io/docs/temporal-explained/activities/#local-activity).
+- ✏️ Add Debian `amd64` releases.
+- ✏️ Add signed releases. Starting from the `v2.10.0`, every released binary can be checked with a provided `*.asc` key. For example:
+```bash
+$ gpg --verify rr.asc
+```
+
+The openPGP key can be verified here: [keyserver](https://keyserver.ubuntu.com/pks/lookup?search=0x9480A51C85D357D0&fingerprint=on&op=index)
+
+- ✏️ All proto api for the `Go` programming language located here: [link](https://buf.build/roadrunner-server/api). To use it, just import the latest stable version `go.buf.build/protocolbuffers/go/roadrunner-server/api latest`.
+- ✏️ `Service` plugin now supports auto-reload. It can be added to the `reload` plugin targets and on change, it'll reload all underlying processes.
+- ✏️ `AutoAck` jobs option. For the messages (jobs), which are acceptable to lose. Or which execution can lead to a worker's stop (for example - OOM).
+- ✏️ **[BETA] OpenTelemetry support**. Starting from now, the `new_relic` middleware is deprecated, it'll receive only dependency updates and will be removed from the RR bundle in the `v2.12.0`.
+OpenTelemetry plugin supports the following exporters:
+  1. OTLP (open telemetry protocol): `datadog`, `new relic`.
+  2. zipkin
+  3. stdout
+  All these exporters can send their data via `http` or `grpc` clients.
+
+Configuration sample (stdout exporter):
+```yaml
+http:
+  address: 127.0.0.1:43239
+  max_request_size: 1024
+  middleware: [gzip, otel]
+  pool:
+    num_workers: 2
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+
+otel:
+  insecure: false
+  compress: true
+  exporter: stdout
+  service_name: rr_test
+  service_version: 1.0.0
+```
+
+New Relic exporter via `http` client: [link](https://docs.newrelic.com/docs/more-integrations/open-source-telemetry-integrations/opentelemetry/opentelemetry-setup/#review-settings)
+```yaml
+http:
+    address: 127.0.0.1:43239
+    max_request_size: 1024
+    middleware: [gzip, otel]
+    pool:
+        num_workers: 2
+        max_jobs: 0
+        allocate_timeout: 60s
+        destroy_timeout: 60s
+otel:
+  insecure: false
+  compress: true
+  client: http
+  exporter: stdout
+  custom_url: ""
+  service_name: rr_test
+  service_version: 1.0.0
+  endpoint: otlp.eu01.nr-data.net:4318
+  headers:
+    - api-key: xxx # your api key here
+```
+
+PHP worker can access tracing data via `w3c` [headers](https://www.w3.org/TR/trace-context/#trace-context-http-headers-format).
+
+## 🧹 Chore:
+
+- 🧑‍🏭: All spaces and new-lines from the `Service` plugin output will be automatically trimmed. [CHORE](https://github.com/roadrunner-server/roadrunner/issues/1060), (thanks, @OO00O0O)
+
+---
+
+## v2.9.4 (06.05.2022)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: **HTTP plugin:** request max body size incorrectly parsed. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1115), (thanks, @Opekunov)
+
+---
+
+## v2.9.3 (06.05.2022)
+
+## 👀 New:
+
+- ✏️: `--silent` flag. This flag will hide startup message and `./rr reset` output.
+
+## 🩹 Fixes:
+
+- 🐛 Fix: **AMQP** driver didn't reconnect on timeouts, which led to stopping consuming messages w/o a proper notification. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1103), (thanks @hustlahusky)
+- 🐛 Fix: `reset` command (`./rr reset`) gets stuck when using output redirects. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1108), (thanks @maximal)
+
+## 🧹 Chore:
+
+- 🏗️ **HTTP** plugin: better looking error message on wrong status code. [ISSUE](https://github.com/roadrunner-server/roadrunner/issues/1107), (thanks @gam6itko)
+
+---
+
 ## v2.10.0-alpha.1 (07.04.2022)
 
 ## 👀 New:
