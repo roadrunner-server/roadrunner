@@ -75,6 +75,31 @@ PHP worker can access tracing data via `w3c` [headers](https://www.w3.org/TR/tra
 
 ---
 
+## v2.9.4 (06.05.2022)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: **HTTP plugin:** request max body size incorrectly parsed. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1115), (thanks, @Opekunov)
+
+---
+
+## v2.9.3 (06.05.2022)
+
+## 👀 New:
+
+- ✏️: `--silent` flag. This flag will hide startup message and `./rr reset` output.
+
+## 🩹 Fixes:
+
+- 🐛 Fix: **AMQP** driver didn't reconnect on timeouts, which led to stopping consuming messages w/o a proper notification. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1103), (thanks @hustlahusky)
+- 🐛 Fix: `reset` command (`./rr reset`) gets stuck when using output redirects. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1108), (thanks @maximal)
+
+## 🧹 Chore:
+
+- 🏗️ **HTTP** plugin: better looking error message on wrong status code. [ISSUE](https://github.com/roadrunner-server/roadrunner/issues/1107), (thanks @gam6itko)
+
+---
+
 ## v2.10.0-alpha.1 (07.04.2022)
 
 ## 👀 New:
