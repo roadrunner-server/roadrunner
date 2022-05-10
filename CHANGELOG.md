@@ -21,7 +21,7 @@ OpenTelemetry plugin supports the following exporters:
   1. OTLP (open telemetry protocol): `datadog`, `new relic`.
   2. zipkin
   3. stdout
-  All these exportes can send their data via `http` or `grpc` clients.
+  All these exporters can send their data via `http` or `grpc` clients.
 
 Configuration sample (stdout exporter):
 ```yaml
