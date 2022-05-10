@@ -5,7 +5,7 @@
 ## 👀 New:
 
 - ✏️ **RoadRunner-Temporal plugin now supports local activities**. Here is the brief overview: [link](https://docs.temporal.io/docs/temporal-explained/activities/#local-activity).
-- ✏️ Add Debian `amd64` releases.
+- ✏️ Add Debian `amd64` releases. [FEATURE](https://github.com/roadrunner-server/roadrunner/issues/940)
 - ✏️ Add signed releases. Starting from the `v2.10.0`, every released binary can be checked with a provided `*.asc` key. For example:
 ```bash
 $ gpg --verify rr.asc
