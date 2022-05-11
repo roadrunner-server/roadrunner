@@ -443,8 +443,12 @@ github.com/roadrunner-server/goridge/v3 v3.4.1 h1:ngamQzKHUN3LV6vGnlEDk2zfftXLzp
 github.com/roadrunner-server/goridge/v3 v3.4.1/go.mod h1:Xmnn1oSEC8cLtd+DixoS7sbCpGYuCPPORUXiWDgUudI=
 github.com/roadrunner-server/grpc/v2 v2.13.3 h1:AY8iIaUyq72oLEZFMubyUsGgZL1SoWefpLGhpkdSIDg=
 github.com/roadrunner-server/grpc/v2 v2.13.3/go.mod h1:OvG51fDqd1Um+eUSFfT9+e31gt3EYeY91IE9fKoSA7Q=
+github.com/roadrunner-server/gzip/v2 v2.11.2 h1:4drbfzOENl52BIxJ6qqCI6BRJMYtolBeJfC0TAgoYck=
+github.com/roadrunner-server/gzip/v2 v2.11.2/go.mod h1:TmHv0h2GfVyzDUy4Mqmr3wRqiZE2ueT5n4syb6G/374=
 github.com/roadrunner-server/headers/v2 v2.11.2 h1:CmDJ2ilslE11+LOw8cU08dri1rnqmzKqyOiGKu90ehE=
 github.com/roadrunner-server/headers/v2 v2.11.2/go.mod h1:IRchXox04TEgu/gfBqvZd07EeP35asPRaxzR40guUMc=
+github.com/roadrunner-server/http/v2 v2.15.7 h1:pjn37kD2LH6zAnZ/H1U0F9zeoy2yeY9KUGPCLQST+ts=
+github.com/roadrunner-server/http/v2 v2.15.7/go.mod h1:FwULCvqeFXrVDLxTDc1lg8+BL7spBIifyF3E7m/1saM=
 github.com/roadrunner-server/informer/v2 v2.11.3 h1:Ul2i3ywLa/gzMkklUCwxJEIUbMDMehmPwr8LvBiJVeo=
 github.com/roadrunner-server/informer/v2 v2.11.3/go.mod h1:uF6DYS9IQiqjRtCEMn8HHuAqDcQizyaDCTKs7BTpOmc=
 github.com/roadrunner-server/jobs/v2 v2.13.1 h1:JJTw7EQoPjj75vJYG8VWdQxWukAr4xDZCrxMbYbEoC4=
@@ -463,6 +467,8 @@ github.com/roadrunner-server/nats/v2 v2.13.1 h1:IjdGL51DW1dpv9xudRB+RXb+Qi3lZyJv
 github.com/roadrunner-server/nats/v2 v2.13.1/go.mod h1:hG/5E2fWqgug5FfvFjCgMiA4917CdXt7rExE3pNBGiE=
 github.com/roadrunner-server/new_relic/v2 v2.13.3 h1:Qd7K5neOE2FL+dDdZ0WGgt68cVzrXIjrHJDwvQbLkSQ=
 github.com/roadrunner-server/new_relic/v2 v2.13.3/go.mod h1:skNpGYS6JtqpEA/W2F2SiLFLOO/ccJDte/ewn/RazcU=
+github.com/roadrunner-server/otel/v2 v2.1.1 h1:rHQacAQjEdaNuxRHSKGzO+ouyEO/qZ4LFt5FKvxEF+M=
+github.com/roadrunner-server/otel/v2 v2.1.1/go.mod h1:wYiNQARQLIl3MiGeVMxoJWnwTDJt/v963ezKh+NIKus=
 github.com/roadrunner-server/prometheus/v2 v2.12.3 h1:DTVyJTbghsDieUDNOtnqAF7Ez86RmfbrtRpTwEdB6U0=
 github.com/roadrunner-server/prometheus/v2 v2.12.3/go.mod h1:kfGF4LoMSwiuT3+9GPdWkzWx445g8JlJ3S7XgkTP/u0=
 github.com/roadrunner-server/proxy_ip_parser/v2 v2.4.0 h1:DA2fItCrwzNBXN7zl2dB+pQMvXoSM9raH1Q8nELkhuI=
