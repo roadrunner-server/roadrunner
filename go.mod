@@ -53,12 +53,6 @@ require (
 	github.com/temporalio/roadrunner-temporal v1.4.0-rc.2
 )
 
-replace (
-	github.com/roadrunner-server/gzip/v2 => ../plugins/gzip
-	github.com/roadrunner-server/http/v2 => ../plugins/http
-	github.com/roadrunner-server/otel/v2 => ../plugins/otel
-)
-
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.16.3 // indirect
