@@ -20,9 +20,9 @@ require (
 	github.com/roadrunner-server/fileserver/v2 v2.12.3
 	github.com/roadrunner-server/goridge/v3 v3.4.1
 	github.com/roadrunner-server/grpc/v2 v2.13.3
-	github.com/roadrunner-server/gzip/v2 v2.11.1
+	github.com/roadrunner-server/gzip/v2 v2.11.2
 	github.com/roadrunner-server/headers/v2 v2.11.2
-	github.com/roadrunner-server/http/v2 v2.15.6
+	github.com/roadrunner-server/http/v2 v2.15.7
 	github.com/roadrunner-server/informer/v2 v2.11.3
 	github.com/roadrunner-server/jobs/v2 v2.13.1
 	github.com/roadrunner-server/kv/v2 v2.12.1
@@ -51,6 +51,12 @@ require (
 	github.com/spf13/viper v1.11.0
 	github.com/stretchr/testify v1.7.1
 	github.com/temporalio/roadrunner-temporal v1.4.0-rc.2
+)
+
+replace (
+	github.com/roadrunner-server/gzip/v2 => ../plugins/gzip
+	github.com/roadrunner-server/http/v2 => ../plugins/http
+	github.com/roadrunner-server/otel/v2 => ../plugins/otel
 )
 
 require (
@@ -99,7 +105,7 @@ require (
 	github.com/hashicorp/go-version v1.4.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/klauspost/compress v1.15.3 // indirect
+	github.com/klauspost/compress v1.15.4 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.12 // indirect
 	github.com/libdns/libdns v0.2.1 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
@@ -108,7 +114,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/mholt/acmez v1.0.2 // indirect
-	github.com/miekg/dns v1.1.48 // indirect
+	github.com/miekg/dns v1.1.49 // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nats-io/jwt/v2 v2.2.1-0.20220113022732-58e87895b296 // indirect
@@ -119,7 +125,7 @@ require (
 	github.com/openzipkin/zipkin-go v0.4.0 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
-	github.com/pelletier/go-toml/v2 v2.0.0 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.12.1 // indirect
