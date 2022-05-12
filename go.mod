@@ -41,7 +41,7 @@ require (
 	github.com/roadrunner-server/rpc/v2 v2.12.3
 	github.com/roadrunner-server/send/v2 v2.11.1
 	github.com/roadrunner-server/server/v2 v2.13.3
-	github.com/roadrunner-server/service/v2 v2.14.2
+	github.com/roadrunner-server/service/v2 v2.14.4
 	github.com/roadrunner-server/sqs/v2 v2.14.1
 	github.com/roadrunner-server/static/v2 v2.12.3
 	github.com/roadrunner-server/status/v2 v2.12.1
@@ -133,7 +133,7 @@ require (
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/spf13/afero v1.8.2 // indirect
-	github.com/spf13/cast v1.4.1 // indirect
+	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.4.0 // indirect
@@ -168,7 +168,7 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
-	golang.org/x/crypto v0.0.0-20220507011949-2cf3adece122 // indirect
+	golang.org/x/crypto v0.0.0-20220511200225-c6db032c6c88 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 //indirect
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect

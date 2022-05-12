@@ -16,15 +16,7 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 .idea
-builds/
-tests/vendor/
-unit_tests
-unit_tests_copied
-dir1
 coverage
 /rr
 rr.exe
-.rr-sample-bench.yaml
-.rr-with-temporal.yaml
-.rr-sample.yaml
-.rr-sample-bench-*
+.rr-sample-*
