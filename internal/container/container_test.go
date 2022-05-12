@@ -15,7 +15,6 @@ func TestNewContainer(t *testing.T) { // there is no legal way to test container
 	c2, err2 := container.NewContainer(container.Config{
 		GracePeriod: time.Second,
 		PrintGraph:  true,
-		RetryOnFail: true,
 		LogLevel:    endure.WarnLevel,
 	})
 

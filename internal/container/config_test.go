@@ -17,7 +17,6 @@ func TestNewConfig_SuccessfulReading(t *testing.T) {
 
 	assert.Equal(t, time.Second*10, c.GracePeriod)
 	assert.True(t, c.PrintGraph)
-	assert.True(t, c.RetryOnFail)
 	assert.Equal(t, endure.WarnLevel, c.LogLevel)
 }
 
@@ -31,7 +30,6 @@ func TestNewConfig_WithoutEndureKey(t *testing.T) {
 
 	assert.Equal(t, time.Second*30, c.GracePeriod)
 	assert.False(t, c.PrintGraph)
-	assert.False(t, c.RetryOnFail)
 	assert.Equal(t, endure.ErrorLevel, c.LogLevel)
 }
 
