@@ -9,7 +9,6 @@ import (
 func NewContainer(cfg Config) (*endure.Endure, error) {
 	endureOptions := []endure.Options{
 		endure.SetLogLevel(cfg.LogLevel),
-		endure.RetryOnFail(cfg.RetryOnFail),
 		endure.GracefulShutdownTimeout(cfg.GracePeriod),
 	}
 

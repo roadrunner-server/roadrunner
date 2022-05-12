@@ -11,7 +11,6 @@ import (
 type Config struct {
 	GracePeriod time.Duration
 	PrintGraph  bool
-	RetryOnFail bool // TODO check for races, disabled at this moment
 	LogLevel    endure.Level
 }
 
@@ -34,7 +33,6 @@ func NewConfig(cfgFile string) (*Config, error) {
 		return &Config{ // return config with defaults
 			GracePeriod: defaultGracePeriod,
 			PrintGraph:  false,
-			RetryOnFail: false,
 			LogLevel:    endure.ErrorLevel,
 		}, nil
 	}
@@ -42,7 +40,6 @@ func NewConfig(cfgFile string) (*Config, error) {
 	rrCfgEndure := struct {
 		GracePeriod time.Duration `mapstructure:"grace_period"`
 		PrintGraph  bool          `mapstructure:"print_graph"`
-		RetryOnFail bool          `mapstructure:"retry_on_fail"`
 		LogLevel    string        `mapstructure:"log_level"`
 	}{}
 
@@ -67,7 +64,6 @@ func NewConfig(cfgFile string) (*Config, error) {
 	return &Config{
 		GracePeriod: rrCfgEndure.GracePeriod,
 		PrintGraph:  rrCfgEndure.PrintGraph,
-		RetryOnFail: rrCfgEndure.RetryOnFail,
 		LogLevel:    logLevel,
 	}, nil
 }

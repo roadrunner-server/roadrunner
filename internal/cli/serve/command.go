@@ -98,9 +98,8 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 				case e := <-errCh:
 					fmt.Printf("error occurred: %v, plugin: %s\n", e.Error, e.VertexID)
 
-					// return error, container already stopped internally
-					if !containerCfg.RetryOnFail {
-						return errors.E(op, e.Error)
+					if err = endureContainer.Stop(); err != nil {
+						fmt.Printf("error occurred during the stopping container: %v\n", err)
 					}
 
 				case <-stop: // stop the container after first signal

@@ -15,7 +15,7 @@ require (
 	github.com/roadrunner-server/broadcast/v2 v2.12.1
 	github.com/roadrunner-server/cache/v2 v2.13.1
 	github.com/roadrunner-server/config/v2 v2.13.3
-	github.com/roadrunner-server/endure v1.2.3
+	github.com/roadrunner-server/endure v1.3.0
 	github.com/roadrunner-server/errors v1.1.2
 	github.com/roadrunner-server/fileserver/v2 v2.12.3
 	github.com/roadrunner-server/goridge/v3 v3.4.1
@@ -41,7 +41,7 @@ require (
 	github.com/roadrunner-server/rpc/v2 v2.12.3
 	github.com/roadrunner-server/send/v2 v2.11.1
 	github.com/roadrunner-server/server/v2 v2.13.3
-	github.com/roadrunner-server/service/v2 v2.14.4
+	github.com/roadrunner-server/service/v2 v2.14.5
 	github.com/roadrunner-server/sqs/v2 v2.14.1
 	github.com/roadrunner-server/static/v2 v2.12.3
 	github.com/roadrunner-server/status/v2 v2.12.1
@@ -183,5 +183,5 @@ require (
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.0-20220512140231-539c8e751b99 // indirect
 )
