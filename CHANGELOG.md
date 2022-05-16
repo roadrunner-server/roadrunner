@@ -1,9 +1,9 @@
 # CHANGELOG
 
-## v2.10.0-rc.1 (10.05.2022)
+## v2.10.0 (16.05.2022)
 
 ## 👀 New:
-
+- ✏️ Documentation update: [link](https://roadrunner.dev).
 - ✏️ **RoadRunner-Temporal plugin now supports local activities**. Here is the brief overview: [link](https://docs.temporal.io/docs/temporal-explained/activities/#local-activity).
 - ✏️ Add Debian `amd64` releases. [FEATURE](https://github.com/roadrunner-server/roadrunner/issues/940)
 - ✏️ Add signed releases. Starting from the `v2.10.0`, every released binary can be checked with a provided `*.asc` key. For example:
@@ -16,7 +16,7 @@ The openPGP key can be verified here: [keyserver](https://keyserver.ubuntu.com/p
 - ✏️ All proto api for the `Go` programming language located here: [link](https://buf.build/roadrunner-server/api). To use it, just import the latest stable version `go.buf.build/protocolbuffers/go/roadrunner-server/api latest`.
 - ✏️ `Service` plugin now supports auto-reload. It can be added to the `reload` plugin targets and on change, it'll reload all underlying processes.
 - ✏️ `AutoAck` jobs option. For the messages (jobs), which are acceptable to lose. Or which execution can lead to a worker's stop (for example - OOM).
-- ✏️ **[BETA] OpenTelemetry support**. Starting from now, the `new_relic` middleware is deprecated, it'll receive only dependency updates and will be removed from the RR bundle in the `v2.12.0`.
+- ✏️ **[BETA] OpenTelemetry support**. Starting from now, the `new_relic` middleware is deprecated, it'll receive only dependency updates and will be removed from the RR bundle in the `v2.12.0`. (thanks @brettmc)
 OpenTelemetry plugin supports the following exporters:
   1. OTLP (open telemetry protocol): `datadog`, `new relic`.
   2. zipkin
@@ -68,6 +68,9 @@ otel:
 ```
 
 PHP worker can access tracing data via `w3c` [headers](https://www.w3.org/TR/trace-context/#trace-context-http-headers-format).
+
+- ✏️ Jobs can be auto-ack'ed now. New option used to acknowledge a message after RR receive it from the queue. [FR](https://github.com/roadrunner-server/roadrunner/issues/1089), (thanks @hustlahusky)
+- ✏️ `protoc-gen-php-grpc` now supports `optional` fields. (thanks @genhoi)
 
 ## 🧹 Chore:
 
