@@ -749,7 +749,7 @@
                         },
                         "exporter": {
                             "description": "Provides functionality to emit telemetry to consumers",
-                            "type": "array",
+                            "type": "string",
                             "items": {
                                 "type": "string",
                                 "enum": [
@@ -772,7 +772,7 @@
                         },
                         "client": {
                             "description": "Client to send the spans",
-                            "type": "array",
+                            "type": "string",
                             "items": {
                                 "type": "string",
                                 "enum": [

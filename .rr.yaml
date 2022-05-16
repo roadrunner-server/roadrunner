@@ -524,22 +524,22 @@ http:
     # Used for the http client to override the default URL
     #
     # Default: empty
-    custom_url:
+    custom_url: ""
 
     # User's service name
     #
     # Default: RoadRunner
-    service_name: rr_test
+    service_name: "rr_test"
 
     # User's service version
     #
     # Default: RoadRunner
-    service_version: 1.0.0
+    service_version: "1.0.0"
 
     # Consumer's endpoint
     #
     # Default: localhost:4318
-    endpoint: 127.0.0.1:4318
+    endpoint: "127.0.0.1:4318"
 
   # [SINCE 2.6] New Relic middleware
   new_relic:
