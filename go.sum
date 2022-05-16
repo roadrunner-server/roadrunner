@@ -427,6 +427,8 @@ github.com/roadrunner-server/amqp/v2 v2.14.1 h1:ATpa5llQWcZZS9oppobxdOX/GnXHCr5B
 github.com/roadrunner-server/amqp/v2 v2.14.1/go.mod h1:WRu8/c+zOt2iT6srsyTkpLr1gBz32yaqsjYL72Bsn0w=
 github.com/roadrunner-server/api/v2 v2.17.0 h1:uB7bi4qt1FhWq4pOosWfyzJjInGztvf4mQcuUCzMGGI=
 github.com/roadrunner-server/api/v2 v2.17.0/go.mod h1:kTic07XUaHlPub5Pe1d9mdukYw840oJ4S/fkH2fUURs=
+github.com/roadrunner-server/api/v2 v2.17.1 h1:uxjmFwHwdce/tG5oRaLGJ7iiGMOEWcx9/gSRXyCH84g=
+github.com/roadrunner-server/api/v2 v2.17.1/go.mod h1:eAFjmf/u+ZBubzIUEjw1fJKYMExK2YnKqNuiepsFveo=
 github.com/roadrunner-server/beanstalk/v2 v2.13.2 h1:tAzG5HvVVqq1+HgQuLZnY10rne7FEWRtIKrkfnCYnA0=
 github.com/roadrunner-server/beanstalk/v2 v2.13.2/go.mod h1:zZnrUGBysnazM+N2vxkc50n7uLx9x1S6SmJUjv35+LU=
 github.com/roadrunner-server/boltdb/v2 v2.14.3 h1:uDvHBFpbFrQJ5YgSsAO3jY2+PpP67Bb8Zg+1e+DRHTc=
@@ -487,6 +489,8 @@ github.com/roadrunner-server/rpc/v2 v2.12.5 h1:X6N99hY6yRoxQEGjjdA04pt8aoCPkUKla
 github.com/roadrunner-server/rpc/v2 v2.12.5/go.mod h1:UU+hhXdSjLd55s+ZqWJM3pu76x5e+4qwlzpnTK/x5UU=
 github.com/roadrunner-server/sdk/v2 v2.14.0 h1:Z3GkXGKlWjwOEmTl7VmusgULHDRAj93K7krAolbtBsk=
 github.com/roadrunner-server/sdk/v2 v2.14.0/go.mod h1:CLDScQwC48YBBfKddtaoo3lOG5COsoprFrD1RIJRp28=
+github.com/roadrunner-server/sdk/v2 v2.14.1 h1:GVfVhkRIXLaXubflZbquaU1E3oy+fTRzglgkCqNfOa0=
+github.com/roadrunner-server/sdk/v2 v2.14.1/go.mod h1:5Vwb4tPDfH2yPy+SFrFgTSO7195lw+LXPgvqDvjjGB8=
 github.com/roadrunner-server/send/v2 v2.11.2 h1:J+QL1f2nXvLfjW2qEjIe64NnmAnd/4I/FkRjpLbl3zo=
 github.com/roadrunner-server/send/v2 v2.11.2/go.mod h1:RiSEAcSFjClpr8XSxtqLjCu+TND2P3LUfxd1tRpOAGk=
 github.com/roadrunner-server/server/v2 v2.13.5 h1:LFqovHRBqh5KaGrLrPPKSYZBYxPY/zlTSyMabAwxy2A=
