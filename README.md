@@ -27,7 +27,7 @@ with much greater performance and flexibility.
 <p align="center">
 	<a href="https://roadrunner.dev/"><b>Official Website</b></a> |
 	<a href="https://roadrunner.dev/docs"><b>Documentation</b></a> |
-    <a href="https://github.com/orgs/spiral/projects/2"><b>Release schedule</b></a>
+    <a href="https://github.com/orgs/roadrunner-server/projects/1"><b>Release schedule</b></a>
 </p>
 
 Features:
