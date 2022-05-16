@@ -499,6 +499,48 @@ http:
         "fe80::/10",
     ]
 
+  # [SINCE 2.10] OpenTelemetry middleware
+  otel:
+    # Use insecure endpoint (http) or insecure gRPC
+    #
+    # Default: false
+    insecure: true
+
+    # Use gzip to compress the spans
+    #
+    # Default: false
+    compress: false
+
+    # Client to send the spans
+    #
+    # Default: http. Possible values: `http`, `grpc`
+    client: http
+
+    # Provides functionality to emit telemetry to consumers
+    #
+    # Default: otlp. Possible values: otlp (used for new_relic, datadog), zipkin or stdout
+    exporter: otlp
+
+    # Used for the http client to override the default URL
+    #
+    # Default: empty
+    custom_url:
+
+    # User's service name
+    #
+    # Default: RoadRunner
+    service_name: rr_test
+
+    # User's service version
+    #
+    # Default: RoadRunner
+    service_version: 1.0.0
+
+    # Consumer's endpoint
+    #
+    # Default: localhost:4318
+    endpoint: 127.0.0.1:4318
+
   # [SINCE 2.6] New Relic middleware
   new_relic:
     # Application name.
