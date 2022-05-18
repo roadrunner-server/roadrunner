@@ -10,7 +10,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v2 v2.15.1
 	github.com/roadrunner-server/api/v2 v2.17.1
-	github.com/roadrunner-server/beanstalk/v2 v2.13.3
+	github.com/roadrunner-server/beanstalk/v2 v2.14.0
 	github.com/roadrunner-server/boltdb/v2 v2.14.4
 	github.com/roadrunner-server/broadcast/v2 v2.12.4
 	github.com/roadrunner-server/cache/v2 v2.13.4
@@ -30,7 +30,7 @@ require (
 	github.com/roadrunner-server/memcached/v2 v2.12.3
 	github.com/roadrunner-server/memory/v2 v2.13.3
 	github.com/roadrunner-server/metrics/v2 v2.12.6
-	github.com/roadrunner-server/nats/v2 v2.13.4
+	github.com/roadrunner-server/nats/v2 v2.14.0
 	github.com/roadrunner-server/new_relic/v2 v2.13.6
 	github.com/roadrunner-server/otel/v2 v2.2.2
 	github.com/roadrunner-server/prometheus/v2 v2.12.6
@@ -42,7 +42,7 @@ require (
 	github.com/roadrunner-server/send/v2 v2.11.3
 	github.com/roadrunner-server/server/v2 v2.13.6
 	github.com/roadrunner-server/service/v2 v2.14.7
-	github.com/roadrunner-server/sqs/v2 v2.14.4
+	github.com/roadrunner-server/sqs/v2 v2.15.0
 	github.com/roadrunner-server/static/v2 v2.12.5
 	github.com/roadrunner-server/status/v2 v2.12.4
 	github.com/roadrunner-server/tcp/v2 v2.12.6

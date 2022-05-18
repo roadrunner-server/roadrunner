@@ -1414,7 +1414,8 @@
                                 "request_client_cert",
                                 "require_any_client_cert",
                                 "verify_client_cert_if_given",
-                                "no_client_certs"
+                                "no_client_certs",
+                                "require_and_verify_client_cert"
                             ]
                         }
                     }
