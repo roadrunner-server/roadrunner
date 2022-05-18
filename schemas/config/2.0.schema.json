@@ -755,7 +755,8 @@
                                 "enum": [
                                     "zipkin",
                                     "stdout",
-                                    "otlp"
+                                    "otlp",
+                                    "jaeger"
                                 ],
                                 "pattern": "^[0-9a-zA-Z_]+$"
                             }
