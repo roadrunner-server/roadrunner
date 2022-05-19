@@ -800,8 +800,13 @@ http:
 
     # Path to the root certificate authority file.
     #
-    # This option is optional.
+    # This option is optional (required for the mTLS).
     root_ca: /ssl/root.crt
+
+    # Client auth type (mTLS)
+    #
+    # This option is optional. Default value: no_client_certs. Possible values: request_client_cert, require_any_client_cert, verify_client_cert_if_given, require_and_verify_client_cert, no_client_certs
+    client_auth_type: no_client_certs
 
   # FastCGI frontend support.
   fcgi:

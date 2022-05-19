@@ -692,6 +692,18 @@
                             "examples": [
                                 "/ssl/root.crt"
                             ]
+                        },
+                        "client_auth_type": {
+                            "description": "Client auth type",
+                            "type": "string",
+                            "default": "no_client_certs",
+                            "enum": [
+                                "request_client_cert",
+                                "require_any_client_cert",
+                                "verify_client_cert_if_given",
+                                "no_client_certs",
+                                "require_and_verify_client_cert"
+                            ]
                         }
                     },
                     "required": [
