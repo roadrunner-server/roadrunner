@@ -692,6 +692,18 @@
                             "examples": [
                                 "/ssl/root.crt"
                             ]
+                        },
+                        "client_auth_type": {
+                            "description": "Client auth type",
+                            "type": "string",
+                            "default": "no_client_certs",
+                            "enum": [
+                                "request_client_cert",
+                                "require_any_client_cert",
+                                "verify_client_cert_if_given",
+                                "no_client_certs",
+                                "require_and_verify_client_cert"
+                            ]
                         }
                     },
                     "required": [
@@ -1163,6 +1175,11 @@
                                                     "type": "integer",
                                                     "default": 100000
                                                 },
+                                                "consume_all": {
+                                                    "description": "Consume all payloads, even not Job structured",
+                                                    "type": "boolean",
+                                                    "default": false
+                                                },
                                                 "queue": {
                                                     "type": "string",
                                                     "description": "Queue name",
@@ -1226,6 +1243,11 @@
                                                     "type": "integer",
                                                     "default": 100000
                                                 },
+                                                "consume_all": {
+                                                    "description": "Consume all payloads, even not Job structured",
+                                                    "type": "boolean",
+                                                    "default": false
+                                                },
                                                 "tube_priority": {
                                                     "description": "Beanstalk internal tube priority",
                                                     "type": "integer",
@@ -1254,6 +1276,16 @@
                                                     "description": "Number of job to prefetch from the driver",
                                                     "type": "integer",
                                                     "default": 100000
+                                                },
+                                                "skip_queue_declaration": {
+                                                    "description": "Get queue URL instead of declaring it",
+                                                    "type": "boolean",
+                                                    "default": false
+                                                },
+                                                "consume_all": {
+                                                    "description": "Consume all payloads, even not Job structured",
+                                                    "type": "boolean",
+                                                    "default": false
                                                 },
                                                 "visibility_timeout": {
                                                     "type": "integer",
@@ -1303,6 +1335,11 @@
                                                     "description": "Number of job to prefetch from the driver",
                                                     "type": "integer",
                                                     "default": 100000
+                                                },
+                                                "consume_all": {
+                                                    "description": "Consume all payloads, even not Job structured",
+                                                    "type": "boolean",
+                                                    "default": false
                                                 },
                                                 "subject": {
                                                     "description": "NATS subject",

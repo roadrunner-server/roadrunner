@@ -1,5 +1,99 @@
 # CHANGELOG
 
+## v2.10.1 (19.05.2022)
+
+## 👀 New:
+- ✏️ **Jobs (queues)** plugin now can consume any payload from the queue. If RR fails in converting payload into the `Job` structure, it'll create and fill all available fields manually. To turn **on** this feature, use `consume_all: true` in the driver configuration, e.g.:
+Supported drivers: `amqp`, `sqs`,`beanstalk`,`nats`.
+
+```yaml
+jobs:
+  num_pollers: 10
+  pipeline_size: 100000
+  pool:
+    num_workers: 10
+
+  pipelines:
+    test-raw:
+      driver: sqs
+      config:
+        consume_all: true # <------- NEW OPTION
+
+  consume: [ "test-raw" ]
+```
+
+- ✏️ **SQS** Jobs driver now can skip queue declaration in favor of getting queue URL instead. To use this feature, use `skip_queue_declaration: true` sqs driver option. [FR](https://github.com/roadrunner-server/roadrunner/issues/980), (thanks @sergey-telpuk)
+
+```yaml
+jobs:
+  num_pollers: 10
+  pipeline_size: 100000
+  pool:
+    num_workers: 10
+
+  pipelines:
+    test-2:
+      driver: sqs
+      config:
+        skip_queue_declaration: true # <----- NEW OPTION
+
+  consume: [ "test-2" ]
+```
+
+- ✏️ OpenTelemetry middleware now supports `Jaeger` exporter and propagator.
+
+```yaml
+http:
+  address: 127.0.0.1:43239
+  max_request_size: 1024
+  middleware: [gzip, otel]
+  pool:
+    num_workers: 2
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+
+otel:
+  exporter: jaeger # <----- NEW OPTION
+```
+
+- ✏️ **HTTP Plugin** now supports [`mTLS` authentication](https://www.cloudflare.com/en-gb/learning/access-management/what-is-mutual-tls/). Possible values for the `client_auth_type` are the same as for the `gRPC` (`no_client_cert`, `request_client_cert`,`require_any_client_cert`,`verify_client_cert_if_given`,`require_and_verify_client_cert`) [FR](https://github.com/roadrunner-server/roadrunner/issues/1111), (thanks @fwolfsjaeger)
+
+```yaml
+version: '2.7'
+
+server:
+  command: "php ../../php_test_files/http/client.php echo pipes"
+  relay: "pipes"
+  relay_timeout: "20s"
+
+http:
+  address: :8085
+  max_request_size: 1024
+  middleware: [ ]
+  pool:
+    num_workers: 1
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+  ssl:
+    address: :8895
+    key: "key"
+    cert: "cert"
+    root_ca: "rootCA.pem" # <---- REQUIRED to use mTLS
+    client_auth_type: require_and_verify_client_cert # <---- NEW OPTION
+logs:
+  mode: development
+  level: error
+```
+
+## 🩹 Fixes:
+
+- 🐛 Fix: **HTTP plugin**: non-documented behavior on non-standard (but valid) http codes. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1136), (thanks, @Meroje)
+- 🐛 Fix: **SQS driver**: `rr_auto_ack` attribute won't fail the existing messages.
+
+---
+
 ## v2.10.0 (16.05.2022)
 
 ## 👀 New:
