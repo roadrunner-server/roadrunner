@@ -1178,6 +1178,11 @@ jobs:
         # If the job has priority set to 0, it will inherit the pipeline's priority. Default: 10.
         priority: 1
 
+        # Consume any payload type (not only Jobs structured)
+        #
+        # Default: false
+        consume_all: false
+
         # Durable queue
         #
         # Default: false
@@ -1246,6 +1251,11 @@ jobs:
         # Default: 1
         tube_priority: 1
 
+        # Consume any payload type (not only Jobs structured)
+        #
+        # Default: false
+        consume_all: false
+
         # Tube name
         #
         # Default: default
@@ -1277,6 +1287,16 @@ jobs:
         #
         # Default: 10
         prefetch: 10
+
+        # Consume any payload type (not only Jobs structured)
+        #
+        # Default: false
+        consume_all: false
+
+        # Get queue URL only
+        #
+        # Default: false
+        skip_queue_declaration: false
 
         # The duration (in seconds) that the received messages are hidden from subsequent
         # retrieve requests after being retrieved by a ReceiveMessage request
@@ -1319,7 +1339,6 @@ jobs:
       #
       # Should not be empty
       config:
-
         # Pipeline priority
         #
         # If the job has priority set to 0, it will inherit the pipeline's priority. Default: 10.
@@ -1329,6 +1348,11 @@ jobs:
         #
         # Messages to read into the channel
         prefetch: 100
+
+        # Consume any payload type (not only Jobs structured)
+        #
+        # Default: false
+        consume_all: false
 
         # NATS subject
         #
