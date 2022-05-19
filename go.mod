@@ -36,7 +36,7 @@ require (
 	github.com/roadrunner-server/prometheus/v2 v2.12.7
 	github.com/roadrunner-server/proxy_ip_parser/v2 v2.4.0
 	github.com/roadrunner-server/redis/v2 v2.14.4
-	github.com/roadrunner-server/reload/v2 v2.12.4
+	github.com/roadrunner-server/reload/v2 v2.12.5
 	github.com/roadrunner-server/resetter/v2 v2.11.6
 	github.com/roadrunner-server/rpc/v2 v2.12.7
 	github.com/roadrunner-server/send/v2 v2.11.4

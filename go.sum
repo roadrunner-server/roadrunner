@@ -477,8 +477,8 @@ github.com/roadrunner-server/proxy_ip_parser/v2 v2.4.0 h1:DA2fItCrwzNBXN7zl2dB+p
 github.com/roadrunner-server/proxy_ip_parser/v2 v2.4.0/go.mod h1:mZHMsfUIkNXQRN8X98POxa/qYB6Zrb4HZmBTAWdxusg=
 github.com/roadrunner-server/redis/v2 v2.14.4 h1:ppC9FMrk0LQ9rv2yUrNyJ70mt9evylY8w8SaoOX1T1g=
 github.com/roadrunner-server/redis/v2 v2.14.4/go.mod h1:unvyqhSrXpaeQUpSqcINef6tYk5enmw2rxIrh3GPoas=
-github.com/roadrunner-server/reload/v2 v2.12.4 h1:bZEF0TiYKZXfSyS7KEny4PfTmJlQEZEWM3YCZyNvTHc=
-github.com/roadrunner-server/reload/v2 v2.12.4/go.mod h1:JHK7XcUahSCTzQjhzbUcDBk9JWofHlVXWFRSWYVhJ3g=
+github.com/roadrunner-server/reload/v2 v2.12.5 h1:7EP1AeWa0F/DwNt7lBDZ43EGgZ1YHuNNewyKWFUk1os=
+github.com/roadrunner-server/reload/v2 v2.12.5/go.mod h1:JHK7XcUahSCTzQjhzbUcDBk9JWofHlVXWFRSWYVhJ3g=
 github.com/roadrunner-server/resetter/v2 v2.11.6 h1:4qIAkjv5BYRGqLNX/fKy0WVBkPfwbAisb89vmojKCvc=
 github.com/roadrunner-server/resetter/v2 v2.11.6/go.mod h1:Eo8gY3YgVg/sn7Rll0+8HqtBqRTxGJouQkgmT4EL7mQ=
 github.com/roadrunner-server/rpc/v2 v2.12.7 h1:qCy+6j7l4HieqL4zpnN3aTpYJWwoW5HJiBPfTP3+NDs=
