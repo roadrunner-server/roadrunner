@@ -19,7 +19,7 @@ const (
 )
 
 // NewCommand creates `serve` command.
-func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Command { //nolint:funlen,gocognit
+func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Command { //nolint:funlen
 	return &cobra.Command{
 		Use:   "serve",
 		Short: "Start RoadRunner server",
@@ -96,12 +96,7 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 			for {
 				select {
 				case e := <-errCh:
-					fmt.Printf("error occurred: %v, plugin: %s\n", e.Error, e.VertexID)
-
-					if err = endureContainer.Stop(); err != nil {
-						fmt.Printf("error occurred during the stopping container: %v\n", err)
-					}
-
+					fmt.Printf("error occurred: %v, plugin: %s, stopping execution\n", e.Error, e.VertexID)
 				case <-stop: // stop the container after first signal
 					fmt.Printf("stop signal received, grace timeout is: %d seconds\n", uint64(containerCfg.GracePeriod.Seconds()))
 
