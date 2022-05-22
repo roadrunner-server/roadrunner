@@ -39,7 +39,7 @@ Features:
 - A Fully customizable server, FastCGI support
 - Flexible environment configuration
 - No external PHP dependencies (64bit version required), drop-in (based on [Goridge](https://github.com/roadrunner-server/goridge))
-- Load balancer, process manager and task pipeline
+- Process manager and task pipeline
 - Integrated metrics (Prometheus)
 - [Workflow engine](https://github.com/temporalio/sdk-php) by [Temporal.io](https://temporal.io)
 - Works over TCP, UNIX sockets and standard pipes
