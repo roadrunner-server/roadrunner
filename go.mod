@@ -11,14 +11,14 @@ require (
 	github.com/roadrunner-server/amqp/v2 v2.15.1
 	github.com/roadrunner-server/api/v2 v2.17.1
 	github.com/roadrunner-server/beanstalk/v2 v2.14.0
-	github.com/roadrunner-server/boltdb/v2 v2.14.6
+	github.com/roadrunner-server/boltdb/v2 v2.14.7
 	github.com/roadrunner-server/broadcast/v2 v2.12.4
 	github.com/roadrunner-server/cache/v2 v2.13.4
 	github.com/roadrunner-server/config/v2 v2.13.8
 	github.com/roadrunner-server/endure v1.3.0
 	github.com/roadrunner-server/errors v1.1.2
 	github.com/roadrunner-server/fileserver/v2 v2.12.8
-	github.com/roadrunner-server/goridge/v3 v3.4.1
+	github.com/roadrunner-server/goridge/v3 v3.4.2
 	github.com/roadrunner-server/grpc/v2 v2.14.3
 	github.com/roadrunner-server/gzip/v2 v2.11.6
 	github.com/roadrunner-server/headers/v2 v2.11.4
@@ -128,7 +128,7 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rabbitmq/amqp091-go v1.3.4 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/roadrunner-server/sdk/v2 v2.14.1 // indirect
+	github.com/roadrunner-server/sdk/v2 v2.14.2 // indirect
 	github.com/roadrunner-server/tcplisten v1.1.2 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
