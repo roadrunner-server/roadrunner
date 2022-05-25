@@ -41,7 +41,7 @@ require (
 	github.com/roadrunner-server/rpc/v2 v2.12.7
 	github.com/roadrunner-server/send/v2 v2.11.5
 	github.com/roadrunner-server/server/v2 v2.13.8
-	github.com/roadrunner-server/service/v2 v2.14.9
+	github.com/roadrunner-server/service/v2 v2.14.10
 	github.com/roadrunner-server/sqs/v2 v2.15.0
 	github.com/roadrunner-server/static/v2 v2.12.6
 	github.com/roadrunner-server/status/v2 v2.12.6
