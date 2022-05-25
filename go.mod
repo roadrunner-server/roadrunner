@@ -18,11 +18,11 @@ require (
 	github.com/roadrunner-server/endure v1.3.0
 	github.com/roadrunner-server/errors v1.1.2
 	github.com/roadrunner-server/fileserver/v2 v2.12.8
-	github.com/roadrunner-server/goridge/v3 v3.4.1
+	github.com/roadrunner-server/goridge/v3 v3.4.2
 	github.com/roadrunner-server/grpc/v2 v2.14.3
 	github.com/roadrunner-server/gzip/v2 v2.11.6
 	github.com/roadrunner-server/headers/v2 v2.11.4
-	github.com/roadrunner-server/http/v2 v2.17.1
+	github.com/roadrunner-server/http/v2 v2.18.0
 	github.com/roadrunner-server/informer/v2 v2.11.6
 	github.com/roadrunner-server/jobs/v2 v2.13.5
 	github.com/roadrunner-server/kv/v2 v2.12.6
@@ -128,7 +128,7 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rabbitmq/amqp091-go v1.3.4 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/roadrunner-server/sdk/v2 v2.14.1 // indirect
+	github.com/roadrunner-server/sdk/v2 v2.14.2 // indirect
 	github.com/roadrunner-server/tcplisten v1.1.2 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
@@ -172,7 +172,7 @@ require (
 	go.uber.org/zap v1.21.0 // indirect
 	golang.org/x/crypto v0.0.0-20220518034528-6f7dac969898 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 //indirect
-	golang.org/x/net v0.0.0-20220520000938-2e3eb7b945c2 // indirect
+	golang.org/x/net v0.0.0-20220524220425-1d687d428aca // indirect
 	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29 // indirect
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	golang.org/x/text v0.3.7 // indirect
