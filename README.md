@@ -87,6 +87,7 @@ $ ./vendor/bin/rr get-binary
 
 - Ubuntu (Debian-derivatives):
 ```bash
+$ wget https://github.com/roadrunner-server/roadrunner/releases/download/v2.X.X/roadrunner-2.X.X-linux-amd64.deb
 $ sudo dpkg -i roadrunner-2.X.X-linux-amd64.deb
 ```
 
