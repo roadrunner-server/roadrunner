@@ -85,6 +85,11 @@ $ composer require spiral/roadrunner:v2.0 nyholm/psr7
 $ ./vendor/bin/rr get-binary
 ```
 
+- Ubuntu (Debian-derivatives):
+```bash
+$ sudo dpkg -i roadrunner-2.X.X-linux-amd64.deb
+```
+
 
 Configuration can be located in `.rr.yaml`
 file ([full sample](https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml)):
