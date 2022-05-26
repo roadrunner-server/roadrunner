@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v2.10.2 (26.05.2022)
+
+## 👀 New:
+- ✏️ **WORKER**: Starting from this release, RR is able to show full error messages sent to the `STDOUT` during the worker bootstrap.
+- ✏️ **HTTP**: Connection might be upgraded from the `http/1.1` to `h2c`: [rfc7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.4)
+Headers, which should be sent to upgrade connection:
+  1. `Upgrade`: `h2c`
+  2. `Connection`: `HTTP2-Settings`
+  3. `Connection`: `Upgrade`
+  4. `HTTP2-Settings`: `AAMAAABkAARAAAAAAAIAAAAA` [RFC](https://datatracker.ietf.org/doc/html/rfc7540#section-3.2.1)
+
+- ✏️ [**VELOX**](https://github.com/roadrunner-server/velox): Add GitLab support. Starting from the `beta.2` you may use `GitHub` and `GitLab` plugins together. Configuration updated. Keep in mind, until stable release `1.0.0` configuration might be changed with breaking changes.
+- ✏️ **protoc-gen-php-grpc**: Use of fully qualified names in place of imports. [PR](https://github.com/roadrunner-server/grpc/pull/30) (thanks @ryanjcohen)
+
+---
+
 ## v2.10.1 (19.05.2022)
 
 ## 👀 New:
