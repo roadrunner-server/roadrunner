@@ -3,7 +3,7 @@
 ## v2.10.2 (26.05.2022)
 
 ## 👀 New:
-- ✏️ **WORKER**: Starting from this release, RR is able to show full error messages which sent to the `STDOUT` during the worker bootstrap. [FR](https://github.com/roadrunner-server/roadrunner/issues/1127) (thanks @ykweb)
+- ✏️ **WORKER**: Starting from this release, RR is able to show full error messages sent to the `STDOUT` during the worker bootstrap.
 - ✏️ **HTTP**: Connection might be upgraded from the `http/1.1` to `h2c`: [rfc7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.4)
 Headers, which should be sent to upgrade connection:
   1. `Upgrade`: `h2c`
