@@ -96,12 +96,12 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 			for {
 				select {
 				case e := <-errCh:
-					fmt.Printf("error occurred: %v, plugin: %s, stopping execution\n", e.Error, e.VertexID)
+					return fmt.Errorf("error: %w\nplugin: %s", e.Error, e.VertexID)
 				case <-stop: // stop the container after first signal
 					fmt.Printf("stop signal received, grace timeout is: %d seconds\n", uint64(containerCfg.GracePeriod.Seconds()))
 
 					if err = endureContainer.Stop(); err != nil {
-						fmt.Printf("error occurred during the stopping container: %v\n", err)
+						return fmt.Errorf("error: %w", err)
 					}
 
 					return nil
