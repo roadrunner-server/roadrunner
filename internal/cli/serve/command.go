@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/roadrunner-server/roadrunner/v2/internal/container"
 	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
@@ -101,7 +100,6 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 				case <-stop: // stop the container after first signal
 					fmt.Printf("stop signal received, grace timeout is: %0.f seconds\n", containerCfg.GracePeriod.Seconds())
 
-					time.Sleep(time.Second * 100)
 					if err = endureContainer.Stop(); err != nil {
 						return fmt.Errorf("error: %w", err)
 					}
