@@ -5,10 +5,12 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
 
 	"github.com/roadrunner-server/errors"
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli/reset"
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli/serve"
+	"github.com/roadrunner-server/roadrunner/v2/internal/cli/stop"
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli/workers"
 	dbg "github.com/roadrunner-server/roadrunner/v2/internal/debug"
 	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
@@ -17,21 +19,29 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewCommand creates root command.
-func NewCommand(cmdName string) *cobra.Command { //nolint:funlen
-	const (
-		envDotenv string = "DOTENV_PATH" // env var name: path to the .env file
-	)
+const (
+	// env var name: path to the .env file
+	envDotenv   string = "DOTENV_PATH"
+	pidFileName string = ".pid"
+)
 
-	var ( // flag values
-		cfgFile  = strPtr("")  // path to the .rr.yaml
-		workDir  string        // working directory
-		dotenv   string        // path to the .env file
-		debug    bool          // debug mode
-		override = &[]string{} // override config values
-		// do not print startup message
-		silent = boolPtr(false)
-	)
+// NewCommand creates root command.
+func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
+	// path to the .rr.yaml
+	cfgFile := toPtr("")
+	// pidfile path
+	pidFile := toPtr(false)
+	// override config values
+	override := &[]string{}
+	// do not print startup message
+	silent := toPtr(false)
+
+	// working directory
+	var workDir string
+	// path to the .env file
+	var dotenv string
+	// debug mode
+	var debug bool
 
 	cmd := &cobra.Command{
 		Use:           cmdName,
@@ -81,12 +91,29 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen
 				go func() { _ = srv.Start(":6061") }() // TODO implement graceful server stopping
 			}
 
+			// user wanted to write a .pid file
+			if *pidFile {
+				f, err := os.Create(pidFileName)
+				if err != nil {
+					return err
+				}
+				defer func() {
+					_ = f.Close()
+				}()
+
+				_, err = f.WriteString(strconv.Itoa(os.Getpid()))
+				if err != nil {
+					return err
+				}
+			}
+
 			return nil
 		},
 	}
 
 	f := cmd.PersistentFlags()
 
+	f.BoolVarP(pidFile, "pid", "p", false, "create a .pid file")
 	f.StringVarP(cfgFile, "config", "c", ".rr.yaml", "config file")
 	f.StringVarP(&workDir, "WorkDir", "w", "", "working directory")
 	f.StringVarP(&dotenv, "dotenv", "", "", fmt.Sprintf("dotenv file [$%s]", envDotenv))
@@ -98,15 +125,12 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen
 		workers.NewCommand(cfgFile, override),
 		reset.NewCommand(cfgFile, override, silent),
 		serve.NewCommand(override, cfgFile, silent),
+		stop.NewCommand(silent),
 	)
 
 	return cmd
 }
 
-func strPtr(s string) *string {
-	return &s
-}
-
-func boolPtr(b bool) *bool {
-	return &b
+func toPtr[T any](val T) *T {
+	return &val
 }

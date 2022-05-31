@@ -98,7 +98,7 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 				case e := <-errCh:
 					return fmt.Errorf("error: %w\nplugin: %s", e.Error, e.VertexID)
 				case <-stop: // stop the container after first signal
-					fmt.Printf("stop signal received, grace timeout is: %f seconds\n", containerCfg.GracePeriod.Seconds())
+					fmt.Printf("stop signal received, grace timeout is: %0.f seconds\n", containerCfg.GracePeriod.Seconds())
 
 					if err = endureContainer.Stop(); err != nil {
 						return fmt.Errorf("error: %w", err)
