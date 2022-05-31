@@ -9,14 +9,14 @@ import (
 )
 
 func TestCommandProperties(t *testing.T) {
-	cmd := stop.NewCommand(toPtr(false))
+	cmd := stop.NewCommand(toPtr(false), toPtr(false))
 
 	assert.Equal(t, "stop", cmd.Use)
 	assert.NotNil(t, cmd.RunE)
 }
 
 func TestCommandTrue(t *testing.T) {
-	cmd := stop.NewCommand(toPtr(true))
+	cmd := stop.NewCommand(toPtr(true), toPtr(true))
 
 	assert.Equal(t, "stop", cmd.Use)
 	assert.NotNil(t, cmd.RunE)

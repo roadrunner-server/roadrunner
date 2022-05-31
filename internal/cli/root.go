@@ -31,6 +31,8 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 	cfgFile := toPtr("")
 	// pidfile path
 	pidFile := toPtr(false)
+	// force stop RR
+	forceStop := toPtr(false)
 	// override config values
 	override := &[]string{}
 	// do not print startup message
@@ -113,6 +115,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 
 	f := cmd.PersistentFlags()
 
+	f.BoolVarP(forceStop, "force", "f", false, "force stop")
 	f.BoolVarP(pidFile, "pid", "p", false, "create a .pid file")
 	f.StringVarP(cfgFile, "config", "c", ".rr.yaml", "config file")
 	f.StringVarP(&workDir, "WorkDir", "w", "", "working directory")
@@ -125,7 +128,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 		workers.NewCommand(cfgFile, override),
 		reset.NewCommand(cfgFile, override, silent),
 		serve.NewCommand(override, cfgFile, silent),
-		stop.NewCommand(silent),
+		stop.NewCommand(silent, forceStop),
 	)
 
 	return cmd

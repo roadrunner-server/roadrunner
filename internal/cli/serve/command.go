@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/roadrunner-server/roadrunner/v2/internal/container"
 	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
@@ -73,7 +74,7 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 				return errors.E(op, err)
 			}
 
-			oss, stop := make(chan os.Signal, 2), make(chan struct{}, 1) //nolint:gomnd
+			oss, stop := make(chan os.Signal, 5), make(chan struct{}, 1) //nolint:gomnd
 			signal.Notify(oss, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 
 			go func() {
@@ -100,6 +101,7 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 				case <-stop: // stop the container after first signal
 					fmt.Printf("stop signal received, grace timeout is: %0.f seconds\n", containerCfg.GracePeriod.Seconds())
 
+					time.Sleep(time.Second * 100)
 					if err = endureContainer.Stop(); err != nil {
 						return fmt.Errorf("error: %w", err)
 					}

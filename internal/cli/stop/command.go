@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"syscall"
+	"time"
 
 	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
@@ -16,7 +17,7 @@ const (
 )
 
 // NewCommand creates `serve` command.
-func NewCommand(silent *bool) *cobra.Command {
+func NewCommand(silent *bool, force *bool) *cobra.Command {
 	return &cobra.Command{
 		Use:   "stop",
 		Short: "Stop RoadRunner server",
@@ -45,6 +46,15 @@ func NewCommand(silent *bool) *cobra.Command {
 			err = process.Signal(syscall.SIGTERM)
 			if err != nil {
 				return errors.E(op, err)
+			}
+
+			if *force {
+				// RR may lost the signal if we immediately send it
+				time.Sleep(time.Second)
+				err = process.Signal(syscall.SIGTERM)
+				if err != nil {
+					return errors.E(op, err)
+				}
 			}
 
 			return nil
