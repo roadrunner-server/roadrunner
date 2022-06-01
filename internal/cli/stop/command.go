@@ -49,7 +49,7 @@ func NewCommand(silent *bool, force *bool) *cobra.Command {
 			}
 
 			if *force {
-				// RR may lost the signal if we immediately send it
+				// RR may lose the signal if we immediately send it
 				time.Sleep(time.Second)
 				err = process.Signal(syscall.SIGTERM)
 				if err != nil {

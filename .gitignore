@@ -20,3 +20,4 @@ coverage
 /rr
 rr.exe
 .rr-sample-*
+.pid
