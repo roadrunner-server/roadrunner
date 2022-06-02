@@ -14,24 +14,24 @@ require (
 	github.com/roadrunner-server/boltdb/v2 v2.14.9
 	github.com/roadrunner-server/broadcast/v2 v2.12.4
 	github.com/roadrunner-server/cache/v2 v2.13.7
-	github.com/roadrunner-server/config/v2 v2.13.11
+	github.com/roadrunner-server/config/v2 v2.13.12
 	github.com/roadrunner-server/endure v1.3.0
 	github.com/roadrunner-server/errors v1.1.2
 	github.com/roadrunner-server/fileserver/v2 v2.12.11
 	github.com/roadrunner-server/goridge/v3 v3.4.2
-	github.com/roadrunner-server/grpc/v2 v2.15.2
+	github.com/roadrunner-server/grpc/v2 v2.15.3
 	github.com/roadrunner-server/gzip/v2 v2.11.9
 	github.com/roadrunner-server/headers/v2 v2.11.7
-	github.com/roadrunner-server/http/v2 v2.18.3
+	github.com/roadrunner-server/http/v2 v2.18.4
 	github.com/roadrunner-server/informer/v2 v2.11.6
-	github.com/roadrunner-server/jobs/v2 v2.13.8
+	github.com/roadrunner-server/jobs/v2 v2.13.9
 	github.com/roadrunner-server/kv/v2 v2.12.6
 	github.com/roadrunner-server/logger/v2 v2.12.9
 	github.com/roadrunner-server/memcached/v2 v2.12.3
 	github.com/roadrunner-server/memory/v2 v2.13.7
 	github.com/roadrunner-server/metrics/v2 v2.12.10
 	github.com/roadrunner-server/nats/v2 v2.14.3
-	github.com/roadrunner-server/new_relic/v2 v2.13.11
+	github.com/roadrunner-server/new_relic/v2 v2.13.12
 	github.com/roadrunner-server/otel/v2 v2.2.2
 	github.com/roadrunner-server/prometheus/v2 v2.12.11
 	github.com/roadrunner-server/proxy_ip_parser/v2 v2.4.0
@@ -40,13 +40,13 @@ require (
 	github.com/roadrunner-server/resetter/v2 v2.11.6
 	github.com/roadrunner-server/rpc/v2 v2.12.10
 	github.com/roadrunner-server/send/v2 v2.11.8
-	github.com/roadrunner-server/server/v2 v2.13.11
-	github.com/roadrunner-server/service/v2 v2.14.10
+	github.com/roadrunner-server/server/v2 v2.13.12
+	github.com/roadrunner-server/service/v2 v2.14.11
 	github.com/roadrunner-server/sqs/v2 v2.15.3
 	github.com/roadrunner-server/static/v2 v2.12.9
 	github.com/roadrunner-server/status/v2 v2.12.8
-	github.com/roadrunner-server/tcp/v2 v2.12.11
-	github.com/roadrunner-server/websockets/v2 v2.13.9
+	github.com/roadrunner-server/tcp/v2 v2.12.12
+	github.com/roadrunner-server/websockets/v2 v2.13.10
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.7.1
@@ -95,7 +95,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.2 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.3 // indirect
 	github.com/hashicorp/go-version v1.5.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
@@ -172,15 +172,15 @@ require (
 	go.uber.org/zap v1.21.0 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 //indirect
-	golang.org/x/net v0.0.0-20220531185740-c18622019355 // indirect
-	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29 // indirect
+	golang.org/x/net v0.0.0-20220531201128-c960675eff93 // indirect
+	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
 	golang.org/x/tools v0.1.10 // indirect
 	golang.org/x/xerrors v0.0.0-20220517211312-f3a8303e98df // indirect
-	google.golang.org/genproto v0.0.0-20220531173845-685668d2de03 // indirect
-	google.golang.org/grpc v1.46.2 // indirect
+	google.golang.org/genproto v0.0.0-20220601144221-27df5f98adab // indirect
+	google.golang.org/grpc v1.47.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.6 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
