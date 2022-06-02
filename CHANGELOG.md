@@ -9,6 +9,7 @@
 ## 🩹 Fixes:
 
 - 🐛 Fix: incorrect `reset` behavior for the `temporal` plugin. [BUG](https://github.com/temporalio/sdk-php/issues/174), [BUG](https://github.com/temporalio/sdk-php/issues/170), [BUG](https://github.com/temporalio/sdk-php/issues/177). (thanks @dmitry-pilipenko, @mzavatsky)
+
 ---
 
 ## v2.10.2 (26.05.2022)
