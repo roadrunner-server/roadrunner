@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v2.10.4 (11.06.2022)
+
+## 🩹 Fixes:
+
+- 🐛 Fix: incorrect `reset` behavior for the workers pool.
+- 🐛 Fix: correct `reset` order for the RR and Temporal workers.
+
+---
+
 ## v2.10.3 (02.06.2022)
 
 ## 👀 New:
