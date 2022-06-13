@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v2 v2.16.1
-	github.com/roadrunner-server/api/v2 v2.17.1
+	github.com/roadrunner-server/api/v2 v2.18.0
 	github.com/roadrunner-server/beanstalk/v2 v2.15.1
 	github.com/roadrunner-server/boltdb/v2 v2.15.1
 	github.com/roadrunner-server/broadcast/v2 v2.12.4
@@ -46,7 +46,7 @@ require (
 	github.com/roadrunner-server/static/v2 v2.13.1
 	github.com/roadrunner-server/status/v2 v2.13.1
 	github.com/roadrunner-server/tcp/v2 v2.13.1
-	github.com/roadrunner-server/websockets/v2 v2.14.1
+	github.com/roadrunner-server/websockets/v2 v2.14.2
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.7.2
@@ -148,7 +148,7 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.2.3 // indirect
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.2.5 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.32.0 // indirect
 	go.opentelemetry.io/contrib/propagators/jaeger v1.7.0 // indirect
