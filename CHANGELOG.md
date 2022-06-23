@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v2.10.5 (23.06.2022)
+
+## 🩹 Fixes:
+
+- 🐛 **SDK**: Increase `stderr` buffer size from 32kb to 65kb, [man7](https://linux.die.net/man/7/pipe), [BUG](https://github.com/roadrunner-server/roadrunner/issues/1171), (thanks @7krasov)
+- 🐛 **AMQP Plugin**: Fix incorrect queue binding to the `default` routing key. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1181), (thanks @rauanmayemir)
+- 🐛 **HTTP Plugin**: Fix `x-www-form-urlencoded` requests 10Mb limit. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1172) (thanks @StreetYo)
+
+---
+
 ## v2.10.4 (11.06.2022)
 
 ## 🩹 Fixes:
