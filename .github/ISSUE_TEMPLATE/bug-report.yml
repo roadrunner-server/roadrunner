@@ -29,7 +29,7 @@ body:
   - type: textarea
     id: version
     attributes:
-      label: Version
+      label: Version (rr --version)
       description: What version of our software are you running?
       placeholder: 2.6.0
     validations:
