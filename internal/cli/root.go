@@ -50,7 +50,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 		Short:         "High-performance PHP application server, load-balancer and process manager",
 		SilenceErrors: true,
 		SilenceUsage:  true,
-		Version:       fmt.Sprintf("%s (build time: %s, %s)", meta.Version(), meta.BuildTime(), runtime.Version()),
+		Version:       fmt.Sprintf("%s (build time: %s, %s), OS: %s, arch: %s", meta.Version(), meta.BuildTime(), runtime.Version(), runtime.GOOS, runtime.GOARCH),
 		PersistentPreRunE: func(*cobra.Command, []string) error {
 			// cfgFile could be defined by user or default `.rr.yaml`
 			// this check added just to be safe
