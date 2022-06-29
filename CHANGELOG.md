@@ -328,7 +328,7 @@ Known issues:
 ## 👀 New:
 
 - ✏️ [**API**](https://github.com/roadrunner-server/api): add service proto api to manage services, [FR](https://github.com/roadrunner-server/roadrunner/issues/1009) (thanks @butschster). Documentation is here: [link](https://roadrunner.dev/docs/beep-beep-service).
-- ✏️ Grafana dashboard [PATH](grafana/RR_Dashboard.json). Exposed metrics:
+- ✏️ Grafana dashboard [PATH](dashboards/RR_Dashboard.json). Exposed metrics:
 1. **General**:
    1. Uptime (seconds).
    2. Memory used by RR (MB).
