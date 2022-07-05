@@ -465,8 +465,8 @@ github.com/roadrunner-server/memcached/v2 v2.12.4 h1:9p5xxrGQLw/welWL81fMRraq3zm
 github.com/roadrunner-server/memcached/v2 v2.12.4/go.mod h1:Qkl0Nj/ofBBLJEe0NP+KUNRLndNTdZnUpiPF5rBBs10=
 github.com/roadrunner-server/memory/v2 v2.15.3 h1:yotZ0+/+y6VqB3NK1/VNYVoIH0nEmxm8ayyXGMPJ9EI=
 github.com/roadrunner-server/memory/v2 v2.15.3/go.mod h1:f3WrrofJ97C9ZaRJQnuemcn/tm970Iuy/eCmh6HkidU=
-github.com/roadrunner-server/metrics/v2 v2.13.4 h1:lcswMcwdHnARle07Lzk0Glr9NQZm3U2jIYT8Tc6ZqmQ=
-github.com/roadrunner-server/metrics/v2 v2.13.4/go.mod h1:Q9A61OSkhxmhGLYnjupzAC+71b8PkgQ87jfKsuCZvZM=
+github.com/roadrunner-server/metrics/v2 v2.13.5 h1:CaSrRm2zyVp43aJSpBzcYPvEMomtrQyn+TJqmtNo7qE=
+github.com/roadrunner-server/metrics/v2 v2.13.5/go.mod h1:X7xHi6pVGvsmZBUgRQY4QF12kjqsI739bie2NszE/Xg=
 github.com/roadrunner-server/nats/v2 v2.16.2 h1:oZuVIFQeaz3r4kiqjq2K2LbX0OudIxd/ANh8EnFfeNI=
 github.com/roadrunner-server/nats/v2 v2.16.2/go.mod h1:AyKbCmfNdRfhudgKxxmW89/2iDtgqbV3ZDvo0jLSjqo=
 github.com/roadrunner-server/new_relic/v2 v2.14.4 h1:GO9tQJd1MnFX2h/vazg1MR3AI76AfzGh2IFyPIzfKhk=
@@ -845,8 +845,8 @@ golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9/go.mod h1:oPkhp1MJrh7nUepCBc
 golang.org/x/sys v0.0.0-20220412211240-33da011f77ad/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
-golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b h1:2n253B2r0pYSmEV+UNCQoPfU/FiaizQEK5Gu4Bq4JE8=
-golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e h1:CsOuNlbOuf0mzxJIefr6Q4uAUetRUwZE4qt7VfzP+xo=
+golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/term v0.0.0-20210927222741-03fcf44c2211/go.mod h1:jbD1KX2456YbFQfuXm/mYQcufACuNUgVhRMnK/tPxf8=
 golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
