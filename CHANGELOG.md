@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v2.10.6 (07.07.2022)
+
+## 🩹 Fixes:
+
+- 🐛 **SDK**: In some cases, worker watcher might freeze if the user kills the worker right after allocation but before `wait4` syscall and become a zombie. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1180)
+- 🐛 **AMQP Plugin**: Ignored prefetch option when dynamically creating a pipeline. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1197) (thanks @rauanmayemir)
+
+## 👀 New:
+
+- ✏️ **VELOX**: Velox now supports environment variables for the `version`, `buildtime`, GitHub, and GitLab `tokens` in the `velox.toml`.
+- ✏️ **Logger**: Say bye-bye to the `CRC verification failed` error. Starting from the `v2.10.6`, RR will show user-friendly message with the link to our docs on the most common causes for this type of error. [Docs](https://roadrunner.dev/docs/known-issues-stdout-crc/2.x/en)
+
+---
+
 ## v2.10.5 (23.06.2022)
 
 ## 🩹 Fixes:
