@@ -768,7 +768,8 @@
                                     "zipkin",
                                     "stdout",
                                     "otlp",
-                                    "jaeger"
+                                    "jaeger",
+                                    "jaeger_agent"
                                 ],
                                 "pattern": "^[0-9a-zA-Z_]+$"
                             }
