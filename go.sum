@@ -443,8 +443,8 @@ github.com/roadrunner-server/fileserver/v2 v2.13.6 h1:zQe2Gddbag7ITTNSUeR8P/UNMj
 github.com/roadrunner-server/fileserver/v2 v2.13.6/go.mod h1:FpZrjzsRikWgmxXPM1ZT1Okwru4Bm6IDro+KNFaFlAg=
 github.com/roadrunner-server/goridge/v3 v3.4.5 h1:g7K9kOmyAOQQ9TusDYksgyKBsKQrQVNc0CT1HKhaphg=
 github.com/roadrunner-server/goridge/v3 v3.4.5/go.mod h1:zGbUad2YyaaW9Vt9dqLBDcyrA45KlYoRh8jB7TUsStM=
-github.com/roadrunner-server/grpc/v2 v2.16.6 h1:2UCXBRLfpz8X5I+fi/UbhHJLygA3MWw8oVS+ELLcLGs=
-github.com/roadrunner-server/grpc/v2 v2.16.6/go.mod h1:2b2Z+7ax44HKcciTcIYHPXfkd/YOFHPxptaoBp9dncY=
+github.com/roadrunner-server/grpc/v2 v2.17.0 h1:FT64YdvvmgN3MaZ0ONc2AycdW/JWN4hqJSj8XXg3Exg=
+github.com/roadrunner-server/grpc/v2 v2.17.0/go.mod h1:dczlTS/fvkckEMonTLWB2xQghUEUy/mLwHe+uBswf+8=
 github.com/roadrunner-server/gzip/v2 v2.12.3 h1:Y0u/CxRg9MOvvQQdu4F9wI+7LXi8bUQUfaWGmhTHrI0=
 github.com/roadrunner-server/gzip/v2 v2.12.3/go.mod h1:FVq6R/218iFYkk3jCC2c+Rys+C2/TXjS0QLZQ2KhGQI=
 github.com/roadrunner-server/headers/v2 v2.12.4 h1:6FHhS6xQeLgqvnUUbbMMMHpjK8aVBSjiFNKNr9nCFtk=
