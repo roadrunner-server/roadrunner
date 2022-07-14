@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## v2.10.7 (14.07.2022)
+
+## 👀 New:
+
+- ✏️ **OTEL Middleware**: Support for the `jaeger_agent` exporter - [BUG](https://github.com/roadrunner-server/roadrunner/issues/1205), (thanks @L3tum)
+
+## 📦 Packages:
+
+- 📦 `OTEL` SDK updated to `v1.8.0`
+- 📦 `google.golang.org/gRPC` updated to `v1.48.0`
+- 📦 `logger` plugin updated to `v2.13.5`
+- 📦 `Go` updated to `v1.18.4`
+
+---
+
 ## v2.10.6 (07.07.2022)
 
 ## 🩹 Fixes:
