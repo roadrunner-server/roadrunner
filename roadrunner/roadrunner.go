@@ -95,6 +95,7 @@ func (rr *RR) CurrentState() fsm.State {
 // Stop stops roadrunner
 func (rr *RR) Stop() error {
 	rr.stop <- struct{}{}
+
 	return rr.container.Stop()
 }
 

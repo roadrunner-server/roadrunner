@@ -28,7 +28,7 @@ endure:
 
 func makeConfig(t *testing.T, configYaml string) string {
 	cfgFile := os.TempDir() + "/.rr.yaml"
-	err := os.WriteFile(cfgFile, []byte(configYaml), 0644)
+	err := os.WriteFile(cfgFile, []byte(configYaml), 0600)
 	assert.Nil(t, err)
 
 	return cfgFile
@@ -55,12 +55,14 @@ func TestServeStop(t *testing.T) {
 
 	var serveError error
 	stopped := false
+
 	go func() {
 		serveError = rr.Serve()
 		stopped = true
 	}()
 
 	assert.Equal(t, rr.CurrentState(), fsm.Initialized)
+
 	for rr.CurrentState() != fsm.Started {
 		time.Sleep(20 * time.Millisecond)
 	}
