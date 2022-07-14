@@ -21,3 +21,4 @@ coverage
 rr.exe
 .rr-sample-*
 .pid
+.vscode
