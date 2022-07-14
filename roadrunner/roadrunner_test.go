@@ -53,12 +53,12 @@ func TestServeStop(t *testing.T) {
 	rr, err := roadrunner.NewRR(cfgFile, &[]string{}, plugins)
 	assert.Nil(t, err)
 
-	var serveError error
-	stopped := false
+	errchan := make(chan error, 1)
+	stopchan := make(chan struct{}, 1)
 
 	go func() {
-		serveError = rr.Serve()
-		stopped = true
+		errchan <- rr.Serve()
+		stopchan <- struct{}{}
 	}()
 
 	assert.Equal(t, rr.CurrentState(), fsm.Initialized)
@@ -73,6 +73,6 @@ func TestServeStop(t *testing.T) {
 	err = rr.Stop()
 	assert.Nil(t, err)
 	assert.Equal(t, fsm.Stopped, rr.CurrentState())
-	assert.True(t, stopped)
-	assert.Nil(t, serveError)
+	assert.Equal(t, struct{}, <-stopped)
+	assert.Nil(t, <-serveError)
 }
