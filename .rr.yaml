@@ -518,7 +518,7 @@ http:
 
     # Provides functionality to emit telemetry to consumers
     #
-    # Default: otlp. Possible values: otlp (used for new_relic, datadog), zipkin or stdout
+    # Default: otlp. Possible values: otlp (used for new_relic, datadog), zipkin, stdout, jaeger or jaeger_agent
     exporter: otlp
 
     # Used for the http client to override the default URL
