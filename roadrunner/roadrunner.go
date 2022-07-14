@@ -5,6 +5,7 @@ import (
 
 	configImpl "github.com/roadrunner-server/config/v2"
 	endure "github.com/roadrunner-server/endure/pkg/container"
+	"github.com/roadrunner-server/endure/pkg/fsm"
 	"github.com/roadrunner-server/roadrunner/v2/internal/container"
 	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
 )
@@ -15,6 +16,7 @@ const (
 
 type RR struct {
 	container *endure.Endure
+	stop      chan struct{}
 	Version   string
 	BuildTime string
 }
@@ -61,6 +63,7 @@ func NewRR(cfgFile string, override *[]string, pluginList []interface{}) (*RR, e
 
 	rr := &RR{
 		container: endureContainer,
+		stop:      make(chan struct{}),
 		Version:   meta.Version(),
 		BuildTime: meta.BuildTime(),
 	}
@@ -77,19 +80,22 @@ func (rr *RR) Serve() error {
 		return err
 	}
 
-	e := <-errCh
+	select {
+	case e := <-errCh:
+		return fmt.Errorf("error: %w\nplugin: %s", e.Error, e.VertexID)
+	case <-rr.stop:
+		return nil
+	}
+}
 
-	return fmt.Errorf("error: %w\nplugin: %s", e.Error, e.VertexID)
+func (rr *RR) CurrentState() fsm.State {
+	return rr.container.CurrentState()
 }
 
 // Stop stops roadrunner
 func (rr *RR) Stop() error {
-	err := rr.container.Stop()
-	if err != nil {
-		return err
-	}
-
-	return nil
+	rr.stop <- struct{}{}
+	return rr.container.Stop()
 }
 
 // DefaultPluginsList returns all the plugins that RR can run with and are included by default
