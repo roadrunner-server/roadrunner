@@ -6,10 +6,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/roadrunner-server/roadrunner/v2/internal/container"
-	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
+	"github.com/roadrunner-server/roadrunner/v2/roadrunner"
 
-	configImpl "github.com/roadrunner-server/config/v2"
 	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
 )
@@ -25,53 +23,19 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 		Short: "Start RoadRunner server",
 		RunE: func(*cobra.Command, []string) error {
 			const op = errors.Op("handle_serve_command")
-			// just to be safe
-			if cfgFile == nil {
-				return errors.E(op, errors.Str("no configuration file provided"))
-			}
+			rr, err := roadrunner.NewRR(*cfgFile, override, roadrunner.DefaultPluginsList())
 
-			// create endure container config
-			containerCfg, err := container.NewConfig(*cfgFile)
 			if err != nil {
 				return errors.E(op, err)
 			}
 
-			cfg := &configImpl.Plugin{
-				Path:    *cfgFile,
-				Prefix:  rrPrefix,
-				Timeout: containerCfg.GracePeriod,
-				Flags:   *override,
-				Version: meta.Version(),
-			}
-
-			// create endure container
-			endureContainer, err := container.NewContainer(*containerCfg)
-			if err != nil {
-				return errors.E(op, err)
-			}
-
-			// register config plugin
-			if err = endureContainer.Register(cfg); err != nil {
-				return errors.E(op, err)
-			}
-
-			// register another container plugins
-			for i, plugins := 0, container.Plugins(); i < len(plugins); i++ {
-				if err = endureContainer.Register(plugins[i]); err != nil {
-					return errors.E(op, err)
+			errCh := make(chan error, 1)
+			go func() {
+				err = rr.Serve()
+				if err != nil {
+					errCh <- errors.E(op, err)
 				}
-			}
-
-			// init container and all services
-			if err = endureContainer.Init(); err != nil {
-				return errors.E(op, err)
-			}
-
-			// start serving the graph
-			errCh, err := endureContainer.Serve()
-			if err != nil {
-				return errors.E(op, err)
-			}
+			}()
 
 			oss, stop := make(chan os.Signal, 5), make(chan struct{}, 1) //nolint:gomnd
 			signal.Notify(oss, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
@@ -89,18 +53,14 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 				os.Exit(1)
 			}()
 
-			if !*silent {
-				fmt.Printf("[INFO] RoadRunner server started; version: %s, buildtime: %s\n", meta.Version(), meta.BuildTime())
-			}
-
 			for {
 				select {
 				case e := <-errCh:
-					return fmt.Errorf("error: %w\nplugin: %s", e.Error, e.VertexID)
+					return errors.E(op, e)
 				case <-stop: // stop the container after first signal
-					fmt.Printf("stop signal received, grace timeout is: %0.f seconds\n", containerCfg.GracePeriod.Seconds())
+					fmt.Printf("stop signal received\n")
 
-					if err = endureContainer.Stop(); err != nil {
+					if err = rr.Stop(); err != nil {
 						return fmt.Errorf("error: %w", err)
 					}
 
