@@ -67,12 +67,9 @@ func TestServeStop(t *testing.T) {
 		time.Sleep(20 * time.Millisecond)
 	}
 
-	assert.Nil(t, serveError)
-	assert.False(t, stopped)
-
 	err = rr.Stop()
 	assert.Nil(t, err)
 	assert.Equal(t, fsm.Stopped, rr.CurrentState())
-	assert.Equal(t, struct{}, <-stopped)
-	assert.Nil(t, <-serveError)
+	assert.Equal(t, struct{}{}, <-stopchan)
+	assert.Nil(t, <-errchan)
 }
