@@ -39,8 +39,6 @@ func TestNewWithConfig(t *testing.T) {
 	rr, err := roadrunner.NewRR(cfgFile, &[]string{}, roadrunner.DefaultPluginsList())
 	assert.Nil(t, err)
 
-	assert.Equal(t, "development", rr.BuildTime)
-	assert.Equal(t, "local", rr.Version)
 	assert.Equal(t, fsm.Initialized, rr.CurrentState())
 }
 

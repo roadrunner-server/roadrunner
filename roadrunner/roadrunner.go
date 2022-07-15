@@ -17,8 +17,6 @@ const (
 type RR struct {
 	container *endure.Endure
 	stop      chan struct{}
-	Version   string
-	BuildTime string
 }
 
 // NewRR creates a new RR instance that can then be started or stopped by the caller
@@ -64,8 +62,6 @@ func NewRR(cfgFile string, override *[]string, pluginList []interface{}) (*RR, e
 	rr := &RR{
 		container: endureContainer,
 		stop:      make(chan struct{}),
-		Version:   meta.Version(),
-		BuildTime: meta.BuildTime(),
 	}
 
 	return rr, nil
