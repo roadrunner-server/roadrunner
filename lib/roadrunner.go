@@ -1,4 +1,4 @@
-package roadrunner
+package lib
 
 import (
 	"fmt"

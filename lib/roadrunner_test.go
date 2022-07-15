@@ -1,4 +1,4 @@
-package roadrunner_test
+package lib_test
 
 import (
 	"os"
@@ -8,12 +8,12 @@ import (
 	"github.com/roadrunner-server/endure/pkg/fsm"
 	"github.com/roadrunner-server/informer/v2"
 	"github.com/roadrunner-server/resetter/v2"
-	"github.com/roadrunner-server/roadrunner/v2/roadrunner"
+	"github.com/roadrunner-server/roadrunner/v2/lib"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewFailsOnMissingConfig(t *testing.T) {
-	_, err := roadrunner.NewRR("config/file/does/not/exist/.rr.yaml", []string{}, roadrunner.DefaultPluginsList())
+	_, err := lib.NewRR("config/file/does/not/exist/.rr.yaml", []string{}, lib.DefaultPluginsList())
 	assert.NotNil(t, err)
 }
 
@@ -36,7 +36,7 @@ func makeConfig(t *testing.T, configYaml string) string {
 
 func TestNewWithConfig(t *testing.T) {
 	cfgFile := makeConfig(t, testConfig)
-	rr, err := roadrunner.NewRR(cfgFile, []string{}, roadrunner.DefaultPluginsList())
+	rr, err := lib.NewRR(cfgFile, []string{}, lib.DefaultPluginsList())
 	assert.Nil(t, err)
 
 	assert.Equal(t, "2", string(rr.Version[0]))
@@ -53,7 +53,7 @@ func TestServeStop(t *testing.T) {
 		&informer.Plugin{},
 		&resetter.Plugin{},
 	}
-	rr, err := roadrunner.NewRR(cfgFile, []string{}, plugins)
+	rr, err := lib.NewRR(cfgFile, []string{}, plugins)
 	assert.Nil(t, err)
 
 	errchan := make(chan error, 1)
