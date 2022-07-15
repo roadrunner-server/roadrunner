@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/roadrunner-server/roadrunner/v2/internal/container"
+	"github.com/roadrunner-server/roadrunner/v2/container"
 	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
 
 	configImpl "github.com/roadrunner-server/config/v2"

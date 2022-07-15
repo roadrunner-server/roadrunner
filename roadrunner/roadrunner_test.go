@@ -13,14 +13,14 @@ import (
 )
 
 func TestNewFailsOnMissingConfig(t *testing.T) {
-	_, err := roadrunner.NewRR("config/file/does/not/exist/.rr.yaml", &[]string{}, roadrunner.DefaultPluginsList())
+	_, err := roadrunner.NewRR("config/file/does/not/exist/.rr.yaml", []string{}, roadrunner.DefaultPluginsList())
 	assert.NotNil(t, err)
 }
 
 const testConfig = `
 server:
   command: "php src/index.php"
-  relay:  "unix://rr.sock"
+  relay:  "pipes"
 
 endure:
   grace_period: 1s
@@ -36,11 +36,15 @@ func makeConfig(t *testing.T, configYaml string) string {
 
 func TestNewWithConfig(t *testing.T) {
 	cfgFile := makeConfig(t, testConfig)
-	rr, err := roadrunner.NewRR(cfgFile, &[]string{}, roadrunner.DefaultPluginsList())
+	rr, err := roadrunner.NewRR(cfgFile, []string{}, roadrunner.DefaultPluginsList())
 	assert.Nil(t, err)
 
 	assert.Equal(t, "2", string(rr.Version[0]))
 	assert.Equal(t, fsm.Initialized, rr.CurrentState())
+
+	t.Cleanup(func() {
+		_ = os.Remove(cfgFile)
+	})
 }
 
 func TestServeStop(t *testing.T) {
@@ -49,7 +53,7 @@ func TestServeStop(t *testing.T) {
 		&informer.Plugin{},
 		&resetter.Plugin{},
 	}
-	rr, err := roadrunner.NewRR(cfgFile, &[]string{}, plugins)
+	rr, err := roadrunner.NewRR(cfgFile, []string{}, plugins)
 	assert.Nil(t, err)
 
 	errchan := make(chan error, 1)
@@ -66,9 +70,14 @@ func TestServeStop(t *testing.T) {
 		time.Sleep(20 * time.Millisecond)
 	}
 
-	err = rr.Stop()
-	assert.Nil(t, err)
+	rr.Stop()
+	time.Sleep(time.Second * 2)
+
 	assert.Equal(t, fsm.Stopped, rr.CurrentState())
 	assert.Equal(t, struct{}{}, <-stopchan)
 	assert.Nil(t, <-errchan)
+
+	t.Cleanup(func() {
+		_ = os.Remove(cfgFile)
+	})
 }

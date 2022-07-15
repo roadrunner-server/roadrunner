@@ -7,12 +7,12 @@ import (
 	configImpl "github.com/roadrunner-server/config/v2"
 	endure "github.com/roadrunner-server/endure/pkg/container"
 	"github.com/roadrunner-server/endure/pkg/fsm"
-	"github.com/roadrunner-server/roadrunner/v2/internal/container"
-	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
+	"github.com/roadrunner-server/roadrunner/v2/container"
 )
 
 const (
 	rrPrefix string = "rr"
+	rrModule string = "github.com/roadrunner-server/roadrunner/v2"
 )
 
 type RR struct {
@@ -22,7 +22,7 @@ type RR struct {
 }
 
 // NewRR creates a new RR instance that can then be started or stopped by the caller
-func NewRR(cfgFile string, override *[]string, pluginList []interface{}) (*RR, error) {
+func NewRR(cfgFile string, override []string, pluginList []interface{}) (*RR, error) {
 	// create endure container config
 	containerCfg, err := container.NewConfig(cfgFile)
 	if err != nil {
@@ -33,7 +33,7 @@ func NewRR(cfgFile string, override *[]string, pluginList []interface{}) (*RR, e
 		Path:    cfgFile,
 		Prefix:  rrPrefix,
 		Timeout: containerCfg.GracePeriod,
-		Flags:   *override,
+		Flags:   override,
 		Version: getRRVersion(),
 	}
 
@@ -43,14 +43,8 @@ func NewRR(cfgFile string, override *[]string, pluginList []interface{}) (*RR, e
 		return nil, err
 	}
 
-	// register config plugin
-	err = endureContainer.Register(cfg)
-	if err != nil {
-		return nil, err
-	}
-
 	// register another container plugins
-	err = endureContainer.RegisterAll(pluginList...)
+	err = endureContainer.RegisterAll(append(pluginList, cfg)...)
 	if err != nil {
 		return nil, err
 	}
@@ -61,13 +55,11 @@ func NewRR(cfgFile string, override *[]string, pluginList []interface{}) (*RR, e
 		return nil, err
 	}
 
-	rr := &RR{
+	return &RR{
 		container: endureContainer,
-		stop:      make(chan struct{}),
+		stop:      make(chan struct{}, 1),
 		Version:   cfg.Version,
-	}
-
-	return rr, nil
+	}, nil
 }
 
 // Serve starts RR and starts listening for requests.
@@ -83,7 +75,7 @@ func (rr *RR) Serve() error {
 	case e := <-errCh:
 		return fmt.Errorf("error: %w\nplugin: %s", e.Error, e.VertexID)
 	case <-rr.stop:
-		return nil
+		return rr.container.Stop()
 	}
 }
 
@@ -92,10 +84,8 @@ func (rr *RR) CurrentState() fsm.State {
 }
 
 // Stop stops roadrunner
-func (rr *RR) Stop() error {
+func (rr *RR) Stop() {
 	rr.stop <- struct{}{}
-
-	return rr.container.Stop()
 }
 
 // DefaultPluginsList returns all the plugins that RR can run with and are included by default
@@ -105,31 +95,17 @@ func DefaultPluginsList() []interface{} {
 
 // Tries to find the version info for a given module's path
 // empty string if not found
-func getModuleVersion(modulePath string) string {
+func getRRVersion() string {
 	bi, ok := debug.ReadBuildInfo()
 	if !ok {
 		return ""
 	}
 
-	for _, d := range bi.Deps {
-		if d.Path == modulePath {
-			return d.Version
+	for i := 0; i < len(bi.Deps); i++ {
+		if bi.Deps[i].Path == rrModule {
+			return bi.Deps[i].Version
 		}
 	}
 
 	return ""
-}
-
-// Grabs RR's module version if available, meta.Version() otherwise
-func getRRVersion() string {
-	v := getModuleVersion("github.com/roadrunner-server/roadrunner/v2")
-	if v == "" {
-		return meta.Version()
-	}
-
-	if len(v) > 1 && ((v[0] == 'v' || v[0] == 'V') && (v[1] >= '0' && v[1] <= '9')) {
-		return v[1:]
-	}
-
-	return v
 }
