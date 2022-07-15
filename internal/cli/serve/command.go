@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/roadrunner-server/roadrunner/v2/internal/container"
+	"github.com/roadrunner-server/roadrunner/v2/container"
 	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
 
 	configImpl "github.com/roadrunner-server/config/v2"
@@ -50,20 +50,15 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 				return errors.E(op, err)
 			}
 
-			// register config plugin
-			if err = endureContainer.Register(cfg); err != nil {
+			// register plugins
+			err = endureContainer.RegisterAll(append(container.Plugins(), cfg)...)
+			if err != nil {
 				return errors.E(op, err)
 			}
 
-			// register another container plugins
-			for i, plugins := 0, container.Plugins(); i < len(plugins); i++ {
-				if err = endureContainer.Register(plugins[i]); err != nil {
-					return errors.E(op, err)
-				}
-			}
-
 			// init container and all services
-			if err = endureContainer.Init(); err != nil {
+			err = endureContainer.Init()
+			if err != nil {
 				return errors.E(op, err)
 			}
 

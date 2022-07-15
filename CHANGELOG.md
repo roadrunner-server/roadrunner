@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v2.11.0 (??.??.????)
+
+## 👀 New:
+
+- ✏️ **RoadRunner**: Can now be embedded in other go programs
+
+
 ## v2.10.7 (14.07.2022)
 
 ## 👀 New:

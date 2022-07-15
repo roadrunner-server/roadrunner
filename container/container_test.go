@@ -4,9 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/roadrunner-server/roadrunner/v2/internal/container"
-
 	endure "github.com/roadrunner-server/endure/pkg/container"
+	"github.com/roadrunner-server/roadrunner/v2/container"
 	"github.com/stretchr/testify/assert"
 )
 
