@@ -2,6 +2,7 @@ package roadrunner
 
 import (
 	"fmt"
+	"runtime/debug"
 
 	configImpl "github.com/roadrunner-server/config/v2"
 	endure "github.com/roadrunner-server/endure/pkg/container"
@@ -17,6 +18,7 @@ const (
 type RR struct {
 	container *endure.Endure
 	stop      chan struct{}
+	Version   string
 }
 
 // NewRR creates a new RR instance that can then be started or stopped by the caller
@@ -32,7 +34,7 @@ func NewRR(cfgFile string, override *[]string, pluginList []interface{}) (*RR, e
 		Prefix:  rrPrefix,
 		Timeout: containerCfg.GracePeriod,
 		Flags:   *override,
-		Version: meta.Version(),
+		Version: getRRVersion(),
 	}
 
 	// create endure container
@@ -62,6 +64,7 @@ func NewRR(cfgFile string, override *[]string, pluginList []interface{}) (*RR, e
 	rr := &RR{
 		container: endureContainer,
 		stop:      make(chan struct{}),
+		Version:   cfg.Version,
 	}
 
 	return rr, nil
@@ -98,4 +101,35 @@ func (rr *RR) Stop() error {
 // DefaultPluginsList returns all the plugins that RR can run with and are included by default
 func DefaultPluginsList() []interface{} {
 	return container.Plugins()
+}
+
+// Tries to find the version info for a given module's path
+// empty string if not found
+func getModuleVersion(modulePath string) string {
+	bi, ok := debug.ReadBuildInfo()
+	if !ok {
+		return ""
+	}
+
+	for _, d := range bi.Deps {
+		if d.Path == modulePath {
+			return d.Version
+		}
+	}
+
+	return ""
+}
+
+// Grabs RR's module version if available, meta.Version() otherwise
+func getRRVersion() string {
+	v := getModuleVersion("github.com/roadrunner-server/roadrunner/v2")
+	if v == "" {
+		return meta.Version()
+	}
+
+	if len(v) > 1 && ((v[0] == 'v' || v[0] == 'V') && (v[1] >= '0' && v[1] <= '9')) {
+		return v[1:]
+	}
+
+	return v
 }
