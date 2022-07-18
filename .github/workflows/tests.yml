@@ -6,10 +6,10 @@ on:
       - master
       - stable
     paths-ignore:
-      - '**.md'
+      - "**.md"
   pull_request:
     paths-ignore:
-      - '**.md'
+      - "**.md"
 
 jobs:
   validate-config-file:
@@ -22,7 +22,7 @@ jobs:
       - name: Setup nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: "14"
 
       - name: Install linter
         run: npm install -g ajv-cli # Package page: <https://www.npmjs.com/package/ajv-cli>
@@ -45,7 +45,7 @@ jobs:
       - name: Run linter
         uses: golangci/golangci-lint-action@v3.2.0
         with:
-          version: v1.46 # without patch version
+          version: v1.47 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
           args: --build-tags=safe --timeout=10m
 
@@ -154,6 +154,6 @@ jobs:
       - uses: aquasecurity/trivy-action@0.5.1 # action page: <https://github.com/aquasecurity/trivy-action>
         with:
           image-ref: rr:local
-          format: 'table'
+          format: "table"
           severity: MEDIUM,HIGH,CRITICAL
           exit-code: 1
