@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/http/pprof"
+	"time"
 )
 
 // Server is a HTTP server for debugging.
@@ -21,7 +22,10 @@ func NewServer() Server {
 	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
-	return Server{srv: &http.Server{Handler: mux}}
+	return Server{srv: &http.Server{
+		ReadHeaderTimeout: time.Minute * 10,
+		Handler:           mux,
+	}}
 }
 
 // Start debug server.
