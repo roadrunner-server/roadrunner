@@ -1425,6 +1425,11 @@
                         "type": "string"
                     }
                 },
+                "enable_reflection_server": {
+                    "type": "boolean",
+                    "description": "[SINCE 2.11]. The reflection server might be activated to use `grpc_cli`, `grpc-ui`, `grpc-curl`, or similar tools to intercept grpc payloads",
+                    "default": false
+                },
                 "tls": {
                     "description": "GRPC TLS configuration",
                     "type": "object",

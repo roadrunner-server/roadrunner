@@ -1401,6 +1401,11 @@ grpc:
   # This option is required
   listen: "tcp://localhost:9001"
 
+  # GRPC reflection server [SINCE 2.11]
+  #
+  # This option is optional. The reflection server might be activated to use `grpc_cli`, `grpc-ui`, `grpc-curl`, or similar tools to intercept grpc payloads.
+  enable_reflection_server: false
+
   # Proto file to use, multiply files supported [SINCE 2.6]
   #
   # This option is required
