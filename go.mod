@@ -8,45 +8,45 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/joho/godotenv v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v2 v2.17.6
+	github.com/roadrunner-server/amqp/v2 v2.17.7
 	github.com/roadrunner-server/api/v2 v2.19.0
-	github.com/roadrunner-server/beanstalk/v2 v2.16.4
-	github.com/roadrunner-server/boltdb/v2 v2.16.6
-	github.com/roadrunner-server/broadcast/v2 v2.12.7
-	github.com/roadrunner-server/cache/v2 v2.15.6
-	github.com/roadrunner-server/config/v2 v2.14.7
-	github.com/roadrunner-server/endure v1.3.0
+	github.com/roadrunner-server/beanstalk/v2 v2.16.5
+	github.com/roadrunner-server/boltdb/v2 v2.16.7
+	github.com/roadrunner-server/broadcast/v2 v2.12.8
+	github.com/roadrunner-server/cache/v2 v2.15.7
+	github.com/roadrunner-server/config/v2 v2.14.8
+	github.com/roadrunner-server/endure v1.3.1
 	github.com/roadrunner-server/errors v1.1.2
-	github.com/roadrunner-server/fileserver/v2 v2.13.7
+	github.com/roadrunner-server/fileserver/v2 v2.13.8
 	github.com/roadrunner-server/goridge/v3 v3.4.5
-	github.com/roadrunner-server/grpc/v2 v2.18.0
-	github.com/roadrunner-server/gzip/v2 v2.12.4
-	github.com/roadrunner-server/headers/v2 v2.12.5
-	github.com/roadrunner-server/http/v2 v2.19.10
-	github.com/roadrunner-server/informer/v2 v2.11.7
-	github.com/roadrunner-server/jobs/v2 v2.15.6
-	github.com/roadrunner-server/kv/v2 v2.12.8
-	github.com/roadrunner-server/logger/v2 v2.13.6
-	github.com/roadrunner-server/memcached/v2 v2.12.5
-	github.com/roadrunner-server/memory/v2 v2.15.4
-	github.com/roadrunner-server/metrics/v2 v2.13.7
-	github.com/roadrunner-server/nats/v2 v2.16.3
-	github.com/roadrunner-server/new_relic/v2 v2.14.7
+	github.com/roadrunner-server/grpc/v2 v2.18.1
+	github.com/roadrunner-server/gzip/v2 v2.12.5
+	github.com/roadrunner-server/headers/v2 v2.12.6
+	github.com/roadrunner-server/http/v2 v2.20.0
+	github.com/roadrunner-server/informer/v2 v2.11.8
+	github.com/roadrunner-server/jobs/v2 v2.15.7
+	github.com/roadrunner-server/kv/v2 v2.12.9
+	github.com/roadrunner-server/logger/v2 v2.13.7
+	github.com/roadrunner-server/memcached/v2 v2.12.6
+	github.com/roadrunner-server/memory/v2 v2.15.5
+	github.com/roadrunner-server/metrics/v2 v2.13.8
+	github.com/roadrunner-server/nats/v2 v2.16.4
+	github.com/roadrunner-server/new_relic/v2 v2.14.8
 	github.com/roadrunner-server/otel/v2 v2.3.0
-	github.com/roadrunner-server/prometheus/v2 v2.13.7
+	github.com/roadrunner-server/prometheus/v2 v2.13.8
 	github.com/roadrunner-server/proxy_ip_parser/v2 v2.4.0
-	github.com/roadrunner-server/redis/v2 v2.15.5
-	github.com/roadrunner-server/reload/v2 v2.12.6
-	github.com/roadrunner-server/resetter/v2 v2.11.7
-	github.com/roadrunner-server/rpc/v2 v2.13.5
-	github.com/roadrunner-server/send/v2 v2.12.4
-	github.com/roadrunner-server/server/v2 v2.14.7
-	github.com/roadrunner-server/service/v2 v2.15.1
-	github.com/roadrunner-server/sqs/v2 v2.17.4
-	github.com/roadrunner-server/static/v2 v2.13.5
-	github.com/roadrunner-server/status/v2 v2.13.7
-	github.com/roadrunner-server/tcp/v2 v2.13.8
-	github.com/roadrunner-server/websockets/v2 v2.14.7
+	github.com/roadrunner-server/redis/v2 v2.15.6
+	github.com/roadrunner-server/reload/v2 v2.12.7
+	github.com/roadrunner-server/resetter/v2 v2.11.8
+	github.com/roadrunner-server/rpc/v2 v2.13.6
+	github.com/roadrunner-server/send/v2 v2.12.5
+	github.com/roadrunner-server/server/v2 v2.14.8
+	github.com/roadrunner-server/service/v2 v2.15.2
+	github.com/roadrunner-server/sqs/v2 v2.17.5
+	github.com/roadrunner-server/static/v2 v2.13.6
+	github.com/roadrunner-server/status/v2 v2.13.8
+	github.com/roadrunner-server/tcp/v2 v2.13.9
+	github.com/roadrunner-server/websockets/v2 v2.14.8
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.8.0
