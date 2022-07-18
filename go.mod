@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v2 v2.17.6
-	github.com/roadrunner-server/api/v2 v2.18.0
+	github.com/roadrunner-server/api/v2 v2.19.0
 	github.com/roadrunner-server/beanstalk/v2 v2.16.4
 	github.com/roadrunner-server/boltdb/v2 v2.16.6
 	github.com/roadrunner-server/broadcast/v2 v2.12.7
@@ -128,7 +128,7 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rabbitmq/amqp091-go v1.3.4 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/roadrunner-server/sdk/v2 v2.17.3 // indirect
+	github.com/roadrunner-server/sdk/v2 v2.18.0 // indirect
 	github.com/roadrunner-server/tcplisten v1.1.2 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
