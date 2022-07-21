@@ -36,7 +36,7 @@ require (
 	github.com/roadrunner-server/prometheus/v2 v2.13.8
 	github.com/roadrunner-server/proxy_ip_parser/v2 v2.4.0
 	github.com/roadrunner-server/redis/v2 v2.15.6
-	github.com/roadrunner-server/reload/v2 v2.12.8
+	github.com/roadrunner-server/reload/v2 v2.12.9
 	github.com/roadrunner-server/resetter/v2 v2.11.9
 	github.com/roadrunner-server/rpc/v2 v2.13.7
 	github.com/roadrunner-server/send/v2 v2.12.5
@@ -99,7 +99,7 @@ require (
 	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/klauspost/compress v1.15.8 // indirect
+	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/klauspost/cpuid/v2 v2.1.0 // indirect
 	github.com/libdns/libdns v0.2.1 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
@@ -178,7 +178,7 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
 	golang.org/x/tools v0.1.11 // indirect
-	google.golang.org/genproto v0.0.0-20220719170305-83ca9fad585f // indirect
+	google.golang.org/genproto v0.0.0-20220720214146-176da50484ac // indirect
 	google.golang.org/grpc v1.48.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.6 // indirect
