@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v2 v2.17.8
-	github.com/roadrunner-server/api/v2 v2.19.0
+	github.com/roadrunner-server/api/v2 v2.20.0
 	github.com/roadrunner-server/beanstalk/v2 v2.16.5
 	github.com/roadrunner-server/boltdb/v2 v2.16.7
 	github.com/roadrunner-server/broadcast/v2 v2.12.9
@@ -24,7 +24,7 @@ require (
 	github.com/roadrunner-server/headers/v2 v2.12.6
 	github.com/roadrunner-server/http/v2 v2.20.1
 	github.com/roadrunner-server/informer/v2 v2.11.9
-	github.com/roadrunner-server/jobs/v2 v2.15.8
+	github.com/roadrunner-server/jobs/v2 v2.16.0
 	github.com/roadrunner-server/kv/v2 v2.12.10
 	github.com/roadrunner-server/logger/v2 v2.13.8
 	github.com/roadrunner-server/memcached/v2 v2.12.6
@@ -170,15 +170,15 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
-	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
+	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 //indirect
-	golang.org/x/net v0.0.0-20220708220712-1185a9018129 // indirect
-	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
-	golang.org/x/sys v0.0.0-20220721230656-c6bc011c0c49 // indirect
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
 	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
+	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
 	golang.org/x/tools v0.1.11 // indirect
-	google.golang.org/genproto v0.0.0-20220720214146-176da50484ac // indirect
+	google.golang.org/genproto v0.0.0-20220722212130-b98a9ff5e252 // indirect
 	google.golang.org/grpc v1.48.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.6 // indirect
