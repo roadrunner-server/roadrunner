@@ -25,7 +25,7 @@ require (
 	github.com/roadrunner-server/http/v2 v2.20.1
 	github.com/roadrunner-server/informer/v2 v2.11.9
 	github.com/roadrunner-server/jobs/v2 v2.16.0
-	github.com/roadrunner-server/kv/v2 v2.12.10
+	github.com/roadrunner-server/kv/v2 v2.12.11
 	github.com/roadrunner-server/logger/v2 v2.13.8
 	github.com/roadrunner-server/memcached/v2 v2.12.6
 	github.com/roadrunner-server/memory/v2 v2.15.5
