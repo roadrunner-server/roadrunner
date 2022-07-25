@@ -483,8 +483,8 @@ github.com/roadrunner-server/resetter/v2 v2.11.9 h1:Ugw6qY/M9tqQWs9hIVI48NujPC3l
 github.com/roadrunner-server/resetter/v2 v2.11.9/go.mod h1:GHDyAJMjHz5l6Cqdk0yc6GDi91F0W11t83mrGNltjE4=
 github.com/roadrunner-server/rpc/v2 v2.13.7 h1:P6oZpBK/au3uam0fuHndTuQYdJUiK6NTic6OVr5JNZI=
 github.com/roadrunner-server/rpc/v2 v2.13.7/go.mod h1:FPh3NeZYoNu/9xd7WvyzxiSi/5DJ1WIVmCwYh7qK0fA=
-github.com/roadrunner-server/sdk/v2 v2.18.0 h1:cPu3o8Z13NKFND3ybk6J4HAnSq4qYLkFT1T5CDd42Hs=
-github.com/roadrunner-server/sdk/v2 v2.18.0/go.mod h1:u4QeEEr/Aa7ZamQw1duZSmsl3LMeuMIQKzdENqWEKLI=
+github.com/roadrunner-server/sdk/v2 v2.18.1 h1:8jlUxQbiK9wTW/oDQZQ4b1b4p9pAMY7puaIyN/lmv70=
+github.com/roadrunner-server/sdk/v2 v2.18.1/go.mod h1:3W/iPjObht/J9D4CtkhHj6VRHlg4+KiT/IeuUrdqZ1g=
 github.com/roadrunner-server/send/v2 v2.12.5 h1:JDxGo929xkGZfAZ4EAQU3VaXGoYHM6JHoXWnNB0KdTU=
 github.com/roadrunner-server/send/v2 v2.12.5/go.mod h1:FdqdTeHVpH7U+8TPQtxGr+QWCoE3uMwqdRqGweD7wYs=
 github.com/roadrunner-server/server/v2 v2.14.8 h1:5ezs+kytvDp6VleYNBKRntNIoy5fVItQ90fQz3rB6/o=
@@ -497,8 +497,8 @@ github.com/roadrunner-server/static/v2 v2.13.6 h1:SOIONB0yDF79kWxTdvHnO8lJ6HZkoZ
 github.com/roadrunner-server/static/v2 v2.13.6/go.mod h1:An4Qd0sAU4z0pkDN67iCBUcR086H6oLijrQMbOpWTBo=
 github.com/roadrunner-server/status/v2 v2.13.9 h1:sRGnSK4wqaV4B9hAzUygnu5N9yfgbQLoxA8qg1JGjb0=
 github.com/roadrunner-server/status/v2 v2.13.9/go.mod h1:5mLzp8tYzesPTbYcn6SI+AC1CaQiefvVxfpydX6zTL8=
-github.com/roadrunner-server/tcp/v2 v2.13.9 h1:IiPjfq7CdvVmHD1Gq/PmOYtwRqNX9fzLK4sugca6KEM=
-github.com/roadrunner-server/tcp/v2 v2.13.9/go.mod h1:86o0hf9eQ+XO9xV8XPCZbpkB/VIh5qmrgWTFvDCgv8k=
+github.com/roadrunner-server/tcp/v2 v2.13.10 h1:ZgukVptcxAc1eEhwhAVIAphDvQsE88/SD34yjHHlCNE=
+github.com/roadrunner-server/tcp/v2 v2.13.10/go.mod h1:L0ZiK9xElIHwPWtdZwfcVeUIUUxGy2GURA+ZQUCy+1M=
 github.com/roadrunner-server/tcplisten v1.1.2 h1:GBjKlSEbA67UB2y83rFWsQKqMQGyalhTN9Q9HCIMBC0=
 github.com/roadrunner-server/tcplisten v1.1.2/go.mod h1:wN2/X46Vo60sC9L5Bf/eC8kL+X3//7KIFmANEXZaLsg=
 github.com/roadrunner-server/websockets/v2 v2.14.8 h1:nEPRlrpRz7YC7uk4gL5dlOZj+HPu9NXJzWTXvZiFZeE=
