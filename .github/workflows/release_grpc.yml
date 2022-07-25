@@ -22,26 +22,31 @@ jobs:
             compiler: gcc
             archiver: tar
             arch: amd64
+            tags: ''
             #----------
           - os: linux
             compiler: gcc
             archiver: tar
             arch: arm64
+            tags: ''
             #----------
           - os: freebsd
             compiler: gcc
             archiver: tar
             arch: amd64
+            tags: ''
             #----------
           - os: darwin
             compiler: gcc
             archiver: tar
             arch: arm64
+            tags: ''
             #----------
           - os: ''
             compiler: musl-gcc # more info: <https://musl.libc.org/>
             archiver: zip
             arch: amd64
+            tags: -tags musl
     steps:
       - name: Set up Go
         uses: actions/setup-go@v3
@@ -85,11 +90,11 @@ jobs:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CC: ${{ matrix.compiler }}
-          CGO_ENABLED: 0
+          CGO_ENABLED: 1
           LDFLAGS: >-
             -s
         run: |
-          go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" protoc_plugins/protoc-gen-php-grpc/main.go
+          go build ${{ matrix.tags }} -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" protoc_plugins/protoc-gen-php-grpc/main.go
           stat "./${{ steps.values.outputs.binary-name }}"
           gpg --detach-sign --armor "./${{ steps.values.outputs.binary-name }}"
 

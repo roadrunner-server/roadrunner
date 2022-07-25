@@ -1,4 +1,4 @@
-//go:build !windows
+//go:build windows
 
 package container
 
@@ -15,7 +15,6 @@ import (
 	httpPlugin "github.com/roadrunner-server/http/v2"
 	"github.com/roadrunner-server/informer/v2"
 	"github.com/roadrunner-server/jobs/v2"
-	"github.com/roadrunner-server/kafka/v2"
 	"github.com/roadrunner-server/logger/v2"
 	"github.com/roadrunner-server/memory/v2"
 	"github.com/roadrunner-server/metrics/v2"
@@ -70,7 +69,6 @@ func Plugins() []interface{} { //nolint:funlen
 		&sqs.Plugin{},
 		&nats.Plugin{},
 		&beanstalk.Plugin{},
-		&kafka.Plugin{},
 		// =========
 
 		// http server plugin with middleware

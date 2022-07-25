@@ -1,6 +1,77 @@
 # CHANGELOG
 
-## v2.11.0 (28.07.2022)
+## v2.11.0-beta.2 (28.07.2022)
+
+## 👀 New:
+
+- ✏️ **[BETA]: Kafka driver**: New kafka driver for the Jobs plugin.
+
+Some info:
+- RR uses confluentic kafka driver from the `librdkafka` developers
+- Go (CGO) driver: https://github.com/confluentinc/confluent-kafka-go/
+- Original kafka C driver: https://github.com/edenhill/librdkafka
+
+Configuration:
+```yaml
+jobs:
+    num_pollers: 10
+    pool:
+        num_workers: 2
+
+    pipelines:
+        test-1:
+            driver: kafka
+            config:
+                priority: 1
+                topics:
+                    - test-1
+                number_of_partitions: 2
+                create_topics_on_start: true
+
+                topics_config:
+                    compression:type: snappy
+
+                consumer_config:
+                    bootstrap:servers: 127.0.0.1:9092
+                    group:id: default-1
+                    enable:partition:eof: true
+                    auto:offset:reset: earliest
+
+                producer_config:
+                    bootstrap:servers: 127.0.0.1:9092
+
+        test-2:
+            driver: kafka
+            config:
+                priority: 2
+                topics:
+                    - test-2
+                number_of_partitions: 2
+                create_topics_on_start: true
+
+                topics_config:
+                    compression:type: snappy
+
+                consumer_config:
+                    bootstrap:servers: 127.0.0.1:9092
+                    group:id: default-2
+                    enable:partition:eof: true
+                    auto:offset:reset: earliest
+
+                producer_config:
+                    bootstrap:servers: 127.0.0.1:9092
+
+    consume: [ "test-1", "test-2" ]
+```
+
+## 🩹 Fixes:
+
+- ✏️ **gRPC Plugin**: Fix issue when some proto files might not be added automatically to use a reflection server.
+- 🐛 **SDK**: Use `pool.allocate_timeout` for the sockets/tcp relays instead of silently used of `relay_timeout`.
+
+---
+
+## v2.11.0-beta.1 (18.07.2022)
 
 ## 👀 New:
 
@@ -25,6 +96,7 @@ grpc:
     - "second.proto"
 ```
 
+---
 
 ## v2.10.7 (14.07.2022)
 
