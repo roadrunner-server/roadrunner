@@ -445,8 +445,8 @@ github.com/roadrunner-server/goridge/v3 v3.4.5 h1:g7K9kOmyAOQQ9TusDYksgyKBsKQrQV
 github.com/roadrunner-server/goridge/v3 v3.4.5/go.mod h1:zGbUad2YyaaW9Vt9dqLBDcyrA45KlYoRh8jB7TUsStM=
 github.com/roadrunner-server/grpc/v2 v2.19.1 h1:VcU/+aA1N/Se9+qR3emQc4hu3Ba7bYFHD/pmdBQZQSE=
 github.com/roadrunner-server/grpc/v2 v2.19.1/go.mod h1:R5rBIrlMzKNEaeJ2gKJFAC2uyEX0Huucgz+HnFpZmq8=
-github.com/roadrunner-server/gzip/v2 v2.12.5 h1:TygneHz97KiOxfDJPRyfRWfLy0ac4g6IAi/8ZAuLrQk=
-github.com/roadrunner-server/gzip/v2 v2.12.5/go.mod h1:IQB9oGsH27uchzYaks5LYPo/Fre1P3KVzNbgEO8H8To=
+github.com/roadrunner-server/gzip/v2 v2.12.6 h1:R+6m7kJY/KrJcevV5ou8DE+bRAK8ja7vtPUCICueTUw=
+github.com/roadrunner-server/gzip/v2 v2.12.6/go.mod h1:SCkpLbWRuqUBvi64CElhpt6rCuDDd009BP/6B0Ef39E=
 github.com/roadrunner-server/headers/v2 v2.12.6 h1:vNtCt12pQAwn36GlaAWouvN08TuFCOEWK/nBla8F6dE=
 github.com/roadrunner-server/headers/v2 v2.12.6/go.mod h1:QaF6Nd6brnMEiD32GOsKdt03Lcx7qvDkU2ZLKTC7iMg=
 github.com/roadrunner-server/http/v2 v2.20.1 h1:b2LlsMaZ1x/c5lhg8BwgmJNGye7O+T0iMjLUa9YoBNQ=
@@ -483,8 +483,8 @@ github.com/roadrunner-server/resetter/v2 v2.11.9 h1:Ugw6qY/M9tqQWs9hIVI48NujPC3l
 github.com/roadrunner-server/resetter/v2 v2.11.9/go.mod h1:GHDyAJMjHz5l6Cqdk0yc6GDi91F0W11t83mrGNltjE4=
 github.com/roadrunner-server/rpc/v2 v2.13.7 h1:P6oZpBK/au3uam0fuHndTuQYdJUiK6NTic6OVr5JNZI=
 github.com/roadrunner-server/rpc/v2 v2.13.7/go.mod h1:FPh3NeZYoNu/9xd7WvyzxiSi/5DJ1WIVmCwYh7qK0fA=
-github.com/roadrunner-server/sdk/v2 v2.18.0 h1:cPu3o8Z13NKFND3ybk6J4HAnSq4qYLkFT1T5CDd42Hs=
-github.com/roadrunner-server/sdk/v2 v2.18.0/go.mod h1:u4QeEEr/Aa7ZamQw1duZSmsl3LMeuMIQKzdENqWEKLI=
+github.com/roadrunner-server/sdk/v2 v2.18.1 h1:8jlUxQbiK9wTW/oDQZQ4b1b4p9pAMY7puaIyN/lmv70=
+github.com/roadrunner-server/sdk/v2 v2.18.1/go.mod h1:3W/iPjObht/J9D4CtkhHj6VRHlg4+KiT/IeuUrdqZ1g=
 github.com/roadrunner-server/send/v2 v2.12.5 h1:JDxGo929xkGZfAZ4EAQU3VaXGoYHM6JHoXWnNB0KdTU=
 github.com/roadrunner-server/send/v2 v2.12.5/go.mod h1:FdqdTeHVpH7U+8TPQtxGr+QWCoE3uMwqdRqGweD7wYs=
 github.com/roadrunner-server/server/v2 v2.14.8 h1:5ezs+kytvDp6VleYNBKRntNIoy5fVItQ90fQz3rB6/o=
