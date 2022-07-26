@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## v2.11.0 (28.07.2022)
+## v2.11.0-beta.2 (28.07.2022)
+
+## 🩹 Fixes:
+
+- ✏️ **gRPC Plugin**: Fix issue when some proto files might not be added automatically to use a reflection server.
+- 🐛 **SDK**: Use `pool.allocate_timeout` for the sockets/tcp relays instead of silently used of `relay_timeout`.
+
+---
+
+## v2.11.0-beta.1 (18.07.2022)
 
 ## 👀 New:
 
@@ -25,6 +34,7 @@ grpc:
     - "second.proto"
 ```
 
+---
 
 ## v2.10.7 (14.07.2022)
 

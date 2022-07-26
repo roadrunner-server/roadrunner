@@ -22,18 +22,22 @@ jobs:
             compiler: gcc
             archiver: tar
             arch: amd64
+            # -----
           - os: linux
             compiler: gcc
             archiver: tar
             arch: arm64
+            # -----
           - os: darwin
             compiler: gcc
             archiver: tar
             arch: arm64
+            # -----
           - os: freebsd
             compiler: gcc
             archiver: tar
             arch: amd64
+            # -----
           - os: ''
             compiler: musl-gcc # more info: <https://musl.libc.org/>
             archiver: zip
