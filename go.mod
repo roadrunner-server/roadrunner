@@ -25,7 +25,6 @@ require (
 	github.com/roadrunner-server/http/v2 v2.20.2
 	github.com/roadrunner-server/informer/v2 v2.11.10
 	github.com/roadrunner-server/jobs/v2 v2.16.1
-	github.com/roadrunner-server/kafka/v2 v2.0.0-beta.2
 	github.com/roadrunner-server/kv/v2 v2.12.11
 	github.com/roadrunner-server/logger/v2 v2.13.9
 	github.com/roadrunner-server/memcached/v2 v2.12.7
@@ -74,7 +73,6 @@ require (
 	github.com/caddyserver/certmagic v0.16.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
-	github.com/confluentinc/confluent-kafka-go v1.9.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/emicklei/proto v1.11.0 // indirect
@@ -133,6 +131,7 @@ require (
 	github.com/roadrunner-server/sdk/v2 v2.18.1 // indirect
 	github.com/roadrunner-server/tcplisten v1.1.2 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
+	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect

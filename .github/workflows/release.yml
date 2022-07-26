@@ -22,31 +22,26 @@ jobs:
             compiler: gcc
             archiver: tar
             arch: amd64
-            tags: ''
             # -----
           - os: linux
             compiler: gcc
             archiver: tar
             arch: arm64
-            tags: ''
             # -----
           - os: darwin
             compiler: gcc
             archiver: tar
             arch: arm64
-            tags: ''
             # -----
           - os: freebsd
             compiler: gcc
             archiver: tar
             arch: amd64
-            tags: ''
             # -----
           - os: ''
             compiler: musl-gcc # more info: <https://musl.libc.org/>
             archiver: zip
             arch: amd64
-            tags: -tags musl
     steps:
       - name: Set up Go
         uses: actions/setup-go@v3
@@ -90,13 +85,13 @@ jobs:
           CC: ${{ matrix.compiler }}
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
           GPG_PASS: ${{secrets.GPG_PASS}}
-          CGO_ENABLED: 1
+          CGO_ENABLED: 0
           LDFLAGS: >-
             -s
             -X github.com/roadrunner-server/roadrunner/v2/internal/meta.version=${{ steps.values.outputs.version }}
             -X github.com/roadrunner-server/roadrunner/v2/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
         run: |
-          go build ${{ matrix.tags }} -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr
+          go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr
           stat "./${{ steps.values.outputs.binary-name }}"
           gpg --detach-sign --armor "./${{ steps.values.outputs.binary-name }}"
 
