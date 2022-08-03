@@ -186,16 +186,6 @@ temporal:
   # Default: default
   namespace: default
 
-  # Internal temporal communication protocol, can be "proto" or "json".
-  #
-  # Default: "proto"
-  codec: proto
-
-  # Debugging level (only for "json" codec). Set 0 for nothing, 1 for "normal", and 2 for colorized messages.
-  #
-  # Default: 0
-  debug_level: 2
-
   # Temporal metrics
   #
   # Optional section
@@ -234,7 +224,7 @@ temporal:
     # Maximal count of worker executions. Zero (or nothing) means no limit.
     #
     # Default: 0
-    max_jobs: 64
+    max_jobs: 0
 
     # Timeout for worker allocation. Zero means no limit.
     #
