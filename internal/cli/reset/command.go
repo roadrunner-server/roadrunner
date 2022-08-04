@@ -10,18 +10,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	op            = errors.Op("reset_handler")
+	resetterList  = "resetter.List"
+	resetterReset = "resetter.Reset"
+)
+
 // NewCommand creates `reset` command.
 func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Command {
 	return &cobra.Command{
 		Use:   "reset",
 		Short: "Reset workers of all or specific RoadRunner service",
 		RunE: func(_ *cobra.Command, args []string) error {
-			const (
-				op            = errors.Op("reset_handler")
-				resetterList  = "resetter.List"
-				resetterReset = "resetter.Reset"
-			)
-
 			if cfgFile == nil {
 				return errors.E(op, errors.Str("no configuration file provided"))
 			}

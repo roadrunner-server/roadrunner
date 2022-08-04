@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/roadrunner-server/errors"
+	"github.com/roadrunner-server/roadrunner/v2/internal/cli/jobs"
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli/reset"
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli/serve"
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli/stop"
@@ -129,6 +130,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 		reset.NewCommand(cfgFile, override, silent),
 		serve.NewCommand(override, cfgFile, silent),
 		stop.NewCommand(silent, forceStop),
+		jobs.NewCommand(cfgFile, override, silent),
 	)
 
 	return cmd
