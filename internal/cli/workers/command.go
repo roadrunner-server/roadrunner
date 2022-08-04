@@ -20,10 +20,8 @@ import (
 
 // NewCommand creates `workers` command.
 func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:funlen
-	var (
-		// interactive workers updates
-		interactive bool
-	)
+	// interactive workers updates
+	var interactive bool
 
 	cmd := &cobra.Command{
 		Use:   "workers",

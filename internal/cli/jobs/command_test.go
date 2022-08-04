@@ -1,18 +1,17 @@
-package reset_test
+package jobs_test
 
 import (
 	"testing"
 
-	"github.com/roadrunner-server/roadrunner/v2/internal/cli/reset"
-
+	"github.com/roadrunner-server/roadrunner/v2/internal/cli/jobs"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCommandProperties(t *testing.T) {
 	path := ""
 	f := false
-	cmd := reset.NewCommand(&path, nil, &f)
+	cmd := jobs.NewCommand(&path, nil, &f)
 
-	assert.Equal(t, "reset", cmd.Use)
+	assert.Equal(t, "jobs", cmd.Use)
 	assert.NotNil(t, cmd.RunE)
 }
