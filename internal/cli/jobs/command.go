@@ -17,7 +17,7 @@ const (
 )
 
 // NewCommand creates `jobs` command.
-func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Command { //nolint:funlen
+func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Command {
 	var (
 		pausePipes   bool
 		destroyPipes bool
@@ -50,12 +50,15 @@ func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Comman
 			switch {
 			case pausePipes:
 				split := strings.Split(strings.Trim(args[0], " "), ",")
+
 				return pause(client, split, silent)
 			case destroyPipes:
 				split := strings.Split(strings.Trim(args[0], " "), ",")
+
 				return destroy(client, split, silent)
 			case resumePipes:
 				split := strings.Split(strings.Trim(args[0], " "), ",")
+
 				return resume(client, split, silent)
 			case listPipes:
 				return list(client)
