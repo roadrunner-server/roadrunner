@@ -16,7 +16,7 @@ require (
 	github.com/roadrunner-server/cache/v2 v2.15.9
 	github.com/roadrunner-server/config/v2 v2.14.9
 	github.com/roadrunner-server/endure v1.3.1
-	github.com/roadrunner-server/errors v1.1.2
+	github.com/roadrunner-server/errors v1.2.0
 	github.com/roadrunner-server/fileserver/v2 v2.13.9
 	github.com/roadrunner-server/goridge/v3 v3.4.5
 	github.com/roadrunner-server/grpc/v2 v2.19.2
@@ -50,6 +50,7 @@ require (
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.8.0
 	github.com/temporalio/roadrunner-temporal v1.5.0
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.10
 )
 
 require (
@@ -147,7 +148,6 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.10 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.34.0 // indirect
 	go.opentelemetry.io/contrib/propagators/jaeger v1.9.0 // indirect
