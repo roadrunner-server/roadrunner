@@ -1,5 +1,64 @@
 # CHANGELOG
 
+## v2.11.0-beta.3 (07.08.2022)
+
+# ⚠️ NewRelic middleware was removed. Please, use [OTEL middleware instead](https://roadrunner.dev/docs/middleware-otel/2.x/en)
+
+## 👀 New:
+
+- ✏️ **CLI**: New CLI command to pause,resume,destroy and list Jobs. [FR](https://github.com/roadrunner-server/roadrunner/issues/1088), (thanks @hustlahusky).
+- ✏️ **Velox**: New configuration option: `folder` which can be used to specify the folder with the plugin in the repository. (thanks @darkweak).
+- ✏️ **Velox**: Velox now respect plugin's `replace` directives. (thanks @darkweak).
+- ✏️ **Cache plugin**: RR now uses a great cache (RFC 7234) plugin made by @darkweak.
+- ✏️ **[BETA] Kafka plugin**: New Kafka driver for the Jobs plugin. [FR](https://github.com/roadrunner-server/roadrunner/issues/1128), (thanks @Smolevich).
+- ✏️ **Temporal plugin**: Temporal plugin now supports a TSL based on the key and cert.
+
+Configuration:
+```yaml
+temporal:
+  tls:
+    key: path/to/key
+    cert: path/to/cert
+  # other options
+```
+
+## 🩹 Fixes:
+
+- 🐛 **Velox**: Fix panic when not `github` section don't specified in the configuration.
+
+## 🔧 Maintenance:
+
+- All plugins including RR now uses Go 1.19
+
+---
+
+## v2.11.0-beta.1 (18.07.2022)
+
+## 👀 New:
+
+- ✏️ **[BETA]: RoadRunner**: Can now be embedded in other go programs. [PR](https://github.com/roadrunner-server/roadrunner/pull/1214), (thanks @khepin)
+- ✏️ **gRPC Plugin**: Implement Google's `gRPC` [errors API](https://cloud.google.com/apis/design/errors). Exception might be passed as a `Status` structure in the `Metadata` (key - `error`) to be parsed and returned to the user w/o worker restart. NOTE: `Status` structure should be marshaled via `proto` marshaller, not `json`. [FR](https://github.com/roadrunner-server/roadrunner/issues/1001)
+- ✏️ **gRPC Plugin**: `gRPC` reflection server. [GoDocs](https://github.com/grpc/grpc-go/blob/master/Documentation/server-reflection-tutorial.md).
+- ✏️ **Logger Plugin**: Get rid of the `context deadline exceeded` error on worker's allocation. We updated the error message with the link to the docs with the most common causes for the `worker allocation failed` error: https://roadrunner.dev/docs/known-issues-allocate-timeout/2.x/en. Feel free to add your cases here :)
+
+The reflection server might be activated to use [`grpc_cli`](https://github.com/grpc/grpc/blob/master/doc/command_line_tool.md), [`grpc-curl`](https://github.com/fullstorydev/grpcurl), [`grpc-ui`](https://github.com/fullstorydev/grpcui), or similar tools to intercept grpc payloads.
+
+Configuration:
+```yaml
+grpc:
+  listen: "tcp://localhost:9001"
+
+  # GRPC reflection server [SINCE 2.11]
+  #
+  # This option is optional. The reflection server might be activated to use `grpc_cli`, `grpc-ui`, `grpc-curl`, or similar tools to intercept grpc payloads.
+  enable_reflection_server: false
+  proto:
+    - "first.proto"
+    - "second.proto"
+```
+
+---
+
 ## v2.11.0-beta.2 (28.07.2022)
 
 ## 🩹 Fixes:

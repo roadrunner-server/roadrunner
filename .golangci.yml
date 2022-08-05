@@ -9,7 +9,7 @@ run:
   allow-parallel-runners: true
 
 output:
-  format: colored-line-number # colored-line-number|line-number|json|tab|checkstyle|code-climate
+  format: colored-line-number
 
 linters-settings:
   wsl:

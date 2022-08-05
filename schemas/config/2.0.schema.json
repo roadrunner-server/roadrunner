@@ -391,42 +391,21 @@
                     ]
                 },
                 "cache": {
-                    "description": "RFC 7234 cache middleware",
+                    "description": "RFC 7234 Souin cache: https://github.com/darkweak/souin/tree/master/plugins/roadrunner",
                     "type": "object",
                     "properties": {
-                        "driver": {
-                            "description": "Driver to store cached responses",
-                            "type": "string",
-                            "items": {
-                                "maxItems": 1,
-                                "type": "string",
-                                "enum": [
-                                    "memory"
-                                ]
-                            },
-                            "default": "memory"
-                        },
-                        "cache_methods": {
-                            "type": "array",
-                            "default": "GET",
-                            "items": {
-                                "type": "string",
-                                "description": "HTTP methods to cache",
-                                "enum": [
-                                    "GET",
-                                    "POST",
-                                    "HEAD"
-                                ]
+                        "api": {
+                            "description": "The cache-handler API cache management",
+                            "type": "object",
+                            "properties": {
+                                "basepath": {
+                                    "description": "Default route basepath for every additional APIs to avoid conflicts with existing routes",
+                                    "type": "string",
+                                    "default": null
+                                }
                             }
-                        },
-                        "config": {
-                            "description": "Cache driver configuration",
-                            "type": "object"
                         }
-                    },
-                    "required": [
-                        "config"
-                    ]
+                    }
                 },
                 "new_relic": {
                     "description": "New Relic middleware",
