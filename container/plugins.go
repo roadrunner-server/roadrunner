@@ -89,7 +89,6 @@ func Plugins() []interface{} { //nolint:funlen
 		&memory.Plugin{},
 		// KV + Jobs
 		&boltdb.Plugin{},
-
 		// broadcast via memory or redis
 		// used in conjunction with Websockets, memory and redis plugins
 		&broadcast.Plugin{},

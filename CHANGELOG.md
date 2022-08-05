@@ -2,16 +2,17 @@
 
 ## v2.11.0-beta.3 (07.08.2022)
 
-# ⚠️ NewRelic middleware was removed. Please, use [OTEL middleware instead](https://roadrunner.dev/docs/middleware-otel/2.x/en)
-
+## ⚠️ NewRelic middleware was removed. Please, use [OTEL middleware instead](https://roadrunner.dev/docs/middleware-otel/2.x/en)
+## ⚠️ In `2.12.0` we plan to replace `websockets` and `broadcast` plugins with the `centrifuge` plugin. However, if you still need a RR with these deprecated plugins, you may use `Velox` to build your custom build.
 ## 👀 New:
 
-- ✏️ **CLI**: New CLI command to pause,resume,destroy and list Jobs. [FR](https://github.com/roadrunner-server/roadrunner/issues/1088), (thanks @hustlahusky).
-- ✏️ **Velox**: New configuration option: `folder` which can be used to specify the folder with the plugin in the repository. (thanks @darkweak).
-- ✏️ **Velox**: Velox now respect plugin's `replace` directives. (thanks @darkweak).
+- ✏️ **CLI**: New CLI command to pause, resume, destroy and list Jobs. [FR](https://github.com/roadrunner-server/roadrunner/issues/1088), (thanks @hustlahusky).
+- ✏️ **Velox**: New configuration option: `folder`, which can be used to specify the folder with the plugin in the repository. (thanks, @darkweak).
+- ✏️ **Velox**: Velox now respects the plugin's `replace` directives. (thanks, @darkweak).
 - ✏️ **Cache plugin**: RR now uses a great cache (RFC 7234) plugin made by @darkweak.
-- ✏️ **[BETA] Kafka plugin**: New Kafka driver for the Jobs plugin. [FR](https://github.com/roadrunner-server/roadrunner/issues/1128), (thanks @Smolevich).
-- ✏️ **Temporal plugin**: Temporal plugin now supports a TSL based on the key and cert.
+- ✏️ **[BETA] Kafka plugin**: New Kafka driver for the Jobs plugin. [FR](https://github.com/roadrunner-server/roadrunner/issues/1128), (thanks, @Smolevich).
+- ✏️ **Temporal plugin**: Temporal plugin now supports a TSL-based authentication with the key and certificate.
+- ✏️ **Temporal plugin**: Temporal now uses a new reset mechanism to prevent WF worker restarts on activity worker failure.
 
 Configuration:
 ```yaml
@@ -24,11 +25,12 @@ temporal:
 
 ## 🩹 Fixes:
 
-- 🐛 **Velox**: Fix panic when not `github` section don't specified in the configuration.
+- 🐛 **Velox**: Fix panic when there is no `github` dspecified in the configuration.
 
 ## 🔧 Maintenance:
 
-- All plugins including RR now uses Go 1.19
+- All plugins, including RR, now uses Go 1.19
+
 
 ---
 
