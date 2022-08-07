@@ -1536,6 +1536,7 @@ jobs:
           #
           # Optional, default: 3
           heartbeat_interval: 10
+
   # list of pipelines to be consumed by the server automatically at the start, keep empty if you want to start consuming manually
   consume:
     [
