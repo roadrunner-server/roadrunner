@@ -1,11 +1,11 @@
 package container
 
 import (
+	cache "github.com/darkweak/souin/plugins/roadrunner"
 	"github.com/roadrunner-server/amqp/v2"
 	"github.com/roadrunner-server/beanstalk/v2"
 	"github.com/roadrunner-server/boltdb/v2"
 	"github.com/roadrunner-server/broadcast/v2"
-	"github.com/roadrunner-server/cache/v2"
 	"github.com/roadrunner-server/fileserver/v2"
 	grpcPlugin "github.com/roadrunner-server/grpc/v2"
 	"github.com/roadrunner-server/gzip/v2"
@@ -13,6 +13,7 @@ import (
 	httpPlugin "github.com/roadrunner-server/http/v2"
 	"github.com/roadrunner-server/informer/v2"
 	"github.com/roadrunner-server/jobs/v2"
+	"github.com/roadrunner-server/kafka/v2"
 	"github.com/roadrunner-server/logger/v2"
 	"github.com/roadrunner-server/memory/v2"
 	"github.com/roadrunner-server/metrics/v2"
@@ -66,6 +67,8 @@ func Plugins() []interface{} { //nolint:funlen
 		&sqs.Plugin{},
 		&nats.Plugin{},
 		&beanstalk.Plugin{},
+		// new in 2.11
+		&kafka.Plugin{},
 		// =========
 
 		// http server plugin with middleware
@@ -75,7 +78,9 @@ func Plugins() []interface{} { //nolint:funlen
 		&status.Plugin{},
 		&gzip.Plugin{},
 		&prometheus.Plugin{},
+		// third-party--
 		&cache.Plugin{},
+		// --
 		&send.Plugin{},
 		&proxyIP.Plugin{},
 		&fileserver.Plugin{},
@@ -87,7 +92,6 @@ func Plugins() []interface{} { //nolint:funlen
 		&memory.Plugin{},
 		// KV + Jobs
 		&boltdb.Plugin{},
-
 		// broadcast via memory or redis
 		// used in conjunction with Websockets, memory and redis plugins
 		&broadcast.Plugin{},
