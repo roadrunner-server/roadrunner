@@ -4,15 +4,16 @@
 
 ## ⚠️ NewRelic middleware was removed. Please, use [OTEL middleware instead](https://roadrunner.dev/docs/middleware-otel/2.x/en)
 ## ⚠️ In `2.12.0` we plan to replace `websockets` and `broadcast` plugins with the `centrifuge` plugin. However, if you still need a RR with these deprecated plugins, you may use `Velox` to build your custom build.
+
 ## 👀 New:
 
-- ✏️ **CLI**: New CLI command to pause, resume, destroy and list Jobs. [FR](https://github.com/roadrunner-server/roadrunner/issues/1088), (thanks @hustlahusky).
-- ✏️ **Velox**: New configuration option: `folder`, which can be used to specify the folder with the plugin in the repository. (thanks, @darkweak).
-- ✏️ **Velox**: Velox now respects the plugin's `replace` directives. (thanks, @darkweak).
-- ✏️ **Cache plugin**: RR now uses a great cache (RFC 7234) plugin made by @darkweak.
-- ✏️ **[BETA] Kafka plugin**: New Kafka driver for the Jobs plugin. [FR](https://github.com/roadrunner-server/roadrunner/issues/1128), (thanks, @Smolevich).
+- ✏️ **CLI**: New CLI command to pause, resume, destroy and list Jobs. [FR](https://github.com/roadrunner-server/roadrunner/issues/1088), (thanks @hustlahusky)
+- ✏️ **Velox**: New configuration option: `folder`, which can be used to specify the folder with the plugin in the repository. (thanks, @darkweak)
+- ✏️ **Velox**: Velox now respects the plugin's `replace` directives. (thanks, @darkweak)
+- ✏️ **Cache plugin**: RR now uses a great cache (RFC 7234) plugin made by @darkweak
+- ✏️ **[BETA] Kafka plugin**: New Kafka driver for the Jobs plugin. [FR](https://github.com/roadrunner-server/roadrunner/issues/1128), (thanks, @Smolevich)
+- ✏️ **Temporal plugin**: Temporal now uses a new reset mechanism to prevent WF worker restarts on activity worker failure
 - ✏️ **Temporal plugin**: Temporal plugin now supports a TSL-based authentication with the key and certificate.
-- ✏️ **Temporal plugin**: Temporal now uses a new reset mechanism to prevent WF worker restarts on activity worker failure.
 
 Configuration:
 ```yaml
@@ -23,14 +24,174 @@ temporal:
   # other options
 ```
 
+Kafka configuration:
+```yaml
+    test-local-6:
+      # Driver name
+      #
+      # This option is required
+      driver: kafka
+
+      # Driver's configuration
+      #
+      # Should not be empty
+      config:
+
+        # Pipeline priority
+        #
+        # If the job has a priority set to 0, it will inherit the pipeline's priority. Default: 10.
+        priority: 1
+
+        # Topic name: https://kafka.apache.org/intro#intro_concepts_and_terms
+        #
+        # This option is required and should not be empty.
+        topic: test-1
+
+        # Offsets for the partitions
+        #
+        # This option is optional. If empty, RR will read from the partition 0, OffsetNewest. Should be a positive number.
+        # We also have 2 exceptional cases for the offsets (negative numbers):
+        # -1: OffsetNewest - stands for the log head offset, i.e. the offset that will be assigned to the following message
+        # that will be produced to the partition.
+        # -2: OffsetOldest - stands for the oldest offset available on the broker for a partition.
+        partitions_offsets:
+          - 0: 0
+          - 1: 0
+          - 2: 0
+
+        # not supported in beta.3
+        group_id: "foo"
+
+        # Max number of outstanding requests a connection is allowed to have before sending on it blocks
+        #
+        # Optional, default: 5.
+        # Throughput can improve, but message ordering is not guaranteed if producer_options.idempotent is disabled, see:
+        # https://kafka.apache.org/protocol#protocol_network
+        # https://kafka.apache.org/28/documentation.html#producerconfigs_max.in.flight.requests.per.connection
+        max_open_requests: 100
+
+        # A user-provided string sent with every request to the brokers for logging, debugging, and auditing purposes.
+        #
+        # Optional, default: roadrunner
+        client_id: "roadrunner"
+
+        # Kafka version.
+        #
+        # Defaults to the oldest supported stable version (1.0.0.0). Since Kafka provides
+        # backwards-compatibility, setting it to a version older than you have
+        # will not break anything, although it may prevent you from using the
+        # latest features. Setting it to a version greater than you are actually
+        # running may lead to random breakage.
+        kafka_version: 3.2.0.0
+
+        # Create topics configuration. If the topic doesn't exist, RR may create a topic with the provided configuration
+        #
+        # Optional, default: null.
+        create_topics:
+
+          # Replication factor for the data stored across several Kafka brokers.
+          #
+          # Optional, default: 1. Docs: https://kafka.apache.org/documentation/#replication
+          replication_factor: 1
+
+          # Partition replica assignment.
+          #
+          # Optional, default: null. Docs: https://kafka.apache.org/documentation/#basic_ops_cluster_expansion
+          replica_assignment:
+            1: [ 1,2,3 ]
+            2: [ 2,3 ]
+
+          # Topic creation options.
+          #
+          # Optional, default: null. Docs: https://kafka.apache.org/documentation/#configuration
+          # Note: 'compression:type' will be replaced with 'compression.type', so ':' -> '.'.
+          # All options should use ':' as the delimiter.
+          config_entries:
+            compression:type: snappy
+
+        # Kafka producer options
+        #
+        # Optional, default: depends on the Kafka version
+        producer_options:
+
+          # Maximum permitted size of a message.
+          #
+          # Optional, default: 1000000. Should be set equal to or smaller than the broker's `message.max.bytes`.
+          max_message_bytes: 1000
+
+          # The level of acknowledgment reliability needed from the broker. Equivalent to the `request.required.acks`
+          # RequiredAcks is used in Produce Requests to tell the broker how many replica acknowledgements
+          # it must see before responding. Any of the constants defined here are valid. On broker versions
+          # prior to 0.8.2.0 any other positive int16 is also valid (the broker will wait for that many
+          # acknowledgements) but in 0.8.2.0 and later this will raise an exception (it has been replaced
+          # by setting the `min.isr` value in the brokers configuration).
+          #
+          # Optional, default: -1
+          # Should be one of the following values:
+          # 0: NoResponse - doesn't send any response.
+          # 1: WaitForLocal - waits for only the local commit to succeed before responding.
+          # -1 WaitForAll, (default) - waits for all in-sync replicas to commit before responding.
+          #	The minimum number of in-sync replicas is configured on the broker via
+          #	the `min.insync.replicas` configuration key.
+          required_acks: -1
+
+          # The maximum duration in seconds the broker will wait for the receipt of the number of
+          # required_acks.
+          #
+          # Optional, default: 10
+          timeout: 10
+
+          # The type of compression to use on messages (defaults to no compression).
+          # Similar to `compression.codec` setting of the JVM producer.
+          #
+          # Optional, default: none. Possible values: none, gzip, snappy, lz4, zstd
+          compression_codec: snappy
+
+          # The level of compression to use on messages. The meaning depends
+          #	on the actual compression type used and defaults to default compression
+          # level for the codec.
+          #
+          # Optional, default: depends on compression_codec option.
+          compression_level: 10
+
+          # If enabled, the producer will ensure that exactly one copy of each message is
+          #	written.
+          #
+          # Optional, default false
+          idempotent: false
+
+        # Kafka consumer options
+        consumer_options:
+
+          # The timeout in seconds is used to detect consumer failures when using Kafka's group management facility.
+          #	The consumer sends periodic heartbeats to indicate its liveness to the broker.
+          #	If no heartbeats are received by the broker before the expiration of this session timeout,
+          #	then the broker will remove this consumer from the group and initiate a rebalance.
+          #	Note that the value must be in the allowable range as configured in the broker configuration
+          #	by `group.min.session.timeout.ms` and `group.max.session.timeout.ms`
+          #
+          # Optional, default: 10
+          session_timeout: 60
+
+          # The expected time in seconds between heartbeats to the consumer coordinator when using Kafka's group
+          #	management facilities. Heartbeats are used to ensure that the consumer's session stays active and
+          #	to facilitate rebalancing when new consumers join or leave the group.
+          #	The value must be set lower than 'session_timeout', but typically should be set no
+          #	higher than 1/3 of that value.
+          #	It can be adjusted even lower to control the expected time for normal rebalances.
+          #
+          # Optional, default: 3
+          heartbeat_interval: 10
+
+```
+
 ## 🩹 Fixes:
 
-- 🐛 **Velox**: Fix panic when there is no `github` dspecified in the configuration.
+- 🐛 **Velox**: Fix panic when no `github` option is specified in the configuration.
 
 ## 🔧 Maintenance:
 
-- All plugins, including RR, now uses Go 1.19
-
+- All plugins, including RR, now use Go 1.19
 
 ---
 
