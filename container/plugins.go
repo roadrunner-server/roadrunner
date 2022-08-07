@@ -67,6 +67,7 @@ func Plugins() []interface{} { //nolint:funlen
 		&sqs.Plugin{},
 		&nats.Plugin{},
 		&beanstalk.Plugin{},
+		// new in 2.11
 		&kafka.Plugin{},
 		// =========
 
@@ -77,7 +78,9 @@ func Plugins() []interface{} { //nolint:funlen
 		&status.Plugin{},
 		&gzip.Plugin{},
 		&prometheus.Plugin{},
+		// third-party--
 		&cache.Plugin{},
+		// --
 		&send.Plugin{},
 		&proxyIP.Plugin{},
 		&fileserver.Plugin{},
