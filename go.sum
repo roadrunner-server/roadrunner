@@ -637,8 +637,8 @@ github.com/roadrunner-server/static/v2 v2.13.8 h1:Kty8TSsa5I44DFqGB/cSAGE0/O/muP
 github.com/roadrunner-server/static/v2 v2.13.8/go.mod h1:itjrS4gKF8hsV1C/r8v1avXVP92MJKoDgiPg/fISNmo=
 github.com/roadrunner-server/status/v2 v2.13.11 h1:0YZF04+H5WoOvMl64WibVlKCaF3r4rEBSNMduUSguSQ=
 github.com/roadrunner-server/status/v2 v2.13.11/go.mod h1:/2QfYy3rNFTJYDg0Zns/isXFDxkftc22UX4t/My0EBE=
-github.com/roadrunner-server/tcp/v2 v2.13.11 h1:IWqcDa576m6pWyn7eC+Y2kiPYJHnENW41pJfEWTR4F4=
-github.com/roadrunner-server/tcp/v2 v2.13.11/go.mod h1:Cfs02W/LTS3lRyhf8MJ9Dqj9yMalqLn+YZ1Rrrh9Vw0=
+github.com/roadrunner-server/tcp/v2 v2.13.12 h1:uRl9g3m43lWASFaF3Rf7oM0czXeIqaYV8oxzzq9Uibk=
+github.com/roadrunner-server/tcp/v2 v2.13.12/go.mod h1:MpNe8A2y5IY1mOjdtBOqASX+yAD0TDiaI72J7Mf1mlc=
 github.com/roadrunner-server/tcplisten v1.2.0 h1:nsiXEEb0zP7vjAsCWNHKpM0HdwFK/KlafFF/2gsTJlg=
 github.com/roadrunner-server/tcplisten v1.2.0/go.mod h1:NhumKvt7dbIKVNZnqR1fA4ET1D8ngIKsg0TxnuJTL6A=
 github.com/roadrunner-server/websockets/v2 v2.14.10 h1:sjVND6XIvWgn3o1F8jkjDmi3il2XJCJq1au/1BE+zNg=
