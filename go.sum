@@ -599,8 +599,8 @@ github.com/roadrunner-server/kafka/v2 v2.0.3 h1:jeY1Uy0e5lr9F5lnyD9J4i/rDaFaHNqa
 github.com/roadrunner-server/kafka/v2 v2.0.3/go.mod h1:3Tk0UwRV7eqHE5CJyD4bq8WOsgRWfzbOZT+2q2SyDd8=
 github.com/roadrunner-server/kv/v2 v2.12.13 h1:tP/h6ZOjiS2kusGdkbl2AyuTNMWn1hXspHFOTR4UBcU=
 github.com/roadrunner-server/kv/v2 v2.12.13/go.mod h1:O6JEhup6NltYQ+o8jSesjKn2Zw2NZ+B2NATsqcoflZA=
-github.com/roadrunner-server/logger/v2 v2.13.11 h1:lvsfku5ArqvGklaDZEqTBwlwAS9fXJv3GgcYgjSAIrs=
-github.com/roadrunner-server/logger/v2 v2.13.11/go.mod h1:7Zgl9f+El28hMxNPdxbbMEqZQ/qDSzZK9+pTrtH72AY=
+github.com/roadrunner-server/logger/v2 v2.14.0 h1:phPfo65D+yIAnGIXdjfXiV5x3qMBVPzQV1kvVOZJId4=
+github.com/roadrunner-server/logger/v2 v2.14.0/go.mod h1:ALxSv6Gq5JJDrmZXeeHTfzVoXoUhnlzh3MgZSf88mFc=
 github.com/roadrunner-server/memcached/v2 v2.12.9 h1:CaZ47O+AgTjJiZJjmmAvF4IRB1I5yHfHDr4AmjE3oz0=
 github.com/roadrunner-server/memcached/v2 v2.12.9/go.mod h1:9L62h/8Toza7bWiaAe1R+XKpocf2PjeY5JJyJNyF7ww=
 github.com/roadrunner-server/memory/v2 v2.15.8 h1:TIZQyh+y/s4kKAKAqo9e2z0C4SR3hTBFbjfA1bD+3G8=
