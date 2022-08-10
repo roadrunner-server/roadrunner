@@ -19,13 +19,13 @@ require (
 	github.com/roadrunner-server/errors v1.2.0
 	github.com/roadrunner-server/fileserver/v2 v2.13.11
 	github.com/roadrunner-server/goridge/v3 v3.5.1
-	github.com/roadrunner-server/grpc/v2 v2.19.5
+	github.com/roadrunner-server/grpc/v2 v2.20.0
 	github.com/roadrunner-server/gzip/v2 v2.12.7
 	github.com/roadrunner-server/headers/v2 v2.12.8
 	github.com/roadrunner-server/http/v2 v2.20.5
 	github.com/roadrunner-server/informer/v2 v2.11.12
 	github.com/roadrunner-server/jobs/v2 v2.16.4
-	github.com/roadrunner-server/kafka/v2 v2.0.3
+	github.com/roadrunner-server/kafka/v2 v2.1.1
 	github.com/roadrunner-server/kv/v2 v2.12.13
 	github.com/roadrunner-server/logger/v2 v2.14.0
 	github.com/roadrunner-server/memcached/v2 v2.12.9
@@ -53,6 +53,8 @@ require (
 	github.com/temporalio/roadrunner-temporal v1.5.2
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.11
 )
+
+replace github.com/roadrunner-server/kafka/v2 => ../plugins/kafka
 
 require (
 	github.com/Shopify/sarama v1.35.0 // indirect
