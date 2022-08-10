@@ -1517,6 +1517,23 @@ jobs:
         # Kafka consumer options
         consumer_options:
 
+          # The minimum number of message bytes to fetch in a request - the broker
+          # will wait until at least this many are available. The default is 1,
+          # as 0 causes the consumer to spin when no messages are available.
+          # Equivalent to the JVM's `fetch.min.bytes`.
+          #
+          # Optional, default - 1 byte
+          min_fetch_message_size: 100000
+
+          # The default number of message bytes to fetch from the broker in each
+          #	request (default 1MB). This should be larger than the majority of
+          #	your messages, or else the consumer will spend a lot of time
+          #	negotiating sizes and not actually consuming. Similar to the JVM's
+          #	`fetch.message.max.bytes`.
+          #
+          # Optional, default 1000000
+          max_fetch_message_size: 1000000
+
           # The timeout in seconds used to detect consumer failures when using Kafka's group management facility.
           #	The consumer sends periodic heartbeats to indicate its liveness to the broker.
           #	If no heartbeats are received by the broker before the expiration of this session timeout,
