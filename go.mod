@@ -54,8 +54,6 @@ require (
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.11
 )
 
-replace github.com/roadrunner-server/kafka/v2 => ../plugins/kafka
-
 require (
 	github.com/Shopify/sarama v1.35.0 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
