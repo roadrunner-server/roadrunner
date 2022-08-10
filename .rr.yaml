@@ -1278,7 +1278,7 @@ jobs:
         # If the job has priority set to 0, it will inherit the pipeline's priority. Default: 10.
         priority: 10
 
-        # Number of jobs to prefetch from the SQS. mazon SQS never returns more messages than this value
+        # Number of jobs to prefetch from the SQS. Amazon SQS never returns more messages than this value
         # (however, fewer messages might be returned). Valid values: 1 to 10.
         #
         # Default: 10

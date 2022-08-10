@@ -27,7 +27,7 @@ require (
 	github.com/roadrunner-server/jobs/v2 v2.16.4
 	github.com/roadrunner-server/kafka/v2 v2.0.3
 	github.com/roadrunner-server/kv/v2 v2.12.13
-	github.com/roadrunner-server/logger/v2 v2.13.11
+	github.com/roadrunner-server/logger/v2 v2.14.0
 	github.com/roadrunner-server/memcached/v2 v2.12.9
 	github.com/roadrunner-server/memory/v2 v2.15.8
 	github.com/roadrunner-server/metrics/v2 v2.13.12
@@ -50,7 +50,7 @@ require (
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.8.0
-	github.com/temporalio/roadrunner-temporal v1.5.1
+	github.com/temporalio/roadrunner-temporal v1.5.2
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.11
 )
 
@@ -58,18 +58,18 @@ require (
 	github.com/Shopify/sarama v1.35.0 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
-	github.com/aws/aws-sdk-go-v2 v1.16.9 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.15.16 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.12.11 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.10 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.16 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.10 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.17 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.10 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.19.2 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.11.14 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.16.11 // indirect
-	github.com/aws/smithy-go v1.12.0 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.16.10 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.15.17 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.12.12 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.11 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.17 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.11 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.18 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.11 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.19.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.11.15 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.16.12 // indirect
+	github.com/aws/smithy-go v1.12.1 // indirect
 	github.com/beanstalkd/go-beanstalk v0.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d // indirect
@@ -220,7 +220,7 @@ require (
 	go.uber.org/zap v1.22.0 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 //indirect
-	golang.org/x/net v0.0.0-20220809012201-f428fae20770 // indirect
+	golang.org/x/net v0.0.0-20220809184613-07c6da5e1ced // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.0.0-20220808155132-1c4a2a72c664 // indirect
 	golang.org/x/text v0.3.7 // indirect
