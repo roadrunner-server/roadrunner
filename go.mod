@@ -25,7 +25,7 @@ require (
 	github.com/roadrunner-server/http/v2 v2.20.5
 	github.com/roadrunner-server/informer/v2 v2.11.12
 	github.com/roadrunner-server/jobs/v2 v2.16.4
-	github.com/roadrunner-server/kafka/v2 v2.1.1
+	github.com/roadrunner-server/kafka/v2 v2.1.2
 	github.com/roadrunner-server/kv/v2 v2.12.13
 	github.com/roadrunner-server/logger/v2 v2.14.0
 	github.com/roadrunner-server/memcached/v2 v2.12.9
