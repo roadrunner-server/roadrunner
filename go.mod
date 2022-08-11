@@ -25,7 +25,7 @@ require (
 	github.com/roadrunner-server/http/v2 v2.20.5
 	github.com/roadrunner-server/informer/v2 v2.11.12
 	github.com/roadrunner-server/jobs/v2 v2.16.4
-	github.com/roadrunner-server/kafka/v2 v2.1.1
+	github.com/roadrunner-server/kafka/v2 v2.1.2
 	github.com/roadrunner-server/kv/v2 v2.12.13
 	github.com/roadrunner-server/logger/v2 v2.14.0
 	github.com/roadrunner-server/memcached/v2 v2.12.9
@@ -59,7 +59,7 @@ require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.16.10 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.15.17 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.16.0 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.12.12 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.11 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.17 // indirect
@@ -227,7 +227,7 @@ require (
 	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
 	golang.org/x/tools v0.1.12 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20220808204814-fd01256a5276 // indirect
+	google.golang.org/genproto v0.0.0-20220810155839-1856144b1d9c // indirect
 	google.golang.org/grpc v1.48.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
