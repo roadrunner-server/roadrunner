@@ -1,5 +1,68 @@
 # CHANGELOG
 
+## v2.11.0-rc.1 (11.08.2022)
+
+## 👀 New:
+
+- ✏️ **gRPC plugin**: Reflection server configuration updated. To prevent issues regarding incorrectly checked/parsed proto imports, we introduce an updated config:
+
+To activate a reflection server, use the following option:
+
+1. If you don't have any imports.
+```yaml
+    reflection_server: {}
+```
+
+2. If you use definitions from other `.proto` files by importing them:
+```yaml
+    # other options ...
+
+    proto:
+        - "path/to/main/proto1.proto"
+        - "path/to/main/proto2.proto"
+
+    reflection_server:
+        - "path/to/include.proto"
+        - "path/to/include2.proto"
+
+    # other options ...
+```
+
+- ✏️ **Kafka plugin**: Consumer groups. Starting from the `rc.1` if you specify `group_id`, RR will automatically connect to that CG with provided topic name.
+
+```yaml
+jobs:
+  num_pollers: 10
+  pipeline_size: 100000
+  timeout: 100
+  pool:
+    num_workers: 10
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+
+  pipelines:
+    test-1:
+      driver: kafka
+      config:
+        # other options ...
+        group_id: "foo-1" # <----- NEW
+```
+
+## 🩹 Fixes:
+
+- 🐛 **Server plugin**: use the `allocate_timeout` from the pool to wait for the `tcp/unix` socket connection from the PHP worker. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1226), (thanks @Warxcell)
+
+## 🧹 Chore:
+
+- 🧽 **Logger plugin**: use the parsable timestamp format for the `raw` logger mode. [CH](https://github.com/roadrunner-server/roadrunner/issues/1236), (thanks @ilsenem)
+
+## 🔧 Maintenance:
+
+- Temporal `GO-SDK` and `API` updated to the latest versions.
+
+---
+
+
 ## v2.11.0-beta.3 (07.08.2022)
 
 ## ⚠️ NewRelic middleware was removed. Please, use [OTEL middleware instead](https://roadrunner.dev/docs/middleware-otel/2.x/en)
