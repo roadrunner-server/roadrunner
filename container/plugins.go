@@ -83,8 +83,9 @@ func Plugins() []interface{} { //nolint:funlen
 		// --
 		&send.Plugin{},
 		&proxyIP.Plugin{},
-		&fileserver.Plugin{},
 		&rrOtel.Plugin{},
+		// --
+		&fileserver.Plugin{},
 		// ===================
 
 		&grpcPlugin.Plugin{},
