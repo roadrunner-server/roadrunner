@@ -1,7 +1,7 @@
 {
     "name": "spiral/roadrunner",
     "type": "metapackage",
-    "description": "RoadRunner: High-performance PHP application server, load-balancer and process manager written in Golang",
+    "description": "RoadRunner: High-performance PHP application server and process manager written in Go and powered with plugins",
     "license": "MIT",
     "authors": [
         {
