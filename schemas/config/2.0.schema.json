@@ -406,8 +406,210 @@
                                     "description": "Default route basepath for every additional APIs to avoid conflicts with existing routes",
                                     "type": "string",
                                     "default": null
+                                },
+                                "prometheus": {
+                                    "type": "object",
+                                    "description": "Prometheus exposed metrics",
+                                    "properties": {
+                                        "basepath": {
+                                            "type": "string",
+                                            "default": null
+                                        }
+                                    }
+                                },
+                                "souin": {
+                                    "type": "object",
+                                    "description": "Souin listing keys and cache management",
+                                    "properties": {
+                                        "basepath": {
+                                            "type": "string",
+                                            "default": null
+                                        }
+                                    }
                                 }
                             }
+                        },
+                        "cache_keys": {
+                            "type": "object",
+                            "patternProperties": {
+                                "^[a-zA-Z0-9._-]+$": {
+                                    "description": "cache keys configuration",
+                                    "type": "object",
+                                    "properties": {
+                                        "disable_body": {
+                                            "type": "boolean",
+                                            "default": false
+                                        },
+                                        "disable_host": {
+                                            "type": "boolean",
+                                            "default": false
+                                        },
+                                        "disable_method": {
+                                            "type": "boolean",
+                                            "default": false
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "cdn": {
+                            "description": "If Souin is set after a CDN fill these information",
+                            "type": "object",
+                            "properties": {
+                                "api_key": {
+                                    "type": "string",
+                                    "description": "Your provider API key if mandatory"
+                                },
+                                "provider": {
+                                    "description": "The provider placed before Souin (e.g. fastly, cloudflare, akamai, varnish)",
+                                    "type": "string",
+                                    "enum": [
+                                        "fastly",
+                                        "cloudflare",
+                                        "akamai",
+                                        "varnish"
+                                    ]
+                                },
+                                "strategy": {
+                                    "description": "The strategy to purge the CDN cache based on tags (e.g. soft, hard)",
+                                    "type": "string",
+                                    "enum": [
+                                        "soft",
+                                        "hard"
+                                    ]
+                                },
+                                "dynamic": {
+                                    "description": "If true, you'll be able to add custom keys than the ones defined under the surrogate_keys key",
+                                    "type": "boolean",
+                                    "default": false
+                                }
+                            }
+                        },
+                        "default_cache": {
+                            "type": "object",
+                            "properties": {
+                                "allowed_http_verbs": {
+                                    "type": "array",
+                                    "default": [
+                                        "GET",
+                                        "POST"
+                                    ]
+                                },
+                                "cache_name": {
+                                    "description": "Override the cache name to use in the Cache-Status header",
+                                    "type": "string",
+                                    "default": "roadrunner"
+                                },
+                                "distributed": {
+                                    "type": "boolean",
+                                    "default": false,
+                                    "description": "Use Olric or Etcd distributed storage"
+                                },
+                                "headers": {
+                                    "description": "Default headers concatenated in stored keys",
+                                    "type": "array",
+                                    "default": null
+                                },
+                                "key": {
+                                    "type": "object",
+                                    "properties": {
+                                        "disable_body": {
+                                            "type": "boolean",
+                                            "default": false
+                                        },
+                                        "disable_host": {
+                                            "type": "boolean",
+                                            "default": false
+                                        },
+                                        "disable_method": {
+                                            "type": "boolean",
+                                            "default": false
+                                        }
+                                    }
+                                },
+                                "etcd": {
+                                    "description": "If distributed is set to true, you'll have to define either the etcd or olric section",
+                                    "type": "object",
+                                    "properties": {
+                                        "configuration": {
+                                            "type": "object",
+                                            "description": "Configure directly the Etcd client",
+                                            "properties": {
+                                                "endpoints": {
+                                                    "description": "Define multiple endpoints",
+                                                    "type": "array",
+                                                    "default": null
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "olric": {
+                                    "type": "object",
+                                    "description": "If distributed is set to true, you'll have to define either the etcd or olric section",
+                                    "properties": {
+                                        "url": {
+                                            "description": "Olric server",
+                                            "type": "string",
+                                            "default": "http://127.0.0.1:3320"
+                                        }
+                                    }
+                                },
+                                "regex": {
+                                    "type": "object",
+                                    "description": "Regex to exclude from cache",
+                                    "properties": {
+                                        "exclude": {
+                                            "type": "string",
+                                            "default": null
+                                        }
+                                    }
+                                },
+                                "stale": {
+                                    "type": "string",
+                                    "description": "Stale duration",
+                                    "default": "1000s"
+                                },
+                                "timeout": {
+                                    "description": "Timeout configuration",
+                                    "type": "object",
+                                    "properties": {
+                                        "backend": {
+                                            "description": "Backend timeout before returning an HTTP unavailable response",
+                                            "type": "string",
+                                            "default": "10s"
+                                        },
+                                        "cache": {
+                                            "description": "Cache provider (badger, etcd, nutsdb, olric, depending the configuration you set) timeout before returning a miss",
+                                            "type": "string",
+                                            "default": "20ms"
+                                        }
+                                    }
+                                },
+                                "ttl": {
+                                    "description": "Default TTL",
+                                    "type": "string",
+                                    "default": "1000s"
+                                },
+                                "default_cache_control": {
+                                    "description": "Set default value for Cache-Control response header if not set by upstream",
+                                    "type": "string",
+                                    "default": "no-store"
+                                }
+                            }
+                        },
+                        "log_level": {
+                            "type": "string",
+                            "description": "Logs verbosity",
+                            "default": "INFO",
+                            "enum": [
+                                "DEBUG",
+                                "INFO",
+                                "WARN",
+                                "DPANIC",
+                                "PANIC",
+                                "FATAL"
+                            ]
                         }
                     }
                 },
@@ -1032,6 +1234,9 @@
         "boltdb": {
             "$ref": "#/definitions/BoltDB_J"
         },
+        "kafka": {
+            "$ref": "#/definitions/KAFKA_J"
+        },
         "amqp": {
             "description": "AMQP jobs driver",
             "type": "object",
@@ -1135,7 +1340,8 @@
                                     "beanstalk",
                                     "boltdb",
                                     "memory",
-                                    "nats"
+                                    "nats",
+                                    "kafka"
                                 ]
                             }
                         },
@@ -1198,6 +1404,141 @@
                                                     "description": "Use rabbitmq mechanism to requeue the job on fail",
                                                     "type": "boolean",
                                                     "default": false
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "priority": {
+                                                    "description": "Pipeline priority. If the job pushed to the pipeline has priority set to 0, it will inherit the pipeline's priority",
+                                                    "type": "integer",
+                                                    "default": 10
+                                                },
+                                                "topic": {
+                                                    "description": "Topic name: https://kafka.apache.org/intro#intro_concepts_and_terms",
+                                                    "type": "string",
+                                                    "default": null
+                                                },
+                                                "partitions_offsets": {
+                                                    "description": "Offsets for the partitions",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "itemType": {
+                                                            "$ref": "#/definitions/HashMapInt"
+                                                        },
+                                                        "itemCount": {
+                                                            "$ref": "#/definitions/Hashmap"
+                                                        }
+                                                    },
+                                                    "default": null
+                                                },
+                                                "group_id": {
+                                                    "type": "string",
+                                                    "description": "Kafka group id",
+                                                    "default": "default"
+                                                },
+                                                "max_open_requests": {
+                                                    "description": "Max number of outstanding requests a connection is allowed to have before sending on it blocks",
+                                                    "type": "integer",
+                                                    "default": 5
+                                                },
+                                                "client_id": {
+                                                    "description": "A user provided string sent with every request to the brokers for logging, debugging, and auditing purposes.",
+                                                    "type": "string",
+                                                    "default": "roadrunner"
+                                                },
+                                                "kafka_version": {
+                                                    "description": "Kafka version.",
+                                                    "type": "string",
+                                                    "default": "1.0.0.0"
+                                                },
+                                                "create_topics": {
+                                                    "description": "Create topics configuration. If topic doesn't exist, RR may create a topic with provided configuration",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "replication_factor": {
+                                                            "description": "Replication factor for the data stored across several Kafka brokers.",
+                                                            "type": "integer",
+                                                            "default": 1
+                                                        },
+                                                        "replica_assignment": {
+                                                            "type": "object",
+                                                            "description": "Partition replica assigment.",
+                                                            "default": null
+                                                        },
+                                                        "config_entries": {
+                                                            "type": "object",
+                                                            "description": "Topic creation options. Note: 'compression:type' will be replaced with 'compression.type', so ':' -> '.'. All options should use ':' as the delimiter.",
+                                                            "default": null
+                                                        }
+                                                    }
+                                                },
+                                                "producer_options": {
+                                                    "description": "Kafka producer options",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "max_message_bytes": {
+                                                            "type": "integer",
+                                                            "default": 1000000
+                                                        },
+                                                        "required_acks": {
+                                                            "description": "The level of acknowledgement reliability needed from the broker.",
+                                                            "type": "integer",
+                                                            "default": -1
+                                                        },
+                                                        "timeout": {
+                                                            "description": "The maximum duration in seconds the broker will wait the receipt of the number of required_acks.",
+                                                            "default": 10,
+                                                            "type": "integer"
+                                                        },
+                                                        "compression_codec": {
+                                                            "type": "string",
+                                                            "default": "none",
+                                                            "enum": [
+                                                                "none",
+                                                                "gzip",
+                                                                "snappy",
+                                                                "lz4",
+                                                                "zstd"
+                                                            ]
+                                                        },
+                                                        "compression_level": {
+                                                            "description": "The level of compression to use on messages.",
+                                                            "type": "integer",
+                                                            "default": null
+                                                        },
+                                                        "idempotent": {
+                                                            "description": "If enabled, the producer will ensure that exactly one copy of each message is written.",
+                                                            "type": "boolean",
+                                                            "default": false
+                                                        }
+                                                    }
+                                                },
+                                                "consumer_options": {
+                                                    "description": "Kafka consumer options",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "min_fetch_message_size": {
+                                                            "description": "The minimum number of message bytes to fetch in a request",
+                                                            "type": "integer",
+                                                            "default": 1
+                                                        },
+                                                        "max_fetch_message_size": {
+                                                            "type": "integer",
+                                                            "description": "The default number of message bytes to fetch from the broker in each request",
+                                                            "default": 1000000
+                                                        },
+                                                        "session_timeout": {
+                                                            "type": "integer",
+                                                            "description": "The timeout in seconds used to detect consumer failures when using Kafka's group management facility.",
+                                                            "default": 10
+                                                        },
+                                                        "heartbeat_interval": {
+                                                            "type": "integer",
+                                                            "description": "The expected time in seconds between heartbeats to the consumer coordinator when using Kafka's group management facilities",
+                                                            "default": 3
+                                                        }
+                                                    }
                                                 }
                                             }
                                         },
@@ -1915,6 +2256,12 @@
             },
             "additionalProperties": false
         },
+        "HashMapInt": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "integer"
+            }
+        },
         "NATS_J": {
             "description": "NATS jobs driver",
             "type": "object",
@@ -1923,6 +2270,16 @@
                     "description": "NATS server address",
                     "type": "string",
                     "default": "demo.nats.io"
+                }
+            }
+        },
+        "KAFKA_J": {
+            "description": "Kafka jobs driver",
+            "type": "object",
+            "properties": {
+                "addr": {
+                    "description": "Kafka server addresses",
+                    "type": "array"
                 }
             }
         },
