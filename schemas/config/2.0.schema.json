@@ -350,6 +350,11 @@
                     "minimum": 0,
                     "default": 0
                 },
+                "access_logs": {
+                    "description": "HTTP access logs",
+                    "type": "boolean",
+                    "default": false
+                },
                 "middleware": {
                     "description": "Middleware for the http plugin, order is important",
                     "type": "array",
@@ -361,7 +366,6 @@
                             "static",
                             "websockets",
                             "sendfile",
-                            "new_relic",
                             "http_metrics",
                             "cache",
                             "proxy_ip_parser",
