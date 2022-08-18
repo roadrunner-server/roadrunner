@@ -543,22 +543,87 @@ http:
     # Error if empty. NEW_RELIC_LICENSE_KEY env variable should be set if the license_key key is empty. If both empty - error.
     license_key: "key"
 
-  # RFC 7234 (partially) RR Cache middleware
+  # RFC 7234 RR Cache middleware
+  #
+  # Link: https://github.com/darkweak/souin
   cache:
-    # Cache driver
-    #
-    # Default: memory. Available drivers: memory
-    driver: memory
-
-    # Methods to cache
-    #
-    # According to the RFC, we can cache only GET, HEAD or POST requests. Currently, only GET method supported.
-    cache_methods: [ "GET", "HEAD", "POST" ]
-
-    # Configuration for the driver
-    #
-    # Empty for the memory
-    config: { }
+    api:
+      basepath: /souin-api
+      prometheus:
+        basepath: /anything-for-prometheus-metrics
+      souin:
+        basepath: /anything-for-souin
+    cache_keys:
+      '.*\.css':
+        disable_body: true
+        disable_host: true
+        disable_method: true
+    cdn:
+      api_key: XXXX
+      provider: fastly
+      strategy: soft
+      dynamic: true
+    default_cache:
+      allowed_http_verbs:
+        - GET
+        - POST
+        - HEAD
+      cache_name: Souin
+      distributed: true
+      headers:
+        - Authorization
+      key:
+        disable_body: true
+        disable_host: true
+        disable_method: true
+      etcd:
+        configuration:
+          endpoints:
+            - etcd-1:2379
+            - etcd-2:2379
+            - etcd-3:2379
+      olric:
+        url: 'olric:3320'
+      regex:
+        exclude: 'ARegexHere'
+      stale: 1000s
+      timeout:
+        backend: 10s
+        cache: 20ms
+      ttl: 1000s
+      default_cache_control: no-store
+    log_level: INFO
+    ssl_providers:
+      - traefik
+    urls:
+      'https:\/\/domain.com\/first-.+':
+        ttl: 1000s
+      'https:\/\/domain.com\/second-route':
+        ttl: 10s
+        headers:
+          - Authorization
+      'https?:\/\/mysubdomain\.domain\.com':
+        ttl: 50s
+        headers:
+          - Authorization
+          - 'Content-Type'
+        default_cache_control: public, max-age=86400
+    ykeys:
+      The_First_Test:
+        headers:
+          Content-Type: '.+'
+      The_Second_Test:
+        url: 'the/second/.+'
+      The_Third_Test:
+      The_Fourth_Test:
+    surrogate_keys:
+      The_First_Test:
+        headers:
+          Content-Type: '.+'
+      The_Second_Test:
+        url: 'the/second/.+'
+      The_Third_Test:
+      The_Fourth_Test:
 
   # File uploading settings.
   uploads:
@@ -1413,7 +1478,9 @@ jobs:
           - 1: 0
           - 2: 0
 
-        # not supported in beta.3
+        # Kafka group id
+        #
+        # Optional, default - empty
         group_id: "foo"
 
         # Max number of outstanding requests a connection is allowed to have before sending on it blocks
