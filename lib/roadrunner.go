@@ -22,7 +22,7 @@ type RR struct {
 }
 
 // NewRR creates a new RR instance that can then be started or stopped by the caller
-func NewRR(cfgFile string, override []string, pluginList []interface{}) (*RR, error) {
+func NewRR(cfgFile string, override []string, pluginList []any) (*RR, error) {
 	// create endure container config
 	containerCfg, err := container.NewConfig(cfgFile)
 	if err != nil {
@@ -89,7 +89,7 @@ func (rr *RR) Stop() {
 }
 
 // DefaultPluginsList returns all the plugins that RR can run with and are included by default
-func DefaultPluginsList() []interface{} {
+func DefaultPluginsList() []any {
 	return container.Plugins()
 }
 

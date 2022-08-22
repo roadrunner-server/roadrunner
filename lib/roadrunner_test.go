@@ -49,7 +49,7 @@ func TestNewWithConfig(t *testing.T) {
 
 func TestServeStop(t *testing.T) {
 	cfgFile := makeConfig(t, testConfig)
-	plugins := []interface{}{
+	plugins := []any{
 		&informer.Plugin{},
 		&resetter.Plugin{},
 	}

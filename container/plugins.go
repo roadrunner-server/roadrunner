@@ -40,8 +40,8 @@ import (
 )
 
 // Plugins returns active plugins for the endure container. Feel free to add or remove any plugins.
-func Plugins() []interface{} { //nolint:funlen
-	return []interface{}{
+func Plugins() []any { //nolint:funlen
+	return []any{
 		// bundled
 		// informer plugin (./rr workers, ./rr workers -i)
 		&informer.Plugin{},
