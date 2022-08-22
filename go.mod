@@ -22,7 +22,7 @@ require (
 	github.com/roadrunner-server/grpc/v2 v2.21.2
 	github.com/roadrunner-server/gzip/v2 v2.12.9
 	github.com/roadrunner-server/headers/v2 v2.12.10
-	github.com/roadrunner-server/http/v2 v2.21.3
+	github.com/roadrunner-server/http/v2 v2.22.0
 	github.com/roadrunner-server/informer/v2 v2.12.3
 	github.com/roadrunner-server/jobs/v2 v2.17.3
 	github.com/roadrunner-server/kafka/v2 v2.1.4
@@ -77,7 +77,7 @@ require (
 	github.com/buraksezer/consistent v0.9.0 // indirect
 	github.com/buraksezer/olric v0.4.5 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
-	github.com/caddyserver/certmagic v0.16.2 // indirect
+	github.com/caddyserver/certmagic v0.16.3 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -221,8 +221,8 @@ require (
 	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 //indirect
 	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
-	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
-	golang.org/x/sys v0.0.0-20220817070843-5a390386f1f2 // indirect
+	golang.org/x/sync v0.0.0-20220819030929-7fc1605a5dde // indirect
+	golang.org/x/sys v0.0.0-20220818161305-2296e01440c6 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
 	golang.org/x/tools v0.1.12 // indirect
