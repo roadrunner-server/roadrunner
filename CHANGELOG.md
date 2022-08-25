@@ -2,6 +2,24 @@
 
 ---
 
+## v2.11.1 (25.08.2022)
+
+## 👀 New:
+
+- ✏ **http plugin**: Send raw body (unescaped) to the PHP worker for the `application/x-www-form-urlencoded` content type. [FR1](https://github.com/roadrunner-server/roadrunner/issues/1264), [FR2](https://github.com/roadrunner-server/roadrunner/issues/1206), (thanks @ekisu, @rlantingmove4mobile)
+Configuration:
+```yaml
+http:
+  raw_body: true/false (by default)
+```
+- ✏ **temporal plugin**: Overwrite `client-name` and `client-version` in Go client to represent PHP-SDK, [FR](https://github.com/roadrunner-server/roadrunner/issues/1249), (thanks, @wolfy-j)
+
+## 🧹 Chore:
+
+- 🧑‍🏭: Autocomplete `.rr.yaml` configuration for the `cache` plugin. [link](https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json)
+
+---
+
 ## v2.11.0 (18.08.2022)
 
 ## ⚠️ NewRelic middleware was removed. Please, use [OTEL middleware instead](https://roadrunner.dev/docs/middleware-otel/2.x/en)
