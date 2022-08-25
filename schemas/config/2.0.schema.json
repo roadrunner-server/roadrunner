@@ -350,6 +350,11 @@
                     "minimum": 0,
                     "default": 0
                 },
+                "raw_body": {
+                    "description": "Send raw body (unescaped) to the PHP worker for the application/x-www-form-urlencoded content type",
+                    "type": "boolean",
+                    "default": false
+                },
                 "access_logs": {
                     "description": "HTTP access logs",
                     "type": "boolean",
@@ -608,6 +613,7 @@
                                 "WARN",
                                 "DPANIC",
                                 "PANIC",
+                                "ERROR",
                                 "FATAL"
                             ]
                         }

@@ -45,7 +45,6 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
   enable:
     - asciicheck # Simple linter to check that your code does not contain non-ASCII identifiers
     - bodyclose # Checks whether HTTP response body is closed successfully
-    - deadcode # Finds unused code
     - depguard # Go linter that checks if package imports are in a list of acceptable packages
     - dogsled # Checks assignments with too many blank identifiers (e.g. x, _, _, _, := f())
     - dupl # Tool for code clone detection
@@ -77,14 +76,12 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - prealloc # Finds slice declarations that could potentially be preallocated
     - rowserrcheck # Checks whether Err of rows is checked successfully
     - staticcheck # Staticcheck is a go vet on steroids, applying a ton of static analysis checks
-    - structcheck # Finds unused struct fields
     - stylecheck # Stylecheck is a replacement for golint
     - tparallel # detects inappropriate usage of t.Parallel() method in your Go test codes
     - typecheck # Like the front-end of a Go compiler, parses and type-checks Go code
     - unconvert # Remove unnecessary type conversions
     - unparam # Reports unused function parameters
     - unused # Checks Go code for unused constants, variables, functions and types
-    - varcheck # Finds unused global variables and constants
     - whitespace # Tool for detection of leading and trailing whitespace
     - wsl # Whitespace Linter - Forces you to use empty lines!
 
