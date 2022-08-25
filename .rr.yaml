@@ -4,7 +4,7 @@
 #       MORE DOCS CAN BE FOUND HERE: <https://roadrunner.dev/docs/intro-config>      #
 ######################################################################################
 
-# Production usage guide: https://roadrunner.dev/docs/beep-beep-production
+# Production usage guide: https://roadrunner.dev/docs/app-server-production/2.x/en
 
 # Hint: RR will replace any config options using reference to environment variables,
 # eg.: `option_key: ${ENVIRONMENT_VARIABLE_NAME}`.
@@ -74,7 +74,7 @@ server:
   # Default: 60s
   relay_timeout: 60s
 
-# Logging settings (docs: https://roadrunner.dev/docs/beep-beep-logging)
+# Logging settings (docs: https://roadrunner.dev/docs/plugins-logger/2.x/en)
 logs:
   # Logging mode can be "development", "production" or "raw". Do not forget to change this value for production environment.
   #
@@ -647,7 +647,7 @@ http:
     # Default: empty
     allow: [ ".html", ".aaa" ]
 
-  # Settings for "headers" middleware (docs: https://roadrunner.dev/docs/http-headers).
+  # Settings for "headers" middleware (docs: https://roadrunner.dev/docs/middleware-headers/2.x/en).
   headers:
     # Allows to control CORS headers. Additional headers "Vary: Origin", "Vary: Access-Control-Request-Method",
     # "Vary: Access-Control-Request-Headers" will be added to the server responses. Drop this section for this
@@ -695,7 +695,7 @@ http:
     response:
       X-Powered-By: "RoadRunner"
 
-  # Settings for "static" middleware (docs: https://roadrunner.dev/docs/http-static).
+  # Settings for "static" middleware (docs: https://roadrunner.dev/docs/middleware-static/2.x/en).
   static:
     # Path to the directory to serve
     #
@@ -766,8 +766,8 @@ http:
     # Default: 60s
     destroy_timeout: 60s
 
-    # Supervisor is used to control http workers (previous name was "limit", docs:
-    # https://roadrunner.dev/docs/php-limit). "Soft" limits will not interrupt current request processing. "Hard"
+    # Supervisor is used to control http workers (previous name was "limit", video: https://www.youtube.com/watch?v=NdrlZhyFqyQ).
+    # "Soft" limits will not interrupt current request processing. "Hard"
     # limit on the contrary - interrupts the execution of the request.
     supervisor:
       # How often to check the state of the workers.
@@ -795,7 +795,7 @@ http:
       # Default: 0s
       exec_ttl: 60s
 
-  # SSL (Secure Sockets Layer) (TLS) settings (docs: https://roadrunner.dev/docs/http-https).
+  # SSL (Secure Sockets Layer) (TLS) settings (docs: https://roadrunner.dev/docs/app-server-https/2.x/en).
   ssl:
     # Host and port to listen on (eg.: `127.0.0.1:443`).
     #
@@ -998,7 +998,7 @@ broadcast:
       idle_check_freq: 0 # accepted values [1s, 5m, 3h]
       read_only: false
 
-# Application metrics in Prometheus format (docs: https://roadrunner.dev/docs/beep-beep-metrics). Drop this section
+# Application metrics in Prometheus format (docs: https://roadrunner.dev/docs/plugins-metrics/2.x/en). Drop this section
 # for this feature disabling.
 metrics:
   # Prometheus client address (path /metrics added automatically).
@@ -1018,7 +1018,7 @@ metrics:
         - 1.4: 2.3
         - 2.0: 1.4
 
-# Health check endpoint (docs: https://roadrunner.dev/docs/beep-beep-health). If response code is 200 - it means at
+# Health check endpoint (docs: https://roadrunner.dev/docs/app-server-health/2.x/en). If response code is 200 - it means at
 # least one worker ready to serve requests. 500 - there are no workers ready to service requests.
 # Drop this section for this feature disabling.
 status:
@@ -1035,8 +1035,8 @@ status:
   # Default: 503
   unavailable_status_code: 503
 
-# Automatically detect PHP file changes and reload connected services (docs:
-# https://roadrunner.dev/docs/beep-beep-reload). Drop this section for this feature disabling.
+# Automatically detect PHP file changes and reload connected services
+# (docs: https://roadrunner.dev/docs/plugins-reload/2.x/en). Drop this section for this feature disabling.
 reload:
   # Sync interval.
   #
