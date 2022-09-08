@@ -10,7 +10,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v2 v2.17.15
-	github.com/roadrunner-server/api/v2 v2.21.2
+	github.com/roadrunner-server/api/v2 v2.23.0-rc.2
 	github.com/roadrunner-server/beanstalk/v2 v2.16.12
 	github.com/roadrunner-server/boltdb/v2 v2.16.13
 	github.com/roadrunner-server/broadcast/v2 v2.13.4
@@ -18,12 +18,12 @@ require (
 	github.com/roadrunner-server/endure v1.4.5
 	github.com/roadrunner-server/errors v1.2.0
 	github.com/roadrunner-server/fileserver/v2 v2.13.14
-	github.com/roadrunner-server/goridge/v3 v3.5.2
+	github.com/roadrunner-server/goridge/v3 v3.5.3
 	github.com/roadrunner-server/grpc/v2 v2.21.3
 	github.com/roadrunner-server/gzip/v2 v2.12.10
 	github.com/roadrunner-server/headers/v2 v2.12.11
 	github.com/roadrunner-server/http/v2 v2.22.1
-	github.com/roadrunner-server/informer/v2 v2.12.4
+	github.com/roadrunner-server/informer/v2 v2.12.6
 	github.com/roadrunner-server/jobs/v2 v2.17.4
 	github.com/roadrunner-server/kafka/v2 v2.1.5
 	github.com/roadrunner-server/kv/v2 v2.13.4
