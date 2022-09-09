@@ -18,7 +18,7 @@ const (
 )
 
 // WorkerTable renders table with information about rr server workers.
-func WorkerTable(writer io.Writer, workers []process.State) *tablewriter.Table {
+func WorkerTable(writer io.Writer, workers []*process.State) *tablewriter.Table {
 	tw := tablewriter.NewWriter(writer)
 	tw.SetHeader([]string{"PID", "Status", "Execs", "Memory", "CPU%", "Created"})
 	tw.SetColMinWidth(0, 7)
@@ -30,12 +30,12 @@ func WorkerTable(writer io.Writer, workers []process.State) *tablewriter.Table {
 
 	for i := 0; i < len(workers); i++ {
 		tw.Append([]string{
-			strconv.Itoa(int(workers[i].Pid())),
-			renderStatus(workers[i].String()),
-			renderJobs(workers[i].NumExecs()),
-			humanize.Bytes(workers[i].MemoryUsage()),
-			renderCPU(workers[i].CPUPercent()),
-			renderAlive(time.Unix(0, workers[i].Created())),
+			strconv.Itoa(int(workers[i].Pid)),
+			renderStatus(workers[i].StatusStr),
+			renderJobs(workers[i].NumExecs),
+			humanize.Bytes(workers[i].MemoryUsage),
+			renderCPU(workers[i].CPUPercent),
+			renderAlive(time.Unix(0, workers[i].Created)),
 		})
 	}
 
@@ -43,7 +43,7 @@ func WorkerTable(writer io.Writer, workers []process.State) *tablewriter.Table {
 }
 
 // ServiceWorkerTable renders table with information about rr server workers.
-func ServiceWorkerTable(writer io.Writer, workers []process.State) *tablewriter.Table {
+func ServiceWorkerTable(writer io.Writer, workers []*process.State) *tablewriter.Table {
 	tw := tablewriter.NewWriter(writer)
 	tw.SetAutoWrapText(false)
 	tw.SetHeader([]string{"PID", "Memory", "CPU%", "Command"})
@@ -55,10 +55,10 @@ func ServiceWorkerTable(writer io.Writer, workers []process.State) *tablewriter.
 
 	for i := 0; i < len(workers); i++ {
 		tw.Append([]string{
-			strconv.Itoa(int(workers[i].Pid())),
-			humanize.Bytes(workers[i].MemoryUsage()),
-			renderCPU(workers[i].CPUPercent()),
-			workers[i].Command(),
+			strconv.Itoa(int(workers[i].Pid)),
+			humanize.Bytes(workers[i].MemoryUsage),
+			renderCPU(workers[i].CPUPercent),
+			workers[i].Command,
 		})
 	}
 
