@@ -10,7 +10,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v2 v2.17.15
-	github.com/roadrunner-server/api/v2 v2.21.2
+	github.com/roadrunner-server/api/v2 v2.23.0
 	github.com/roadrunner-server/beanstalk/v2 v2.16.12
 	github.com/roadrunner-server/boltdb/v2 v2.16.13
 	github.com/roadrunner-server/broadcast/v2 v2.13.4
@@ -18,7 +18,7 @@ require (
 	github.com/roadrunner-server/endure v1.4.5
 	github.com/roadrunner-server/errors v1.2.0
 	github.com/roadrunner-server/fileserver/v2 v2.13.14
-	github.com/roadrunner-server/goridge/v3 v3.5.2
+	github.com/roadrunner-server/goridge/v3 v3.5.3
 	github.com/roadrunner-server/grpc/v2 v2.21.3
 	github.com/roadrunner-server/gzip/v2 v2.12.10
 	github.com/roadrunner-server/headers/v2 v2.12.11
@@ -36,7 +36,7 @@ require (
 	github.com/roadrunner-server/prometheus/v2 v2.13.14
 	github.com/roadrunner-server/proxy_ip_parser/v2 v2.4.5
 	github.com/roadrunner-server/redis/v2 v2.15.12
-	github.com/roadrunner-server/reload/v2 v2.13.4
+	github.com/roadrunner-server/reload/v2 v2.14.0
 	github.com/roadrunner-server/resetter/v2 v2.12.4
 	github.com/roadrunner-server/rpc/v2 v2.14.4
 	github.com/roadrunner-server/send/v2 v2.12.11
@@ -223,7 +223,7 @@ require (
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 //indirect
 	golang.org/x/net v0.0.0-20220906165146-f3363e06e74c // indirect
 	golang.org/x/sync v0.0.0-20220819030929-7fc1605a5dde // indirect
-	golang.org/x/sys v0.0.0-20220907062415-87db552b00fd // indirect
+	golang.org/x/sys v0.0.0-20220909162455-aba9fc2a8ff2 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
 	golang.org/x/tools v0.1.12 // indirect
