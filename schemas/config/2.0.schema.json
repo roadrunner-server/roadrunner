@@ -231,8 +231,9 @@
                             "default": "prometheus"
                         }
                     },
-                    "oneOf": [
+                    "anyOf": [
                         {
+                            "type": "object",
                             "properties": {
                                 "address": {
                                     "description": "Server metrics address",

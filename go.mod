@@ -20,9 +20,9 @@ require (
 	github.com/roadrunner-server/fileserver/v2 v2.14.0
 	github.com/roadrunner-server/goridge/v3 v3.5.3
 	github.com/roadrunner-server/grpc/v2 v2.22.0
-	github.com/roadrunner-server/gzip/v2 v2.13.0
-	github.com/roadrunner-server/headers/v2 v2.13.0
-	github.com/roadrunner-server/http/v2 v2.23.0
+	github.com/roadrunner-server/gzip/v2 v2.13.1
+	github.com/roadrunner-server/headers/v2 v2.13.1
+	github.com/roadrunner-server/http/v2 v2.23.1
 	github.com/roadrunner-server/informer/v2 v2.13.0
 	github.com/roadrunner-server/jobs/v2 v2.18.0
 	github.com/roadrunner-server/kafka/v2 v2.2.0
@@ -32,21 +32,21 @@ require (
 	github.com/roadrunner-server/memory/v2 v2.17.0
 	github.com/roadrunner-server/metrics/v2 v2.14.0
 	github.com/roadrunner-server/nats/v2 v2.17.0
-	github.com/roadrunner-server/otel/v2 v2.5.0
-	github.com/roadrunner-server/prometheus/v2 v2.14.0
-	github.com/roadrunner-server/proxy_ip_parser/v2 v2.5.0
+	github.com/roadrunner-server/otel/v2 v2.5.1
+	github.com/roadrunner-server/prometheus/v2 v2.14.1
+	github.com/roadrunner-server/proxy_ip_parser/v2 v2.5.1
 	github.com/roadrunner-server/redis/v2 v2.16.0
 	github.com/roadrunner-server/reload/v2 v2.14.0
 	github.com/roadrunner-server/resetter/v2 v2.13.0
 	github.com/roadrunner-server/rpc/v2 v2.15.0
-	github.com/roadrunner-server/send/v2 v2.13.0
+	github.com/roadrunner-server/send/v2 v2.13.1
 	github.com/roadrunner-server/server/v2 v2.16.0
 	github.com/roadrunner-server/service/v2 v2.17.0
 	github.com/roadrunner-server/sqs/v2 v2.20.0
-	github.com/roadrunner-server/static/v2 v2.14.0
+	github.com/roadrunner-server/static/v2 v2.14.1
 	github.com/roadrunner-server/status/v2 v2.15.0
 	github.com/roadrunner-server/tcp/v2 v2.15.0
-	github.com/roadrunner-server/websockets/v2 v2.16.0
+	github.com/roadrunner-server/websockets/v2 v2.16.1
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.0
@@ -202,17 +202,17 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.34.0 // indirect
 	go.opentelemetry.io/contrib/propagators/jaeger v1.9.0 // indirect
-	go.opentelemetry.io/otel v1.9.0 // indirect
-	go.opentelemetry.io/otel/exporters/jaeger v1.9.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.9.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.9.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.9.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.9.0 // indirect
-	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.9.0 // indirect
-	go.opentelemetry.io/otel/exporters/zipkin v1.9.0 // indirect
+	go.opentelemetry.io/otel v1.10.0 // indirect
+	go.opentelemetry.io/otel/exporters/jaeger v1.10.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.10.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.10.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.10.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.10.0 // indirect
+	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.10.0 // indirect
+	go.opentelemetry.io/otel/exporters/zipkin v1.10.0 // indirect
 	go.opentelemetry.io/otel/metric v0.31.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.9.0 // indirect
-	go.opentelemetry.io/otel/trace v1.9.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.10.0 // indirect
+	go.opentelemetry.io/otel/trace v1.10.0 // indirect
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
 	go.temporal.io/api v1.11.1-0.20220907050538-6de5285cf463 // indirect
 	go.temporal.io/sdk v1.17.0 // indirect
