@@ -216,56 +216,88 @@
                     "type": "string",
                     "default": "default"
                 },
-                "codec": {
-                    "description": "Internal temporal communication protocol",
-                    "type": "string",
-                    "default": "proto",
-                    "anyOf": [
-                        {
-                            "type": "string",
-                            "examples": [
-                                "proto",
-                                "json"
-                            ]
-                        }
-                    ]
-                },
-                "debug_level": {
-                    "description": "Debugging level (only for json codec)",
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2,
-                    "default": 0
-                },
                 "metrics": {
                     "description": "Temporal metrics",
                     "type": "object",
                     "default": null,
                     "properties": {
-                        "address": {
-                            "description": "Server metrics address",
+                        "driver": {
+                            "description": "Metrics driver to use",
                             "type": "string",
-                            "default": "127.0.0.1:9091"
-                        },
-                        "type": {
-                            "type": "string",
-                            "description": "Metrics type",
-                            "anyOf": [
-                                {
-                                    "type": "string",
-                                    "examples": [
-                                        "summary",
-                                        "histogram"
-                                    ]
-                                }
-                            ]
-                        },
-                        "prefix": {
-                            "description": "Temporal metrics prefix",
-                            "type": "string",
-                            "default": null
+                            "enum": [
+                                "prometheus",
+                                "statsd"
+                            ],
+                            "default": "prometheus"
                         }
-                    }
+                    },
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "address": {
+                                    "description": "Server metrics address",
+                                    "type": "string",
+                                    "default": "127.0.0.1:9091"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "description": "Metrics type",
+                                    "anyOf": [
+                                        {
+                                            "type": "string",
+                                            "examples": [
+                                                "summary",
+                                                "histogram"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "prefix": {
+                                    "description": "Temporal metrics prefix",
+                                    "type": "string",
+                                    "default": null
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "host_port": {
+                                    "description": "The host and port of the statsd server",
+                                    "type": "string",
+                                    "default": "127.0.0.1:8125"
+                                },
+                                "prefix": {
+                                    "description": "The prefix to use in reporting to statsd",
+                                    "type": "string",
+                                    "default": null
+                                },
+                                "flush_interval": {
+                                    "description": "FlushInterval is the maximum interval for sending packets",
+                                    "type": "string",
+                                    "default": "1s"
+                                },
+                                "flush_bytes": {
+                                    "description": "FlushBytes specifies the maximum udp packet size you wish to send. If FlushBytes is unspecified, it defaults  to 1432 bytes, which is considered safe for local traffic.",
+                                    "type": "integer",
+                                    "default": 1432
+                                },
+                                "tags": {
+                                    "description": "Hashmap with tag:value values",
+                                    "$ref": "#/definitions/Hashmap"
+                                },
+                                "tag_prefix": {
+                                    "description": "Prefix for the tag",
+                                    "type": "string",
+                                    "default": null
+                                },
+                                "tag_separator": {
+                                    "description": "TagSeparator allows tags to be appended with a separator. If not specified tag keys and values are embedded to the stat name directly.",
+                                    "type": "string",
+                                    "default": null
+                                }
+                            }
+                        }
+                    ]
                 },
                 "activities": {
                     "description": "Activities pool settings",

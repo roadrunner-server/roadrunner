@@ -1,5 +1,57 @@
 # CHANGELOG
 
+## v2.11.2 (13.09.2022)
+
+## 👀 New:
+
+- ✏ **Kafka plugin**: **[ ⚠️ EXPERIMENTAL OPTION ⚠️ ]** Kafka plugin now waits for 1 minute (automatically) for the broker to be available, [FR](https://github.com/roadrunner-server/roadrunner/issues/1267), (thanks @Baiquette)
+- ✏ **Internal**: PHP Worker now uses an [FSM](https://en.wikipedia.org/wiki/Finite-state_machine) to transition between states (`working`, `ready`, `invalid`, etc).
+- ✏ **Internal**: `./rr reset` now works in parallel. All workers will be restarted simultaneously instead of a one-by-one sync approach.
+- ✏ **Internal**: `./rr reset` and destroy (when stopping RR) now gracefully stop the workers (giving a chance for the finalizers to work). If the worker doesn't respond in 10 seconds, it'll be killed.
+
+-
+## 🩹 Fixes:
+
+- 🐛 **SQS plugin**: Incorrect detection of the `AWS IMDSv2` instances, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1250) (thanks @paulermo)
+- 🐛 **Temporal plugin**: Segmentation violation when using TLS, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1278), (thanks @seregazhuk)
+- 🐛 **NATS plugin**: Properly check the `stream not found` error from NATS, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1274), (thanks @pjtuxe)
+
+## 🧹 Chore:
+
+- 🧑‍🏭: **Temporal plugin**: Support for the `statsd` daemon for stats aggregation, [FR](https://github.com/temporalio/roadrunner-temporal/issues/265), (thanks @cv65kr)
+Configuration stays the same (**no breaking changes**), but additionally, you may specify a `driver`:
+
+**Prometheus:**
+```yaml
+temporal:
+  address: "127.0.0.1:7233"
+  metrics:
+    driver: prometheus # <---- prometheus used by default (you may omit the driver in this case)
+    address: "127.0.0.1:9095"
+    prefix: "samples"
+    type: "summary"
+  activities:
+    num_workers: 4
+```
+
+**Statsd:**
+```yaml
+temporal:
+  address: "127.0.0.1:7233"
+  metrics:
+    driver: statsd # <---- Should be specified to use a statsd driver
+    host_port: "127.0.0.1:8125"
+    prefix: "samples"
+    flush_interval: 1s
+    flush_bytes: 512
+    tags:
+      - foo: bar
+  activities:
+    num_workers: 4
+```
+
+Detailed description is here: [link](https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml#L169)
+
 ---
 
 ## v2.11.1 (25.08.2022)
