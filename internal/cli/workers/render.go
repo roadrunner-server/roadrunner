@@ -30,9 +30,9 @@ func WorkerTable(writer io.Writer, workers []*process.State) *tablewriter.Table 
 
 	for i := 0; i < len(workers); i++ {
 		tw.Append([]string{
-			strconv.Itoa(workers[i].Pid),
-			renderStatus(workers[i].Status),
-			renderJobs(workers[i].NumJobs),
+			strconv.Itoa(int(workers[i].Pid)),
+			renderStatus(workers[i].StatusStr),
+			renderJobs(workers[i].NumExecs),
 			humanize.Bytes(workers[i].MemoryUsage),
 			renderCPU(workers[i].CPUPercent),
 			renderAlive(time.Unix(0, workers[i].Created)),
@@ -55,7 +55,7 @@ func ServiceWorkerTable(writer io.Writer, workers []*process.State) *tablewriter
 
 	for i := 0; i < len(workers); i++ {
 		tw.Append([]string{
-			strconv.Itoa(workers[i].Pid),
+			strconv.Itoa(int(workers[i].Pid)),
 			humanize.Bytes(workers[i].MemoryUsage),
 			renderCPU(workers[i].CPUPercent),
 			workers[i].Command,
