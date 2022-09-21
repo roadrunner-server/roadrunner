@@ -649,8 +649,8 @@ github.com/roadrunner-server/informer/v2 v2.13.0 h1:gYbbRSKNVqw/Ii6mepbiCXrgGMAD
 github.com/roadrunner-server/informer/v2 v2.13.0/go.mod h1:PgEhY4W1cSf6GehCwwEXtcBLa4nXOAW86ndLtDGsZJ4=
 github.com/roadrunner-server/jobs/v2 v2.18.1 h1:ENqcXf65vmhO08KD1WVtRAa+E5YMHiGzFQdpn03b+ws=
 github.com/roadrunner-server/jobs/v2 v2.18.1/go.mod h1:xQZRhzd3MDvGMJGJJjTSOGKUYt/2oCwhYcxv0wft/6A=
-github.com/roadrunner-server/kafka/v2 v2.2.0 h1:8kN8ht3rsa+MiBK5/WbPG0AwrEkFKcwvDI6Z6qeaJvM=
-github.com/roadrunner-server/kafka/v2 v2.2.0/go.mod h1:YqZdvVtgKquPLp8EIaZq71vnx989bbLO0OKrzTrWKRY=
+github.com/roadrunner-server/kafka/v2 v2.2.1 h1:PdFItG4tu5lvf5kA+yrCJ8PczOG0KXXwBKurKiCDld0=
+github.com/roadrunner-server/kafka/v2 v2.2.1/go.mod h1:76G9K83zJlcBGV+IP9sH3bS4oR6PvBdyuF9OhX5YaU8=
 github.com/roadrunner-server/kv/v2 v2.14.0 h1:UPyEWfHRRmoksYbBFfXDRE8ocPAN/gsQPVheHsPzTM8=
 github.com/roadrunner-server/kv/v2 v2.14.0/go.mod h1:16N9PIwzNuyvzYAHwS+W3Ms5hPKGPY/H7byRh70Q3B8=
 github.com/roadrunner-server/logger/v2 v2.15.1 h1:gBp6TWYWNEn80OlWlGhBOBW2LTw1U7FHKzJ4d8EduDw=
@@ -903,8 +903,8 @@ golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5y
 golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
 golang.org/x/crypto v0.0.0-20220214200702-86341886e292/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
 golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
-golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 h1:Y/gsMcFOcR+6S6f3YeMKl5g+dZMEWqcz5Czj/GWYbkM=
-golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
+golang.org/x/crypto v0.0.0-20220919173607-35f4265a4bc0 h1:a5Yg6ylndHHYJqIPrdq0AhvR6KTvDTAvgBtaidhEevY=
+golang.org/x/crypto v0.0.0-20220919173607-35f4265a4bc0/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
 golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190306152737-a1d7652674e8/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190510132918-efd6b22b2522/go.mod h1:ZjyILWgesfNpC6sMxTJOJm9Kp84zZh5NQWvqDGG3Qr8=
@@ -1004,8 +1004,9 @@ golang.org/x/net v0.0.0-20220630215102-69896b714898/go.mod h1:XRhObCWvk6IyKnWLug
 golang.org/x/net v0.0.0-20220725212005-46097bf591d3/go.mod h1:AaygXjzTFtRAg2ttMY5RMuhpJ3cNnI0XpyFJD1iQRSM=
 golang.org/x/net v0.0.0-20220809184613-07c6da5e1ced/go.mod h1:YDH+HFinaLZZlnHAfSS6ZXJJ9M9t4Dl22yv3iI2vPwk=
 golang.org/x/net v0.0.0-20220906165146-f3363e06e74c/go.mod h1:YDH+HFinaLZZlnHAfSS6ZXJJ9M9t4Dl22yv3iI2vPwk=
-golang.org/x/net v0.0.0-20220909164309-bea034e7d591 h1:D0B/7al0LLrVC8aWF4+oxpv/m8bc7ViFfVS8/gXGdqI=
 golang.org/x/net v0.0.0-20220909164309-bea034e7d591/go.mod h1:YDH+HFinaLZZlnHAfSS6ZXJJ9M9t4Dl22yv3iI2vPwk=
+golang.org/x/net v0.0.0-20220920203100-d0c6ba3f52d9 h1:asZqf0wXastQr+DudYagQS8uBO8bHKeYD1vbAvGmFL8=
+golang.org/x/net v0.0.0-20220920203100-d0c6ba3f52d9/go.mod h1:YDH+HFinaLZZlnHAfSS6ZXJJ9M9t4Dl22yv3iI2vPwk=
 golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=
 golang.org/x/oauth2 v0.0.0-20190226205417-e64efc72b421/go.mod h1:gOpvHmFTYa4IltrdGE7lF6nIHvwfUNPOp7c8zoXwtLw=
 golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45/go.mod h1:gOpvHmFTYa4IltrdGE7lF6nIHvwfUNPOp7c8zoXwtLw=

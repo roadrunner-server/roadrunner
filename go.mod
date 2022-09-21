@@ -25,7 +25,7 @@ require (
 	github.com/roadrunner-server/http/v2 v2.23.2
 	github.com/roadrunner-server/informer/v2 v2.13.0
 	github.com/roadrunner-server/jobs/v2 v2.18.1
-	github.com/roadrunner-server/kafka/v2 v2.2.0
+	github.com/roadrunner-server/kafka/v2 v2.2.1
 	github.com/roadrunner-server/kv/v2 v2.14.0
 	github.com/roadrunner-server/logger/v2 v2.15.1
 	github.com/roadrunner-server/memcached/v2 v2.13.0
@@ -221,9 +221,9 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.23.0 // indirect
-	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 // indirect
+	golang.org/x/crypto v0.0.0-20220919173607-35f4265a4bc0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 //indirect
-	golang.org/x/net v0.0.0-20220909164309-bea034e7d591 // indirect
+	golang.org/x/net v0.0.0-20220920203100-d0c6ba3f52d9 // indirect
 	golang.org/x/sync v0.0.0-20220907140024-f12130a52804 // indirect
 	golang.org/x/sys v0.0.0-20220919091848-fb04ddd9f9c8 // indirect
 	golang.org/x/text v0.3.7 // indirect
