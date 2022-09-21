@@ -31,7 +31,7 @@ require (
 	github.com/roadrunner-server/memcached/v2 v2.13.0
 	github.com/roadrunner-server/memory/v2 v2.17.0
 	github.com/roadrunner-server/metrics/v2 v2.14.1
-	github.com/roadrunner-server/nats/v2 v2.17.0
+	github.com/roadrunner-server/nats/v2 v2.17.1
 	github.com/roadrunner-server/otel/v2 v2.5.3
 	github.com/roadrunner-server/prometheus/v2 v2.14.2
 	github.com/roadrunner-server/proxy_ip_parser/v2 v2.5.1
@@ -221,7 +221,7 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.23.0 // indirect
-	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 // indirect
+	golang.org/x/crypto v0.0.0-20220919173607-35f4265a4bc0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 //indirect
 	golang.org/x/net v0.0.0-20220909164309-bea034e7d591 // indirect
 	golang.org/x/sync v0.0.0-20220907140024-f12130a52804 // indirect

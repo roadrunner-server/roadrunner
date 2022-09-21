@@ -661,8 +661,8 @@ github.com/roadrunner-server/memory/v2 v2.17.0 h1:cHWE6hwzYsUwJBDwkFohrCXn0XkQMt
 github.com/roadrunner-server/memory/v2 v2.17.0/go.mod h1:8QrWKB9u/6Y96oq32/KxQwtHFoybCHl0OuNU5pLz+rY=
 github.com/roadrunner-server/metrics/v2 v2.14.1 h1:NOmQHfjPorA3xmxx0IUD1ONadWeXPm8ZTtUuZwCrVqU=
 github.com/roadrunner-server/metrics/v2 v2.14.1/go.mod h1:ayMKa/FoD2Nz3xXSX0WE194Kva6xKq6+zBW8NDshV7Y=
-github.com/roadrunner-server/nats/v2 v2.17.0 h1:zTYsX2KUAsKioJSfl/5kEYMlnaZ82MOhr2Wron2jV2c=
-github.com/roadrunner-server/nats/v2 v2.17.0/go.mod h1:ULdbxShmDghsGcEIhzIhe239Y/vBFVROT5fsGtuHIoU=
+github.com/roadrunner-server/nats/v2 v2.17.1 h1:3aM28ddwiFXHU2WrpkSdDZofWYXSdNTwoWe4t2UKV2o=
+github.com/roadrunner-server/nats/v2 v2.17.1/go.mod h1:9u7RA+b55A6GsJkOUVB2euLVSMV7uj6n+8gCJGHgCuU=
 github.com/roadrunner-server/otel/v2 v2.5.3 h1:jfAjgFmHUdPRpXDpyA/LEUsHAozNIf7KL78G923g1wM=
 github.com/roadrunner-server/otel/v2 v2.5.3/go.mod h1:nsMSSnaaQxApJGF04fLtaczMiMwMWm9lgmvrkXSHVn0=
 github.com/roadrunner-server/prometheus/v2 v2.14.2 h1:dDHz6e/41Zsc0/N7ySO77iy2PH0AT7W6BBviK6ByADI=
@@ -903,8 +903,8 @@ golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5y
 golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
 golang.org/x/crypto v0.0.0-20220214200702-86341886e292/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
 golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
-golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 h1:Y/gsMcFOcR+6S6f3YeMKl5g+dZMEWqcz5Czj/GWYbkM=
-golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
+golang.org/x/crypto v0.0.0-20220919173607-35f4265a4bc0 h1:a5Yg6ylndHHYJqIPrdq0AhvR6KTvDTAvgBtaidhEevY=
+golang.org/x/crypto v0.0.0-20220919173607-35f4265a4bc0/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
 golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190306152737-a1d7652674e8/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190510132918-efd6b22b2522/go.mod h1:ZjyILWgesfNpC6sMxTJOJm9Kp84zZh5NQWvqDGG3Qr8=
