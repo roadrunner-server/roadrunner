@@ -695,8 +695,8 @@ github.com/roadrunner-server/tcp/v2 v2.15.1 h1:pNhYUbSa1BdzFlzkeDYIQxMLQVy9Xs5Uz
 github.com/roadrunner-server/tcp/v2 v2.15.1/go.mod h1:hasZIVy4d8byF+YmMgbn37WTe2Aa65tRe0SKenf1ugo=
 github.com/roadrunner-server/tcplisten v1.2.0 h1:nsiXEEb0zP7vjAsCWNHKpM0HdwFK/KlafFF/2gsTJlg=
 github.com/roadrunner-server/tcplisten v1.2.0/go.mod h1:NhumKvt7dbIKVNZnqR1fA4ET1D8ngIKsg0TxnuJTL6A=
-github.com/roadrunner-server/websockets/v2 v2.16.2 h1:GGfrTJ/bj5IAemQUmj2NJSktNLza1gd+2Pi8RVaqDZg=
-github.com/roadrunner-server/websockets/v2 v2.16.2/go.mod h1:MfKFk6hjJD2u/MwOV20u2Xmu7PKIrgG9Uzl3pcoSTio=
+github.com/roadrunner-server/websockets/v2 v2.16.3 h1:WfPv21QYT7rvFURkpE3I9zIrjx1Rin74hQJxTs4bK14=
+github.com/roadrunner-server/websockets/v2 v2.16.3/go.mod h1:8ixsfRq62Wm5VchXwjqxJkTSGg0S3puo0f6VGg3GlFY=
 github.com/robfig/cron v1.2.0 h1:ZjScXvvxeQ63Dbyxy76Fj3AT3Ut0aKsyd2/tl3DTMuQ=
 github.com/robfig/cron v1.2.0/go.mod h1:JGuDeoQd7Z6yL4zQhZ3OPEVHB7fL6Ka6skscFHfmt2k=
 github.com/rogpeppe/fastuuid v1.2.0/go.mod h1:jVj6XXZzXRy/MSR5jhDC/2q6DgLz+nrA6LYCDYWNEvQ=
