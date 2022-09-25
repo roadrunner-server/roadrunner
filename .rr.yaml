@@ -796,7 +796,7 @@ http:
     # Maximal count of worker executions. Zero (or nothing) means no limit.
     #
     # Default: 0
-    max_jobs: 64
+    max_jobs: 0
 
     # Timeout for worker allocation. Zero means no limit.
     #
