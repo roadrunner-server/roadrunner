@@ -14,7 +14,7 @@ require (
 	github.com/roadrunner-server/beanstalk/v2 v2.17.0
 	github.com/roadrunner-server/boltdb/v2 v2.17.2
 	github.com/roadrunner-server/broadcast/v2 v2.14.0
-	github.com/roadrunner-server/config/v2 v2.16.2
+	github.com/roadrunner-server/config/v2 v2.16.3
 	github.com/roadrunner-server/endure v1.4.5
 	github.com/roadrunner-server/errors v1.2.0
 	github.com/roadrunner-server/fileserver/v2 v2.14.2
@@ -226,8 +226,8 @@ require (
 	golang.org/x/crypto v0.0.0-20220919173607-35f4265a4bc0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 //indirect
 	golang.org/x/net v0.0.0-20220921203646-d300de134e69 // indirect
-	golang.org/x/sync v0.0.0-20220907140024-f12130a52804 // indirect
-	golang.org/x/sys v0.0.0-20220919091848-fb04ddd9f9c8 // indirect
+	golang.org/x/sync v0.0.0-20220923202941-7f9b1623fab7 // indirect
+	golang.org/x/sys v0.0.0-20220926163933-8cfa568d3c25 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220920022843-2ce7c2934d45 // indirect
 	golang.org/x/tools v0.1.12 // indirect
