@@ -304,6 +304,44 @@
                     "description": "Activities pool settings",
                     "type": "object",
                     "$ref": "#/definitions/WorkersPool"
+                },
+                "tls": {
+                    "description": "Temporal TLS configuration",
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "description": "Path to the key file",
+                            "type": "string",
+                            "default": null
+                        },
+                        "cert": {
+                            "description": "Path to the certificate",
+                            "type": "string",
+                            "default": null
+                        },
+                        "root_ca": {
+                            "description": "Path to the CA certificate",
+                            "type": "string",
+                            "default": null
+                        },
+                        "client_auth_type": {
+                            "description": "Client auth type",
+                            "type": "string",
+                            "default": "no_client_certs",
+                            "enum": [
+                                "request_client_cert",
+                                "require_any_client_cert",
+                                "verify_client_cert_if_given",
+                                "no_client_certs",
+                                "require_and_verify_client_cert"
+                            ]
+                        },
+                        "server_name" :{
+                            "description": "ServerName is used to verify the hostname on the returned certificates unless InsecureSkipVerify is given. It is also included in the client's handshake to support virtual hosting unless it is an IP address.",
+                            "type": "string",
+                            "default": null
+                        }
+                    }
                 }
             }
         },
