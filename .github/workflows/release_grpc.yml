@@ -58,7 +58,7 @@ jobs:
         run: sudo apt-get install -y musl-tools
 
       - name: Download dependencies
-        run: go mod download
+        run: cd protoc_plugins && go mod download
 
       - name: Generate builder values
         id: values
@@ -89,9 +89,9 @@ jobs:
           LDFLAGS: >-
             -s
         run: |
-          go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" protoc_plugins/protoc-gen-php-grpc/main.go
-          stat "./${{ steps.values.outputs.binary-name }}"
-          gpg --detach-sign --armor "./${{ steps.values.outputs.binary-name }}"
+          cd protoc_plugins && go build -trimpath -ldflags "$LDFLAGS" -o "../${{ steps.values.outputs.binary-name }}" protoc-gen-php-grpc/main.go
+          stat "../${{ steps.values.outputs.binary-name }}"
+          gpg --detach-sign --armor "../${{ steps.values.outputs.binary-name }}"
 
       - name: Generate distributive directory name
         id: dist-dir
