@@ -15,11 +15,6 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
     steps:
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.19
-
       - name: Check out code
         uses: actions/checkout@v3
         with:
