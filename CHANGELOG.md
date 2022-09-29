@@ -1,5 +1,38 @@
 # CHANGELOG
 
+## v2.11.3 (29.09.2022)
+
+## 👀 New:
+- ✏ **[ALPHA] gRPC plugin**: `buf` remote plugins support for the `protoc-gen-php-grpc` plugin. [FR](https://github.com/roadrunner-server/roadrunner/issues/1297),  (thanks @rauanmayemir)
+- ✏ **Temporal plugin**: `mTLS` support. [FR](https://github.com/roadrunner-server/roadrunner/issues/1300), (thanks @seregazhuk)
+
+[Configuration sample](https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml#L252):
+
+```yaml
+temporal:
+  address: 127.0.0.1:7233
+  cache_size: 100000
+  activities:
+    num_workers: 4
+
+  tls:
+    key: client.key
+    cert: client.pem
+    root_ca: ca.cert
+    client_auth_type: require_and_verify_client_cert
+    server_name: "tls-sample"
+```
+
+
+## 🩹 Fixes:
+- 🐛 **Config plugin**: properly replace environment variables for the array `yaml` values. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1308), (thanks @lyt8384)
+
+## 🧹 Chore:
+
+- 🧑‍🏭: **[ALPHA] gRPC plugin**:  `base64` decoder for the google's `ErrorProto` structure. [FR](https://github.com/roadrunner-server/roadrunner/issues/1273), (thanks @rauanmayemir)
+
+---
+
 ## v2.11.2 (13.09.2022)
 
 ## 👀 New:
@@ -9,7 +42,7 @@
 - ✏ **Internal**: `./rr reset` now works in parallel. All workers will be restarted simultaneously instead of a one-by-one sync approach.
 - ✏ **Internal**: `./rr reset` and destroy (when stopping RR) now gracefully stop the workers (giving a chance for the finalizers to work). If the worker doesn't respond in 10 seconds, it'll be killed.
 
--
+
 ## 🩹 Fixes:
 
 - 🐛 **SQS plugin**: Incorrect detection of the `AWS IMDSv2` instances, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1250) (thanks @paulermo)
