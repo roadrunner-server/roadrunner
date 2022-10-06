@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## v2.11.4 (06.10.2022)
+
+## 👀 New:
+
+- ✏ **Temporal plugin**: Support for the `SearchAttributes`. [FR](https://github.com/temporalio/roadrunner-temporal/pull/275), (thanks @cv65kr).
+
+**Docs**: [link](https://docs.temporal.io/concepts/what-is-a-search-attribute)
+**Samples**: [link](https://github.com/temporalio/samples-php/tree/master/app/src/SearchAttributes)
+
+## 🔧 Maintenance:
+
+- `roadrunner-temporal` plugin updated to: `1.7.0`
+- `http` plugin updated to: `2.23.5`
+- `sqs` plugin updated to: `2.20.4`
+- `config` plugin updated to: `2.16.5`
+- `grpc` plugin updated to: `2.23.3`
+- `nats` plugin updated to: `2.17.3`
+- `jobs` plugin updated to: `2.18.4`
+- `server` plugin updated to: `2.16.4`
+- `tcp` plugin updated to: `2.15.4`
+- `websockets` plugin updated to: `2.16.5`
+- `otel` plugin updated to: `2.5.6`
+- `kafka` plugin updated to: `2.2.3`
+
+---
+
+
 ## v2.11.3 (29.09.2022)
 
 ## 👀 New:
