@@ -1,7 +1,6 @@
 # Documentation: <https://github.com/golangci/golangci-lint#config-file>
 
 run:
-  go: '1.17'
   timeout: 1m
   skip-dirs:
     - .github
@@ -74,7 +73,6 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - noctx # finds sending http request without context.Context
     - nolintlint # Reports ill-formed or insufficient nolint directives
     - prealloc # Finds slice declarations that could potentially be preallocated
-    - rowserrcheck # Checks whether Err of rows is checked successfully
     - staticcheck # Staticcheck is a go vet on steroids, applying a ton of static analysis checks
     - stylecheck # Stylecheck is a replacement for golint
     - tparallel # detects inappropriate usage of t.Parallel() method in your Go test codes

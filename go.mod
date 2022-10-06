@@ -14,25 +14,25 @@ require (
 	github.com/roadrunner-server/beanstalk/v2 v2.17.0
 	github.com/roadrunner-server/boltdb/v2 v2.17.3
 	github.com/roadrunner-server/broadcast/v2 v2.14.0
-	github.com/roadrunner-server/config/v2 v2.16.4
+	github.com/roadrunner-server/config/v2 v2.16.5
 	github.com/roadrunner-server/endure v1.4.5
 	github.com/roadrunner-server/errors v1.2.0
 	github.com/roadrunner-server/fileserver/v2 v2.14.3
 	github.com/roadrunner-server/goridge/v3 v3.5.3
-	github.com/roadrunner-server/grpc/v2 v2.23.2
+	github.com/roadrunner-server/grpc/v2 v2.23.3
 	github.com/roadrunner-server/gzip/v2 v2.13.4
 	github.com/roadrunner-server/headers/v2 v2.13.4
-	github.com/roadrunner-server/http/v2 v2.23.4
+	github.com/roadrunner-server/http/v2 v2.23.5
 	github.com/roadrunner-server/informer/v2 v2.13.0
-	github.com/roadrunner-server/jobs/v2 v2.18.3
-	github.com/roadrunner-server/kafka/v2 v2.2.2
+	github.com/roadrunner-server/jobs/v2 v2.18.4
+	github.com/roadrunner-server/kafka/v2 v2.2.3
 	github.com/roadrunner-server/kv/v2 v2.14.0
 	github.com/roadrunner-server/logger/v2 v2.15.3
 	github.com/roadrunner-server/memcached/v2 v2.13.0
 	github.com/roadrunner-server/memory/v2 v2.17.0
 	github.com/roadrunner-server/metrics/v2 v2.14.3
-	github.com/roadrunner-server/nats/v2 v2.17.2
-	github.com/roadrunner-server/otel/v2 v2.5.5
+	github.com/roadrunner-server/nats/v2 v2.17.3
+	github.com/roadrunner-server/otel/v2 v2.5.6
 	github.com/roadrunner-server/prometheus/v2 v2.14.4
 	github.com/roadrunner-server/proxy_ip_parser/v2 v2.5.1
 	github.com/roadrunner-server/redis/v2 v2.16.0
@@ -40,13 +40,13 @@ require (
 	github.com/roadrunner-server/resetter/v2 v2.13.0
 	github.com/roadrunner-server/rpc/v2 v2.15.0
 	github.com/roadrunner-server/send/v2 v2.13.4
-	github.com/roadrunner-server/server/v2 v2.16.3
+	github.com/roadrunner-server/server/v2 v2.16.4
 	github.com/roadrunner-server/service/v2 v2.17.3
-	github.com/roadrunner-server/sqs/v2 v2.20.3
+	github.com/roadrunner-server/sqs/v2 v2.20.4
 	github.com/roadrunner-server/static/v2 v2.14.4
 	github.com/roadrunner-server/status/v2 v2.15.3
-	github.com/roadrunner-server/tcp/v2 v2.15.3
-	github.com/roadrunner-server/websockets/v2 v2.16.4
+	github.com/roadrunner-server/tcp/v2 v2.15.4
+	github.com/roadrunner-server/websockets/v2 v2.16.5
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.0
@@ -55,7 +55,7 @@ require (
 )
 
 require (
-	github.com/Shopify/sarama v1.37.0 // indirect
+	github.com/Shopify/sarama v1.37.2 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.16.16 // indirect
@@ -103,7 +103,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
-	github.com/go-redis/redis/v9 v9.0.0-beta.2 // indirect
+	github.com/go-redis/redis/v9 v9.0.0-beta.3 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.1.0 // indirect
@@ -133,7 +133,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20200511160909-eb529947af53 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/logutils v1.0.0 // indirect
-	github.com/hashicorp/memberlist v0.4.0 // indirect
+	github.com/hashicorp/memberlist v0.5.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/jcmturner/aescts/v2 v2.0.0 // indirect
@@ -223,9 +223,9 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.23.0 // indirect
-	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be // indirect
+	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 //indirect
-	golang.org/x/net v0.0.0-20221002022538-bcab6841153b // indirect
+	golang.org/x/net v0.0.0-20221004154528-8021a29435af // indirect
 	golang.org/x/sync v0.0.0-20220929204114-8fcdb60fdcc0 // indirect
 	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
 	golang.org/x/text v0.3.7 // indirect
