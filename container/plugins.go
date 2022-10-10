@@ -4,7 +4,9 @@ import (
 	cache "github.com/darkweak/souin/plugins/roadrunner"
 	"github.com/roadrunner-server/amqp/v3"
 	"github.com/roadrunner-server/beanstalk/v3"
+	"github.com/roadrunner-server/fileserver/v3"
 	"github.com/roadrunner-server/gzip/v3"
+	"github.com/roadrunner-server/headers/v3"
 	httpPlugin "github.com/roadrunner-server/http/v3"
 	"github.com/roadrunner-server/informer/v3"
 	"github.com/roadrunner-server/jobs/v3"
@@ -12,12 +14,18 @@ import (
 	"github.com/roadrunner-server/logger/v3"
 	"github.com/roadrunner-server/metrics/v3"
 	"github.com/roadrunner-server/nats/v3"
+	rrOtel "github.com/roadrunner-server/otel/v3"
+	"github.com/roadrunner-server/prometheus/v3"
+	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v3"
 	"github.com/roadrunner-server/reload/v3"
 	"github.com/roadrunner-server/resetter/v3"
 	rpcPlugin "github.com/roadrunner-server/rpc/v3"
+	"github.com/roadrunner-server/send/v3"
 	"github.com/roadrunner-server/server/v3"
 	"github.com/roadrunner-server/service/v3"
 	"github.com/roadrunner-server/sqs/v3"
+	"github.com/roadrunner-server/static/v3"
+	"github.com/roadrunner-server/status/v3"
 	rrt "github.com/temporalio/roadrunner-temporal/v2"
 )
 
@@ -51,45 +59,44 @@ func Plugins() []any { //nolint:funlen
 		&beanstalk.Plugin{},
 		// new in 2.11
 		&kafka.Plugin{},
-		//// =========
+		// =========
 		//
 		// http server plugin with middleware
 		&httpPlugin.Plugin{},
-		//&static.Plugin{},
-		//&headers.Plugin{},
-		//&status.Plugin{},
+		&static.Plugin{},
+		&headers.Plugin{},
+		&status.Plugin{},
 		&gzip.Plugin{},
-		//&prometheus.Plugin{},
+		&prometheus.Plugin{},
+		&send.Plugin{},
+		&proxyIP.Plugin{},
+		&rrOtel.Plugin{},
+		&fileserver.Plugin{},
 		// third-party--
 		&cache.Plugin{},
 		// --
-		//&send.Plugin{},
-		//&proxyIP.Plugin{},
-		//&rrOtel.Plugin{},
-		// --
-		//&fileserver.Plugin{},
 		// ===================
 
-		//&grpcPlugin.Plugin{},
-		// kv + ws + jobs plugin
-		//&memory.Plugin{},
-		// KV + Jobs
-		//&boltdb.Plugin{},
-		// broadcast via memory or redis
-		// used in conjunction with Websockets, memory and redis plugins
-		//&broadcast.Plugin{},
-		// ======== websockets broadcast bundle
-		//&websockets.Plugin{},
-		//&redis.Plugin{},
-		// =========
+		// &grpcPlugin.Plugin{},
+		//  kv + ws + jobs plugin
+		// &memory.Plugin{},
+		//  KV + Jobs
+		// &boltdb.Plugin{},
+		//  broadcast via memory or redis
+		//  used in conjunction with Websockets, memory and redis plugins
+		// &broadcast.Plugin{},
+		//  ======== websockets broadcast bundle
+		// &websockets.Plugin{},
+		// &redis.Plugin{},
+		//  =========
 
-		// ============== KV
-		//&kv.Plugin{},
-		//&memcached.Plugin{},
-		// ==============
+		//  ============== KV
+		// &kv.Plugin{},
+		// &memcached.Plugin{},
+		//  ==============
 
 		// raw TCP connections handling
-		//&tcp.Plugin{},
+		// &tcp.Plugin{},
 
 		// temporal plugins
 		&rrt.Plugin{},

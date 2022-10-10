@@ -6,7 +6,8 @@ import (
 	"time"
 
 	"github.com/roadrunner-server/endure/pkg/fsm"
-	"github.com/roadrunner-server/resetter/v2"
+	"github.com/roadrunner-server/informer/v3"
+	"github.com/roadrunner-server/resetter/v3"
 	"github.com/roadrunner-server/roadrunner/v2/lib"
 	"github.com/stretchr/testify/assert"
 )
