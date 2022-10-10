@@ -9,7 +9,7 @@ import (
 	"github.com/roadrunner-server/roadrunner/v2/container"
 	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
 
-	configImpl "github.com/roadrunner-server/config/v2"
+	configImpl "github.com/roadrunner-server/config/v3"
 	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
 )
