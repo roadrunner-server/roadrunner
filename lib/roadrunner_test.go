@@ -29,7 +29,7 @@ endure:
 func makeConfig(t *testing.T, configYaml string) string {
 	cfgFile := os.TempDir() + "/.rr.yaml"
 	err := os.WriteFile(cfgFile, []byte(configYaml), 0600)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	return cfgFile
 }
@@ -37,7 +37,7 @@ func makeConfig(t *testing.T, configYaml string) string {
 func TestNewWithConfig(t *testing.T) {
 	cfgFile := makeConfig(t, testConfig)
 	rr, err := lib.NewRR(cfgFile, []string{}, lib.DefaultPluginsList())
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	assert.Equal(t, "2", string(rr.Version[0]))
 	assert.Equal(t, fsm.Initialized, rr.CurrentState())
@@ -54,7 +54,7 @@ func TestServeStop(t *testing.T) {
 		&resetter.Plugin{},
 	}
 	rr, err := lib.NewRR(cfgFile, []string{}, plugins)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	errchan := make(chan error, 1)
 	stopchan := make(chan struct{}, 1)
