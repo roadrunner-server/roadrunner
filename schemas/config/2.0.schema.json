@@ -2002,8 +2002,8 @@
             "description": "Redis config section",
             "type": "object",
             "properties": {
-                "addr": {
-                    "description": "Redis server address",
+                "addrs": {
+                    "description": "Redis server addresses",
                     "type": "array",
                     "default": "localhost:6379"
                 },
