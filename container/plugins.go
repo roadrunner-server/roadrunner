@@ -5,7 +5,6 @@ import (
 	"github.com/roadrunner-server/amqp/v3"
 	"github.com/roadrunner-server/beanstalk/v3"
 	"github.com/roadrunner-server/boltdb/v3"
-	"github.com/roadrunner-server/broadcast/v3"
 	"github.com/roadrunner-server/fileserver/v3"
 	grpcPlugin "github.com/roadrunner-server/grpc/v3"
 	"github.com/roadrunner-server/gzip/v3"
@@ -34,7 +33,6 @@ import (
 	"github.com/roadrunner-server/static/v3"
 	"github.com/roadrunner-server/status/v3"
 	"github.com/roadrunner-server/tcp/v3"
-	"github.com/roadrunner-server/websockets/v3"
 	rrt "github.com/temporalio/roadrunner-temporal/v2"
 )
 
@@ -81,33 +79,24 @@ func Plugins() []any { //nolint:funlen
 		&proxyIP.Plugin{},
 		&rrOtel.Plugin{},
 		&fileserver.Plugin{},
-		// third-party--
-		&cache.Plugin{},
-		// --
 		// ===================
-
+		// gRPC
 		&grpcPlugin.Plugin{},
-		//  kv + ws + jobs plugin
+		// ===================
+		//  KV + Jobs
 		&memory.Plugin{},
 		//  KV + Jobs
 		&boltdb.Plugin{},
-		//  broadcast via memory or redis
-		//  used in conjunction with Websockets, memory and redis plugins
-		&broadcast.Plugin{},
-		//  ======== websockets broadcast bundle
-		&websockets.Plugin{},
-		&redis.Plugin{},
-		//  =========
-
 		//  ============== KV
 		&kv.Plugin{},
 		&memcached.Plugin{},
+		&redis.Plugin{},
 		//  ==============
-
 		// raw TCP connections handling
 		&tcp.Plugin{},
-
 		// temporal plugin
 		&rrt.Plugin{},
+		// third-party--
+		&cache.Plugin{},
 	}
 }
