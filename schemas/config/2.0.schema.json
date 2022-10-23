@@ -440,7 +440,6 @@
                             "headers",
                             "gzip",
                             "static",
-                            "websockets",
                             "sendfile",
                             "http_metrics",
                             "cache",
@@ -1080,70 +1079,9 @@
             ]
         },
         "redis": {
-            "description": "Redis section. Should be defined to use as a broadcast driver for the websockets (with no limitation to use in other plugins).",
+            "description": "Redis section.",
             "type": "object",
             "$ref": "#/definitions/Redis"
-        },
-        "websockets": {
-            "description": "Websockets plugin, HTTP middleware",
-            "type": "object",
-            "properties": {
-                "broker": {
-                    "type": "string",
-                    "pattern": "^[a-zA-Z0-9._-]+$",
-                    "description": "Broker to use. Brokers can be set in the broadcast plugin. For example, if you use broker: default here, broadcast plugin should have default broker in its config."
-                },
-                "allowed_origin": {
-                    "type": "string",
-                    "description": " Allowed request origin (single value). This option is optional (allowed all by default)",
-                    "default": "*"
-                },
-                "path": {
-                    "type": "string",
-                    "description": "http path where to handle websockets connections",
-                    "default": "/ws"
-                }
-            }
-        },
-        "broadcast": {
-            "description": " Broadcast plugin. It main purpose is to broadcast published messages via all brokers. Use it in conjunction with the websockets, memory and redis plugins. LIMITATION: DO NOT use the same redis connection within different sections or messages will be duplicated. There is no limitation to use different redis connections (ie localhost:6379, localhost:6378, etc) in different sections.",
-            "type": "object",
-            "minProperties": 1,
-            "patternProperties": {
-                "^[a-zA-Z0-9._-]+$": {
-                    "description": "Driver configuration sections",
-                    "type": "object",
-                    "properties": {
-                        "driver": {
-                            "description": "Driver to use. Available drivers: redis, memory. In-memory driver does not require any configuration.",
-                            "type": "string",
-                            "enum": [
-                                "memory",
-                                "redis"
-                            ]
-                        },
-                        "config": {
-                            "description": "Driver configuration",
-                            "type": "object",
-                            "allOf": [
-                                {
-                                    "description": "In-memory configuration",
-                                    "type": "object",
-                                    "properties": {}
-                                },
-                                {
-                                    "type": "object",
-                                    "$ref": "#/definitions/Redis"
-                                }
-                            ]
-                        }
-                    },
-                    "required": [
-                        "driver",
-                        "config"
-                    ]
-                }
-            }
         },
         "metrics": {
             "description": "Application metrics in Prometheus format (docs: https://roadrunner.dev/docs/beep-beep-metrics)",
