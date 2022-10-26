@@ -659,8 +659,8 @@ github.com/roadrunner-server/sdk/v3 v3.0.0-beta.4 h1:jrBpY72kXYTkfQ00RME2HaW/m9+
 github.com/roadrunner-server/sdk/v3 v3.0.0-beta.4/go.mod h1:QnhQ/Ib3uYXSVF0N9F7Accozx/nLkvRdGgufOJq5WfA=
 github.com/roadrunner-server/send/v3 v3.0.0-beta.1 h1:7KwjSFzASAS7e5QwVJkdDr46xFrZDYbwLmgt+hQJCT4=
 github.com/roadrunner-server/send/v3 v3.0.0-beta.1/go.mod h1:3Q5+HLG1qvzSQAK0n5o066vFuZOesij+0Oa48kgjR44=
-github.com/roadrunner-server/server/v3 v3.0.0-beta.3 h1:8+I/R43SAnpyovx9vYAWSAWaxU5VazPY3ncYkMjxBBw=
-github.com/roadrunner-server/server/v3 v3.0.0-beta.3/go.mod h1:07kczE9QtdZ1FSdLjc21qmS+Dep6P3NMyrc0g69Bv2A=
+github.com/roadrunner-server/server/v3 v3.0.0-beta.4 h1:D8GziWLNX+B5Hp7dL2dtBGg3T3I7yMu2Fq7JkhTPLeo=
+github.com/roadrunner-server/server/v3 v3.0.0-beta.4/go.mod h1:a9PentczlwYSFeDdOdsQ9YQcSdxgkZwvZAWauT/k1nk=
 github.com/roadrunner-server/service/v3 v3.0.0-beta.1 h1:2dZDduexqgrCJdApPFwhf0NXZzPPtQWOkG8gPkJJBjQ=
 github.com/roadrunner-server/service/v3 v3.0.0-beta.1/go.mod h1:7kPeC4Kk43/AMw3EOYev7Tf/hxhBGzm1YtHkY6r/NU4=
 github.com/roadrunner-server/sqs/v3 v3.0.0-beta.1 h1:/Frlpr4soCtHpb9B+zsGn4Qt0pc/H6hePN5Ya7ZCkIA=
@@ -722,8 +722,9 @@ github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
-github.com/stretchr/testify v1.8.0 h1:pSgiaMZlXftHpm5L7V1+rVB+AZJydKsMxsQBIJw4PKk=
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
+github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
+github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/subosito/gotenv v1.4.1 h1:jyEFiXpy21Wm81FBN71l9VoMMV8H8jG+qIK3GCpY6Qs=
 github.com/subosito/gotenv v1.4.1/go.mod h1:ayKnFf/c6rvx/2iiLrJUk1e6plDbT3edrFNGqEflhK0=
 github.com/temporalio/roadrunner-temporal/v2 v2.0.0-beta.3 h1:MlNAgoNZn2bRAMQX7mhH3its8/9QKHWc6+pGHC8w10k=
