@@ -49,7 +49,7 @@ require (
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.0
 	github.com/temporalio/roadrunner-temporal/v2 v2.0.0-beta.3
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.15
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.20
 )
 
 require (
