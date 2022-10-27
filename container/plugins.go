@@ -5,6 +5,7 @@ import (
 	"github.com/roadrunner-server/amqp/v3"
 	"github.com/roadrunner-server/beanstalk/v3"
 	"github.com/roadrunner-server/boltdb/v3"
+	"github.com/roadrunner-server/centrifuge/v3"
 	"github.com/roadrunner-server/fileserver/v3"
 	grpcPlugin "github.com/roadrunner-server/grpc/v3"
 	"github.com/roadrunner-server/gzip/v3"
@@ -57,6 +58,8 @@ func Plugins() []any { //nolint:funlen
 		&server.Plugin{},
 		// service plugin
 		&service.Plugin{},
+		// centrifuge
+		&centrifuge.Plugin{},
 		//
 		// ========= JOBS bundle
 		&jobs.Plugin{},
