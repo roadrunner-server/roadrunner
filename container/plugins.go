@@ -23,6 +23,7 @@ import (
 	rrOtel "github.com/roadrunner-server/otel/v3"
 	"github.com/roadrunner-server/prometheus/v3"
 	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v3"
+	psr3 "github.com/roadrunner-server/psr-3-logger/v3"
 	"github.com/roadrunner-server/redis/v3"
 	"github.com/roadrunner-server/reload/v3"
 	"github.com/roadrunner-server/resetter/v3"
@@ -48,6 +49,8 @@ func Plugins() []any { //nolint:funlen
 		//
 		// logger plugin
 		&logger.Plugin{},
+		// psr-3 logger extension
+		&psr3.Plugin{},
 		// metrics plugin
 		&metrics.Plugin{},
 		// reload plugin
