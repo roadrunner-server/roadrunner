@@ -17,6 +17,7 @@ body:
       options:
         - label: I have searched for a similar issue in our bug tracker and didn't find any solutions.
           required: true
+          
   - type: textarea
     id: what-happened
     attributes:
@@ -26,6 +27,7 @@ body:
       value: "A bug happened!"
     validations:
       required: true
+      
   - type: textarea
     id: version
     attributes:
@@ -34,6 +36,15 @@ body:
       placeholder: 2.6.0
     validations:
       required: true
+      
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce the issue?
+      description: .rr.yaml and steps on how to reproduce the issue?
+    validations:
+      required: true
+      
   - type: textarea
     id: logs
     attributes:
