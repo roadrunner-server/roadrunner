@@ -42,7 +42,7 @@ require (
 	github.com/roadrunner-server/sdk/v3 v3.0.0-beta.4
 	github.com/roadrunner-server/send/v3 v3.0.0-beta.1
 	github.com/roadrunner-server/server/v3 v3.0.0-beta.4
-	github.com/roadrunner-server/service/v3 v3.0.0-beta.1
+	github.com/roadrunner-server/service/v3 v3.0.0-beta.2
 	github.com/roadrunner-server/sqs/v3 v3.0.0-beta.1
 	github.com/roadrunner-server/static/v3 v3.0.0-beta.1
 	github.com/roadrunner-server/status/v3 v3.0.0-beta.1
@@ -51,7 +51,7 @@ require (
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.1
 	github.com/temporalio/roadrunner-temporal/v2 v2.0.0-beta.3
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.21
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.23
 )
 
 require (
