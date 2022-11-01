@@ -3,6 +3,7 @@ package container
 import (
 	cache "github.com/darkweak/souin/plugins/roadrunner"
 	"github.com/roadrunner-server/amqp/v3"
+	appLogger "github.com/roadrunner-server/app-logger/v3"
 	"github.com/roadrunner-server/beanstalk/v3"
 	"github.com/roadrunner-server/boltdb/v3"
 	"github.com/roadrunner-server/centrifuge/v3"
@@ -23,7 +24,6 @@ import (
 	rrOtel "github.com/roadrunner-server/otel/v3"
 	"github.com/roadrunner-server/prometheus/v3"
 	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v3"
-	psr3 "github.com/roadrunner-server/psr-3-logger/v3"
 	"github.com/roadrunner-server/redis/v3"
 	"github.com/roadrunner-server/reload/v3"
 	"github.com/roadrunner-server/resetter/v3"
@@ -50,7 +50,7 @@ func Plugins() []any { //nolint:funlen
 		// logger plugin
 		&logger.Plugin{},
 		// psr-3 logger extension
-		&psr3.Plugin{},
+		&appLogger.Plugin{},
 		// metrics plugin
 		&metrics.Plugin{},
 		// reload plugin

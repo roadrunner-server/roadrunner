@@ -10,6 +10,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/app-logger/v3 v3.0.0-beta.2
 	github.com/roadrunner-server/beanstalk/v3 v3.0.0-beta.2
 	github.com/roadrunner-server/boltdb/v3 v3.0.0-beta.1
 	github.com/roadrunner-server/centrifuge/v3 v3.0.0-beta.2
@@ -34,7 +35,6 @@ require (
 	github.com/roadrunner-server/otel/v3 v3.0.0-beta.1
 	github.com/roadrunner-server/prometheus/v3 v3.0.0-beta.1
 	github.com/roadrunner-server/proxy_ip_parser/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/psr-3-logger/v3 v3.0.0-alpha.1
 	github.com/roadrunner-server/redis/v3 v3.0.0-beta.2
 	github.com/roadrunner-server/reload/v3 v3.0.0-beta.1
 	github.com/roadrunner-server/resetter/v3 v3.0.0-beta.1
@@ -42,7 +42,7 @@ require (
 	github.com/roadrunner-server/sdk/v3 v3.0.0-beta.4
 	github.com/roadrunner-server/send/v3 v3.0.0-beta.1
 	github.com/roadrunner-server/server/v3 v3.0.0-beta.4
-	github.com/roadrunner-server/service/v3 v3.0.0-beta.1
+	github.com/roadrunner-server/service/v3 v3.0.0-beta.2
 	github.com/roadrunner-server/sqs/v3 v3.0.0-beta.1
 	github.com/roadrunner-server/static/v3 v3.0.0-beta.1
 	github.com/roadrunner-server/status/v3 v3.0.0-beta.1
@@ -51,7 +51,7 @@ require (
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.1
 	github.com/temporalio/roadrunner-temporal/v2 v2.0.0-beta.3
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.21
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.23
 )
 
 require (
@@ -73,7 +73,7 @@ require (
 	github.com/aws/smithy-go v1.13.4 // indirect
 	github.com/beanstalkd/go-beanstalk v0.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bradfitz/gomemcache v0.0.0-20220106215444-fb4bf637b56d // indirect
+	github.com/bradfitz/gomemcache v0.0.0-20221031212613-62deef7fc822 // indirect
 	github.com/buraksezer/connpool v0.6.0 // indirect
 	github.com/buraksezer/consistent v0.9.0 // indirect
 	github.com/buraksezer/olric v0.4.8 // indirect
@@ -192,10 +192,10 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/xujiajun/mmap-go v1.0.1 // indirect
-	github.com/xujiajun/nutsdb v0.10.0 // indirect
+	github.com/xujiajun/nutsdb v0.11.0 // indirect
 	github.com/xujiajun/utils v0.0.0-20220904132955-5f7c5b914235 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	go.buf.build/grpc/go/roadrunner-server/api v1.4.21 // indirect
+	go.buf.build/grpc/go/roadrunner-server/api v1.4.23 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.5 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.5 // indirect
@@ -218,7 +218,7 @@ require (
 	go.temporal.io/api v1.12.0 // indirect
 	go.temporal.io/sdk v1.17.0 // indirect
 	go.temporal.io/sdk/contrib/tally v0.2.0 // indirect
-	go.temporal.io/server v1.18.3 // indirect
+	go.temporal.io/server v1.18.4 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.23.0 // indirect
