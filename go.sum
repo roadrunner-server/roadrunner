@@ -782,7 +782,6 @@ github.com/yusufpapurcu/wmi v1.2.2/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQ
 go.buf.build/grpc/go/roadrunner-server/api v1.4.23 h1:WqIHbagc3x+IatoPoKbzuP1iN+dLqQZkPo1n9DPkrkY=
 go.buf.build/grpc/go/roadrunner-server/api v1.4.23/go.mod h1:gydvLOEhY1OyTQFdpzBvDRn2QMpmtb73BSFFKu3JmPk=
 go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.23 h1:iWddHyg7bItQaMU8FkHwzCtE0mc/Q4gnrQ3J+fijJ3g=
-go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.23/go.mod h1:CfIAvR+W2N+Y0WXMzwT80Eh83CmBPWplgFQDA5HftC4=
 go.etcd.io/bbolt v1.3.6 h1:/ecaJf0sk1l4l6V4awd65v2C3ILy7MSj+s/x1ADCIMU=
 go.etcd.io/bbolt v1.3.6/go.mod h1:qXsaaIqmgQH0T+OPdb99Bf+PKfBBQVAdyD6TY9G8XM4=
 go.etcd.io/etcd/api/v3 v3.5.4/go.mod h1:5GB2vv4A4AOn3yk7MftYGHkUfGtDHnEraIjym4dYz5A=
