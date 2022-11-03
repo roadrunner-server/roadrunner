@@ -1,5 +1,81 @@
 # CHANGELOG
 
+## v2.12.0-beta.1 (03.11.2022)
+
+# ⚠️ `websocket` and `broadcast` plugins was replaced by the new `centrifuge` plugin.
+
+# ⚠️ All plugins, `sdk` and `api` updated to `v3`. There are no breaking changes, we moved all Go code from the `api` to `sdk`.
+
+## 👀 New:
+
+- ✏ **Centrifugo plugin**: New `centrifugo` plugin. Which is going to replace existing `broadcast` + `websockets` plugins. [FR](https://github.com/roadrunner-server/roadrunner/issues/1134).
+**Docs**: [PHP-lib](https://github.com/roadrunner-php/centrifugo)
+
+RoadRunner config:
+
+```yaml
+version: "2.7"
+
+centrifuge:
+  # Centrifugo server proxy address (docs: https://centrifugal.dev/docs/server/proxy#grpc-proxy)
+  #
+  # Optional, default: tcp://127.0.0.1:30000
+  proxy_address: "tcp://127.0.0.1:30000"
+
+  # gRPC server API address (docs: https://centrifugal.dev/docs/server/server_api#grpc-api)
+  #
+  # Optional, default: tcp://127.0.0.1:30000. Centrifugo: `grpc_api` should be set to true and `grpc_port` should be the same as in the RR's config.
+  grpc_api_address: tcp://127.0.0.1:30000
+
+  # Use gRPC gzip compressor
+  #
+  # Optional, default: false
+  use_compressor: true
+
+  # Your application version
+  #
+  # Optional, default: v1.0.0
+  version: "v1.0.0"
+
+  # Your application name
+  #
+  # Optional, default: roadrunner
+  name: "roadrunner"
+
+  # TLS configuration
+  #
+  # Optional, default: null
+  tls:
+    # TLS key
+    #
+    # Required
+    key: /path/to/key.pem
+
+    # TLS certificate
+    #
+    # Required
+    cert: /path/to/cert.pem
+
+
+  # Workers pool settings. link: https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml#L812
+  #
+  # Optional, default: null (see default values)
+  pool: {}
+```
+
+- ✏ **App logger plugin**: Application logger plugin, [FR](https://github.com/roadrunner-server/roadrunner/issues/1227) (thanks @wolfy-j)
+**Docs**: [PHP-lib](https://github.com/roadrunner-php/app-logger)
+
+
+## 🩹 Fixes:
+
+- 🐛 **Headers middleware**: Header size is too small, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1336) (thanks @masterjus)
+- 🐛 **gRPC plugin**: Protobuf compiler plugin segfaults on import statements, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1337) (thanks @phroggyy)
+- 🐛 **Service plugin**: Get services list via RPC, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1339) (thanks @butschster)
+- 🐛 **gRPC plugin**: Remote `protoc-gen-php-grpc` plugin error, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1341) (thanks @rapita)
+- 🐛 **HTTP plugin**: Fail to upload files when RR's permissions are different from worker's, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1314) (thanks @egonbraun)
+
+
 ## v2.11.4 (06.10.2022)
 
 ## 👀 New:
