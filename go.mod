@@ -4,55 +4,57 @@ go 1.19
 
 require (
 	github.com/buger/goterm v1.0.4
-	github.com/darkweak/souin/plugins/roadrunner v0.0.0-20221024182059-f3669a8ebe3d
+	github.com/darkweak/souin/plugins/roadrunner v0.0.0-20221102055713-a9046ff655cc
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.13.0
 	github.com/joho/godotenv v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/amqp/v3 v3.0.0-beta.3
 	github.com/roadrunner-server/app-logger/v3 v3.0.0-beta.2
-	github.com/roadrunner-server/beanstalk/v3 v3.0.0-beta.2
-	github.com/roadrunner-server/boltdb/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/centrifuge/v3 v3.0.0-beta.2
-	github.com/roadrunner-server/config/v3 v3.0.0-beta.1
+	github.com/roadrunner-server/beanstalk/v3 v3.0.0-beta.3
+	github.com/roadrunner-server/boltdb/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/centrifuge/v3 v3.0.0-beta.4
+	github.com/roadrunner-server/config/v3 v3.0.0-beta.3
 	github.com/roadrunner-server/endure v1.4.5
 	github.com/roadrunner-server/errors v1.2.0
-	github.com/roadrunner-server/fileserver/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/fileserver/v3 v3.0.0-beta.3
 	github.com/roadrunner-server/goridge/v3 v3.6.1
-	github.com/roadrunner-server/grpc/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/gzip/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/headers/v3 v3.0.0-beta.3
-	github.com/roadrunner-server/http/v3 v3.0.0-beta.2
-	github.com/roadrunner-server/informer/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/jobs/v3 v3.0.0-beta.2
-	github.com/roadrunner-server/kafka/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/kv/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/logger/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/memcached/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/memory/v3 v3.0.0-beta.2
-	github.com/roadrunner-server/metrics/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/nats/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/otel/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/prometheus/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/proxy_ip_parser/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/redis/v3 v3.0.0-beta.2
-	github.com/roadrunner-server/reload/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/resetter/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/rpc/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/sdk/v3 v3.0.0-beta.4
-	github.com/roadrunner-server/send/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/server/v3 v3.0.0-beta.4
-	github.com/roadrunner-server/service/v3 v3.0.0-beta.2
-	github.com/roadrunner-server/sqs/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/static/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/status/v3 v3.0.0-beta.1
-	github.com/roadrunner-server/tcp/v3 v3.0.0-beta.1
+	github.com/roadrunner-server/grpc/v3 v3.0.0-beta.3
+	github.com/roadrunner-server/gzip/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/headers/v3 v3.0.0-beta.4
+	github.com/roadrunner-server/http/v3 v3.0.0-beta.3
+	github.com/roadrunner-server/informer/v3 v3.0.0-beta.3
+	github.com/roadrunner-server/jobs/v3 v3.0.0-beta.3
+	github.com/roadrunner-server/kafka/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/kv/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/logger/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/memcached/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/memory/v3 v3.0.0-beta.3
+	github.com/roadrunner-server/metrics/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/nats/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/otel/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/prometheus/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/proxy_ip_parser/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/redis/v3 v3.0.0-beta.3
+	github.com/roadrunner-server/reload/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/resetter/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/rpc/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/sdk/v3 v3.0.0-beta.5
+	github.com/roadrunner-server/send/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/server/v3 v3.0.0-beta.6
+	github.com/roadrunner-server/service/v3 v3.0.0-beta.3
+	github.com/roadrunner-server/sqs/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/static/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/status/v3 v3.0.0-beta.2
+	github.com/roadrunner-server/tcp/v3 v3.0.0-beta.3
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.13.0
 	github.com/stretchr/testify v1.8.1
-	github.com/temporalio/roadrunner-temporal/v2 v2.0.0-beta.3
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.23
+	github.com/temporalio/roadrunner-temporal/v2 v2.0.0-beta.4
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.27
 )
+
+exclude go.temporal.io/api v1.13.0
 
 require (
 	github.com/Shopify/sarama v1.37.2 // indirect
@@ -119,7 +121,7 @@ require (
 	github.com/google/flatbuffers v22.10.26+incompatible // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.12.0 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.13.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-msgpack v0.5.5 // indirect
@@ -162,7 +164,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/pquerna/cachecontrol v0.1.0 // indirect
-	github.com/prometheus/client_golang v1.13.0 // indirect
+	github.com/prometheus/client_golang v1.13.1 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
@@ -195,7 +197,7 @@ require (
 	github.com/xujiajun/nutsdb v0.11.0 // indirect
 	github.com/xujiajun/utils v0.0.0-20220904132955-5f7c5b914235 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	go.buf.build/grpc/go/roadrunner-server/api v1.4.23 // indirect
+	go.buf.build/grpc/go/roadrunner-server/api v1.4.27 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.5 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.5 // indirect

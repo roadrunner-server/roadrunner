@@ -14,6 +14,63 @@
                 "2.7"
             ]
         },
+        "centrifuge": {
+            "description": "Centrifugo server plugin. Docs: https://centrifugal.dev/",
+            "type": "object",
+            "properties": {
+                "proxy_address": {
+                    "description": "Centrifugo server proxy address (docs: https://centrifugal.dev/docs/server/proxy#grpc-proxy)",
+                    "type": "string",
+                    "default": "tcp://127.0.0.1:30000"
+                },
+                "grpc_api_address": {
+                    "description": "gRPC server API address (docs: https://centrifugal.dev/docs/server/server_api#grpc-api)",
+                    "type": "string",
+                    "default": "tcp://127.0.0.1:30000"
+                },
+                "use_compressor": {
+                    "description": "Use gRPC gzip compressor",
+                    "type": "boolean",
+                    "default": false
+                },
+                "version": {
+                    "description": "Your application version",
+                    "type": "string",
+                    "default": "v1.0.0"
+                },
+                "name": {
+                    "description": "Your application name",
+                    "type": "string",
+                    "default": "roadrunner"
+                },
+                "pool": {
+                    "description": "Workers pool settings",
+                    "$ref": "#/definitions/WorkersPool"
+                },
+                "tls": {
+                    "description": "TLS settings",
+                    "type": "object",
+                    "properties": {
+                        "cert": {
+                            "description": "Path to the cert file",
+                            "type": "string",
+                            "minLength": 1,
+                            "examples": [
+                                "/ssl/server.crt"
+                            ]
+                        },
+                        "key": {
+                            "description": "Path to the cert key file",
+                            "type": "string",
+                            "minLength": 1,
+                            "examples": [
+                                "/ssl/server.key"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "rpc": {
             "type": "object",
             "properties": {
@@ -336,7 +393,7 @@
                                 "require_and_verify_client_cert"
                             ]
                         },
-                        "server_name" :{
+                        "server_name": {
                             "description": "ServerName is used to verify the hostname on the returned certificates unless InsecureSkipVerify is given. It is also included in the client's handshake to support virtual hosting unless it is an IP address.",
                             "type": "string",
                             "default": null
@@ -686,22 +743,6 @@
                                 "ERROR",
                                 "FATAL"
                             ]
-                        }
-                    }
-                },
-                "new_relic": {
-                    "description": "New Relic middleware",
-                    "type": "object",
-                    "properties": {
-                        "app_name": {
-                            "type": "string",
-                            "description": "Application name. NEW_RELIC_APP_NAME env variable should be set if the app_name key is empty.",
-                            "default": null
-                        },
-                        "licence_key": {
-                            "type": "string",
-                            "description": "Licence key. NEW_RELIC_LICENSE_KEY env variable should be set if the license_key key is empty.",
-                            "default": null
                         }
                     }
                 },
