@@ -4,7 +4,7 @@ import (
 	"net/rpc"
 	"os"
 
-	jobsv1 "go.buf.build/protocolbuffers/go/roadrunner-server/api/proto/jobs/v1"
+	jobsv1 "go.buf.build/protocolbuffers/go/roadrunner-server/api/jobs/v1"
 )
 
 func pause(client *rpc.Client, pause []string, silent *bool) error {
