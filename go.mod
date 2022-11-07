@@ -48,7 +48,7 @@ require (
 	github.com/roadrunner-server/status/v3 v3.0.0-beta.2
 	github.com/roadrunner-server/tcp/v3 v3.0.0-beta.3
 	github.com/spf13/cobra v1.6.1
-	github.com/spf13/viper v1.13.0
+	github.com/spf13/viper v1.14.0
 	github.com/stretchr/testify v1.8.1
 	github.com/temporalio/roadrunner-temporal/v2 v2.0.0-beta.4
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.27
