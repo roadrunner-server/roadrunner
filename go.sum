@@ -623,8 +623,8 @@ github.com/roadrunner-server/gzip/v3 v3.0.0-beta.2 h1:ZtL71SbjMZP9y9KwnZKm3dIGHA
 github.com/roadrunner-server/gzip/v3 v3.0.0-beta.2/go.mod h1:5MsbqkK98XGfJ9o2zO9grtOkJUoTolsrhEmQEIuUZ2M=
 github.com/roadrunner-server/headers/v3 v3.0.0-beta.4 h1:oZu6YilMF5fgcjg7pWu5IHyq1Zhnk4QozVPt8KjkjlE=
 github.com/roadrunner-server/headers/v3 v3.0.0-beta.4/go.mod h1:xKCIvKsBz+wwP0wOVIIAT+aJKVlQt1wxZB28YGlD/DM=
-github.com/roadrunner-server/http/v3 v3.0.0-beta.3 h1:yAN5A/NZ3VcCgmIAskdZTVHWpbNRkmwsYVeDxC3BZOI=
-github.com/roadrunner-server/http/v3 v3.0.0-beta.3/go.mod h1:uX1ub9ZgZSFBuQWZr2yNk0K/6LpNS0s8H4G5AsT7tBA=
+github.com/roadrunner-server/http/v3 v3.0.0-beta.4 h1:21RhxZWvFGpmdiuRlQsNWA3FPUocwrzb9UIryBgYfZk=
+github.com/roadrunner-server/http/v3 v3.0.0-beta.4/go.mod h1:yCnfLG0EXdLVa+lg3fFbATEt6pIAY6SgxUyoZHPwWSM=
 github.com/roadrunner-server/informer/v3 v3.0.0-beta.3 h1:2I6MCFR/HiDa2pFJ+ifkui6EkjtINkTvOWrLsse0KVE=
 github.com/roadrunner-server/informer/v3 v3.0.0-beta.3/go.mod h1:b5bRLgmsFx1RbNp2w0oNAkdQgVjYtZPl4WWE4saGMf0=
 github.com/roadrunner-server/jobs/v3 v3.0.0-beta.3 h1:A7FD9yqevdB32xf7C+UzYG0mnTx0ZK+V7XH7pGs6S8s=

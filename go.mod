@@ -22,7 +22,7 @@ require (
 	github.com/roadrunner-server/grpc/v3 v3.0.0-beta.3
 	github.com/roadrunner-server/gzip/v3 v3.0.0-beta.2
 	github.com/roadrunner-server/headers/v3 v3.0.0-beta.4
-	github.com/roadrunner-server/http/v3 v3.0.0-beta.3
+	github.com/roadrunner-server/http/v3 v3.0.0-beta.4
 	github.com/roadrunner-server/informer/v3 v3.0.0-beta.3
 	github.com/roadrunner-server/jobs/v3 v3.0.0-beta.3
 	github.com/roadrunner-server/kafka/v3 v3.0.0-beta.2
