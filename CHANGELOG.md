@@ -1,5 +1,45 @@
 # CHANGELOG
 
+## v2.12.0-rc.1 (12.11.2022)
+
+## 👀 New:
+
+- ✏ **All plugins**: update to `v3`. This is done not because of some breaking change but because of the internal update.
+- ✏ **RPC plugin**: add new API to provide a running RR version and RR configuration in JSON format.
+- ✏ **AMQP plugin**: new configuration options. [FR](https://github.com/roadrunner-server/roadrunner/issues/1351), (thanks @andrey-tech)
+```yaml
+jobs:
+  pipelines:
+    example:
+      driver: amqp
+      config:
+        # Durable exchange
+        #
+        # Default: true
+        exchange_durable: true
+
+        # Auto-deleted exchange
+        #
+        # Default: false
+        exchange_auto_deleted: false
+
+        # Auto-deleted queue
+        #
+        # Default: false
+        queue_auto_deleted: false
+```
+
+- ✏ **Workers pool (SDK)**: New option to control the `reset_timeout`. Note that the `pool.Reset` is protected by mutexes, meaning that if you have some requests already in the pool, you'll have to wait for these requests to be processed. The `reset_timeout` does not count this time.
+
+```yaml
+pool:
+  allocate_timeout: 10s
+  reset_timeout: 10s
+  destroy_timeout: 10s
+```
+
+---
+
 ## v2.12.0-beta.1 (03.11.2022)
 
 # ⚠️ `websocket` and `broadcast` plugins was replaced by the new `centrifuge` plugin.
