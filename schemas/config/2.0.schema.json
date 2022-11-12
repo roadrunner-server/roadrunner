@@ -1436,6 +1436,21 @@
                                                     "type": "string",
                                                     "default": "amqp.default"
                                                 },
+                                                "exchange_durable": {
+                                                    "description": "Durable exchange",
+                                                    "type": "boolean",
+                                                    "default": false
+                                                },
+                                                "exchange_auto_deleted": {
+                                                    "description": "Auto delete exchange",
+                                                    "type": "boolean",
+                                                    "default": false
+                                                },
+                                                "queue_auto_deleted": {
+                                                    "description": "Queue auto delete",
+                                                    "type": "boolean",
+                                                    "default": false
+                                                },
                                                 "exchange_type": {
                                                     "description": "Exchange type",
                                                     "type": "string",
@@ -2135,12 +2150,17 @@
                     "default": 0
                 },
                 "allocate_timeout": {
-                    "description": "Timeout for worker allocation. Zero means no limit",
+                    "description": "Timeout for worker allocation. Zero means the default limit - 60s",
+                    "$ref": "#/definitions/Duration",
+                    "default": "60s"
+                },
+                "reset_timeout": {
+                    "description": "Timeout for the pool.Reset operation (./rr reset). Zero means the default limit - 60s",
                     "$ref": "#/definitions/Duration",
                     "default": "60s"
                 },
                 "destroy_timeout": {
-                    "description": "Timeout for worker destroying before process killing. Zero means no limit",
+                    "description": "Timeout for worker destroying before process killing. Zero means the default limit - 60s",
                     "$ref": "#/definitions/Duration",
                     "default": "60s"
                 },
