@@ -844,8 +844,8 @@ github.com/roadrunner-server/jobs/v3 v3.0.0 h1:T8NinNqSjNAtrYgFkWc0HPs54Lbcq6dNl
 github.com/roadrunner-server/jobs/v3 v3.0.0/go.mod h1:zIKppfVvgpCf+kxeabQGWb1x4h6LkGjlLBUop47eTFs=
 github.com/roadrunner-server/kafka/v3 v3.0.0 h1:e3CVhQUn1hAFLawLtEOIkkiKbur/o4XaLwoqkxx5yig=
 github.com/roadrunner-server/kafka/v3 v3.0.0/go.mod h1:Yz4cHsViG3hYxvnWY98/Fgp8Afqf0dA2e8/TKjIrqSs=
-github.com/roadrunner-server/kv/v3 v3.0.0 h1:r28sa2mJ8g7uCgP7b40oVPMSOjiltQVOMnDPRwtip78=
-github.com/roadrunner-server/kv/v3 v3.0.0/go.mod h1:tJWzmH7N4mtHm4loLfX2R+hXcgXYIPqnZ7qXhGuo/4U=
+github.com/roadrunner-server/kv/v3 v3.0.1 h1:yAfHHdbhcU4PTE+9wfono8FNXNKvApcN/KowxG82gMg=
+github.com/roadrunner-server/kv/v3 v3.0.1/go.mod h1:bo9WGfH70+xsbq5duGArtrPDdFIuviC5FR8Mf3wv06U=
 github.com/roadrunner-server/logger/v3 v3.0.0 h1:BTc2BeM43FOHCPURx3RgXEheWrWAiFyVNFfdKN729yA=
 github.com/roadrunner-server/logger/v3 v3.0.0/go.mod h1:Uc6P2arkF1au8nfnlMl1Bif+zac5HR1rfaAioJeot5I=
 github.com/roadrunner-server/memcached/v3 v3.0.0 h1:Kl7CcxGVL+2cqrAUh+CdQzb8wIETT+1TlejS4Qhx31c=
@@ -870,8 +870,8 @@ github.com/roadrunner-server/resetter/v3 v3.0.0 h1:YWTFVe8S5GrXlEVLQ8peDCKk6EWsN
 github.com/roadrunner-server/resetter/v3 v3.0.0/go.mod h1:+6pgq8TUvcQDsC1R4axEgjDhJTFzKzF2A95LvgRMDAI=
 github.com/roadrunner-server/rpc/v3 v3.0.0 h1:jIomJvtrEsHoz+u3ZC5g5O0nqmCec+5d00YbXAaB+B4=
 github.com/roadrunner-server/rpc/v3 v3.0.0/go.mod h1:hcIDgPjnWVAjOWCvq2wwzld1XC8tDKxVAZhXknfO/nY=
-github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2 h1:Xh1Byn+kH3CGtGZw/Wq/A/K8o5l1Han5IdhCIJvGwnw=
-github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2/go.mod h1:R8CbJAIsHjye7asTIl0zLDRl89aIRETLFFfHbmczw04=
+github.com/roadrunner-server/sdk/v3 v3.0.0 h1:DhSLwTCAP5yzUwgBcUo6M1jK8e1XufxYvpFCuGACruw=
+github.com/roadrunner-server/sdk/v3 v3.0.0/go.mod h1:R8CbJAIsHjye7asTIl0zLDRl89aIRETLFFfHbmczw04=
 github.com/roadrunner-server/send/v3 v3.0.0 h1:6S6armK9t2f/BwrVkc7/e6rFkD0uAG/3dZWkhRuAxYc=
 github.com/roadrunner-server/send/v3 v3.0.0/go.mod h1:KNzBCXrsBJDxVE572Qx26vrI+IJNOaajqL88ftLErRE=
 github.com/roadrunner-server/server/v3 v3.0.0 h1:s4HG5LAoxtiQ0VexS6OyOQPo3mcSyH6YeUwgMLeBOns=

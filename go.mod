@@ -26,7 +26,7 @@ require (
 	github.com/roadrunner-server/informer/v3 v3.0.0
 	github.com/roadrunner-server/jobs/v3 v3.0.0
 	github.com/roadrunner-server/kafka/v3 v3.0.0
-	github.com/roadrunner-server/kv/v3 v3.0.0
+	github.com/roadrunner-server/kv/v3 v3.0.1
 	github.com/roadrunner-server/logger/v3 v3.0.0
 	github.com/roadrunner-server/memcached/v3 v3.0.0
 	github.com/roadrunner-server/memory/v3 v3.0.0
@@ -39,7 +39,7 @@ require (
 	github.com/roadrunner-server/reload/v3 v3.0.0
 	github.com/roadrunner-server/resetter/v3 v3.0.0
 	github.com/roadrunner-server/rpc/v3 v3.0.0
-	github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2
+	github.com/roadrunner-server/sdk/v3 v3.0.0
 	github.com/roadrunner-server/send/v3 v3.0.0
 	github.com/roadrunner-server/server/v3 v3.0.0
 	github.com/roadrunner-server/service/v3 v3.0.0
