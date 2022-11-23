@@ -39,13 +39,13 @@ require (
 	github.com/roadrunner-server/reload/v3 v3.0.0
 	github.com/roadrunner-server/resetter/v3 v3.0.0
 	github.com/roadrunner-server/rpc/v3 v3.0.0
-	github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2
+	github.com/roadrunner-server/sdk/v3 v3.0.0
 	github.com/roadrunner-server/send/v3 v3.0.0
 	github.com/roadrunner-server/server/v3 v3.0.0
 	github.com/roadrunner-server/service/v3 v3.0.0
 	github.com/roadrunner-server/sqs/v3 v3.0.0
 	github.com/roadrunner-server/static/v3 v3.0.0
-	github.com/roadrunner-server/status/v3 v3.0.0
+	github.com/roadrunner-server/status/v3 v3.0.1
 	github.com/roadrunner-server/tcp/v3 v3.0.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.14.0
@@ -110,7 +110,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-redis/redis/v9 v9.0.0-rc.1 // indirect
 	github.com/goccy/go-json v0.9.11 // indirect
-	github.com/gofiber/fiber/v2 v2.39.0 // indirect
+	github.com/gofiber/fiber/v2 v2.40.1 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/gogo/status v1.1.1 // indirect

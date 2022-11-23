@@ -465,8 +465,8 @@ github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0/go.mod h1:fyg78
 github.com/goccy/go-json v0.9.11 h1:/pAaQDLHEoCq/5FFmSKBswWmK6H0e8g4159Kc/X/nqk=
 github.com/goccy/go-json v0.9.11/go.mod h1:6MelG93GURQebXPDq3khkgXZkazVtN9CRI+MGFi0w8I=
 github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
-github.com/gofiber/fiber/v2 v2.39.0 h1:uhWpYQ6EHN8J7FOPYbI2hrdBD/KNZBC5CjbuOd4QUt4=
-github.com/gofiber/fiber/v2 v2.39.0/go.mod h1:Cmuu+elPYGqlvQvdKyjtYsjGMi69PDp8a1AY2I5B2gM=
+github.com/gofiber/fiber/v2 v2.40.1 h1:pc7n9VVpGIqNsvg9IPLQhyFEMJL8gCs1kneH5D1pIl4=
+github.com/gofiber/fiber/v2 v2.40.1/go.mod h1:Gko04sLksnHbzLSRBFWPFdzM9Ws9pRxvvIaohJK1dsk=
 github.com/gogo/googleapis v0.0.0-20180223154316-0cd9801be74a/go.mod h1:gf4bu3Q80BeJ6H1S1vYPm8/ELATdvryBaNFGgqEef3s=
 github.com/gogo/googleapis v1.4.1 h1:1Yx4Myt7BxzvUr5ldGSbwYiZG6t9wGBZ+8/fX3Wvtq0=
 github.com/gogo/googleapis v1.4.1/go.mod h1:2lpHqI5OcWCtVElxXnPt+s8oJvMpySlOyM6xDCrzib4=
@@ -870,8 +870,8 @@ github.com/roadrunner-server/resetter/v3 v3.0.0 h1:YWTFVe8S5GrXlEVLQ8peDCKk6EWsN
 github.com/roadrunner-server/resetter/v3 v3.0.0/go.mod h1:+6pgq8TUvcQDsC1R4axEgjDhJTFzKzF2A95LvgRMDAI=
 github.com/roadrunner-server/rpc/v3 v3.0.0 h1:jIomJvtrEsHoz+u3ZC5g5O0nqmCec+5d00YbXAaB+B4=
 github.com/roadrunner-server/rpc/v3 v3.0.0/go.mod h1:hcIDgPjnWVAjOWCvq2wwzld1XC8tDKxVAZhXknfO/nY=
-github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2 h1:Xh1Byn+kH3CGtGZw/Wq/A/K8o5l1Han5IdhCIJvGwnw=
-github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2/go.mod h1:R8CbJAIsHjye7asTIl0zLDRl89aIRETLFFfHbmczw04=
+github.com/roadrunner-server/sdk/v3 v3.0.0 h1:DhSLwTCAP5yzUwgBcUo6M1jK8e1XufxYvpFCuGACruw=
+github.com/roadrunner-server/sdk/v3 v3.0.0/go.mod h1:R8CbJAIsHjye7asTIl0zLDRl89aIRETLFFfHbmczw04=
 github.com/roadrunner-server/send/v3 v3.0.0 h1:6S6armK9t2f/BwrVkc7/e6rFkD0uAG/3dZWkhRuAxYc=
 github.com/roadrunner-server/send/v3 v3.0.0/go.mod h1:KNzBCXrsBJDxVE572Qx26vrI+IJNOaajqL88ftLErRE=
 github.com/roadrunner-server/server/v3 v3.0.0 h1:s4HG5LAoxtiQ0VexS6OyOQPo3mcSyH6YeUwgMLeBOns=
@@ -882,8 +882,8 @@ github.com/roadrunner-server/sqs/v3 v3.0.0 h1:2DPfSIV3DZ0lz4s37Ju9iymkhKqbt15MDt
 github.com/roadrunner-server/sqs/v3 v3.0.0/go.mod h1:daFjBYKTYFuioxPnycsC8eAyEUyQMFphGiqAxsCgSZY=
 github.com/roadrunner-server/static/v3 v3.0.0 h1:MtidlDeO5g8bIA64b9rXmB5TVbPD3L2NePft5lPrMx0=
 github.com/roadrunner-server/static/v3 v3.0.0/go.mod h1:mBkZY/Vvwv4j8cteVrJeFRlS/3f9k+hM9QHdXd4fRhQ=
-github.com/roadrunner-server/status/v3 v3.0.0 h1:eDz7mOIWqdNdEFJ+edqVbUkbzImcexieNPpNsvCg4S4=
-github.com/roadrunner-server/status/v3 v3.0.0/go.mod h1:UV4XIdhgenxRJkg+EBTmUKkM2jGemsyIRNj0Y/Cj6q4=
+github.com/roadrunner-server/status/v3 v3.0.1 h1:ZREXBd3x8ax4xjNnrlfMtUdrn1eNiaUsamet2Xl8iPg=
+github.com/roadrunner-server/status/v3 v3.0.1/go.mod h1:3UubQgEnfiXtqHoR9KuXiy04IGj+S1oT+SOCcQTHyJI=
 github.com/roadrunner-server/tcp/v3 v3.0.0 h1:njzxOf09LjisbSP7D9nq7prE9QepjLbVtHiHEBbVZHY=
 github.com/roadrunner-server/tcp/v3 v3.0.0/go.mod h1:xd5Ug2FcRb1YVVAJ5RBtFV7lSiAGfopCALgSOn9EmUc=
 github.com/roadrunner-server/tcplisten v1.2.0 h1:nsiXEEb0zP7vjAsCWNHKpM0HdwFK/KlafFF/2gsTJlg=
