@@ -870,8 +870,8 @@ github.com/roadrunner-server/resetter/v3 v3.0.0 h1:YWTFVe8S5GrXlEVLQ8peDCKk6EWsN
 github.com/roadrunner-server/resetter/v3 v3.0.0/go.mod h1:+6pgq8TUvcQDsC1R4axEgjDhJTFzKzF2A95LvgRMDAI=
 github.com/roadrunner-server/rpc/v3 v3.0.0 h1:jIomJvtrEsHoz+u3ZC5g5O0nqmCec+5d00YbXAaB+B4=
 github.com/roadrunner-server/rpc/v3 v3.0.0/go.mod h1:hcIDgPjnWVAjOWCvq2wwzld1XC8tDKxVAZhXknfO/nY=
-github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2 h1:Xh1Byn+kH3CGtGZw/Wq/A/K8o5l1Han5IdhCIJvGwnw=
-github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2/go.mod h1:R8CbJAIsHjye7asTIl0zLDRl89aIRETLFFfHbmczw04=
+github.com/roadrunner-server/sdk/v3 v3.0.0 h1:DhSLwTCAP5yzUwgBcUo6M1jK8e1XufxYvpFCuGACruw=
+github.com/roadrunner-server/sdk/v3 v3.0.0/go.mod h1:R8CbJAIsHjye7asTIl0zLDRl89aIRETLFFfHbmczw04=
 github.com/roadrunner-server/send/v3 v3.0.0 h1:6S6armK9t2f/BwrVkc7/e6rFkD0uAG/3dZWkhRuAxYc=
 github.com/roadrunner-server/send/v3 v3.0.0/go.mod h1:KNzBCXrsBJDxVE572Qx26vrI+IJNOaajqL88ftLErRE=
 github.com/roadrunner-server/server/v3 v3.0.0 h1:s4HG5LAoxtiQ0VexS6OyOQPo3mcSyH6YeUwgMLeBOns=
@@ -884,8 +884,8 @@ github.com/roadrunner-server/static/v3 v3.0.0 h1:MtidlDeO5g8bIA64b9rXmB5TVbPD3L2
 github.com/roadrunner-server/static/v3 v3.0.0/go.mod h1:mBkZY/Vvwv4j8cteVrJeFRlS/3f9k+hM9QHdXd4fRhQ=
 github.com/roadrunner-server/status/v3 v3.0.0 h1:eDz7mOIWqdNdEFJ+edqVbUkbzImcexieNPpNsvCg4S4=
 github.com/roadrunner-server/status/v3 v3.0.0/go.mod h1:UV4XIdhgenxRJkg+EBTmUKkM2jGemsyIRNj0Y/Cj6q4=
-github.com/roadrunner-server/tcp/v3 v3.0.0 h1:njzxOf09LjisbSP7D9nq7prE9QepjLbVtHiHEBbVZHY=
-github.com/roadrunner-server/tcp/v3 v3.0.0/go.mod h1:xd5Ug2FcRb1YVVAJ5RBtFV7lSiAGfopCALgSOn9EmUc=
+github.com/roadrunner-server/tcp/v3 v3.0.1 h1:ax46susRz907qs7p/oBbbjqXpkX/o5HxrSaJXi/ajxU=
+github.com/roadrunner-server/tcp/v3 v3.0.1/go.mod h1:Y0b7nCih4TVQ+A8hh5qMav6DPOf11jWrso2+zhjFbxU=
 github.com/roadrunner-server/tcplisten v1.2.0 h1:nsiXEEb0zP7vjAsCWNHKpM0HdwFK/KlafFF/2gsTJlg=
 github.com/roadrunner-server/tcplisten v1.2.0/go.mod h1:NhumKvt7dbIKVNZnqR1fA4ET1D8ngIKsg0TxnuJTL6A=
 github.com/robfig/cron v1.2.0 h1:ZjScXvvxeQ63Dbyxy76Fj3AT3Ut0aKsyd2/tl3DTMuQ=
