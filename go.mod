@@ -30,7 +30,7 @@ require (
 	github.com/roadrunner-server/logger/v3 v3.0.0
 	github.com/roadrunner-server/memcached/v3 v3.0.0
 	github.com/roadrunner-server/memory/v3 v3.0.0
-	github.com/roadrunner-server/metrics/v3 v3.0.0
+	github.com/roadrunner-server/metrics/v3 v3.1.0
 	github.com/roadrunner-server/nats/v3 v3.0.0
 	github.com/roadrunner-server/otel/v3 v3.0.0
 	github.com/roadrunner-server/prometheus/v3 v3.0.0

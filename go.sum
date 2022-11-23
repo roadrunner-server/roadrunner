@@ -852,8 +852,8 @@ github.com/roadrunner-server/memcached/v3 v3.0.0 h1:Kl7CcxGVL+2cqrAUh+CdQzb8wIET
 github.com/roadrunner-server/memcached/v3 v3.0.0/go.mod h1:8f+NKzrtCTv4+ADIUcZ9uhE+9eB6oLf5B1rFqYgI3L8=
 github.com/roadrunner-server/memory/v3 v3.0.0 h1:w7btDU+ytgWK7cVmz5jU1oOasHb+TOO8PSvbB5knIds=
 github.com/roadrunner-server/memory/v3 v3.0.0/go.mod h1:OO6NemraQaZsCpnROycOc7AKz+2oOTfdQg6jQdUi1a4=
-github.com/roadrunner-server/metrics/v3 v3.0.0 h1:LS6kfOA4QipasmUy1qSnOcmmuR/6SG9ygyDdWBDIDpc=
-github.com/roadrunner-server/metrics/v3 v3.0.0/go.mod h1:4Mh7S2g9KZ0WMFri0eYBNx6XzGW324SGYkWsK+qdwi8=
+github.com/roadrunner-server/metrics/v3 v3.1.0 h1:YQ8874w6aWQaw7LrX4r5Nn8zyFQvyQbB9Ll1YnNnzY0=
+github.com/roadrunner-server/metrics/v3 v3.1.0/go.mod h1:4Mh7S2g9KZ0WMFri0eYBNx6XzGW324SGYkWsK+qdwi8=
 github.com/roadrunner-server/nats/v3 v3.0.0 h1:bgFOH5+n4uGzSmHpHKruju6rdSdIWE8PErlLgASKY/0=
 github.com/roadrunner-server/nats/v3 v3.0.0/go.mod h1:tOrjG957GTKqBMcIjZlhpsYKKx2vXpiHFuRyHqVM4Fg=
 github.com/roadrunner-server/otel/v3 v3.0.0 h1:8gzuXyPfKjgSu8jFjBrsl82agNMfAZfjxlRIvu2d+DA=
