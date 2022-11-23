@@ -874,8 +874,8 @@ github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2 h1:Xh1Byn+kH3CGtGZw/Wq/A/K8o5l1H
 github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2/go.mod h1:R8CbJAIsHjye7asTIl0zLDRl89aIRETLFFfHbmczw04=
 github.com/roadrunner-server/send/v3 v3.0.0 h1:6S6armK9t2f/BwrVkc7/e6rFkD0uAG/3dZWkhRuAxYc=
 github.com/roadrunner-server/send/v3 v3.0.0/go.mod h1:KNzBCXrsBJDxVE572Qx26vrI+IJNOaajqL88ftLErRE=
-github.com/roadrunner-server/server/v3 v3.0.0 h1:s4HG5LAoxtiQ0VexS6OyOQPo3mcSyH6YeUwgMLeBOns=
-github.com/roadrunner-server/server/v3 v3.0.0/go.mod h1:jOirhKrw3WgbyKVheLy7VRtVf4M1kdbzcysgDurIDe4=
+github.com/roadrunner-server/server/v3 v3.0.1 h1:wBimQB+L+xHkQFlAlJiGuPZVYZ87LCyN8jt94V7uyIk=
+github.com/roadrunner-server/server/v3 v3.0.1/go.mod h1:xV9okQre9l5WSg/tECuNPjj9rSOpXVVg/R1E5Z5ak6E=
 github.com/roadrunner-server/service/v3 v3.0.0 h1:W54vq2ZYTjS9sxiQ59/ySWh59JylMpXPC4UJM7fqkDc=
 github.com/roadrunner-server/service/v3 v3.0.0/go.mod h1:9JhmjOn6YvKyhfVETYNhflDjMkWE1gxHZ+ie+a8uYO4=
 github.com/roadrunner-server/sqs/v3 v3.0.0 h1:2DPfSIV3DZ0lz4s37Ju9iymkhKqbt15MDtCvzQdoxMk=

@@ -41,7 +41,7 @@ require (
 	github.com/roadrunner-server/rpc/v3 v3.0.0
 	github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2
 	github.com/roadrunner-server/send/v3 v3.0.0
-	github.com/roadrunner-server/server/v3 v3.0.0
+	github.com/roadrunner-server/server/v3 v3.0.1
 	github.com/roadrunner-server/service/v3 v3.0.0
 	github.com/roadrunner-server/sqs/v3 v3.0.0
 	github.com/roadrunner-server/static/v3 v3.0.0
