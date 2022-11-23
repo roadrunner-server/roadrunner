@@ -19,7 +19,7 @@ require (
 	github.com/roadrunner-server/errors v1.2.0
 	github.com/roadrunner-server/fileserver/v3 v3.0.0
 	github.com/roadrunner-server/goridge/v3 v3.6.1
-	github.com/roadrunner-server/grpc/v3 v3.0.0
+	github.com/roadrunner-server/grpc/v3 v3.0.1
 	github.com/roadrunner-server/gzip/v3 v3.0.0
 	github.com/roadrunner-server/headers/v3 v3.0.0
 	github.com/roadrunner-server/http/v3 v3.0.1
@@ -39,7 +39,7 @@ require (
 	github.com/roadrunner-server/reload/v3 v3.0.0
 	github.com/roadrunner-server/resetter/v3 v3.0.0
 	github.com/roadrunner-server/rpc/v3 v3.0.0
-	github.com/roadrunner-server/sdk/v3 v3.0.0-rc.2
+	github.com/roadrunner-server/sdk/v3 v3.0.0
 	github.com/roadrunner-server/send/v3 v3.0.0
 	github.com/roadrunner-server/server/v3 v3.0.0
 	github.com/roadrunner-server/service/v3 v3.0.0
@@ -236,8 +236,8 @@ require (
 	golang.org/x/time v0.2.0 // indirect
 	golang.org/x/tools v0.3.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20221116193143-41c2ba794472 // indirect
-	google.golang.org/grpc v1.50.1 // indirect
+	google.golang.org/genproto v0.0.0-20221118155620-16455021b5e6 // indirect
+	google.golang.org/grpc v1.51.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
