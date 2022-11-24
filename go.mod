@@ -9,44 +9,44 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/joho/godotenv v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v3 v3.0.1
+	github.com/roadrunner-server/amqp/v3 v3.0.2
 	github.com/roadrunner-server/app-logger/v3 v3.0.1
-	github.com/roadrunner-server/beanstalk/v3 v3.0.1
-	github.com/roadrunner-server/boltdb/v3 v3.0.1
-	github.com/roadrunner-server/centrifuge/v3 v3.0.1
-	github.com/roadrunner-server/config/v3 v3.0.1
+	github.com/roadrunner-server/beanstalk/v3 v3.0.2
+	github.com/roadrunner-server/boltdb/v3 v3.0.2
+	github.com/roadrunner-server/centrifuge/v3 v3.0.2
+	github.com/roadrunner-server/config/v3 v3.0.2
 	github.com/roadrunner-server/endure v1.4.5
 	github.com/roadrunner-server/errors v1.2.0
-	github.com/roadrunner-server/fileserver/v3 v3.0.1
+	github.com/roadrunner-server/fileserver/v3 v3.0.2
 	github.com/roadrunner-server/goridge/v3 v3.6.1
-	github.com/roadrunner-server/grpc/v3 v3.0.1
-	github.com/roadrunner-server/gzip/v3 v3.0.1
-	github.com/roadrunner-server/headers/v3 v3.0.1
-	github.com/roadrunner-server/http/v3 v3.0.2
-	github.com/roadrunner-server/informer/v3 v3.0.1
-	github.com/roadrunner-server/jobs/v3 v3.0.1
-	github.com/roadrunner-server/kafka/v3 v3.0.1
-	github.com/roadrunner-server/kv/v3 v3.0.1
+	github.com/roadrunner-server/grpc/v3 v3.0.2
+	github.com/roadrunner-server/gzip/v3 v3.0.2
+	github.com/roadrunner-server/headers/v3 v3.0.2
+	github.com/roadrunner-server/http/v3 v3.0.3
+	github.com/roadrunner-server/informer/v3 v3.0.2
+	github.com/roadrunner-server/jobs/v3 v3.0.2
+	github.com/roadrunner-server/kafka/v3 v3.0.2
+	github.com/roadrunner-server/kv/v3 v3.0.2
 	github.com/roadrunner-server/logger/v3 v3.0.1
-	github.com/roadrunner-server/memcached/v3 v3.0.1
-	github.com/roadrunner-server/memory/v3 v3.0.1
+	github.com/roadrunner-server/memcached/v3 v3.0.2
+	github.com/roadrunner-server/memory/v3 v3.0.2
 	github.com/roadrunner-server/metrics/v3 v3.1.0
-	github.com/roadrunner-server/nats/v3 v3.0.1
-	github.com/roadrunner-server/otel/v3 v3.0.1
-	github.com/roadrunner-server/prometheus/v3 v3.0.1
-	github.com/roadrunner-server/proxy_ip_parser/v3 v3.0.1
-	github.com/roadrunner-server/redis/v3 v3.0.1
+	github.com/roadrunner-server/nats/v3 v3.0.2
+	github.com/roadrunner-server/otel/v3 v3.0.2
+	github.com/roadrunner-server/prometheus/v3 v3.0.2
+	github.com/roadrunner-server/proxy_ip_parser/v3 v3.0.2
+	github.com/roadrunner-server/redis/v3 v3.0.2
 	github.com/roadrunner-server/reload/v3 v3.0.1
 	github.com/roadrunner-server/resetter/v3 v3.0.1
-	github.com/roadrunner-server/rpc/v3 v3.0.1
+	github.com/roadrunner-server/rpc/v3 v3.0.2
 	github.com/roadrunner-server/sdk/v3 v3.0.0
-	github.com/roadrunner-server/send/v3 v3.0.1
-	github.com/roadrunner-server/server/v3 v3.0.1
-	github.com/roadrunner-server/service/v3 v3.0.1
-	github.com/roadrunner-server/sqs/v3 v3.0.1
-	github.com/roadrunner-server/static/v3 v3.0.1
-	github.com/roadrunner-server/status/v3 v3.0.1
-	github.com/roadrunner-server/tcp/v3 v3.0.1
+	github.com/roadrunner-server/send/v3 v3.0.2
+	github.com/roadrunner-server/server/v3 v3.0.2
+	github.com/roadrunner-server/service/v3 v3.0.2
+	github.com/roadrunner-server/sqs/v3 v3.0.2
+	github.com/roadrunner-server/static/v3 v3.0.2
+	github.com/roadrunner-server/status/v3 v3.0.2
+	github.com/roadrunner-server/tcp/v3 v3.0.2
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.14.0
 	github.com/stretchr/testify v1.8.1

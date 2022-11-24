@@ -34,8 +34,8 @@ ARG BUILD_TIME="undefined"
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL org.opencontainers.image.title="roadrunner"
-LABEL org.opencontainers.image.description="High-performance PHP application server, load-balancer, process manager written in Go and powered with plugins"
-LABEL org.opencontainers.image.url="https://github.com/roadrunner-server/roadrunner"
+LABEL org.opencontainers.image.description="High-performance PHP application server and process manager written in Go and powered with plugins"
+LABEL org.opencontainers.image.url="https://roadrunner.dev"
 LABEL org.opencontainers.image.source="https://github.com/roadrunner-server/roadrunner"
 LABEL org.opencontainers.image.vendor="SpiralScout"
 LABEL org.opencontainers.image.version="$APP_VERSION"
