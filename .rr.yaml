@@ -476,6 +476,11 @@ service:
     # Default: 0 (infinity), can be 1s, 2m, 2h (seconds, minutes, hours)
     exec_timeout: 0
 
+    # Show the name of the service in logs (e.g. service.some_service_1)
+    #
+    # Default: false
+    service_name_in_log: false
+
     # Remain process after exit. In other words, restart process after exit with any exit code.
     #
     # Default: "false"
@@ -506,6 +511,12 @@ service:
     #
     # Default: 1
     process_num: 1
+
+
+    # Show the name of the service in logs (e.g. service.some_service_1)
+    #
+    # Default: false
+    service_name_in_log: false
 
     # Allowed time before stop.
     #
