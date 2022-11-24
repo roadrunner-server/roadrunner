@@ -2,7 +2,7 @@
 
 ## v2.12.0 (24.11.2022)
 
-# ⚠️ `websocket` and `broadcast` plugins was replaced by the new `centrifuge` plugin.
+# ⚠️ `websocket` and `broadcast` plugins were replaced by the new `centrifuge` plugin.
 # ⚠️ All plugins, `sdk` and `api` updated to `v3`. There are no breaking changes, we moved all Go code from the `api` to `sdk`.
 
 ## 👀 New:
