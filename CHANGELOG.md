@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## v2.12.0-rc.1 (12.11.2022)
+## v2.12.0 (24.11.2022)
 
 ## 👀 New:
 
@@ -37,10 +37,6 @@ pool:
   reset_timeout: 10s
   destroy_timeout: 10s
 ```
-
----
-
-## v2.12.0-beta.1 (03.11.2022)
 
 # ⚠️ `websocket` and `broadcast` plugins was replaced by the new `centrifuge` plugin.
 
