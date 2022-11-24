@@ -2,10 +2,17 @@
 
 ## v2.12.0 (24.11.2022)
 
+# ⚠️ `websocket` and `broadcast` plugins was replaced by the new `centrifuge` plugin.
+# ⚠️ All plugins, `sdk` and `api` updated to `v3`. There are no breaking changes, we moved all Go code from the `api` to `sdk`.
+
 ## 👀 New:
 
 - ✏ **All plugins**: update to `v3`. This is done not because of some breaking change but because of the internal update.
 - ✏ **RPC plugin**: add new API to provide a running RR version and RR configuration in JSON format.
+- ✏ **Metrics plugin**: add new API to unregister previously registered collector. (thanks @butschster)
+- ✏ **Server plugin**: add new API to get statuses about the service and its child processes. (thanks @butschster)
+- ✏ **App logger plugin**: Application logger plugin, [FR](https://github.com/roadrunner-server/roadrunner/issues/1227) (thanks @wolfy-j)
+  **Docs**: [PHP-lib](https://github.com/roadrunner-php/app-logger)
 - ✏ **AMQP plugin**: new configuration options. [FR](https://github.com/roadrunner-server/roadrunner/issues/1351), (thanks @andrey-tech)
 ```yaml
 jobs:
@@ -38,14 +45,8 @@ pool:
   destroy_timeout: 10s
 ```
 
-# ⚠️ `websocket` and `broadcast` plugins was replaced by the new `centrifuge` plugin.
-
-# ⚠️ All plugins, `sdk` and `api` updated to `v3`. There are no breaking changes, we moved all Go code from the `api` to `sdk`.
-
-## 👀 New:
-
 - ✏ **Centrifugo plugin**: New `centrifugo` plugin. Which is going to replace existing `broadcast` + `websockets` plugins. [FR](https://github.com/roadrunner-server/roadrunner/issues/1134).
-**Docs**: [PHP-lib](https://github.com/roadrunner-php/centrifugo)
+  **Docs**: [PHP-lib](https://github.com/roadrunner-php/centrifugo)
 
 RoadRunner config:
 
@@ -98,10 +99,6 @@ centrifuge:
   # Optional, default: null (see default values)
   pool: {}
 ```
-
-- ✏ **App logger plugin**: Application logger plugin, [FR](https://github.com/roadrunner-server/roadrunner/issues/1227) (thanks @wolfy-j)
-**Docs**: [PHP-lib](https://github.com/roadrunner-php/app-logger)
-
 
 ## 🩹 Fixes:
 
