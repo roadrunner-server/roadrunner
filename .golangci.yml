@@ -53,7 +53,6 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - exportloopref # checks for pointers to enclosing loop variables
     - funlen # Tool for detection of long functions
     - gochecknoglobals # Checks that no globals are present in Go code
-    - gochecknoinits # Checks that no init functions are present in Go code
     - gocognit # Computes and checks the cognitive complexity of functions
     - goconst # Finds repeated strings that could be replaced by a constant
     - gocritic # The most opinionated Go source code linter

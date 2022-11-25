@@ -16,9 +16,7 @@ var exitFn = os.Exit //nolint:gochecknoglobals
 func main() { exitFn(run()) }
 
 func init() {
-	_, _ = maxprocs.Set(maxprocs.Min(1), maxprocs.Logger(func(_ string, _ ...interface{}) {
-		return
-	}))
+	_, _ = maxprocs.Set(maxprocs.Min(1), maxprocs.Logger(func(_ string, _ ...any) {}))
 }
 
 // run this CLI application.
