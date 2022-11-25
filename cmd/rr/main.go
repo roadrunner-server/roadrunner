@@ -6,7 +6,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli"
-	_ "go.uber.org/automaxprocs"
+	"go.uber.org/automaxprocs/maxprocs"
 )
 
 // exitFn is a function for application exiting.
@@ -14,6 +14,12 @@ var exitFn = os.Exit //nolint:gochecknoglobals
 
 // main CLI application entrypoint.
 func main() { exitFn(run()) }
+
+func init() {
+	_, _ = maxprocs.Set(maxprocs.Min(1), maxprocs.Logger(func(_ string, _ ...interface{}) {
+		return
+	}))
+}
 
 // run this CLI application.
 func run() int {
