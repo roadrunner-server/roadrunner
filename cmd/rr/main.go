@@ -6,6 +6,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/roadrunner-server/roadrunner/v2/internal/cli"
+	_ "go.uber.org/automaxprocs"
 )
 
 // exitFn is a function for application exiting.

@@ -52,6 +52,7 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/temporalio/roadrunner-temporal/v2 v2.0.0
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.27
+	go.uber.org/automaxprocs v1.5.1
 )
 
 exclude (

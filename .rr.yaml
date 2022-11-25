@@ -279,6 +279,8 @@ temporal:
     server_name: "tls-sample"
 
   # Activities pool settings.
+  #
+  # Equal to the regular pool options
   activities:
     # Debug mode for the pool. In this mode, pool will not pre-allocate the worker. Worker (only 1, num_workers ignored) will be allocated right after the request arrived.
     #
@@ -300,12 +302,17 @@ temporal:
     # Default: 0
     max_jobs: 0
 
-    # Timeout for worker allocation. Zero means no limit.
+    # Timeout for worker allocation. Zero means 60s.
     #
     # Default: 60s
     allocate_timeout: 60s
 
-    # Timeout for worker destroying before process killing. Zero means no limit.
+    # Timeout for the reset timeout. Zero means 60s.
+    #
+    # Default: 60s
+    reset_timeout: 60s
+
+    # Timeout for worker destroying before process killing. Zero means 60s.
     #
     # Default: 60s
     destroy_timeout: 60s
@@ -341,6 +348,7 @@ temporal:
 
 
 # KV plugin settings. Available drivers: boltdb, redis, memcached, memory.
+#
 # Any number of sections can be defined here.
 kv:
   # User defined name of the section
@@ -351,6 +359,7 @@ kv:
     #
     # This option is required.
     driver: boltdb
+
     # Local configuration section
     #
     # This option is required to use local section, otherwise (boltdb-south) global configuration will be used.
@@ -841,12 +850,17 @@ http:
     # Default: 0
     max_jobs: 0
 
-    # Timeout for worker allocation. Zero means no limit.
+    # Timeout for worker allocation. Zero means 60s.
     #
     # Default: 60s
     allocate_timeout: 60s
 
-    # Timeout for worker destroying before process killing. Zero means no limit.
+    # Timeout for the reset timeout. Zero means 60s.
+    #
+    # Default: 60s
+    reset_timeout: 60s
+
+    # Timeout for worker destroying before process killing. Zero means 60s.
     #
     # Default: 60s
     destroy_timeout: 60s
@@ -1167,10 +1181,39 @@ jobs:
 
   # worker pool configuration
   pool:
-    command: ""
-    num_workers: 10
+    # Debug mode for the pool. In this mode, pool will not pre-allocate the worker. Worker (only 1, num_workers ignored) will be allocated right after the request arrived.
+    #
+    # Default: false
+    debug: false
+
+    # Override server's command
+    #
+    # Default: empty
+    command: "php my-super-app.php"
+
+    # How many worker processes will be started. Zero (or nothing) means the number of logical CPUs.
+    #
+    # Default: 0
+    num_workers: 0
+
+    # Maximal count of worker executions. Zero (or nothing) means no limit.
+    #
+    # Default: 0
     max_jobs: 0
+
+    # Timeout for worker allocation. Zero means 60s.
+    #
+    # Default: 60s
     allocate_timeout: 60s
+
+    # Timeout for the reset timeout. Zero means 60s.
+    #
+    # Default: 60s
+    reset_timeout: 60s
+
+    # Timeout for worker destroying before process killing. Zero means 60s.
+    #
+    # Default: 60s
     destroy_timeout: 60s
 
   # List of broker pipelines associated with the drivers.
@@ -1733,10 +1776,40 @@ grpc:
 
   # Usual workers pool configuration
   pool:
-    num_workers: 2
+    # Debug mode for the pool. In this mode, pool will not pre-allocate the worker. Worker (only 1, num_workers ignored) will be allocated right after the request arrived.
+    #
+    # Default: false
+    debug: false
+
+    # Override server's command
+    #
+    # Default: empty
+    command: "php my-super-app.php"
+
+    # How many worker processes will be started. Zero (or nothing) means the number of logical CPUs.
+    #
+    # Default: 0
+    num_workers: 0
+
+    # Maximal count of worker executions. Zero (or nothing) means no limit.
+    #
+    # Default: 0
     max_jobs: 0
+
+    # Timeout for worker allocation. Zero means 60s.
+    #
+    # Default: 60s
     allocate_timeout: 60s
-    destroy_timeout: 60
+
+    # Timeout for the reset timeout. Zero means 60s.
+    #
+    # Default: 60s
+    reset_timeout: 60s
+
+    # Timeout for worker destroying before process killing. Zero means 60s.
+    #
+    # Default: 60s
+    destroy_timeout: 60s
 
 # [SINCE 2.6] TCP plugin
 tcp:
@@ -1771,10 +1844,39 @@ tcp:
       read_buf_size: 1
 
   pool:
-    command: ""
-    num_workers: 5
+    # Debug mode for the pool. In this mode, pool will not pre-allocate the worker. Worker (only 1, num_workers ignored) will be allocated right after the request arrived.
+    #
+    # Default: false
+    debug: false
+
+    # Override server's command
+    #
+    # Default: empty
+    command: "php my-super-app.php"
+
+    # How many worker processes will be started. Zero (or nothing) means the number of logical CPUs.
+    #
+    # Default: 0
+    num_workers: 0
+
+    # Maximal count of worker executions. Zero (or nothing) means no limit.
+    #
+    # Default: 0
     max_jobs: 0
+
+    # Timeout for worker allocation. Zero means 60s.
+    #
+    # Default: 60s
     allocate_timeout: 60s
+
+    # Timeout for the reset timeout. Zero means 60s.
+    #
+    # Default: 60s
+    reset_timeout: 60s
+
+    # Timeout for worker destroying before process killing. Zero means 60s.
+    #
+    # Default: 60s
     destroy_timeout: 60s
 
 # [SINCE 2.6] Fileserver to serve static files.
