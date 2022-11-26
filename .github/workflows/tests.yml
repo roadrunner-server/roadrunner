@@ -112,8 +112,8 @@ jobs:
       - name: Generate version value
         id: values # for PR this value will be `merge@__hash__`, SO: <https://stackoverflow.com/a/59780579/2252921>
         run: |
-          echo "::set-output name=version::`echo ${GITHUB_REF##*/}`@`echo ${GITHUB_SHA} | cut -c1-8`"
-          echo "::set-output name=timestamp::`date +%FT%T%z`"
+          echo "{name}={version} >> `echo ${GITHUB_REF##*/}`@`echo ${GITHUB_SHA} | cut -c1-8`"
+          echo "{name}={timestamp} >> `date +%FT%T%z`"
 
       - name: Compile binary file
         env:
