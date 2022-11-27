@@ -63,13 +63,13 @@ jobs:
       - name: Generate builder values
         id: values
         run: |
-          echo "::set-output name=version::`echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//'`"
-          echo "::set-output name=timestamp::`date +%FT%T%z`"
-          echo "::set-output name=binary-name::protoc-gen-php-grpc`[ ${{ matrix.os }} = 'windows' ] && echo '.exe'`"
+          echo "version=$(echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//')" >> $GITHUB_OUTPUT
+          echo "timestamp=$(echo $(date +%FT%T%z))" >> $GITHUB_OUTPUT
+          echo "binary-name=$(echo $(echo protoc-gen-php-grpc`[ ${{ matrix.os }} = 'windows' ] && echo '.exe'`))" >> $GITHUB_OUTPUT
           if [ ${{ matrix.os }} == "windows" ]; then
-            echo "::set-output name=sign-cert-name::protoc-gen-php-grpc.exe.asc"
+            echo "sign-cert-name=protoc-gen-php-grpc.exe.asc" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=sign-cert-name::protoc-gen-php-grpc.asc"
+            echo "sign-cert-name=protoc-gen-php-grpc.asc" >> $GITHUB_OUTPUT
           fi
 
       - name: Import GPG key
@@ -96,22 +96,22 @@ jobs:
       - name: Generate distributive directory name
         id: dist-dir
         run: >
-          echo "::set-output name=name::protoc-gen-php-grpc-${{ steps.values.outputs.version }}-$(
+          echo "name=$(echo protoc-gen-php-grpc-${{ steps.values.outputs.version }}-$(
             [ ${{ matrix.os }} != '' ] && echo '${{ matrix.os }}' || echo 'unknown'
           )$(
             [ ${{ matrix.compiler }} = 'musl-gcc' ] && echo '-musl'
-          )-${{ matrix.arch }}"
+          ))-${{ matrix.arch }}" >> $GITHUB_OUTPUT
 
       - name: Generate distributive archive name
         id: dist-arch
         run: >
-          echo "::set-output name=name::${{ steps.dist-dir.outputs.name }}.$(
+          echo "name=$(echo ${{ steps.dist-dir.outputs.name }}.$(
             case ${{ matrix.archiver }} in
               zip) echo 'zip';;
               tar) echo 'tar.gz';;
               *)   exit 10;
             esac
-          )"
+          ))" >> $GITHUB_OUTPUT
 
       - name: Create distributive
         run: |
