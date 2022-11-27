@@ -174,7 +174,7 @@ jobs:
       - name: Generate builder values
         id: values
         run: |
-          echo "version=$(echo $(${GITHUB_REF##*/} | sed -e 's/^[vV ]*//'`)" >> $GITHUB_OUTPUT
+          echo "version=$(echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//')" >> $GITHUB_OUTPUT
           echo "timestamp=$(echo $(date +%FT%T%z))" >> $GITHUB_OUTPUT
 
       - name: Build image
