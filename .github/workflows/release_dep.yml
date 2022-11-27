@@ -33,10 +33,10 @@ jobs:
       - name: Generate builder values
         id: values
         run: |
-          echo "::set-output name=version::`echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//'`"
-          echo "::set-output name=timestamp::`date +%FT%T%z`"
-          echo "::set-output name=binary-name::rr"
-          echo "::set-output name=sign-cert-name::rr.asc"
+          echo "version=$(echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//')" >> $GITHUB_OUTPUT
+          echo "timestamp=$(echo $(date +%FT%T%z))" >> $GITHUB_OUTPUT
+          echo "binary-name=rr" >> $GITHUB_OUTPUT
+          echo "sign-cert-name=rr.asc" >> $GITHUB_OUTPUT
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v5

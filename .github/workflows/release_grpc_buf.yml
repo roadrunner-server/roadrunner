@@ -24,7 +24,7 @@ jobs:
       - name: Generate builder values
         id: values
         run: |
-          echo "::set-output name=version::`echo ${GITHUB_REF##*/} | sed -e 's/*//'`"
+          echo "version=$(echo ${GITHUB_REF##*/} | sed -e 's/*//')" >> $GITHUB_OUTPUT
 
       - name: Build image
         run: |
