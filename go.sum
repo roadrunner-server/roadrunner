@@ -463,8 +463,8 @@ github.com/go-redis/redis/v9 v9.0.0-rc.1 h1:/+bS+yeUnanqAbuD3QwlejzQZ+4eqgfUtFTG
 github.com/go-redis/redis/v9 v9.0.0-rc.1/go.mod h1:8et+z03j0l8N+DvsVnclzjf3Dl/pFHgRk+2Ct1qw66A=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0/go.mod h1:fyg7847qk6SyHyPtNmDHnmrv/HOrqktSC+C9fM+CJOE=
-github.com/goccy/go-json v0.9.11 h1:/pAaQDLHEoCq/5FFmSKBswWmK6H0e8g4159Kc/X/nqk=
-github.com/goccy/go-json v0.9.11/go.mod h1:6MelG93GURQebXPDq3khkgXZkazVtN9CRI+MGFi0w8I=
+github.com/goccy/go-json v0.10.0 h1:mXKd9Qw4NuzShiRlOXKews24ufknHO7gx30lsDyokKA=
+github.com/goccy/go-json v0.10.0/go.mod h1:6MelG93GURQebXPDq3khkgXZkazVtN9CRI+MGFi0w8I=
 github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
 github.com/gofiber/fiber/v2 v2.40.1 h1:pc7n9VVpGIqNsvg9IPLQhyFEMJL8gCs1kneH5D1pIl4=
 github.com/gofiber/fiber/v2 v2.40.1/go.mod h1:Gko04sLksnHbzLSRBFWPFdzM9Ws9pRxvvIaohJK1dsk=
@@ -830,8 +830,8 @@ github.com/roadrunner-server/errors v1.2.0 h1:qBmNXt8Iex9QnYTjCkbJKsBZu2EtYkQCM0
 github.com/roadrunner-server/errors v1.2.0/go.mod h1:z0ECxZp/dDa5RahtMcy4mBIavVxiZ9vwE5kByl7kFtY=
 github.com/roadrunner-server/fileserver/v3 v3.0.2 h1:TTiGWQEauWrunpIc3BCrCbaGB67x0ToWoPseojDmh00=
 github.com/roadrunner-server/fileserver/v3 v3.0.2/go.mod h1:L61cIw+bQWAZliASsHzOCNeqDeWZEIqmirzqzAvdck8=
-github.com/roadrunner-server/goridge/v3 v3.6.1 h1:AnMCHWOxNdyswJUKpcTFRRPCqL1WippAXIjC0GchIgw=
-github.com/roadrunner-server/goridge/v3 v3.6.1/go.mod h1:ju0NNhhw9G1M8aCNsC0T0/2+aQ9yEHztrWIMlzv4LpE=
+github.com/roadrunner-server/goridge/v3 v3.6.2 h1:LH5HXfCygDp05KnOaXpa4fqVPWTsH7V3lfvPtMwFU3k=
+github.com/roadrunner-server/goridge/v3 v3.6.2/go.mod h1:3B95k/wM5GGAD0h2hZlJagS9PlTDGs5jh8MpZYC12vA=
 github.com/roadrunner-server/grpc/v3 v3.0.2 h1:6nwR6HRI0xo0/A8jb5OTC/c7jO20zoMD86cJe8h64Yc=
 github.com/roadrunner-server/grpc/v3 v3.0.2/go.mod h1:zVRjKkCDS67GEgcpzG4aLMPx2qpA5K1oW62C5zwe9jQ=
 github.com/roadrunner-server/gzip/v3 v3.0.2 h1:kqz3eyp/NSZEcnE47bxYYwrmxVVOGdsXByEE3nwSqUI=
