@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/buger/goterm v1.0.4
-	github.com/darkweak/souin/plugins/roadrunner v0.0.0-20221107151800-123300e224c3
+	github.com/darkweak/souin/plugins/roadrunner v0.0.0-20221125215952-7cec0ec0a0df
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.13.0
 	github.com/joho/godotenv v1.4.0
@@ -29,7 +29,7 @@ require (
 	github.com/roadrunner-server/kv/v3 v3.0.2
 	github.com/roadrunner-server/logger/v3 v3.0.1
 	github.com/roadrunner-server/memcached/v3 v3.0.2
-	github.com/roadrunner-server/memory/v3 v3.0.2
+	github.com/roadrunner-server/memory/v3 v3.1.0
 	github.com/roadrunner-server/metrics/v3 v3.1.0
 	github.com/roadrunner-server/nats/v3 v3.0.2
 	github.com/roadrunner-server/otel/v3 v3.0.2
@@ -43,7 +43,7 @@ require (
 	github.com/roadrunner-server/send/v3 v3.0.2
 	github.com/roadrunner-server/server/v3 v3.0.2
 	github.com/roadrunner-server/service/v3 v3.0.2
-	github.com/roadrunner-server/sqs/v3 v3.0.2
+	github.com/roadrunner-server/sqs/v3 v3.1.0
 	github.com/roadrunner-server/static/v3 v3.0.2
 	github.com/roadrunner-server/status/v3 v3.0.2
 	github.com/roadrunner-server/tcp/v3 v3.0.2
@@ -82,7 +82,7 @@ require (
 	github.com/bradfitz/gomemcache v0.0.0-20221031212613-62deef7fc822 // indirect
 	github.com/buraksezer/connpool v0.6.0 // indirect
 	github.com/buraksezer/consistent v0.10.0 // indirect
-	github.com/buraksezer/olric v0.4.9 // indirect
+	github.com/buraksezer/olric v0.4.10 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/cactus/go-statsd-client/statsd v0.0.0-20200423205355-cb0885a1018c // indirect
 	github.com/caddyserver/certmagic v0.17.2 // indirect
@@ -92,7 +92,7 @@ require (
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
 	github.com/darkweak/go-esi v0.0.5 // indirect
-	github.com/darkweak/souin v1.6.22 // indirect
+	github.com/darkweak/souin v1.6.23 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgraph-io/badger/v3 v3.2103.4 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
@@ -109,7 +109,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
-	github.com/go-redis/redis/v9 v9.0.0-rc.1 // indirect
+	github.com/go-redis/redis/v9 v9.0.0-rc.2 // indirect
 	github.com/goccy/go-json v0.10.0 // indirect
 	github.com/gofiber/fiber/v2 v2.40.1 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
@@ -138,7 +138,7 @@ require (
 	github.com/hashicorp/logutils v1.0.0 // indirect
 	github.com/hashicorp/memberlist v0.5.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
-	github.com/inconshreveable/mousetrap v1.0.1 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jcmturner/aescts/v2 v2.0.0 // indirect
 	github.com/jcmturner/dnsutils/v2 v2.0.0 // indirect
 	github.com/jcmturner/gofork v1.7.6 // indirect
@@ -192,7 +192,7 @@ require (
 	github.com/twmb/murmur3 v1.1.6 // indirect
 	github.com/uber-go/tally/v4 v4.1.3 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.42.0 // indirect
+	github.com/valyala/fasthttp v1.43.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
