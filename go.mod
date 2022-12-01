@@ -43,7 +43,7 @@ require (
 	github.com/roadrunner-server/send/v3 v3.0.4
 	github.com/roadrunner-server/server/v3 v3.0.4
 	github.com/roadrunner-server/service/v3 v3.0.4
-	github.com/roadrunner-server/sqs/v3 v3.1.2
+	github.com/roadrunner-server/sqs/v3 v3.1.3
 	github.com/roadrunner-server/static/v3 v3.0.4
 	github.com/roadrunner-server/status/v3 v3.0.4
 	github.com/roadrunner-server/tcp/v3 v3.0.4
