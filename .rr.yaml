@@ -1239,7 +1239,7 @@ jobs:
         # If the job has priority set to 0, it will inherit the pipeline's priority. Default: 10.
         priority: 10
 
-        # Number of job to prefetch from the driver.
+        # Number of job to prefetch from the driver until ACK/NACK.
         #
         # Default: 100_000.
         prefetch: 10000
@@ -1302,6 +1302,21 @@ jobs:
         #
         # Default: false
         durable: false
+
+        # Durable exchange (rabbitmq option: https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges)
+        #
+        # Default: true
+        exchange_durable: false
+
+        # Auto-delete (exchange is deleted when last queue is unbound from it): https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges
+        #
+        # Default: false
+        exchange_auto_deleted: false
+
+        # Auto-delete (queue that has had at least one consumer is deleted when last consumer unsubscribes) (rabbitmq option: https://www.rabbitmq.com/queues.html#properties)
+        #
+        # Default: false
+        queue_auto_deleted: false
 
         # Delete queue when stopping the pipeline
         #
@@ -1397,8 +1412,7 @@ jobs:
         # If the job has priority set to 0, it will inherit the pipeline's priority. Default: 10.
         priority: 10
 
-        # Number of jobs to prefetch from the SQS. Amazon SQS never returns more messages than this value
-        # (however, fewer messages might be returned). Valid values: 1 to 10.
+        # Number of jobs to prefetch from the SQS until ACK/NACK.
         #
         # Default: 10
         prefetch: 10

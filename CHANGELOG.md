@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## v2.12.1 (01.12.2022)
+
+###### tags: `roadrunner` `v2.12.1`
+
+## <center> 🚀 v2.12.1 🚀 </center>
+## <center>👀 New: </center>
+
+- ✏ **RR:** Automatically set the `GOMAXPROCS` to match the container CPU quota.
+- ✏ **AMQP plugin:** implement `Status` to check the AMQP connection [PR](https://github.com/roadrunner-server/amqp/pull/33).
+- ✏ **SQS plugin:** `prefetch` option now works as expected. RR will not consume new JOBS when reaches `prefetch` limit, until already accepted messages are not ACK/NACK-ed.
+- ✏ **JOBS(memory) plugin:** `prefetch` option now works as expected (see SQS). You can now emulate FIFO in memory by setting the `prefetch` option to 1.
+
+### <center>🩹 Fixes:</center>
+
+- **gRPC plugin**: server options are applied only when TLS is set. [Discussion](https://github.com/roadrunner-server/roadrunner/discussions/1384).
+- **AMQP plugin**: fix a few typos in the configuration.
+
 ## v2.12.0 (24.11.2022)
 
 # ⚠️ `websocket` and `broadcast` plugins were replaced by the new `centrifuge` plugin.

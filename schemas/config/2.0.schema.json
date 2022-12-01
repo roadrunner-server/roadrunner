@@ -1437,17 +1437,17 @@
                                                     "default": "amqp.default"
                                                 },
                                                 "exchange_durable": {
-                                                    "description": "Durable exchange",
+                                                    "description": "Durable exchange (rabbitmq option: https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges)",
                                                     "type": "boolean",
                                                     "default": false
                                                 },
                                                 "exchange_auto_deleted": {
-                                                    "description": "Auto delete exchange",
+                                                    "description": "Auto-delete (exchange is deleted when last queue is unbound from it): https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges",
                                                     "type": "boolean",
                                                     "default": false
                                                 },
                                                 "queue_auto_deleted": {
-                                                    "description": "Queue auto delete",
+                                                    "description": "Auto-delete (queue that has had at least one consumer is deleted when last consumer unsubscribes)",
                                                     "type": "boolean",
                                                     "default": false
                                                 },
@@ -1621,7 +1621,7 @@
                                                     "default": 10
                                                 },
                                                 "prefetch": {
-                                                    "description": "Number of job to prefetch from the driver",
+                                                    "description": "Number of job to prefetch from the driver until ACK/NACK",
                                                     "type": "integer",
                                                     "default": 100000
                                                 }
@@ -1669,7 +1669,7 @@
                                                     "default": 10
                                                 },
                                                 "prefetch": {
-                                                    "description": "Number of job to prefetch from the driver",
+                                                    "description": "Number of job to prefetch from the driver until ACK/NACK",
                                                     "type": "integer",
                                                     "default": 100000
                                                 },
