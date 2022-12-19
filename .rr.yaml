@@ -52,7 +52,7 @@ server:
   # Default: ""
   user: ""
 
-  # Group name (not GID) for the worker processes. An empty value means to use the RR process user.
+  # Group name (not GID) for the worker processes. An empty value means to use the RR process group.
   #
   # Default: ""
   group: ""
