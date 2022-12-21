@@ -698,7 +698,6 @@ github.com/gorilla/sessions v1.2.1/go.mod h1:dk2InVEVJ0sfLlnXv9EAgkf6ecYs/i80K/z
 github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 h1:+9834+KizmvFV7pXQGSXQTsaWhq2GjuNUt0aUU0YBYw=
 github.com/grpc-ecosystem/go-grpc-middleware v1.3.0/go.mod h1:z0ButlSOZa5vEBq9m2m2hlwIgKw+rp3sdCBRoJY+30Y=
 github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0/go.mod h1:8NvIoxWQoOIhqOTXgfV/d3M/q6VIi02HzZEHgUlZvzk=
-github.com/grpc-ecosystem/grpc-gateway v1.16.0 h1:gmcG1KaJ57LophUzW0Hy8NmPhnMZb4M0+kPpLofRdBo=
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.0/go.mod h1:hgWBS7lorOAVIJEQMi4ZsPv9hVvWI6+ch50m39Pf2Ks=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.14.0 h1:t7uX3JBHdVwAi3G7sSSdbsk8NfgA+LnUS88V/2EKaA0=
@@ -940,8 +939,8 @@ github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475/go.mod h1:bCqn
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rivo/uniseg v0.4.3 h1:utMvzDsuh3suAEnhH0RdHmoPbU648o6CvXxTx4SBMOw=
 github.com/rivo/uniseg v0.4.3/go.mod h1:FN3SvrM+Zdj16jyLfmOkMNblXMcoc8DfTHruCPUcx88=
-github.com/roadrunner-server/amqp/v3 v3.0.4 h1:XnCe/ig/WUh1x4uz41jD3+JE/Omyr5qEcpu5Dz/OAqc=
-github.com/roadrunner-server/amqp/v3 v3.0.4/go.mod h1:jaDg13Pii+TQr8RlPMbVpQKoLx5wbgKOF1fin/RsM0A=
+github.com/roadrunner-server/amqp/v3 v3.1.0 h1:iidFeIbu+IfkxWwFyuEv4688AqJlcW1ZSbA9c5v1Mjo=
+github.com/roadrunner-server/amqp/v3 v3.1.0/go.mod h1:yK1DJC0putjaSAZgqjUedr2mWDIbN6bL6sutz/iZSi8=
 github.com/roadrunner-server/app-logger/v3 v3.0.2 h1:4fZObK73geWmbgxv6Sfssi2a/Xggd8Amz9jt8pWGcZ8=
 github.com/roadrunner-server/app-logger/v3 v3.0.2/go.mod h1:5BzNlVgyqfg8y8luq16qHyFc4TVzu7t8sB2GNfMyh50=
 github.com/roadrunner-server/beanstalk/v3 v3.0.4 h1:ETyKRkDcCt0/Bu/5eMJ4lVvRhDq5gIHkgIFDdySMaag=
