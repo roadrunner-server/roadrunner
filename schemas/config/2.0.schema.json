@@ -1475,6 +1475,11 @@
                                                     "description": "Use rabbitmq mechanism to requeue the job on fail",
                                                     "type": "boolean",
                                                     "default": false
+                                                },
+                                                "queue_headers" : {
+                                                    "description": "Queue declare args, associated array (hashmap, key:val)",
+                                                    "$ref": "#/definitions/Hashmap",
+                                                    "default": null
                                                 }
                                             }
                                         },
