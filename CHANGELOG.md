@@ -1,5 +1,21 @@
 # CHANGELOG
 
+###### tags: `roadrunner` `v2.12.2`
+
+## <center>🚀 v2.12.2-alpha.1 🚀<center>
+
+## <center>👀 New: <center>
+
+- ✏ **AMQP plugin:** pass headers to the `Queue` declaration command to create quorum, lazy, etc. queues and provide additional options supported by RabbitMQ, [FR](https://github.com/roadrunner-server/roadrunner/issues/1388), (thanks @ykweb)
+
+- ✏ **AMQP plugin:** do not create a queue if the user does not consume it, [FR](https://github.com/spiral/roadrunner-jobs/issues/30), (thanks @Colomix)
+
+### <center>🩹 Fixes:</center>
+
+- 🐛 **X-Sendfile middleware:** make it work as expected (as the response header), [BUG](https://github.com/roadrunner-server/roadrunner/issues/1386), (thanks @tux-rampage)
+
+---
+
 ## v2.12.1 (01.12.2022)
 
 ###### tags: `roadrunner` `v2.12.1`
