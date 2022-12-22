@@ -1360,6 +1360,12 @@ jobs:
         # Default: false
         requeue_on_fail: false
 
+        # Queue headers
+        #
+        # Default: null
+        queue_headers:
+          x-queue-mode: lazy
+
     test-local-3:
       # Driver name
       #
