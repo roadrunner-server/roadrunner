@@ -40,7 +40,7 @@ require (
 	github.com/roadrunner-server/resetter/v3 v3.0.3
 	github.com/roadrunner-server/rpc/v3 v3.0.5
 	github.com/roadrunner-server/sdk/v3 v3.0.1
-	github.com/roadrunner-server/send/v3 v3.1.1
+	github.com/roadrunner-server/send/v3 v3.1.2
 	github.com/roadrunner-server/server/v3 v3.0.5
 	github.com/roadrunner-server/service/v3 v3.0.5
 	github.com/roadrunner-server/sqs/v3 v3.1.4
@@ -146,11 +146,11 @@ require (
 	github.com/jcmturner/gokrb5/v8 v8.4.3 // indirect
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
 	github.com/klauspost/compress v1.15.13 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.2 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.3 // indirect
 	github.com/libdns/libdns v0.2.1 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.16 // indirect
+	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mholt/acmez v1.0.4 // indirect
@@ -240,7 +240,7 @@ require (
 	golang.org/x/text v0.5.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.4.0 // indirect
-	google.golang.org/genproto v0.0.0-20221207170731-23e4bf6bdc37 // indirect
+	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef // indirect
 	google.golang.org/grpc v1.51.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
