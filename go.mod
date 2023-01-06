@@ -26,7 +26,7 @@ require (
 	github.com/roadrunner-server/informer/v3 v3.0.5
 	github.com/roadrunner-server/jobs/v3 v3.0.5
 	github.com/roadrunner-server/kafka/v3 v3.0.4
-	github.com/roadrunner-server/kv/v3 v3.0.5
+	github.com/roadrunner-server/kv/v3 v3.1.0
 	github.com/roadrunner-server/logger/v3 v3.0.3
 	github.com/roadrunner-server/memcached/v3 v3.0.5
 	github.com/roadrunner-server/memory/v3 v3.1.4
@@ -177,6 +177,8 @@ require (
 	github.com/rabbitmq/amqp091-go v1.5.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/rivo/uniseg v0.4.3 // indirect
+	github.com/roadrunner-server/api/v3 v3.1.2 // indirect
+	github.com/roadrunner-server/endure/v2 v2.0.0-beta.1 // indirect
 	github.com/roadrunner-server/tcplisten v1.2.1 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529 // indirect
