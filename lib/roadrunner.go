@@ -5,8 +5,7 @@ import (
 	"runtime/debug"
 
 	configImpl "github.com/roadrunner-server/config/v3"
-	endure "github.com/roadrunner-server/endure/pkg/container"
-	"github.com/roadrunner-server/endure/pkg/fsm"
+	"github.com/roadrunner-server/endure/v2"
 	"github.com/roadrunner-server/roadrunner/v2/container"
 )
 
@@ -38,10 +37,15 @@ func NewRR(cfgFile string, override []string, pluginList []any) (*RR, error) {
 	}
 
 	// create endure container
-	endureContainer, err := container.NewContainer(*containerCfg)
-	if err != nil {
-		return nil, err
+	endureOptions := []endure.Options{
+		endure.GracefulShutdownTimeout(containerCfg.GracePeriod),
 	}
+
+	if containerCfg.PrintGraph {
+		endureOptions = append(endureOptions, endure.Visualize())
+	}
+
+	endureContainer := endure.New(containerCfg.LogLevel, endureOptions...)
 
 	// register another container plugins
 	err = endureContainer.RegisterAll(append(pluginList, cfg)...)
@@ -79,8 +83,8 @@ func (rr *RR) Serve() error {
 	}
 }
 
-func (rr *RR) CurrentState() fsm.State {
-	return rr.container.CurrentState()
+func (rr *RR) Plugins() []string {
+	return rr.container.Plugins()
 }
 
 // Stop stops roadrunner

@@ -1,7 +1,7 @@
 package container
 
 import (
-	cache "github.com/darkweak/souin/plugins/roadrunner"
+	//cache "github.com/darkweak/souin/plugins/roadrunner"
 	"github.com/roadrunner-server/amqp/v3"
 	appLogger "github.com/roadrunner-server/app-logger/v3"
 	"github.com/roadrunner-server/beanstalk/v3"
@@ -14,7 +14,7 @@ import (
 	httpPlugin "github.com/roadrunner-server/http/v3"
 	"github.com/roadrunner-server/informer/v3"
 	"github.com/roadrunner-server/jobs/v3"
-	"github.com/roadrunner-server/kafka/v3"
+	//"github.com/roadrunner-server/kafka/v3"
 	"github.com/roadrunner-server/kv/v3"
 	"github.com/roadrunner-server/logger/v3"
 	"github.com/roadrunner-server/memcached/v3"
@@ -71,7 +71,7 @@ func Plugins() []any { //nolint:funlen
 		&nats.Plugin{},
 		&beanstalk.Plugin{},
 		// new in 2.11
-		&kafka.Plugin{},
+		//&kafka.Plugin{},
 		// =========
 		//
 		// http server plugin with middleware
@@ -103,6 +103,6 @@ func Plugins() []any { //nolint:funlen
 		// temporal plugin
 		&rrt.Plugin{},
 		// third-party--
-		&cache.Plugin{},
+		//&cache.Plugin{},
 	}
 }

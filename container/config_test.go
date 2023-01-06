@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/roadrunner-server/config/v3"
-	endure "github.com/roadrunner-server/endure/pkg/container"
 	"github.com/roadrunner-server/roadrunner/v2/container"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/exp/slog"
 )
 
 func TestNewConfig_SuccessfulReading(t *testing.T) {
@@ -17,7 +17,7 @@ func TestNewConfig_SuccessfulReading(t *testing.T) {
 
 	assert.Equal(t, time.Second*10, c.GracePeriod)
 	assert.True(t, c.PrintGraph)
-	assert.Equal(t, endure.WarnLevel, c.LogLevel)
+	assert.Equal(t, slog.LevelWarn, c.LogLevel)
 }
 
 func TestNewConfig_WithoutEndureKey(t *testing.T) {
@@ -30,21 +30,20 @@ func TestNewConfig_WithoutEndureKey(t *testing.T) {
 
 	assert.Equal(t, time.Second*30, c.GracePeriod)
 	assert.False(t, c.PrintGraph)
-	assert.Equal(t, endure.ErrorLevel, c.LogLevel)
+	assert.Equal(t, slog.LevelError, c.LogLevel)
 }
 
 func TestNewConfig_LoggingLevels(t *testing.T) {
 	for _, tt := range []struct {
 		path      string
 		giveLevel string
-		wantLevel endure.Level
+		wantLevel slog.Leveler
 		wantError bool
 	}{
-		{path: "test/endure_ok_debug.yaml", giveLevel: "debug", wantLevel: endure.DebugLevel},
-		{path: "test/endure_ok_info.yaml", giveLevel: "info", wantLevel: endure.InfoLevel},
-		{path: "test/endure_ok_warn.yaml", giveLevel: "warn", wantLevel: endure.WarnLevel},
-		{path: "test/endure_ok_panic.yaml", giveLevel: "panic", wantLevel: endure.PanicLevel},
-		{path: "test/endure_ok_fatal.yaml", giveLevel: "fatal", wantLevel: endure.FatalLevel},
+		{path: "test/endure_ok_debug.yaml", giveLevel: "debug", wantLevel: slog.LevelDebug},
+		{path: "test/endure_ok_info.yaml", giveLevel: "info", wantLevel: slog.LevelInfo},
+		{path: "test/endure_ok_warn.yaml", giveLevel: "warn", wantLevel: slog.LevelWarn},
+		{path: "test/endure_ok_error.yaml", giveLevel: "error", wantLevel: slog.LevelError},
 
 		{path: "test/endure_ok_foobar.yaml", giveLevel: "foobar", wantError: true},
 	} {

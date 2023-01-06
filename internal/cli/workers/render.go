@@ -2,13 +2,14 @@ package workers
 
 import (
 	"io"
+	"sort"
 	"strconv"
 	"time"
 
 	"github.com/dustin/go-humanize"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
-	"github.com/roadrunner-server/sdk/v3/plugins/jobs"
+	"github.com/roadrunner-server/api/v3/plugins/v1/jobs"
 	"github.com/roadrunner-server/sdk/v3/state/process"
 )
 
@@ -19,6 +20,10 @@ const (
 
 // WorkerTable renders table with information about rr server workers.
 func WorkerTable(writer io.Writer, workers []*process.State) *tablewriter.Table {
+	sort.Slice(workers, func(i, j int) bool {
+		return workers[i].Pid < workers[j].Pid
+	})
+
 	tw := tablewriter.NewWriter(writer)
 	tw.SetHeader([]string{"PID", "Status", "Execs", "Memory", "CPU%", "Created"})
 	tw.SetColMinWidth(0, 7)
