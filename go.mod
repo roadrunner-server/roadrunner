@@ -20,7 +20,7 @@ require (
 	github.com/roadrunner-server/fileserver/v3 v3.0.5
 	github.com/roadrunner-server/goridge/v3 v3.6.2
 	github.com/roadrunner-server/grpc/v3 v3.1.1
-	github.com/roadrunner-server/gzip/v3 v3.0.5
+	github.com/roadrunner-server/gzip/v3 v3.2.0
 	github.com/roadrunner-server/headers/v3 v3.0.5
 	github.com/roadrunner-server/http/v3 v3.0.6
 	github.com/roadrunner-server/informer/v3 v3.0.5
@@ -39,7 +39,7 @@ require (
 	github.com/roadrunner-server/reload/v3 v3.0.3
 	github.com/roadrunner-server/resetter/v3 v3.0.3
 	github.com/roadrunner-server/rpc/v3 v3.0.5
-	github.com/roadrunner-server/sdk/v3 v3.0.1
+	github.com/roadrunner-server/sdk/v3 v3.2.0
 	github.com/roadrunner-server/send/v3 v3.1.2
 	github.com/roadrunner-server/server/v3 v3.0.5
 	github.com/roadrunner-server/service/v3 v3.0.5
@@ -145,7 +145,7 @@ require (
 	github.com/jcmturner/gofork v1.7.6 // indirect
 	github.com/jcmturner/gokrb5/v8 v8.4.3 // indirect
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
-	github.com/klauspost/compress v1.15.13 // indirect
+	github.com/klauspost/compress v1.15.14 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.3 // indirect
 	github.com/libdns/libdns v0.2.1 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect

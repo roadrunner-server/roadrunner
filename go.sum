@@ -754,8 +754,8 @@ github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/klauspost/compress v1.12.3/go.mod h1:8dP1Hq4DHOhN9w426knH3Rhby4rFm6D8eO+e+Dq5Gzg=
 github.com/klauspost/compress v1.15.9/go.mod h1:PhcZ0MbTNciWF3rruxRgKxI5NkcHHrHUDtV4Yw2GlzU=
-github.com/klauspost/compress v1.15.13 h1:NFn1Wr8cfnenSJSA46lLq4wHCcBzKTSjnBIexDMMOV0=
-github.com/klauspost/compress v1.15.13/go.mod h1:QPwzmACJjUTFsnSHH934V6woptycfrDDJnH7hvFVbGM=
+github.com/klauspost/compress v1.15.14 h1:i7WCKDToww0wA+9qrUZ1xOjp218vfFo3nTU6UHp+gOc=
+github.com/klauspost/compress v1.15.14/go.mod h1:QPwzmACJjUTFsnSHH934V6woptycfrDDJnH7hvFVbGM=
 github.com/klauspost/cpuid/v2 v2.2.3 h1:sxCkb+qR91z4vsqw4vGGZlDgPz3G7gjaLyK3V8y70BU=
 github.com/klauspost/cpuid/v2 v2.2.3/go.mod h1:RVVoqg1df56z8g3pUjL/3lE5UfnlrJX8tyFgg4nqhuY=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
@@ -937,8 +937,8 @@ github.com/roadrunner-server/goridge/v3 v3.6.2 h1:LH5HXfCygDp05KnOaXpa4fqVPWTsH7
 github.com/roadrunner-server/goridge/v3 v3.6.2/go.mod h1:3B95k/wM5GGAD0h2hZlJagS9PlTDGs5jh8MpZYC12vA=
 github.com/roadrunner-server/grpc/v3 v3.1.1 h1:dS4KfuIhuAb7zIx9x1oaMIOtmibanQN+jMCFOPlPHwc=
 github.com/roadrunner-server/grpc/v3 v3.1.1/go.mod h1:oLLrJFIsBgZPBplvwgDB+FuuXaThcc+o7hWy5+bMtEU=
-github.com/roadrunner-server/gzip/v3 v3.0.5 h1:AjONWe7fcj2Wx7yA/WTsasOqYbpHGvgFDail8ksxjKA=
-github.com/roadrunner-server/gzip/v3 v3.0.5/go.mod h1:VFZaeTVnyZqqKF+PzaY6/clno4LDzzFJBZUNRU9HHGQ=
+github.com/roadrunner-server/gzip/v3 v3.2.0 h1:RtpIQ6jcyPrnp6SbrSKrdKgObEduBEZVIDtX10afRos=
+github.com/roadrunner-server/gzip/v3 v3.2.0/go.mod h1:s0b7re9npjEAkG9Gm2sAzMrXVO/grR6TwwI20UpglD8=
 github.com/roadrunner-server/headers/v3 v3.0.5 h1:lLjmLIdx5GlVk9zuUQ77D6PVG7q4GBI0GBBsOTN0/rw=
 github.com/roadrunner-server/headers/v3 v3.0.5/go.mod h1:eZIt0expup4U1sYeu0tt+Jt6cOKv7hxWgh4Bgo5exDw=
 github.com/roadrunner-server/http/v3 v3.0.6 h1:65j2KncBp4LEv21tiWvzOHSOTpDpMfimZHoOwbjZO5E=
@@ -975,8 +975,8 @@ github.com/roadrunner-server/resetter/v3 v3.0.3 h1:cfLfc3FTzoj8rbMDWBWDRCXEknxsI
 github.com/roadrunner-server/resetter/v3 v3.0.3/go.mod h1:7jfwvQf2sUzLtagFoj2+2fNQs4r9oqY7TQJ3fET0LEQ=
 github.com/roadrunner-server/rpc/v3 v3.0.5 h1:MsjKci19fL6EPPAIJL7v2JtSuqLBTllbV3MJszRO7uw=
 github.com/roadrunner-server/rpc/v3 v3.0.5/go.mod h1:G7dXyB0gBENtKLkDEpUreTh49wogxT3TObkoKDL7xLU=
-github.com/roadrunner-server/sdk/v3 v3.0.1 h1:yF+j9sVaQN0pvrt1U8MByeD2qBNbnQngIT08lpV7TwI=
-github.com/roadrunner-server/sdk/v3 v3.0.1/go.mod h1:eisnv7rDW5DFLAFes+XXgWCFYE+7Xn40jv+H0ZOJ2tA=
+github.com/roadrunner-server/sdk/v3 v3.2.0 h1:HOZyBSknhzXY4AAmSsLciYGhPBVBT1QuBhbKAtd8sI8=
+github.com/roadrunner-server/sdk/v3 v3.2.0/go.mod h1:eisnv7rDW5DFLAFes+XXgWCFYE+7Xn40jv+H0ZOJ2tA=
 github.com/roadrunner-server/send/v3 v3.1.2 h1:CAfLRzrrWZnYlX/eyOlSXUki7dDw144oSf4hxrcgr8k=
 github.com/roadrunner-server/send/v3 v3.1.2/go.mod h1:4+gy5n3q8vPzZnAp299oIKm4Se54wiW/p/OmTavgK+E=
 github.com/roadrunner-server/server/v3 v3.0.5 h1:5h9PDeaQOosggajqCpBGG/NuT4aSjEU9td56W5JR6Yo=
