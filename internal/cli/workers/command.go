@@ -14,7 +14,7 @@ import (
 	tm "github.com/buger/goterm"
 	"github.com/fatih/color"
 	"github.com/roadrunner-server/errors"
-	"github.com/roadrunner-server/informer/v3"
+	"github.com/roadrunner-server/informer/v4"
 	"github.com/spf13/cobra"
 )
 

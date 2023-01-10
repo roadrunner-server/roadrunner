@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/roadrunner-server/config/v3"
+	"github.com/roadrunner-server/config/v4"
 	"github.com/roadrunner-server/roadrunner/v2/container"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/slog"
