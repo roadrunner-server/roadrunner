@@ -1,7 +1,6 @@
 package container
 
 import (
-	cache "github.com/darkweak/souin/plugins/roadrunner"
 	"github.com/roadrunner-server/amqp/v3"
 	appLogger "github.com/roadrunner-server/app-logger/v3"
 	"github.com/roadrunner-server/beanstalk/v3"
@@ -35,7 +34,7 @@ import (
 	"github.com/roadrunner-server/static/v3"
 	"github.com/roadrunner-server/status/v3"
 	"github.com/roadrunner-server/tcp/v3"
-	rrt "github.com/temporalio/roadrunner-temporal/v2"
+	rrt "github.com/temporalio/roadrunner-temporal/v3"
 )
 
 // Plugins returns active plugins for the endure container. Feel free to add or remove any plugins.
@@ -102,7 +101,5 @@ func Plugins() []any { //nolint:funlen
 		&tcp.Plugin{},
 		// temporal plugin
 		&rrt.Plugin{},
-		// third-party--
-		&cache.Plugin{},
 	}
 }
