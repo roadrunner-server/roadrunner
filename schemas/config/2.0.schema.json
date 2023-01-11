@@ -1476,7 +1476,7 @@
                                                     "type": "boolean",
                                                     "default": false
                                                 },
-                                                "queue_headers" : {
+                                                "queue_headers": {
                                                     "description": "Queue declare args, associated array (hashmap, key:val)",
                                                     "$ref": "#/definitions/Hashmap",
                                                     "default": null
@@ -2040,11 +2040,11 @@
                     "default": 1
                 },
                 "min_retry_backoff": {
-                    "type": "integer",
+                    "$ref": "#/definitions/Duration",
                     "default": 0
                 },
                 "max_retry_backoff": {
-                    "type": "integer",
+                    "$ref": "#/definitions/Duration",
                     "default": 0
                 },
                 "pool_size": {
@@ -2110,7 +2110,7 @@
                 },
                 "exec_timeout": {
                     "description": "Allowed time before stop",
-                    "type": "integer",
+                    "type": "string",
                     "$ref": "#/definitions/Duration"
                 },
                 "remain_after_exit": {
@@ -2231,26 +2231,14 @@
         },
         "Duration": {
             "description": "Time duration",
-            "anyOf": [
-                {
-                    "description": "Duration as a string. Valid time units are 'ns', 'us' (or 'µs'), 'ms', 's', 'm', 'h'",
-                    "type": "string",
-                    "examples": [
-                        "10h",
-                        "1m",
-                        "1h10m10s",
-                        "30s",
-                        "300ms",
-                        "1µs",
-                        "1us"
-                    ],
-                    "minLength": 2
-                },
-                {
-                    "description": "Duration in nanoseconds",
-                    "type": "integer",
-                    "minimum": 0
-                }
+            "type": "string",
+            "pattern": "^[0-9]+[ms]|[s,h]",
+            "examples": [
+                "10h",
+                "1m",
+                "1h",
+                "30s",
+                "300ms"
             ]
         },
         "HostAndPortWithTCP": {
