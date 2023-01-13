@@ -92,11 +92,9 @@ get_archi() {
   'arm64')
     # macOS M1/M2
 
-    if [ $os = 'macos' ]; then
+    if [ $os = 'darwin' ]; then
       archi='arm64'
     fi
-
-    archi='arm64'
     ;;
   *)
     return 1
