@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/buger/goterm v1.0.4
-	github.com/dustin/go-humanize v1.0.0
+	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.13.0
 	github.com/joho/godotenv v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
