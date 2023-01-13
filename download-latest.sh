@@ -12,7 +12,6 @@ DEFAULT='\033[0m'
 
 # Project name
 PNAME='roadrunner'
-v='v'
 
 # GitHub API address
 GITHUB_API='https://api.github.com/repos/roadrunner-server/roadrunner/releases'
@@ -40,8 +39,8 @@ get_latest() {
     curl -H "Authorization: token $GITHUB_PAT" -s "$latest_release" >"$temp_file" || return 1
   fi
 
-  latest="$(cat "$temp_file" | grep '"tag_name":' | cut -d ':' -f2 | tr -d '"' | tr -d ',' | tr -d ' ')"
-  latest="${latest:1}"
+  latest="$(cat "$temp_file" | grep '"tag_name":' | cut -d ':' -f2 | tr -d '"' | tr -d ',' | tr -d ' ' | tr -d 'v')"
+  latestV="$(cat "$temp_file" | grep '"tag_name":' | cut -d ':' -f2 | tr -d '"' | tr -d ',' | tr -d ' ')"
 
   rm -f "$temp_file"
   return 0
@@ -176,7 +175,7 @@ download_binary() {
   echo "Downloading RoadRunner binary $latest for $os, architecture $archi..."
   release_file="$PNAME-$latest-$os-$archi.$compress"
 
-  curl --fail -OL "$GITHUB_REL/${v}$latest/$release_file"
+  curl --fail -OL "$GITHUB_REL/$latestV/$release_file"
   if [ $? -ne 0 ]; then
     fetch_release_failure_usage
     exit 1
