@@ -62,7 +62,7 @@ get_os() {
   os_name=$(uname -s)
   case "$os_name" in
   'Darwin')
-    os='macos'
+    os='darwin'
     ;;
   'Linux')
     os='linux'
