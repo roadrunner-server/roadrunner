@@ -47,18 +47,19 @@ get_latest() {
   return 0
 }
 
+# 0 -> not alpine
+# >0 -> alpine
 isAlpine() {
-   return "$(cat "/etc/os-release" | grep "NAME=" | grep -ic "Alpine")"
+  if [ "$(cat "/etc/os-release" | grep "NAME=" | grep -ic "Alpine")" ]; then
+    return 1
+  fi
+
+  return 0
 }
 
 # Gets the OS by setting the $os variable.
 # Returns 0 in case of success, 1 otherwise.
 get_os() {
-  if isAlpine; then
-    os="unknown-musl"
-    return 0
-  fi
-
   os_name=$(uname -s)
   case "$os_name" in
   'Darwin')
@@ -66,6 +67,10 @@ get_os() {
     ;;
   'Linux')
     os='linux'
+    if isAlpine; then
+      os="unknown-musl"
+    fi
+
     ;;
   'MINGW'*)
     os='windows'
@@ -77,14 +82,15 @@ get_os() {
   return 0
 }
 
-
 # Gets the architecture by setting the $archi variable.
 # Returns 0 in case of success, 1 otherwise.
 get_archi() {
   architecture=$(uname -m)
 
-  case "$architecture" in ('x86_64' | 'amd64')
-    archi='amd64';;'arm64')
+  case "$architecture" in 'x86_64' | 'amd64')
+    archi='amd64'
+    ;;
+  'arm64')
     # macOS M1/M2
 
     if [ $os = 'macos' ]; then
@@ -101,11 +107,6 @@ get_archi() {
 }
 
 get_compress() {
-  if isAlpine; then
-    compress="zip"
-    return 0
-  fi
-
   os_name=$(uname -s)
   case "$os_name" in
   'Darwin')
@@ -113,6 +114,9 @@ get_compress() {
     ;;
   'Linux')
     compress='tar.gz'
+    if isAlpine; then
+      compress="zip"
+    fi
     ;;
   'MINGW'*)
     compress='zip'
