@@ -56,7 +56,7 @@ isAlpine() {
 get_os() {
   if isAlpine; then
     os="unknown-musl"
-    return 1
+    return 0
   fi
 
   os_name=$(uname -s)
@@ -103,7 +103,7 @@ get_archi() {
 get_compress() {
   if isAlpine; then
     compress="zip"
-    return 1
+    return 0
   fi
 
   os_name=$(uname -s)
@@ -181,9 +181,4 @@ download_binary() {
   printf "$GREEN%s\n$DEFAULT" "RoadRunner $latest archive successfully downloaded as $release_file"
 }
 
-# MAIN
-
-main() {
-  download_binary
-}
-main
+download_binary
