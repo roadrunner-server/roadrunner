@@ -27,7 +27,7 @@ get_latest() {
   temp_file=$(mktemp -q /tmp/$PNAME.XXXXXXXXX)
   latest_release="$GITHUB_API/latest"
 
-  if [ $? -ne 0 ]; then
+  if ! temp_file=$(mktemp -q /tmp/$PNAME.XXXXXXXXX); then
     echo "$0: Can't create temp file."
     fetch_release_failure_usage
     exit 1
@@ -39,17 +39,18 @@ get_latest() {
     curl -H "Authorization: token $GITHUB_PAT" -s "$latest_release" >"$temp_file" || return 1
   fi
 
-  latest="$(cat "$temp_file" | grep '"tag_name":' | cut -d ':' -f2 | tr -d '"' | tr -d ',' | tr -d ' ' | tr -d 'v')"
-  latestV="$(cat "$temp_file" | grep '"tag_name":' | cut -d ':' -f2 | tr -d '"' | tr -d ',' | tr -d ' ')"
+  latest="$(grep <"$temp_file" '"tag_name":' | cut -d ':' -f2 | tr -d '"' | tr -d ',' | tr -d ' ' | tr -d 'v')"
+  latestV="$(grep <"$temp_file" '"tag_name":' | cut -d ':' -f2 | tr -d '"' | tr -d ',' | tr -d ' ')"
 
   rm -f "$temp_file"
   return 0
 }
 
 # 0 -> not alpine
-# >0 -> alpine
+# 1 -> alpine
 isAlpine() {
-  if [ "$(cat "/etc/os-release" | grep "NAME=" | grep -ic "Alpine")" ]; then
+  # shellcheck disable=SC2143
+  if [ "$(grep <"/etc/os-release" "NAME=" | grep -ic "Alpine")" ]; then
     return 1
   fi
 
@@ -61,19 +62,25 @@ isAlpine() {
 get_os() {
   os_name=$(uname -s)
   case "$os_name" in
+  # ---
   'Darwin')
     os='darwin'
     ;;
+
+    # ---
   'Linux')
     os='linux'
     if isAlpine; then
       os="unknown-musl"
     fi
-
     ;;
+
+    # ---
   'MINGW'*)
     os='windows'
     ;;
+
+    # ---
   *)
     return 1
     ;;
@@ -92,7 +99,7 @@ get_arch() {
     arch='amd64'
     ;;
 
-  # case 2
+    # case 2
   'arm64')
     arch='arm64'
     ;;
@@ -176,8 +183,7 @@ download_binary() {
   echo "Downloading RoadRunner binary $latest for $os, architecture $arch..."
   release_file="$PNAME-$latest-$os-$arch.$compress"
 
-  curl --fail -OL "$GITHUB_REL/$latestV/$release_file"
-  if [ $? -ne 0 ]; then
+  if ! curl --fail -OL "$GITHUB_REL/$latestV/$release_file"; then
     fetch_release_failure_usage
     exit 1
   fi
