@@ -81,25 +81,28 @@ get_os() {
   return 0
 }
 
-# Gets the architecture by setting the $archi variable.
+# Gets the architecture by setting the $arch variable.
 # Returns 0 in case of success, 1 otherwise.
-get_archi() {
+get_arch() {
   architecture=$(uname -m)
 
-  case "$architecture" in 'x86_64' | 'amd64')
-    archi='amd64'
+  # case 1
+  case "$architecture" in
+  'x86_64' | 'amd64')
+    arch='amd64'
     ;;
-  'arm64')
-    # macOS M1/M2
 
-    if [ $os = 'darwin' ]; then
-      archi='arm64'
-    fi
+  # case 2
+  'arm64')
+    arch='arm64'
     ;;
+
+  # all other
   *)
     return 1
     ;;
   esac
+
   return 0
 }
 
@@ -155,8 +158,8 @@ fill_release_variables() {
     not_available_failure_usage
     exit 1
   fi
-  # Fill $archi variable.
-  if ! get_archi; then
+  # Fill $arch variable.
+  if ! get_arch; then
     not_available_failure_usage
     exit 1
   fi
@@ -170,8 +173,8 @@ fill_release_variables() {
 
 download_binary() {
   fill_release_variables
-  echo "Downloading RoadRunner binary $latest for $os, architecture $archi..."
-  release_file="$PNAME-$latest-$os-$archi.$compress"
+  echo "Downloading RoadRunner binary $latest for $os, architecture $arch..."
+  release_file="$PNAME-$latest-$os-$arch.$compress"
 
   curl --fail -OL "$GITHUB_REL/$latestV/$release_file"
   if [ $? -ne 0 ]; then
