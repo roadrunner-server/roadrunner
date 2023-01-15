@@ -99,7 +99,7 @@ $ sudo dpkg -i roadrunner-2.X.X-linux-amd64.deb
 - Download the latest release for your arch:
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf  https://raw.githubusercontent.com/roadrunner-server/roadrunner/master/download-latest.sh | sh
-- ```
+```
 
 
 Configuration can be located in `.rr.yaml`
