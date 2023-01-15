@@ -83,7 +83,7 @@ COPY --from=roadrunner /usr/bin/rr /usr/local/bin/rr
 # USE THE RR
 ```
 
-- CLI
+- Composer
 
 ```bash
 $ composer require spiral/roadrunner:v2.0 nyholm/psr7
@@ -95,6 +95,11 @@ $ ./vendor/bin/rr get-binary
 $ wget https://github.com/roadrunner-server/roadrunner/releases/download/v2.X.X/roadrunner-2.X.X-linux-amd64.deb
 $ sudo dpkg -i roadrunner-2.X.X-linux-amd64.deb
 ```
+
+- Download the latest release for your arch:
+```bash
+curl --proto '=https' --tlsv1.2 -sSf  https://raw.githubusercontent.com/roadrunner-server/roadrunner/master/download-latest.sh | sh
+- ```
 
 
 Configuration can be located in `.rr.yaml`
