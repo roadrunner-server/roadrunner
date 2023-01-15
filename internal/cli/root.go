@@ -122,7 +122,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 	f.StringVarP(&workDir, "WorkDir", "w", "", "working directory")
 	f.StringVarP(&dotenv, "dotenv", "", "", fmt.Sprintf("dotenv file [$%s]", envDotenv))
 	f.BoolVarP(&debug, "debug", "d", false, "debug mode")
-	f.BoolVarP(silent, "silent", "s", false, "print startup message")
+	f.BoolVarP(silent, "silent", "s", false, "do not print startup message")
 	f.StringArrayVarP(override, "override", "o", nil, "override config value (dot.notation=value)")
 
 	cmd.AddCommand(

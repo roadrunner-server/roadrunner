@@ -2,6 +2,26 @@
 
 ###### tags: `roadrunner` `v2.12.2`
 
+## v2.12.2 (12.01.2023)
+
+## <center> 🚀 v2.12.2 🚀 </center>
+
+## <center>👀 New: <center>
+
+- ✒️ **AMQP plugin:** Custom headers in AMQP driver, [FR](https://github.com/roadrunner-server/roadrunner/issues/1388), (thanks @ykweb)
+
+
+ ### <center>🩹 Fixes:</center> 
+
+- 🐛 **Velox**: Unable to build RoadRunner with custom velox configuration, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1400), (thanks @mprokocki)
+- 🐛 **RR**: JSON Schema - wrong type for service `exec_timeout` option, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1410), (thanks @Chi-teck)
+- 🐛 **RR**: Fix the description of the `--silent` flag, [PR](https://github.com/roadrunner-server/roadrunner/pull/1401), (thanks @maximal)
+
+
+---
+
+###### tags: `roadrunner` `v2.12.2`
+
 ## <center>🚀 v2.12.2-alpha.1 🚀<center>
 
 ## <center>👀 New: <center>
