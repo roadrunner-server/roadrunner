@@ -13,7 +13,6 @@ import (
 	httpPlugin "github.com/roadrunner-server/http/v4"
 	"github.com/roadrunner-server/informer/v4"
 	"github.com/roadrunner-server/jobs/v4"
-	//"github.com/roadrunner-server/kafka/v4"
 	"github.com/roadrunner-server/kv/v4"
 	"github.com/roadrunner-server/logger/v4"
 	"github.com/roadrunner-server/memcached/v4"
@@ -69,8 +68,6 @@ func Plugins() []any { //nolint:funlen
 		&sqs.Plugin{},
 		&nats.Plugin{},
 		&beanstalk.Plugin{},
-		// new in 2.11
-		//&kafka.Plugin{},
 		// =========
 		//
 		// http server plugin with middleware

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/roadrunner-server/api/v3/plugins/v1/jobs"
-	internalRpc "github.com/roadrunner-server/roadrunner/v2/internal/rpc"
+	internalRpc "github.com/roadrunner-server/roadrunner/v2023/internal/rpc"
 
 	tm "github.com/buger/goterm"
 	"github.com/fatih/color"

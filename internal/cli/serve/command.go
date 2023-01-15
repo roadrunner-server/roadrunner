@@ -7,8 +7,8 @@ import (
 	"syscall"
 
 	"github.com/roadrunner-server/endure/v2"
-	"github.com/roadrunner-server/roadrunner/v2/container"
-	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
+	"github.com/roadrunner-server/roadrunner/v2023/container"
+	"github.com/roadrunner-server/roadrunner/v2023/internal/meta"
 
 	configImpl "github.com/roadrunner-server/config/v4"
 	"github.com/roadrunner-server/errors"

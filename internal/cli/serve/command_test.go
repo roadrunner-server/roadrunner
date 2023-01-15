@@ -3,7 +3,7 @@ package serve_test
 import (
 	"testing"
 
-	"github.com/roadrunner-server/roadrunner/v2/internal/cli/serve"
+	"github.com/roadrunner-server/roadrunner/v2023/internal/cli/serve"
 
 	"github.com/stretchr/testify/assert"
 )
