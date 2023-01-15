@@ -2,4 +2,4 @@ endure:
   grace_period: 10s
   print_graph: true
   retry_on_fail: true
-  log_level: panic
+  log_level: error

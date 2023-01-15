@@ -4,22 +4,16 @@ import (
 	"testing"
 	"time"
 
-	endure "github.com/roadrunner-server/endure/pkg/container"
-	"github.com/roadrunner-server/roadrunner/v2/container"
+	"github.com/roadrunner-server/endure/v2"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/exp/slog"
 )
 
 func TestNewContainer(t *testing.T) { // there is no legal way to test container options
-	c, err := container.NewContainer(container.Config{})
-	c2, err2 := container.NewContainer(container.Config{
-		GracePeriod: time.Second,
-		PrintGraph:  true,
-		LogLevel:    endure.WarnLevel,
-	})
+	c := endure.New(slog.LevelDebug, endure.Visualize(), endure.GracefulShutdownTimeout(time.Second))
+	c2 := endure.New(slog.LevelDebug, endure.Visualize(), endure.GracefulShutdownTimeout(time.Second))
 
-	assert.NoError(t, err)
 	assert.NotNil(t, c)
 
-	assert.NoError(t, err2)
 	assert.NotNil(t, c2)
 }

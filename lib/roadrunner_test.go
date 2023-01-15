@@ -5,10 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/roadrunner-server/endure/pkg/fsm"
-	"github.com/roadrunner-server/informer/v3"
-	"github.com/roadrunner-server/resetter/v3"
-	"github.com/roadrunner-server/roadrunner/v2/lib"
+	"github.com/roadrunner-server/informer/v4"
+	"github.com/roadrunner-server/resetter/v4"
+	"github.com/roadrunner-server/roadrunner/v2023/lib"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -40,7 +39,6 @@ func TestNewWithConfig(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, "2", string(rr.Version[0]))
-	assert.Equal(t, fsm.Initialized, rr.CurrentState())
 
 	t.Cleanup(func() {
 		_ = os.Remove(cfgFile)
@@ -64,16 +62,9 @@ func TestServeStop(t *testing.T) {
 		stopchan <- struct{}{}
 	}()
 
-	assert.Equal(t, rr.CurrentState(), fsm.Initialized)
-
-	for rr.CurrentState() != fsm.Started {
-		time.Sleep(20 * time.Millisecond)
-	}
-
 	rr.Stop()
 	time.Sleep(time.Second * 2)
 
-	assert.Equal(t, fsm.Stopped, rr.CurrentState())
 	assert.Equal(t, struct{}{}, <-stopchan)
 	assert.Nil(t, <-errchan)
 

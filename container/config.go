@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"time"
 
-	endure "github.com/roadrunner-server/endure/pkg/container"
 	"github.com/spf13/viper"
+	"golang.org/x/exp/slog"
 )
 
 type Config struct {
 	GracePeriod time.Duration
 	PrintGraph  bool
-	LogLevel    endure.Level
+	LogLevel    slog.Leveler
 }
 
 const (
@@ -33,7 +33,7 @@ func NewConfig(cfgFile string) (*Config, error) {
 		return &Config{ // return config with defaults
 			GracePeriod: defaultGracePeriod,
 			PrintGraph:  false,
-			LogLevel:    endure.ErrorLevel,
+			LogLevel:    slog.LevelError,
 		}, nil
 	}
 
@@ -68,21 +68,17 @@ func NewConfig(cfgFile string) (*Config, error) {
 	}, nil
 }
 
-func parseLogLevel(s string) (endure.Level, error) {
+func parseLogLevel(s string) (slog.Leveler, error) {
 	switch s {
 	case "debug":
-		return endure.DebugLevel, nil
+		return slog.LevelDebug, nil
 	case "info":
-		return endure.InfoLevel, nil
+		return slog.LevelInfo, nil
 	case "warn", "warning":
-		return endure.WarnLevel, nil
+		return slog.LevelWarn, nil
 	case "error":
-		return endure.ErrorLevel, nil
-	case "panic":
-		return endure.PanicLevel, nil
-	case "fatal":
-		return endure.FatalLevel, nil
+		return slog.LevelError, nil
 	}
 
-	return endure.DebugLevel, fmt.Errorf(`unknown log level "%s" (allowed: debug, info, warn, error, panic, fatal)`, s)
+	return slog.LevelInfo, fmt.Errorf(`unknown log level "%s" (allowed: debug, info, warn, error, panic, fatal)`, s)
 }

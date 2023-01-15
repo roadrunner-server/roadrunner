@@ -1,40 +1,39 @@
 package container
 
 import (
-	"github.com/roadrunner-server/amqp/v3"
-	appLogger "github.com/roadrunner-server/app-logger/v3"
-	"github.com/roadrunner-server/beanstalk/v3"
-	"github.com/roadrunner-server/boltdb/v3"
-	"github.com/roadrunner-server/centrifuge/v3"
-	"github.com/roadrunner-server/fileserver/v3"
-	grpcPlugin "github.com/roadrunner-server/grpc/v3"
-	"github.com/roadrunner-server/gzip/v3"
-	"github.com/roadrunner-server/headers/v3"
-	httpPlugin "github.com/roadrunner-server/http/v3"
-	"github.com/roadrunner-server/informer/v3"
-	"github.com/roadrunner-server/jobs/v3"
-	"github.com/roadrunner-server/kafka/v3"
-	"github.com/roadrunner-server/kv/v3"
-	"github.com/roadrunner-server/logger/v3"
-	"github.com/roadrunner-server/memcached/v3"
-	"github.com/roadrunner-server/memory/v3"
-	"github.com/roadrunner-server/metrics/v3"
-	"github.com/roadrunner-server/nats/v3"
-	rrOtel "github.com/roadrunner-server/otel/v3"
-	"github.com/roadrunner-server/prometheus/v3"
-	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v3"
-	"github.com/roadrunner-server/redis/v3"
-	"github.com/roadrunner-server/reload/v3"
-	"github.com/roadrunner-server/resetter/v3"
-	rpcPlugin "github.com/roadrunner-server/rpc/v3"
-	"github.com/roadrunner-server/send/v3"
-	"github.com/roadrunner-server/server/v3"
-	"github.com/roadrunner-server/service/v3"
-	"github.com/roadrunner-server/sqs/v3"
-	"github.com/roadrunner-server/static/v3"
-	"github.com/roadrunner-server/status/v3"
-	"github.com/roadrunner-server/tcp/v3"
-	rrt "github.com/temporalio/roadrunner-temporal/v3"
+	"github.com/roadrunner-server/amqp/v4"
+	appLogger "github.com/roadrunner-server/app-logger/v4"
+	"github.com/roadrunner-server/beanstalk/v4"
+	"github.com/roadrunner-server/boltdb/v4"
+	"github.com/roadrunner-server/centrifuge/v4"
+	"github.com/roadrunner-server/fileserver/v4"
+	grpcPlugin "github.com/roadrunner-server/grpc/v4"
+	"github.com/roadrunner-server/gzip/v4"
+	"github.com/roadrunner-server/headers/v4"
+	httpPlugin "github.com/roadrunner-server/http/v4"
+	"github.com/roadrunner-server/informer/v4"
+	"github.com/roadrunner-server/jobs/v4"
+	"github.com/roadrunner-server/kv/v4"
+	"github.com/roadrunner-server/logger/v4"
+	"github.com/roadrunner-server/memcached/v4"
+	"github.com/roadrunner-server/memory/v4"
+	"github.com/roadrunner-server/metrics/v4"
+	"github.com/roadrunner-server/nats/v4"
+	rrOtel "github.com/roadrunner-server/otel/v4"
+	"github.com/roadrunner-server/prometheus/v4"
+	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v4"
+	"github.com/roadrunner-server/redis/v4"
+	"github.com/roadrunner-server/reload/v4"
+	"github.com/roadrunner-server/resetter/v4"
+	rpcPlugin "github.com/roadrunner-server/rpc/v4"
+	"github.com/roadrunner-server/send/v4"
+	"github.com/roadrunner-server/server/v4"
+	"github.com/roadrunner-server/service/v4"
+	"github.com/roadrunner-server/sqs/v4"
+	"github.com/roadrunner-server/static/v4"
+	"github.com/roadrunner-server/status/v4"
+	"github.com/roadrunner-server/tcp/v4"
+	rrt "github.com/temporalio/roadrunner-temporal/v4"
 )
 
 // Plugins returns active plugins for the endure container. Feel free to add or remove any plugins.
@@ -45,7 +44,7 @@ func Plugins() []any { //nolint:funlen
 		&informer.Plugin{},
 		// resetter plugin (./rr reset)
 		&resetter.Plugin{},
-		//
+
 		// logger plugin
 		&logger.Plugin{},
 		// psr-3 logger extension
@@ -69,8 +68,6 @@ func Plugins() []any { //nolint:funlen
 		&sqs.Plugin{},
 		&nats.Plugin{},
 		&beanstalk.Plugin{},
-		// new in 2.11
-		&kafka.Plugin{},
 		// =========
 		//
 		// http server plugin with middleware

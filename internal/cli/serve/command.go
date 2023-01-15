@@ -6,10 +6,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/roadrunner-server/roadrunner/v2/container"
-	"github.com/roadrunner-server/roadrunner/v2/internal/meta"
+	"github.com/roadrunner-server/endure/v2"
+	"github.com/roadrunner-server/roadrunner/v2023/container"
+	"github.com/roadrunner-server/roadrunner/v2023/internal/meta"
 
-	configImpl "github.com/roadrunner-server/config/v3"
+	configImpl "github.com/roadrunner-server/config/v4"
 	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
 )
@@ -44,26 +45,31 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 				Version: meta.Version(),
 			}
 
-			// create endure container
-			endureContainer, err := container.NewContainer(*containerCfg)
-			if err != nil {
-				return errors.E(op, err)
+			endureOptions := []endure.Options{
+				endure.GracefulShutdownTimeout(containerCfg.GracePeriod),
 			}
 
+			if containerCfg.PrintGraph {
+				endureOptions = append(endureOptions, endure.Visualize())
+			}
+
+			// create endure container
+			cont := endure.New(containerCfg.LogLevel, endureOptions...)
+
 			// register plugins
-			err = endureContainer.RegisterAll(append(container.Plugins(), cfg)...)
+			err = cont.RegisterAll(append(container.Plugins(), cfg)...)
 			if err != nil {
 				return errors.E(op, err)
 			}
 
 			// init container and all services
-			err = endureContainer.Init()
+			err = cont.Init()
 			if err != nil {
 				return errors.E(op, err)
 			}
 
 			// start serving the graph
-			errCh, err := endureContainer.Serve()
+			errCh, err := cont.Serve()
 			if err != nil {
 				return errors.E(op, err)
 			}
@@ -95,7 +101,7 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 				case <-stop: // stop the container after first signal
 					fmt.Printf("stop signal received, grace timeout is: %0.f seconds\n", containerCfg.GracePeriod.Seconds())
 
-					if err = endureContainer.Stop(); err != nil {
+					if err = cont.Stop(); err != nil {
 						return fmt.Errorf("error: %w", err)
 					}
 
