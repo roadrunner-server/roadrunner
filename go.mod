@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v4 v4.0.0
-	github.com/roadrunner-server/api/v3 v3.1.2
+	github.com/roadrunner-server/api/v3 v3.2.0
 	github.com/roadrunner-server/app-logger/v4 v4.0.0
 	github.com/roadrunner-server/beanstalk/v4 v4.0.0
 	github.com/roadrunner-server/boltdb/v4 v4.0.0
@@ -24,7 +24,7 @@ require (
 	github.com/roadrunner-server/headers/v4 v4.0.0
 	github.com/roadrunner-server/http/v4 v4.0.0
 	github.com/roadrunner-server/informer/v4 v4.0.0
-	github.com/roadrunner-server/jobs/v4 v4.0.0
+	github.com/roadrunner-server/jobs/v4 v4.1.0
 	github.com/roadrunner-server/kv/v4 v4.0.0
 	github.com/roadrunner-server/logger/v4 v4.0.0
 	github.com/roadrunner-server/memcached/v4 v4.0.0
@@ -52,7 +52,7 @@ require (
 	github.com/temporalio/roadrunner-temporal/v4 v4.0.0
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.27
 	go.uber.org/automaxprocs v1.5.1
-	golang.org/x/exp v0.0.0-20230113213754-f9f960f08ad4
+	golang.org/x/exp v0.0.0-20230116083435-1de6713980de
 )
 
 require (
@@ -167,7 +167,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.11.2 // indirect
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
 	go.temporal.io/api v1.14.0 // indirect
-	go.temporal.io/sdk v1.19.0 // indirect
+	go.temporal.io/sdk v1.20.0 // indirect
 	go.temporal.io/sdk/contrib/tally v0.2.0 // indirect
 	go.temporal.io/server v1.19.1 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
@@ -181,7 +181,7 @@ require (
 	golang.org/x/text v0.6.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.5.0 // indirect
-	google.golang.org/genproto v0.0.0-20230113154510-dbe35b8444a5 // indirect
+	google.golang.org/genproto v0.0.0-20230117162540-28d6b9783ac4 // indirect
 	google.golang.org/grpc v1.52.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
