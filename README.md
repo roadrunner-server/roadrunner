@@ -76,7 +76,7 @@ image and tags can be found [here](https://hub.docker.com/r/spiralscout/roadrunn
 
 ```dockerfile
 FROM ghcr.io/roadrunner-server/roadrunner:2.X.X AS roadrunner
-FROM php:8.1-cli
+FROM php:8.2-cli
 
 COPY --from=roadrunner /usr/bin/rr /usr/local/bin/rr
 
