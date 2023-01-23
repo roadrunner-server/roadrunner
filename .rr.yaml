@@ -1102,15 +1102,6 @@ reload:
 nats:
   addr: "demo.nats.io"
 
-# Boltdb jobs driver
-#
-# This option is required to use boltdb driver
-boltdb:
-  # Permissions for hte boltdb database file
-  #
-  # This option is optional. Default: 0777
-  permissions: 0777
-
 # AMQP jobs driver
 #
 # This option is required to use AMQP driver
@@ -1258,20 +1249,25 @@ jobs:
       #
       # Should not be empty
       config:
-        # BoldDB file to create or DB to use
+        # Number of job to prefetch from the driver.
         #
-        # Default: "rr.db"
-        file: "path/to/rr.db"
+        # Default: 100_000.
+        prefetch: 10000
 
         # Pipeline priority
         #
         # If the job has priority set to 0, it will inherit the pipeline's priority. Default: 10.
         priority: 10
 
-        # Number of job to prefetch from the driver.
+        # BoldDB file to create or DB to use
         #
-        # Default: 100_000.
-        prefetch: 10000
+        # Default: "rr.db"
+        file: "path/to/rr.db"
+
+        # Permissions for the boltdb database file
+        #
+        # This option is optional. Default: 0777
+        permissions: 0777
 
     test-local-2:
       # Driver name

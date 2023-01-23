@@ -1287,9 +1287,6 @@
         "nats": {
             "$ref": "#/definitions/NATS_J"
         },
-        "boltdb": {
-            "$ref": "#/definitions/BoltDB_J"
-        },
         "kafka": {
             "$ref": "#/definitions/KAFKA_J"
         },
@@ -1409,6 +1406,30 @@
                                     "type": "object",
                                     "maxProperties": 1,
                                     "oneOf": [
+                                        {
+                                            "properties": {
+                                                "priority": {
+                                                    "description": "Pipeline priority. If the job pushed to the pipeline has priority set to 0, it will inherit the pipeline's priority",
+                                                    "type": "integer",
+                                                    "default": 10
+                                                },
+                                                "prefetch": {
+                                                    "description": "Number of job to prefetch from the driver",
+                                                    "type": "integer",
+                                                    "default": 100000
+                                                },
+                                                "permissions": {
+                                                    "description": "Permissions for the boltdb database file",
+                                                    "type": "integer",
+                                                    "default": 777
+                                                },
+                                                "file": {
+                                                    "description": "BoldDB file to create or DB to use",
+                                                    "type": "string",
+                                                    "default": "rr.db"
+                                                }
+                                            }
+                                        },
                                         {
                                             "properties": {
                                                 "priority": {

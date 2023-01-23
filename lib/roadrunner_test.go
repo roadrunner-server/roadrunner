@@ -16,6 +16,16 @@ func TestNewFailsOnMissingConfig(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
+const testConfigWithVersion = `
+version: "2.7"
+server:
+  command: "php src/index.php"
+  relay:  "pipes"
+
+endure:
+  grace_period: 1s
+`
+
 const testConfig = `
 server:
   command: "php src/index.php"
@@ -33,12 +43,21 @@ func makeConfig(t *testing.T, configYaml string) string {
 	return cfgFile
 }
 
-func TestNewWithConfig(t *testing.T) {
+func TestNewWithOldConfig(t *testing.T) {
 	cfgFile := makeConfig(t, testConfig)
+	_, err := lib.NewRR(cfgFile, []string{}, lib.DefaultPluginsList())
+	assert.Error(t, err)
+
+	t.Cleanup(func() {
+		_ = os.Remove(cfgFile)
+	})
+}
+
+func TestNewWithConfig(t *testing.T) {
+	cfgFile := makeConfig(t, testConfigWithVersion)
 	rr, err := lib.NewRR(cfgFile, []string{}, lib.DefaultPluginsList())
 	assert.NoError(t, err)
-
-	assert.Equal(t, "2", string(rr.Version[0]))
+	assert.Equal(t, 0, len(rr.Version))
 
 	t.Cleanup(func() {
 		_ = os.Remove(cfgFile)
@@ -46,7 +65,7 @@ func TestNewWithConfig(t *testing.T) {
 }
 
 func TestServeStop(t *testing.T) {
-	cfgFile := makeConfig(t, testConfig)
+	cfgFile := makeConfig(t, testConfigWithVersion)
 	plugins := []any{
 		&informer.Plugin{},
 		&resetter.Plugin{},
