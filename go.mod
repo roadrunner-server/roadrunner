@@ -34,7 +34,7 @@ require (
 	github.com/roadrunner-server/otel/v4 v4.0.0
 	github.com/roadrunner-server/prometheus/v4 v4.0.0
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.0.0
-	github.com/roadrunner-server/redis/v4 v4.0.0
+	github.com/roadrunner-server/redis/v4 v4.1.1
 	github.com/roadrunner-server/reload/v4 v4.0.0
 	github.com/roadrunner-server/resetter/v4 v4.0.0
 	github.com/roadrunner-server/rpc/v4 v4.0.0
