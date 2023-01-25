@@ -754,8 +754,8 @@ github.com/roadrunner-server/app-logger/v4 v4.0.0 h1:/6tRPnUFGJ+6vm4iTF9zeU2hHl1
 github.com/roadrunner-server/app-logger/v4 v4.0.0/go.mod h1:cWV6nWhwQmkyGZtefeWrqs59v0XTrQdm5B7y8ukFpQU=
 github.com/roadrunner-server/beanstalk/v4 v4.1.0 h1:LJIFJiAGA4SBCTJ4LVIhPIhmCblyYIM1kbjYYNoTaUA=
 github.com/roadrunner-server/beanstalk/v4 v4.1.0/go.mod h1:Ekpce6ise0aet/WJDregbecSho502uIgu9sKfce5/T4=
-github.com/roadrunner-server/boltdb/v4 v4.1.0 h1:fj216Ow1CYLyn+wk1vfuw4FxTpF+j2KwmFXk/9UYAVk=
-github.com/roadrunner-server/boltdb/v4 v4.1.0/go.mod h1:dVgez5eFAVivFeCEcycVT2fbb33dKbgESjXrkqmck3o=
+github.com/roadrunner-server/boltdb/v4 v4.2.0 h1:K+Ijgpp8MgkNPypdolLUo0TiPjXqyBUgx1Huise01QM=
+github.com/roadrunner-server/boltdb/v4 v4.2.0/go.mod h1:dVgez5eFAVivFeCEcycVT2fbb33dKbgESjXrkqmck3o=
 github.com/roadrunner-server/centrifuge/v4 v4.0.0 h1:0Ac7nS2Hv/EJ0tKnAUqu9U9rq02GABRoERWlIigFgN4=
 github.com/roadrunner-server/centrifuge/v4 v4.0.0/go.mod h1:rTkGOF4XBJxSKP9KNVudbiMBSLms03m4tp9ZgLpUvF8=
 github.com/roadrunner-server/config/v4 v4.1.0 h1:EyM632R4qVeO9tvhNItffBZMIBtuw70D3oYpPyRWoAs=
