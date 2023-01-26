@@ -1532,165 +1532,211 @@ jobs:
         # If the job has priority set to 0, it will inherit the pipeline's priority. Default: 10.
         priority: 1
 
-        # Topic name: https://kafka.apache.org/intro#intro_concepts_and_terms
+        # Kafka brokers, array. If there is no port specified, 9092 will be used as default
         #
-        # This option is required and should not be empty.
-        topic: test-1
+        # Required, no default
+        brokers: [ 127.0.0.1:9092 ]
 
-        # Offsets for the partitions
+        # SASL authentication options to use for all connections. Depending on the auth type, plain or aws_msk_plain sections might be removed.
         #
-        # This option is optional. If empty, RR will read from the partition 0, OffsetNewest. Should be a positive number.
-        # We also have 2 special cases for the offsets (negative numbers):
-        # -1: OffsetNewest - stands for the log head offset, i.e. the offset that will be assigned to the next message
-        # that will be produced to the partition.
-        # -2: OffsetOldest - stands for the oldest offset available on the broker for a partition.
-        partitions_offsets:
-          - 0: 0
-          - 1: 0
-          - 2: 0
+        # Optional, default: empty
+        sasl:
 
-        # Kafka group id
-        #
-        # Optional, default - empty
-        group_id: "foo"
+          # PLAIN auth section -----
 
-        # Max number of outstanding requests a connection is allowed to have before sending on it blocks
-        #
-        # Optional, default: 5.
-        # Throughput can improve but message ordering is not guaranteed if producer_options.idempotent is disabled, see:
-        # https://kafka.apache.org/protocol#protocol_network
-        # https://kafka.apache.org/28/documentation.html#producerconfigs_max.in.flight.requests.per.connection
-        max_open_requests: 100
-
-        # A user provided string sent with every request to the brokers for logging, debugging, and auditing purposes.
-        #
-        # Optional, default: roadrunner
-        client_id: "roadrunner"
-
-        # Kafka version.
-        #
-        # Defaults to the oldest supported stable version (1.0.0.0). Since Kafka provides
-        # backwards-compatibility, setting it to a version older than you have
-        # will not break anything, although it may prevent you from using the
-        # latest features. Setting it to a version greater than you are actually
-        # running may lead to random breakage.
-        kafka_version: 3.2.0.0
-
-        # Create topics configuration. If topic doesn't exist, RR may create a topic with provided configuration
-        #
-        # Optional, default: null.
-        create_topics:
-
-          # Replication factor for the data stored across several Kafka brokers.
+          # Mechanism used for the authentication
           #
-          # Optional, default: 1. Docs: https://kafka.apache.org/documentation/#replication
-          replication_factor: 1
+          # Required for the section. Might be: 'aws_msk_iam' or 'plain'
+          mechanism: plain
 
-          # Partition replica assigment.
+          # Username to use for authentication.
           #
-          # Optional, default: null. Docs: https://kafka.apache.org/documentation/#basic_ops_cluster_expansion
-          replica_assignment:
-            1: [ 1,2,3 ]
-            2: [ 2,3 ]
+          # Required for the plain auth mechanism.
+          username: foo
 
-          # Topic creation options.
+          # Password to use for authentication.
           #
-          # Optional, default: null. Docs: https://kafka.apache.org/documentation/#configuration
-          # Note: 'compression:type' will be replaced with 'compression.type', so ':' -> '.'.
-          # All options should use ':' as the delimiter.
-          config_entries:
-            compression:type: snappy
+          # Required for the plain auth mechanism.
+          password: bar
+
+          # Zid is an optional authorization ID to use in authenticating.
+          #
+          # Optional, default: empty.
+          zid: "foo"
+
+          # AWS_MSK_IAM auth section -----
+
+          # AWS Access key ID.
+          #
+          # Required
+          access_key: foo
+
+          # AWS Secret Access Key.
+          #
+          #
+          secret_key: bar
+
+          # SessionToken, if non-empty, is a session / security token to use for authentication.
+          # See the following link for more details:
+          #
+          # https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html
+          session_token: bar
+
+
+          # UserAgent is the user agent to for the client to use when connecting
+          # to Kafka, overriding the default "franz-go/<runtime.Version()>/<hostname>".
+          # Setting a UserAgent allows authorizing based on the aws:UserAgent
+          # condition key; see the following link for more details:
+          #     https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-useragent
+          user_agent: baz
+
+        # Auto create topic for the consumer/producer
+        #
+        # Optional, default: false
+        auto_create_topics_enable: false
 
         # Kafka producer options
         #
-        # Optional, default: depends on Kafka version
+        # Optional, required only if Push/PushBatch is used.
         producer_options:
 
-          # Maximum permitted size of a message.
+          # disable_idempotent disables idempotent produce requests, opting out of
+          # Kafka server-side deduplication in the face of reissued requests due to
+          # transient network problems.
+          # Idempotent production is strictly a win, but does require the IDEMPOTENT_WRITE permission on CLUSTER
+          # (pre Kafka 3.0), and not all clients can have that permission.
           #
-          # Optional, default: 1000000. Should be set equal to or smaller than the broker's `message.max.bytes`.
-          max_message_bytes: 1000
+          # Optional, defaut: false
+          disable_idempotent: false
 
-          # The level of acknowledgement reliability needed from the broker. Equivalent to the `request.required.acks`
-          # RequiredAcks is used in Produce Requests to tell the broker how many replica acknowledgements
-          # it must see before responding. Any of the constants defined here are valid. On broker versions
-          # prior to 0.8.2.0 any other positive int16 is also valid (the broker will wait for that many
-          # acknowledgements) but in 0.8.2.0 and later this will raise an exception (it has been replaced
-          # by setting the `min.isr` value in the brokers configuration).
+          # required_acks sets the required acks for produced records.
           #
-          # Optional, default: -1
-          # Should be one of the following values:
-          # 0: NoResponse - doesn't send any response.
-          # 1: WaitForLocal - waits for only the local commit to succeed before responding.
-          # -1 WaitForAll, (default) - waits for all in-sync replicas to commit before responding.
-          #	The minimum number of in-sync replicas is configured on the broker via
-          #	the `min.insync.replicas` configuration key.
-          required_acks: -1
+          # Optional, default: AllISRAcks. Possible values: NoAck, LeaderAck, AllISRAck
+          required_acks: AllISRAck
 
-          # The maximum duration in seconds the broker will wait the receipt of the number of
-          # required_acks.
+          # max_message_bytes upper bounds the size of a record batch, overriding the default 1,000,012 bytes.
+          # This mirrors Kafka's max.message.bytes.
           #
-          # Optional, default: 10
-          timeout: 10
+          # Optional, default: 1000012
+          max_message_bytes: 1000012
 
-          # The type of compression to use on messages (defaults to no compression).
-          # Similar to `compression.codec` setting of the JVM producer.
+          # request_timeout sets how long Kafka broker's are allowed to respond produce requests, overriding the default 10s.
+          # If a broker exceeds this duration, it will reply with a request timeout error.
           #
-          # Optional, default: none. Possible values: none, gzip, snappy, lz4, zstd
-          compression_codec: snappy
+          # Optional, default: 10s. Possible values: 10s, 10m.
+          request_timeout: 10s
 
-          # The level of compression to use on messages. The meaning depends
-          #	on the actual compression type used and defaults to default compression
-          # level for the codec.
+          # delivery_timeout sets a rough time of how long a record can sit around in a batch before timing out,
+          # overriding the unlimited default. If idempotency is enabled (as it is by default), this option is only
+          # enforced if it is safe to do so without creating invalid sequence numbers.
           #
-          # Optional, default: depends on compression_codec option.
-          compression_level: 10
+          # Optional, default: delivery.timeout.ms Kafka option. Possible values: 10s, 10m.
+          delivery_timeout: 100s
 
-          # If enabled, the producer will ensure that exactly one copy of each message is
-          #	written.
+          # transaction_timeout sets the allowed for a transaction, overriding the default 40s. It is a good idea to
+          # keep this less than a group's session timeout.
           #
-          # Optional, default false
-          idempotent: false
+          # Optional, default 40s. Possible values: 10s, 10m.
+          transaction_timeout: 100
 
-        # Kafka consumer options
+          # compression_codec sets the compression codec to use for producing records.
+          #
+          # Optional, default is chosen in the order preferred based on broker support. Possible values: gzip, snappy, lz4, zstd.
+          compression_codec: gzip
+
+        # Kafka Consumer options. Needed to consume messages from the Kafka cluster.
+        #
+        # Optional, needed only if `consume` is used.
         consumer_options:
 
-          # The minimum number of message bytes to fetch in a request - the broker
-          # will wait until at least this many are available. The default is 1,
-          # as 0 causes the consumer to spin when no messages are available.
-          # Equivalent to the JVM's `fetch.min.bytes`.
+          # topics: adds topics to use for consuming
           #
-          # Optional, default - 1 byte
-          min_fetch_message_size: 100000
+          # Default: empty (will produce an error), possible to use regexp if `consume_regexp` is set to true.
+          topics: [ "foo", "bar", "^[a-zA-Z0-9._-]+$" ]
 
-          # The default number of message bytes to fetch from the broker in each
-          #	request (default 1MB). This should be larger than the majority of
-          #	your messages, or else the consumer will spend a lot of time
-          #	negotiating sizes and not actually consuming. Similar to the JVM's
-          #	`fetch.message.max.bytes`.
+          # consume_regexp sets the client to parse all topics passed to `topics` as regular expressions.
+          # When consuming via regex, every metadata request loads *all* topics, so that all topics can be passed to
+          # any regular expressions. Every topic is evaluated only once ever across all regular expressions; either it
+          # permanently is known to match, or is permanently known to not match.
           #
-          # Optional, default 1000000
-          max_fetch_message_size: 1000000
+          # Optional, default: false.
+          consume_regexp: true
 
-          # The timeout in seconds used to detect consumer failures when using Kafka's group management facility.
-          #	The consumer sends periodic heartbeats to indicate its liveness to the broker.
-          #	If no heartbeats are received by the broker before the expiration of this session timeout,
-          #	then the broker will remove this consumer from the group and initiate a rebalance.
-          #	Note that the value must be in the allowable range as configured in the broker configuration
-          #	by `group.min.session.timeout.ms` and `group.max.session.timeout.ms`
+          # max_fetch_message_size sets the maximum amount of bytes a broker will try to send during a fetch, overriding the default 50MiB.
+          # Note that brokers may not obey this limit if it has records larger than this limit.
+          # Also note that this client sends a fetch to each broker concurrently, meaning the client will
+          # buffer up to <brokers * max bytes> worth of memory. This corresponds to the Java fetch.max.bytes setting.
           #
-          # Optional, default: 10
-          session_timeout: 60
+          # Optional, default 50000
+          max_fetch_message_size: 50000
 
-          # The expected time in seconds between heartbeats to the consumer coordinator when using Kafka's group
-          #	management facilities. Heartbeats are used to ensure that the consumer's session stays active and
-          #	to facilitate rebalancing when new consumers join or leave the group.
-          #	The value must be set lower than 'session_timeout', but typically should be set no
-          #	higher than 1/3 of that value.
-          #	It can be adjusted even lower to control the expected time for normal rebalances.
+          # min_fetch_message_size sets the minimum amount of bytes a broker will try to send during a fetch,
+          # overriding the default 1 byte. With the default of 1, data is sent as soon as it is available.
+          # This corresponds to the Java fetch.min.bytes setting.
           #
-          # Optional, default: 3
-          heartbeat_interval: 10
+          # Optional, default: 1.
+          min_fetch_message_size: 1
+
+          # consume_partitions sets partitions to consume from directly and the offsets to start consuming those partitions from.
+          # This option is basically a way to explicitly consume from subsets of partitions in topics, or to consume at exact offsets.
+          #
+          # NOTE: This option is not compatible with group consuming and regex consuming.
+          #
+          # Optional, default: empty
+          consume_partitions:
+
+            # Topic for the consume_partitions
+            #
+            # Optional, default: empty.
+            foo:
+
+              # Partition for the topic.
+              #
+              # Optional, default: empty.
+              0:
+
+                # Partition offset.
+                #
+                # Required if all options is used. No default, error on empty.
+                # Possible values: AtEnd, At, AfterMilli, AtStart, Relative, WithEpoch
+                type: AtStart
+
+                # Value for the: At, AfterMilli, Relative and WithEpoch offsets.
+                #
+                # Optional, default: 0.
+                value: 1
+
+          # consumer_offset sets the offset to start consuming from, or if OffsetOutOfRange is seen while fetching,
+          # to restart consuming from.
+          #
+          # Optional, default: AtStart
+          consumer_offset:
+
+            # Partition offset.
+            #
+            # Optional, default: AtStart. Possible values: AtEnd, At, AfterMilli, AtStart, Relative, WithEpoch
+            type: AtStart
+
+            # Value for the: At, AfterMilli, Relative and WithEpoch offsets.
+            #
+            # Optional, default: 0.
+            value: 1
+
+        # group_options sets the consumer group for the client to join and consume in.
+        # This option is required if using any other group options.
+        #
+        # Default: empty.
+        group_options:
+
+          # group_id sets the group to consume.
+          #
+          # Required if using group consumer.
+          group_id: foo
+
+          # block_rebalance_on_poll switches the client to block rebalances whenever you poll.
+          #
+          # Optional, default: false.
+          block_rebalance_on_poll: true
 
   # list of pipelines to be consumed by the server automatically at the start, keep empty if you want to start consuming manually
   consume:
