@@ -178,7 +178,7 @@ jobs:
           echo "timestamp=$(echo $(date +%FT%T%z))" >> $GITHUB_OUTPUT
 
       - name: Build image
-        uses: docker/build-push-action@v3 # Action page: <https://github.com/docker/build-push-action>
+        uses: docker/build-push-action@v4 # Action page: <https://github.com/docker/build-push-action>
         with:
           context: .
           file: Dockerfile
