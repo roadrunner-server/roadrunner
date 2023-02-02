@@ -40,7 +40,7 @@ jobs:
             # -----
           - os: ''
             compiler: musl-gcc # more info: <https://musl.libc.org/>
-            archiver: zip
+            archiver: tar
             arch: amd64
     steps:
       - name: Set up Go

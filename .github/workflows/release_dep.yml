@@ -15,7 +15,6 @@ jobs:
       matrix:
         os: [ linux ]
         compiler: [ gcc ]
-        archiver: [ zip ]
         arch: [ amd64 ]
 
     steps:
