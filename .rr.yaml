@@ -581,7 +581,7 @@ otel:
 
   # Consumer's endpoint
   #
-  # Default: localhost:4318
+  # Default: 127.0.0.1:4318
   endpoint: "127.0.0.1:4318"
 
 # HTTP plugin settings.

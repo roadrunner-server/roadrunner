@@ -483,6 +483,7 @@
                         "enum": [
                             "zipkin",
                             "stdout",
+                            "stderr",
                             "otlp",
                             "jaeger",
                             "jaeger_agent"
@@ -498,7 +499,7 @@
                 "endpoint": {
                     "description": "Consumer's endpoint",
                     "type": "string",
-                    "default": "localhost:4318"
+                    "default": "127.0.0.1:4318"
                 },
                 "client": {
                     "description": "Client to send the spans",
