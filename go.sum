@@ -760,8 +760,8 @@ github.com/roadrunner-server/centrifuge/v4 v4.0.2 h1:HcqGSJVdxAcKlx8Iot2U1nGNShU
 github.com/roadrunner-server/centrifuge/v4 v4.0.2/go.mod h1:oGPwAOZ1n9jguzcjxDl6hUzK1/D3Xi70fu+c3zqS54M=
 github.com/roadrunner-server/config/v4 v4.1.1 h1:YICoAy0E8wpicqTFIQCxUUg+z2GDE5hVtH6p8gwitIo=
 github.com/roadrunner-server/config/v4 v4.1.1/go.mod h1:dlrCUD2OxFxCiaXXiKY+/OqIJKz3BZbtkBVnrtvGWks=
-github.com/roadrunner-server/endure/v2 v2.0.1 h1:2greoQ669iCjsYNt14dwXXQGHAKDmLtFzL0OIE0ZATc=
-github.com/roadrunner-server/endure/v2 v2.0.1/go.mod h1:RDrC9SFlyCGqGA2v9SqFIA+EqWTFmPxafIb4SMeHCHM=
+github.com/roadrunner-server/endure/v2 v2.1.0 h1:aVQx/G70XUrt/GoT9RCB1QiT+y9nMpISSV5Ts0t8VCw=
+github.com/roadrunner-server/endure/v2 v2.1.0/go.mod h1:aiFuQMl8vGHlKbxLutVuyp1p2ybRMfzRzV67RT08qLg=
 github.com/roadrunner-server/errors v1.2.0 h1:qBmNXt8Iex9QnYTjCkbJKsBZu2EtYkQCM06GUDcQBbI=
 github.com/roadrunner-server/errors v1.2.0/go.mod h1:z0ECxZp/dDa5RahtMcy4mBIavVxiZ9vwE5kByl7kFtY=
 github.com/roadrunner-server/fileserver/v4 v4.0.1 h1:+TInwLPHz+7AP1u1p38n16SlakHpKM1oLtr7kqYN4BE=
@@ -996,8 +996,8 @@ golang.org/x/exp v0.0.0-20191227195350-da58074b4299/go.mod h1:2RIsYlXP63K8oxa1u0
 golang.org/x/exp v0.0.0-20200119233911-0405dc783f0a/go.mod h1:2RIsYlXP63K8oxa1u096TMicItID8zy7Y6sNkU49FU4=
 golang.org/x/exp v0.0.0-20200207192155-f17229e696bd/go.mod h1:J/WKrq2StrnmMY6+EHIKF9dgMWnmCNThgcyBT1FY9mM=
 golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6/go.mod h1:3jZMyOhIsHpP37uCMkUooju7aAi5cS1Q23tOzKc+0MU=
-golang.org/x/exp v0.0.0-20230131160201-f062dba9d201 h1:BEABXpNXLEz0WxtA+6CQIz2xkg80e+1zrhWyMcq8VzE=
-golang.org/x/exp v0.0.0-20230131160201-f062dba9d201/go.mod h1:CxIveKay+FTh1D0yPZemJVgC/95VzuuOLq5Qi4xnoYc=
+golang.org/x/exp v0.0.0-20230203172020-98cc5a0785f9 h1:frX3nT9RkKybPnjyI+yvZh6ZucTZatCCEm9D47sZ2zo=
+golang.org/x/exp v0.0.0-20230203172020-98cc5a0785f9/go.mod h1:CxIveKay+FTh1D0yPZemJVgC/95VzuuOLq5Qi4xnoYc=
 golang.org/x/image v0.0.0-20190227222117-0694c2d4d067/go.mod h1:kZ7UVZpmo3dzQBMxlp+ypCbDeSB+sBbTgSJuh5dn5js=
 golang.org/x/image v0.0.0-20190802002840-cff245a6509b/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=
 golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3/go.mod h1:UVdnD1Gm6xHRNCYTkRU2/jEulfH38KcIWyp/GAMgvoE=

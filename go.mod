@@ -15,7 +15,7 @@ require (
 	github.com/roadrunner-server/boltdb/v4 v4.2.1
 	github.com/roadrunner-server/centrifuge/v4 v4.0.2
 	github.com/roadrunner-server/config/v4 v4.1.1
-	github.com/roadrunner-server/endure/v2 v2.0.1
+	github.com/roadrunner-server/endure/v2 v2.1.0
 	github.com/roadrunner-server/errors v1.2.0
 	github.com/roadrunner-server/fileserver/v4 v4.0.1
 	github.com/roadrunner-server/goridge/v3 v3.6.2
@@ -52,7 +52,7 @@ require (
 	github.com/temporalio/roadrunner-temporal/v4 v4.0.1
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.27
 	go.uber.org/automaxprocs v1.5.1
-	golang.org/x/exp v0.0.0-20230131160201-f062dba9d201
+	golang.org/x/exp v0.0.0-20230203172020-98cc5a0785f9
 )
 
 require (
