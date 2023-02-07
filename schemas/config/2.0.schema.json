@@ -461,6 +461,74 @@
                 }
             }
         },
+        "otel": {
+            "description": "OpenTelemetry configuration",
+            "type": "object",
+            "properties": {
+                "insecure": {
+                    "description": "Use insecure endpoint",
+                    "type": "boolean",
+                    "default": false
+                },
+                "compress": {
+                    "description": "Use gzip compressor",
+                    "type": "boolean",
+                    "default": false
+                },
+                "exporter": {
+                    "description": "Provides functionality to emit telemetry to consumers",
+                    "type": "string",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "zipkin",
+                            "stdout",
+                            "stderr",
+                            "otlp",
+                            "jaeger",
+                            "jaeger_agent"
+                        ],
+                        "pattern": "^[0-9a-zA-Z_]+$"
+                    }
+                },
+                "custom_url": {
+                    "description": "Used for the http client to override the default URL",
+                    "type": "string",
+                    "default": ""
+                },
+                "endpoint": {
+                    "description": "Consumer's endpoint",
+                    "type": "string",
+                    "default": "127.0.0.1:4318"
+                },
+                "client": {
+                    "description": "Client to send the spans",
+                    "type": "string",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "http",
+                            "grpc"
+                        ],
+                        "pattern": "^[0-9a-zA-Z_]+$"
+                    }
+                },
+                "service_name": {
+                    "description": "User's service name",
+                    "type": "string",
+                    "default": "RoadRunner"
+                },
+                "service_version": {
+                    "description": "User's service version",
+                    "type": "string",
+                    "default": "1.0.0"
+                },
+                "headers": {
+                    "description": "User defined headers",
+                    "$ref": "#/definitions/Hashmap"
+                }
+            }
+        },
         "http": {
             "type": "object",
             "properties": {
@@ -1044,73 +1112,6 @@
                             "type": "integer",
                             "default": 128,
                             "minimum": 0
-                        }
-                    }
-                },
-                "otel": {
-                    "description": "OpenTelemetry configuration",
-                    "type": "object",
-                    "properties": {
-                        "insecure": {
-                            "description": "Use insecure endpoint",
-                            "type": "boolean",
-                            "default": false
-                        },
-                        "compress": {
-                            "description": "Use gzip compressor",
-                            "type": "boolean",
-                            "default": false
-                        },
-                        "exporter": {
-                            "description": "Provides functionality to emit telemetry to consumers",
-                            "type": "string",
-                            "items": {
-                                "type": "string",
-                                "enum": [
-                                    "zipkin",
-                                    "stdout",
-                                    "otlp",
-                                    "jaeger",
-                                    "jaeger_agent"
-                                ],
-                                "pattern": "^[0-9a-zA-Z_]+$"
-                            }
-                        },
-                        "custom_url": {
-                            "description": "Used for the http client to override the default URL",
-                            "type": "string",
-                            "default": ""
-                        },
-                        "endpoint": {
-                            "description": "Consumer's endpoint",
-                            "type": "string",
-                            "default": "localhost:4318"
-                        },
-                        "client": {
-                            "description": "Client to send the spans",
-                            "type": "string",
-                            "items": {
-                                "type": "string",
-                                "enum": [
-                                    "http",
-                                    "grpc"
-                                ],
-                                "pattern": "^[0-9a-zA-Z_]+$"
-                            }
-                        },
-                        "service_name": {
-                            "description": "User's service name",
-                            "type": "string",
-                            "default": "RoadRunner"
-                        },
-                        "service_version": {
-                            "description": "User's service version",
-                            "type": "string",
-                            "default": "1.0.0"
-                        },
-                        "headers": {
-                            "description": "User defined headers",
-                            "$ref": "#/definitions/Hashmap"
                         }
                     }
                 }
