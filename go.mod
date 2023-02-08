@@ -37,7 +37,7 @@ require (
 	github.com/roadrunner-server/redis/v4 v4.1.1
 	github.com/roadrunner-server/reload/v4 v4.0.1
 	github.com/roadrunner-server/resetter/v4 v4.0.1
-	github.com/roadrunner-server/rpc/v4 v4.0.1
+	github.com/roadrunner-server/rpc/v4 v4.1.0
 	github.com/roadrunner-server/sdk/v4 v4.0.0
 	github.com/roadrunner-server/send/v4 v4.0.2
 	github.com/roadrunner-server/server/v4 v4.0.1
