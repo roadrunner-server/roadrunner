@@ -1329,6 +1329,11 @@ jobs:
         # Default: amqp.default
         exchange: default
 
+        # Redial timeout (in seconds). How long to try to reconnect to the AMQP server.
+        #
+        # Default: 60
+        redial_timeout: 60
+
         # Exchange type
         #
         # Default: direct.

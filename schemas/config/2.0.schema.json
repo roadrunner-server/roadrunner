@@ -1458,6 +1458,11 @@
                                                     "type": "string",
                                                     "default": "amqp.default"
                                                 },
+                                                "redial_timeout": {
+                                                    "description": "Redial timeout (in seconds). How long to try to reconnect to the AMQP server",
+                                                    "type": "integer",
+                                                    "default": 60
+                                                },
                                                 "exchange_durable": {
                                                     "description": "Durable exchange (rabbitmq option: https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges)",
                                                     "type": "boolean",
