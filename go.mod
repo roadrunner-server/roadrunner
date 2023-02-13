@@ -50,7 +50,7 @@ require (
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.1
 	github.com/temporalio/roadrunner-temporal/v4 v4.1.0
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.29
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.31
 	go.uber.org/automaxprocs v1.5.1
 	golang.org/x/exp v0.0.0-20230212135524-a684f29349b6
 )
