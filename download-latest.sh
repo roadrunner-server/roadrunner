@@ -100,7 +100,7 @@ get_arch() {
     ;;
 
     # case 2
-  'arm64')
+  'arm64' | 'aarch64')
     arch='arm64'
     ;;
 
