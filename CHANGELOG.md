@@ -1,5 +1,22 @@
 # CHANGELOG
 
+###### tags: `roadrunner` `v2.12.3`
+
+## v2.12.3 (16.02.2023)
+
+## <center> 🚀 v2.12.3 🚀 </center>
+
+## <center>👀 New: <center>
+
+- ✒️ **Composer.json:** add contributors, funds, project description: [PR](https://github.com/roadrunner-server/roadrunner/pull/1451), (thanks @roxblnfk)
+
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project dependencies.
+
+---
+
 ###### tags: `roadrunner` `v2.12.2`
 
 ## v2.12.2 (12.01.2023)
@@ -11,7 +28,7 @@
 - ✒️ **AMQP plugin:** Custom headers in AMQP driver, [FR](https://github.com/roadrunner-server/roadrunner/issues/1388), (thanks @ykweb)
 
 
- ### <center>🩹 Fixes:</center> 
+ ### <center>🩹 Fixes:</center>
 
 - 🐛 **Velox**: Unable to build RoadRunner with custom velox configuration, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1400), (thanks @mprokocki)
 - 🐛 **RR**: JSON Schema - wrong type for service `exec_timeout` option, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1410), (thanks @Chi-teck)
