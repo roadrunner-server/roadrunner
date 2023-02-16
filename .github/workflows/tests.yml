@@ -74,7 +74,7 @@ jobs:
         run: go mod download
 
       - name: Run Unit tests
-        run: go test -race -covermode=atomic -coverprofile /tmp/coverage.txt ./...
+        run: go test -v -race -covermode=atomic -coverprofile /tmp/coverage.txt ./...
 
       - name: Upload Coverage report to CodeCov
         continue-on-error: true
