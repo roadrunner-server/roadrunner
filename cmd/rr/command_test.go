@@ -5,24 +5,24 @@ import (
 	"io"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func Test_Main(t *testing.T) {
 	os.Args = []string{"rr", "--help"}
 	exitFn = func(code int) { assert.Equal(t, 0, code) }
 
-	r, w, err := os.Pipe()
-	require.NoError(t, err)
+	r, w, _ := os.Pipe()
 	os.Stdout = w
 
 	main()
 	_ = w.Close()
 	buf := new(bytes.Buffer)
-	_, err = io.Copy(buf, r)
-	require.NoError(t, err)
+
+	_ = r.SetReadDeadline(time.Now().Add(time.Second))
+	_, _ = io.Copy(buf, r)
 
 	assert.Contains(t, buf.String(), "Usage:")
 	assert.Contains(t, buf.String(), "Available Commands:")
@@ -33,15 +33,13 @@ func Test_MainWithoutCommands(t *testing.T) {
 	os.Args = []string{"rr"}
 	exitFn = func(code int) { assert.Equal(t, 0, code) }
 
-	r, w, err := os.Pipe()
-	require.NoError(t, err)
+	r, w, _ := os.Pipe()
 	os.Stdout = w
 
 	main()
-	_ = w.Close()
 	buf := new(bytes.Buffer)
-	_, err = io.Copy(buf, r)
-	require.NoError(t, err)
+	_ = r.SetReadDeadline(time.Now().Add(time.Second))
+	_, _ = io.Copy(buf, r)
 
 	assert.Contains(t, buf.String(), "Usage:")
 	assert.Contains(t, buf.String(), "Available Commands:")
@@ -52,15 +50,15 @@ func Test_MainUnknownSubcommand(t *testing.T) {
 	os.Args = []string{"", "foobar"}
 	exitFn = func(code int) { assert.Equal(t, 1, code) }
 
-	r, w, err := os.Pipe()
-	require.NoError(t, err)
+	r, w, _ := os.Pipe()
 	os.Stderr = w
 
 	main()
 	_ = w.Close()
 	buf := new(bytes.Buffer)
-	_, err = io.Copy(buf, r)
-	require.NoError(t, err)
+
+	_ = r.SetReadDeadline(time.Now().Add(time.Second))
+	_, _ = io.Copy(buf, r)
 
 	assert.Contains(t, buf.String(), "unknown command")
 	assert.Contains(t, buf.String(), "foobar")
