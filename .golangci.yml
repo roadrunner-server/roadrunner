@@ -2,7 +2,6 @@
 
 run:
   timeout: 1m
-  go: '1.19'
   skip-dirs:
     - .github
     - .git
