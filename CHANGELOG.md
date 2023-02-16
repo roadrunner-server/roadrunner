@@ -14,6 +14,7 @@
 ### <center>🧹 Chore:</center>
 
 - 🧑‍🏭 **Dependencies**: update project dependencies.
+- 🧑‍🏭 **Go**: update Go to `1.20`.
 
 ---
 

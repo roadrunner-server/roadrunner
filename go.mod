@@ -1,6 +1,6 @@
 module github.com/roadrunner-server/roadrunner/v2
 
-go 1.19
+go 1.20
 
 require (
 	github.com/buger/goterm v1.0.4
