@@ -14,6 +14,7 @@ import (
 	"github.com/roadrunner-server/informer/v4"
 	"github.com/roadrunner-server/jobs/v4"
 	"github.com/roadrunner-server/kv/v4"
+	"github.com/roadrunner-server/lock/v4"
 	"github.com/roadrunner-server/logger/v4"
 	"github.com/roadrunner-server/memcached/v4"
 	"github.com/roadrunner-server/memory/v4"
@@ -44,7 +45,8 @@ func Plugins() []any { //nolint:funlen
 		&informer.Plugin{},
 		// resetter plugin (./rr reset)
 		&resetter.Plugin{},
-
+		// mutexes(locks)
+		&lock.Plugin{},
 		// logger plugin
 		&logger.Plugin{},
 		// psr-3 logger extension
