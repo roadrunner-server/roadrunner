@@ -2,6 +2,7 @@ package lib_test
 
 import (
 	"os"
+	"path"
 	"testing"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/roadrunner-server/resetter/v3"
 	"github.com/roadrunner-server/roadrunner/v2/lib"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewFailsOnMissingConfig(t *testing.T) {
@@ -27,9 +29,9 @@ endure:
 `
 
 func makeConfig(t *testing.T, configYaml string) string {
-	cfgFile := os.TempDir() + "/.rr.yaml"
+	cfgFile := path.Join(os.TempDir(), ".rr.yaml")
 	err := os.WriteFile(cfgFile, []byte(configYaml), 0600)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	return cfgFile
 }

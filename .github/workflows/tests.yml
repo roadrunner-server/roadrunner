@@ -40,12 +40,12 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3 # action page: <https://github.com/actions/setup-go>
         with:
-          go-version: 1.19
+          go-version: '1.19'
 
       - name: Run linter
-        uses: golangci/golangci-lint-action@v3.3.1
+        uses: golangci/golangci-lint-action@v3.4.0
         with:
-          version: v1.50 # without patch version
+          version: v1.51 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
           args: --build-tags=safe --timeout=10m
 
@@ -56,7 +56,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.19
+          go-version: '1.20'
 
       - name: Check out code
         uses: actions/checkout@v3
@@ -74,7 +74,7 @@ jobs:
         run: go mod download
 
       - name: Run Unit tests
-        run: go test -race -covermode=atomic -coverprofile /tmp/coverage.txt ./...
+        run: go test -v -race -covermode=atomic -coverprofile /tmp/coverage.txt ./...
 
       - name: Upload Coverage report to CodeCov
         continue-on-error: true
@@ -94,7 +94,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3 # action page: <https://github.com/actions/setup-go>
         with:
-          go-version: 1.19
+          go-version: '1.20'
 
       - name: Check out code
         uses: actions/checkout@v3
