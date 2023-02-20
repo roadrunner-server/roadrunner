@@ -75,7 +75,6 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - staticcheck # Staticcheck is a go vet on steroids, applying a ton of static analysis checks
     - stylecheck # Stylecheck is a replacement for golint
     - tparallel # detects inappropriate usage of t.Parallel() method in your Go test codes
-    - typecheck # Like the front-end of a Go compiler, parses and type-checks Go code
     - unconvert # Remove unnecessary type conversions
     - unparam # Reports unused function parameters
     - unused # Checks Go code for unused constants, variables, functions and types
