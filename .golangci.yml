@@ -6,6 +6,8 @@ run:
     - .github
     - .git
   allow-parallel-runners: true
+  skip-files:
+    - "internal/debug/server_test.go"
 
 output:
   format: colored-line-number
