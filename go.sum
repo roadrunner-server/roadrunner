@@ -771,8 +771,8 @@ github.com/rabbitmq/amqp091-go v1.7.0/go.mod h1:wfClAtY0C7bOHxd3GjmF26jEHn+rR/0B
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rivo/uniseg v0.4.3 h1:utMvzDsuh3suAEnhH0RdHmoPbU648o6CvXxTx4SBMOw=
 github.com/rivo/uniseg v0.4.3/go.mod h1:FN3SvrM+Zdj16jyLfmOkMNblXMcoc8DfTHruCPUcx88=
-github.com/roadrunner-server/amqp/v4 v4.2.1 h1:jAnHLdcInnHEVF6QVZPTEJffDzfNNDSA9hhdN5dm3Kk=
-github.com/roadrunner-server/amqp/v4 v4.2.1/go.mod h1:V5sw1foA6IxZfCCTMZi0cfXHWUmEAglKMc+eueFJyE8=
+github.com/roadrunner-server/amqp/v4 v4.3.0 h1:X5LB1kEl22c8Z2v6dGgArPE9s4T1CP6wtB8aDOPH5pE=
+github.com/roadrunner-server/amqp/v4 v4.3.0/go.mod h1:V5sw1foA6IxZfCCTMZi0cfXHWUmEAglKMc+eueFJyE8=
 github.com/roadrunner-server/api/v3 v3.2.1 h1:N4rokKVkN8Phoodbqtil90G65t2BqIWvHCKaxIKajvs=
 github.com/roadrunner-server/api/v3 v3.2.1/go.mod h1:hlv546SS3tZVIDu68YekPCLS/82Y/AoS8Eu5xysvwBQ=
 github.com/roadrunner-server/api/v4 v4.1.0 h1:VDFYfcLKCKi4hAsVNhRkbJ8yYVBY8vCdcmBDVtvBdI8=
