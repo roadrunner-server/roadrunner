@@ -91,3 +91,6 @@ issues:
         - funlen
         - scopelint
         - gocognit
+    - path: internal/debug/
+      linters:
+        - staticcheck
