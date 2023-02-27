@@ -1301,7 +1301,7 @@ jobs:
 
         # Durable exchange (rabbitmq option: https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges)
         #
-        # Default: true
+        # Default: false
         exchange_durable: false
 
         # Auto-delete (exchange is deleted when last queue is unbound from it): https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges
