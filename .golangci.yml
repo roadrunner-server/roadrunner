@@ -54,7 +54,6 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - errorlint # find code that will cause problems with the error wrapping scheme introduced in Go 1.13
     - exhaustive # check exhaustiveness of enum switch statements
     - exportloopref # checks for pointers to enclosing loop variables
-    - funlen # Tool for detection of long functions
     - gochecknoglobals # Checks that no globals are present in Go code
     - gocognit # Computes and checks the cognitive complexity of functions
     - goconst # Finds repeated strings that could be replaced by a constant

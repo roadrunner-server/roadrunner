@@ -35,6 +35,10 @@ func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Comman
 				return errors.E(op, errors.Str("no configuration file provided"))
 			}
 
+			if len(args) == 0 {
+				return errors.Str("incorrect command usage, should be: rr jobs pause/resume/destroy/list")
+			}
+
 			// for the commands other than list, args[1] should contain list of pipelines to pause/resume/destroy
 			if !listPipes && len(args[0]) == 0 {
 				return errors.Str("pause/resume/destroy commands should have list of the pipelines as second arg")
