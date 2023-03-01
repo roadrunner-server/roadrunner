@@ -13,6 +13,7 @@ import (
 	httpPlugin "github.com/roadrunner-server/http/v4"
 	"github.com/roadrunner-server/informer/v4"
 	"github.com/roadrunner-server/jobs/v4"
+	"github.com/roadrunner-server/kafka/v4"
 	"github.com/roadrunner-server/kv/v4"
 	"github.com/roadrunner-server/lock/v4"
 	"github.com/roadrunner-server/logger/v4"
@@ -69,6 +70,7 @@ func Plugins() []any { //nolint:funlen
 		&amqp.Plugin{},
 		&sqs.Plugin{},
 		&nats.Plugin{},
+		&kafka.Plugin{},
 		&beanstalk.Plugin{},
 		// =========
 		//
