@@ -1157,7 +1157,7 @@ sqs:
 #
 # This option is required to use Kafka driver. Addrs can contain any number of addresses separated by comma (127.0.0.1:9092,127.0.0.1:9093,...)
 kafka:
-  addrs: 127.0.0.1:9092
+  brokers: 127.0.0.1:9092, 127.0.0.1:9002
 
 jobs:
   # Number of threads which will try to obtain the job from the priority queue
