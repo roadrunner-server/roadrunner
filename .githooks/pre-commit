@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e -o pipefail
+
+if ! command -v golangci-lint &> /dev/null; then
+    echo "golangci-lint is not installed"
+    exit 1
+fi
+
+exec golangci-lint --build-tags=race run "$@"
