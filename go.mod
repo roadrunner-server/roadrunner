@@ -33,7 +33,7 @@ require (
 	github.com/roadrunner-server/memory/v4 v4.1.2
 	github.com/roadrunner-server/metrics/v4 v4.0.2
 	github.com/roadrunner-server/nats/v4 v4.1.2
-	github.com/roadrunner-server/otel/v4 v4.1.1
+	github.com/roadrunner-server/otel/v4 v4.1.2
 	github.com/roadrunner-server/prometheus/v4 v4.0.3
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.0.3
 	github.com/roadrunner-server/redis/v4 v4.1.2
@@ -187,7 +187,7 @@ require (
 	go.uber.org/zap v1.24.0 // indirect
 	golang.org/x/crypto v0.6.0 // indirect
 	golang.org/x/mod v0.9.0 // indirect
-	golang.org/x/net v0.7.0 // indirect
+	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
