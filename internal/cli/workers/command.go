@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/roadrunner-server/api/v3/plugins/v1/jobs"
+	"github.com/roadrunner-server/api/v4/plugins/v1/jobs"
 	internalRpc "github.com/roadrunner-server/roadrunner/v2023/internal/rpc"
 
 	tm "github.com/buger/goterm"

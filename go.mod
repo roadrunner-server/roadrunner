@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v4 v4.3.0
-	github.com/roadrunner-server/api/v3 v3.2.1
+	github.com/roadrunner-server/api/v4 v4.1.0
 	github.com/roadrunner-server/app-logger/v4 v4.0.2
 	github.com/roadrunner-server/beanstalk/v4 v4.1.2
 	github.com/roadrunner-server/boltdb/v4 v4.2.2
@@ -133,7 +133,7 @@ require (
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/rabbitmq/amqp091-go v1.7.0 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
-	github.com/roadrunner-server/api/v4 v4.2.0 // indirect
+	github.com/roadrunner-server/api/v3 v3.2.1 // indirect
 	github.com/roadrunner-server/tcplisten v1.3.0 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/savsgio/dictpool v0.0.0-20221023140959-7bf2e61cea94 // indirect
