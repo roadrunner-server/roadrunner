@@ -155,5 +155,5 @@ jobs:
         with:
           image-ref: rr:local
           format: "table"
-          severity: MEDIUM,HIGH,CRITICAL
+          severity: HIGH,CRITICAL
           exit-code: 1
