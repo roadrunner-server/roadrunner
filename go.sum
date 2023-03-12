@@ -494,8 +494,8 @@ github.com/envoyproxy/protoc-gen-validate v0.6.7/go.mod h1:dyJXwwfPK2VSqiB9Klm1J
 github.com/envoyproxy/protoc-gen-validate v0.9.1/go.mod h1:OKNgG7TCp5pF4d6XftA0++PMirau2/yoOwVac3AbF2w=
 github.com/facebookgo/clock v0.0.0-20150410010913-600d898af40a h1:yDWHCSQ40h88yih2JAcL6Ls/kVkSE8GFACTGVnMPruw=
 github.com/facebookgo/clock v0.0.0-20150410010913-600d898af40a/go.mod h1:7Ga40egUymuWXxAe151lTNnCv97MddSOVsjpPPkityA=
-github.com/fatih/color v1.14.1 h1:qfhVLaG5s+nCROl1zJsZRxFeYrHLqWroPOQ8BWiNb4w=
-github.com/fatih/color v1.14.1/go.mod h1:2oHN61fhTpgcxD3TSWCgKDiH1+x4OiDVVGH8WlgGZGg=
+github.com/fatih/color v1.15.0 h1:kOqh6YHBtK8aywxGerMG2Eq3H6Qgoqeo13Bk2Mv/nBs=
+github.com/fatih/color v1.15.0/go.mod h1:0h5ZqXfHYED7Bhv2ZJamyIOUej9KtShiJESRwBDUSsw=
 github.com/felixge/httpsnoop v1.0.3 h1:s/nj+GCswXYzN5v2DpNMuMQYe+0DDwt5WVCU6CWBdXk=
 github.com/felixge/httpsnoop v1.0.3/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
 github.com/frankban/quicktest v1.14.3 h1:FJKSZTDHjyhriyC81FLQ0LY93eSai0ZyR/ZIkd3ZUKE=
@@ -782,8 +782,8 @@ github.com/roadrunner-server/api/v4 v4.2.1 h1:baxVHErnfrmRCIimJDRGWBse8qu/ekeh8E
 github.com/roadrunner-server/api/v4 v4.2.1/go.mod h1:HFb1kQ/H5UkD7MBNqi4L7hXQTtc919FcO8JKPqoSVzs=
 github.com/roadrunner-server/app-logger/v4 v4.0.2 h1:JBYMkh0gl5hgkeTzW7H/DFPk3ZGSPuFjHmC+JkrXmnk=
 github.com/roadrunner-server/app-logger/v4 v4.0.2/go.mod h1:sqEfHaQy98fbAxD9zbEHIUN6p07WMDN8XDEvl58nECg=
-github.com/roadrunner-server/beanstalk/v4 v4.2.0-beta.2 h1:lI+jmf6IyuoUDLtabP5R8XnUchGECbJPJAEVPcOoZJo=
-github.com/roadrunner-server/beanstalk/v4 v4.2.0-beta.2/go.mod h1:7gXOudsUbXLZBcE9SpZPbsTa9dTalvn4s6/sLJfxB40=
+github.com/roadrunner-server/beanstalk/v4 v4.2.0-beta.3 h1:zSZ5qRmDg8yaVZU6MdIXc4KnjT54yjpzANxIKineanE=
+github.com/roadrunner-server/beanstalk/v4 v4.2.0-beta.3/go.mod h1:7gXOudsUbXLZBcE9SpZPbsTa9dTalvn4s6/sLJfxB40=
 github.com/roadrunner-server/boltdb/v4 v4.3.0-beta.1 h1:H0HmGTF+fJWV3CmiWUoeA0au/6aoi7CAJr++/WeIPg4=
 github.com/roadrunner-server/boltdb/v4 v4.3.0-beta.1/go.mod h1:+g+iYrkAq/fyEfEnB4O3BD9iZjUciESnHcGO1VG4N9M=
 github.com/roadrunner-server/centrifuge/v4 v4.0.3 h1:EQOH+U02mPI/SJouEjrBggkJcPh4ZiQ1skWbRhXr9zE=
@@ -824,8 +824,8 @@ github.com/roadrunner-server/memory/v4 v4.2.0-beta.2 h1:bp36ObcXSIT9luGgftZqlzLX
 github.com/roadrunner-server/memory/v4 v4.2.0-beta.2/go.mod h1:LLMms9CucJqo95eJWPK2mw8aC4roa6XQgYuqEuet/dg=
 github.com/roadrunner-server/metrics/v4 v4.0.2 h1:gEG0llhF6ROqzhPvwYheDSWw1YZql/00lQTBKboK2yM=
 github.com/roadrunner-server/metrics/v4 v4.0.2/go.mod h1:Uur2reMHaCTMalvm0Emfh/myyGw4td1MkmDvUSLVg2Y=
-github.com/roadrunner-server/nats/v4 v4.2.0-beta.1 h1:+pbV327DB0JkM38Qqk+TXsBMvfQDyTQyFDahKrdAhic=
-github.com/roadrunner-server/nats/v4 v4.2.0-beta.1/go.mod h1:ONdL1cyFPh77Cf8dmiXga5WUy5OBTRet273mHGkbgiw=
+github.com/roadrunner-server/nats/v4 v4.2.0-beta.2 h1:WdFaR9V1KjGPRzIuFj+61z2cIqUSXz1OuVqOj9GCS4o=
+github.com/roadrunner-server/nats/v4 v4.2.0-beta.2/go.mod h1:ONdL1cyFPh77Cf8dmiXga5WUy5OBTRet273mHGkbgiw=
 github.com/roadrunner-server/otel/v4 v4.1.2 h1:QaZv+XIQIvc7liTXSVdpwW2WsN4pfPTv39eklorK2ew=
 github.com/roadrunner-server/otel/v4 v4.1.2/go.mod h1:NcbciG5YSoVOW20T6XMNgn/0FXMy15ctz0RvqVHFtTk=
 github.com/roadrunner-server/prometheus/v4 v4.0.3 h1:NoMCyrTerWQ8A0nCSyb+VCVv6PxMcnmy08p20Rh5Kbk=
