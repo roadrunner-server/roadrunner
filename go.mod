@@ -8,11 +8,11 @@ require (
 	github.com/fatih/color v1.14.1
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v4 v4.3.0
-	github.com/roadrunner-server/api/v4 v4.1.0
+	github.com/roadrunner-server/amqp/v4 v4.4.0-beta.1
+	github.com/roadrunner-server/api/v4 v4.2.1
 	github.com/roadrunner-server/app-logger/v4 v4.0.2
-	github.com/roadrunner-server/beanstalk/v4 v4.1.2
-	github.com/roadrunner-server/boltdb/v4 v4.2.2
+	github.com/roadrunner-server/beanstalk/v4 v4.2.0-beta.2
+	github.com/roadrunner-server/boltdb/v4 v4.3.0-beta.1
 	github.com/roadrunner-server/centrifuge/v4 v4.0.3
 	github.com/roadrunner-server/config/v4 v4.1.2
 	github.com/roadrunner-server/endure/v2 v2.2.0
@@ -24,15 +24,15 @@ require (
 	github.com/roadrunner-server/headers/v4 v4.0.2
 	github.com/roadrunner-server/http/v4 v4.0.4
 	github.com/roadrunner-server/informer/v4 v4.0.2
-	github.com/roadrunner-server/jobs/v4 v4.2.2
-	github.com/roadrunner-server/kafka/v4 v4.0.7
+	github.com/roadrunner-server/jobs/v4 v4.3.0-beta.2
+	github.com/roadrunner-server/kafka/v4 v4.1.0-beta.1
 	github.com/roadrunner-server/kv/v4 v4.1.2
 	github.com/roadrunner-server/lock/v4 v4.0.0-beta.1
 	github.com/roadrunner-server/logger/v4 v4.1.0
 	github.com/roadrunner-server/memcached/v4 v4.1.3
-	github.com/roadrunner-server/memory/v4 v4.1.2
+	github.com/roadrunner-server/memory/v4 v4.2.0-beta.2
 	github.com/roadrunner-server/metrics/v4 v4.0.2
-	github.com/roadrunner-server/nats/v4 v4.1.2
+	github.com/roadrunner-server/nats/v4 v4.2.0-beta.1
 	github.com/roadrunner-server/otel/v4 v4.1.2
 	github.com/roadrunner-server/prometheus/v4 v4.0.3
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.0.3
@@ -44,7 +44,7 @@ require (
 	github.com/roadrunner-server/send/v4 v4.0.3
 	github.com/roadrunner-server/server/v4 v4.0.2
 	github.com/roadrunner-server/service/v4 v4.0.3
-	github.com/roadrunner-server/sqs/v4 v4.1.2
+	github.com/roadrunner-server/sqs/v4 v4.2.0-beta.1
 	github.com/roadrunner-server/static/v4 v4.0.3
 	github.com/roadrunner-server/status/v4 v4.0.2
 	github.com/roadrunner-server/tcp/v4 v4.0.2
@@ -54,24 +54,24 @@ require (
 	github.com/temporalio/roadrunner-temporal/v4 v4.2.0-alpha.1
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.31
 	go.uber.org/automaxprocs v1.5.1
-	golang.org/x/exp v0.0.0-20230307190834-24139beb5833
+	golang.org/x/exp v0.0.0-20230310171629-522b1b587ee0
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.217 // indirect
-	github.com/aws/aws-sdk-go-v2 v1.17.5 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.18.15 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.13.15 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.23 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.29 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.23 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.30 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.23 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.20.4 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.12.4 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.4 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.18.5 // indirect
+	github.com/aws/aws-sdk-go v1.44.219 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.17.6 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.18.16 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.13.16 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.24 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.30 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.24 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.31 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.24 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.20.5 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.12.5 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.5 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.18.6 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/beanstalkd/go-beanstalk v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -112,7 +112,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mholt/acmez v1.1.0 // indirect
-	github.com/miekg/dns v1.1.51 // indirect
+	github.com/miekg/dns v1.1.52 // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nats-io/jwt/v2 v2.3.0 // indirect
