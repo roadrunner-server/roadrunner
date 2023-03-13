@@ -46,13 +46,13 @@ require (
 	github.com/roadrunner-server/service/v4 v4.0.3
 	github.com/roadrunner-server/sqs/v4 v4.2.0-beta.1
 	github.com/roadrunner-server/static/v4 v4.0.3
-	github.com/roadrunner-server/status/v4 v4.0.2
+	github.com/roadrunner-server/status/v4 v4.1.1
 	github.com/roadrunner-server/tcp/v4 v4.0.2
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
 	github.com/temporalio/roadrunner-temporal/v4 v4.2.0-alpha.1
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.31
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.32
 	go.uber.org/automaxprocs v1.5.1
 	golang.org/x/exp v0.0.0-20230310171629-522b1b587ee0
 )

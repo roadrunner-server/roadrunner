@@ -852,8 +852,8 @@ github.com/roadrunner-server/sqs/v4 v4.2.0-beta.1 h1:GNMKNKEyO7eBtGoOO0AseFnerCw
 github.com/roadrunner-server/sqs/v4 v4.2.0-beta.1/go.mod h1:2ugLu9hIqec1b1hNtZbi2cFGa3FzoZtnsYGtdJyTOmk=
 github.com/roadrunner-server/static/v4 v4.0.3 h1:ulWDAus57UA5rvgnpmm4+Y8oZPbK1oc8k4//GtfaOww=
 github.com/roadrunner-server/static/v4 v4.0.3/go.mod h1:jT5V0qHqN01WHBmUwgzn7/6PlxjU6JkQeGg1rLqQt5Q=
-github.com/roadrunner-server/status/v4 v4.0.2 h1:K3crpLufOQUUUHyHy+ARwus0gl6ChEmWRJSJQI/MomQ=
-github.com/roadrunner-server/status/v4 v4.0.2/go.mod h1:Vdj2VfuldaTOBiNyjLwZUX2g2zOvYNlduEkXBuGEqfY=
+github.com/roadrunner-server/status/v4 v4.1.1 h1:vwrWc+Nbap34R9D2SW9OV5++AHe+AepB+X6VvnmsOVc=
+github.com/roadrunner-server/status/v4 v4.1.1/go.mod h1:flvTj8vbeCOZmK9E40gx9CH5R6PABoBLvwI5K9/0I3o=
 github.com/roadrunner-server/tcp/v4 v4.0.2 h1:YggCtz2MiUJKreua0yOufxe4enOKo+UvgPrQcTz777E=
 github.com/roadrunner-server/tcp/v4 v4.0.2/go.mod h1:hSzTrCZAQH9R+sCdfFQDBLMCoE+cQSHRBCUQ+07QSyc=
 github.com/roadrunner-server/tcplisten v1.3.0 h1:VDd6IbP8oIjm5vKvMVozeZgeHgOcoP0XYLOyOqcZHCY=
@@ -953,8 +953,8 @@ github.com/yusufpapurcu/wmi v1.2.2 h1:KBNDSne4vP5mbSWnJbO+51IMOXJB67QiYCSBrubbPR
 github.com/yusufpapurcu/wmi v1.2.2/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
 go.buf.build/grpc/go/roadrunner-server/api v1.4.31 h1:yNixh1L9S43/lRQNTotHrUWmsqLiKj9U1qtm9eGucdY=
 go.buf.build/grpc/go/roadrunner-server/api v1.4.31/go.mod h1:gydvLOEhY1OyTQFdpzBvDRn2QMpmtb73BSFFKu3JmPk=
-go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.31 h1:uSIsJkWneeKWN8MhRhWnVYt38e9fWJyGiF32GJWNlvc=
-go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.31/go.mod h1:CfIAvR+W2N+Y0WXMzwT80Eh83CmBPWplgFQDA5HftC4=
+go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.32 h1:pqq8kUBAoD8l0Q8R9qef+brFtQWRMx8DwwsStktsaOc=
+go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.32/go.mod h1:CfIAvR+W2N+Y0WXMzwT80Eh83CmBPWplgFQDA5HftC4=
 go.etcd.io/bbolt v1.3.7 h1:j+zJOnnEjF/kyHlDDgGnVL/AIqIJPq8UoB2GSNfkUfQ=
 go.etcd.io/bbolt v1.3.7/go.mod h1:N9Mkw9X8x5fupy0IKsmuqVtoGDyxsaDlbk4Rd05IAQw=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
