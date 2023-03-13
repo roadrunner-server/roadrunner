@@ -23,7 +23,7 @@ require (
 	github.com/roadrunner-server/gzip/v4 v4.0.2
 	github.com/roadrunner-server/headers/v4 v4.0.2
 	github.com/roadrunner-server/http/v4 v4.0.4
-	github.com/roadrunner-server/informer/v4 v4.0.2
+	github.com/roadrunner-server/informer/v4 v4.1.0
 	github.com/roadrunner-server/jobs/v4 v4.3.0-beta.2
 	github.com/roadrunner-server/kafka/v4 v4.1.0-beta.1
 	github.com/roadrunner-server/kv/v4 v4.1.2
