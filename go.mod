@@ -44,7 +44,7 @@ require (
 	github.com/roadrunner-server/send/v4 v4.0.3
 	github.com/roadrunner-server/server/v4 v4.0.2
 	github.com/roadrunner-server/service/v4 v4.0.3
-	github.com/roadrunner-server/sqs/v4 v4.2.0-beta.1
+	github.com/roadrunner-server/sqs/v4 v4.2.0
 	github.com/roadrunner-server/static/v4 v4.0.3
 	github.com/roadrunner-server/status/v4 v4.1.1
 	github.com/roadrunner-server/tcp/v4 v4.0.2
