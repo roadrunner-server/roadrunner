@@ -27,7 +27,7 @@ require (
 	github.com/roadrunner-server/jobs/v4 v4.3.0-beta.2
 	github.com/roadrunner-server/kafka/v4 v4.1.0-beta.1
 	github.com/roadrunner-server/kv/v4 v4.1.2
-	github.com/roadrunner-server/lock/v4 v4.0.0-beta.1
+	github.com/roadrunner-server/lock/v4 v4.0.0-beta.2
 	github.com/roadrunner-server/logger/v4 v4.1.0
 	github.com/roadrunner-server/memcached/v4 v4.1.3
 	github.com/roadrunner-server/memory/v4 v4.2.0-beta.2
@@ -52,7 +52,7 @@ require (
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
 	github.com/temporalio/roadrunner-temporal/v4 v4.2.0-alpha.1
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.32
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.36
 	go.uber.org/automaxprocs v1.5.1
 	golang.org/x/exp v0.0.0-20230314191032-db074128a8ec
 )
