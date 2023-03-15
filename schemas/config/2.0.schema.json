@@ -9,9 +9,10 @@
         "version": {
             "description": "configuration version",
             "type": "string",
-            "default": "2.7",
+            "default": "3",
             "enum": [
-                "2.7"
+                "2.7",
+                "3"
             ]
         },
         "centrifuge": {
