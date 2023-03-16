@@ -108,7 +108,7 @@ file ([full sample](https://github.com/roadrunner-server/roadrunner/blob/master/
 
 ```yaml
 # configuration version: https://roadrunner.dev/docs/beep-beep-config/2.x/en
-version: '2.7'
+version: '3'
 
 rpc:
   listen: tcp://127.0.0.1:6001

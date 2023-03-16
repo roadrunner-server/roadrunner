@@ -12,7 +12,7 @@
 # Important: TCP port numbers for each plugin (rpc, http, etc) must be unique!
 
 # RR configuration version
-version: "2.7"
+version: '3'
 
 # Remote Procedures Calling (docs: https://roadrunner.dev/docs/plugins-rpc/2.x/en)
 # Is used for connecting to RoadRunner server from your PHP workers.

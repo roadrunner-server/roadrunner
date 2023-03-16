@@ -17,7 +17,7 @@ func TestNewFailsOnMissingConfig(t *testing.T) {
 }
 
 const testConfigWithVersion = `
-version: "2.7"
+version: '3'
 server:
   command: "php src/index.php"
   relay:  "pipes"
@@ -57,7 +57,7 @@ func TestNewWithConfig(t *testing.T) {
 	cfgFile := makeConfig(t, testConfigWithVersion)
 	rr, err := lib.NewRR(cfgFile, []string{}, lib.DefaultPluginsList())
 	assert.NoError(t, err)
-	assert.Equal(t, 0, len(rr.Version))
+	assert.Equal(t, "3", rr.Version)
 
 	t.Cleanup(func() {
 		_ = os.Remove(cfgFile)
