@@ -5,11 +5,7 @@ on:
     branches:
       - master
       - stable
-    paths-ignore:
-      - "**.md"
   pull_request:
-    paths-ignore:
-      - "**.md"
 
 jobs:
   validate-config-file:
