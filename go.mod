@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v4 v4.4.0
-	github.com/roadrunner-server/api/v4 v4.2.1
+	github.com/roadrunner-server/api/v4 v4.3.1
 	github.com/roadrunner-server/app-logger/v4 v4.0.2
 	github.com/roadrunner-server/beanstalk/v4 v4.2.0
 	github.com/roadrunner-server/boltdb/v4 v4.3.0
@@ -27,7 +27,7 @@ require (
 	github.com/roadrunner-server/jobs/v4 v4.3.0-beta.2
 	github.com/roadrunner-server/kafka/v4 v4.1.0-beta.1
 	github.com/roadrunner-server/kv/v4 v4.1.2
-	github.com/roadrunner-server/lock/v4 v4.0.0-beta.1
+	github.com/roadrunner-server/lock/v4 v4.0.0-beta.2
 	github.com/roadrunner-server/logger/v4 v4.1.0
 	github.com/roadrunner-server/memcached/v4 v4.1.3
 	github.com/roadrunner-server/memory/v4 v4.2.0-beta.2
@@ -51,15 +51,15 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
-	github.com/temporalio/roadrunner-temporal/v4 v4.2.0-alpha.1
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.32
+	github.com/temporalio/roadrunner-temporal/v4 v4.2.0-beta.1
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.36
 	go.uber.org/automaxprocs v1.5.1
-	golang.org/x/exp v0.0.0-20230314191032-db074128a8ec
+	golang.org/x/exp v0.0.0-20230315142452-642cacee5cc0
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.221 // indirect
+	github.com/aws/aws-sdk-go v1.44.222 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.6 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.17 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.17 // indirect
@@ -98,7 +98,7 @@ require (
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
+	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
@@ -154,12 +154,12 @@ require (
 	github.com/twmb/murmur3 v1.1.6 // indirect
 	github.com/uber-go/tally/v4 v4.1.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.44.0 // indirect
+	github.com/valyala/fasthttp v1.45.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	go.buf.build/grpc/go/roadrunner-server/api v1.4.32 // indirect
+	go.buf.build/grpc/go/roadrunner-server/api v1.4.36 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.40.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.40.0 // indirect
