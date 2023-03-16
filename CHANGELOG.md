@@ -1,5 +1,36 @@
 # CHANGELOG
 
+## <center> 🚀 v2023.1.0-beta.1 🚀 </center>
+
+## <center>👀 New: <center>
+
+- ✒️ **Kafka plugin:** Totally reworked Kafka plugin. Now it supports regexps for the topics, marked commits for the group consumers, and SASL authentication. Configuration reference: [link](https://roadrunner.dev/docs/plugins-jobs/2.x/en#kafka-driver).
+- ✒️ **RPC plugin:** RPC plugin would be available immediately before the worker initialization. That means, that PHP worker may use all RPC methods immediately.
+- ✒️ Endure v2 support (internal change).
+- ✒️ Bash script to download the latest RR archive. Later we're going to release a non archived binaries in addition to the regular archived releases.
+  Sample of usage:
+```bash
+curl --proto '=https' --tlsv1.2 -sSf  https://raw.githubusercontent.com/roadrunner-server/roadrunner/master/download-latest.sh | sh
+```
+- ✒️ RoadRunner composer metapackage: Removed the `require` section: [PR](https://github.com/roadrunner-server/roadrunner/pull/1422), (thanks @roxblnfk)
+- ✒️ **Lock plugin:** New plugin to handle mutual access to the resource. PHP client is WIP with documentation.
+- ✒️ **AMQP plugin:** RR passes the Queue, Pipeline and Driver names to the PHP client in all modes including the consuming payloads from the other senders.
+- ✒️ **AMQP plugin:** `consumer_id` can now be set from the configuration, [FR](https://github.com/roadrunner-server/roadrunner/issues/1432), (thanks @codercms)
+- ✒️ **AMQP plugin:** Starting from the `v2023.1.0` RR would not accept the empty queue name, [CH](https://github.com/roadrunner-server/roadrunner/issues/1443)
+- ✒️ **OTEL plugin:** ️Support OpenTelemetry for the `temporal`, `http`, `gRPC` and `Jobs` plugins including all `Jobs` drivers.
+- ✒️ **Config plugin:** Configuration version updated to the `version: '3'`. ️
+- ✒️ **Logger plugin:** Now uses UTC timestamps [CH](https://github.com/roadrunner-server/roadrunner/issues/1442), (thanks @cv65kr)
+- ✒️ **gRPC plugin:** Support user defined interceptors.
+- ✒️ **Temporal plugin:** Support user defined interceptors.
+
+### <center>🩹 Fixes:</center>
+
+- 🐛 **HTTP plugin**: Edge case where empty form value overwrites existing value, [PR](https://github.com/roadrunner-server/http/pull/87), (thanks @tungfinblox).
+- 🐛 **AMQP plugin**: Redial failed if user uses only consumer, [PR](https://github.com/roadrunner-server/roadrunner/issues/1472), (thanks @iborysenko).
+- 🐛 **RR CLI**: `./rr jobs` command panic if used without arguments, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1479), (thanks @embargo2710)
+
+---
+
 ###### tags: `roadrunner` `v2.12.3`
 
 ## v2.12.3 (16.02.2023)
