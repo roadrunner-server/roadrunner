@@ -13,7 +13,7 @@ require (
 	github.com/roadrunner-server/app-logger/v4 v4.0.3
 	github.com/roadrunner-server/beanstalk/v4 v4.2.1
 	github.com/roadrunner-server/boltdb/v4 v4.3.1
-	github.com/roadrunner-server/centrifuge/v4 v4.0.4
+	github.com/roadrunner-server/centrifuge/v4 v4.1.0
 	github.com/roadrunner-server/config/v4 v4.2.0
 	github.com/roadrunner-server/endure/v2 v2.2.0
 	github.com/roadrunner-server/errors v1.2.0
@@ -159,7 +159,7 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	go.buf.build/grpc/go/roadrunner-server/api v1.4.36 // indirect
+	go.buf.build/grpc/go/roadrunner-server/api v1.4.38 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.40.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.40.0 // indirect
