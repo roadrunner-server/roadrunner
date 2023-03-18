@@ -9,11 +9,11 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v4 v4.4.1
-	github.com/roadrunner-server/api/v4 v4.3.1
+	github.com/roadrunner-server/api/v4 v4.3.2
 	github.com/roadrunner-server/app-logger/v4 v4.0.3
 	github.com/roadrunner-server/beanstalk/v4 v4.2.1
 	github.com/roadrunner-server/boltdb/v4 v4.3.1
-	github.com/roadrunner-server/centrifuge/v4 v4.0.4
+	github.com/roadrunner-server/centrifuge/v4 v4.1.0
 	github.com/roadrunner-server/config/v4 v4.2.0
 	github.com/roadrunner-server/endure/v2 v2.2.0
 	github.com/roadrunner-server/errors v1.2.0
@@ -52,16 +52,16 @@ require (
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
 	github.com/temporalio/roadrunner-temporal/v4 v4.2.0-beta.1
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.36
-	go.uber.org/automaxprocs v1.5.1
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.39
+	go.uber.org/automaxprocs v1.5.2
 	golang.org/x/exp v0.0.0-20230315142452-642cacee5cc0
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.222 // indirect
+	github.com/aws/aws-sdk-go v1.44.224 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.6 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.18.17 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.18.18 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.17 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.30 // indirect
@@ -117,7 +117,7 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nats-io/jwt/v2 v2.3.0 // indirect
 	github.com/nats-io/nats.go v1.24.0 // indirect
-	github.com/nats-io/nkeys v0.3.0 // indirect
+	github.com/nats-io/nkeys v0.4.4 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/onsi/gomega v1.24.1 // indirect
 	github.com/openzipkin/zipkin-go v0.4.1 // indirect
@@ -159,7 +159,7 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	go.buf.build/grpc/go/roadrunner-server/api v1.4.36 // indirect
+	go.buf.build/grpc/go/roadrunner-server/api v1.4.39 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.40.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.40.0 // indirect
