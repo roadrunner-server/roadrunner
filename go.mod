@@ -51,7 +51,7 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
-	github.com/temporalio/roadrunner-temporal/v4 v4.2.0-beta.1
+	github.com/temporalio/roadrunner-temporal/v4 v4.2.0-beta.2
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.39
 	go.uber.org/automaxprocs v1.5.2
 	golang.org/x/exp v0.0.0-20230315142452-642cacee5cc0
@@ -90,7 +90,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
-	github.com/goccy/go-json v0.10.1 // indirect
+	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gofiber/fiber/v2 v2.42.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
