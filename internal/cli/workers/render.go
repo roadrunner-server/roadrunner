@@ -49,6 +49,10 @@ func WorkerTable(writer io.Writer, workers []*process.State) *tablewriter.Table 
 
 // ServiceWorkerTable renders table with information about rr server workers.
 func ServiceWorkerTable(writer io.Writer, workers []*process.State) *tablewriter.Table {
+	sort.Slice(workers, func(i, j int) bool {
+		return workers[i].Pid < workers[j].Pid
+	})
+
 	tw := tablewriter.NewWriter(writer)
 	tw.SetAutoWrapText(false)
 	tw.SetHeader([]string{"PID", "Memory", "CPU%", "Command"})
@@ -72,6 +76,10 @@ func ServiceWorkerTable(writer io.Writer, workers []*process.State) *tablewriter
 
 // JobsTable renders table with information about rr server jobs.
 func JobsTable(writer io.Writer, jobs []*jobs.State) *tablewriter.Table {
+	sort.Slice(jobs, func(i, j int) bool {
+		return jobs[i].Pipeline < jobs[j].Pipeline
+	})
+
 	tw := tablewriter.NewWriter(writer)
 	tw.SetAutoWrapText(false)
 	tw.SetHeader([]string{"Status", "Pipeline", "Driver", "Queue", "Active", "Delayed", "Reserved"})
