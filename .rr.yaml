@@ -1353,8 +1353,13 @@ jobs:
         # on the same channel will be acknowledged.  This is useful for batch processing
         # of deliveries
         #
-        # Default:false
+        # Default: false
         multiple_ack: false
+        
+        # The consumer_id is identified by a string that is unique and scoped for all consumers on this channel.
+        #
+        # Default: "roadrunner" + uuid.
+        consumer_id: "roadrunner-uuid"
 
         # Use rabbitmq mechanism to requeue the job on fail
         #
