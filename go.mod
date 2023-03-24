@@ -25,7 +25,7 @@ require (
 	github.com/roadrunner-server/http/v4 v4.1.2
 	github.com/roadrunner-server/informer/v4 v4.1.2
 	github.com/roadrunner-server/jobs/v4 v4.3.2
-	github.com/roadrunner-server/kafka/v4 v4.1.2
+	github.com/roadrunner-server/kafka/v4 v4.1.3
 	github.com/roadrunner-server/kv/v4 v4.1.5
 	github.com/roadrunner-server/lock/v4 v4.0.3
 	github.com/roadrunner-server/logger/v4 v4.1.3
@@ -59,7 +59,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.227 // indirect
+	github.com/aws/aws-sdk-go v1.44.228 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.7 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.19 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.18 // indirect
@@ -192,7 +192,7 @@ require (
 	golang.org/x/text v0.8.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.7.0 // indirect
-	google.golang.org/genproto v0.0.0-20230322174352-cde4c949918d // indirect
+	google.golang.org/genproto v0.0.0-20230323212658-478b75c54725 // indirect
 	google.golang.org/grpc v1.54.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
