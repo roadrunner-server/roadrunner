@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## <center> 🚀 v2023.1.0-rc.1 🚀 </center>
+
+## <center>👀 New: <center
+- ✒️ **Server plugin:** pass `RR_VERSION` env variable to the worker to check the current RR version. Version passed without the `v` prefix (e.g. `2023.1.0`).
+- ✒️ **Lock plugin:** faster first call to acquire the lock.
+
+---
+
 ## <center> 🚀 v2023.1.0-beta.1 🚀 </center>
 
 ## <center>👀 New: <center>
