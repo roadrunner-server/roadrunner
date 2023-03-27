@@ -1696,20 +1696,18 @@ jobs:
 
             # Topic for the consume_partitions
             #
-            # Required
+            # Required at least one topic.
             foo:
 
               # Partition for the topic.
               #
-              # Required
+              # Required at least one partition.
               0:
 
                 # Partition offset.
                 #
                 # Required if all options is used. No default, error on empty.
                 # Possible values: AtEnd, At, AfterMilli, AtStart, Relative, WithEpoch
-                #
-                # Required
                 type: AtStart
 
                 # Value for the: At, AfterMilli, Relative and WithEpoch offsets.
