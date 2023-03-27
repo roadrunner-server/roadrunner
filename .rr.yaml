@@ -1158,10 +1158,10 @@ sqs:
 # This option is required to use Kafka driver,
 kafka:
 
-  # Kafka brokers can contain any number of addresses separated by comma (127.0.0.1:9092,127.0.0.1:9093,...)
+  # Kafka brokers addresses
   #
   # Required to use Kafka driver
-  brokers: 127.0.0.1:9092, 127.0.0.1:9002
+  brokers: ["127.0.0.1:9092", "127.0.0.1:9002"]
 
   # SASL authentication options to use for all connections. Depending on the auth type, plain or aws_msk_plain sections might be removed.
   #
