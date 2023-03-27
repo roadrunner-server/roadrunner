@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Spiral Roadrunner config file schema version 2",
-    "description": "Spiral Roadrunner config file schema version 2.",
+    "title": "Roadrunner config file schema version 3",
+    "description": "Roadrunner config file schema version 3",
     "type": "object",
     "additionalProperties": true,
     "minProperties": 1,
@@ -9,9 +9,9 @@
         "version": {
             "description": "configuration version",
             "type": "string",
-            "default": "2.7",
+            "default": "3",
             "enum": [
-                "2.7"
+                "3"
             ]
         },
         "centrifuge": {
@@ -458,6 +458,74 @@
                             "$ref": "#/definitions/Service"
                         }
                     ]
+                }
+            }
+        },
+        "otel": {
+            "description": "OpenTelemetry configuration",
+            "type": "object",
+            "properties": {
+                "insecure": {
+                    "description": "Use insecure endpoint",
+                    "type": "boolean",
+                    "default": false
+                },
+                "compress": {
+                    "description": "Use gzip compressor",
+                    "type": "boolean",
+                    "default": false
+                },
+                "exporter": {
+                    "description": "Provides functionality to emit telemetry to consumers",
+                    "type": "string",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "zipkin",
+                            "stdout",
+                            "stderr",
+                            "otlp",
+                            "jaeger",
+                            "jaeger_agent"
+                        ],
+                        "pattern": "^[0-9a-zA-Z_]+$"
+                    }
+                },
+                "custom_url": {
+                    "description": "Used for the http client to override the default URL",
+                    "type": "string",
+                    "default": ""
+                },
+                "endpoint": {
+                    "description": "Consumer's endpoint",
+                    "type": "string",
+                    "default": "127.0.0.1:4318"
+                },
+                "client": {
+                    "description": "Client to send the spans",
+                    "type": "string",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "http",
+                            "grpc"
+                        ],
+                        "pattern": "^[0-9a-zA-Z_]+$"
+                    }
+                },
+                "service_name": {
+                    "description": "User's service name",
+                    "type": "string",
+                    "default": "RoadRunner"
+                },
+                "service_version": {
+                    "description": "User's service version",
+                    "type": "string",
+                    "default": "1.0.0"
+                },
+                "headers": {
+                    "description": "User defined headers",
+                    "$ref": "#/definitions/Hashmap"
                 }
             }
         },
@@ -1046,73 +1114,6 @@
                             "minimum": 0
                         }
                     }
-                },
-                "otel": {
-                    "description": "OpenTelemetry configuration",
-                    "type": "object",
-                    "properties": {
-                        "insecure": {
-                            "description": "Use insecure endpoint",
-                            "type": "boolean",
-                            "default": false
-                        },
-                        "compress": {
-                            "description": "Use gzip compressor",
-                            "type": "boolean",
-                            "default": false
-                        },
-                        "exporter": {
-                            "description": "Provides functionality to emit telemetry to consumers",
-                            "type": "string",
-                            "items": {
-                                "type": "string",
-                                "enum": [
-                                    "zipkin",
-                                    "stdout",
-                                    "otlp",
-                                    "jaeger",
-                                    "jaeger_agent"
-                                ],
-                                "pattern": "^[0-9a-zA-Z_]+$"
-                            }
-                        },
-                        "custom_url": {
-                            "description": "Used for the http client to override the default URL",
-                            "type": "string",
-                            "default": ""
-                        },
-                        "endpoint": {
-                            "description": "Consumer's endpoint",
-                            "type": "string",
-                            "default": "localhost:4318"
-                        },
-                        "client": {
-                            "description": "Client to send the spans",
-                            "type": "string",
-                            "items": {
-                                "type": "string",
-                                "enum": [
-                                    "http",
-                                    "grpc"
-                                ],
-                                "pattern": "^[0-9a-zA-Z_]+$"
-                            }
-                        },
-                        "service_name": {
-                            "description": "User's service name",
-                            "type": "string",
-                            "default": "RoadRunner"
-                        },
-                        "service_version": {
-                            "description": "User's service version",
-                            "type": "string",
-                            "default": "1.0.0"
-                        },
-                        "headers": {
-                            "description": "User defined headers",
-                            "$ref": "#/definitions/Hashmap"
-                        }
-                    }
                 }
             },
             "required": [
@@ -1287,9 +1288,6 @@
         "nats": {
             "$ref": "#/definitions/NATS_J"
         },
-        "boltdb": {
-            "$ref": "#/definitions/BoltDB_J"
-        },
         "kafka": {
             "$ref": "#/definitions/KAFKA_J"
         },
@@ -1421,6 +1419,30 @@
                                                     "type": "integer",
                                                     "default": 100000
                                                 },
+                                                "permissions": {
+                                                    "description": "Permissions for the boltdb database file",
+                                                    "type": "integer",
+                                                    "default": 777
+                                                },
+                                                "file": {
+                                                    "description": "BoldDB file to create or DB to use",
+                                                    "type": "string",
+                                                    "default": "rr.db"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "properties": {
+                                                "priority": {
+                                                    "description": "Pipeline priority. If the job pushed to the pipeline has priority set to 0, it will inherit the pipeline's priority",
+                                                    "type": "integer",
+                                                    "default": 10
+                                                },
+                                                "prefetch": {
+                                                    "description": "Number of job to prefetch from the driver",
+                                                    "type": "integer",
+                                                    "default": 100000
+                                                },
                                                 "consume_all": {
                                                     "description": "Consume all payloads, even not Job structured",
                                                     "type": "boolean",
@@ -1436,10 +1458,20 @@
                                                     "type": "string",
                                                     "default": "amqp.default"
                                                 },
+                                                "redial_timeout": {
+                                                    "description": "Redial timeout (in seconds). How long to try to reconnect to the AMQP server",
+                                                    "type": "integer",
+                                                    "default": 60
+                                                },
                                                 "exchange_durable": {
                                                     "description": "Durable exchange (rabbitmq option: https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges)",
                                                     "type": "boolean",
                                                     "default": false
+                                                },
+                                                "consumer_id": {
+                                                    "description": "The consumer_id is identified by a string that is unique and scoped for all consumers on this channel",
+                                                    "type": "string",
+                                                    "default": "roadrunner+uuid"
                                                 },
                                                 "exchange_auto_deleted": {
                                                     "description": "Auto-delete (exchange is deleted when last queue is unbound from it): https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges",
