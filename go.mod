@@ -37,7 +37,6 @@ require (
 	github.com/roadrunner-server/prometheus/v4 v4.0.5
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.0.4
 	github.com/roadrunner-server/redis/v4 v4.1.5
-	github.com/roadrunner-server/reload/v4 v4.0.4
 	github.com/roadrunner-server/resetter/v4 v4.0.3
 	github.com/roadrunner-server/rpc/v4 v4.1.4
 	github.com/roadrunner-server/sdk/v4 v4.2.0
@@ -59,7 +58,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.228 // indirect
+	github.com/aws/aws-sdk-go v1.44.229 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.7 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.19 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.18 // indirect
@@ -91,7 +90,7 @@ require (
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
-	github.com/gofiber/fiber/v2 v2.42.0 // indirect
+	github.com/gofiber/fiber/v2 v2.43.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/gogo/status v1.1.1 // indirect
@@ -116,7 +115,7 @@ require (
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nats-io/jwt/v2 v2.3.0 // indirect
-	github.com/nats-io/nats.go v1.24.0 // indirect
+	github.com/nats-io/nats.go v1.25.0 // indirect
 	github.com/nats-io/nkeys v0.4.4 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/onsi/gomega v1.24.1 // indirect
@@ -150,7 +149,7 @@ require (
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
 	github.com/twmb/franz-go v1.13.1 // indirect
-	github.com/twmb/franz-go/pkg/kmsg v1.4.0 // indirect
+	github.com/twmb/franz-go/pkg/kmsg v1.5.0 // indirect
 	github.com/twmb/murmur3 v1.1.6 // indirect
 	github.com/uber-go/tally/v4 v4.1.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

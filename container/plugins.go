@@ -25,7 +25,6 @@ import (
 	"github.com/roadrunner-server/prometheus/v4"
 	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v4"
 	"github.com/roadrunner-server/redis/v4"
-	"github.com/roadrunner-server/reload/v4"
 	"github.com/roadrunner-server/resetter/v4"
 	rpcPlugin "github.com/roadrunner-server/rpc/v4"
 	"github.com/roadrunner-server/send/v4"
@@ -54,8 +53,6 @@ func Plugins() []any { //nolint:funlen
 		&appLogger.Plugin{},
 		// metrics plugin
 		&metrics.Plugin{},
-		// reload plugin
-		&reload.Plugin{},
 		// rpc plugin (workers, reset)
 		&rpcPlugin.Plugin{},
 		// server plugin (NewWorker, NewWorkerPool)
