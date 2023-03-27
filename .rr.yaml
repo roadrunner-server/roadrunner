@@ -1691,23 +1691,25 @@ jobs:
           #
           # NOTE: This option is not compatible with group consuming and regex consuming.
           #
-          # Optional, default: empty
+          # Optional, default: null
           consume_partitions:
 
             # Topic for the consume_partitions
             #
-            # Optional, default: empty.
+            # Required
             foo:
 
               # Partition for the topic.
               #
-              # Optional, default: empty.
+              # Required
               0:
 
                 # Partition offset.
                 #
                 # Required if all options is used. No default, error on empty.
                 # Possible values: AtEnd, At, AfterMilli, AtStart, Relative, WithEpoch
+                #
+                # Required
                 type: AtStart
 
                 # Value for the: At, AfterMilli, Relative and WithEpoch offsets.
