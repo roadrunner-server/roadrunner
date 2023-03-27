@@ -1155,9 +1155,65 @@ sqs:
 
 # Kafka jobs driver
 #
-# This option is required to use Kafka driver. Addrs can contain any number of addresses separated by comma (127.0.0.1:9092,127.0.0.1:9093,...)
+# This option is required to use Kafka driver,
 kafka:
+
+  # Kafka brokers can contain any number of addresses separated by comma (127.0.0.1:9092,127.0.0.1:9093,...)
+  #
+  # Required to use Kafka driver
   brokers: 127.0.0.1:9092, 127.0.0.1:9002
+
+  # SASL authentication options to use for all connections. Depending on the auth type, plain or aws_msk_plain sections might be removed.
+  #
+  # Optional, default: empty
+  sasl:
+
+    # PLAIN auth section -----
+
+    # Mechanism used for the authentication
+    #
+    # Required for the section. Might be: 'aws_msk_iam' or 'plain'
+    mechanism: plain
+
+    # Username to use for authentication.
+    #
+    # Required for the plain auth mechanism.
+    username: foo
+
+    # Password to use for authentication.
+    #
+    # Required for the plain auth mechanism.
+    password: bar
+
+    # Zid is an optional authorization ID to use in authenticating.
+    #
+    # Optional, default: empty.
+    zid: "foo"
+
+    # AWS_MSK_IAM auth section -----
+
+    # AWS Access key ID.
+    #
+    # Required
+    access_key: foo
+
+    # AWS Secret Access Key.
+    #
+    #
+    secret_key: bar
+
+    # SessionToken, if non-empty, is a session / security token to use for authentication.
+    # See the following link for more details:
+    #
+    # https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html
+    session_token: bar
+
+    # UserAgent is the user agent to for the client to use when connecting
+    # to Kafka, overriding the default "franz-go/<runtime.Version()>/<hostname>".
+    # Setting a UserAgent allows authorizing based on the aws:UserAgent
+    # condition key; see the following link for more details:
+    #     https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-useragent
+    user_agent: baz
 
 jobs:
   # Number of threads which will try to obtain the job from the priority queue
@@ -1355,7 +1411,7 @@ jobs:
         #
         # Default: false
         multiple_ack: false
-        
+
         # The consumer_id is identified by a string that is unique and scoped for all consumers on this channel.
         #
         # Default: "roadrunner" + uuid.
@@ -1541,63 +1597,6 @@ jobs:
         # If the job has priority set to 0, it will inherit the pipeline's priority. Default: 10.
         priority: 1
 
-        # Kafka brokers, array. If there is no port specified, 9092 will be used as default
-        #
-        # Required, no default
-        brokers: [ 127.0.0.1:9092 ]
-
-        # SASL authentication options to use for all connections. Depending on the auth type, plain or aws_msk_plain sections might be removed.
-        #
-        # Optional, default: empty
-        sasl:
-
-          # PLAIN auth section -----
-
-          # Mechanism used for the authentication
-          #
-          # Required for the section. Might be: 'aws_msk_iam' or 'plain'
-          mechanism: plain
-
-          # Username to use for authentication.
-          #
-          # Required for the plain auth mechanism.
-          username: foo
-
-          # Password to use for authentication.
-          #
-          # Required for the plain auth mechanism.
-          password: bar
-
-          # Zid is an optional authorization ID to use in authenticating.
-          #
-          # Optional, default: empty.
-          zid: "foo"
-
-          # AWS_MSK_IAM auth section -----
-
-          # AWS Access key ID.
-          #
-          # Required
-          access_key: foo
-
-          # AWS Secret Access Key.
-          #
-          #
-          secret_key: bar
-
-          # SessionToken, if non-empty, is a session / security token to use for authentication.
-          # See the following link for more details:
-          #
-          # https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html
-          session_token: bar
-
-
-          # UserAgent is the user agent to for the client to use when connecting
-          # to Kafka, overriding the default "franz-go/<runtime.Version()>/<hostname>".
-          # Setting a UserAgent allows authorizing based on the aws:UserAgent
-          # condition key; see the following link for more details:
-          #     https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-useragent
-          user_agent: baz
 
         # Auto create topic for the consumer/producer
         #
