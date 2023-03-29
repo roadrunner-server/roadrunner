@@ -22,10 +22,10 @@ require (
 	github.com/roadrunner-server/grpc/v4 v4.1.5
 	github.com/roadrunner-server/gzip/v4 v4.0.4
 	github.com/roadrunner-server/headers/v4 v4.0.4
-	github.com/roadrunner-server/http/v4 v4.1.2
+	github.com/roadrunner-server/http/v4 v4.1.3
 	github.com/roadrunner-server/informer/v4 v4.1.2
 	github.com/roadrunner-server/jobs/v4 v4.3.2
-	github.com/roadrunner-server/kafka/v4 v4.1.3
+	github.com/roadrunner-server/kafka/v4 v4.1.4
 	github.com/roadrunner-server/kv/v4 v4.1.5
 	github.com/roadrunner-server/lock/v4 v4.0.3
 	github.com/roadrunner-server/logger/v4 v4.1.3
@@ -58,7 +58,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.229 // indirect
+	github.com/aws/aws-sdk-go v1.44.231 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.7 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.19 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.18 // indirect
@@ -111,7 +111,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mholt/acmez v1.1.0 // indirect
-	github.com/miekg/dns v1.1.52 // indirect
+	github.com/miekg/dns v1.1.53 // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nats-io/jwt/v2 v2.3.0 // indirect
@@ -191,7 +191,7 @@ require (
 	golang.org/x/text v0.8.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.7.0 // indirect
-	google.golang.org/genproto v0.0.0-20230323212658-478b75c54725 // indirect
+	google.golang.org/genproto v0.0.0-20230327215041-6ac7f18bb9d5 // indirect
 	google.golang.org/grpc v1.54.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
