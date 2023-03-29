@@ -97,7 +97,7 @@ composer require spiral/roadrunner:v2.0 nyholm/psr7
 
 Server binary will be available at the root of your project.
 
-> **INFO**
+> **Note**
 > PHP's extensions `php-curl` and `php-zip` are required to download RoadRunner automatically.
 > PHP's extensions `php-sockets` need to be installed to run roadrunner.
 > Check with `php --modules` your installed extensions.
