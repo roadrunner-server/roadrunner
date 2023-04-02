@@ -50,7 +50,7 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
-	github.com/temporalio/roadrunner-temporal/v4 v4.2.0
+	github.com/temporalio/roadrunner-temporal/v4 v4.2.1
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.39
 	go.uber.org/automaxprocs v1.5.2
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
@@ -179,7 +179,7 @@ require (
 	go.temporal.io/sdk v1.21.1 // indirect
 	go.temporal.io/sdk/contrib/opentelemetry v0.2.0 // indirect
 	go.temporal.io/sdk/contrib/tally v0.2.0 // indirect
-	go.temporal.io/server v1.20.0 // indirect
+	go.temporal.io/server v1.20.1 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
