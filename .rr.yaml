@@ -629,19 +629,6 @@ http:
       "fc00::/7",
       "fe80::/10",
     ]
-
-  # [SINCE 2.6] New Relic middleware
-  new_relic:
-    # Application name.
-    #
-    # Error if empty. NEW_RELIC_APP_NAME env variable should be set if the app_name key is empty. If both empty - error.
-    app_name: "app"
-
-    # Licence key
-    #
-    # Error if empty. NEW_RELIC_LICENSE_KEY env variable should be set if the license_key key is empty. If both empty - error.
-    license_key: "key"
-
   # RFC 7234 RR Cache middleware
   #
   # Link: https://github.com/darkweak/souin
