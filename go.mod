@@ -27,7 +27,7 @@ require (
 	github.com/roadrunner-server/jobs/v4 v4.3.2
 	github.com/roadrunner-server/kafka/v4 v4.1.4
 	github.com/roadrunner-server/kv/v4 v4.1.5
-	github.com/roadrunner-server/lock/v4 v4.0.3
+	github.com/roadrunner-server/lock/v4 v4.0.4
 	github.com/roadrunner-server/logger/v4 v4.1.3
 	github.com/roadrunner-server/memcached/v4 v4.1.5
 	github.com/roadrunner-server/memory/v4 v4.2.2
