@@ -1,8 +1,23 @@
 # CHANGELOG
 
+## <center> 🚀 v2023.1.0-rc.2 🚀 </center>
+
+## <center>👀 New: </center>
+
+- ✒️ **Velox:** Support for `v2023` and `v4` plugins. v2` and `v3` plugins are still supported.
+
+### <center>🩹 Fixes:</center>
+
+- 🐛 **Service plugin**: Fix deadlock on channel send operation when using `remain_after_exit`.
+- 🐛 **Service plugin**: Send `SIGINT` instead of `SIGKILL` to underlying processes with `5s` timeout to let the process exit gracefully.
+- 🐛 **Config plugin**: Fix missing default env variable syntax parser, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1522), (thanks @benalf)
+
+---
+
 ## <center> 🚀 v2023.1.0-rc.1 🚀 </center>
 
-## <center>👀 New: <center
+## <center>👀 New: </center>
+
 - ✒️ **Server plugin:** pass `RR_VERSION` env variable to the worker to check the current RR version. Version passed without the `v` prefix (e.g. `2023.1.0`).
 - ✒️ **Lock plugin:** faster first call to acquire the lock.
 
@@ -10,7 +25,7 @@
 
 ## <center> 🚀 v2023.1.0-beta.1 🚀 </center>
 
-## <center>👀 New: <center>
+## <center>👀 New: </center>
 
 - ✒️ **Kafka plugin:** Totally reworked Kafka plugin. Now it supports regexps for the topics, marked commits for the group consumers, and SASL authentication. Configuration reference: [link](https://roadrunner.dev/docs/plugins-jobs/2.x/en#kafka-driver).
 - ✒️ **RPC plugin:** RPC plugin would be available immediately before the worker initialization. That means, that PHP worker may use all RPC methods immediately.
