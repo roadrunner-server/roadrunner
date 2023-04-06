@@ -42,7 +42,7 @@ require (
 	github.com/roadrunner-server/sdk/v4 v4.2.0
 	github.com/roadrunner-server/send/v4 v4.0.6
 	github.com/roadrunner-server/server/v4 v4.1.2
-	github.com/roadrunner-server/service/v4 v4.1.1
+	github.com/roadrunner-server/service/v4 v4.1.2
 	github.com/roadrunner-server/sqs/v4 v4.2.4
 	github.com/roadrunner-server/static/v4 v4.0.6
 	github.com/roadrunner-server/status/v4 v4.1.6
