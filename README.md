@@ -61,7 +61,7 @@ with much greater performance and flexibility.
 - Development Mode
 - Integrations with [Symfony](https://github.com/php-runtime/roadrunner-symfony-nyholm), [Laravel](https://github.com/laravel/octane), Slim, CakePHP, Zend Expressive
 - Application server for [Spiral](https://github.com/spiral/framework)
-- Works on Windows (Unix sockets (AF_UNIX) supported on Windows 10) and WSL2
+- Works on Windows 10/11 and WSL2
 
 ---
 
@@ -107,8 +107,8 @@ Server binary will be available at the root of your project.
 ## Installation option for the Debian-derivatives (Ubuntu, Mint, MX, etc)
 
 ```bash
-wget https://github.com/roadrunner-server/roadrunner/releases/download/v2.X.X/roadrunner-2.X.X-linux-amd64.deb
-sudo dpkg -i roadrunner-2.X.X-linux-amd64.deb
+wget https://github.com/roadrunner-server/roadrunner/releases/download/v2023.X.X/roadrunner-2023.X.X-linux-amd64.deb
+sudo dpkg -i roadrunner-2023.X.X-linux-amd64.deb
 ```
 
 ## Dowload the latest release via curl:
