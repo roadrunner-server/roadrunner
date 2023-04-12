@@ -1009,8 +1009,8 @@ github.com/roadrunner-server/resetter/v4 v4.0.3 h1:SEqd2BU5ToPT4d8H3Y8k2bI9WIL3Z
 github.com/roadrunner-server/resetter/v4 v4.0.3/go.mod h1:aMBbcnJrVlUm3QayCUyuEStAprAu42c9tNhuvS97Ue4=
 github.com/roadrunner-server/rpc/v4 v4.1.5 h1:ttVdeNRViLh3OiT2+w3XNUeAitSBk1/1Iq7zsKKozz0=
 github.com/roadrunner-server/rpc/v4 v4.1.5/go.mod h1:56fnmcfENCy+4qFF2qrBE2Y+2LDvekDCifC7GTRRWAQ=
-github.com/roadrunner-server/sdk/v4 v4.2.0 h1:hqNlqJV2MXZ8DF1wJnouUdV/55Hae6VL37fVXT1aIr8=
-github.com/roadrunner-server/sdk/v4 v4.2.0/go.mod h1:aIzXmg8DZBJ4Tbtvihp/s6VH4e2oSdivOqm/8V+HuUc=
+github.com/roadrunner-server/sdk/v4 v4.2.1 h1:7BGqp+Jm5IBbc+rf9Z/ZSjj2FHzMIQOQVj7U+NeMMFo=
+github.com/roadrunner-server/sdk/v4 v4.2.1/go.mod h1:A8zS1JZfn/95lWBn4IG3dKvgZ205DN/+eqztkxBYU5w=
 github.com/roadrunner-server/send/v4 v4.0.6 h1:BXkMZx5FIpDdU6H7UH0NNBgo2jR3zJDzfMvyVt8SXCc=
 github.com/roadrunner-server/send/v4 v4.0.6/go.mod h1:cKhKMryDTNhc0FsDtTIN/OJzL+YfG7wao2gcIcE8bcw=
 github.com/roadrunner-server/server/v4 v4.1.2 h1:mx42NqN5T4CqIKs8l9pedSfxGP64xH1dCC4O+JUInWc=
