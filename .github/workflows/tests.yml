@@ -41,7 +41,7 @@ jobs:
       - name: Run linter
         uses: golangci/golangci-lint-action@v3.4.0
         with:
-          version: v1.51 # without patch version
+          version: v1.52 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
           args: -v --build-tags=race --timeout=10m
 
@@ -119,7 +119,7 @@ jobs:
           LDFLAGS: -s
             -X github.com/roadrunner-server/roadrunner/v2023/internal/meta.version=${{ steps.values.outputs.version }}
             -X github.com/roadrunner-server/roadrunner/v2023/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
-        run: go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr
+        run: go build -pgo=roadrunner.pprof -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr
 
       - name: Try to execute
         if: matrix.os == 'linux'
