@@ -91,7 +91,7 @@ Configuration located in the `.rr.yaml` file ([full sample](https://github.com/r
 You can also install RoadRunner automatically using command shipped with the composer package, run:
 
 ```bash
-composer require spiral/roadrunner:v2023.1.0 nyholm/psr7
+composer require spiral/roadrunner-http nyholm/psr7
 ./vendor/bin/rr get-binary
 ```
 
