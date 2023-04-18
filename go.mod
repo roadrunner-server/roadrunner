@@ -13,7 +13,7 @@ require (
 	github.com/roadrunner-server/app-logger/v4 v4.0.6
 	github.com/roadrunner-server/beanstalk/v4 v4.2.5
 	github.com/roadrunner-server/boltdb/v4 v4.3.5
-	github.com/roadrunner-server/centrifuge/v4 v4.1.5
+	github.com/roadrunner-server/centrifuge/v4 v4.1.6
 	github.com/roadrunner-server/config/v4 v4.3.1
 	github.com/roadrunner-server/endure/v2 v2.2.0
 	github.com/roadrunner-server/errors v1.2.0
@@ -82,7 +82,7 @@ require (
 	github.com/bradfitz/gomemcache v0.0.0-20230124162541-5f7a7d875746 // indirect
 	github.com/cactus/go-statsd-client/statsd v0.0.0-20200423205355-cb0885a1018c // indirect
 	github.com/caddyserver/certmagic v0.17.2 // indirect
-	github.com/cenkalti/backoff/v4 v4.2.0 // indirect
+	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -141,8 +141,6 @@ require (
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/savsgio/dictpool v0.0.0-20221023140959-7bf2e61cea94 // indirect
 	github.com/savsgio/gotils v0.0.0-20230208104028-c358bd845dee // indirect
-	github.com/segmentio/asm v1.2.0 // indirect
-	github.com/segmentio/encoding v0.3.6 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/spf13/afero v1.9.5 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
