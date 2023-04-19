@@ -158,7 +158,7 @@ func TestCommandWorkingDir(t *testing.T) {
 
 	assert.NoError(t, cmd.Execute())
 	assert.True(t, executed)
-	assert.Equal(t, "/tmp", wd)
+	assert.Equal(t, tmp, wd)
 
 	t.Cleanup(func() {
 		_ = f2.Close()

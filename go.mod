@@ -45,7 +45,7 @@ require (
 	github.com/roadrunner-server/service/v4 v4.1.4
 	github.com/roadrunner-server/sqs/v4 v4.2.6
 	github.com/roadrunner-server/static/v4 v4.0.8
-	github.com/roadrunner-server/status/v4 v4.1.7
+	github.com/roadrunner-server/status/v4 v4.1.8
 	github.com/roadrunner-server/tcp/v4 v4.0.7
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.15.0
@@ -53,14 +53,14 @@ require (
 	github.com/temporalio/roadrunner-temporal/v4 v4.2.2
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.39
 	go.uber.org/automaxprocs v1.5.2
-	golang.org/x/exp v0.0.0-20230418202329-0354be287a23
+	golang.org/x/exp v0.0.0-20230419192730-864b3d6c5c2c
 )
 
 exclude github.com/uber-go/tally/v4 v4.1.7
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.245 // indirect
+	github.com/aws/aws-sdk-go v1.44.246 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.8 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.21 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.20 // indirect
