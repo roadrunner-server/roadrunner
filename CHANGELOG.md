@@ -1,56 +1,56 @@
 # CHANGELOG
 
-## <center> 🚀 v2023.1.0-rc.2 🚀 </center>
+# <center> 🚀 v2023.1.1 🚀 </center>
 
-## <center>👀 New: </center>
+## 🩹 Fixes
 
-- ✒️ **Velox:** Support for `v2023` and `v4` plugins. v2` and `v3` plugins are still supported.
-
-### <center>🩹 Fixes:</center>
-
-- 🐛 **Service plugin**: Fix deadlock on channel send operation when using `remain_after_exit`.
-- 🐛 **Service plugin**: Send `SIGINT` instead of `SIGKILL` to underlying processes with `5s` timeout to let the process exit gracefully.
-- 🐛 **Config plugin**: Fix missing default env variable syntax parser, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1522), (thanks @benalf)
+- 🐛 **Centrifuge plugin**: Fix incorrect proto package import that caused panic on large payload.
+- 🐛 **PHP metapackage**: Unable to install RoadRunner via Composer, [B](https://github.com/roadrunner-server/roadrunner/issues/1540), (thanks @monkenWu, @butschster)
+- 🐛 **HTTP plugin**: Fix double unmarshal of the main plugin configuration.
+- 🐛 **RR**: Fix `TestCommandWorkingDir` predifined temp directory, [B](https://github.com/roadrunner-server/roadrunner/issues/1545), (thanks @shyim)
+- 🐛 **Status plugin**: Fix `superfluous response.WriteHeader` bug, [B](https://github.com/roadrunner-server/roadrunner/issues/1544), (thanks @mfadul24)
 
 ---
 
-## <center> 🚀 v2023.1.0-rc.1 🚀 </center>
+# <center> 🚀 v2023.1.0 🚀 </center>
 
-## <center>👀 New: </center>
+## ⚠️ The `reload` plugin has been removed from the default plugins list. Please use `*.pool.debug=true` instead.
 
-- ✒️ **Server plugin:** pass `RR_VERSION` env variable to the worker to check the current RR version. Version passed without the `v` prefix (e.g. `2023.1.0`).
-- ✒️ **Lock plugin:** faster first call to acquire the lock.
+## 👀 New
 
----
+- ✒️ **Kafka plugin:** Completely rewritten Kafka plugin. Now supports regexps for topics, marked commits for group consumers, and SASL authentication. Configuration reference: [link](https://roadrunner.dev/docs/plugins-jobs/2.x/en#kafka-driver).
+- ✒️ **RPC plugin:** The RPC plugin would be available immediately before worker initialization. This means that PHP worker can use all RPC methods immediately.
 
-## <center> 🚀 v2023.1.0-beta.1 🚀 </center>
-
-## <center>👀 New: </center>
-
-- ✒️ **Kafka plugin:** Totally reworked Kafka plugin. Now it supports regexps for the topics, marked commits for the group consumers, and SASL authentication. Configuration reference: [link](https://roadrunner.dev/docs/plugins-jobs/2.x/en#kafka-driver).
-- ✒️ **RPC plugin:** RPC plugin would be available immediately before the worker initialization. That means, that PHP worker may use all RPC methods immediately.
 - ✒️ Endure v2 support (internal change).
-- ✒️ Bash script to download the latest RR archive. Later we're going to release a non archived binaries in addition to the regular archived releases.
-  Sample of usage:
+- ✒️ Bash script to download the latest RR archive. Later we'll release a non-archived binary in addition to the regular archived releases.  Sample of usage:
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf  https://raw.githubusercontent.com/roadrunner-server/roadrunner/master/download-latest.sh | sh
-```
-- ✒️ RoadRunner composer metapackage: Removed the `require` section: [PR](https://github.com/roadrunner-server/roadrunner/pull/1422), (thanks @roxblnfk)
-- ✒️ **Lock plugin:** New plugin to handle mutual access to the resource. PHP client is WIP with documentation.
-- ✒️ **AMQP plugin:** RR passes the Queue, Pipeline and Driver names to the PHP client in all modes including the consuming payloads from the other senders.
-- ✒️ **AMQP plugin:** `consumer_id` can now be set from the configuration, [FR](https://github.com/roadrunner-server/roadrunner/issues/1432), (thanks @codercms)
-- ✒️ **AMQP plugin:** Starting from the `v2023.1.0` RR would not accept the empty queue name, [CH](https://github.com/roadrunner-server/roadrunner/issues/1443)
-- ✒️ **OTEL plugin:** ️Support OpenTelemetry for the `temporal`, `http`, `gRPC` and `Jobs` plugins including all `Jobs` drivers.
-- ✒️ **Config plugin:** Configuration version updated to the `version: '3'`. ️
-- ✒️ **Logger plugin:** Now uses UTC timestamps [CH](https://github.com/roadrunner-server/roadrunner/issues/1442), (thanks @cv65kr)
-- ✒️ **gRPC plugin:** Support user defined interceptors.
-- ✒️ **Temporal plugin:** Support user defined interceptors.
 
-### <center>🩹 Fixes:</center>
+```
+- ✒️ RoadRunner Composer metapackage: Removed the `require` section: [PR](https://github.com/roadrunner-server/roadrunner/pull/1422), (thanks @roxblnfk)
+- ✒️ **Lock plugin:** New plugin to handle shared resource access.
+- ✒️ **AMQP plugin:** RR passes the queue, pipeline, and driver names to the PHP client in all modes, including the consuming payloads from the other senders.
+- ✒️ **AMQP plugin:** `consumer_id` can now be set in configuration, [FR](https://github.com/roadrunner-server/roadrunner/issues/1432), (thanks @codercms)
+- ✒️ **AMQP plugin:** Since `v2023.1.0` RR did not accept the empty queue name, [CH](https://github.com/roadrunner-server/roadrunner/issues/1443)
+- ✒️ **OTEL plugin:** ️Support OpenTelemetry for the `temporal`, `http`, `gRPC` and `Jobs` plugins, including all `Jobs` drivers.
+- ✒️ **Config plugin:** Configuration version updated to `version: '3'`.
+- ✒️ **Logger plugin:** Now uses UTC timestamps [CH](https://github.com/roadrunner-server/roadrunner/issues/1442), (thanks @cv65kr)
+- ✒️ **Service plugin:** Instead of `SIGKILL`, send `SIGINT` with a 5s timeout to stop the underlying processes.
+
+- ✒️ **Configuration plugin:** Support for bash syntax with default values for keys. Starting from this release, you can use the following variables anywhere (values) in the configuration: `${LOG-LEVEL:-debug}`. That is, if the `LOG-LEVEL` env variable is not set, use `debug`.
+
+- ✒️ **gRPC plugin:** Support for custom interceptors. Will be generally available in the `2023.2.0`.
+- ✒️ **Temporal plugin:** Support for custom interceptors. Will be generally available in the `2023.2.0`.
+
+## 🩹 Fixes
 
 - 🐛 **HTTP plugin**: Edge case where empty form value overwrites existing value, [PR](https://github.com/roadrunner-server/http/pull/87), (thanks @tungfinblox).
-- 🐛 **AMQP plugin**: Redial failed if user uses only consumer, [PR](https://github.com/roadrunner-server/roadrunner/issues/1472), (thanks @iborysenko).
-- 🐛 **RR CLI**: `./rr jobs` command panic if used without arguments, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1479), (thanks @embargo2710)
+- 🐛 **AMQP plugin**: Redial failed if user only uses consumer, [PR](https://github.com/roadrunner-server/roadrunner/issues/1472), (thanks @iborysenko).
+
+- 🐛 **RR CLI**: ./rr jobs` command panics when used without arguments, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1479), (thanks @embargo2710)
+
+- 🐛 **gRPC Plugin:** panic when calling `grpc.Workers` immediately after RR start.[BUG](https://github.com/roadrunner-server/roadrunner/issues/1532), (thanks @genhoi)
+- 🐛 **Proxy IP parser middleware:** Correctly handle the proxy headers from CloudFlare: [Discussion](https://github.com/orgs/roadrunner-server/discussions/1516), (thanks @victor-sudakov, @vladimir-vv)
 
 ---
 
