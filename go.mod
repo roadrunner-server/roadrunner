@@ -53,14 +53,14 @@ require (
 	github.com/temporalio/roadrunner-temporal/v4 v4.2.3
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.39
 	go.uber.org/automaxprocs v1.5.2
-	golang.org/x/exp v0.0.0-20230419192730-864b3d6c5c2c
+	golang.org/x/exp v0.0.0-20230420155640-133eef4313cb
 )
 
 exclude github.com/uber-go/tally/v4 v4.1.7
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.246 // indirect
+	github.com/aws/aws-sdk-go v1.44.247 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.8 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.21 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.20 // indirect
@@ -153,7 +153,7 @@ require (
 	github.com/twmb/murmur3 v1.1.7 // indirect
 	github.com/uber-go/tally/v4 v4.1.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.45.0 // indirect
+	github.com/valyala/fasthttp v1.46.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
@@ -179,7 +179,7 @@ require (
 	go.temporal.io/sdk v1.22.1 // indirect
 	go.temporal.io/sdk/contrib/opentelemetry v0.2.0 // indirect
 	go.temporal.io/sdk/contrib/tally v0.2.0 // indirect
-	go.temporal.io/server v1.20.1 // indirect
+	go.temporal.io/server v1.20.2 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
