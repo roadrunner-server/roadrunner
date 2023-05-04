@@ -1,5 +1,18 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.1.2 🚀 </center>
+
+## 🩹 Fixes
+
+- 🐛 **SQS plugin**: Revert optimized check for the AWS environment, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1550), (thanks @sergey-telpuk)
+
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project dependencies.
+
+---
+
 # <center> 🚀 v2023.1.1 🚀 </center>
 
 ## 🩹 Fixes
