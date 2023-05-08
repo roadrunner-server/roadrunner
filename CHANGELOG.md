@@ -18,10 +18,10 @@
 ## 🩹 Fixes
 
 - 🐛 **Centrifuge plugin**: Fix incorrect proto package import that caused panic on large payload.
-- 🐛 **PHP metapackage**: Unable to install RoadRunner via Composer, [B](https://github.com/roadrunner-server/roadrunner/issues/1540), (thanks @monkenWu, @butschster)
+- 🐛 **PHP metapackage**: Unable to install RoadRunner via Composer, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1540), (thanks @monkenWu, @butschster)
 - 🐛 **HTTP plugin**: Fix double unmarshal of the main plugin configuration.
-- 🐛 **RR**: Fix `TestCommandWorkingDir` predifined temp directory, [B](https://github.com/roadrunner-server/roadrunner/issues/1545), (thanks @shyim)
-- 🐛 **Status plugin**: Fix `superfluous response.WriteHeader` bug, [B](https://github.com/roadrunner-server/roadrunner/issues/1544), (thanks @mfadul24)
+- 🐛 **RR**: Fix `TestCommandWorkingDir` predifined temp directory, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1545), (thanks @shyim)
+- 🐛 **Status plugin**: Fix `superfluous response.WriteHeader` bug, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1544), (thanks @mfadul24)
 
 ---
 
