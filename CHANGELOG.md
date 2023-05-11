@@ -1,5 +1,18 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.1.3 🚀 </center>
+
+## 🩹 Fixes
+
+- 🐛 **AMQP plugin**: Driver crash when not using OTEL metrics: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1553), (thanks @rauanmayemir)
+- 🐛 **JOBS plugin**: Incorrect parsing of JSON configuraion values: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1557), (thanks @embargo2710)
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project dependencies.
+
+---
+
 # <center> 🚀 v2023.1.2 🚀 </center>
 
 ## 🩹 Fixes
