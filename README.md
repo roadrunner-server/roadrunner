@@ -59,7 +59,7 @@ with much greater performance and flexibility.
     - exec_tll (brute, max_execution_time)
 - Protocol, worker and job level error management (including PHP errors)
 - Development Mode
-- Integrations with [Symfony](https://github.com/php-runtime/roadrunner-symfony-nyholm), [Laravel](https://github.com/laravel/octane), Slim, CakePHP, Zend Expressive
+- Integrations with [Symfony](https://roadrunner.dev/docs/integration-symfony), [Laravel](https://roadrunner.dev/docs/integration-laravel), Slim, CakePHP, Zend Expressive
 - Application server for [Spiral](https://github.com/spiral/framework)
 - Works on Windows 10/11 and WSL2
 
