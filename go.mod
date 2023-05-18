@@ -8,7 +8,7 @@ require (
 	github.com/fatih/color v1.15.0
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v4 v4.4.8
+	github.com/roadrunner-server/amqp/v4 v4.4.9
 	github.com/roadrunner-server/api/v4 v4.3.2
 	github.com/roadrunner-server/app-logger/v4 v4.0.7
 	github.com/roadrunner-server/beanstalk/v4 v4.2.8
