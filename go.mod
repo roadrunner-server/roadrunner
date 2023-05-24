@@ -21,7 +21,7 @@ require (
 	github.com/roadrunner-server/goridge/v3 v3.6.2
 	github.com/roadrunner-server/grpc/v4 v4.1.12
 	github.com/roadrunner-server/gzip/v4 v4.0.10
-	github.com/roadrunner-server/headers/v4 v4.0.9
+	github.com/roadrunner-server/headers/v4 v4.0.10
 	github.com/roadrunner-server/http/v4 v4.1.10
 	github.com/roadrunner-server/informer/v4 v4.1.7
 	github.com/roadrunner-server/jobs/v4 v4.3.9
