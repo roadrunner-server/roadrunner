@@ -4,11 +4,10 @@
 
 ## 🩹 Fixes
 
-- 🐛 **gRPC plugin**: allow specifying wildcards in the `proto` field: [PR](https://github.com/roadrunner-server/roadrunner/issues/1553), (thanks @MaxSem)
+- 🐛 **gRPC plugin**: allow specifying wildcards in the `proto` field: [PR](https://github.com/roadrunner-server/grpc/pull/90), (thanks @MaxSem)
 - 🐛 **SDK (internal)**: Workers are killed during processing when memory usage is exeeded: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1561), (thanks @ekisu)
 - 🐛 **JOBS plugin**: Jobs plugin hangd on many workers and pollers: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1568), (thanks @embargo2710)
 - 🐛 **JOBS plugin**: Safe shutdown occurs before the specified time: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1567), (thanks @embargo2710)
-- 🐛 **JOBS plugin**: Incorrect parsing of JSON configuration values: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1557), (thanks @embargo2710)
 - 🐛 **AMQP plugin**: Typo in the property name (`multiple_ack`): [BUG](https://github.com/roadrunner-server/roadrunner/issues/1565), (thanks @embargo2710)
 
 ### <center>🧹 Chore:</center>
