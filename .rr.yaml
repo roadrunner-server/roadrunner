@@ -1751,10 +1751,11 @@ grpc:
   # This option is required
   listen: "tcp://127.0.0.1:9001"
 
-  # Proto file to use, multiply files supported [SINCE 2.6]
+  # Proto file to use, multiply files supported [SINCE 2.6]. As of v2023.1.4, wilcards are allowed in the proto field.
   #
   # This option is required
   proto:
+    - "*.proto" # wilcard
     - "first.proto"
     - "second.proto"
 
@@ -2025,7 +2026,7 @@ centrifuge:
   #
   # Optional, default: roadrunner
   name: "roadrunner"
-  
+
   # Workers pool settings.
   pool:
     # Debug mode for the pool. In this mode, pool will not pre-allocate the worker. Worker (only 1, num_workers ignored) will be allocated right after the request arrived.
