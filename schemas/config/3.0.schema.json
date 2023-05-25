@@ -1852,7 +1852,7 @@
                 },
                 "proto": {
                     "type": "array",
-                    "description": "Proto file to use, multiply files supported [SINCE 2.6]",
+                    "description": "Proto file to use, multiply files supported [SINCE 2.6]. As of [v2023.1.4], wilcards are allowed in the proto field",
                     "items": {
                         "type": "string"
                     }
