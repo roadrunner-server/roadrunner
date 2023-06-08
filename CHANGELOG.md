@@ -1,5 +1,23 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.1.5 🚀 </center>
+
+## 🩹 Fixes
+
+- 🐛 **KV plugin**: Correct plugin startup order: [PR](https://github.com/roadrunner-server/roadrunner/issues/1589), (thanks @ekisu)
+- 🐛 **JOBS plugin**: Check the pool pointer: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1597), (thanks @Kaspiman)
+- 🐛 **Send Middleware**: Fix bug in http.ResponseWriter wrapper: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1593), (thanks @tux-rampage)
+
+## 👀 New
+
+- ✒️ **Docker** Add tags with minor version (e.g.: `v2023.1`, `v2023.2`, etc.): [FR](https://github.com/roadrunner-server/roadrunner/issues/1581), (thanks @Kaspiman)
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project dependencies.
+
+---
+
 # <center> 🚀 v2023.1.4 🚀 </center>
 
 ## 🩹 Fixes
