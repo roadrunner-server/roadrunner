@@ -7,6 +7,7 @@
 - 🐛 **KV plugin**: Correct plugin startup order: [PR](https://github.com/roadrunner-server/roadrunner/issues/1589), (thanks @ekisu)
 - 🐛 **JOBS plugin**: Check the pool pointer: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1597), (thanks @Kaspiman)
 - 🐛 **Send Middleware**: Fix bug in http.ResponseWriter wrapper: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1593), (thanks @tux-rampage)
+- 🐛 **XFF Middleware**: Split XFF content without space: [BUG](https://github.com/roadrunner-server/proxy_ip_parser/pull/35), (thanks @eightfourseventwo)
 
 ## 👀 New
 
