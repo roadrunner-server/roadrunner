@@ -174,8 +174,10 @@ jobs:
       - name: Generate builder values
         id: values
         run: |
-          echo "version_minor=$(echo ${GITHUB_REF##*/} | sed -e 's/^[vV]*//' | sed -e 's/\.[0-9]$//')" >> $GITHUB_OUTPUT
-          echo "version=$(echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//')" >> $GITHUB_OUTPUT
+          echo "latest_tag=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/.*v[0-9]+\..*/latest/')" >> $GITHUB_OUTPUT
+          echo "version_major=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+)\..*/\1/')" >> $GITHUB_OUTPUT
+          echo "version_minor=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+\.[0-9]+).*/\1/' -e '/^[^-]*$/ s/\.0$//')" >> $GITHUB_OUTPUT
+          echo "version_bugfix=$(echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//')" >> $GITHUB_OUTPUT
           echo "timestamp=$(echo $(date +%FT%T%z))" >> $GITHUB_OUTPUT
 
       - name: Build image
@@ -186,12 +188,14 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           build-args: |
-            APP_VERSION=${{ steps.values.outputs.version }}
+            APP_VERSION=${{ steps.values.outputs.version_bugfix}}
             BUILD_TIME=${{ steps.values.outputs.timestamp }}
           tags: |
-            spiralscout/roadrunner:latest
+            spiralscout/roadrunner:${{ steps.values.outputs.latest_tag }}
+            spiralscout/roadrunner:${{ steps.values.outputs.version_major }}
             spiralscout/roadrunner:${{ steps.values.outputs.version_minor }}
-            spiralscout/roadrunner:${{ steps.values.outputs.version }}
-            ghcr.io/roadrunner-server/roadrunner:latest
+            spiralscout/roadrunner:${{ steps.values.outputs.version_bugfix }}
+            ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.latest_tag }}
+            ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_major }}
             ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_minor }}
-            ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version }}
+            ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_bugfix }}
