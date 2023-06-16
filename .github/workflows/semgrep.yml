@@ -1,0 +1,20 @@
+name: semgrep
+on:
+  pull_request: {}
+  push:
+    branches:
+      - master
+      - stable
+    paths:
+      - .github/workflows/semgrep.yml
+jobs:
+  semgrep:
+    name: semgrep/ci
+    runs-on: ubuntu-latest
+    env:
+      SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+    container:
+      image: returntocorp/semgrep
+    steps:
+      - uses: actions/checkout@v3
+      - run: semgrep ci
