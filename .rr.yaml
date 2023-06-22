@@ -42,6 +42,25 @@ server:
     env:
       - SOME_KEY: "SOME_VALUE"
       - SOME_KEY2: "SOME_VALUE2"
+
+  #[SINCE 2023.2]
+  after_init:
+    # Command to execute after the main server's command
+    #
+    # This option is required if using on_init
+    command: "any php or script here"
+
+    # Script execute timeout
+    #
+    # Default: 60s [60m, 60h], if used w/o units its means - NANOSECONDS.
+    exec_timeout: 20s
+
+    # Environment variables for the worker processes.
+    #
+    # Default: <empty map>
+    env:
+      - SOME_KEY: "SOME_VALUE"
+      - SOME_KEY2: "SOME_VALUE2"
   # Worker starting command, with any required arguments.
   #
   # This option is required.
@@ -1094,8 +1113,32 @@ nats:
 amqp:
   # AMQP Uri to connect to the rabbitmq server https://www.rabbitmq.com/uri-spec.html
   #
-  # This option is required for the production. Default: amqp://guest:guest@127.0.0.1:5672
+  # This option is required for the production. Default: amqp(s)://guest:guest@127.0.0.1:5672
   addr: amqp://guest:guest@127.0.0.1:5672/
+
+  # AMQPS TLS configuration
+  #
+  # This section is optional
+  tls:
+    # Path to the key file
+    #
+    # This option is required
+    key: ""
+
+    # Path to the certificate
+    #
+    # This option is required
+    cert: ""
+
+    # Path to the CA certificate, defines the set of root certificate authorities that servers use if required to verify a client certificate. Used with the `client_auth_type` option.
+    #
+    # This option is optional
+    root_ca: ""
+
+    # Client auth type (mTLS, peer verification).
+    #
+    # This option is optional. Default value: no_client_certs. Possible values: request_client_cert, require_any_client_cert, verify_client_cert_if_given, require_and_verify_client_cert, no_client_certs
+    client_auth_type: no_client_certs
 
 # Beanstalk jobs driver
 #
@@ -1150,16 +1193,16 @@ kafka:
   # Required to use Kafka driver
   brokers: ["127.0.0.1:9092", "127.0.0.1:9002"]
 
-  # SASL authentication options to use for all connections. Depending on the auth type, plain or aws_msk_plain sections might be removed.
+  # SASL authentication options to use for all connections. Depending on the auth type, plain/SCRAM or aws_msk_plain sections should be removed.
   #
   # Optional, default: empty
   sasl:
 
-    # PLAIN auth section -----
+    # ----------- 1. PLAIN and SCRAM auth section ---------------
 
     # Mechanism used for the authentication
     #
-    # Required for the section. Might be: 'aws_msk_iam' or 'plain'
+    # Required for the section. Might be: 'aws_msk_iam', 'plain', 'SCRAM-SHA-256', 'SCRAM-SHA-512'
     mechanism: plain
 
     # Username to use for authentication.
@@ -1172,12 +1215,22 @@ kafka:
     # Required for the plain auth mechanism.
     password: bar
 
+    # Nonce.
+    #
+    # Optional for the SHA auth types. Empty by default.
+    nonce: "foo"
+
+    # If true, suffixes the "tokenauth=true" extra attribute to the initial authentication message.
+    # Set this to true if the user and pass are from a delegation token.
+    # Optional for the SHA auth types. Empty by default.
+    is_token: false
+
     # Zid is an optional authorization ID to use in authenticating.
     #
     # Optional, default: empty.
     zid: "foo"
 
-    # AWS_MSK_IAM auth section -----
+    # -------------- 2. AWS_MSK_IAM auth section ------------------
 
     # AWS Access key ID.
     #

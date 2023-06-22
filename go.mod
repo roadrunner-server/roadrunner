@@ -8,49 +8,49 @@ require (
 	github.com/fatih/color v1.15.0
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v4 v4.6.0
+	github.com/roadrunner-server/amqp/v4 v4.6.1
 	github.com/roadrunner-server/api/v4 v4.5.0
-	github.com/roadrunner-server/app-logger/v4 v4.0.8
+	github.com/roadrunner-server/app-logger/v4 v4.0.9
 	github.com/roadrunner-server/beanstalk/v4 v4.3.0
-	github.com/roadrunner-server/boltdb/v4 v4.4.0
-	github.com/roadrunner-server/centrifuge/v4 v4.1.10
-	github.com/roadrunner-server/config/v4 v4.3.4
+	github.com/roadrunner-server/boltdb/v4 v4.4.1
+	github.com/roadrunner-server/centrifuge/v4 v4.1.11
+	github.com/roadrunner-server/config/v4 v4.3.5
 	github.com/roadrunner-server/endure/v2 v2.2.1
 	github.com/roadrunner-server/errors v1.2.0
-	github.com/roadrunner-server/fileserver/v4 v4.0.13
+	github.com/roadrunner-server/fileserver/v4 v4.0.14
 	github.com/roadrunner-server/goridge/v3 v3.6.2
-	github.com/roadrunner-server/grpc/v4 v4.1.14
-	github.com/roadrunner-server/gzip/v4 v4.0.12
-	github.com/roadrunner-server/headers/v4 v4.1.0
-	github.com/roadrunner-server/http/v4 v4.1.13
-	github.com/roadrunner-server/informer/v4 v4.1.9
-	github.com/roadrunner-server/jobs/v4 v4.4.0
-	github.com/roadrunner-server/kafka/v4 v4.2.0
-	github.com/roadrunner-server/kv/v4 v4.1.12
-	github.com/roadrunner-server/lock/v4 v4.1.0
-	github.com/roadrunner-server/logger/v4 v4.1.9
-	github.com/roadrunner-server/memcached/v4 v4.1.9
+	github.com/roadrunner-server/grpc/v4 v4.1.15
+	github.com/roadrunner-server/gzip/v4 v4.0.13
+	github.com/roadrunner-server/headers/v4 v4.1.1
+	github.com/roadrunner-server/http/v4 v4.1.14
+	github.com/roadrunner-server/informer/v4 v4.1.10
+	github.com/roadrunner-server/jobs/v4 v4.4.1
+	github.com/roadrunner-server/kafka/v4 v4.2.1
+	github.com/roadrunner-server/kv/v4 v4.1.13
+	github.com/roadrunner-server/lock/v4 v4.1.1
+	github.com/roadrunner-server/logger/v4 v4.1.10
+	github.com/roadrunner-server/memcached/v4 v4.1.10
 	github.com/roadrunner-server/memory/v4 v4.3.0
-	github.com/roadrunner-server/metrics/v4 v4.0.11
-	github.com/roadrunner-server/nats/v4 v4.3.0
-	github.com/roadrunner-server/otel/v4 v4.1.14
-	github.com/roadrunner-server/prometheus/v4 v4.0.13
-	github.com/roadrunner-server/proxy_ip_parser/v4 v4.0.11
-	github.com/roadrunner-server/redis/v4 v4.1.12
-	github.com/roadrunner-server/resetter/v4 v4.0.6
-	github.com/roadrunner-server/rpc/v4 v4.1.11
+	github.com/roadrunner-server/metrics/v4 v4.0.12
+	github.com/roadrunner-server/nats/v4 v4.3.1
+	github.com/roadrunner-server/otel/v4 v4.1.15
+	github.com/roadrunner-server/prometheus/v4 v4.0.14
+	github.com/roadrunner-server/proxy_ip_parser/v4 v4.0.12
+	github.com/roadrunner-server/redis/v4 v4.1.13
+	github.com/roadrunner-server/resetter/v4 v4.0.7
+	github.com/roadrunner-server/rpc/v4 v4.1.12
 	github.com/roadrunner-server/sdk/v4 v4.3.0
-	github.com/roadrunner-server/send/v4 v4.0.12
-	github.com/roadrunner-server/server/v4 v4.1.9
-	github.com/roadrunner-server/service/v4 v4.1.8
-	github.com/roadrunner-server/sqs/v4 v4.3.0
-	github.com/roadrunner-server/static/v4 v4.0.12
+	github.com/roadrunner-server/send/v4 v4.1.0
+	github.com/roadrunner-server/server/v4 v4.1.10
+	github.com/roadrunner-server/service/v4 v4.1.9
+	github.com/roadrunner-server/sqs/v4 v4.3.1
+	github.com/roadrunner-server/static/v4 v4.0.13
 	github.com/roadrunner-server/status/v4 v4.2.0
-	github.com/roadrunner-server/tcp/v4 v4.0.11
+	github.com/roadrunner-server/tcp/v4 v4.0.12
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
-	github.com/temporalio/roadrunner-temporal/v4 v4.2.6
+	github.com/temporalio/roadrunner-temporal/v4 v4.2.7
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.39
 	go.uber.org/automaxprocs v1.5.2
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
@@ -117,7 +117,7 @@ require (
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nats-io/jwt/v2 v2.3.0 // indirect
-	github.com/nats-io/nats.go v1.27.0 // indirect
+	github.com/nats-io/nats.go v1.27.1 // indirect
 	github.com/nats-io/nkeys v0.4.4 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/onsi/gomega v1.24.1 // indirect
