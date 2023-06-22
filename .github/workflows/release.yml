@@ -174,9 +174,16 @@ jobs:
       - name: Generate builder values
         id: values
         run: |
-          echo "latest_tag=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/.*v[0-9]+\..*/latest/')" >> $GITHUB_OUTPUT
-          echo "version_major=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+)\..*/\1/')" >> $GITHUB_OUTPUT
-          echo "version_minor=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+\.[0-9]+).*/\1/' -e '/^[^-]*$/ s/\.0$//')" >> $GITHUB_OUTPUT
+          echo latest_tag_s=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/.*v[0-9]+\..*/latest/'); [[ ! -z "$latest_tag_s" ]] && latest_tag_s="spiralscout/roadrunner:$latest_tag_s" >> $GITHUB_OUTPUT
+          echo version_major_s=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+)\..*/\1/'); [[ ! -z "$version_major_s" ]] && version_major_s="spiralscout/roadrunner:$version_major_s" >> $GITHUB_OUTPUT
+          echo version_minor_s=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+\.[0-9]+).*/\1/' -e '/^[^-]*$/ s/\.0$//'); [[ ! -z "$version_minor_s" ]] && version_minor_s="spiralscout/roadrunner:$version_minor_s" >> $GITHUB_OUTPUT
+          echo version_bugfix_s=$(echo ${GITHUB_REF##*/} | sed -E -e sed -e 's/^[vV ]*//'); [[ ! -z "$version_bugfix_s" ]] && version_bugfix_s="spiralscout/roadrunner:$version_bugfix_s" >> $GITHUB_OUTPUT
+
+          echo latest_tag_g=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/.*v[0-9]+\..*/latest/'); [[ ! -z "$latest_tag_g" ]] && latest_tag_g="ghcr.io/roadrunner-server/roadrunner:$latest_tag_g" >> $GITHUB_OUTPUT
+          echo version_major_g=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+)\..*/\1/'); [[ ! -z "$version_major_g" ]] && version_major_g="ghcr.io/roadrunner-server/roadrunner:$version_major_g" >> $GITHUB_OUTPUT
+          echo version_minor_g=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+\.[0-9]+).*/\1/' -e '/^[^-]*$/ s/\.0$//'); [[ ! -z "$version_minor_g" ]] && version_minor_g="ghcr.io/roadrunner-server/roadrunner:$version_minor_g" >> $GITHUB_OUTPUT
+          echo version_bugfix_g=$(echo ${GITHUB_REF##*/} | sed -E -e sed -e 's/^[vV ]*//'); [[ ! -z "$version_bugfix_g" ]] && version_bugfix_g="ghcr.io/roadrunner-server/roadrunner:$version_bugfix_g" >> $GITHUB_OUTPUT
+
           echo "version_bugfix=$(echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//')" >> $GITHUB_OUTPUT
           echo "timestamp=$(echo $(date +%FT%T%z))" >> $GITHUB_OUTPUT
 
@@ -191,11 +198,11 @@ jobs:
             APP_VERSION=${{ steps.values.outputs.version_bugfix}}
             BUILD_TIME=${{ steps.values.outputs.timestamp }}
           tags: |
-            spiralscout/roadrunner:${{ steps.values.outputs.latest_tag }}
-            spiralscout/roadrunner:${{ steps.values.outputs.version_major }}
-            spiralscout/roadrunner:${{ steps.values.outputs.version_minor }}
-            spiralscout/roadrunner:${{ steps.values.outputs.version_bugfix }}
-            ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.latest_tag }}
-            ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_major }}
-            ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_minor }}
-            ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_bugfix }}
+            ${{ steps.values.outputs.latest_tag_s }}
+            ${{ steps.values.outputs.version_major_s }}
+            ${{ steps.values.outputs.version_minor_s }}
+            ${{ steps.values.outputs.version_bugfix_s }}
+            ${{ steps.values.outputs.latest_tag_g }}
+            ${{ steps.values.outputs.version_major_g }}
+            ${{ steps.values.outputs.version_minor_g }}
+            ${{ steps.values.outputs.version_bugfix_g }}
