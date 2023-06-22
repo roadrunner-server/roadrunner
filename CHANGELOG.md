@@ -1,5 +1,22 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.2.0-beta.1 🚀 </center>
+
+## 👀 New
+
+- ✒️ **Kafka driver**: Support for the `SCRAM-SHA-256` and `SCRAM-SHA-512` SASL mechanisms: [FR](https://github.com/roadrunner-server/roadrunner/issues/1601), (thanks @Azomas)
+- ✒️ **Headers middleware**: Actualize CORS support: [FR](https://github.com/roadrunner-server/roadrunner/issues/909), (thanks @rmikalkenas, @hustlahusky)
+- ✒️ **RoadRunner CLI**: Additional [semgrep](https://semgrep.dev/) security scanner.
+- ✒️ **Docker builds**: New tags: `v2023`, `v2023.x` and with bugfix: `v2023.x.x`. The `latest` tag points to the latest **stable** release. All `rc`, `beta`, `alpha` releases will no longer be tagged with `latest`.
+- ✒️ **Server plugin**: `after_init` option. This is a new `server` option and, like `on_init`, can contain any custom command to be fired after each pool of workers is initialized. For example, if you have 2 plugins: `http` and `grpc`, the `after_init` command would be fired twice: [FR](https://github.com/roadrunner-server/roadrunner/issues/1554), (thanks @rauanmayemir).
+- ✒️ **AMQP driver**: Support for the `TLS` transport named `amqps`: [FR](https://github.com/roadrunner-server/roadrunner/issues/1538), (thanks @marcosraudkett)
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project dependencies.
+
+---
+
 # <center> 🚀 v2023.1.5 🚀 </center>
 
 ## 🩹 Fixes
