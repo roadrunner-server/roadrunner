@@ -91,7 +91,7 @@ jobs:
             -X github.com/roadrunner-server/roadrunner/v2023/internal/meta.version=${{ steps.values.outputs.version }}
             -X github.com/roadrunner-server/roadrunner/v2023/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
         run: |
-          go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr
+          go build -pgo=roadrunner.pprof -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr
           stat "./${{ steps.values.outputs.binary-name }}"
           gpg --detach-sign --armor "./${{ steps.values.outputs.binary-name }}"
 
