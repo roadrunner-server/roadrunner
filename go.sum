@@ -1222,8 +1222,8 @@ github.com/zeebo/assert v1.3.0/go.mod h1:Pq9JiuJQpG8JLJdtkwrJESF0Foym2/D9XMU5ciN
 github.com/zeebo/xxh3 v1.0.2/go.mod h1:5NWz9Sef7zIDm2JHfFlcQvNekmcEl9ekUZQQKCYaDcA=
 go.buf.build/grpc/go/roadrunner-server/api v1.4.39 h1:acBVtLfDgkALNfT9FLC01hpU3Gd6fYIIJlRc2OQfuRM=
 go.buf.build/grpc/go/roadrunner-server/api v1.4.39/go.mod h1:gydvLOEhY1OyTQFdpzBvDRn2QMpmtb73BSFFKu3JmPk=
-go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.39 h1:WZ2k78qL9izK0ik1hBRZ3vwXX64D1YAgHdYMzpTvShE=
-go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.39/go.mod h1:CfIAvR+W2N+Y0WXMzwT80Eh83CmBPWplgFQDA5HftC4=
+go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.40 h1:qSbzJFNeR87VeGHE1zVoCcYim3iiJEW9JsTyZXbBcXI=
+go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.40/go.mod h1:CfIAvR+W2N+Y0WXMzwT80Eh83CmBPWplgFQDA5HftC4=
 go.etcd.io/bbolt v1.3.7 h1:j+zJOnnEjF/kyHlDDgGnVL/AIqIJPq8UoB2GSNfkUfQ=
 go.etcd.io/bbolt v1.3.7/go.mod h1:N9Mkw9X8x5fupy0IKsmuqVtoGDyxsaDlbk4Rd05IAQw=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
