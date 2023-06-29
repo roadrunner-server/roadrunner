@@ -18,7 +18,7 @@ require (
 	github.com/roadrunner-server/endure/v2 v2.2.1
 	github.com/roadrunner-server/errors v1.2.0
 	github.com/roadrunner-server/fileserver/v4 v4.0.14
-	github.com/roadrunner-server/goridge/v3 v3.6.2
+	github.com/roadrunner-server/goridge/v3 v3.6.3
 	github.com/roadrunner-server/grpc/v4 v4.1.15
 	github.com/roadrunner-server/gzip/v4 v4.0.13
 	github.com/roadrunner-server/headers/v4 v4.1.1
@@ -42,7 +42,7 @@ require (
 	github.com/roadrunner-server/sdk/v4 v4.3.0
 	github.com/roadrunner-server/send/v4 v4.1.0
 	github.com/roadrunner-server/server/v4 v4.1.10
-	github.com/roadrunner-server/service/v4 v4.1.9
+	github.com/roadrunner-server/service/v4 v4.2.0
 	github.com/roadrunner-server/sqs/v4 v4.3.1
 	github.com/roadrunner-server/static/v4 v4.0.13
 	github.com/roadrunner-server/status/v4 v4.2.0
@@ -51,7 +51,7 @@ require (
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
 	github.com/temporalio/roadrunner-temporal/v4 v4.2.7
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.39
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.40
 	go.uber.org/automaxprocs v1.5.2
 	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df
 )
@@ -60,7 +60,7 @@ exclude github.com/uber-go/tally/v4 v4.1.7
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.290 // indirect
+	github.com/aws/aws-sdk-go v1.44.292 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.18.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.27 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.26 // indirect
@@ -149,7 +149,7 @@ require (
 	github.com/tinylib/msgp v1.1.8 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
-	github.com/twmb/franz-go v1.13.5 // indirect
+	github.com/twmb/franz-go v1.13.6 // indirect
 	github.com/twmb/franz-go/pkg/kmsg v1.5.0 // indirect
 	github.com/twmb/murmur3 v1.1.8 // indirect
 	github.com/uber-go/tally/v4 v4.1.6 // indirect
@@ -159,7 +159,7 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
-	go.buf.build/grpc/go/roadrunner-server/api v1.4.39 // indirect
+	go.buf.build/grpc/go/roadrunner-server/api v1.4.40 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.42.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.42.0 // indirect
@@ -192,8 +192,8 @@ require (
 	golang.org/x/text v0.10.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.10.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20230626202813-9b080da550b3 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230626202813-9b080da550b3 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20230628200519-e449d1ea0e82 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230628200519-e449d1ea0e82 // indirect
 	google.golang.org/grpc v1.56.1 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
