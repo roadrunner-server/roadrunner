@@ -174,14 +174,6 @@ jobs:
       - name: Generate builder values
         id: values
         run: |
-          echo latest_tag_s=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/.*v[0-9]+\..*/latest/'); [[ ! -z "$latest_tag_s" ]] && latest_tag_s="spiralscout/roadrunner:$latest_tag_s" >> $GITHUB_OUTPUT
-          echo version_major_s=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+)\..*/\1/'); [[ ! -z "$version_major_s" ]] && version_major_s="spiralscout/roadrunner:$version_major_s" >> $GITHUB_OUTPUT
-          echo version_minor_s=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+\.[0-9]+).*/\1/' -e '/^[^-]*$/ s/\.0$//'); [[ ! -z "$version_minor_s" ]] && version_minor_s="spiralscout/roadrunner:$version_minor_s" >> $GITHUB_OUTPUT
-
-          echo latest_tag_g=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/.*v[0-9]+\..*/latest/'); [[ ! -z "$latest_tag_g" ]] && latest_tag_g="ghcr.io/roadrunner-server/roadrunner:$latest_tag_g" >> $GITHUB_OUTPUT
-          echo version_major_g=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+)\..*/\1/'); [[ ! -z "$version_major_g" ]] && version_major_g="ghcr.io/roadrunner-server/roadrunner:$version_major_g" >> $GITHUB_OUTPUT
-          echo version_minor_g=$(echo ${GITHUB_REF##*/} | sed -E -e '/-beta|-alpha|-rc/ s/.*//' -e '/^[^-]*$/ s/v([0-9]+\.[0-9]+).*/\1/' -e '/^[^-]*$/ s/\.0$//'); [[ ! -z "$version_minor_g" ]] && version_minor_g="ghcr.io/roadrunner-server/roadrunner:$version_minor_g" >> $GITHUB_OUTPUT
-
           echo "version_full=$(echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//')" >> $GITHUB_OUTPUT
           echo "timestamp=$(echo $(date +%FT%T%z))" >> $GITHUB_OUTPUT
 
@@ -197,11 +189,11 @@ jobs:
             BUILD_TIME=${{ steps.values.outputs.timestamp }}
           tags: |
             spiralscout/roadrunner:${{ steps.values.outputs.version_full}}
-            ${{ steps.values.outputs.latest_tag_s }}
-            ${{ steps.values.outputs.version_major_s }}
-            ${{ steps.values.outputs.version_minor_s }}
+            spiralscout/roadrunner:latest
+            spiralscout/roadrunner:2023
+            spiralscout/roadrunner:2023.2
 
             ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_full}}
-            ${{ steps.values.outputs.latest_tag_g }}
-            ${{ steps.values.outputs.version_major_g }}
-            ${{ steps.values.outputs.version_minor_g }}
+            ghcr.io/roadrunner-server/roadrunner:latest
+            ghcr.io/roadrunner-server/roadrunner:2023
+            ghcr.io/roadrunner-server/roadrunner:2023.2

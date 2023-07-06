@@ -1,5 +1,31 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.2.0 🚀 </center>
+
+## 👀 New
+
+- ✒️ **Kafka driver**: Support for the `SCRAM-SHA-256` and `SCRAM-SHA-512` SASL mechanisms: [FR](https://github.com/roadrunner-server/roadrunner/issues/1601), (thanks @Azomas)
+- ✒️ **Headers middleware**: Actualize CORS support: [FR](https://github.com/roadrunner-server/roadrunner/issues/909), (thanks @rmikalkenas, @hustlahusky)
+- ✒️ **RoadRunner CLI**: Additional [semgrep](https://semgrep.dev/) security scanner.
+- ✒️ **Docker builds**: New tags: `v2023`, `v2023.x` and with bugfix: `v2023.x.x`. The `latest` tag points to the latest **stable** release. All `rc`, `beta`, `alpha` releases will no longer be tagged with `latest`.
+- ✒️ **Server plugin**: `after_init` option. This is a new `server` option and, like `on_init`, can contain any custom command to be fired after each pool of workers is initialized. For example, if you have 2 plugins: `http` and `grpc`, the `after_init` command would be fired twice: [FR](https://github.com/roadrunner-server/roadrunner/issues/1554), (thanks @rauanmayemir).
+- ✒️ **AMQP driver**: Support for the `TLS` transport named `amqps`: [FR](https://github.com/roadrunner-server/roadrunner/issues/1538), (thanks @marcosraudkett)
+- ✒️ **JOBS plugin**: Support for the workers health/readiness checks. [PR](https://github.com/roadrunner-server/jobs/pull/81), (thanks @Kaspiman)
+- ✒️ **JOBS plugin**: Delete all messages that were in the priority queue when the pipeline was deleted (1-st part of the BUG), [BUG](https://github.com/roadrunner-server/roadrunner/issues/1382)
+- ✒️ **JOBS plugin**: JOBS plugin now support reporting it's workers status with a simple query: `http://<status_plugin_host>:<port>/ready(health)?plugin=jobs`, [PR](https://github.com/roadrunner-server/roadrunner/issues/1382), (thanks @Kaspiman)
+- ✒️ **Temporal plugin, internal**: Pass `history_len` to the PHP worker and get the PHP-SDK version to pass to the Temporal server.
+- ✒️ **Lock plugin**: Completely rewritten. Now supports microseconds interval. Any `ttl/wait_ttl` value passed to RR is now treated as **microseconds**. There is no configuration for this plugin, it is bundled with RR.
+- ✒️ **Service plugin**: Add a new option for the graceful process timeout: `timeout_stop_sec`. RR will wait for the specified amount of time (but not more than `endure.graceful_period`) for the process to stop, [FR](https://github.com/roadrunner-server/roadrunner/issues/1628), (thanks @asanikovich)
+
+## 🩹 Fixes
+
+- 🐛 **JOBS plugin**: Nil pointer exception on very fast (after RR was started, but JOBS worker failed to start) check for the JOBS metrics: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1597), (thanks @Kaspiman).
+- 🐛 **Service plugin**: Incorrect parsing and assignment of the `process_num` value passed via RPC: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1621), (thanks @asanikovich)
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project dependencies.
+
 # <center> 🚀 v2023.2.0-beta.1 🚀 </center>
 
 ## 👀 New

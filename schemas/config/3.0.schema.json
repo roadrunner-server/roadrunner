@@ -88,6 +88,39 @@
         "server": {
             "type": "object",
             "properties": {
+                "after_init": {
+                    "description": "Execute command or script after RR allocated a pool of workers. Command executed on the every pool allocation. For example, if you have 2 plugins: `http` and `grpc`, the `after_init` command would be fired twice.",
+                    "type": "object",
+                    "properties": {
+                        "command": {
+                            "description": "Command to execute. It can be script or binary",
+                            "type": "string",
+                            "examples": [
+                                "php not-worker.php",
+                                "sh script.sh",
+                                "start script.bat"
+                            ]
+                        },
+                        "exec_timeout": {
+                            "description": "Script execute timeout",
+                            "$ref": "#/definitions/Duration",
+                            "default": "60s"
+                        },
+                        "env": {
+                            "description": "Environment variables for the worker processes",
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "patternProperties": {
+                                    "^[a-zA-Z0-9._-]+$": {
+                                        "type": "string"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        }
+                    }
+                },
                 "on_init": {
                     "description": "Execute command or script before RR starts allocating workers",
                     "type": "object",
@@ -1299,6 +1332,34 @@
                     "description": "AMQP Uri to connect to the rabbitmq server https://www.rabbitmq.com/uri-spec.html",
                     "type": "string",
                     "default": "amqp://guest:guest@127.0.0.1:5672"
+                },
+                "tls": {
+                    "description": "",
+                   "properties": {
+                    "key": {
+                        "description": "Path to the key file",
+                        "type": "string"
+                    },
+                    "cert": {
+                        "description": "Path to the cert file",
+                        "type": "string"
+                    },
+                    "root_ca": {
+                        "description": "Path to the CA certificate, defines the set of root certificate authorities that servers use if required to verify a client certificate. Used with the `client_auth_type` option.",
+                        "type": "string"
+                    },
+                    "client_auth_type": {
+                            "type": "string",
+                            "default": "no_client_certs",
+                            "enum": [
+                                "request_client_cert",
+                                "require_any_client_cert",
+                                "verify_client_cert_if_given",
+                                "no_client_certs",
+                                "require_and_verify_client_cert"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -1522,79 +1583,35 @@
                                                     "type": "integer",
                                                     "default": 10
                                                 },
-                                                "topic": {
-                                                    "description": "Topic name: https://kafka.apache.org/intro#intro_concepts_and_terms",
-                                                    "type": "string",
-                                                    "default": null
-                                                },
-                                                "partitions_offsets": {
-                                                    "description": "Offsets for the partitions",
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "itemType": {
-                                                            "$ref": "#/definitions/HashMapInt"
-                                                        },
-                                                        "itemCount": {
-                                                            "$ref": "#/definitions/Hashmap"
-                                                        }
-                                                    },
-                                                    "default": null
-                                                },
-                                                "group_id": {
-                                                    "type": "string",
-                                                    "description": "Kafka group id",
-                                                    "default": "default"
-                                                },
-                                                "max_open_requests": {
-                                                    "description": "Max number of outstanding requests a connection is allowed to have before sending on it blocks",
-                                                    "type": "integer",
-                                                    "default": 5
-                                                },
-                                                "client_id": {
-                                                    "description": "A user provided string sent with every request to the brokers for logging, debugging, and auditing purposes.",
-                                                    "type": "string",
-                                                    "default": "roadrunner"
-                                                },
-                                                "kafka_version": {
-                                                    "description": "Kafka version.",
-                                                    "type": "string",
-                                                    "default": "1.0.0.0"
-                                                },
-                                                "create_topics": {
-                                                    "description": "Create topics configuration. If topic doesn't exist, RR may create a topic with provided configuration",
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "replication_factor": {
-                                                            "description": "Replication factor for the data stored across several Kafka brokers.",
-                                                            "type": "integer",
-                                                            "default": 1
-                                                        },
-                                                        "replica_assignment": {
-                                                            "type": "object",
-                                                            "description": "Partition replica assigment.",
-                                                            "default": null
-                                                        },
-                                                        "config_entries": {
-                                                            "type": "object",
-                                                            "description": "Topic creation options. Note: 'compression:type' will be replaced with 'compression.type', so ':' -> '.'. All options should use ':' as the delimiter.",
-                                                            "default": null
-                                                        }
-                                                    }
+                                                "auto_create_topics_enable": {
+                                                    "description": "Auto create topic for the consumer/producer",
+                                                    "type": "boolean",
+                                                    "default": false
                                                 },
                                                 "producer_options": {
                                                     "description": "Kafka producer options",
                                                     "type": "object",
                                                     "properties": {
-                                                        "max_message_bytes": {
-                                                            "type": "integer",
-                                                            "default": 1000000
+                                                        "disable_idempotent": {
+                                                            "description": "Disable_idempotent disables idempotent produce requests, opting out of Kafka server-side deduplication in the face of reissued requests due to transient network problems. Idempotent production is strictly a win, but does require the IDEMPOTENT_WRITE permission on CLUSTER (pre Kafka 3.0), and not all clients can have that permission.",
+                                                            "type": "boolean",
+                                                            "default": false
                                                         },
                                                         "required_acks": {
-                                                            "description": "The level of acknowledgement reliability needed from the broker.",
-                                                            "type": "integer",
-                                                            "default": -1
+                                                            "description": "Sets the required acks for produced records",
+                                                            "type": "string",
+                                                            "default": "AllISRAcks",
+                                                            "enum": [
+                                                                "NoAck",
+                                                                "LeaderAck",
+                                                                "AllISRAck"
+                                                            ]
                                                         },
-                                                        "timeout": {
+                                                        "max_message_bytes": {
+                                                            "type": "integer",
+                                                            "default": 1000012
+                                                        },
+                                                        "request_timeout": {
                                                             "description": "The maximum duration in seconds the broker will wait the receipt of the number of required_acks.",
                                                             "default": 10,
                                                             "type": "integer"
@@ -1610,13 +1627,28 @@
                                                                 "zstd"
                                                             ]
                                                         },
-                                                        "compression_level": {
+                                                        "delivery_timeout": {
                                                             "description": "The level of compression to use on messages.",
                                                             "type": "integer",
                                                             "default": null
                                                         },
-                                                        "idempotent": {
+                                                        "transaction_timeout": {
                                                             "description": "If enabled, the producer will ensure that exactly one copy of each message is written.",
+                                                            "type": "boolean",
+                                                            "default": false
+                                                        }
+                                                    }
+                                                },
+                                                "group_options": {
+                                                    "description": "group_options sets the consumer group for the client to join and consume in. This option is required if using any other group options.",
+                                                    "properties": {
+                                                        "group_id":{
+                                                            "description": "Kafka group ID",
+                                                            "type": "string",
+                                                            "default": null
+                                                        },
+                                                        "block_rebalance_on_poll":{
+                                                            "description": "Switches the client to block rebalances whenever you poll",
                                                             "type": "boolean",
                                                             "default": false
                                                         }
@@ -1626,25 +1658,83 @@
                                                     "description": "Kafka consumer options",
                                                     "type": "object",
                                                     "properties": {
-                                                        "min_fetch_message_size": {
-                                                            "description": "The minimum number of message bytes to fetch in a request",
-                                                            "type": "integer",
-                                                            "default": 1
+                                                        "topics": {
+                                                            "description": "List of the topics to consume. Regex also supported",
+                                                            "type": "array",
+                                                            "default": null
+                                                        },
+                                                        "consume_regexp": {
+                                                            "description": "consume_regexp sets the client to parse all topics passed to `topics` as regular expressions. When consuming via regex, every metadata request loads *all* topics, so that all topics can be passed to any regular expressions. Every topic is evaluated only once ever across all regular expressions; either it permanently is known to match, or is permanently known to not match.",
+                                                            "type": "boolean",
+                                                            "default": false
                                                         },
                                                         "max_fetch_message_size": {
                                                             "type": "integer",
-                                                            "description": "The default number of message bytes to fetch from the broker in each request",
-                                                            "default": 1000000
+                                                            "default": 50000
                                                         },
-                                                        "session_timeout": {
+                                                        "min_fetch_message_size": {
                                                             "type": "integer",
-                                                            "description": "The timeout in seconds used to detect consumer failures when using Kafka's group management facility.",
-                                                            "default": 10
+                                                            "default": 1
                                                         },
-                                                        "heartbeat_interval": {
-                                                            "type": "integer",
-                                                            "description": "The expected time in seconds between heartbeats to the consumer coordinator when using Kafka's group management facilities",
-                                                            "default": 3
+                                                        "consume_offset": {
+                                                            "description": "consumer_offset sets the offset to start consuming from, or if OffsetOutOfRange is seen while fetching, to restart consuming from.",
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "type":{
+                                                                    "description": "Partition offset type",
+                                                                    "type": "string",
+                                                                    "default": null,
+                                                                    "enum": [
+                                                                       "AtEnd",
+                                                                        "At",
+                                                                        "AfterMilli",
+                                                                        "AtStart",
+                                                                        "Relative",
+                                                                        "WithEpoch"
+                                                                        ]
+                                                                    },
+                                                                "value": {
+                                                                    "description": "Value for the: At, AfterMilli, Relative and WithEpoch offsets",
+                                                                    "type": "integer",
+                                                                    "default": 0
+                                                                }
+                                                            }
+                                                        },
+                                                        "consume_partitions": {
+                                                            "patternProperties": {
+                                                                "^[a-zA-Z0-9._-]+$": {
+                                                                    "description": "Topic to consume",
+                                                                    "type":"string",
+                                                                    "default": null,
+                                                                    "patternProperties": {
+                                                                        "^[0-9]+$":{
+                                                                            "description": "Partition number",
+                                                                            "type": "integer",
+                                                                            "default": null,
+                                                                            "properties": {
+                                                                                "type":{
+                                                                                    "description": "Partition offset type",
+                                                                                    "type": "string",
+                                                                                    "default": null,
+                                                                                    "enum": [
+                                                                                        "AtEnd",
+                                                                                        "At",
+                                                                                        "AfterMilli",
+                                                                                        "AtStart",
+                                                                                        "Relative",
+                                                                                        "WithEpoch"
+                                                                                    ]
+                                                                                },
+                                                                                "value": {
+                                                                                    "description": "Value for the: At, AfterMilli, Relative and WithEpoch offsets",
+                                                                                    "type": "integer",
+                                                                                    "default": 0
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -2135,6 +2225,11 @@
                     "type": "object",
                     "$ref": "#/definitions/Hashmap"
                 },
+                "timeout_stop_sec": {
+                    "description": "Timeout for the process stop operation",
+                    "type":"integer",
+                    "default": 5
+                },
                 "process_num": {
                     "description": "Number of copies (processes) to start per command",
                     "type": "integer",
@@ -2373,9 +2468,81 @@
             "description": "Kafka jobs driver",
             "type": "object",
             "properties": {
-                "addr": {
-                    "description": "Kafka server addresses",
-                    "type": "array"
+                "brokers": {
+                    "description": "Kafka broker addresses",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "127.0.0.1:9092",
+                            "127.0.0.1:9002"
+                        ]
+                    }
+                },
+                "sasl": {
+                    "description": "Mechanism used for the authentication",
+                    "properties": {
+                        "mechanism":{
+                            "description": "Kafka brokers",
+                            "type": "string",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "aws_msk_iam",
+                                    "plain",
+                                    "SCRAM-SHA-256",
+                                    "SCRAM-SHA-512"
+                                ]
+                            }
+                        },
+                        "username":{
+                            "description": "Username for authentication",
+                            "type": "string",
+                            "default": null
+                        },
+                        "password":{
+                            "description": "Password for authentication",
+                            "type": "string",
+                            "default": null
+                        },
+                        "nonce":{
+                            "description": "Optional for the SHA auth types. Empty by default",
+                            "type": "string",
+                            "default": null
+                        },
+                        "is_token":{
+                            "description": "If true, suffixes the tokenauth=true extra attribute to the initial authentication message. Set this to true if the user and pass are from a delegation token. Optional for the SHA auth types. Empty by default",
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "zid":{
+                            "description": "Zid is an optional authorization ID to use in authenticating",
+                            "type": "string",
+                            "default": null
+                        },
+
+
+                        "access_key":{
+                            "description": "AWS Access key ID",
+                            "type": "string",
+                            "default": null
+                        },
+                        "secret_key":{
+                            "description": "AWS Secret Access key ID",
+                            "type": "string",
+                            "default": null
+                        },
+                        "session_token":{
+                            "description": "SessionToken, if non-empty, is a session / security token to use for authentication. See the following link for more details: https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html",
+                            "type": "string",
+                            "default": null
+                        },
+                        "user_agent":{
+                            "description": "UserAgent is the user agent to for the client to use when connecting to Kafka, overriding the default franz-go/<runtime.Version()>/<hostname>. Setting a UserAgent allows authorizing based on the aws:UserAgent condition key; see the following link for more details: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-useragent",
+                            "type": "string",
+                            "default": null
+                        }
+                    }
                 }
             }
         },
