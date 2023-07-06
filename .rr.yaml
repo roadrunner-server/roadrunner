@@ -500,6 +500,11 @@ service:
     # Default: 1
     process_num: 1
 
+    # Timeout for the process stop operation
+    #
+    # Default: 5 seconds
+    timeout_stop_sec: 5
+
     # Allowed time before stop.
     #
     # Default: 0 (infinity), can be 1s, 2m, 2h (seconds, minutes, hours)
@@ -528,6 +533,11 @@ service:
     #
     # Default: none, required.
     command: "binary"
+
+    # Timeout for the process stop operation
+    #
+    # Default: 5 seconds
+    timeout_stop_sec: 5
 
     # Env variables for the process
     #
