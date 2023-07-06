@@ -56,13 +56,11 @@ require (
 	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df
 )
 
-replace github.com/temporalio/roadrunner-temporal/v4 => ../plugins/roadrunner-temporal
-
 exclude github.com/uber-go/tally/v4 v4.1.7
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.296 // indirect
+	github.com/aws/aws-sdk-go v1.44.297 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.18.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.27 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.26 // indirect
