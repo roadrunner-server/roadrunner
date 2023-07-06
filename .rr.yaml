@@ -1268,8 +1268,13 @@ kafka:
 jobs:
   # Number of threads which will try to obtain the job from the priority queue
   #
-  # Default: number of the logical CPU cores
+  # Default: number of the workers + 1
   num_pollers: 32
+
+  # Push operation timeout in seconds
+  #
+  # Default: 60
+  timeout: 60
 
   # Size of the internal priority queue
   #

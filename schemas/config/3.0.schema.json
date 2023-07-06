@@ -1416,12 +1416,17 @@
             "type": "object",
             "properties": {
                 "num_pollers": {
-                    "description": "Number of threads which will try to obtain the job from the priority queue. Default is the number of the logical CPU cores",
+                    "description": "Number of threads which will try to obtain the job from the priority queue. Default is the number of workers+1",
                     "type": "integer",
                     "examples": [
                         10,
                         32
                     ]
+                },
+                "timeout": {
+                    "description": "JOBS Push operation timeout in seconds",
+                    "type": "integer",
+                    "default": 60
                 },
                 "pipeline_size": {
                     "description": "Size of the internal priority queue, if the internal PQ reach the max number of elements, the Push operation will be blocked",
