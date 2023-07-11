@@ -15,7 +15,7 @@ require (
 	github.com/roadrunner-server/boltdb/v4 v4.5.0
 	github.com/roadrunner-server/centrifuge/v4 v4.2.0
 	github.com/roadrunner-server/config/v4 v4.4.0
-	github.com/roadrunner-server/endure/v2 v2.2.1
+	github.com/roadrunner-server/endure/v2 v2.3.0
 	github.com/roadrunner-server/errors v1.2.0
 	github.com/roadrunner-server/fileserver/v4 v4.1.0
 	github.com/roadrunner-server/goridge/v3 v3.6.3
@@ -53,14 +53,14 @@ require (
 	github.com/temporalio/roadrunner-temporal/v4 v4.3.2
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.40
 	go.uber.org/automaxprocs v1.5.2
-	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df
+	golang.org/x/exp v0.0.0-20230711023510-fffb14384f22
 )
 
 exclude github.com/uber-go/tally/v4 v4.1.7
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.297 // indirect
+	github.com/aws/aws-sdk-go v1.44.299 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.18.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.27 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.26 // indirect
@@ -78,7 +78,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230611145640-acc696258285 // indirect
 	github.com/cactus/go-statsd-client/statsd v0.0.0-20200423205355-cb0885a1018c // indirect
-	github.com/caddyserver/certmagic v0.18.2 // indirect
+	github.com/caddyserver/certmagic v0.19.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -148,8 +148,8 @@ require (
 	github.com/tinylib/msgp v1.1.8 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
-	github.com/twmb/franz-go v1.13.6 // indirect
-	github.com/twmb/franz-go/pkg/kmsg v1.5.0 // indirect
+	github.com/twmb/franz-go v1.14.1 // indirect
+	github.com/twmb/franz-go/pkg/kmsg v1.6.1 // indirect
 	github.com/twmb/murmur3 v1.1.8 // indirect
 	github.com/uber-go/tally/v4 v4.1.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
@@ -158,6 +158,7 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
+	github.com/zeebo/blake3 v0.2.3 // indirect
 	go.buf.build/grpc/go/roadrunner-server/api v1.4.40 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.42.0 // indirect
@@ -191,9 +192,9 @@ require (
 	golang.org/x/text v0.11.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.11.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20230629202037-9506855d4529 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230629202037-9506855d4529 // indirect
-	google.golang.org/grpc v1.56.1 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20230710151506-e685fd7b542b // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230710151506-e685fd7b542b // indirect
+	google.golang.org/grpc v1.56.2 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
