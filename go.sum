@@ -1062,8 +1062,8 @@ github.com/roadrunner-server/fileserver/v4 v4.1.0 h1:5O42/ESyNWfpM0eTlRz/mYjWP6G
 github.com/roadrunner-server/fileserver/v4 v4.1.0/go.mod h1:TtFW0RfNGyoMgqyhEE5tCUD7X29irA1D08Lv0MNioVI=
 github.com/roadrunner-server/goridge/v3 v3.6.3 h1:8hCuPVK9BxIE4IGyNphK6KPAy9Kg6t5tHaItBIQKh2o=
 github.com/roadrunner-server/goridge/v3 v3.6.3/go.mod h1:hB5+lHhl8msuHrngjKQ+Wx8B705AU0/2DlYGFXbjtgU=
-github.com/roadrunner-server/grpc/v4 v4.2.0 h1:wb0WxQNMpG+frI2N9H18j2RWG4aZlb9pvNr/hc94qWM=
-github.com/roadrunner-server/grpc/v4 v4.2.0/go.mod h1:jfI+iVJlCJNFIY1vsY7BNNV1aqfKsEMNu47m6CkGK+Q=
+github.com/roadrunner-server/grpc/v4 v4.3.0 h1:IwIbpG/z79lt4RSXHChdsW+jHD0ipKO/De85tyPH1IY=
+github.com/roadrunner-server/grpc/v4 v4.3.0/go.mod h1:YbG3WlYoAPL/Zb89H3FpZBsj2LnWM7kQi/tsn1qu8PQ=
 github.com/roadrunner-server/gzip/v4 v4.1.0 h1:YtVnKUty3lsYUtpRkxsQoW2aPyDsSl3ndKtWEeVUas8=
 github.com/roadrunner-server/gzip/v4 v4.1.0/go.mod h1:aurznE//pHsr7FD1QitiVuNK1HRXUyM6pICJNlraSnA=
 github.com/roadrunner-server/headers/v4 v4.2.0 h1:CCgDX1B2EDt+9Hp5SkeG02LlnJXsHC+Hn1CpJ77zdmQ=
@@ -1913,8 +1913,8 @@ google.golang.org/genproto/googleapis/api v0.0.0-20230710151506-e685fd7b542b h1:
 google.golang.org/genproto/googleapis/api v0.0.0-20230710151506-e685fd7b542b/go.mod h1:rsr7RhLuwsDKL7RmgDDCUc6yaGr1iqceVb5Wv6f6YvQ=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20230525234015-3fc162c6f38a/go.mod h1:xURIpW9ES5+/GZhnV6beoEtxQrnkRGIfP5VQG2tCBLc=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20230530153820-e85fd2cbaebc/go.mod h1:66JfowdXAEgad5O9NnYcsNPLCPZJD++2L9X0PCMODrA=
-google.golang.org/genproto/googleapis/rpc v0.0.0-20230710151506-e685fd7b542b h1:BC7Q0uXfp6VFXnNWp5RqATIN/viqCGkqBO8+HxzH/jY=
-google.golang.org/genproto/googleapis/rpc v0.0.0-20230710151506-e685fd7b542b/go.mod h1:TUfxEVdsvPg18p6AslUXFoLdpED4oBnGwyqk3dV1XzM=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20230711160842-782d3b101e98 h1:bVf09lpb+OJbByTj913DRJioFFAjf/ZGxEz7MajTp2U=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20230711160842-782d3b101e98/go.mod h1:TUfxEVdsvPg18p6AslUXFoLdpED4oBnGwyqk3dV1XzM=
 google.golang.org/grpc v1.12.0/go.mod h1:yo6s7OP7yaDglbqo1J04qKzAhqBH6lvTonzMVmEdcZw=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.20.1/go.mod h1:10oTOabMzJvdu6/UiuZezV6QK5dSlG84ov/aaiqXj38=
