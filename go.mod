@@ -52,7 +52,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/temporalio/roadrunner-temporal/v4 v4.3.2
 	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.40
-	go.uber.org/automaxprocs v1.5.2
+	go.uber.org/automaxprocs v1.5.3
 	golang.org/x/exp v0.0.0-20230711023510-fffb14384f22
 )
 
