@@ -80,5 +80,5 @@ func parseLogLevel(s string) (slog.Leveler, error) {
 		return slog.LevelError, nil
 	}
 
-	return slog.LevelInfo, fmt.Errorf(`unknown log level "%s" (allowed: debug, info, warn, error, panic, fatal)`, s)
+	return slog.LevelInfo, fmt.Errorf(`unknown log level "%s" (allowed: debug, info, warn, error)`, s)
 }
