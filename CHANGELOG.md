@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.2.1 🚀 </center>
+
+## 🩹 Fixes
+
+- 🐛 **NATS driver**: Segfault when sending job via third-party sender without `consume_all` option set to `true`: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1650), (thanks @KernelMrex).
+- 🐛 **Metrics plugin**: Irregular panic when declaring metrics via `on_init` option: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1648), (thanks @Kaspiman).
+- 🐛 **Headers middleware**: Inconsistent usage of CORS options, failed to apply `allowed_*` options with spaces: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1655), (thanks @gam6itko).
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project dependencies.
+
+---
+
 # <center> 🚀 v2023.2.0 🚀 </center>
 
 ## 👀 New
