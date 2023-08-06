@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	internalRpc "github.com/roadrunner-server/roadrunner/v2023/internal/rpc"
+	"github.com/roadrunner-server/roadrunner/v2023/internal/sdnotify"
 
 	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
@@ -33,12 +34,14 @@ func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Comman
 
 			defer func() { _ = client.Close() }()
 
-			plugins := args        // by default we expect services list from user
+			plugins := args        // by default, we expect services list from user
 			if len(plugins) == 0 { // but if nothing was passed - request all services list
 				if err = client.Call(resetterList, true, &plugins); err != nil {
 					return err
 				}
 			}
+
+			_, _ = sdnotify.SdNotify(sdnotify.Reloading)
 
 			var wg sync.WaitGroup
 			wg.Add(len(plugins))
@@ -67,6 +70,8 @@ func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Comman
 			}
 
 			wg.Wait()
+
+			_, _ = sdnotify.SdNotify(sdnotify.Ready)
 
 			return nil
 		},

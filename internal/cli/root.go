@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"strconv"
 
+	"github.com/joho/godotenv"
 	"github.com/roadrunner-server/errors"
 	"github.com/roadrunner-server/roadrunner/v2023/internal/cli/jobs"
 	"github.com/roadrunner-server/roadrunner/v2023/internal/cli/reset"
@@ -15,8 +16,6 @@ import (
 	"github.com/roadrunner-server/roadrunner/v2023/internal/cli/workers"
 	dbg "github.com/roadrunner-server/roadrunner/v2023/internal/debug"
 	"github.com/roadrunner-server/roadrunner/v2023/internal/meta"
-
-	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 )
 
@@ -48,7 +47,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 
 	cmd := &cobra.Command{
 		Use:           cmdName,
-		Short:         "High-performance PHP application server, load-balancer and process manager",
+		Short:         "High-performance PHP application server, process manager written in Golang and powered with ❤️ (by SpiralScout)",
 		SilenceErrors: true,
 		SilenceUsage:  true,
 		Version:       fmt.Sprintf("%s (build time: %s, %s), OS: %s, arch: %s", meta.Version(), meta.BuildTime(), runtime.Version(), runtime.GOOS, runtime.GOARCH),

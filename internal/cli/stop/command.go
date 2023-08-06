@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/roadrunner-server/errors"
+	"github.com/roadrunner-server/roadrunner/v2023/internal/sdnotify"
 	"github.com/spf13/cobra"
 )
 
@@ -24,6 +25,7 @@ func NewCommand(silent *bool, force *bool) *cobra.Command {
 		RunE: func(*cobra.Command, []string) error {
 			const op = errors.Op("rr_stop")
 
+			_, _ = sdnotify.SdNotify(sdnotify.Stopping)
 			data, err := os.ReadFile(pidFileName)
 			if err != nil {
 				return errors.Errorf("%v, to create a .pid file, you must run RR with the following options: './rr serve -p'", err)

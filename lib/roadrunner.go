@@ -45,7 +45,12 @@ func NewRR(cfgFile string, override []string, pluginList []any) (*RR, error) {
 		endureOptions = append(endureOptions, endure.Visualize())
 	}
 
-	endureContainer := endure.New(containerCfg.LogLevel, endureOptions...)
+	// create endure container
+	ll, err := container.ParseLogLevel(containerCfg.LogLevel)
+	if err != nil {
+		return nil, err
+	}
+	endureContainer := endure.New(ll, endureOptions...)
 
 	// register another container plugins
 	err = endureContainer.RegisterAll(append(pluginList, cfg)...)

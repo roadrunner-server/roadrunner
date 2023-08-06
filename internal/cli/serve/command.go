@@ -9,6 +9,7 @@ import (
 	"github.com/roadrunner-server/endure/v2"
 	"github.com/roadrunner-server/roadrunner/v2023/container"
 	"github.com/roadrunner-server/roadrunner/v2023/internal/meta"
+	"github.com/roadrunner-server/roadrunner/v2023/internal/sdnotify"
 
 	configImpl "github.com/roadrunner-server/config/v4"
 	"github.com/roadrunner-server/errors"
@@ -54,7 +55,13 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 			}
 
 			// create endure container
-			cont := endure.New(containerCfg.LogLevel, endureOptions...)
+			ll, err := container.ParseLogLevel(containerCfg.LogLevel)
+			if err != nil {
+				if !*silent {
+					fmt.Printf("[WARN] Failed to parse log level, using default (error): %s\n", err)
+				}
+			}
+			cont := endure.New(ll, endureOptions...)
 
 			// register plugins
 			err = cont.RegisterAll(append(container.Plugins(), cfg)...)
@@ -75,7 +82,7 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 			}
 
 			oss, stop := make(chan os.Signal, 5), make(chan struct{}, 1) //nolint:gomnd
-			signal.Notify(oss, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+			signal.Notify(oss, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGABRT)
 
 			go func() {
 				// first catch - stop the container
@@ -83,8 +90,10 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 				// send signal to stop execution
 				stop <- struct{}{}
 
-				// after first hit we are waiting for the second
-				// second catch - exit from the process
+				// notify about stopping
+				_, _ = sdnotify.SdNotify(sdnotify.Stopping)
+
+				// after first hit we are waiting for the second catch - exit from the process
 				<-oss
 				fmt.Println("exit forced")
 				os.Exit(1)
@@ -92,6 +101,26 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 
 			if !*silent {
 				fmt.Printf("[INFO] RoadRunner server started; version: %s, buildtime: %s\n", meta.Version(), meta.BuildTime())
+			}
+
+			// at this moment, we're almost sure that the container is running (almost- because we don't know if the plugins won't report an error on the next step)
+			notified, err := sdnotify.SdNotify(sdnotify.Ready)
+			if err != nil {
+				if !*silent {
+					fmt.Printf("[WARN] sdnotify: %s\n", err)
+				}
+			}
+
+			if !*silent {
+				if notified {
+					fmt.Println("[INFO] sdnotify: notified")
+					// if notified -> notify about stop
+					defer func() {
+						_, _ = sdnotify.SdNotify(sdnotify.Stopping)
+					}()
+				} else {
+					fmt.Println("[INFO] sdnotify: not notified")
+				}
 			}
 
 			for {
