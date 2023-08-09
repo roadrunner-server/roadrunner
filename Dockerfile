@@ -1,5 +1,5 @@
 # Image page: <https://hub.docker.com/_/golang>
-FROM --platform=${TARGETPLATFORM:-linux/amd64} golang:1.20-alpine as builder
+FROM --platform=${TARGETPLATFORM:-linux/amd64} golang:1.21-alpine as builder
 
 # app version and build date must be passed during image building (version without any prefix).
 # e.g.: `docker build --build-arg "APP_VERSION=1.2.3" --build-arg "BUILD_TIME=$(date +%FT%T%z)" .`
@@ -18,7 +18,7 @@ ENV LDFLAGS="-s \
 # compile binary file
 RUN set -x
 RUN go mod download
-RUN go mod tidy
+RUN go mod tidy -go 1.21
 RUN CGO_ENABLED=0 go build -pgo=roadrunner.pprof -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr
 RUN ./rr -v
 
