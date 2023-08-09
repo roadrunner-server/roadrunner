@@ -1,6 +1,8 @@
 module github.com/roadrunner-server/roadrunner/v2023
 
-go 1.20
+go 1.21
+
+toolchain go1.21.0
 
 require (
 	github.com/buger/goterm v1.0.4
@@ -59,7 +61,7 @@ exclude github.com/uber-go/tally/v4 v4.1.7
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.318 // indirect
+	github.com/aws/aws-sdk-go v1.44.319 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.20.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.33 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.32 // indirect
@@ -139,9 +141,9 @@ require (
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/stretchr/objx v0.5.0 // indirect
+	github.com/stretchr/objx v0.5.1 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
-	github.com/tklauser/go-sysconf v0.3.11 // indirect
+	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/twmb/franz-go v1.14.3 // indirect
 	github.com/twmb/franz-go/pkg/kmsg v1.6.1 // indirect
