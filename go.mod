@@ -54,7 +54,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/temporalio/roadrunner-temporal/v4 v4.4.0-beta.1
 	go.uber.org/automaxprocs v1.5.3
-	golang.org/x/exp v0.0.0-20230807204917-050eac23e9de
+	golang.org/x/exp v0.0.0-20230809094429-853ea248256d
 )
 
 exclude github.com/uber-go/tally/v4 v4.1.7
