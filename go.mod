@@ -3,6 +3,7 @@ module github.com/roadrunner-server/roadrunner/v2023
 go 1.21
 
 require (
+	buf.build/gen/go/roadrunner-server/api/protocolbuffers/go v1.31.0-20230627200035-4e59a69f79a2.1
 	github.com/buger/goterm v1.0.4
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.15.0
@@ -24,9 +25,9 @@ require (
 	github.com/roadrunner-server/headers/v4 v4.2.1
 	github.com/roadrunner-server/http/v4 v4.2.2
 	github.com/roadrunner-server/informer/v4 v4.2.0
-	github.com/roadrunner-server/jobs/v4 v4.5.2
+	github.com/roadrunner-server/jobs/v4 v4.5.3
 	github.com/roadrunner-server/kafka/v4 v4.3.0
-	github.com/roadrunner-server/kv/v4 v4.2.0
+	github.com/roadrunner-server/kv/v4 v4.2.1
 	github.com/roadrunner-server/lock/v4 v4.3.1
 	github.com/roadrunner-server/logger/v4 v4.2.0
 	github.com/roadrunner-server/memcached/v4 v4.1.10
@@ -51,7 +52,6 @@ require (
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
 	github.com/temporalio/roadrunner-temporal/v4 v4.3.2
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.40
 	go.uber.org/automaxprocs v1.5.3
 	golang.org/x/exp v0.0.0-20230810033253-352e893a4cad
 )
@@ -160,6 +160,7 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	github.com/zeebo/blake3 v0.2.3 // indirect
 	go.buf.build/grpc/go/roadrunner-server/api v1.4.40 // indirect
+	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.40 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.42.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.42.0 // indirect

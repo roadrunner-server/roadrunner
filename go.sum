@@ -1,3 +1,5 @@
+buf.build/gen/go/roadrunner-server/api/protocolbuffers/go v1.31.0-20230627200035-4e59a69f79a2.1 h1:ZE+yuuIECfhbj4BP9ktzWz+RVGdBb4/RKhnmSI2tnNw=
+buf.build/gen/go/roadrunner-server/api/protocolbuffers/go v1.31.0-20230627200035-4e59a69f79a2.1/go.mod h1:uwBu+GWElu84PQVdeRgzDd14w8HF1MO/1g+3Hzu1W5c=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.38.0/go.mod h1:990N+gfupTy94rShfmMCWGDn0LpTmnzTp2qbd1dvSRU=
@@ -1079,12 +1081,12 @@ github.com/roadrunner-server/http/v4 v4.2.2 h1:FFuyQKR/8cV6Lf2b64wTzPme5kTkj/MZS
 github.com/roadrunner-server/http/v4 v4.2.2/go.mod h1:XPT6Ft5/gAL+s9yUmrLSicxJv1Cdl1B9GlLeds8fETw=
 github.com/roadrunner-server/informer/v4 v4.2.0 h1:LQuJwW7dg1Z47GtocOaOeepXJPDYB12K6zznXC3oeBQ=
 github.com/roadrunner-server/informer/v4 v4.2.0/go.mod h1:c59aVVYVke4nB69gYSHvVL1Ct+zOkf+SnA3ikPPhDUs=
-github.com/roadrunner-server/jobs/v4 v4.5.2 h1:lveen9dYR5vq7YCCEWFHOwy72ZLZREK8ILdhP5tR3l4=
-github.com/roadrunner-server/jobs/v4 v4.5.2/go.mod h1:Wn3PScAF5weQdcxCwIC42axxdP2XSNrsxYOHSvCNiGw=
+github.com/roadrunner-server/jobs/v4 v4.5.3 h1:HXEodJD6eVhGL0souzyyzB0gZV35jPtZehz5GRC8IoM=
+github.com/roadrunner-server/jobs/v4 v4.5.3/go.mod h1:GRi+m2+9VoRqodhxQkbynY+IUwc9mMhXKVR3J3FK9mY=
 github.com/roadrunner-server/kafka/v4 v4.3.0 h1:v1SdC7Erh6PFBrPEC8bgwreuf1xHu7pfM8IBVd9uFb8=
 github.com/roadrunner-server/kafka/v4 v4.3.0/go.mod h1:/XGmZGE2yGxvjQrhU46L9IxO/7wG9/kk19IeGPZRFUo=
-github.com/roadrunner-server/kv/v4 v4.2.0 h1:B/3SHE6xAqwK3wDG9PpB1nGikwUPIdaKsiOhH5W1CoI=
-github.com/roadrunner-server/kv/v4 v4.2.0/go.mod h1:4E7zTQ8liypysI7DxtVGorPBRyqqFqHtrA3S2otbolE=
+github.com/roadrunner-server/kv/v4 v4.2.1 h1:/AAhVrQJAnxH9Gx5nq4xCsvMk3agk8skCZqkCv/nubQ=
+github.com/roadrunner-server/kv/v4 v4.2.1/go.mod h1:o/mm8mi4pkLmut/50XxQXFx4/iVnvwzaUSKUqg7hqNw=
 github.com/roadrunner-server/lock/v4 v4.3.1 h1:a3AxQFWyxxeYXRTaVEc2+7TSqP65ZHHdMHSZQiUk3U4=
 github.com/roadrunner-server/lock/v4 v4.3.1/go.mod h1:9J2gRhb3la5SYn8POMo8BRC9MXcdg0/XVU72QzkfNzs=
 github.com/roadrunner-server/logger/v4 v4.2.0 h1:dKWC1hS6iTVFqRD1gUtAXqOFbNMjPKSCXaC9hbZwowo=
