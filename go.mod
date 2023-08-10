@@ -59,6 +59,7 @@ exclude (
 	github.com/roadrunner-server/jobs/v4 v4.5.1
 	github.com/roadrunner-server/sdk/v4 v4.4.0-beta.4
 	github.com/uber-go/tally/v4 v4.1.7
+	go.temporal.io/sdk v1.24.0
 )
 
 require (
@@ -175,7 +176,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.16.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	go.temporal.io/api v1.23.0 // indirect
-	go.temporal.io/sdk v1.24.0 // indirect
+	go.temporal.io/sdk v1.23.1 // indirect
 	go.temporal.io/sdk/contrib/opentelemetry v0.2.0 // indirect
 	go.temporal.io/sdk/contrib/tally v0.2.0 // indirect
 	go.temporal.io/server v1.21.4 // indirect
