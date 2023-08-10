@@ -9,16 +9,16 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v4 v4.7.0
-	github.com/roadrunner-server/api/v4 v4.6.1
+	github.com/roadrunner-server/api/v4 v4.6.2
 	github.com/roadrunner-server/app-logger/v4 v4.0.9
 	github.com/roadrunner-server/beanstalk/v4 v4.4.0
 	github.com/roadrunner-server/boltdb/v4 v4.5.0
 	github.com/roadrunner-server/centrifuge/v4 v4.3.0-beta.2
 	github.com/roadrunner-server/config/v4 v4.4.0
-	github.com/roadrunner-server/endure/v2 v2.3.1
-	github.com/roadrunner-server/errors v1.2.0
+	github.com/roadrunner-server/endure/v2 v2.4.1
+	github.com/roadrunner-server/errors v1.3.0
 	github.com/roadrunner-server/fileserver/v4 v4.1.0
-	github.com/roadrunner-server/goridge/v3 v3.6.3
+	github.com/roadrunner-server/goridge/v3 v3.7.0
 	github.com/roadrunner-server/grpc/v4 v4.4.0-beta.1
 	github.com/roadrunner-server/gzip/v4 v4.1.0
 	github.com/roadrunner-server/headers/v4 v4.2.1
@@ -26,7 +26,7 @@ require (
 	github.com/roadrunner-server/informer/v4 v4.2.0
 	github.com/roadrunner-server/jobs/v4 v4.6.0-beta.2
 	github.com/roadrunner-server/kafka/v4 v4.3.0
-	github.com/roadrunner-server/kv/v4 v4.2.0
+	github.com/roadrunner-server/kv/v4 v4.2.2
 	github.com/roadrunner-server/lock/v4 v4.4.0-beta.1
 	github.com/roadrunner-server/logger/v4 v4.2.0
 	github.com/roadrunner-server/memcached/v4 v4.1.10
@@ -42,24 +42,24 @@ require (
 	github.com/roadrunner-server/sdk/v4 v4.4.0-beta.5
 	github.com/roadrunner-server/send/v4 v4.2.0
 	github.com/roadrunner-server/server/v4 v4.3.0-beta.3
-	github.com/roadrunner-server/service/v4 v4.3.0
+	github.com/roadrunner-server/service/v4 v4.3.1
 	github.com/roadrunner-server/sqs/v4 v4.4.1
 	github.com/roadrunner-server/static/v4 v4.1.0
-	github.com/roadrunner-server/status/v4 v4.3.0
+	github.com/roadrunner-server/status/v4 v4.3.1
 	github.com/roadrunner-server/tcp/v4 v4.2.0-beta.1
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
 	github.com/temporalio/roadrunner-temporal/v4 v4.4.0-beta.1
 	go.uber.org/automaxprocs v1.5.3
-	golang.org/x/exp v0.0.0-20230809094429-853ea248256d
+	golang.org/x/exp v0.0.0-20230810033253-352e893a4cad
 )
 
 exclude github.com/uber-go/tally/v4 v4.1.7
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.319 // indirect
+	github.com/aws/aws-sdk-go v1.44.320 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.20.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.33 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.32 // indirect
@@ -118,7 +118,7 @@ require (
 	github.com/nats-io/nats.go v1.28.0 // indirect
 	github.com/nats-io/nkeys v0.4.4 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
-	github.com/openzipkin/zipkin-go v0.4.1 // indirect
+	github.com/openzipkin/zipkin-go v0.4.2 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.9 // indirect
 	github.com/pierrec/lz4/v4 v4.1.18 // indirect
@@ -131,7 +131,7 @@ require (
 	github.com/rabbitmq/amqp091-go v1.8.1 // indirect
 	github.com/redis/go-redis/v9 v9.0.5 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
-	github.com/roadrunner-server/tcplisten v1.3.0 // indirect
+	github.com/roadrunner-server/tcplisten v1.4.0 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/rs/cors v1.9.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
@@ -154,7 +154,6 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	github.com/zeebo/blake3 v0.2.3 // indirect
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.40 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.42.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.42.0 // indirect
