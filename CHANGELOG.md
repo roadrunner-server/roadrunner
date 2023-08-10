@@ -1,5 +1,20 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.2.2 🚀 </center>
+
+## 🩹 Fixes
+
+- 🐛 **JOBS plugin**: Fix typo in the `RPC` span name: [PR](https://github.com/roadrunner-server/jobs/pull/92), (thanks @Kaspiman).
+- 🐛 **SDK**: Fix incorrect workers state when worker reached `idleTTL` state: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1669), (thanks @Aleksa1996).
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **HTTP plugin**: faster PostForm/MultipartForm processing [PR](https://github.com/roadrunner-server/http/pull/145).
+- 🧑‍🏭 **Golang**: Update Golang version to v1.21.
+- 🧑‍🏭 **Dependencies**: update project dependencies.
+
+---
+
 # <center> 🚀 v2023.2.1 🚀 </center>
 
 ## 🩹 Fixes
