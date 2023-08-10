@@ -3,7 +3,6 @@ module github.com/roadrunner-server/roadrunner/v2023
 go 1.21
 
 require (
-	buf.build/gen/go/roadrunner-server/api/protocolbuffers/go v1.31.0-20230627200035-4e59a69f79a2.1
 	github.com/buger/goterm v1.0.4
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.15.0
@@ -14,7 +13,7 @@ require (
 	github.com/roadrunner-server/app-logger/v4 v4.0.9
 	github.com/roadrunner-server/beanstalk/v4 v4.4.0
 	github.com/roadrunner-server/boltdb/v4 v4.5.0
-	github.com/roadrunner-server/centrifuge/v4 v4.2.0
+	github.com/roadrunner-server/centrifuge/v4 v4.2.1
 	github.com/roadrunner-server/config/v4 v4.4.0
 	github.com/roadrunner-server/endure/v2 v2.4.1
 	github.com/roadrunner-server/errors v1.3.0
@@ -25,10 +24,10 @@ require (
 	github.com/roadrunner-server/headers/v4 v4.2.1
 	github.com/roadrunner-server/http/v4 v4.2.2
 	github.com/roadrunner-server/informer/v4 v4.2.0
-	github.com/roadrunner-server/jobs/v4 v4.5.3
+	github.com/roadrunner-server/jobs/v4 v4.5.4
 	github.com/roadrunner-server/kafka/v4 v4.3.0
-	github.com/roadrunner-server/kv/v4 v4.2.1
-	github.com/roadrunner-server/lock/v4 v4.3.1
+	github.com/roadrunner-server/kv/v4 v4.2.2
+	github.com/roadrunner-server/lock/v4 v4.3.2
 	github.com/roadrunner-server/logger/v4 v4.2.0
 	github.com/roadrunner-server/memcached/v4 v4.1.10
 	github.com/roadrunner-server/memory/v4 v4.4.0
@@ -43,10 +42,10 @@ require (
 	github.com/roadrunner-server/sdk/v4 v4.3.2
 	github.com/roadrunner-server/send/v4 v4.2.0
 	github.com/roadrunner-server/server/v4 v4.2.0
-	github.com/roadrunner-server/service/v4 v4.3.0
+	github.com/roadrunner-server/service/v4 v4.3.1
 	github.com/roadrunner-server/sqs/v4 v4.4.1
 	github.com/roadrunner-server/static/v4 v4.1.0
-	github.com/roadrunner-server/status/v4 v4.3.0
+	github.com/roadrunner-server/status/v4 v4.3.1
 	github.com/roadrunner-server/tcp/v4 v4.1.0
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
@@ -159,8 +158,6 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	github.com/zeebo/blake3 v0.2.3 // indirect
-	go.buf.build/grpc/go/roadrunner-server/api v1.4.40 // indirect
-	go.buf.build/protocolbuffers/go/roadrunner-server/api v1.3.40 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.42.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.42.0 // indirect
