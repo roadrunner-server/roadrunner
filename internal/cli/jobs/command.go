@@ -35,15 +35,6 @@ func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Comman
 				return errors.E(op, errors.Str("no configuration file provided"))
 			}
 
-			if len(args) == 0 {
-				return errors.Str("incorrect command usage, should be: rr jobs pause/resume/destroy/list")
-			}
-
-			// for the commands other than list, args[1] should contain list of pipelines to pause/resume/destroy
-			if !listPipes && len(args[0]) == 0 {
-				return errors.Str("pause/resume/destroy commands should have list of the pipelines as second arg")
-			}
-
 			client, err := internalRpc.NewClient(*cfgFile, *override)
 			if err != nil {
 				return err
@@ -53,21 +44,30 @@ func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Comman
 
 			switch {
 			case pausePipes:
+				if len(args) == 0 {
+					return errors.Str("incorrect command usage, should be: rr jobs --pause pipe1,pipe2")
+				}
 				split := strings.Split(strings.Trim(args[0], " "), ",")
 
 				return pause(client, split, silent)
 			case destroyPipes:
+				if len(args) == 0 {
+					return errors.Str("incorrect command usage, should be: rr jobs --destroy pipe1,pipe2")
+				}
 				split := strings.Split(strings.Trim(args[0], " "), ",")
 
 				return destroy(client, split, silent)
 			case resumePipes:
+				if len(args) == 0 {
+					return errors.Str("incorrect command usage, should be: rr jobs --resume pipe1,pipe2")
+				}
 				split := strings.Split(strings.Trim(args[0], " "), ",")
 
 				return resume(client, split, silent)
 			case listPipes:
 				return list(client)
 			default:
-				return errors.Str("command should be in form of: `rr jobs pause pipe1,pipe2,etc`")
+				return errors.Str("command should be in form of: `rr jobs --<destroy/resume/pause> pipe1,pipe2`")
 			}
 		},
 	}
