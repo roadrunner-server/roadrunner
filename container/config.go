@@ -10,10 +10,10 @@ import (
 
 // Config defines endure container configuration.
 type Config struct {
-	GracePeriod    time.Duration `mapstructure:"grace_period"`
-	LogLevel       string        `mapstructure:"log_level"`
-	EnableWatchdog bool          `mapstructure:"enable_watchdog"`
-	PrintGraph     bool          `mapstructure:"print_graph"`
+	GracePeriod time.Duration `mapstructure:"grace_period"`
+	LogLevel    string        `mapstructure:"log_level"`
+	WatchdogSec int           `mapstructure:"watchdog_sec"`
+	PrintGraph  bool          `mapstructure:"print_graph"`
 }
 
 const (
@@ -34,10 +34,9 @@ func NewConfig(cfgFile string) (*Config, error) {
 	}
 
 	cfg := &Config{
-		GracePeriod:    defaultGracePeriod,
-		LogLevel:       "error",
-		PrintGraph:     false,
-		EnableWatchdog: false,
+		GracePeriod: defaultGracePeriod,
+		LogLevel:    "error",
+		PrintGraph:  false,
 	}
 
 	if !v.IsSet(endureKey) {

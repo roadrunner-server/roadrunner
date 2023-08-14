@@ -114,9 +114,15 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 			if !*silent {
 				if notified {
 					fmt.Println("[INFO] sdnotify: notified")
+					stopCh := make(chan struct{}, 1)
+					if containerCfg.WatchdogSec > 0 {
+						fmt.Printf("[INFO] sdnotify: watchdog enabled, timeout: %d seconds\n", containerCfg.WatchdogSec)
+						sdnotify.StartWatchdog(containerCfg.WatchdogSec, stopCh)
+					}
+
 					// if notified -> notify about stop
 					defer func() {
-						_, _ = sdnotify.SdNotify(sdnotify.Stopping)
+						stopCh <- struct{}{}
 					}()
 				} else {
 					fmt.Println("[INFO] sdnotify: not notified")

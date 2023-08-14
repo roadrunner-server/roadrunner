@@ -25,6 +25,7 @@ package sdnotify
 import (
 	"net"
 	"os"
+	"time"
 )
 
 type State string
@@ -83,4 +84,20 @@ func SdNotify(state State) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func StartWatchdog(interval int, stopCh chan struct{}) {
+	go func() {
+		ticker := time.NewTicker(time.Duration(interval) * time.Second)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-stopCh:
+				return
+			case <-ticker.C:
+				_, _ = SdNotify(Watchdog)
+			}
+		}
+	}()
 }
