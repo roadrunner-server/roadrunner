@@ -52,16 +52,16 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
-	github.com/temporalio/roadrunner-temporal/v4 v4.4.0-beta.1
+	github.com/temporalio/roadrunner-temporal/v4 v4.4.0-beta.2
 	go.uber.org/automaxprocs v1.5.3
-	golang.org/x/exp v0.0.0-20230810033253-352e893a4cad
+	golang.org/x/exp v0.0.0-20230811145659-89c5cff77bcb
 )
 
 exclude github.com/uber-go/tally/v4 v4.1.7
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.44.320 // indirect
+	github.com/aws/aws-sdk-go v1.44.324 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.20.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.33 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.32 // indirect
@@ -142,7 +142,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.5.1 // indirect
-	github.com/subosito/gotenv v1.4.2 // indirect
+	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/twmb/franz-go v1.14.3 // indirect
@@ -188,8 +188,8 @@ require (
 	golang.org/x/text v0.12.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.12.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20230807174057-1744710a1577 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230807174057-1744710a1577 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20230814215434-ca7cfce7776a // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230814215434-ca7cfce7776a // indirect
 	google.golang.org/grpc v1.57.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
