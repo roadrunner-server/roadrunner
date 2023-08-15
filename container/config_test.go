@@ -15,9 +15,12 @@ func TestNewConfig_SuccessfulReading(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, c)
 
+	ll, err := container.ParseLogLevel(c.LogLevel)
+	assert.NoError(t, err)
+
 	assert.Equal(t, time.Second*10, c.GracePeriod)
 	assert.True(t, c.PrintGraph)
-	assert.Equal(t, slog.LevelWarn, c.LogLevel)
+	assert.Equal(t, slog.LevelWarn, ll.Level())
 }
 
 func TestNewConfig_WithoutEndureKey(t *testing.T) {
@@ -28,9 +31,12 @@ func TestNewConfig_WithoutEndureKey(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, c)
 
+	ll, err := container.ParseLogLevel(c.LogLevel)
+	assert.NoError(t, err)
+
 	assert.Equal(t, time.Second*30, c.GracePeriod)
 	assert.False(t, c.PrintGraph)
-	assert.Equal(t, slog.LevelError, c.LogLevel)
+	assert.Equal(t, slog.LevelError, ll.Level())
 }
 
 func TestNewConfig_LoggingLevels(t *testing.T) {
@@ -53,15 +59,16 @@ func TestNewConfig_LoggingLevels(t *testing.T) {
 			assert.NoError(t, cfgPlugin.Init())
 
 			c, err := container.NewConfig(tt.path)
+			assert.NotNil(t, c)
+			ll, err2 := container.ParseLogLevel(c.LogLevel)
 
 			if tt.wantError {
-				assert.Nil(t, c)
-				assert.Error(t, err)
-				assert.Contains(t, err.Error(), "unknown log level")
+				assert.Error(t, err2)
+				assert.Contains(t, err2.Error(), "unknown log level")
 			} else {
 				assert.NoError(t, err)
-				assert.NotNil(t, c)
-				assert.Equal(t, tt.wantLevel, c.LogLevel)
+				assert.NoError(t, err2)
+				assert.Equal(t, tt.wantLevel, ll.Level())
 			}
 		})
 	}
