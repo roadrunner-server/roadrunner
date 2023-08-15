@@ -39,7 +39,7 @@ func TestNewClient_ConnectionError(t *testing.T) {
 }
 
 func TestNewClient_SuccessfullyConnected(t *testing.T) {
-	l, err := net.Listen("tcp", "127.0.0.1:55555")
+	l, err := net.Listen("tcp", "127.0.0.1:55554")
 	assert.NoError(t, err)
 
 	defer func() { assert.NoError(t, l.Close()) }()
@@ -53,12 +53,12 @@ func TestNewClient_SuccessfullyConnected(t *testing.T) {
 }
 
 func TestNewClient_SuccessfullyConnectedOverride(t *testing.T) {
-	l, err := net.Listen("tcp", "127.0.0.1:55555")
+	l, err := net.Listen("tcp", "127.0.0.1:55554")
 	assert.NoError(t, err)
 
 	defer func() { assert.NoError(t, l.Close()) }()
 
-	c, err := rpc.NewClient("test/config_rpc_empty.yaml", []string{"rpc.listen=tcp://127.0.0.1:55555"})
+	c, err := rpc.NewClient("test/config_rpc_empty.yaml", []string{"rpc.listen=tcp://127.0.0.1:55554"})
 
 	assert.NotNil(t, c)
 	assert.NoError(t, err)
