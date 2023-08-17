@@ -1062,8 +1062,8 @@ github.com/roadrunner-server/centrifuge/v4 v4.3.0-beta.2 h1:rA4Bx+MJ7CDwGX1zRzyP
 github.com/roadrunner-server/centrifuge/v4 v4.3.0-beta.2/go.mod h1:ZYs0FX6GYUQ5eo594jZMZ7G1Iz0CBjA/Mw9AbYblQWA=
 github.com/roadrunner-server/config/v4 v4.4.0 h1:iRgwldlKQJpRZ3eUThBWIEEFxQT2Qg+QKY5HxLlCHzg=
 github.com/roadrunner-server/config/v4 v4.4.0/go.mod h1:WUnciU9NeJpcVukJCYDp4bF6xb+yRbCVi3gjJXWoZtg=
-github.com/roadrunner-server/endure/v2 v2.4.1 h1:ukwAoMQoUqPsD4Fu4wCeG84FfN/dGqy2a1F9ufl4vH8=
-github.com/roadrunner-server/endure/v2 v2.4.1/go.mod h1:uBmTMeZYtKTT8+aa2Ge/FH95G/VACj0QpZ8yf36wn6Y=
+github.com/roadrunner-server/endure/v2 v2.4.2 h1:aFnPc321l5HDzE2mN5wwfksJ40lgXwfU3RSqdS1LyUQ=
+github.com/roadrunner-server/endure/v2 v2.4.2/go.mod h1:vWTvn6NiYxUBDgwAyjv92i/qFemSUs+cTItMZvc5Zsk=
 github.com/roadrunner-server/errors v1.3.0 h1:kLVXpXne0jMReN7pj8KIhyYyjqKjsPC5DRGqMsd4/Fo=
 github.com/roadrunner-server/errors v1.3.0/go.mod h1:XYVuhXvxi3yQaP/zCLB6QRZ0JvQIRaBa0SKFHL4WLKg=
 github.com/roadrunner-server/fileserver/v4 v4.1.0 h1:5O42/ESyNWfpM0eTlRz/mYjWP6GJkNSz47r2H/D1WFI=
@@ -1080,8 +1080,8 @@ github.com/roadrunner-server/http/v4 v4.3.0-beta.3 h1:PtDu7UJLPl0shs9p0pSgKirx78
 github.com/roadrunner-server/http/v4 v4.3.0-beta.3/go.mod h1:WDjOAx+7EkT4saluaRSX1dM6yVcOIjNKZEGkarxjaw0=
 github.com/roadrunner-server/informer/v4 v4.2.0 h1:LQuJwW7dg1Z47GtocOaOeepXJPDYB12K6zznXC3oeBQ=
 github.com/roadrunner-server/informer/v4 v4.2.0/go.mod h1:c59aVVYVke4nB69gYSHvVL1Ct+zOkf+SnA3ikPPhDUs=
-github.com/roadrunner-server/jobs/v4 v4.6.0-beta.3 h1:qKuBidlTxZhUBrkjugmm3eImCLcJjRKAR6MCMs3UuRA=
-github.com/roadrunner-server/jobs/v4 v4.6.0-beta.3/go.mod h1:JmqB7hETeLG/6ikeuMldiZTDVwhOm/BYfEhG9oFEM0c=
+github.com/roadrunner-server/jobs/v4 v4.6.0-beta.4 h1:uE/tg9ibLaEvvp3VfQgkaAOqJTqY0vxESplRF+Id1nQ=
+github.com/roadrunner-server/jobs/v4 v4.6.0-beta.4/go.mod h1:X+zG793v16km3DugNfcJ+GiAjGu4KoZHhk8ZH0ffwHY=
 github.com/roadrunner-server/kafka/v4 v4.3.0 h1:v1SdC7Erh6PFBrPEC8bgwreuf1xHu7pfM8IBVd9uFb8=
 github.com/roadrunner-server/kafka/v4 v4.3.0/go.mod h1:/XGmZGE2yGxvjQrhU46L9IxO/7wG9/kk19IeGPZRFUo=
 github.com/roadrunner-server/kv/v4 v4.2.2 h1:a1RGTihi+yMVRQjN0rQKjsILckKtxaHkA3iwk8BniCE=

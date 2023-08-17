@@ -17,7 +17,7 @@ require (
 	github.com/roadrunner-server/boltdb/v4 v4.5.0
 	github.com/roadrunner-server/centrifuge/v4 v4.3.0-beta.2
 	github.com/roadrunner-server/config/v4 v4.4.0
-	github.com/roadrunner-server/endure/v2 v2.4.1
+	github.com/roadrunner-server/endure/v2 v2.4.2
 	github.com/roadrunner-server/errors v1.3.0
 	github.com/roadrunner-server/fileserver/v4 v4.1.0
 	github.com/roadrunner-server/goridge/v3 v3.7.0
@@ -26,7 +26,7 @@ require (
 	github.com/roadrunner-server/headers/v4 v4.2.1
 	github.com/roadrunner-server/http/v4 v4.3.0-beta.3
 	github.com/roadrunner-server/informer/v4 v4.2.0
-	github.com/roadrunner-server/jobs/v4 v4.6.0-beta.3
+	github.com/roadrunner-server/jobs/v4 v4.6.0-beta.4
 	github.com/roadrunner-server/kafka/v4 v4.3.0
 	github.com/roadrunner-server/kv/v4 v4.2.2
 	github.com/roadrunner-server/lock/v4 v4.4.0-beta.1
