@@ -189,11 +189,4 @@ jobs:
             BUILD_TIME=${{ steps.values.outputs.timestamp }}
           tags: |
             spiralscout/roadrunner:${{ steps.values.outputs.version_full}}
-            spiralscout/roadrunner:latest
-            spiralscout/roadrunner:2023
-            spiralscout/roadrunner:2023.2
-
             ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_full}}
-            ghcr.io/roadrunner-server/roadrunner:latest
-            ghcr.io/roadrunner-server/roadrunner:2023
-            ghcr.io/roadrunner-server/roadrunner:2023.2

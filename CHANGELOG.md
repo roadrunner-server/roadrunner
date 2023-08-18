@@ -1,5 +1,135 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.0-beta.1 🚀 </center>
+
+## 👀 New
+
+- ✒️ **Service plugin**: Support for the user/group per-service: [FR](https://github.com/roadrunner-server/roadrunner/issues/1570), (thanks @Kaspiman)
+
+#### Configuration example:
+```yaml
+service:
+    schedule:run:
+        command: "bin/console schedule:run"
+        process_num: 1
+        exec_timeout: 0s
+        remain_after_exit: true
+        service_name_in_log: false
+        restart_sec: 60
+        user: www-data  # <---------- [NEW]
+        group: www-data # <---------- [NEW]
+```
+
+- ✒️ **Temporal plugin**: Replay API support [SINCE PHP-SDK 2.6.0]: [FR](https://github.com/roadrunner-server/roadrunner/issues/1640)
+- ✒️ **RR core**: `sdnotify` support: [FR](https://github.com/roadrunner-server/roadrunner/pull/1671), (thanks @Kaspiman)
+- ✒️ **HTTP response streaming support**: : [FR](https://github.com/roadrunner-server/http/pull/152), (thanks @roxblnfk)
+
+#### Worker.php example:
+
+```php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Spiral\RoadRunner;
+
+ini_set('display_errors', 'stderr');
+require __DIR__ . "/vendor/autoload.php";
+
+$worker = RoadRunner\Worker::create();
+$http = new RoadRunner\Http\HttpWorker($worker);
+$read = static function (): Generator {
+    foreach (\file(__DIR__ . '/test.txt') as $line) {
+        try {
+            yield $line;
+        } catch (Spiral\RoadRunner\Http\Exception\StreamStoppedException) {
+            // Just stop sending data
+            return;
+        }
+    }
+};
+
+try {
+    while ($req = $http->waitRequest()) {
+        $http->respond(200, $read());
+    }
+} catch (\Throwable $e) {
+    $worker->error($e->getMessage());
+}
+```
+
+- ✒️ **HTTP plugin**: Support for the `103` Early Hints via streamed response: [FR](https://github.com/roadrunner-server/roadrunner/issues/918), (thanks @roxblnfk)
+- ✒️ **RAW command support**: Support for raw commands, which are not validated by RR and may contain spaces. Note that this feature is only supported via `.rr.yaml` configuration: [FR](https://github.com/roadrunner-server/roadrunner/issues/1667), (thanks @nunomaduro)
+
+#### Configuration:
+
+1.
+```yaml
+version: "3"
+
+server:
+  command: ["php", "../../php_test_files/client.php echo pipes"]
+  relay: "pipes"
+  relay_timeout: "20s"
+```
+2.
+```yaml
+version: "3"
+
+server:
+    command:
+      - "php"
+      - "../../php_test_files/client.php echo pipes"
+    relay: "pipes"
+    relay_timeout: "20s"
+```
+
+First argument should be a command (executable) and the rest of the arguments are passed to the command as arguments.
+
+- ✒️ **JOBS plugin**: Parallel pipelines start/stop/destroy initialization. If you have a much number of the pipelines, this feature should significantly reduce RR startup/shutdown time: [FR](https://github.com/roadrunner-server/roadrunner/issues/1672), (thanks @Kaspiman)
+
+## 🩹 Fixes
+
+- 🐛 **RR Core**: Actualize according to the docs `./rr jobs list/stop/resume` commands: [PR](https://github.com/roadrunner-server/roadrunner/pull/1675), (thanks @gam6itko).
+- 🐛 **JOBS plugin**: Correctly handle OTEL span on listener error: [PR](https://github.com/roadrunner-server/amqp/pull/87), (thanks @Kaspiman).
+- 🐛 **RR tests**: Fix tests failures on Darwin: [PR](https://github.com/roadrunner-server/roadrunner/pull/1680), (thanks @shyim).
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Golang**: Update Golang version to v1.21.
+- 🧑‍🏭 **Dependencies**: update project dependencies.
+
+---
+
+# <center> 🚀 v2023.2.2 🚀 </center>
+
+## 🩹 Fixes
+
+- 🐛 **JOBS plugin**: Fix typo in the `RPC` span name: [PR](https://github.com/roadrunner-server/jobs/pull/92), (thanks @Kaspiman).
+- 🐛 **SDK**: Fix incorrect workers state when worker reached `idleTTL` state: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1669), (thanks @Aleksa1996).
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **HTTP plugin**: faster PostForm/MultipartForm processing [PR](https://github.com/roadrunner-server/http/pull/145).
+- 🧑‍🏭 **Golang**: Update Golang version to v1.21.
+- 🧑‍🏭 **Dependencies**: update project dependencies.
+
+---
+
+# <center> 🚀 v2023.2.1 🚀 </center>
+
+## 🩹 Fixes
+
+- 🐛 **NATS driver**: Segfault when sending job via third-party sender without `consume_all` option set to `true`: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1650), (thanks @KernelMrex).
+- 🐛 **Metrics plugin**: Irregular panic when declaring metrics via `on_init` option: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1648), (thanks @Kaspiman).
+- 🐛 **Headers middleware**: Inconsistent usage of CORS options, failed to apply `allowed_*` options with spaces: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1655), (thanks @gam6itko).
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project dependencies.
+
+---
+
 # <center> 🚀 v2023.2.0 🚀 </center>
 
 ## 👀 New

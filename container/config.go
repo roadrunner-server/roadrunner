@@ -2,10 +2,10 @@ package container
 
 import (
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/spf13/viper"
-	"golang.org/x/exp/slog"
 )
 
 // Config defines endure container configuration.

@@ -1,12 +1,12 @@
 package container_test
 
 import (
+	"log/slog"
 	"testing"
 	"time"
 
 	"github.com/roadrunner-server/endure/v2"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/exp/slog"
 )
 
 func TestNewContainer(t *testing.T) { // there is no legal way to test container options

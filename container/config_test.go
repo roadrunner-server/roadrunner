@@ -1,13 +1,13 @@
 package container_test
 
 import (
+	"log/slog"
 	"testing"
 	"time"
 
 	"github.com/roadrunner-server/config/v4"
 	"github.com/roadrunner-server/roadrunner/v2023/container"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/exp/slog"
 )
 
 func TestNewConfig_SuccessfulReading(t *testing.T) {
