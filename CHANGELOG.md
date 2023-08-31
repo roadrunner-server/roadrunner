@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.0-beta.2 🚀 </center>
+
+## 🔥Features:
+
+## 👀 Temporal plugin:
+
+- ✒️ Add support for the Worker Versioning: [FR](https://github.com/roadrunner-server/roadrunner/issues/1689)
+
+## 🩹 Fixes:
+
+- 🐛 **Streaming**: Add stream timeout (will be configurable in the next release). Fix loss of the first chunk of the streamed response.
+
+---
+
 # <center> 🚀 v2023.3.0-beta.1 🚀 </center>
 
 ## 👀 New
