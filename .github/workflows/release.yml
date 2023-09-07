@@ -49,7 +49,7 @@ jobs:
           go-version: stable
 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install musl
         if: matrix.compiler == 'musl-gcc'
@@ -150,7 +150,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2 # Action page: <https://github.com/docker/setup-qemu-action>
