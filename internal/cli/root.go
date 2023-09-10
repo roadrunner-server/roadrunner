@@ -1,12 +1,8 @@
 package cli
 
 import (
+	"context"
 	"fmt"
-	"os"
-	"path/filepath"
-	"runtime"
-	"strconv"
-
 	"github.com/joho/godotenv"
 	"github.com/roadrunner-server/errors"
 	"github.com/roadrunner-server/roadrunner/v2023/internal/cli/jobs"
@@ -17,6 +13,12 @@ import (
 	dbg "github.com/roadrunner-server/roadrunner/v2023/internal/debug"
 	"github.com/roadrunner-server/roadrunner/v2023/internal/meta"
 	"github.com/spf13/cobra"
+	"os"
+	"os/signal"
+	"path/filepath"
+	"runtime"
+	"strconv"
+	"syscall"
 )
 
 const (
@@ -90,7 +92,14 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 
 			if debug {
 				srv := dbg.NewServer()
-				go func() { _ = srv.Start(":6061") }() // TODO implement graceful server stopping
+				go func() {
+					exit := make(chan os.Signal, 1)
+					signal.Notify(exit, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGABRT)
+					go srv.Start(":6061")
+
+					<-exit
+					_ = srv.Stop(context.Background())
+				}()
 			}
 
 			// user wanted to write a .pid file
