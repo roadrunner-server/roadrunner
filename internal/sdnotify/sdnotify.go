@@ -86,7 +86,7 @@ func SdNotify(state State) (bool, error) {
 	return true, nil
 }
 
-func StartWatchdog(interval int, stopCh chan struct{}) {
+func StartWatchdog(interval int, stopCh <-chan struct{}) {
 	go func() {
 		ticker := time.NewTicker(time.Duration(interval) * time.Second)
 		defer ticker.Stop()
