@@ -2,7 +2,16 @@ package cli
 
 import (
 	"context"
+	stderr "errors"
 	"fmt"
+	"net/http"
+	"os"
+	"os/signal"
+	"path/filepath"
+	"runtime"
+	"strconv"
+	"syscall"
+
 	"github.com/joho/godotenv"
 	"github.com/roadrunner-server/errors"
 	"github.com/roadrunner-server/roadrunner/v2023/internal/cli/jobs"
@@ -13,12 +22,6 @@ import (
 	dbg "github.com/roadrunner-server/roadrunner/v2023/internal/debug"
 	"github.com/roadrunner-server/roadrunner/v2023/internal/meta"
 	"github.com/spf13/cobra"
-	"os"
-	"os/signal"
-	"path/filepath"
-	"runtime"
-	"strconv"
-	"syscall"
 )
 
 const (
@@ -92,13 +95,32 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 
 			if debug {
 				srv := dbg.NewServer()
-				go func() {
-					exit := make(chan os.Signal, 1)
-					signal.Notify(exit, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGABRT)
-					go srv.Start(":6061")
+				exit := make(chan os.Signal, 1)
+				stpErr := make(chan error, 1)
+				signal.Notify(exit, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGABRT)
 
-					<-exit
-					_ = srv.Stop(context.Background())
+				go func() {
+					errS := srv.Start(":6061")
+					// errS is always non-nil, this is just double check
+					if errS != nil && stderr.Is(errS, http.ErrServerClosed) {
+						return
+					}
+					// if we have other type of error - record it
+					stpErr <- errS
+				}()
+
+				go func() {
+					for {
+						select {
+						case e := <-stpErr:
+							// no need to stop the server
+							fmt.Println(fmt.Errorf("[ERROR] debug server stopped with error: %w", e))
+
+							return
+						case <-exit:
+							_ = srv.Stop(context.Background())
+						}
+					}
 				}()
 			}
 
