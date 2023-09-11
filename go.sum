@@ -1254,8 +1254,8 @@ github.com/roadrunner-server/gzip/v4 v4.1.2 h1:dIbm8/3XEDjm6uk0Fhm8qgOFWQajEZ3gL
 github.com/roadrunner-server/gzip/v4 v4.1.2/go.mod h1:96z8mEqkOk7Pn7rfOkS0HniW+KjuWggqiCz+g6DpvdQ=
 github.com/roadrunner-server/headers/v4 v4.2.3 h1:NTmEm+uUC5gf8ELEmS6lp5F8z9NQLP2Nz/f6obRvIiA=
 github.com/roadrunner-server/headers/v4 v4.2.3/go.mod h1:B1klmrug0ykiS7Q5RKACCNbNmRptKF1qRDf924ppH0I=
-github.com/roadrunner-server/http/v4 v4.3.1 h1:5p/88SIl9HE/tIpyOSbAKldNg5P4rudgZ/1YhOhQKP0=
-github.com/roadrunner-server/http/v4 v4.3.1/go.mod h1:GuXh9FRG7hepqCDRIc/gAM/zKXPfDPFFTtyCbw5uJTo=
+github.com/roadrunner-server/http/v4 v4.3.2 h1:aDeWZW406arlE5GU71USCEMez1drGlK+KUnCl8J78ho=
+github.com/roadrunner-server/http/v4 v4.3.2/go.mod h1:t/vTkowh/p4ene489qmMWzs5CjiIGwK6Lfqr/We7BoE=
 github.com/roadrunner-server/informer/v4 v4.2.2 h1:4Z7BNK7flH3mRHLMXtS00X/HEfny5HhbzmfRNvKGp2w=
 github.com/roadrunner-server/informer/v4 v4.2.2/go.mod h1:i+SRKGrVrY6OhFSxajBzlwfcTLpzzcHCN9U2E3rPAy4=
 github.com/roadrunner-server/jobs/v4 v4.6.1 h1:gbkmgB5wtSf/OltGKnejEXQvj5N+29UtxgM86bspaBs=
