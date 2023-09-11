@@ -42,7 +42,7 @@ require (
 	github.com/roadrunner-server/resetter/v4 v4.0.9
 	github.com/roadrunner-server/rpc/v4 v4.2.2
 	github.com/roadrunner-server/sdk/v4 v4.4.0
-	github.com/roadrunner-server/send/v4 v4.2.2
+	github.com/roadrunner-server/send/v4 v4.2.3
 	github.com/roadrunner-server/server/v4 v4.3.1
 	github.com/roadrunner-server/service/v4 v4.4.1
 	github.com/roadrunner-server/sqs/v4 v4.5.1
