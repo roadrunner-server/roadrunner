@@ -31,7 +31,7 @@ require (
 	github.com/roadrunner-server/kv/v4 v4.4.1
 	github.com/roadrunner-server/lock/v4 v4.4.1
 	github.com/roadrunner-server/logger/v4 v4.2.1
-	github.com/roadrunner-server/memcached/v4 v4.2.0
+	github.com/roadrunner-server/memcached/v4 v4.3.0
 	github.com/roadrunner-server/memory/v4 v4.6.0
 	github.com/roadrunner-server/metrics/v4 v4.1.3
 	github.com/roadrunner-server/nats/v4 v4.5.1
@@ -155,6 +155,7 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	github.com/zeebo/blake3 v0.2.3 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
+	go.opentelemetry.io/contrib/instrumentation/github.com/bradfitz/gomemcache/memcache/otelmemcache v0.43.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.43.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.43.0 // indirect
 	go.opentelemetry.io/contrib/propagators/jaeger v1.18.0 // indirect
