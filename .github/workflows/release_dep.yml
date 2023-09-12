@@ -38,7 +38,7 @@ jobs:
           echo "sign-cert-name=rr.asc" >> $GITHUB_OUTPUT
 
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v5
+        uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_SIGNING_KEY }}
           passphrase: ${{ secrets.GPG_PASS }}
