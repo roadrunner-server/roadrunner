@@ -153,7 +153,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2 # Action page: <https://github.com/docker/setup-qemu-action>
+        uses: docker/setup-qemu-action@v3 # Action page: <https://github.com/docker/setup-qemu-action>
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2 # Action page: <https://github.com/docker/setup-buildx-action>
