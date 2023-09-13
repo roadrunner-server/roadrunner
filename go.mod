@@ -27,9 +27,9 @@ require (
 	github.com/roadrunner-server/http/v4 v4.3.2
 	github.com/roadrunner-server/informer/v4 v4.2.2
 	github.com/roadrunner-server/jobs/v4 v4.6.1
-	github.com/roadrunner-server/kafka/v4 v4.4.1
+	github.com/roadrunner-server/kafka/v4 v4.4.2
 	github.com/roadrunner-server/kv/v4 v4.4.1
-	github.com/roadrunner-server/lock/v4 v4.4.1
+	github.com/roadrunner-server/lock/v4 v4.4.2
 	github.com/roadrunner-server/logger/v4 v4.2.1
 	github.com/roadrunner-server/memcached/v4 v4.3.0
 	github.com/roadrunner-server/memory/v4 v4.6.0
@@ -58,7 +58,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.45.8 // indirect
+	github.com/aws/aws-sdk-go v1.45.9 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.21.0 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.39 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.37 // indirect
@@ -115,7 +115,7 @@ require (
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nats-io/jwt/v2 v2.3.0 // indirect
-	github.com/nats-io/nats.go v1.28.0 // indirect
+	github.com/nats-io/nats.go v1.29.0 // indirect
 	github.com/nats-io/nkeys v0.4.4 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/openzipkin/zipkin-go v0.4.2 // indirect
@@ -185,9 +185,9 @@ require (
 	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.13.0 // indirect
-	google.golang.org/genproto v0.0.0-20230911183012-2d3300fd4832 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20230911183012-2d3300fd4832 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230911183012-2d3300fd4832 // indirect
+	google.golang.org/genproto v0.0.0-20230913181813-007df8e322eb // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20230913181813-007df8e322eb // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230913181813-007df8e322eb // indirect
 	google.golang.org/grpc v1.58.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
