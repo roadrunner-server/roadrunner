@@ -1,5 +1,23 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.0-rc.1 🚀 </center>
+
+## 🔥 Features:
+
+## 👀 AMQP driver:
+
+- ✒️ Support for a custom `routing_key` in the JOBS payload: [FR](https://github.com/roadrunner-server/roadrunner/issues/1555), (thanks @rauanmayemir)
+
+## 👀 KV drivers (all):
+
+- ✒️ Support for OTEL across all KV drivers: [FR](https://github.com/roadrunner-server/roadrunner/issues/1635)
+
+## 👀 App-Logger plugin:
+
+- ✒️ Added new methods for your logger to log with context (message + key-values array): [FR](https://github.com/roadrunner-server/roadrunner/issues/1633), (thanks @Baiquette)
+
+---
+
 # <center> 🚀 v2023.3.0-beta.2 🚀 </center>
 
 ## 🔥Features:
