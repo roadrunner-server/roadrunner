@@ -1232,8 +1232,8 @@ github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec/go.mod h1:qq
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rivo/uniseg v0.4.4 h1:8TfxU8dW6PdqD27gjM8MVNuicgxIjxpm4K7x4jp8sis=
 github.com/rivo/uniseg v0.4.4/go.mod h1:FN3SvrM+Zdj16jyLfmOkMNblXMcoc8DfTHruCPUcx88=
-github.com/roadrunner-server/amqp/v4 v4.8.3 h1:DsPONwO+wF+vIoddF9eOyohLbvBfSL6kZh8CYYUrBQU=
-github.com/roadrunner-server/amqp/v4 v4.8.3/go.mod h1:Easjf2zW/6SDPdgQEdpFFP7LLCpQXUuVyUHtqatZbcY=
+github.com/roadrunner-server/amqp/v4 v4.8.4 h1:HAREZ7nBymMSjQpSDGYaMTSELutTAB3gVz2msBISTNc=
+github.com/roadrunner-server/amqp/v4 v4.8.4/go.mod h1:Easjf2zW/6SDPdgQEdpFFP7LLCpQXUuVyUHtqatZbcY=
 github.com/roadrunner-server/api/v4 v4.8.0 h1:wsANwein0dD3q9OQi8L6XGjgEkEn/23mAJ4ZphavfLM=
 github.com/roadrunner-server/api/v4 v4.8.0/go.mod h1:FhCdSyHWBJfyZ0yuggVE72WYKcmAOsGuJbC3dvzaMOg=
 github.com/roadrunner-server/app-logger/v4 v4.1.0 h1:+NRiRDXE/gwAl6ROGcvcSVUST9+KhleP1T9SAmd8GAA=
