@@ -29,7 +29,7 @@ require (
 	github.com/roadrunner-server/jobs/v4 v4.6.2
 	github.com/roadrunner-server/kafka/v4 v4.4.3
 	github.com/roadrunner-server/kv/v4 v4.4.2
-	github.com/roadrunner-server/lock/v4 v4.4.2
+	github.com/roadrunner-server/lock/v4 v4.5.0
 	github.com/roadrunner-server/logger/v4 v4.2.2
 	github.com/roadrunner-server/memcached/v4 v4.3.1
 	github.com/roadrunner-server/memory/v4 v4.6.1
@@ -178,7 +178,7 @@ require (
 	go.temporal.io/server v1.22.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.25.0 // indirect
+	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/crypto v0.13.0 // indirect
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.15.0 // indirect
