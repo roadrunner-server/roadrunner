@@ -15,18 +15,18 @@ require (
 	github.com/roadrunner-server/app-logger/v4 v4.1.0
 	github.com/roadrunner-server/beanstalk/v4 v4.5.2
 	github.com/roadrunner-server/boltdb/v4 v4.7.1
-	github.com/roadrunner-server/centrifuge/v4 v4.3.1
+	github.com/roadrunner-server/centrifuge/v4 v4.4.0-beta.1
 	github.com/roadrunner-server/config/v4 v4.4.3
 	github.com/roadrunner-server/endure/v2 v2.4.2
 	github.com/roadrunner-server/errors v1.3.0
 	github.com/roadrunner-server/fileserver/v4 v4.1.3
 	github.com/roadrunner-server/goridge/v3 v3.8.1
-	github.com/roadrunner-server/grpc/v4 v4.4.1
+	github.com/roadrunner-server/grpc/v4 v4.5.0-beta.1
 	github.com/roadrunner-server/gzip/v4 v4.1.3
 	github.com/roadrunner-server/headers/v4 v4.2.4
 	github.com/roadrunner-server/http/v4 v4.4.0-beta.1
 	github.com/roadrunner-server/informer/v4 v4.3.0-beta.1
-	github.com/roadrunner-server/jobs/v4 v4.6.2
+	github.com/roadrunner-server/jobs/v4 v4.7.0-beta.1
 	github.com/roadrunner-server/kafka/v4 v4.4.3
 	github.com/roadrunner-server/kv/v4 v4.4.2
 	github.com/roadrunner-server/lock/v4 v4.5.0
@@ -35,7 +35,7 @@ require (
 	github.com/roadrunner-server/memory/v4 v4.6.1
 	github.com/roadrunner-server/metrics/v4 v4.1.4
 	github.com/roadrunner-server/nats/v4 v4.5.2
-	github.com/roadrunner-server/otel/v4 v4.2.5
+	github.com/roadrunner-server/otel/v4 v4.3.0
 	github.com/roadrunner-server/prometheus/v4 v4.1.3
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.3
 	github.com/roadrunner-server/redis/v4 v4.2.3
@@ -48,11 +48,11 @@ require (
 	github.com/roadrunner-server/sqs/v4 v4.5.2
 	github.com/roadrunner-server/static/v4 v4.1.4
 	github.com/roadrunner-server/status/v4 v4.4.1
-	github.com/roadrunner-server/tcp/v4 v4.2.1
+	github.com/roadrunner-server/tcp/v4 v4.3.0-beta.1
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
-	github.com/temporalio/roadrunner-temporal/v4 v4.4.1
+	github.com/temporalio/roadrunner-temporal/v4 v4.5.0-beta.1
 	go.uber.org/automaxprocs v1.5.3
 )
 
