@@ -36,12 +36,12 @@ require (
 	github.com/roadrunner-server/metrics/v4 v4.1.4
 	github.com/roadrunner-server/nats/v4 v4.5.2
 	github.com/roadrunner-server/otel/v4 v4.3.0
-	github.com/roadrunner-server/prometheus/v4 v4.1.3
+	github.com/roadrunner-server/prometheus/v4 v4.1.4
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.3
 	github.com/roadrunner-server/redis/v4 v4.2.3
 	github.com/roadrunner-server/resetter/v4 v4.0.10
 	github.com/roadrunner-server/rpc/v4 v4.2.3
-	github.com/roadrunner-server/sdk/v4 v4.5.0-beta.1
+	github.com/roadrunner-server/sdk/v4 v4.5.0
 	github.com/roadrunner-server/send/v4 v4.2.4
 	github.com/roadrunner-server/server/v4 v4.4.0-beta.1
 	github.com/roadrunner-server/service/v4 v4.4.2
