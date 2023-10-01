@@ -10,45 +10,45 @@ require (
 	github.com/fatih/color v1.15.0
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v4 v4.8.4
+	github.com/roadrunner-server/amqp/v4 v4.9.0
 	github.com/roadrunner-server/api/v4 v4.8.0
-	github.com/roadrunner-server/app-logger/v4 v4.1.0
-	github.com/roadrunner-server/beanstalk/v4 v4.5.2
-	github.com/roadrunner-server/boltdb/v4 v4.7.1
-	github.com/roadrunner-server/centrifuge/v4 v4.4.0-beta.1
-	github.com/roadrunner-server/config/v4 v4.4.3
+	github.com/roadrunner-server/app-logger/v4 v4.2.0
+	github.com/roadrunner-server/beanstalk/v4 v4.5.5
+	github.com/roadrunner-server/boltdb/v4 v4.7.2
+	github.com/roadrunner-server/centrifuge/v4 v4.4.1
+	github.com/roadrunner-server/config/v4 v4.4.5
 	github.com/roadrunner-server/endure/v2 v2.4.2
 	github.com/roadrunner-server/errors v1.3.0
-	github.com/roadrunner-server/fileserver/v4 v4.1.3
+	github.com/roadrunner-server/fileserver/v4 v4.1.4
 	github.com/roadrunner-server/goridge/v3 v3.8.1
-	github.com/roadrunner-server/grpc/v4 v4.5.0-beta.1
-	github.com/roadrunner-server/gzip/v4 v4.1.3
-	github.com/roadrunner-server/headers/v4 v4.2.4
-	github.com/roadrunner-server/http/v4 v4.4.0-beta.1
-	github.com/roadrunner-server/informer/v4 v4.3.0-beta.1
-	github.com/roadrunner-server/jobs/v4 v4.7.0-beta.1
-	github.com/roadrunner-server/kafka/v4 v4.4.3
-	github.com/roadrunner-server/kv/v4 v4.4.2
-	github.com/roadrunner-server/lock/v4 v4.5.0
-	github.com/roadrunner-server/logger/v4 v4.2.2
-	github.com/roadrunner-server/memcached/v4 v4.3.1
-	github.com/roadrunner-server/memory/v4 v4.6.1
-	github.com/roadrunner-server/metrics/v4 v4.1.4
-	github.com/roadrunner-server/nats/v4 v4.5.2
-	github.com/roadrunner-server/otel/v4 v4.3.0
-	github.com/roadrunner-server/prometheus/v4 v4.1.3
-	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.3
-	github.com/roadrunner-server/redis/v4 v4.2.3
+	github.com/roadrunner-server/grpc/v4 v4.5.2
+	github.com/roadrunner-server/gzip/v4 v4.1.4
+	github.com/roadrunner-server/headers/v4 v4.2.5
+	github.com/roadrunner-server/http/v4 v4.4.1
+	github.com/roadrunner-server/informer/v4 v4.3.1
+	github.com/roadrunner-server/jobs/v4 v4.7.2
+	github.com/roadrunner-server/kafka/v4 v4.4.5
+	github.com/roadrunner-server/kv/v4 v4.4.3
+	github.com/roadrunner-server/lock/v4 v4.5.1
+	github.com/roadrunner-server/logger/v4 v4.2.3
+	github.com/roadrunner-server/memcached/v4 v4.3.2
+	github.com/roadrunner-server/memory/v4 v4.6.3
+	github.com/roadrunner-server/metrics/v4 v4.1.5
+	github.com/roadrunner-server/nats/v4 v4.5.4
+	github.com/roadrunner-server/otel/v4 v4.3.1
+	github.com/roadrunner-server/prometheus/v4 v4.1.4
+	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.4
+	github.com/roadrunner-server/redis/v4 v4.2.4
 	github.com/roadrunner-server/resetter/v4 v4.0.10
-	github.com/roadrunner-server/rpc/v4 v4.2.3
-	github.com/roadrunner-server/sdk/v4 v4.5.0-beta.1
-	github.com/roadrunner-server/send/v4 v4.2.4
-	github.com/roadrunner-server/server/v4 v4.4.0-beta.1
-	github.com/roadrunner-server/service/v4 v4.4.2
-	github.com/roadrunner-server/sqs/v4 v4.5.2
-	github.com/roadrunner-server/static/v4 v4.1.4
-	github.com/roadrunner-server/status/v4 v4.4.1
-	github.com/roadrunner-server/tcp/v4 v4.3.0-beta.1
+	github.com/roadrunner-server/rpc/v4 v4.2.4
+	github.com/roadrunner-server/sdk/v4 v4.5.0
+	github.com/roadrunner-server/send/v4 v4.2.5
+	github.com/roadrunner-server/server/v4 v4.4.1
+	github.com/roadrunner-server/service/v4 v4.4.3
+	github.com/roadrunner-server/sqs/v4 v4.5.3
+	github.com/roadrunner-server/static/v4 v4.1.5
+	github.com/roadrunner-server/status/v4 v4.4.2
+	github.com/roadrunner-server/tcp/v4 v4.3.1
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
@@ -58,7 +58,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/aws/aws-sdk-go v1.45.15 // indirect
+	github.com/aws/aws-sdk-go v1.45.19 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.21.0 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.42 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.40 // indirect
@@ -115,7 +115,7 @@ require (
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/nats-io/jwt/v2 v2.5.2 // indirect
-	github.com/nats-io/nats.go v1.30.0 // indirect
+	github.com/nats-io/nats.go v1.30.2 // indirect
 	github.com/nats-io/nkeys v0.4.5 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/openzipkin/zipkin-go v0.4.2 // indirect
@@ -124,18 +124,18 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.18 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/prometheus/client_golang v1.16.0 // indirect
-	github.com/prometheus/client_model v0.4.0 // indirect
+	github.com/prometheus/client_golang v1.17.0 // indirect
+	github.com/prometheus/client_model v0.4.1-0.20230718164431-9a2bf3000d16 // indirect
 	github.com/prometheus/common v0.44.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/rabbitmq/amqp091-go v1.8.1 // indirect
 	github.com/redis/go-redis/extra/rediscmd/v9 v9.0.5 // indirect
 	github.com/redis/go-redis/extra/redisotel/v9 v9.0.5 // indirect
-	github.com/redis/go-redis/v9 v9.2.0 // indirect
+	github.com/redis/go-redis/v9 v9.2.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/roadrunner-server/tcplisten v1.4.0 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
-	github.com/rs/cors v1.10.0 // indirect
+	github.com/rs/cors v1.10.1 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/spf13/afero v1.10.0 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
@@ -152,24 +152,24 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.50.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
+	github.com/vmihailenco/msgpack/v5 v5.4.0 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	github.com/zeebo/blake3 v0.2.3 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opentelemetry.io/contrib/instrumentation/github.com/bradfitz/gomemcache/memcache/otelmemcache v0.43.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.44.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.44.0 // indirect
-	go.opentelemetry.io/contrib/propagators/jaeger v1.19.0 // indirect
-	go.opentelemetry.io/otel v1.18.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.18.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.18.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.18.0 // indirect
-	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.18.0 // indirect
-	go.opentelemetry.io/otel/exporters/zipkin v1.18.0 // indirect
-	go.opentelemetry.io/otel/metric v1.18.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.18.0 // indirect
-	go.opentelemetry.io/otel/trace v1.18.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.45.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.45.0 // indirect
+	go.opentelemetry.io/contrib/propagators/jaeger v1.20.0 // indirect
+	go.opentelemetry.io/otel v1.19.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.19.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.19.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.19.0 // indirect
+	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.19.0 // indirect
+	go.opentelemetry.io/otel/exporters/zipkin v1.19.0 // indirect
+	go.opentelemetry.io/otel/metric v1.19.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.19.0 // indirect
+	go.opentelemetry.io/otel/trace v1.19.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	go.temporal.io/api v1.24.0 // indirect
 	go.temporal.io/sdk v1.24.0 // indirect
