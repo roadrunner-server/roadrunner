@@ -2296,6 +2296,12 @@
                     "$ref": "#/definitions/Duration",
                     "default": "60s"
                 },
+                "stream_timeout":
+                {
+                    "description": "Timeout for the stream cancellation. Zero means the default limit - 60s",
+                    "$ref": "#/definitions/Duration",
+                    "default": "60s"
+                },
                 "destroy_timeout": {
                     "description": "Timeout for worker destroying before process killing. Zero means the default limit - 60s",
                     "$ref": "#/definitions/Duration",

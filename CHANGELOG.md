@@ -1,12 +1,18 @@
 # CHANGELOG
 
-# <center> 🚀 v2023.3.0-rc.1 🚀 </center>
+# <center> 🚀 v2023.3.0 🚀 </center>
 
 ## 🔥 Features:
 
-## 👀 AMQP driver:
+### RR Core:
 
-- ✒️ Support for a custom `routing_key` in the JOBS payload: [FR](https://github.com/roadrunner-server/roadrunner/issues/1555), (thanks @rauanmayemir)
+- ✒️ `sdnotify` support: [FR](https://github.com/roadrunner-server/roadrunner/pull/1671), (thanks @Kaspiman), Docs: [link](https://roadrunner.dev/docs/app-server-systemd/current/en)
+
+## 👀 JOBS plugin:
+
+- ✒️ **AMQP Driver:** Support for a custom `routing_key` in the JOBS payload: [FR](https://github.com/roadrunner-server/roadrunner/issues/1555), (thanks @rauanmayemir)
+- ✒️ **JOBS plugin**: Parallel pipelines start/stop/destroy initialization. If you have much number of the pipelines,
+this feature should significantly reduce RR startup/shutdown time: [FR](https://github.com/roadrunner-server/roadrunner/issues/1672), (thanks @Kaspiman)
 
 ## 👀 KV drivers (all):
 
@@ -16,28 +22,14 @@
 
 - ✒️ Added new methods for your logger to log with context (message + key-values array): [FR](https://github.com/roadrunner-server/roadrunner/issues/1633), (thanks @Baiquette)
 
----
-
-# <center> 🚀 v2023.3.0-beta.2 🚀 </center>
-
-## 🔥Features:
-
 ## 👀 Temporal plugin:
 
+- ✒️ Replay API support [SINCE PHP-SDK 2.6.0]: [FR](https://github.com/roadrunner-server/roadrunner/issues/1640)
 - ✒️ Add support for the Worker Versioning: [FR](https://github.com/roadrunner-server/roadrunner/issues/1689)
 
-## 🩹 Fixes:
+## 👀 Service plugin:
 
-- 🐛 **Streaming**: Add stream timeout (will be configurable in the next release). Fix loss of the first chunk of the streamed response.
-
----
-
-# <center> 🚀 v2023.3.0-beta.1 🚀 </center>
-
-## 👀 New
-
-- ✒️ **Service plugin**: Support for the user/group per-service: [FR](https://github.com/roadrunner-server/roadrunner/issues/1570), (thanks @Kaspiman)
-
+- ✒️ Support for the user/group per-service: [FR](https://github.com/roadrunner-server/roadrunner/issues/1570), (thanks @Kaspiman)
 #### Configuration example:
 ```yaml
 service:
@@ -52,13 +44,14 @@ service:
         group: www-data # <---------- [NEW]
 ```
 
-- ✒️ **Temporal plugin**: Replay API support [SINCE PHP-SDK 2.6.0]: [FR](https://github.com/roadrunner-server/roadrunner/issues/1640)
-- ✒️ **RR core**: `sdnotify` support: [FR](https://github.com/roadrunner-server/roadrunner/pull/1671), (thanks @Kaspiman)
-- ✒️ **HTTP response streaming support**: : [FR](https://github.com/roadrunner-server/http/pull/152), (thanks @roxblnfk)
+## 👀 HTTP plugin:
 
-#### Worker.php example:
+- ✒️ Response streaming support [FR](https://github.com/roadrunner-server/http/pull/152), (thanks @roxblnfk)
+
+Worker example:
 
 ```php
+
 <?php
 
 require __DIR__ . '/vendor/autoload.php';
@@ -90,12 +83,54 @@ try {
 }
 ```
 
-- ✒️ **HTTP plugin**: Support for the `103` Early Hints via streamed response: [FR](https://github.com/roadrunner-server/roadrunner/issues/918), (thanks @roxblnfk)
+- ✒️ Support for the `103` Early Hints via streamed response: [FR](https://github.com/roadrunner-server/roadrunner/issues/918), (thanks @azjezz)
+
+Worker example:
+
+```php
+<?php
+
+use Spiral\RoadRunner;
+
+ini_set('display_errors', 'stderr');
+require __DIR__ . "/vendor/autoload.php";
+
+$worker = RoadRunner\Worker::create();
+$http = new RoadRunner\Http\HttpWorker($worker);
+$read = static function (): Generator {
+    $limit = 10;
+    foreach (\file(__DIR__ . '/test.txt') as $line) {
+        foreach (explode('"', $line) as $chunk) {
+            try {
+                usleep(50_000);
+                yield $chunk;
+            } catch (Spiral\RoadRunner\Http\Exception\StreamStoppedException $e) {
+                // Just stop sending data
+                return;
+            }
+            if (--$limit === 0) {
+                return;
+            }
+        }
+    }
+};
+
+
+try {
+    while ($req = $http->waitRequest()) {
+        $http->respond(103, '', headers: ['Link' => ['</style111.css>; rel=preload; as=style'], 'X-103' => ['103']], endOfStream: false);
+        $http->respond(200, $read(), headers: ['X-200' => ['200']], endOfStream: true); // your regular response
+    }
+} catch (\Throwable $e) {
+    $worker->error($e->getMessage());
+}
+```
+
+## 👀 Server plugin:
+
 - ✒️ **RAW command support**: Support for raw commands, which are not validated by RR and may contain spaces. Note that this feature is only supported via `.rr.yaml` configuration: [FR](https://github.com/roadrunner-server/roadrunner/issues/1667), (thanks @nunomaduro)
+First argument should be a command (executable) and the rest of the arguments are passed to the command as arguments.
 
-#### Configuration:
-
-1.
 ```yaml
 version: "3"
 
@@ -116,18 +151,15 @@ server:
     relay_timeout: "20s"
 ```
 
-First argument should be a command (executable) and the rest of the arguments are passed to the command as arguments.
-
-- ✒️ **JOBS plugin**: Parallel pipelines start/stop/destroy initialization. If you have a much number of the pipelines, this feature should significantly reduce RR startup/shutdown time: [FR](https://github.com/roadrunner-server/roadrunner/issues/1672), (thanks @Kaspiman)
-
-## 🩹 Fixes
+## 🩹 Fixes:
 
 - 🐛 **RR Core**: Actualize according to the docs `./rr jobs list/stop/resume` commands: [PR](https://github.com/roadrunner-server/roadrunner/pull/1675), (thanks @gam6itko).
 - 🐛 **JOBS plugin**: Correctly handle OTEL span on listener error: [PR](https://github.com/roadrunner-server/amqp/pull/87), (thanks @Kaspiman).
 - 🐛 **RR tests**: Fix tests failures on Darwin: [PR](https://github.com/roadrunner-server/roadrunner/pull/1680), (thanks @shyim).
+- 🐛 **Streaming**: Add stream timeout (will be configurable in the next release). Fix loss of the first chunk of the streamed response.
+
 
 ### <center>🧹 Chore:</center>
-
 - 🧑‍🏭 **Golang**: Update Golang version to v1.21.
 - 🧑‍🏭 **Dependencies**: update project dependencies.
 
