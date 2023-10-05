@@ -573,6 +573,30 @@ service:
     restart_sec: 1
 
 otel:
+  # OpenTelemetry Resources
+  #
+  # https://github.com/open-telemetry/opentelemetry-specification/blob/v1.25.0/specification/resource/semantic_conventions/README.md
+  resources:
+
+      # User's service name
+      #
+      # Default: RoadRunner
+      service_name: "rr_test"
+
+      # User's service version
+      #
+      # Default: RoadRunner
+      service_version: "1.0.0"
+
+      # User's service namespace
+      #
+      # Default: RoadRunner
+      service_namespace: "RR-Shop"
+
+      # User's service instance id
+      #
+      # Default: Generated UUID
+      service_instance_id: "UUID"
   # Use insecure endpoint (http) or insecure gRPC
   #
   # Default: false
@@ -597,16 +621,6 @@ otel:
   #
   # Default: empty
   custom_url: ""
-
-  # User's service name
-  #
-  # Default: RoadRunner
-  service_name: "rr_test"
-
-  # User's service version
-  #
-  # Default: RoadRunner
-  service_version: "1.0.0"
 
   # Consumer's endpoint
   #
@@ -875,6 +889,11 @@ http:
     #
     # Default: 60s
     reset_timeout: 60s
+
+    # Timeout for the stream cancellation. Zero means 60s.
+    #
+    # Default: 60s
+    stream_timeout: 60s
 
     # Timeout for worker destroying before process killing. Zero means 60s.
     #
@@ -1312,6 +1331,11 @@ jobs:
     #
     # Default: 60s
     reset_timeout: 60s
+
+    # Timeout for the stream cancellation. Zero means 60s.
+    #
+    # Default: 60s
+    stream_timeout: 60s
 
     # Timeout for worker destroying before process killing. Zero means 60s.
     #
@@ -1933,6 +1957,11 @@ grpc:
     # Default: 60s
     reset_timeout: 60s
 
+    # Timeout for the stream cancellation. Zero means 60s.
+    #
+    # Default: 60s
+    stream_timeout: 60s
+
     # Timeout for worker destroying before process killing. Zero means 60s.
     #
     # Default: 60s
@@ -2000,6 +2029,11 @@ tcp:
     #
     # Default: 60s
     reset_timeout: 60s
+
+    # Timeout for the stream cancellation. Zero means 60s.
+    #
+    # Default: 60s
+    stream_timeout: 60s
 
     # Timeout for worker destroying before process killing. Zero means 60s.
     #
@@ -2126,6 +2160,11 @@ centrifuge:
     #
     # Default: 60s
     reset_timeout: 60s
+
+    # Timeout for the stream cancellation. Zero means 60s.
+    #
+    # Default: 60s
+    stream_timeout: 60s
 
     # Timeout for worker destroying before process killing. Zero means 60s.
     #

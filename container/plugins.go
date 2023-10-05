@@ -37,7 +37,7 @@ import (
 	rrt "github.com/temporalio/roadrunner-temporal/v4"
 )
 
-// Plugins returns active plugins for the endure container. Feel free to add or remove any plugins.
+// Plugins returns active plugins for the endured container. Feel free to add or remove any plugins.
 func Plugins() []any { //nolint:funlen
 	return []any{
 		// bundled
