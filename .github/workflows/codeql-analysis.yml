@@ -26,6 +26,13 @@ jobs:
           # We must fetch at least the immediate parents so that if this is a pull request then we can checkout the head
           fetch-depth: 2
 
+      # Initializes the Golang environment for the CodeQL tools.
+      # https://github.com/github/codeql-action/issues/1842#issuecomment-1704398087
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
