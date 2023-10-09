@@ -11,13 +11,13 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v4 v4.9.1
-	github.com/roadrunner-server/api/v4 v4.8.0
+	github.com/roadrunner-server/api/v4 v4.9.0
 	github.com/roadrunner-server/app-logger/v4 v4.2.1
 	github.com/roadrunner-server/beanstalk/v4 v4.5.6
 	github.com/roadrunner-server/boltdb/v4 v4.7.3
-	github.com/roadrunner-server/centrifuge/v4 v4.4.2
+	github.com/roadrunner-server/centrifuge/v4 v4.5.0
 	github.com/roadrunner-server/config/v4 v4.4.6
-	github.com/roadrunner-server/endure/v2 v2.4.2
+	github.com/roadrunner-server/endure/v2 v2.4.3
 	github.com/roadrunner-server/errors v1.3.0
 	github.com/roadrunner-server/fileserver/v4 v4.1.5
 	github.com/roadrunner-server/goridge/v3 v3.8.1
@@ -52,7 +52,7 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
-	github.com/temporalio/roadrunner-temporal/v4 v4.5.0
+	github.com/temporalio/roadrunner-temporal/v4 v4.5.1
 	go.uber.org/automaxprocs v1.5.3
 )
 
