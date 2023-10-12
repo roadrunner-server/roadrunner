@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.1 🚀 </center>
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project dependencies (including CVE in Go libraries).
+- 🧑‍🏭 **Go**: Update Golang to version 1.21.3.
+
+---
+
+
 # <center> 🚀 v2023.3.0 🚀 </center>
 
 ## 🔥 Features:
