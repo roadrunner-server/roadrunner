@@ -2,6 +2,11 @@
 
 # <center> 🚀 v2023.3.2 [Maintenance] 🚀 </center>
 
+## 🩹 Fixes
+
+- 🐛 **Temporal**: Fix incorrect log entry: [ISSUE](https://github.com/roadrunner-server/roadrunner/issues/1752), (thanks @roxblnfk)
+
+
 ### <center>🧹 Chore:</center>
 
 - 🧑‍🏭 **Dependencies**: update project dependencies (including CVE in transitive dependencies, especially gofiber).
