@@ -1,6 +1,15 @@
 # CHANGELOG
 
-# <center> 🚀 v2023.3.1 🚀 </center>
+# <center> 🚀 v2023.3.2 [Maintenance] 🚀 </center>
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project dependencies (including CVE in transitive dependencies, especially gofiber).
+
+---
+
+
+# <center> 🚀 v2023.3.1 [Maintenance] 🚀 </center>
 
 ### <center>🧹 Chore:</center>
 
