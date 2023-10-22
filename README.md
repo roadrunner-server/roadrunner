@@ -30,7 +30,7 @@ with much greater performance and flexibility.
 	<a href="https://roadrunner.dev/"><b>Official Website</b></a> |
 	<a href="https://roadrunner.dev/docs"><b>Documentation</b></a> |
     <a href="https://forum.roadrunner.dev"><b>Forum</b></a> |
-    <a href="https://github.com/orgs/roadrunner-server/projects/1"><b>Release schedule</b></a>
+    <a href="https://github.com/orgs/roadrunner-server/projects/4"><b>Release schedule</b></a>
 </p>
 
 # Features:
