@@ -1,11 +1,21 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.3 [Bugfix] 🚀 </center>
+
+## 🩹 Fixes
+
+- 🐛 **RR Core**: Fix removed by mistake RPC endpoint: [ISSUE](https://github.com/roadrunner-server/roadrunner/issues/1758), (thanks @Kaspiman)
+
+---
+
+
 # <center> 🚀 v2023.3.2 [Maintenance] 🚀 </center>
 
 ## 🩹 Fixes
 
 - 🐛 **Temporal**: Fix incorrect log entry: [ISSUE](https://github.com/roadrunner-server/roadrunner/issues/1752), (thanks @roxblnfk)
 
+---
 
 ### <center>🧹 Chore:</center>
 
@@ -226,7 +236,6 @@ server:
 - ✒️ **Headers middleware**: Actualize CORS support: [FR](https://github.com/roadrunner-server/roadrunner/issues/909), (thanks @rmikalkenas, @hustlahusky)
 - ✒️ **RoadRunner CLI**: Additional [semgrep](https://semgrep.dev/) security scanner.
 - ✒️ **Docker builds**: New tags: `v2023`, `v2023.x` and with bugfix: `v2023.x.x`. The `latest` tag points to the latest **stable** release. All `rc`, `beta`, `alpha` releases will no longer be tagged with `latest`.
-- ✒️ **Server plugin**: `after_init` option. This is a new `server` option and, like `on_init`, can contain any custom command to be fired after each pool of workers is initialized. For example, if you have 2 plugins: `http` and `grpc`, the `after_init` command would be fired twice: [FR](https://github.com/roadrunner-server/roadrunner/issues/1554), (thanks @rauanmayemir).
 - ✒️ **AMQP driver**: Support for the `TLS` transport named `amqps`: [FR](https://github.com/roadrunner-server/roadrunner/issues/1538), (thanks @marcosraudkett)
 - ✒️ **JOBS plugin**: Support for the workers health/readiness checks. [PR](https://github.com/roadrunner-server/jobs/pull/81), (thanks @Kaspiman)
 - ✒️ **JOBS plugin**: Delete all messages that were in the priority queue when the pipeline was deleted (1-st part of the BUG), [BUG](https://github.com/roadrunner-server/roadrunner/issues/1382)
@@ -252,7 +261,6 @@ server:
 - ✒️ **Headers middleware**: Actualize CORS support: [FR](https://github.com/roadrunner-server/roadrunner/issues/909), (thanks @rmikalkenas, @hustlahusky)
 - ✒️ **RoadRunner CLI**: Additional [semgrep](https://semgrep.dev/) security scanner.
 - ✒️ **Docker builds**: New tags: `v2023`, `v2023.x` and with bugfix: `v2023.x.x`. The `latest` tag points to the latest **stable** release. All `rc`, `beta`, `alpha` releases will no longer be tagged with `latest`.
-- ✒️ **Server plugin**: `after_init` option. This is a new `server` option and, like `on_init`, can contain any custom command to be fired after each pool of workers is initialized. For example, if you have 2 plugins: `http` and `grpc`, the `after_init` command would be fired twice: [FR](https://github.com/roadrunner-server/roadrunner/issues/1554), (thanks @rauanmayemir).
 - ✒️ **AMQP driver**: Support for the `TLS` transport named `amqps`: [FR](https://github.com/roadrunner-server/roadrunner/issues/1538), (thanks @marcosraudkett)
 - ✒️ **JOBS plugin**: Support for the workers health/readiness checks. [PR](https://github.com/roadrunner-server/jobs/pull/81), (thanks @Kaspiman)
 - ✒️ **JOBS plugin**: Delete all messages that were in the priority queue when the pipeline was deleted (1-st part of the BUG), [BUG](https://github.com/roadrunner-server/roadrunner/issues/1382)

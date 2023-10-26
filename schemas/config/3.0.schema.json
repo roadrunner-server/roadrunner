@@ -88,39 +88,6 @@
         "server": {
             "type": "object",
             "properties": {
-                "after_init": {
-                    "description": "Execute command or script after RR allocated a pool of workers. Command executed on the every pool allocation. For example, if you have 2 plugins: `http` and `grpc`, the `after_init` command would be fired twice.",
-                    "type": "object",
-                    "properties": {
-                        "command": {
-                            "description": "Command to execute. It can be script or binary",
-                            "type": "string",
-                            "examples": [
-                                "php not-worker.php",
-                                "sh script.sh",
-                                "start script.bat"
-                            ]
-                        },
-                        "exec_timeout": {
-                            "description": "Script execute timeout",
-                            "$ref": "#/definitions/Duration",
-                            "default": "60s"
-                        },
-                        "env": {
-                            "description": "Environment variables for the worker processes",
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "patternProperties": {
-                                    "^[a-zA-Z0-9._-]+$": {
-                                        "type": "string"
-                                    }
-                                },
-                                "additionalProperties": false
-                            }
-                        }
-                    }
-                },
                 "on_init": {
                     "description": "Execute command or script before RR starts allocating workers",
                     "type": "object",
