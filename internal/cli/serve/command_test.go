@@ -10,14 +10,14 @@ import (
 
 func TestCommandProperties(t *testing.T) {
 	path := ""
-	cmd := serve.NewCommand(nil, &path, nil)
+	cmd := serve.NewCommand(nil, &path, nil, nil)
 
 	assert.Equal(t, "serve", cmd.Use)
 	assert.NotNil(t, cmd.RunE)
 }
 
 func TestCommandNil(t *testing.T) {
-	cmd := serve.NewCommand(nil, nil, nil)
+	cmd := serve.NewCommand(nil, nil, nil, nil)
 
 	assert.Equal(t, "serve", cmd.Use)
 	assert.NotNil(t, cmd.RunE)

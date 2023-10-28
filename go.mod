@@ -16,7 +16,7 @@ require (
 	github.com/roadrunner-server/beanstalk/v4 v4.5.9
 	github.com/roadrunner-server/boltdb/v4 v4.7.6
 	github.com/roadrunner-server/centrifuge/v4 v4.5.3
-	github.com/roadrunner-server/config/v4 v4.4.9
+	github.com/roadrunner-server/config/v4 v4.5.0
 	github.com/roadrunner-server/endure/v2 v2.4.3
 	github.com/roadrunner-server/errors v1.3.0
 	github.com/roadrunner-server/fileserver/v4 v4.1.8

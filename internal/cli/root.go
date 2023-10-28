@@ -42,6 +42,8 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 	override := &[]string{}
 	// do not print startup message
 	silent := toPtr(false)
+	// enable experimental features
+	experimental := toPtr(false)
 
 	// working directory
 	var workDir string
@@ -146,6 +148,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 
 	f := cmd.PersistentFlags()
 
+	f.BoolVarP(experimental, "enable-experimental", "e", false, "enable experimental features")
 	f.BoolVarP(forceStop, "force", "f", false, "force stop")
 	f.BoolVarP(pidFile, "pid", "p", false, "create a .pid file")
 	f.StringVarP(cfgFile, "config", "c", ".rr.yaml", "config file")
@@ -158,7 +161,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 	cmd.AddCommand(
 		workers.NewCommand(cfgFile, override),
 		reset.NewCommand(cfgFile, override, silent),
-		serve.NewCommand(override, cfgFile, silent),
+		serve.NewCommand(override, cfgFile, silent, experimental),
 		stop.NewCommand(silent, forceStop),
 		jobs.NewCommand(cfgFile, override, silent),
 	)
