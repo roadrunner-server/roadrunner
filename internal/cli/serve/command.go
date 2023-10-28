@@ -21,7 +21,7 @@ const (
 )
 
 // NewCommand creates `serve` command.
-func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Command { //nolint:funlen
+func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental *bool) *cobra.Command { //nolint:funlen
 	return &cobra.Command{
 		Use:   "serve",
 		Short: "Start RoadRunner server",
@@ -39,11 +39,12 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 			}
 
 			cfg := &configImpl.Plugin{
-				Path:    *cfgFile,
-				Prefix:  rrPrefix,
-				Timeout: containerCfg.GracePeriod,
-				Flags:   *override,
-				Version: meta.Version(),
+				Path:                 *cfgFile,
+				Prefix:               rrPrefix,
+				Timeout:              containerCfg.GracePeriod,
+				Flags:                *override,
+				Version:              meta.Version(),
+				ExperimentalFeatures: *experimental,
 			}
 
 			endureOptions := []endure.Options{
@@ -58,7 +59,7 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool) *cobra.Comman
 			ll, err := container.ParseLogLevel(containerCfg.LogLevel)
 			if err != nil {
 				if !*silent {
-					fmt.Printf("[WARN] Failed to parse log level, using default (error): %s\n", err)
+					fmt.Println(fmt.Errorf("[WARN] Failed to parse log level, using default (error): %w", err))
 				}
 			}
 			cont := endure.New(ll, endureOptions...)
