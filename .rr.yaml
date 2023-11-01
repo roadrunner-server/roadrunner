@@ -1575,6 +1575,11 @@ jobs:
         # Default: default
         queue: default
 
+        # Message group ID: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SendMessage.html#SQS-SendMessage-request-MessageGroupId
+        #
+        # Default: empty, should be set if FIFO queue is used
+        message_group_id: "test"
+
         # List of the AWS SQS attributes https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SetQueueAttributes.html.
         attributes:
           DelaySeconds: 0

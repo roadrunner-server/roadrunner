@@ -1797,6 +1797,11 @@
                                                     "type": "string",
                                                     "default": "default"
                                                 },
+                                                "message_group_id": {
+                                                    "description": "Message Group ID: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SendMessage.html#SQS-SendMessage-request-MessageGroupId",
+                                                    "type": "string",
+                                                    "default": null
+                                                },
                                                 "attributes": {
                                                     "title": "map[string]number",
                                                     "type": "array",
