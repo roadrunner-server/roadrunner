@@ -58,11 +58,11 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.6 // indirect
-	github.com/aws/aws-sdk-go v1.47.1 // indirect
+	github.com/aws/aws-sdk-go v1.47.3 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.22.1 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.21.0 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.15.0 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.14.1 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.22.0 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.15.1 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.14.2 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.2.1 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.5.1 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.5.0 // indirect
@@ -81,7 +81,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/emicklei/proto v1.12.1 // indirect
+	github.com/emicklei/proto v1.12.2 // indirect
 	github.com/facebookgo/clock v0.0.0-20150410010913-600d898af40a // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -145,7 +145,7 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
-	github.com/twmb/franz-go v1.15.1 // indirect
+	github.com/twmb/franz-go v1.15.2 // indirect
 	github.com/twmb/franz-go/pkg/kmsg v1.7.0 // indirect
 	github.com/twmb/murmur3 v1.1.8 // indirect
 	github.com/uber-go/tally/v4 v4.1.10 // indirect

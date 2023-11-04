@@ -869,7 +869,15 @@
                                     "examples": [
                                         "*"
                                     ],
-                                    "default": ""
+                                    "default": null
+                                },
+                                "allowed_origin_regex": {
+                                    "description": "Controls 'Access-Control-Allow-Origin' header value, regex version",
+                                    "type": "string",
+                                    "examples": [
+                                        "^https://foo"
+                                    ],
+                                    "default": null
                                 },
                                 "allowed_headers": {
                                     "description": "Controls 'Access-Control-Allow-Headers' header value",

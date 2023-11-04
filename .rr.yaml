@@ -761,8 +761,13 @@ http:
     cors:
       # Controls "Access-Control-Allow-Origin" header value (docs: https://mzl.la/2OgD4Qf).
       #
-      # Default: ""
+      # Default: empty
       allowed_origin: "*"
+
+      # Controls "Access-Control-Allow-Origin" header value (docs: https://mzl.la/2OgD4Qf).
+      #
+      # Default: empty. If set, overrides allowed_origin.
+      allowed_origin_regex: "^https://foo"
 
       # Controls "Access-Control-Allow-Headers" header value (docs: https://mzl.la/2OzDVvk).
       #
