@@ -371,8 +371,8 @@ kv:
       file: "rr.db"
       # Access permission for the DB file.
       #
-      # Default: "0777"
-      permissions: 0777
+      # Default: "0755"
+      permissions: 0755
       # TTL keys check interval in seconds. It's safe to use 1 second here, but can be a little costly to performance.
       #
       # Default: "60" seconds
@@ -1387,8 +1387,8 @@ jobs:
 
         # Permissions for the boltdb database file
         #
-        # This option is optional. Default: 0777
-        permissions: 0777
+        # This option is optional. Default: 0755
+        permissions: 0755
 
     test-local-2:
       # Driver name
