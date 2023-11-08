@@ -2244,18 +2244,22 @@
         "HostAndPortWithTCP": {
             "description": "Host and port with tcp:// prefix",
             "type": "string",
-            "pattern": "^(tcp://[0-9a-zA-Z_.-]+|):[0-9]{1,5}$",
+            "pattern": "^(((tcp://[0-9a-zA-Z_.-]+|)|\\$\\{([^}]+)\\}):([0-9]{1,5}||\\$\\{([^}]+)\\}))|\\$\\{([^}]+)\\}$",
             "examples": [
-                "tcp://127.0.0.1:443"
+                "tcp://127.0.0.1:443",
+                "${TCP:-tcp://127.0.0.1:443}",
+                "tcp://127.0.0.1:${TCP_PORT}"
             ]
         },
         "HostAndPort": {
             "description": "Host and port",
             "type": "string",
-            "pattern": "^([0-9a-zA-Z_.-]+|):[0-9]{1,5}$",
+            "pattern": "^((([0-9a-zA-Z_.-]+|)|\\$\\{([^}]+)\\}):([0-9]{1,5})|\\$\\{([^}]+)\\})|\\$\\{([^}]+)\\}$",
             "examples": [
                 "127.0.0.1:443",
-                ":8080"
+                ":8080",
+                "0.0.0.0:${HTTP_PORT:-8080}",
+                "${HTTP_HOST:-127.0.0.1:8000}"
             ]
         },
         "LogMode": {
