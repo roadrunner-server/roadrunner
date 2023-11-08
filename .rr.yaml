@@ -371,8 +371,8 @@ kv:
       file: "rr.db"
       # Access permission for the DB file.
       #
-      # Default: "0777"
-      permissions: 0777
+      # Default: "0755"
+      permissions: 0755
       # TTL keys check interval in seconds. It's safe to use 1 second here, but can be a little costly to performance.
       #
       # Default: "60" seconds
@@ -1387,8 +1387,8 @@ jobs:
 
         # Permissions for the boltdb database file
         #
-        # This option is optional. Default: 0777
-        permissions: 0777
+        # This option is optional. Default: 0755
+        permissions: 0755
 
     test-local-2:
       # Driver name
@@ -1429,12 +1429,12 @@ jobs:
         # Auto-delete (exchange is deleted when last queue is unbound from it): https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges
         #
         # Default: false
-        exchange_auto_deleted: false
+        exchange_auto_delete: false
 
         # Auto-delete (queue that has had at least one consumer is deleted when last consumer unsubscribes) (rabbitmq option: https://www.rabbitmq.com/queues.html#properties)
         #
         # Default: false
-        queue_auto_deleted: false
+        queue_auto_delete: false
 
         # Delete queue when stopping the pipeline
         #
