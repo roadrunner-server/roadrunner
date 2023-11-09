@@ -36,7 +36,7 @@ require (
 	github.com/roadrunner-server/metrics/v4 v4.1.10
 	github.com/roadrunner-server/nats/v4 v4.6.1
 	github.com/roadrunner-server/otel/v4 v4.3.6
-	github.com/roadrunner-server/prometheus/v4 v4.1.8
+	github.com/roadrunner-server/prometheus/v4 v4.1.9
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.9
 	github.com/roadrunner-server/redis/v4 v4.2.9
 	github.com/roadrunner-server/resetter/v4 v4.0.15
