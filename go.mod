@@ -36,7 +36,7 @@ require (
 	github.com/roadrunner-server/metrics/v4 v4.1.10
 	github.com/roadrunner-server/nats/v4 v4.6.1
 	github.com/roadrunner-server/otel/v4 v4.3.6
-	github.com/roadrunner-server/prometheus/v4 v4.1.8
+	github.com/roadrunner-server/prometheus/v4 v4.1.9
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.9
 	github.com/roadrunner-server/redis/v4 v4.2.9
 	github.com/roadrunner-server/resetter/v4 v4.0.15
@@ -47,7 +47,7 @@ require (
 	github.com/roadrunner-server/service/v4 v4.4.8
 	github.com/roadrunner-server/sqs/v4 v4.5.8
 	github.com/roadrunner-server/static/v4 v4.1.9
-	github.com/roadrunner-server/status/v4 v4.4.6
+	github.com/roadrunner-server/status/v4 v4.4.7
 	github.com/roadrunner-server/tcp/v4 v4.3.6
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0
@@ -58,14 +58,14 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.6 // indirect
-	github.com/aws/aws-sdk-go v1.47.7 // indirect
+	github.com/aws/aws-sdk-go v1.47.8 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.22.2 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.22.3 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.23.0 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.15.2 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.14.3 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.2.2 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.5.2 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/ini v1.5.2 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.6.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.10.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.28.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.17.1 // indirect
