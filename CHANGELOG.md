@@ -1,5 +1,26 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.4 🚀 </center>
+
+## 🔥 Features:
+
+### RR Core:
+
+- ✒️ **Experimental features:** Add support for the experimental features: [Docs](https://roadrunner.dev/docs/experimental-experimental/current/en).
+
+## 👀 Plugins:
+
+- ✒️ **NATS driver:** Replace the old JetStream client with the new one: [FR](https://github.com/roadrunner-server/roadrunner/issues/1574), [API](https://github.com/nats-io/nats.go/blob/main/jetstream/README.md).
+- ✒️ **Config driver:** Add experimental support for merging two and more configuration files: [FR](https://github.com/roadrunner-server/roadrunner/issues/935), [Docs](https://roadrunner.dev/docs/experimental-experimental/current/en), (thanks @hugochinchilla)
+- ✒️ **Headers middleware:** Add support for the regular expressions for `origin`: [FR](https://github.com/roadrunner-server/roadrunner/issues/1709), [Docs](https://roadrunner.dev/docs/http-headers/current/en#cors), (thanks @orlandothoeny)
+
+## 🩹 Fixes
+
+- 🐛 **HTTP Plugin**: Unable to POST relatively chunky POST: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1765), (thanks @FluffyDiscord)
+
+
+---
+
 # <center> 🚀 v2023.3.3 [Bugfix] 🚀 </center>
 
 ## 🩹 Fixes
