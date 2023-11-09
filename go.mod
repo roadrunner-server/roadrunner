@@ -47,7 +47,7 @@ require (
 	github.com/roadrunner-server/service/v4 v4.4.8
 	github.com/roadrunner-server/sqs/v4 v4.5.8
 	github.com/roadrunner-server/static/v4 v4.1.9
-	github.com/roadrunner-server/status/v4 v4.4.6
+	github.com/roadrunner-server/status/v4 v4.4.7
 	github.com/roadrunner-server/tcp/v4 v4.3.6
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0
