@@ -113,6 +113,11 @@ sudo dpkg -i roadrunner-2023.X.X-linux-amd64.deb
 curl --proto '=https' --tlsv1.2 -sSf  https://raw.githubusercontent.com/roadrunner-server/roadrunner/master/download-latest.sh | sh
 ```
 
+## MacOS using [Homebrew](https://brew.sh/):
+```bash
+brew install roadrunner
+```
+
 ---
 
 Configuration can be located in `.rr.yaml` file ([full sample](https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml)):
