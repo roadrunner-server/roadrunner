@@ -74,7 +74,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 
 			// try to get the absolute path to the configuration
 			if absPath, err := filepath.Abs(*cfgFile); err == nil {
-				*cfgFile = absPath // switch config path to the absolute
+				*cfgFile = absPath // switch a config path to the absolute
 
 				// if workDir is empty - force working absPath related to config file
 				if workDir == "" {
@@ -84,7 +84,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 				}
 			}
 
-			if v, ok := os.LookupEnv(envDotenv); ok { // read path to the dotenv file from environment variable
+			if v, ok := os.LookupEnv(envDotenv); ok { // read a path to the dotenv file from environment variable
 				dotenv = v
 			}
 
@@ -107,7 +107,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 					if errS != nil && stderr.Is(errS, http.ErrServerClosed) {
 						return
 					}
-					// if we have other type of error - record it
+					// if we have another type of error - record it
 					stpErr <- errS
 				}()
 
