@@ -522,8 +522,8 @@ github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcU
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8=
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
-github.com/temporalio/roadrunner-temporal/v4 v4.5.4 h1:VIDR6jFdV15af9sNr9NDgstn1vb7rLPCDfXeIOsPpDU=
-github.com/temporalio/roadrunner-temporal/v4 v4.5.4/go.mod h1:L1QV1h9rDoicbL54ROinNOO1hWxwLQLFRdVj4YPhOqk=
+github.com/temporalio/roadrunner-temporal/v4 v4.5.5 h1:Hx6hw56BG/F3/ivOME61dPsp35Y8qnPByPNvzhaWdOk=
+github.com/temporalio/roadrunner-temporal/v4 v4.5.5/go.mod h1:iUJ9aQPXTy5E1wLgmUoEzG9L8SJSLFLlEFUlFJp/lIM=
 github.com/tklauser/go-sysconf v0.3.12 h1:0QaGUFOdQaIVdPgfITYzaTegZvdCjmYO52cSFAEVmqU=
 github.com/tklauser/go-sysconf v0.3.12/go.mod h1:Ho14jnntGE1fpdOqQEEaiKRpvIavV0hSfmBq8nJbHYI=
 github.com/tklauser/numcpus v0.6.1 h1:ng9scYS7az0Bk4OZLvrNXNSAO2Pxr1XXRAPyjhIx+Fk=
@@ -613,8 +613,8 @@ go.temporal.io/sdk/contrib/opentelemetry v0.3.0 h1:wOEErZugJF1NcBpcxEAmOQmrcRBw3
 go.temporal.io/sdk/contrib/opentelemetry v0.3.0/go.mod h1:V0kUHBikUWh3fb4WufUKXd8tKrFO3isZM+MmrfJKIGM=
 go.temporal.io/sdk/contrib/tally v0.2.0 h1:XnTJIQcjOv+WuCJ1u8Ve2nq+s2H4i/fys34MnWDRrOo=
 go.temporal.io/sdk/contrib/tally v0.2.0/go.mod h1:1kpSuCms/tHeJQDPuuKkaBsMqfHnIIRnCtUYlPNXxuE=
-go.temporal.io/server v1.22.1 h1:VmLEy2PZHY9HN7VyL0vaI1EncqGPw6Zl4q/OPTTXHes=
-go.temporal.io/server v1.22.1/go.mod h1:UxFq6afGcjhhsi4zbW8uS3op8e0SX56daLO6eeCtm8U=
+go.temporal.io/server v1.22.2 h1:n+I0f5CmCIiYJz+7sAeGjpQxL19RsyM67QiSpiaD7eU=
+go.temporal.io/server v1.22.2/go.mod h1:fq92tQGzaj3TCt3x4KFeo2N+rA8Vucp6lCwCqNRNR2o=
 go.uber.org/atomic v1.4.0/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=
 go.uber.org/atomic v1.7.0/go.mod h1:fEN4uk6kAWBTFdckzkM89CLk9XfWZrxpCo0nPH17wJc=
 go.uber.org/atomic v1.9.0/go.mod h1:fEN4uk6kAWBTFdckzkM89CLk9XfWZrxpCo0nPH17wJc=
