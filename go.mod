@@ -43,7 +43,7 @@ require (
 	github.com/roadrunner-server/rpc/v4 v4.2.9
 	github.com/roadrunner-server/sdk/v4 v4.5.3
 	github.com/roadrunner-server/send/v4 v4.2.9
-	github.com/roadrunner-server/server/v4 v4.5.0
+	github.com/roadrunner-server/server/v4 v4.5.1
 	github.com/roadrunner-server/service/v4 v4.4.8
 	github.com/roadrunner-server/sqs/v4 v4.5.8
 	github.com/roadrunner-server/static/v4 v4.1.9
@@ -52,20 +52,20 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
-	github.com/temporalio/roadrunner-temporal/v4 v4.5.4
+	github.com/temporalio/roadrunner-temporal/v4 v4.5.5
 	go.uber.org/automaxprocs v1.5.3
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.6 // indirect
-	github.com/aws/aws-sdk-go v1.47.9 // indirect
+	github.com/aws/aws-sdk-go v1.47.10 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.22.2 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.23.0 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.24.0 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.15.2 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.14.3 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.2.2 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.5.2 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/ini v1.6.0 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.7.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.10.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.28.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.17.1 // indirect
@@ -89,7 +89,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
-	github.com/gofiber/fiber/v2 v2.50.0 // indirect
+	github.com/gofiber/fiber/v2 v2.51.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/gogo/status v1.1.1 // indirect
@@ -175,7 +175,7 @@ require (
 	go.temporal.io/sdk v1.25.1 // indirect
 	go.temporal.io/sdk/contrib/opentelemetry v0.3.0 // indirect
 	go.temporal.io/sdk/contrib/tally v0.2.0 // indirect
-	go.temporal.io/server v1.22.1 // indirect
+	go.temporal.io/server v1.22.2 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
