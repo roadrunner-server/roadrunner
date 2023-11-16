@@ -2,7 +2,7 @@ module github.com/roadrunner-server/roadrunner/v2023
 
 go 1.21
 
-toolchain go1.21.1
+toolchain go1.21.4
 
 require (
 	github.com/buger/goterm v1.0.4
@@ -10,49 +10,49 @@ require (
 	github.com/fatih/color v1.16.0
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v4 v4.9.5
+	github.com/roadrunner-server/amqp/v4 v4.9.6
 	github.com/roadrunner-server/api/v4 v4.9.0
-	github.com/roadrunner-server/app-logger/v4 v4.2.5
-	github.com/roadrunner-server/beanstalk/v4 v4.5.10
-	github.com/roadrunner-server/boltdb/v4 v4.7.7
-	github.com/roadrunner-server/centrifuge/v4 v4.5.4
-	github.com/roadrunner-server/config/v4 v4.6.1
+	github.com/roadrunner-server/app-logger/v4 v4.2.6
+	github.com/roadrunner-server/beanstalk/v4 v4.5.11
+	github.com/roadrunner-server/boltdb/v4 v4.7.8
+	github.com/roadrunner-server/centrifuge/v4 v4.5.5
+	github.com/roadrunner-server/config/v4 v4.6.2
 	github.com/roadrunner-server/endure/v2 v2.4.3
 	github.com/roadrunner-server/errors v1.3.0
-	github.com/roadrunner-server/fileserver/v4 v4.1.9
+	github.com/roadrunner-server/fileserver/v4 v4.1.10
 	github.com/roadrunner-server/goridge/v3 v3.8.1
-	github.com/roadrunner-server/grpc/v4 v4.5.7
-	github.com/roadrunner-server/gzip/v4 v4.1.9
-	github.com/roadrunner-server/headers/v4 v4.2.10
-	github.com/roadrunner-server/http/v4 v4.4.6
-	github.com/roadrunner-server/informer/v4 v4.3.8
-	github.com/roadrunner-server/jobs/v4 v4.7.7
-	github.com/roadrunner-server/kafka/v4 v4.4.10
-	github.com/roadrunner-server/kv/v4 v4.4.8
-	github.com/roadrunner-server/lock/v4 v4.5.6
-	github.com/roadrunner-server/logger/v4 v4.2.8
-	github.com/roadrunner-server/memcached/v4 v4.3.7
-	github.com/roadrunner-server/memory/v4 v4.6.8
-	github.com/roadrunner-server/metrics/v4 v4.1.10
-	github.com/roadrunner-server/nats/v4 v4.6.1
-	github.com/roadrunner-server/otel/v4 v4.3.6
-	github.com/roadrunner-server/prometheus/v4 v4.1.9
-	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.9
-	github.com/roadrunner-server/redis/v4 v4.2.9
-	github.com/roadrunner-server/resetter/v4 v4.0.15
-	github.com/roadrunner-server/rpc/v4 v4.2.9
+	github.com/roadrunner-server/grpc/v4 v4.5.8
+	github.com/roadrunner-server/gzip/v4 v4.1.10
+	github.com/roadrunner-server/headers/v4 v4.2.11
+	github.com/roadrunner-server/http/v4 v4.4.7
+	github.com/roadrunner-server/informer/v4 v4.3.9
+	github.com/roadrunner-server/jobs/v4 v4.7.8
+	github.com/roadrunner-server/kafka/v4 v4.4.11
+	github.com/roadrunner-server/kv/v4 v4.4.9
+	github.com/roadrunner-server/lock/v4 v4.5.7
+	github.com/roadrunner-server/logger/v4 v4.2.9
+	github.com/roadrunner-server/memcached/v4 v4.3.8
+	github.com/roadrunner-server/memory/v4 v4.6.9
+	github.com/roadrunner-server/metrics/v4 v4.1.11
+	github.com/roadrunner-server/nats/v4 v4.6.2
+	github.com/roadrunner-server/otel/v4 v4.3.7
+	github.com/roadrunner-server/prometheus/v4 v4.1.10
+	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.10
+	github.com/roadrunner-server/redis/v4 v4.2.10
+	github.com/roadrunner-server/resetter/v4 v4.0.16
+	github.com/roadrunner-server/rpc/v4 v4.2.10
 	github.com/roadrunner-server/sdk/v4 v4.5.3
-	github.com/roadrunner-server/send/v4 v4.2.9
-	github.com/roadrunner-server/server/v4 v4.5.1
-	github.com/roadrunner-server/service/v4 v4.4.8
-	github.com/roadrunner-server/sqs/v4 v4.5.8
-	github.com/roadrunner-server/static/v4 v4.1.9
-	github.com/roadrunner-server/status/v4 v4.4.7
-	github.com/roadrunner-server/tcp/v4 v4.3.6
+	github.com/roadrunner-server/send/v4 v4.2.10
+	github.com/roadrunner-server/server/v4 v4.5.2
+	github.com/roadrunner-server/service/v4 v4.4.9
+	github.com/roadrunner-server/sqs/v4 v4.5.9
+	github.com/roadrunner-server/static/v4 v4.1.10
+	github.com/roadrunner-server/status/v4 v4.4.8
+	github.com/roadrunner-server/tcp/v4 v4.3.7
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
-	github.com/temporalio/roadrunner-temporal/v4 v4.5.5
+	github.com/temporalio/roadrunner-temporal/v4 v4.5.6
 	go.uber.org/automaxprocs v1.5.3
 )
 
