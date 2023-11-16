@@ -558,7 +558,7 @@ otel:
   # OpenTelemetry Resources
   #
   # https://github.com/open-telemetry/opentelemetry-specification/blob/v1.25.0/specification/resource/semantic_conventions/README.md
-  resources:
+  resource:
 
       # User's service name
       #

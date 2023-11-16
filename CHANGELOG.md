@@ -1,5 +1,27 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.5 🚀 </center>
+
+### Config plugin:
+
+-  🔥 Add ability to include `.env` files in the configuration (experimental feature): [Docs](https://roadrunner.dev/docs/experimental-experimental/current/en#support-for-loading-envfiles-in-the-rryaml--v202335), (thanks @OO00O0O).
+
+### Temporal plugin:
+
+- 🐛️ Fix bug with incorrect pool destroy order: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1776), (thanks @pfy-oleksii-storozhylov).
+
+### HTTP plugin:
+
+-  🔥 Allow showing PHP exception traces in the response: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1781), (thanks @speller).
+
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project (system) dependencies.
+
+
+---
+
 # <center> 🚀 v2023.3.4 🚀 </center>
 
 ## 🔥 Features:
