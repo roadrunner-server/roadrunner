@@ -58,7 +58,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.6 // indirect
-	github.com/aws/aws-sdk-go v1.48.2 // indirect
+	github.com/aws/aws-sdk-go v1.48.3 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.23.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.25.5 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.16.4 // indirect
