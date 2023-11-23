@@ -1,5 +1,18 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.6 🚀 </center>
+
+### CI releases:
+
+-  🔥 Add support for the `arm64` deb packages: [FR](https://github.com/roadrunner-server/roadrunner/issues/1785), (thanks @stevenbrookes)
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project/system dependencies.
+
+
+---
+
 # <center> 🚀 v2023.3.5 🚀 </center>
 
 ### Config plugin:
