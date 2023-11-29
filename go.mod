@@ -10,7 +10,7 @@ require (
 	github.com/fatih/color v1.16.0
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v4 v4.9.6
+	github.com/roadrunner-server/amqp/v4 v4.9.8
 	github.com/roadrunner-server/api/v4 v4.9.0
 	github.com/roadrunner-server/app-logger/v4 v4.2.6
 	github.com/roadrunner-server/beanstalk/v4 v4.5.11
@@ -185,7 +185,7 @@ require (
 	golang.org/x/mod v0.14.0 // indirect
 	golang.org/x/net v0.18.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/sys v0.14.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.4.0 // indirect
 	golang.org/x/tools v0.15.0 // indirect
