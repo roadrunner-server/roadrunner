@@ -1,5 +1,23 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.7 🚀 </center>
+
+### `gRPC` plugin:
+
+-  🔥 Re-enable HTTP health and readiness checks via regular endpoints `/health` and `/ready`.
+
+### `AMQP` driver:
+
+- 🐛️ Fix mapping for the RabbitMQ type `List` (Golang `[]any`), [BUG](https://github.com/roadrunner-server/roadrunner/issues/1793), (thanks @iborysenko).
+- 🐛️ Fix an edge case for the DLX queue type when user doesn't specify any queue, but use `Push` method with delays, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1792), (thanks @fereron).
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project/system dependencies.
+
+
+---
+
 # <center> 🚀 v2023.3.6 🚀 </center>
 
 ### CI releases:
