@@ -50,7 +50,7 @@ require (
 	github.com/roadrunner-server/status/v4 v4.4.9
 	github.com/roadrunner-server/tcp/v4 v4.3.8
 	github.com/spf13/cobra v1.8.0
-	github.com/spf13/viper v1.18.0
+	github.com/spf13/viper v1.18.1
 	github.com/stretchr/testify v1.8.4
 	github.com/temporalio/roadrunner-temporal/v4 v4.5.6
 	go.uber.org/automaxprocs v1.5.3
