@@ -13,7 +13,7 @@ require (
 	github.com/roadrunner-server/amqp/v4 v4.9.8
 	github.com/roadrunner-server/api/v4 v4.9.0
 	github.com/roadrunner-server/app-logger/v4 v4.2.7
-	github.com/roadrunner-server/beanstalk/v4 v4.5.12
+	github.com/roadrunner-server/beanstalk/v4 v4.6.0
 	github.com/roadrunner-server/boltdb/v4 v4.7.9
 	github.com/roadrunner-server/centrifuge/v4 v4.5.6
 	github.com/roadrunner-server/config/v4 v4.6.3
