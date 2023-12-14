@@ -2,7 +2,7 @@ module github.com/roadrunner-server/roadrunner/v2023
 
 go 1.21
 
-toolchain go1.21.4
+toolchain go1.21.5
 
 require (
 	github.com/buger/goterm v1.0.4
@@ -10,49 +10,49 @@ require (
 	github.com/fatih/color v1.16.0
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v4 v4.9.8
+	github.com/roadrunner-server/amqp/v4 v4.9.9
 	github.com/roadrunner-server/api/v4 v4.9.0
-	github.com/roadrunner-server/app-logger/v4 v4.2.7
-	github.com/roadrunner-server/beanstalk/v4 v4.6.1
-	github.com/roadrunner-server/boltdb/v4 v4.7.9
-	github.com/roadrunner-server/centrifuge/v4 v4.5.6
-	github.com/roadrunner-server/config/v4 v4.6.3
+	github.com/roadrunner-server/app-logger/v4 v4.2.8
+	github.com/roadrunner-server/beanstalk/v4 v4.6.2
+	github.com/roadrunner-server/boltdb/v4 v4.7.10
+	github.com/roadrunner-server/centrifuge/v4 v4.5.7
+	github.com/roadrunner-server/config/v4 v4.6.4
 	github.com/roadrunner-server/endure/v2 v2.4.3
 	github.com/roadrunner-server/errors v1.3.0
-	github.com/roadrunner-server/fileserver/v4 v4.1.11
+	github.com/roadrunner-server/fileserver/v4 v4.1.12
 	github.com/roadrunner-server/goridge/v3 v3.8.1
-	github.com/roadrunner-server/grpc/v4 v4.6.1
-	github.com/roadrunner-server/gzip/v4 v4.1.11
-	github.com/roadrunner-server/headers/v4 v4.2.12
-	github.com/roadrunner-server/http/v4 v4.4.8
-	github.com/roadrunner-server/informer/v4 v4.3.10
-	github.com/roadrunner-server/jobs/v4 v4.7.9
-	github.com/roadrunner-server/kafka/v4 v4.4.12
-	github.com/roadrunner-server/kv/v4 v4.4.10
-	github.com/roadrunner-server/lock/v4 v4.5.8
-	github.com/roadrunner-server/logger/v4 v4.2.10
-	github.com/roadrunner-server/memcached/v4 v4.3.9
-	github.com/roadrunner-server/memory/v4 v4.6.10
-	github.com/roadrunner-server/metrics/v4 v4.1.12
-	github.com/roadrunner-server/nats/v4 v4.6.3
-	github.com/roadrunner-server/otel/v4 v4.3.8
-	github.com/roadrunner-server/prometheus/v4 v4.1.11
-	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.11
-	github.com/roadrunner-server/redis/v4 v4.2.11
-	github.com/roadrunner-server/resetter/v4 v4.0.17
-	github.com/roadrunner-server/rpc/v4 v4.2.11
+	github.com/roadrunner-server/grpc/v4 v4.6.2
+	github.com/roadrunner-server/gzip/v4 v4.1.12
+	github.com/roadrunner-server/headers/v4 v4.2.13
+	github.com/roadrunner-server/http/v4 v4.4.9
+	github.com/roadrunner-server/informer/v4 v4.3.11
+	github.com/roadrunner-server/jobs/v4 v4.7.10
+	github.com/roadrunner-server/kafka/v4 v4.4.13
+	github.com/roadrunner-server/kv/v4 v4.4.11
+	github.com/roadrunner-server/lock/v4 v4.5.9
+	github.com/roadrunner-server/logger/v4 v4.2.11
+	github.com/roadrunner-server/memcached/v4 v4.3.10
+	github.com/roadrunner-server/memory/v4 v4.6.11
+	github.com/roadrunner-server/metrics/v4 v4.1.13
+	github.com/roadrunner-server/nats/v4 v4.6.4
+	github.com/roadrunner-server/otel/v4 v4.3.9
+	github.com/roadrunner-server/prometheus/v4 v4.1.12
+	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.12
+	github.com/roadrunner-server/redis/v4 v4.2.12
+	github.com/roadrunner-server/resetter/v4 v4.0.18
+	github.com/roadrunner-server/rpc/v4 v4.2.12
 	github.com/roadrunner-server/sdk/v4 v4.5.4
-	github.com/roadrunner-server/send/v4 v4.2.11
-	github.com/roadrunner-server/server/v4 v4.5.3
-	github.com/roadrunner-server/service/v4 v4.4.10
-	github.com/roadrunner-server/sqs/v4 v4.5.10
-	github.com/roadrunner-server/static/v4 v4.1.11
-	github.com/roadrunner-server/status/v4 v4.4.9
-	github.com/roadrunner-server/tcp/v4 v4.3.8
+	github.com/roadrunner-server/send/v4 v4.2.12
+	github.com/roadrunner-server/server/v4 v4.5.4
+	github.com/roadrunner-server/service/v4 v4.4.11
+	github.com/roadrunner-server/sqs/v4 v4.5.11
+	github.com/roadrunner-server/static/v4 v4.1.12
+	github.com/roadrunner-server/status/v4 v4.4.10
+	github.com/roadrunner-server/tcp/v4 v4.3.9
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
-	github.com/temporalio/roadrunner-temporal/v4 v4.5.6
+	github.com/temporalio/roadrunner-temporal/v4 v4.5.7
 	go.uber.org/automaxprocs v1.5.3
 )
 
@@ -64,7 +64,7 @@ exclude (
 
 require (
 	github.com/andybalholm/brotli v1.0.6 // indirect
-	github.com/aws/aws-sdk-go v1.49.1 // indirect
+	github.com/aws/aws-sdk-go v1.49.2 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.24.0 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.26.1 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.16.12 // indirect
@@ -95,6 +95,7 @@ require (
 	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
+	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gofiber/fiber/v2 v2.51.0 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
@@ -102,6 +103,7 @@ require (
 	github.com/gogo/status v1.1.1 // indirect
 	github.com/golang/mock v1.7.0-rc.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/google/pprof v0.0.0-20231212022811-ec68065c825e // indirect
 	github.com/google/uuid v1.5.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
@@ -123,6 +125,7 @@ require (
 	github.com/nats-io/nats.go v1.31.0 // indirect
 	github.com/nats-io/nkeys v0.4.6 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
+	github.com/onsi/ginkgo/v2 v2.13.2 // indirect
 	github.com/openzipkin/zipkin-go v0.4.2 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
@@ -133,6 +136,9 @@ require (
 	github.com/prometheus/client_model v0.5.0 // indirect
 	github.com/prometheus/common v0.45.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
+	github.com/quic-go/qpack v0.4.0 // indirect
+	github.com/quic-go/qtls-go1-20 v0.4.1 // indirect
+	github.com/quic-go/quic-go v0.40.1 // indirect
 	github.com/rabbitmq/amqp091-go v1.9.0 // indirect
 	github.com/redis/go-redis/extra/rediscmd/v9 v9.0.5 // indirect
 	github.com/redis/go-redis/extra/redisotel/v9 v9.0.5 // indirect
@@ -184,6 +190,7 @@ require (
 	go.temporal.io/sdk/contrib/tally v0.2.0 // indirect
 	go.temporal.io/server v1.22.3 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
+	go.uber.org/mock v0.3.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/crypto v0.16.0 // indirect
