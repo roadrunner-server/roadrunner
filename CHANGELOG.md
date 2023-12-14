@@ -1,5 +1,29 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.8 🚀 </center>
+
+### `HTTP` plugin
+
+- 🔥 Experimental HTTP3 server, [FR](https://github.com/roadrunner-server/roadrunner/issues/926), docs: [link](https://roadrunner.dev/docs/experimental-experimental/current/en#support-for-the-http3-server-202338), (thanks @cv65kr & @cidious)
+
+### `gRPC` plugin
+
+- 🔥 Experimental support for the OTLP protocol inside the `gRPC` plugin: [FR](https://roadrunner.dev/docs/experimental-experimental/current/en#otlp-support-in-the-grpc-plugin-202338), (thanks @rauanmayemir)
+
+### `Beanstalk` driver
+
+- 🐛️ Fix NPE on empty options [BUG](https://github.com/roadrunner-server/roadrunner/issues/1804), (thanks @SerhiiMova).
+
+### `Velox` plugin
+
+- 🔥 To ensure that Velox is able to build every RoadRunner version, we've added a new CI CRON job that builds RoadRunner with Velox daily. This job is not related to the RoadRunner release process, but it will help us to ensure that Velox is always compatible with the latest RoadRunner version.
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project/system dependencies.
+
+---
+
 # <center> 🚀 v2023.3.7 🚀 </center>
 
 ### `gRPC` plugin:
