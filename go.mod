@@ -11,11 +11,11 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v4 v4.9.9
-	github.com/roadrunner-server/api/v4 v4.9.0
+	github.com/roadrunner-server/api/v4 v4.10.0
 	github.com/roadrunner-server/app-logger/v4 v4.2.8
 	github.com/roadrunner-server/beanstalk/v4 v4.6.2
 	github.com/roadrunner-server/boltdb/v4 v4.7.10
-	github.com/roadrunner-server/centrifuge/v4 v4.5.7
+	github.com/roadrunner-server/centrifuge/v4 v4.6.0
 	github.com/roadrunner-server/config/v4 v4.6.4
 	github.com/roadrunner-server/endure/v2 v2.4.3
 	github.com/roadrunner-server/errors v1.3.0
@@ -44,13 +44,13 @@ require (
 	github.com/roadrunner-server/sdk/v4 v4.5.4
 	github.com/roadrunner-server/send/v4 v4.2.12
 	github.com/roadrunner-server/server/v4 v4.5.4
-	github.com/roadrunner-server/service/v4 v4.4.11
+	github.com/roadrunner-server/service/v4 v4.5.0
 	github.com/roadrunner-server/sqs/v4 v4.5.11
 	github.com/roadrunner-server/static/v4 v4.1.12
 	github.com/roadrunner-server/status/v4 v4.4.10
 	github.com/roadrunner-server/tcp/v4 v4.3.9
 	github.com/spf13/cobra v1.8.0
-	github.com/spf13/viper v1.17.0
+	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
 	github.com/temporalio/roadrunner-temporal/v4 v4.5.7
 	go.uber.org/automaxprocs v1.5.3
@@ -64,7 +64,7 @@ exclude (
 
 require (
 	github.com/andybalholm/brotli v1.0.6 // indirect
-	github.com/aws/aws-sdk-go v1.49.2 // indirect
+	github.com/aws/aws-sdk-go v1.49.5 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.24.0 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.26.1 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.16.12 // indirect
@@ -193,8 +193,8 @@ require (
 	go.uber.org/mock v0.3.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
-	golang.org/x/crypto v0.16.0 // indirect
-	golang.org/x/exp v0.0.0-20231206192017-f3f8817b8deb // indirect
+	golang.org/x/crypto v0.17.0 // indirect
+	golang.org/x/exp v0.0.0-20231214170342-aacd6d4b4611 // indirect
 	golang.org/x/mod v0.14.0 // indirect
 	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
@@ -205,7 +205,7 @@ require (
 	google.golang.org/genproto v0.0.0-20231212172506-995d672761c0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20231212172506-995d672761c0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231212172506-995d672761c0 // indirect
-	google.golang.org/grpc v1.60.0 // indirect
+	google.golang.org/grpc v1.60.1 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
