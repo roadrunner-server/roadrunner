@@ -85,10 +85,10 @@ Configuration located in the `.rr.yaml` file ([full sample](https://github.com/r
 
 
 ## Installation via Composer
-You can also install RoadRunner automatically using command shipped with the composer package, run:
+You can also install RoadRunner automatically using the command shipped with the composer package, run:
 
 ```bash
-composer require spiral/roadrunner-http nyholm/psr7
+composer require spiral/roadrunner-http spiral/roadrunner-worker nyholm/psr7
 ./vendor/bin/rr get-binary
 ```
 
@@ -167,6 +167,10 @@ while ($req = $worker->waitRequest()) {
     }
 }
 ```
+
+> [!IMPORTANT]  
+> If you see the `EOF` error, check that you have installed the PHP packages from [this step](https://github.com/roadrunner-server/roadrunner#installation-via-composer).
+> If this does not help, try to execute the command `php worker.php` directly and check the output.
 
 ---
 
