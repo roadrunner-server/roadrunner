@@ -38,7 +38,7 @@ require (
 	github.com/roadrunner-server/otel/v4 v4.3.9
 	github.com/roadrunner-server/prometheus/v4 v4.1.12
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.12
-	github.com/roadrunner-server/redis/v4 v4.2.12
+	github.com/roadrunner-server/redis/v4 v4.2.13
 	github.com/roadrunner-server/resetter/v4 v4.0.18
 	github.com/roadrunner-server/rpc/v4 v4.2.12
 	github.com/roadrunner-server/sdk/v4 v4.5.4
@@ -64,7 +64,7 @@ exclude (
 
 require (
 	github.com/andybalholm/brotli v1.0.6 // indirect
-	github.com/aws/aws-sdk-go v1.49.7 // indirect
+	github.com/aws/aws-sdk-go v1.49.8 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.24.0 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.26.2 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.16.13 // indirect
@@ -92,7 +92,7 @@ require (
 	github.com/facebookgo/clock v0.0.0-20150410010913-600d898af40a // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
-	github.com/go-logr/logr v1.4.0 // indirect
+	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect
