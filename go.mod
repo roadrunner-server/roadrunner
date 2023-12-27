@@ -34,7 +34,7 @@ require (
 	github.com/roadrunner-server/memcached/v4 v4.3.10
 	github.com/roadrunner-server/memory/v4 v4.6.11
 	github.com/roadrunner-server/metrics/v4 v4.1.13
-	github.com/roadrunner-server/nats/v4 v4.6.4
+	github.com/roadrunner-server/nats/v4 v4.6.5
 	github.com/roadrunner-server/otel/v4 v4.3.9
 	github.com/roadrunner-server/prometheus/v4 v4.1.12
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.12
