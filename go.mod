@@ -22,7 +22,7 @@ require (
 	github.com/roadrunner-server/fileserver/v4 v4.1.12
 	github.com/roadrunner-server/goridge/v3 v3.8.1
 	github.com/roadrunner-server/grpc/v4 v4.6.2
-	github.com/roadrunner-server/gzip/v4 v4.1.12
+	github.com/roadrunner-server/gzip/v4 v4.1.13
 	github.com/roadrunner-server/headers/v4 v4.2.13
 	github.com/roadrunner-server/http/v4 v4.4.9
 	github.com/roadrunner-server/informer/v4 v4.3.11
