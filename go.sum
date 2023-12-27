@@ -71,7 +71,6 @@ github.com/caddyserver/certmagic v0.20.0/go.mod h1:N4sXgpICQUskEWpj7zVzvWD41p3NY
 github.com/cenkalti/backoff/v4 v4.2.1 h1:y4OZtCnogmCPw98Zjyt5a6+QwPLGkiQsYW5oUqylYbM=
 github.com/cenkalti/backoff/v4 v4.2.1/go.mod h1:Y3VNntkOUPxTVeUxJ/G5vcM//AlwfmyYozVcomhLiZE=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
-github.com/cespare/xxhash v1.1.0 h1:a6HrQnmkObjyL+Gs60czilIUGqrzKutQD6XZog3p+ko=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/cespare/xxhash/v2 v2.2.0 h1:DC2CZ1Ep5Y4k3ZQ899DldepgrayRUGE6BBZ/cd9Cj44=
@@ -237,7 +236,6 @@ github.com/mattn/go-runewidth v0.0.9/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m
 github.com/mattn/go-runewidth v0.0.15 h1:UNAjwbU9l54TA3KzvqLGxwWjHmMgBUVhBiTjelZgg3U=
 github.com/mattn/go-runewidth v0.0.15/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
-github.com/matttproud/golang_protobuf_extensions v1.0.4 h1:mmDVorXM7PCGKw94cs5zkfA9PSy5pEvNWRP0ET0TIVo=
 github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 h1:jWpvCLoY8Z/e3VKvlsiIGKtc+UG6U5vzxaoagmhXfyg=
 github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0/go.mod h1:QUyp042oQthUoa9bqDv0ER0wrtXnBruoNd7aNjkbP+k=
 github.com/mholt/acmez v1.2.0 h1:1hhLxSgY5FvH5HCnGUuwbKY2VQVo8IU7rxXKSnZ7F30=
@@ -396,8 +394,8 @@ github.com/roadrunner-server/service/v4 v4.5.0 h1:b/s8BKPFqkXxqhi7c/+5as2Y/bD0HT
 github.com/roadrunner-server/service/v4 v4.5.0/go.mod h1:o2JRxWdg7jLEx0xEpSPNVaPf8MDHYNd85bIPKcu3bxY=
 github.com/roadrunner-server/sqs/v4 v4.5.11 h1:m3v3fPUxrP3Zkaef5BvcSy4u/aiSutMF6iBLmK5essI=
 github.com/roadrunner-server/sqs/v4 v4.5.11/go.mod h1:4FgrM+Fm6nNxFIZIJ1zND29uGID0gVJM/ft04/taAg8=
-github.com/roadrunner-server/static/v4 v4.1.12 h1:i1S0v/Uc0AWFt9WmdUK+KnezxMpOgTFcDDRLwhwO6ws=
-github.com/roadrunner-server/static/v4 v4.1.12/go.mod h1:3WmckTrDprt6j2UNo/b95z1usOUNf66dqfPjzghhNcc=
+github.com/roadrunner-server/static/v4 v4.1.13 h1:uEbFswPBIjpgomOUuC41TNiTZtkIjrcTvveAUyOx9NA=
+github.com/roadrunner-server/static/v4 v4.1.13/go.mod h1:0BIMnnil/ca7g3oCKpUCNfzdIjwmf+vZIfnnkzbawfQ=
 github.com/roadrunner-server/status/v4 v4.4.10 h1:ZxYJ223dcAyM0Zo0Gtrhi3oiAOcvat6KTaeClx0iRyg=
 github.com/roadrunner-server/status/v4 v4.4.10/go.mod h1:51s1r8lzoqp42Ho8u3mITLuI8Zkae5TFf7njcvCY1U0=
 github.com/roadrunner-server/tcp/v4 v4.3.9 h1:kiJYa41J97qUaiJ0B1854vGVIf5ucX+m+7pTXirxQjc=
