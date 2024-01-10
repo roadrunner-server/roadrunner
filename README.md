@@ -18,11 +18,21 @@
     <img alt="All releases" src="https://img.shields.io/github/downloads/roadrunner-server/roadrunner/total">
 </p>
 
-RoadRunner is an open-source (MIT licensed) high-performance PHP application server, load balancer, and process manager.
-It supports running as a service with the ability to extend its functionality on a per-project basis.
+RoadRunner is an open-source (MIT licensed) high-performance PHP application server, process manager written in Go and powered with plugins ❤️.
+It supports running as a service with the ability to extend its functionality on a per-project basis with plugins.
 
-RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP/2 server and can be used to replace classic Nginx+FPM setup
-with much greater performance and flexibility.
+RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP(S)/2/3 servers and can be used to replace classic Nginx+FPM setup
+with much greater performance and flexibility. RoadRunner features HTTP(S)/2/3 servers as just one of its many available plugins, but its capabilities extend far beyond: 
+- Queue drivers: RabbitMQ, Kafka, SQS, Beanstalk, NATS, In-Memory.
+- KV drivers: Redis, Memcached, BoltDB, In-Memory.
+- Workflow state of the art engine: [Temporal](https://temporal.io)
+- gRPC server. For increased speed, the `protobuf` extension can be used.
+- HTTP(S)/2/3 server features automatic TLS management and middleware like: Static, Headers, gzip, prometheus (metrics), send (x-sendfile), OTEL, proxy_ip_parser, etc.
+- Embedded distribute lock plugin which manages access to shared resources.
+- Metrics server (you might easily expose your own).
+- WebSockets and Broadcast via [Centrifugo](https://centrifugal.dev) server.
+- SystemD-like services manager with auto-restarts, execution time limiter, etc.
+- And more 😉
 
 # Join our discord server: [Link](https://discord.gg/TFeEmCs)
 
@@ -38,7 +48,7 @@ with much greater performance and flexibility.
 - Production-ready
 - PCI DSS compliant (HTTP plugin)
 - PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middleware, event listeners)
-- HTTPS and HTTP/2 support (including HTTP/2 Push, H2C)
+- HTTPS, HTTP/2/3 support (including HTTP/2 Push, H2C)
 - A Fully customizable http(s)/2 server
 - FastCGI support (HTTP plugin)
 - Flexible environment configuration
@@ -58,7 +68,7 @@ with much greater performance and flexibility.
 - Development Mode
 - Integrations with [Symfony](https://roadrunner.dev/docs/integration-symfony), [Laravel](https://roadrunner.dev/docs/integration-laravel), Slim, CakePHP, Zend Expressive
 - Application server for [Spiral](https://github.com/spiral/framework)
-- Works on Windows 10/11 and WSL2
+- Works on Windows 10/11 and in WSL2
 
 ---
 
