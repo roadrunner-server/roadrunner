@@ -21,18 +21,18 @@
 RoadRunner is an open-source (MIT licensed) high-performance PHP application server, process manager written in Go and powered with plugins ❤️.
 It supports running as a service with the ability to extend its functionality on a per-project basis with plugins.
 
-RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP(S)/2/3 servers and can be used to replace classic Nginx+FPM setup
-with much greater performance and flexibility. RoadRunner features HTTP(S)/2/3 servers as just one of its many available plugins, but its capabilities extend far beyond: 
+RoadRunner includes PSR-7/PSR-17 compatible HTTP and `HTTP(S)/2/3` servers and can be used to replace classic Nginx+FPM setup
+with much greater performance and flexibility. RoadRunner features `HTTP(S)/2/3` servers as just one of its many available plugins, but its capabilities extend far beyond: 
 - Queue drivers: RabbitMQ, Kafka, SQS, Beanstalk, NATS, In-Memory.
 - KV drivers: Redis, Memcached, BoltDB, In-Memory.
 - OpenTelemetry protocol support (`gRPC`, `http`, `jaeger`).
 - Workflows manager via [Temporal](https://temporal.io)
-- gRPC server. For increased speed, the `protobuf` extension can be used.
-- HTTP(S)/2/3 server features automatic TLS management and middleware like: Static, Headers, gzip, prometheus (metrics), send (x-sendfile), OTEL, proxy_ip_parser, etc.
+- `gRPC` server. For increased speed, the `protobuf` extension can be used.
+- `HTTP(S)/2/3` server features automatic TLS management and middleware like: Static, Headers, gzip, prometheus (metrics), send (x-sendfile), OTEL, proxy_ip_parser, etc.
 - Embedded distribute lock plugin which manages access to shared resources.
 - Metrics server (you might easily expose your own).
 - WebSockets and Broadcast via [Centrifugo](https://centrifugal.dev) server.
-- SystemD-like services manager with auto-restarts, execution time limiter, etc.
+- Systemd-like services manager with auto-restarts, execution time limiter, etc.
 - And more 😉
 
 # Join our discord server: [Link](https://discord.gg/TFeEmCs)
