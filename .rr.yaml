@@ -43,6 +43,11 @@ server:
       - SOME_KEY: "SOME_VALUE"
       - SOME_KEY2: "SOME_VALUE2"
 
+    # Username (not UID) of the user from whom the on_init command is executed. An empty value means to use the RR process user.
+    #
+    # Default: ""
+    user: ""
+
   # Worker starting command, with any required arguments.
   #
   # This option is required.

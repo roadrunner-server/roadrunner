@@ -106,6 +106,14 @@
                             "$ref": "#/definitions/Duration",
                             "default": "60s"
                         },
+                        "user": {
+                            "description": "Username (not UID) of the user from whom the on_init command is executed. An empty value means to use the RR process user.",
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                                "www-data"
+                            ]
+                        },
                         "env": {
                             "description": "Environment variables for the worker processes",
                             "type": "array",
