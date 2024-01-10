@@ -22,7 +22,7 @@ RoadRunner is an open-source (MIT licensed) high-performance PHP application ser
 It supports running as a service with the ability to extend its functionality on a per-project basis with plugins.
 
 RoadRunner includes PSR-7/PSR-17 compatible HTTP and `HTTP(S)/2/3` servers and can be used to replace classic Nginx+FPM setup
-with much greater performance and flexibility. RoadRunner features `HTTP(S)/2/3` servers as just one of its many available plugins, but its capabilities extend far beyond: 
+with much greater performance and flexibility. `HTTP(S)/2/3` servers as just one of its many available plugins, but its capabilities extend far beyond: 
 - Queue drivers: RabbitMQ, Kafka, SQS, Beanstalk, NATS, In-Memory.
 - KV drivers: Redis, Memcached, BoltDB, In-Memory.
 - OpenTelemetry protocol support (`gRPC`, `http`, `jaeger`).
