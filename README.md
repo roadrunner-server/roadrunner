@@ -25,6 +25,7 @@ RoadRunner includes PSR-7/PSR-17 compatible HTTP and HTTP(S)/2/3 servers and can
 with much greater performance and flexibility. RoadRunner features HTTP(S)/2/3 servers as just one of its many available plugins, but its capabilities extend far beyond: 
 - Queue drivers: RabbitMQ, Kafka, SQS, Beanstalk, NATS, In-Memory.
 - KV drivers: Redis, Memcached, BoltDB, In-Memory.
+- OpenTelemetry protocol support (`gRPC`, `http`, `jaeger`).
 - Workflows manager via [Temporal](https://temporal.io)
 - gRPC server. For increased speed, the `protobuf` extension can be used.
 - HTTP(S)/2/3 server features automatic TLS management and middleware like: Static, Headers, gzip, prometheus (metrics), send (x-sendfile), OTEL, proxy_ip_parser, etc.
