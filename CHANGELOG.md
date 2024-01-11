@@ -10,9 +10,13 @@
 
 - 🐛️ Use user specified credentials if they are set even if we're inside AWS, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1833), (thanks @matteokov)
 
-### `Services` plugin
+### `Service` plugin
 
 - 🐛️ Services directly killed when restarting on terminating. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1814), (thanks @chazzbg)
+
+### `Server` plugin
+
+- 🔥 Add `user` param to `on_init` command section. [PR](https://github.com/roadrunner-server/server/pull/68), [docs](https://roadrunner.dev/docs/plugins-server/current/en#configuration), (thanks @Kaspiman)
 
 ### `Redis` KV driver
 
