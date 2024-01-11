@@ -1,5 +1,30 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.9 🚀 </center>
+
+### `HTTP` plugin
+
+- 🐛️ Streaming responses can experience a lock-up when the client disconnects early, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1830), (thanks @segrax)
+
+### `SQS` JOBS driver
+
+- 🐛️ Use user specified credentials if they are set even if we're inside AWS, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1833), (thanks @matteokov)
+
+### `Services` plugin
+
+- 🐛️ Services directly killed when restarting on terminating. [BUG](https://github.com/roadrunner-server/roadrunner/issues/1814), (thanks @chazzbg)
+
+### `Redis` KV driver
+
+- 🐛️ Correctly finish the OTEL span. [PR](https://github.com/roadrunner-server/redis/pull/62), (thanks @Kaspiman)
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project/system dependencies.
+- 🧑‍🏭 **Docs**: update docs, [BUG](https://github.com/roadrunner-server/roadrunner/issues/1819).
+
+---
+
 # <center> 🚀 v2023.3.8 🚀 </center>
 
 ### `HTTP` plugin
@@ -38,7 +63,6 @@
 ### <center>🧹 Chore:</center>
 
 - 🧑‍🏭 **Dependencies**: update project/system dependencies.
-
 
 ---
 
