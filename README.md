@@ -28,7 +28,7 @@ with much greater performance and flexibility. `HTTP(S)/2/3` and `fCGI` servers 
 - OpenTelemetry protocol support (`gRPC`, `http`, `jaeger`).
 - Workflows manager via [Temporal](https://temporal.io)
 - `gRPC` server. For increased speed, the `protobuf` extension can be used.
-- `HTTP(S)/2/3` server features **automatic TLS management**, **103 Early Hints** support and middleware like: Static, Headers, gzip, prometheus (metrics), send (x-sendfile), OTEL, proxy_ip_parser, etc.
+- `HTTP(S)/2/3` and `fCGI` servers features **automatic TLS management**, **103 Early Hints** support and middleware like: Static, Headers, gzip, prometheus (metrics), send (x-sendfile), OTEL, proxy_ip_parser, etc.
 - Embedded distribute lock plugin which manages access to shared resources.
 - Metrics server (you might easily expose your own).
 - WebSockets and Broadcast via [Centrifugo](https://centrifugal.dev) server.
