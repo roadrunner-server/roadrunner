@@ -28,7 +28,7 @@ It supports running as a service with the ability to extend its functionality on
 - Queue drivers: RabbitMQ, Kafka, SQS, Beanstalk, NATS, In-Memory.
 - KV drivers: Redis, Memcached, BoltDB, In-Memory.
 - OpenTelemetry protocol support (`gRPC`, `http`, `jaeger`).
-- [Workflow engine](https://github.com/temporalio/sdk-php) via [Temporal](https://temporal.io)
+- [Workflow engine](https://github.com/temporalio/sdk-php) via [Temporal](https://temporal.io).
 - `gRPC` server. For increased speed, the `protobuf` extension can be used.
 - `HTTP(S)/2/3` and `fCGI` servers features **automatic TLS management**, **103 Early Hints** support and middleware like: Static, Headers, gzip, prometheus (metrics), send (x-sendfile), OTEL, proxy_ip_parser, etc.
 - Embedded distribute lock plugin which manages access to shared resources.
