@@ -21,18 +21,21 @@
 RoadRunner is an open-source (MIT licensed) high-performance PHP application server, process manager written in Go and powered with plugins ❤️.
 It supports running as a service with the ability to extend its functionality on a per-project basis with plugins.
 
-RoadRunner includes PSR-7/PSR-17 compatible HTTP, `HTTP(S)/2/3` and `fCGI` servers and can be used to replace classic Nginx+FPM setup
-with much greater performance and flexibility. `HTTP(S)/2/3` and `fCGI` servers as just one of its many available plugins, but its capabilities extend far beyond: 
+
+# Features 
+
+**RoadRunner** features a range of plugins, including `HTTP(S)/2/3` and `fCGI` servers that are compatible with PSR-7/PSR-17 standards. This is just one of its many capabilities. It serves as an effective alternative to the traditional Nginx+FPM setup, providing improved performance and more flexibility. Its extensive plugin options go far beyond just `HTTP(S)/2/3` and `fCGI` servers, offering a broad range of functionalities:
 - Queue drivers: RabbitMQ, Kafka, SQS, Beanstalk, NATS, In-Memory.
 - KV drivers: Redis, Memcached, BoltDB, In-Memory.
 - OpenTelemetry protocol support (`gRPC`, `http`, `jaeger`).
-- Workflows manager via [Temporal](https://temporal.io)
+- [Workflow engine](https://github.com/temporalio/sdk-php) via [Temporal](https://temporal.io)
 - `gRPC` server. For increased speed, the `protobuf` extension can be used.
 - `HTTP(S)/2/3` and `fCGI` servers features **automatic TLS management**, **103 Early Hints** support and middleware like: Static, Headers, gzip, prometheus (metrics), send (x-sendfile), OTEL, proxy_ip_parser, etc.
 - Embedded distribute lock plugin which manages access to shared resources.
 - Metrics server (you might easily expose your own).
 - WebSockets and Broadcast via [Centrifugo](https://centrifugal.dev) server.
 - Systemd-like services manager with auto-restarts, execution time limiter, etc.
+- Production-ready.
 - And more 😉
 
 # Join our discord server: [Link](https://discord.gg/TFeEmCs)
@@ -43,35 +46,6 @@ with much greater performance and flexibility. `HTTP(S)/2/3` and `fCGI` servers 
     <a href="https://forum.roadrunner.dev"><b>Forum</b></a> |
     <a href="https://github.com/orgs/roadrunner-server/projects/4"><b>Release schedule</b></a>
 </p>
-
-# Features:
---------
-- Production-ready
-- PCI DSS compliant (HTTP plugin)
-- PSR-7 HTTP server (file uploads, error handling, static files, hot reload, middleware, event listeners)
-- HTTPS, HTTP/2/3 support (including HTTP/2 Push, H2C)
-- A Fully customizable http(s)/2 server
-- FastCGI support (HTTP plugin)
-- Flexible environment configuration
-- No external PHP dependencies (64bit version required)
-- Integrated metrics (Prometheus)
-- [Workflow engine](https://github.com/temporalio/sdk-php) by [Temporal.io](https://temporal.io)
-- Works over TCP, UNIX sockets and process pipes
-- Automatic worker replacement, graceful and safe PHP process destruction
-- Worker create/allocate/destroy timeouts
-- Max requests per worker limitation
-- Worker lifecycle management (controller)
-    - max_memory (graceful stop)
-    - ttl (graceful stop)
-    - idle_ttl (graceful stop)
-    - exec_tll (brute, max_execution_time)
-- Protocol, worker and job level error management (including PHP errors)
-- Development Mode
-- Integrations with [Symfony](https://roadrunner.dev/docs/integration-symfony), [Laravel](https://roadrunner.dev/docs/integration-laravel), Slim, CakePHP, Zend Expressive
-- Application server for [Spiral](https://github.com/spiral/framework)
-- Works on Windows 10/11 and in WSL2
-
----
 
 # Installation
 
