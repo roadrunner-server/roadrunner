@@ -22,7 +22,7 @@ RoadRunner is an open-source (MIT licensed) high-performance PHP application ser
 It supports running as a service with the ability to extend its functionality on a per-project basis with plugins.
 
 
-# Features 
+# Features
 
 **RoadRunner** features a range of plugins, including `HTTP(S)/2/3` and `fCGI` servers that are compatible with PSR-7/PSR-17 standards. This is just one of its many capabilities. It serves as an effective alternative to the traditional Nginx+FPM setup, providing improved performance and more flexibility. Its extensive plugin options go far beyond just `HTTP(S)/2/3` and `fCGI` servers, offering a broad range of functionalities:
 - Queue drivers: RabbitMQ, Kafka, SQS, Beanstalk, NATS, In-Memory.
@@ -42,7 +42,7 @@ It supports running as a service with the ability to extend its functionality on
 
 <p align="center">
 	<a href="https://roadrunner.dev/"><b>Official Website</b></a> |
-	<a href="https://roadrunner.dev/docs"><b>Documentation</b></a> |
+	<a href="https://docs.roadrunner.dev/"><b>Documentation</b></a> |
     <a href="https://forum.roadrunner.dev"><b>Forum</b></a> |
     <a href="https://github.com/orgs/roadrunner-server/projects/4"><b>Release schedule</b></a>
 </p>
@@ -153,7 +153,7 @@ while ($req = $worker->waitRequest()) {
 }
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > If you see the `EOF` error, check that you have installed the PHP packages from [this step](https://github.com/roadrunner-server/roadrunner#installation-via-composer).
 > If this does not help, try to execute the command `php worker.php` directly and check the output.
 
