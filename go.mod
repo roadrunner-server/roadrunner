@@ -18,7 +18,7 @@ require (
 	github.com/roadrunner-server/centrifuge/v4 v4.6.2
 	github.com/roadrunner-server/config/v4 v4.6.6
 	github.com/roadrunner-server/endure/v2 v2.4.3
-	github.com/roadrunner-server/errors v1.3.0
+	github.com/roadrunner-server/errors v1.4.0
 	github.com/roadrunner-server/fileserver/v4 v4.1.14
 	github.com/roadrunner-server/goridge/v3 v3.8.1
 	github.com/roadrunner-server/grpc/v4 v4.6.4
@@ -41,14 +41,14 @@ require (
 	github.com/roadrunner-server/redis/v4 v4.2.15
 	github.com/roadrunner-server/resetter/v4 v4.0.20
 	github.com/roadrunner-server/rpc/v4 v4.2.14
-	github.com/roadrunner-server/sdk/v4 v4.5.6
+	github.com/roadrunner-server/sdk/v4 v4.6.0
 	github.com/roadrunner-server/send/v4 v4.2.14
 	github.com/roadrunner-server/server/v4 v4.5.6
 	github.com/roadrunner-server/service/v4 v4.5.2
 	github.com/roadrunner-server/sqs/v4 v4.6.1
 	github.com/roadrunner-server/static/v4 v4.1.14
 	github.com/roadrunner-server/status/v4 v4.4.12
-	github.com/roadrunner-server/tcp/v4 v4.3.11
+	github.com/roadrunner-server/tcp/v4 v4.3.12
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
@@ -104,7 +104,7 @@ require (
 	github.com/golang/mock v1.7.0-rc.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/pprof v0.0.0-20240117000934-35fc243c5815 // indirect
-	github.com/google/uuid v1.5.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.0 // indirect
@@ -165,7 +165,7 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
-	github.com/yusufpapurcu/wmi v1.2.3 // indirect
+	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	github.com/zeebo/blake3 v0.2.3 // indirect
 	go.etcd.io/bbolt v1.3.8 // indirect
 	go.opentelemetry.io/contrib/instrumentation/github.com/bradfitz/gomemcache/memcache/otelmemcache v0.43.0 // indirect
