@@ -180,8 +180,8 @@ github.com/google/pprof v0.0.0-20240117000934-35fc243c5815/go.mod h1:czg5+yv1E0Z
 github.com/google/uuid v1.0.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/google/uuid v1.1.2/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/google/uuid v1.5.0 h1:1p67kYwdtXjb0gL0BPiP1Av9wiZPo5A8z2cWkTZ+eyU=
-github.com/google/uuid v1.5.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
+github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/grpc-ecosystem/go-grpc-middleware v1.3.0/go.mod h1:z0ButlSOZa5vEBq9m2m2hlwIgKw+rp3sdCBRoJY+30Y=
 github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 h1:UH//fgunKIs4JdUbpDl1VZCDaL56wXCB/5+wF6uHfaI=
 github.com/grpc-ecosystem/go-grpc-middleware v1.4.0/go.mod h1:g5qyo/la0ALbONm6Vbp88Yd8NsDy6rZz+RcrMPxvld8=
@@ -334,8 +334,8 @@ github.com/roadrunner-server/config/v4 v4.6.6 h1:xH84PLvxLSOhvL3PhXr2g/QqXs4mAHl
 github.com/roadrunner-server/config/v4 v4.6.6/go.mod h1:CgAtmCsxGkMM+lGkp3R9QVbBpSeJvLBuDKXPqN2o4hE=
 github.com/roadrunner-server/endure/v2 v2.4.3 h1:R9DdsLiLjtSFivZ1HKk/1eDZ0TYaKHQzakVwz9D2hto=
 github.com/roadrunner-server/endure/v2 v2.4.3/go.mod h1:4n3PdwZ3h/IRL2enDGvEVXtaQgqRnZ74VOyZtOJq528=
-github.com/roadrunner-server/errors v1.3.0 h1:kLVXpXne0jMReN7pj8KIhyYyjqKjsPC5DRGqMsd4/Fo=
-github.com/roadrunner-server/errors v1.3.0/go.mod h1:XYVuhXvxi3yQaP/zCLB6QRZ0JvQIRaBa0SKFHL4WLKg=
+github.com/roadrunner-server/errors v1.4.0 h1:Odjg3VZrj1q5Y8ILwoN+JgERyv0pkhrWPNOM4h68iQ8=
+github.com/roadrunner-server/errors v1.4.0/go.mod h1:78PvraAFj+Sxy5nDmo0S+h6rEMLFIDszWZxA3B0sPAs=
 github.com/roadrunner-server/fileserver/v4 v4.1.14 h1:JIdccn+NgwL0ydiEnw5m10Lj10XYwYK0NsGsSfTmDic=
 github.com/roadrunner-server/fileserver/v4 v4.1.14/go.mod h1:ofbDOkMs21d6e/k+WSusfZu+r0Pi03uUBSGJV9FAGe0=
 github.com/roadrunner-server/goridge/v3 v3.8.1 h1:mdS5lDKQwPuVJ2jwW7l5cngJNJiie7xEGwpgw7a6CuQ=
@@ -378,10 +378,10 @@ github.com/roadrunner-server/redis/v4 v4.2.15 h1:wUCKPet17tF27lUhW7cfs5sn5Ow+d48
 github.com/roadrunner-server/redis/v4 v4.2.15/go.mod h1:xDlwTlPT5PHtaeUQV3Eec8aQOfq9NBO01bEndlQSGBM=
 github.com/roadrunner-server/resetter/v4 v4.0.20 h1:A+8CtjkP+5M6cAWravSd0gc0fKQpEDa6DQTzGIW5rDQ=
 github.com/roadrunner-server/resetter/v4 v4.0.20/go.mod h1:yF+Ys7c97wONQOVDHsZh5YfXoHeHUqrCnHquekm57fM=
-github.com/roadrunner-server/rpc/v4 v4.2.14 h1:mbuXHP9A1aK83kAYcVvtAW5d5yAi+hDyrak4M9jCt0w=
-github.com/roadrunner-server/rpc/v4 v4.2.14/go.mod h1:I0bC3C80kezMzfikv/ut8qTCM+SIUXE7QRSsYw1TDS8=
-github.com/roadrunner-server/sdk/v4 v4.5.6 h1:vfEYV0bHf/6Wi4qwLlNiwj5O239xpPKIc7Ho2kIcb3Q=
-github.com/roadrunner-server/sdk/v4 v4.5.6/go.mod h1:M21tpBfCk3NEH2ixa/Fs80d7KGPVP9zwLrZhc/goi1Y=
+github.com/roadrunner-server/rpc/v4 v4.2.15 h1:cGKsF2tYqe8k+oRM3aWsbddpihY1vhjd9n6/w6AqEqA=
+github.com/roadrunner-server/rpc/v4 v4.2.15/go.mod h1:Hxduua91f9pAkMzoJzG+a5Ep3azHeBsp2I842A6X+mQ=
+github.com/roadrunner-server/sdk/v4 v4.6.0 h1:dXMN7V8+VKjQAZamhKBizPGSqrpfAfVG6r4OCF66hNY=
+github.com/roadrunner-server/sdk/v4 v4.6.0/go.mod h1:YzRn2S947MqcnBcOuwu04CpAhsQGf6JBf+xY+njqu5o=
 github.com/roadrunner-server/send/v4 v4.2.14 h1:AreNZrof7dYEA/yHhYe/DgHJKLihxpC0S40wWy01//0=
 github.com/roadrunner-server/send/v4 v4.2.14/go.mod h1:U4huKYoySCy3KEJMW/SO2TSN301iAgJfYGFsl4nZYv4=
 github.com/roadrunner-server/server/v4 v4.5.6 h1:7JIVNaYUNhcJER0atVL3pgHcKjM8h5vxymXwTi6TCg0=
@@ -478,8 +478,8 @@ github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9de
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.1/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
-github.com/yusufpapurcu/wmi v1.2.3 h1:E1ctvB7uKFMOJw3fdOW32DwGE9I7t++CRUEMKvFoFiw=
-github.com/yusufpapurcu/wmi v1.2.3/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
+github.com/yusufpapurcu/wmi v1.2.4 h1:zFUKzehAFReQwLys1b/iSMl+JQGSCSjtVqQn9bBrPo0=
+github.com/yusufpapurcu/wmi v1.2.4/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
 github.com/zeebo/assert v1.1.0/go.mod h1:Pq9JiuJQpG8JLJdtkwrJESF0Foym2/D9XMU5ciN/wJ0=
 github.com/zeebo/assert v1.3.1 h1:vukIABvugfNMZMQO1ABsyQDJDTVQbn+LWSMy1ol1h6A=
 github.com/zeebo/assert v1.3.1/go.mod h1:Pq9JiuJQpG8JLJdtkwrJESF0Foym2/D9XMU5ciN/wJ0=
