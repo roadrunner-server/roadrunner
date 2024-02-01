@@ -18,7 +18,7 @@ require (
 	github.com/roadrunner-server/centrifuge/v4 v4.6.2
 	github.com/roadrunner-server/config/v4 v4.6.6
 	github.com/roadrunner-server/endure/v2 v2.4.3
-	github.com/roadrunner-server/errors v1.3.0
+	github.com/roadrunner-server/errors v1.4.0
 	github.com/roadrunner-server/fileserver/v4 v4.1.14
 	github.com/roadrunner-server/goridge/v3 v3.8.1
 	github.com/roadrunner-server/grpc/v4 v4.6.4
@@ -38,7 +38,7 @@ require (
 	github.com/roadrunner-server/otel/v4 v4.3.11
 	github.com/roadrunner-server/prometheus/v4 v4.1.14
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.14
-	github.com/roadrunner-server/redis/v4 v4.2.15
+	github.com/roadrunner-server/redis/v4 v4.2.16
 	github.com/roadrunner-server/resetter/v4 v4.0.20
 	github.com/roadrunner-server/rpc/v4 v4.2.14
 	github.com/roadrunner-server/sdk/v4 v4.5.6
@@ -172,15 +172,15 @@ require (
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.46.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.46.1 // indirect
 	go.opentelemetry.io/contrib/propagators/jaeger v1.21.1 // indirect
-	go.opentelemetry.io/otel v1.21.0 // indirect
+	go.opentelemetry.io/otel v1.22.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.21.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.21.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.21.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.21.0 // indirect
 	go.opentelemetry.io/otel/exporters/zipkin v1.21.0 // indirect
-	go.opentelemetry.io/otel/metric v1.21.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.21.0 // indirect
-	go.opentelemetry.io/otel/trace v1.21.0 // indirect
+	go.opentelemetry.io/otel/metric v1.22.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.22.0 // indirect
+	go.opentelemetry.io/otel/trace v1.22.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.1.0 // indirect
 	go.temporal.io/api v1.26.0 // indirect
 	go.temporal.io/sdk v1.25.1 // indirect
