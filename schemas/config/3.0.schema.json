@@ -2274,6 +2274,12 @@
                     "minimum": 0,
                     "default": 0
                 },
+                "max_queue_size": {
+                    "description": "[2023.3.10]. Maximum size of the internal requests queue. After reaching the limit, all additional requests would be rejected with error.",
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 0
+                },
                 "allocate_timeout": {
                     "description": "Timeout for worker allocation. Zero means the default limit - 60s",
                     "$ref": "#/definitions/Duration",
