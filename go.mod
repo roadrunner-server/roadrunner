@@ -18,7 +18,7 @@ require (
 	github.com/roadrunner-server/centrifuge/v4 v4.6.2
 	github.com/roadrunner-server/config/v4 v4.6.6
 	github.com/roadrunner-server/endure/v2 v2.4.3
-	github.com/roadrunner-server/errors v1.3.0
+	github.com/roadrunner-server/errors v1.4.0
 	github.com/roadrunner-server/fileserver/v4 v4.1.14
 	github.com/roadrunner-server/goridge/v3 v3.8.1
 	github.com/roadrunner-server/grpc/v4 v4.6.4
@@ -39,7 +39,7 @@ require (
 	github.com/roadrunner-server/prometheus/v4 v4.1.14
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.14
 	github.com/roadrunner-server/redis/v4 v4.2.15
-	github.com/roadrunner-server/resetter/v4 v4.0.20
+	github.com/roadrunner-server/resetter/v4 v4.0.21
 	github.com/roadrunner-server/rpc/v4 v4.2.14
 	github.com/roadrunner-server/sdk/v4 v4.5.6
 	github.com/roadrunner-server/send/v4 v4.2.14
