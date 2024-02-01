@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.10 🚀 </center>
+
+### Core `SDK` bugfixes:
+
+- 🐛️ Request queue gets too large, [BUG/FR](https://github.com/roadrunner-server/roadrunner/issues/1841), [Docs](https://docs.roadrunner.dev/php-worker/pool) (thanks, @L3tum)
+- 🐛️ Huge memory allocation in the debug mode [FIX](https://github.com/roadrunner-server/sdk/pull/110).
+- 🐛️ Stop handler (`worker->stop()`) was returned (breaking change fix) [FIX](https://github.com/roadrunner-server/sdk/pull/109), (thanks @Zylius)
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: update project/system dependencies.
+
+---
+
 # <center> 🚀 v2023.3.9 🚀 </center>
 
 ### `HTTP` plugin
