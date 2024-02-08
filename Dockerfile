@@ -18,7 +18,7 @@ ENV LDFLAGS="-s \
 # compile binary file
 RUN set -x
 RUN go mod download
-RUN go mod tidy -go 1.21
+RUN go mod tidy -go 1.22
 RUN CGO_ENABLED=0 go build -pgo=roadrunner.pprof -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr
 RUN ./rr -v
 
