@@ -39,7 +39,7 @@ jobs:
           go-version: stable
 
       - name: Run linter
-        uses: golangci/golangci-lint-action@v3.7.0
+        uses: golangci/golangci-lint-action@v4.0.0
         with:
           version: v1.54 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
