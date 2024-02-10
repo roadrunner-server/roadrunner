@@ -41,7 +41,7 @@ It supports running as a service with the ability to extend its functionality on
 <p align="center">
 	<a href="https://roadrunner.dev/"><b>Official Website</b></a> |
 	<a href="https://docs.roadrunner.dev/"><b>Documentation</b></a> |
-    <a href="https://forum.roadrunner.dev"><b>Forum</b></a> |
+    <a href="https://github.com/orgs/roadrunner-server/discussions"><b>Forum</b></a> |
     <a href="https://github.com/orgs/roadrunner-server/projects/4"><b>Release schedule</b></a>
 </p>
 
@@ -121,7 +121,7 @@ logs:
   level: error
 ```
 
-> Read more in [Documentation](https://roadrunner.dev/docs).
+> Read more in [Documentation](https://docs.roadrunner.dev).
 
 Example Worker:
 --------
@@ -157,7 +157,7 @@ while ($req = $worker->waitRequest()) {
 
 ---
 
-### Available Plugins: [link](https://roadrunner.dev/docs)
+### Available Plugins: [link](https://docs.roadrunner.dev)
 
 Run:
 ----
