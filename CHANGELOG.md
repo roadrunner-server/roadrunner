@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.11 🚀 </center>
+
+### `Centrifuge` plugin:
+- 🐛️ Check the connection propertly before attempting to send a request: [PR](https://github.com/roadrunner-server/centrifuge/pull/78)
+
+### `OTEL` plugin:
+- 🐛️ Do not force to set `endpoint` and `headers`: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1848). Update docs on OTEL env usage: [Docs](https://docs.roadrunner.dev/logging-and-observability/otel), (thanks @fasdalf and @arku31).
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭 **Dependencies**: Build with Go 1.22.0.
+
+---
+
 # <center> 🚀 v2023.3.10 🚀 </center>
 
 ### Core `SDK` bugfixes:

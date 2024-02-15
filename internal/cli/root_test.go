@@ -78,7 +78,7 @@ func TestCommandSimpleExecuting(t *testing.T) {
 	var executed bool
 
 	if cmd.Run == nil { // override "Run" property for test (if it was not set)
-		cmd.Run = func(cmd *cobra.Command, args []string) {
+		cmd.Run = func(_ *cobra.Command, _ []string) {
 			executed = true
 		}
 	}
@@ -94,7 +94,7 @@ func TestCommandNoEnvFileError(t *testing.T) {
 	var executed bool
 
 	if cmd.Run == nil { // override "Run" property for test (if it was not set)
-		cmd.Run = func(cmd *cobra.Command, args []string) {
+		cmd.Run = func(_ *cobra.Command, _ []string) {
 			executed = true
 		}
 	}
@@ -122,7 +122,7 @@ func TestCommandNoEnvFileNoError(t *testing.T) {
 	}()
 
 	if cmd.Run == nil { // override "Run" property for test (if it was not set)
-		cmd.Run = func(cmd *cobra.Command, args []string) {
+		cmd.Run = func(_ *cobra.Command, _ []string) {
 			executed = true
 		}
 	}
@@ -150,7 +150,7 @@ func TestCommandWorkingDir(t *testing.T) {
 	require.NoError(t, err)
 
 	if cmd.Run == nil { // override "Run" property for test (if it was not set)
-		cmd.Run = func(cmd *cobra.Command, args []string) {
+		cmd.Run = func(_ *cobra.Command, _ []string) {
 			executed = true
 			wd, _ = os.Getwd()
 		}
