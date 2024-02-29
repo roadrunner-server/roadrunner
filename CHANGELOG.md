@@ -1,5 +1,20 @@
 # CHANGELOG
 
+# <center> 🚀 v2023.3.12 🚀 </center>
+
+### `Centrifuge` plugin:
+- 🔥 Add support for the `NotifyChannelState` centrifuge API.
+
+### `Temporal` plugin:
+- 🔥 Add support for the [Updates API](https://docs.temporal.io/dev-guide/go/features#updates).
+- 🔥 Add support for the healthchecks: [FR](https://github.com/roadrunner-server/roadrunner/issues/1872), (thanks @shanginn).
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭: All `since` log entries are now always shown as milliseconds, [FR](https://github.com/roadrunner-server/roadrunner/issues/1858), (thanks @dmitryuk).
+
+---
+
 # <center> 🚀 v2023.3.11 🚀 </center>
 
 ### `Centrifuge` plugin:
