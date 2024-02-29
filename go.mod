@@ -11,10 +11,10 @@ require (
 	github.com/roadrunner-server/amqp/v4 v4.9.14
 	github.com/roadrunner-server/api/v4 v4.11.1
 	github.com/roadrunner-server/app-logger/v4 v4.2.13
-	github.com/roadrunner-server/beanstalk/v4 v4.6.6
+	github.com/roadrunner-server/beanstalk/v4 v4.6.7
 	github.com/roadrunner-server/boltdb/v4 v4.7.15
 	github.com/roadrunner-server/centrifuge/v4 v4.7.1
-	github.com/roadrunner-server/config/v4 v4.6.8
+	github.com/roadrunner-server/config/v4 v4.6.9
 	github.com/roadrunner-server/endure/v2 v2.4.3
 	github.com/roadrunner-server/errors v1.4.0
 	github.com/roadrunner-server/fileserver/v4 v4.1.16
@@ -25,23 +25,23 @@ require (
 	github.com/roadrunner-server/http/v4 v4.5.2
 	github.com/roadrunner-server/informer/v4 v4.3.16
 	github.com/roadrunner-server/jobs/v4 v4.7.14
-	github.com/roadrunner-server/kafka/v4 v4.4.17
-	github.com/roadrunner-server/kv/v4 v4.4.15
+	github.com/roadrunner-server/kafka/v4 v4.4.18
+	github.com/roadrunner-server/kv/v4 v4.4.16
 	github.com/roadrunner-server/lock/v4 v4.5.13
 	github.com/roadrunner-server/logger/v4 v4.2.16
 	github.com/roadrunner-server/memcached/v4 v4.3.15
 	github.com/roadrunner-server/memory/v4 v4.6.16
-	github.com/roadrunner-server/metrics/v4 v4.1.17
-	github.com/roadrunner-server/nats/v4 v4.6.8
-	github.com/roadrunner-server/otel/v4 v4.3.14
+	github.com/roadrunner-server/metrics/v4 v4.1.18
+	github.com/roadrunner-server/nats/v4 v4.6.9
+	github.com/roadrunner-server/otel/v4 v4.3.15
 	github.com/roadrunner-server/prometheus/v4 v4.1.17
 	github.com/roadrunner-server/proxy_ip_parser/v4 v4.1.16
 	github.com/roadrunner-server/redis/v4 v4.2.18
-	github.com/roadrunner-server/resetter/v4 v4.1.1
+	github.com/roadrunner-server/resetter/v4 v4.1.2
 	github.com/roadrunner-server/rpc/v4 v4.2.17
 	github.com/roadrunner-server/sdk/v4 v4.6.0
 	github.com/roadrunner-server/send/v4 v4.2.16
-	github.com/roadrunner-server/server/v4 v4.5.8
+	github.com/roadrunner-server/server/v4 v4.5.9
 	github.com/roadrunner-server/service/v4 v4.5.5
 	github.com/roadrunner-server/sqs/v4 v4.6.3
 	github.com/roadrunner-server/static/v4 v4.1.17
