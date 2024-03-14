@@ -449,8 +449,8 @@ github.com/twmb/murmur3 v1.1.5/go.mod h1:Qq/R7NUyOfr65zD+6Q5IHKsJLwP7exErjN6lyyq
 github.com/twmb/murmur3 v1.1.8 h1:8Yt9taO/WN3l08xErzjeschgZU2QSrwm1kclYq+0aRg=
 github.com/twmb/murmur3 v1.1.8/go.mod h1:Qq/R7NUyOfr65zD+6Q5IHKsJLwP7exErjN6lyyq3OSQ=
 github.com/uber-go/tally/v4 v4.1.1/go.mod h1:aXeSTDMl4tNosyf6rdU8jlgScHyjEGGtfJ/uwCIf/vM=
-github.com/uber-go/tally/v4 v4.1.12 h1:SdOe+x8aLNZxsxhuAiKW8eB9ha9BkByxYHVR6nIejLQ=
-github.com/uber-go/tally/v4 v4.1.12/go.mod h1:RW5DgqsyEPs0lA4b0YNf4zKj7DveKHd73hnO6zVlyW0=
+github.com/uber-go/tally/v4 v4.1.10 h1:2GSX7Tmq26wjAvOtQEc5EvRROIkX2OX4vpROt6mlRLM=
+github.com/uber-go/tally/v4 v4.1.10/go.mod h1:pPR56rjthjtLB8xQlEx2I1VwAwRGCh/i4xMUcmG+6z4=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/fasthttp v1.52.0 h1:wqBQpxH71XW0e2g+Og4dzQM8pk34aFYlA1Ga8db7gU0=

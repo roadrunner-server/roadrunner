@@ -58,6 +58,7 @@ exclude (
 	github.com/spf13/viper v1.18.0
 	github.com/spf13/viper v1.18.1
 	github.com/uber-go/tally/v4 v4.1.11
+	github.com/uber-go/tally/v4 v4.1.12
 	go.temporal.io/api v1.26.1
 )
 
@@ -155,7 +156,7 @@ require (
 	github.com/twmb/franz-go v1.16.1 // indirect
 	github.com/twmb/franz-go/pkg/kmsg v1.7.0 // indirect
 	github.com/twmb/murmur3 v1.1.8 // indirect
-	github.com/uber-go/tally/v4 v4.1.12 // indirect
+	github.com/uber-go/tally/v4 v4.1.10 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.52.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
