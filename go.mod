@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v4 v4.9.14
-	github.com/roadrunner-server/api/v4 v4.11.1
+	github.com/roadrunner-server/api/v4 v4.12.0
 	github.com/roadrunner-server/app-logger/v4 v4.2.13
 	github.com/roadrunner-server/beanstalk/v4 v4.6.7
 	github.com/roadrunner-server/boltdb/v4 v4.7.15
@@ -179,7 +179,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.24.0 // indirect
 	go.opentelemetry.io/otel/trace v1.24.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.1.0 // indirect
-	go.temporal.io/api v1.30.0 // indirect
+	go.temporal.io/api v1.30.1 // indirect
 	go.temporal.io/sdk v1.26.0 // indirect
 	go.temporal.io/sdk/contrib/opentelemetry v0.4.0 // indirect
 	go.temporal.io/sdk/contrib/tally v0.2.0 // indirect
@@ -197,8 +197,8 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	golang.org/x/tools v0.19.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240318140521-94a12d6c2237 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240318140521-94a12d6c2237 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240325203815-454cdb8f5daa // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240325203815-454cdb8f5daa // indirect
 	google.golang.org/grpc v1.62.1 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
