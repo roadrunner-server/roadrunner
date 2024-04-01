@@ -2,22 +2,16 @@
 
 run:
   timeout: 1m
-  skip-dirs:
-    - .github
-    - .git
   allow-parallel-runners: true
-  skip-files:
-    # staticcheck internal file
-    - internal/debug/server_test.go
 
 output:
-  format: colored-line-number
+  formats: colored-line-number
 
 linters-settings:
   wsl:
     allow-assign-and-anything: true
   govet:
-    check-shadowing: true
+    shadow: true
   golint:
     min-confidence: 0.1
   godot:
@@ -79,6 +73,12 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - wsl # Whitespace Linter - Forces you to use empty lines!
 
 issues:
+  exclude-files:
+    # staticcheck internal file
+    - internal/debug/server_test.go
+  skip-dirs:
+    - .github
+    - .git
   exclude-rules:
     - path: _test\.go
       linters:
