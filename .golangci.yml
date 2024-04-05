@@ -5,15 +5,12 @@ run:
   allow-parallel-runners: true
 
 output:
-  formats: colored-line-number
+  formats:
+    - format: colored-line-number
 
 linters-settings:
   wsl:
     allow-assign-and-anything: true
-  govet:
-    shadow: true
-  golint:
-    min-confidence: 0.1
   godot:
     scope: declarations
     capital: true
@@ -31,7 +28,6 @@ linters-settings:
     range-loops: true
     for-loops: true
   nolintlint:
-    allow-leading-space: false
     require-specific: true
 
 linters: # All available linters list: <https://golangci-lint.run/usage/linters/>
@@ -76,7 +72,7 @@ issues:
   exclude-files:
     # staticcheck internal file
     - internal/debug/server_test.go
-  skip-dirs:
+  exclude-dirs:
     - .github
     - .git
   exclude-rules:
