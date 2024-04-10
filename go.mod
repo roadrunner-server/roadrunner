@@ -1,7 +1,6 @@
 module github.com/roadrunner-server/roadrunner/v2023
 
 go 1.22.1
-
 require (
 	github.com/buger/goterm v1.0.4
 	github.com/dustin/go-humanize v1.0.1
@@ -18,7 +17,7 @@ require (
 	github.com/roadrunner-server/endure/v2 v2.4.4
 	github.com/roadrunner-server/errors v1.4.0
 	github.com/roadrunner-server/fileserver/v4 v4.1.17
-	github.com/roadrunner-server/goridge/v3 v3.8.1
+	github.com/roadrunner-server/goridge/v3 v3.8.2
 	github.com/roadrunner-server/grpc/v4 v4.6.7
 	github.com/roadrunner-server/gzip/v4 v4.1.17
 	github.com/roadrunner-server/headers/v4 v4.2.18
