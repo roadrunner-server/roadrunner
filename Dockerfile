@@ -12,8 +12,8 @@ WORKDIR /src
 
 # arguments to pass on each go tool link invocation
 ENV LDFLAGS="-s \
--X github.com/roadrunner-server/roadrunner/v2023/internal/meta.version=$APP_VERSION \
--X github.com/roadrunner-server/roadrunner/v2023/internal/meta.buildTime=$BUILD_TIME"
+-X github.com/roadrunner-server/roadrunner/v2024/internal/meta.version=$APP_VERSION \
+-X github.com/roadrunner-server/roadrunner/v2024/internal/meta.buildTime=$BUILD_TIME"
 
 # compile binary file
 RUN set -x
