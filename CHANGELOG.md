@@ -12,9 +12,3 @@
 
 ### `SDK`:
 - 🔥 Use a small random jitter to prevent the [Thundering herd problem](https://en.wikipedia.org/wiki/Thundering_herd_problem) when user uses `max_jobs` option and all the workers restarted at the same time. This feature is enabled automatically. (thanks @Kaspiman)
-
-### <center>🧹Chore:</center>
-
-- 🧑‍🏭: All `since` log entries are now always shown as milliseconds, [FR](https://github.com/roadrunner-server/roadrunner/issues/1858), (thanks @dmitryuk).
-
----
