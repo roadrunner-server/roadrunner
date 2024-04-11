@@ -3,7 +3,7 @@ package jobs_test
 import (
 	"testing"
 
-	"github.com/roadrunner-server/roadrunner/v2023/internal/cli/jobs"
+	"github.com/roadrunner-server/roadrunner/v2024/internal/cli/jobs"
 	"github.com/stretchr/testify/assert"
 )
 

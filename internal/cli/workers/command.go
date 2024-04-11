@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/roadrunner-server/api/v4/plugins/v1/jobs"
-	internalRpc "github.com/roadrunner-server/roadrunner/v2023/internal/rpc"
+	internalRpc "github.com/roadrunner-server/roadrunner/v2024/internal/rpc"
 
 	tm "github.com/buger/goterm"
 	"github.com/fatih/color"
@@ -43,7 +43,7 @@ func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:f
 
 			defer func() { _ = client.Close() }()
 
-			plugins := args        // by default we expect plugins list from user
+			plugins := args        // by default, we expect a plugin list from user
 			if len(plugins) == 0 { // but if nothing was passed - request all informers list
 				if err = client.Call(informerList, true, &plugins); err != nil {
 					return err

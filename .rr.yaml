@@ -75,11 +75,6 @@ server:
   # Default: "pipes"
   relay: pipes
 
-  # Timeout for relay connection establishing (only for socket and TCP port relay).
-  #
-  # Default: 60s
-  relay_timeout: 60s
-
 # Logging settings (docs: https://roadrunner.dev/docs/plugins-logger/2.x/en)
 logs:
   # Logging mode can be "development", "production" or "raw". Do not forget to change this value for production environment.
@@ -1226,11 +1221,40 @@ kafka:
   # Required to use Kafka driver
   brokers: ["127.0.0.1:9092", "127.0.0.1:9002"]
 
+  # SSL/TLS configuration
+  #
+  # Optional, default: empty
+  tls:
+    # Secure connection timeout
+    #
+    # Examples: "2s", "5m"
+    # Optional, default: "10s"
+    timeout: "10s"
+
+    # Path to the key file
+    #
+    # This option is required
+    key: ""
+
+    # Path to the certificate
+    #
+    # This option is required
+    cert: ""
+
+    # Path to the CA certificate, defines the set of root certificate authorities that servers use if required to verify a client certificate. Used with the `client_auth_type` option.
+    #
+    # This option is optional
+    root_ca: ""
+
+    # Client auth type.
+    #
+    # This option is optional. Default value: no_client_certs. Possible values: request_client_cert, require_any_client_cert, verify_client_cert_if_given, require_and_verify_client_cert, no_client_certs
+    client_auth_type: no_client_certs
+
   # SASL authentication options to use for all connections. Depending on the auth type, plain/SCRAM or aws_msk_plain sections should be removed.
   #
   # Optional, default: empty
   sasl:
-
     # ----------- 1. PLAIN and SCRAM auth section ---------------
 
     # Mechanism used for the authentication
