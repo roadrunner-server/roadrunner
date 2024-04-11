@@ -3,7 +3,7 @@ package reset_test
 import (
 	"testing"
 
-	"github.com/roadrunner-server/roadrunner/v2023/internal/cli/reset"
+	"github.com/roadrunner-server/roadrunner/v2024/internal/cli/reset"
 
 	"github.com/stretchr/testify/assert"
 )

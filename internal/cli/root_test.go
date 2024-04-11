@@ -5,7 +5,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/roadrunner-server/roadrunner/v2023/internal/cli"
+	"github.com/roadrunner-server/roadrunner/v2024/internal/cli"
 	"github.com/stretchr/testify/require"
 
 	"github.com/spf13/cobra"

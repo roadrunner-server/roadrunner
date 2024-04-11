@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/roadrunner-server/config/v4"
-	"github.com/roadrunner-server/roadrunner/v2023/container"
+	"github.com/roadrunner-server/roadrunner/v2024/container"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -174,11 +174,6 @@
                         "tcp://127.0.0.1:6002",
                         "unix:///var/run/rr.sock"
                     ]
-                },
-                "relay_timeout": {
-                    "description": "Timeout for relay connection establishing (only for socket and TCP port relay)",
-                    "$ref": "#/definitions/Duration",
-                    "default": "60s"
                 }
             },
             "required": [
@@ -2486,6 +2481,39 @@
                             "127.0.0.1:9092",
                             "127.0.0.1:9002"
                         ]
+                    }
+                },
+                "tls": {
+                    "description": "Kafka TLS configuration",
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "description": "Path to the key file",
+                            "type": "string",
+                            "default": null
+                        },
+                        "cert": {
+                            "description": "Path to the certificate",
+                            "type": "string",
+                            "default": null
+                        },
+                        "root_ca": {
+                            "description": "Path to the CA certificate",
+                            "type": "string",
+                            "default": null
+                        },
+                        "client_auth_type": {
+                            "description": "Client auth type",
+                            "type": "string",
+                            "default": "no_client_certs",
+                            "enum": [
+                                "request_client_cert",
+                                "require_any_client_cert",
+                                "verify_client_cert_if_given",
+                                "no_client_certs",
+                                "require_and_verify_client_cert"
+                            ]
+                        }
                     }
                 },
                 "sasl": {
