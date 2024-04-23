@@ -22,7 +22,7 @@ require (
 	github.com/roadrunner-server/grpc/v4 v4.8.0
 	github.com/roadrunner-server/gzip/v4 v4.3.0
 	github.com/roadrunner-server/headers/v4 v4.4.0
-	github.com/roadrunner-server/http/v4 v4.7.0
+	github.com/roadrunner-server/http/v4 v4.7.1
 	github.com/roadrunner-server/informer/v4 v4.5.0
 	github.com/roadrunner-server/jobs/v4 v4.9.0
 	github.com/roadrunner-server/kafka/v4 v4.6.0
@@ -100,7 +100,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.4 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/mock v1.7.0-rc.1 // indirect
-	github.com/google/pprof v0.0.0-20240409012703-83162a5b38cd // indirect
+	github.com/google/pprof v0.0.0-20240416155748-26353dc0451f // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect
@@ -188,7 +188,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
-	golang.org/x/exp v0.0.0-20240409090435-93d18d7e34b8 // indirect
+	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
 	golang.org/x/mod v0.17.0 // indirect
 	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
