@@ -3,7 +3,7 @@
 # 🚀 v2024.1.1 🚀
 
 ### `HTTP` plugin:
-- 🐛Bug: Fix for the NPE on types check: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1903), (thanks @cto-asocial)
+- 🐛 Bug: Fix for the NPE on types check: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1903), (thanks @cto-asocial)
 
 ### `gRPC` plugin:
 - 🔥 Remove experimental status from the OTEL in `gRPC`, [PR](https://github.com/roadrunner-server/grpc/pull/133)
