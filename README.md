@@ -101,6 +101,11 @@ curl --proto '=https' --tlsv1.2 -sSf  https://raw.githubusercontent.com/roadrunn
 brew install roadrunner
 ```
 
+## Windows using [Chocolatey](https://community.chocolatey.org/):
+```bash
+choco install roadrunner
+```
+
 ---
 
 Configuration can be located in `.rr.yaml` file ([full sample](https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml)):
