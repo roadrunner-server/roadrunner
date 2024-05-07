@@ -54,8 +54,6 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - ineffassign # Detects when assignments to existing variables are not used
     - misspell # Finds commonly misspelled English words in comments
     - nakedret # Finds naked returns in functions greater than a specified function length
-    - nestif # Reports deeply nested if statements
-    - nlreturn # checks for a new line before return and branch statements to increase code clarity
     - noctx # finds sending http request without context.Context
     - nolintlint # Reports ill-formed or insufficient nolint directives
     - prealloc # Finds slice declarations that could potentially be preallocated
@@ -66,7 +64,6 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - unparam # Reports unused function parameters
     - unused # Checks Go code for unused constants, variables, functions and types
     - whitespace # Tool for detection of leading and trailing whitespace
-    - wsl # Whitespace Linter - Forces you to use empty lines!
 
 issues:
   exclude-files:
