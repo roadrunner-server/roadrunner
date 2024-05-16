@@ -11,10 +11,10 @@ require (
 	github.com/roadrunner-server/amqp/v4 v4.11.2
 	github.com/roadrunner-server/api/v4 v4.12.0
 	github.com/roadrunner-server/app-logger/v4 v4.4.2
-	github.com/roadrunner-server/beanstalk/v4 v4.8.1
+	github.com/roadrunner-server/beanstalk/v4 v4.8.2
 	github.com/roadrunner-server/boltdb/v4 v4.9.2
 	github.com/roadrunner-server/centrifuge/v4 v4.9.1
-	github.com/roadrunner-server/config/v4 v4.8.1
+	github.com/roadrunner-server/config/v4 v4.8.2
 	github.com/roadrunner-server/endure/v2 v2.4.4
 	github.com/roadrunner-server/errors v1.4.0
 	github.com/roadrunner-server/fileserver/v4 v4.3.2
@@ -25,8 +25,8 @@ require (
 	github.com/roadrunner-server/http/v4 v4.7.4
 	github.com/roadrunner-server/informer/v4 v4.5.1
 	github.com/roadrunner-server/jobs/v4 v4.9.2
-	github.com/roadrunner-server/kafka/v4 v4.6.1
-	github.com/roadrunner-server/kv/v4 v4.6.1
+	github.com/roadrunner-server/kafka/v4 v4.6.2
+	github.com/roadrunner-server/kv/v4 v4.6.2
 	github.com/roadrunner-server/lock/v4 v4.7.2
 	github.com/roadrunner-server/logger/v4 v4.4.2
 	github.com/roadrunner-server/memcached/v4 v4.5.2
@@ -35,14 +35,14 @@ require (
 	github.com/roadrunner-server/nats/v4 v4.8.2
 	github.com/roadrunner-server/otel/v4 v4.5.2
 	github.com/roadrunner-server/prometheus/v4 v4.3.2
-	github.com/roadrunner-server/proxy_ip_parser/v4 v4.3.1
-	github.com/roadrunner-server/redis/v4 v4.4.1
+	github.com/roadrunner-server/proxy_ip_parser/v4 v4.3.2
+	github.com/roadrunner-server/redis/v4 v4.4.2
 	github.com/roadrunner-server/resetter/v4 v4.3.2
 	github.com/roadrunner-server/rpc/v4 v4.4.2
 	github.com/roadrunner-server/sdk/v4 v4.7.2
 	github.com/roadrunner-server/send/v4 v4.4.1
-	github.com/roadrunner-server/server/v4 v4.8.1
-	github.com/roadrunner-server/service/v4 v4.7.1
+	github.com/roadrunner-server/server/v4 v4.8.2
+	github.com/roadrunner-server/service/v4 v4.7.2
 	github.com/roadrunner-server/sqs/v4 v4.8.1
 	github.com/roadrunner-server/static/v4 v4.3.2
 	github.com/roadrunner-server/status/v4 v4.6.2
