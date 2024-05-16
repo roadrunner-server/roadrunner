@@ -1,5 +1,21 @@
 # CHANGELOG
 
+# 🚀 v2024.1.2 🚀
+
+### Upcoming new JOBS driver: `google-pub-sub`:
+- 🔥: Currently in a polishing phase, the new plugin will be released as part of the `v2024.2.0`. Stay tuned! (thanks @cv65kr)
+
+### `gRPC` plugin:
+- 🐛: strip extra slashes when there is no package defined in the protofile: [PR](https://github.com/roadrunner-server/grpc/pull/134), (thanks @satdeveloping)
+
+### `OTEL` plugin:
+- 🐛: Fix hardcoded AlwaysSample samples: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1918), (thanks @bazilmarkov)
+
+### `RR core` plugin:
+- 🐛: RR `workers/reset` commands don't respect default config values: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1914), (thanks @r4m-alexd)
+
+---
+
 # 🚀 v2024.1.1 🚀
 
 ### `HTTP` plugin:
