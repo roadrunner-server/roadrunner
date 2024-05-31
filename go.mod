@@ -50,7 +50,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.9.0
-	github.com/temporalio/roadrunner-temporal/v4 v4.7.2
+	github.com/temporalio/roadrunner-temporal/v4 v4.8.0
 	go.uber.org/automaxprocs v1.5.3
 )
 
