@@ -10,7 +10,6 @@ import (
 )
 
 const (
-	rrPrefix string = "rr"
 	rrModule string = "github.com/roadrunner-server/roadrunner/v2024"
 )
 
@@ -30,7 +29,6 @@ func NewRR(cfgFile string, override []string, pluginList []any) (*RR, error) {
 
 	cfg := &configImpl.Plugin{
 		Path:    cfgFile,
-		Prefix:  rrPrefix,
 		Timeout: containerCfg.GracePeriod,
 		Flags:   override,
 		Version: getRRVersion(),
