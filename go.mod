@@ -14,7 +14,7 @@ require (
 	github.com/roadrunner-server/beanstalk/v4 v4.8.2
 	github.com/roadrunner-server/boltdb/v4 v4.9.2
 	github.com/roadrunner-server/centrifuge/v4 v4.9.2
-	github.com/roadrunner-server/config/v4 v4.8.2
+	github.com/roadrunner-server/config/v4 v4.9.0
 	github.com/roadrunner-server/endure/v2 v2.4.4
 	github.com/roadrunner-server/errors v1.4.0
 	github.com/roadrunner-server/fileserver/v4 v4.3.2
@@ -48,7 +48,7 @@ require (
 	github.com/roadrunner-server/status/v4 v4.6.2
 	github.com/roadrunner-server/tcp/v4 v4.5.2
 	github.com/spf13/cobra v1.8.0
-	github.com/spf13/viper v1.18.2
+	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
 	github.com/temporalio/roadrunner-temporal/v4 v4.8.0
 	go.uber.org/automaxprocs v1.5.3
