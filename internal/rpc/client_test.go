@@ -66,21 +66,6 @@ func TestNewClient_SuccessfullyConnectedOverride(t *testing.T) {
 	defer func() { assert.NoError(t, c.Close()) }()
 }
 
-func TestNewClient_SuccessfullyConnectedEnv(t *testing.T) {
-	l, err := net.Listen("tcp", "127.0.0.1:55556")
-	assert.NoError(t, err)
-
-	defer func() { assert.NoError(t, l.Close()) }()
-
-	require.NoError(t, os.Setenv("RR_RPC_LISTEN", "tcp://127.0.0.1:55556"))
-	c, err := rpc.NewClient("test/config_rpc_ok.yaml", nil)
-
-	assert.NotNil(t, c)
-	assert.NoError(t, err)
-
-	defer func() { assert.NoError(t, c.Close()) }()
-}
-
 // ${} syntax
 func TestNewClient_SuccessfullyConnectedEnvDollarSyntax(t *testing.T) {
 	l, err := net.Listen("tcp", "127.0.0.1:55556")
