@@ -39,7 +39,7 @@ require (
 	github.com/roadrunner-server/redis/v4 v4.4.2
 	github.com/roadrunner-server/resetter/v4 v4.3.2
 	github.com/roadrunner-server/rpc/v4 v4.4.2
-	github.com/roadrunner-server/sdk/v4 v4.7.2
+	github.com/roadrunner-server/sdk/v4 v4.7.3
 	github.com/roadrunner-server/send/v4 v4.4.2
 	github.com/roadrunner-server/server/v4 v4.8.2
 	github.com/roadrunner-server/service/v4 v4.7.2
@@ -134,7 +134,7 @@ require (
 	github.com/prometheus/common v0.54.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
-	github.com/quic-go/quic-go v0.44.0 // indirect
+	github.com/quic-go/quic-go v0.45.0 // indirect
 	github.com/rabbitmq/amqp091-go v1.10.0 // indirect
 	github.com/redis/go-redis/extra/rediscmd/v9 v9.0.5 // indirect
 	github.com/redis/go-redis/extra/redisotel/v9 v9.0.5 // indirect
