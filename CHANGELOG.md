@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 🚀 v2024.1.3 🚀
+
+
+---
+
 # 🚀 v2024.1.2 🚀
 
 ### Upcoming new JOBS driver: `google-pub-sub`:
