@@ -1,5 +1,31 @@
 # CHANGELOG
 
+# 🚀 v2024.1.3 🚀
+
+### `RR core`:
+- 🔥: Deprecate `RR_*` env variables prefix. This was an undocumented feature which caused confusion, because any configuration value might be automatically replaced (without using env in the configuration) with a matching `RR_*` environment variable, [PR](https://github.com/roadrunner-server/roadrunner/pull/1929).
+
+### `Temporal` plugin:
+- 🔥: Enable client certificate rotation: [FR](https://github.com/temporalio/roadrunner-temporal/issues/522). With this change you may replace certificate on a Live system. (thanks @benkelukas)
+- 🔥: Expose `continue_as_new_suggested` for the PHP Worker: [PR](https://github.com/temporalio/roadrunner-temporal/pull/520).
+
+### `Kafka`
+- 🐛: Reduce number of `maxPollRecords` from 10k to 100, [PR](https://github.com/roadrunner-server/kafka/commit/f7950cb538e6c670cfc50681e61eb939c591f27b).
+
+### `Endure` container:
+- 🐛: Fix incorrectly used error log message: [PR](https://github.com/roadrunner-server/endure/pull/175).
+
+### General:
+- 🔥: Update Go to `v1.22.4`.
+
+## RoadRunner PHP:
+
+### `Worker`:
+- 🔥: Add `RR_VERSION` env to the `Environment` class: [PR](https://github.com/roadrunner-php/worker/pull/37), (thanks @Kaspiman)
+
+
+---
+
 # 🚀 v2024.1.2 🚀
 
 ### Upcoming new JOBS driver: `google-pub-sub`:
