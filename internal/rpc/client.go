@@ -16,7 +16,6 @@ import (
 )
 
 const (
-	prefix string = "rr"
 	rpcKey string = "rpc.listen"
 	// default envs
 	envDefault = ":-"
@@ -26,8 +25,6 @@ const (
 // Client will be connected to the RPC.
 func NewClient(cfg string, flags []string) (*rpc.Client, error) {
 	v := viper.New()
-	v.AutomaticEnv()
-	v.SetEnvPrefix(prefix)
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	v.SetConfigFile(cfg)
 

@@ -16,11 +16,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	rrPrefix string = "rr"
-)
-
-// NewCommand creates `serve` command.
 func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental *bool) *cobra.Command { //nolint:funlen
 	return &cobra.Command{
 		Use:   "serve",
@@ -40,7 +35,6 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental 
 
 			cfg := &configImpl.Plugin{
 				Path:                 *cfgFile,
-				Prefix:               rrPrefix,
 				Timeout:              containerCfg.GracePeriod,
 				Flags:                *override,
 				Version:              meta.Version(),

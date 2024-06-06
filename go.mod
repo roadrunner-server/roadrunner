@@ -54,11 +54,11 @@ require (
 	go.uber.org/automaxprocs v1.5.3
 )
 
+replace github.com/uber-go/tally/v4 => github.com/uber-go/tally/v4 v4.1.10
+
 exclude (
 	github.com/spf13/viper v1.18.0
 	github.com/spf13/viper v1.18.1
-	github.com/uber-go/tally/v4 v4.1.11
-	github.com/uber-go/tally/v4 v4.1.12
 	go.temporal.io/api v1.26.1
 )
 
