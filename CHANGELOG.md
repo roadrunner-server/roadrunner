@@ -1,5 +1,13 @@
 # CHANGELOG
 
+# 🚀 v2024.1.4 🚀
+
+### `Temporal` plugin:
+- 🐛: Fix Local activities executed on the Workflow PHP Worker instead of the Activity PHP Worker: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1940). With this fix, LA performance should see a significant increase. (thanks @Zylius)
+
+
+---
+
 # 🚀 v2024.1.3 🚀
 
 ### `RR core`:
