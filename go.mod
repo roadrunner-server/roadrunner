@@ -47,7 +47,7 @@ require (
 	github.com/roadrunner-server/static/v4 v4.3.3
 	github.com/roadrunner-server/status/v4 v4.6.4
 	github.com/roadrunner-server/tcp/v4 v4.5.4
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
 	github.com/temporalio/roadrunner-temporal/v4 v4.9.0
