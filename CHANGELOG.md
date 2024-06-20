@@ -1,5 +1,18 @@
 # CHANGELOG
 
+# 🚀 v2024.1.5 🚀
+
+### `Status` plugin:
+- 🐛: Fix k8s-related problem, when status was not available during the graceful shutdown process: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1924). (thanks @cv65kr)
+
+### `JOBS` plugin:
+- 🔥: Experimentally added new handlers for the more canonical `ACK`, `NACK`, and `REQUEUE` operations for the `JOBS` drivers. PHP SDK will be updated soon. [FR](https://github.com/roadrunner-server/roadrunner/issues/1941), (thanks @shieldz80)
+
+### ✏️ Future changes:
+- 💡: Configuration includes will be out of experimental status in the next minor release (`v2024.2.0`) and currently don't have restrictions on where to put the included config. Keep in mind that the path for the included configurations is calculated from the working directory of the RoadRunner process. [FR](https://github.com/roadrunner-server/roadrunner/issues/935)
+
+---
+
 # 🚀 v2024.1.4 🚀
 
 ### `Temporal` plugin:
