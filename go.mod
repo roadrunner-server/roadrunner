@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v4 v4.11.5
-	github.com/roadrunner-server/api/v4 v4.12.0
+	github.com/roadrunner-server/api/v4 v4.13.0
 	github.com/roadrunner-server/app-logger/v4 v4.4.5
 	github.com/roadrunner-server/beanstalk/v4 v4.8.5
 	github.com/roadrunner-server/boltdb/v4 v4.9.5
@@ -24,7 +24,7 @@ require (
 	github.com/roadrunner-server/headers/v4 v4.4.5
 	github.com/roadrunner-server/http/v4 v4.7.7
 	github.com/roadrunner-server/informer/v4 v4.5.5
-	github.com/roadrunner-server/jobs/v4 v4.9.5
+	github.com/roadrunner-server/jobs/v4 v4.10.0
 	github.com/roadrunner-server/kafka/v4 v4.6.5
 	github.com/roadrunner-server/kv/v4 v4.6.5
 	github.com/roadrunner-server/lock/v4 v4.7.5
@@ -198,8 +198,8 @@ require (
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	golang.org/x/tools v0.22.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240617180043-68d350f18fd4 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240617180043-68d350f18fd4 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240624140628-dc46fd24d27d // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240624140628-dc46fd24d27d // indirect
 	google.golang.org/grpc v1.64.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
