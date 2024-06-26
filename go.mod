@@ -39,7 +39,7 @@ require (
 	github.com/roadrunner-server/redis/v4 v4.4.5
 	github.com/roadrunner-server/resetter/v4 v4.3.5
 	github.com/roadrunner-server/rpc/v4 v4.4.5
-	github.com/roadrunner-server/sdk/v4 v4.7.3
+	github.com/roadrunner-server/sdk/v4 v4.8.0
 	github.com/roadrunner-server/send/v4 v4.4.3
 	github.com/roadrunner-server/server/v4 v4.8.5
 	github.com/roadrunner-server/service/v4 v4.7.5
@@ -119,6 +119,7 @@ require (
 	github.com/mholt/acmez/v2 v2.0.1 // indirect
 	github.com/miekg/dns v1.1.61 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/nats-io/nats.go v1.36.0 // indirect
 	github.com/nats-io/nkeys v0.4.7 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
@@ -131,7 +132,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.19.1 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.54.0 // indirect
+	github.com/prometheus/common v0.55.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/quic-go/quic-go v0.45.0 // indirect
