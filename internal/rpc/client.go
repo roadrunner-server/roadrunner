@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	goridgeRpc "github.com/roadrunner-server/goridge/v3/pkg/rpc"
-	rpcPlugin "github.com/roadrunner-server/rpc/v4"
+	rpcPlugin "github.com/roadrunner-server/rpc/v5"
 	"github.com/spf13/viper"
 )
 

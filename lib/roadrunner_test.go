@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/roadrunner-server/informer/v4"
-	"github.com/roadrunner-server/resetter/v4"
+	"github.com/roadrunner-server/informer/v5"
+	"github.com/roadrunner-server/resetter/v5"
 	"github.com/roadrunner-server/roadrunner/v2024/lib"
 	"github.com/stretchr/testify/assert"
 )

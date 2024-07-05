@@ -11,7 +11,7 @@ import (
 	"github.com/roadrunner-server/roadrunner/v2024/internal/meta"
 	"github.com/roadrunner-server/roadrunner/v2024/internal/sdnotify"
 
-	configImpl "github.com/roadrunner-server/config/v4"
+	configImpl "github.com/roadrunner-server/config/v5"
 	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
 )
