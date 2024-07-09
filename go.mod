@@ -24,7 +24,7 @@ require (
 	github.com/roadrunner-server/headers/v5 v5.0.0
 	github.com/roadrunner-server/http/v5 v5.0.0
 	github.com/roadrunner-server/informer/v5 v5.0.0
-	github.com/roadrunner-server/jobs/v5 v5.0.0
+	github.com/roadrunner-server/jobs/v5 v5.0.1
 	github.com/roadrunner-server/kafka/v5 v5.0.0
 	github.com/roadrunner-server/kv/v5 v5.0.0
 	github.com/roadrunner-server/lock/v5 v5.0.0
@@ -64,7 +64,7 @@ exclude (
 
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
-	github.com/aws/aws-sdk-go v1.54.14 // indirect
+	github.com/aws/aws-sdk-go v1.54.17 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.30.1 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.27.24 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.24 // indirect
@@ -196,16 +196,16 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.25.0 // indirect
-	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
+	golang.org/x/exp v0.0.0-20240707233637-46b078467d37 // indirect
 	golang.org/x/mod v0.19.0 // indirect
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	golang.org/x/tools v0.22.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240701130421-f6361c86f094 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240701130421-f6361c86f094 // indirect
+	golang.org/x/tools v0.23.0 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240709173604-40e1e62336c5 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240709173604-40e1e62336c5 // indirect
 	google.golang.org/grpc v1.65.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
