@@ -9,7 +9,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
-	"github.com/roadrunner-server/api/v4/plugins/v1/jobs"
+	"github.com/roadrunner-server/api/v4/plugins/v4/jobs"
 	"github.com/roadrunner-server/pool/state/process"
 )
 
@@ -19,11 +19,7 @@ const (
 )
 
 // WorkerTable renders table with information about rr server workers.
-func WorkerTable(writer io.Writer, workers []*process.State) *tablewriter.Table {
-	sort.Slice(workers, func(i, j int) bool {
-		return workers[i].Pid < workers[j].Pid
-	})
-
+func WorkerTable(writer io.Writer, workers []*process.State, err error) *tablewriter.Table {
 	tw := tablewriter.NewWriter(writer)
 	tw.SetHeader([]string{"PID", "Status", "Execs", "Memory", "CPU%", "Created"})
 	tw.SetColMinWidth(0, 7)
@@ -32,6 +28,23 @@ func WorkerTable(writer io.Writer, workers []*process.State) *tablewriter.Table 
 	tw.SetColMinWidth(3, 7)
 	tw.SetColMinWidth(4, 7)
 	tw.SetColMinWidth(5, 18)
+
+	if err != nil {
+		tw.Append([]string{
+			"0",
+			err.Error(),
+			"ERROR",
+			"ERROR",
+			"ERROR",
+			"ERROR",
+		})
+
+		return tw
+	}
+
+	sort.Slice(workers, func(i, j int) bool {
+		return workers[i].Pid < workers[j].Pid
+	})
 
 	for i := 0; i < len(workers); i++ {
 		tw.Append([]string{
@@ -75,11 +88,7 @@ func ServiceWorkerTable(writer io.Writer, workers []*process.State) *tablewriter
 }
 
 // JobsTable renders table with information about rr server jobs.
-func JobsTable(writer io.Writer, jobs []*jobs.State) *tablewriter.Table {
-	sort.Slice(jobs, func(i, j int) bool {
-		return jobs[i].Pipeline < jobs[j].Pipeline
-	})
-
+func JobsTable(writer io.Writer, jobs []*jobs.State, err error) *tablewriter.Table {
 	tw := tablewriter.NewWriter(writer)
 	tw.SetAutoWrapText(false)
 	tw.SetHeader([]string{"Status", "Pipeline", "Driver", "Queue", "Active", "Delayed", "Reserved"})
@@ -91,6 +100,24 @@ func JobsTable(writer io.Writer, jobs []*jobs.State) *tablewriter.Table {
 	tw.SetColWidth(10)
 	tw.SetColWidth(10)
 	tw.SetAlignment(tablewriter.ALIGN_LEFT)
+
+	if err != nil {
+		tw.Append([]string{
+			err.Error(),
+			"ERROR",
+			"ERROR",
+			"ERROR",
+			"ERROR",
+			"ERROR",
+			"ERROR",
+		})
+
+		return tw
+	}
+
+	sort.Slice(jobs, func(i, j int) bool {
+		return jobs[i].Pipeline < jobs[j].Pipeline
+	})
 
 	for i := 0; i < len(jobs); i++ {
 		tw.Append([]string{
