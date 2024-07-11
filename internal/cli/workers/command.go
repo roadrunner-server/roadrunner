@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/roadrunner-server/api/v4/plugins/v1/jobs"
+	"github.com/roadrunner-server/api/v4/plugins/v4/jobs"
 	internalRpc "github.com/roadrunner-server/roadrunner/v2024/internal/rpc"
 
 	tm "github.com/buger/goterm"
@@ -46,12 +46,13 @@ func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:f
 			plugins := args        // by default, we expect a plugin list from user
 			if len(plugins) == 0 { // but if nothing was passed - request all informers list
 				if err = client.Call(informerList, true, &plugins); err != nil {
-					return err
+					return fmt.Errorf("failed to get list of plugins: %w", err)
 				}
 			}
 
 			if !interactive {
-				return showWorkers(plugins, client)
+				showWorkers(plugins, client)
+				return nil
 			}
 
 			oss := make(chan os.Signal, 1)
@@ -71,9 +72,7 @@ func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:f
 					tm.MoveCursor(1, 1)
 					tm.Flush()
 
-					if err = showWorkers(plugins, client); err != nil {
-						return errors.E(op, err)
-					}
+					showWorkers(plugins, client)
 				}
 			}
 		},
@@ -90,9 +89,8 @@ func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:f
 	return cmd
 }
 
-func showWorkers(plugins []string, client *rpc.Client) error {
+func showWorkers(plugins []string, client *rpc.Client) {
 	const (
-		op              = errors.Op("show_workers")
 		informerWorkers = "informer.Workers"
 		informerJobs    = "informer.Jobs"
 		// this is only one exception to Render the workers, service plugin has the same workers as other plugins,
@@ -105,7 +103,9 @@ func showWorkers(plugins []string, client *rpc.Client) error {
 		list := &informer.WorkerList{}
 
 		if err := client.Call(informerWorkers, plugin, &list); err != nil {
-			return errors.E(op, err)
+			// this is a special case, when we can't get workers list, we need to render an error message
+			WorkerTable(os.Stdout, list.Workers, fmt.Errorf("failed to receive information about %s plugin: %w", plugin, err)).Render()
+			continue
 		}
 
 		if len(list.Workers) == 0 {
@@ -121,14 +121,15 @@ func showWorkers(plugins []string, client *rpc.Client) error {
 
 		fmt.Printf("Workers of [%s]:\n", color.HiYellowString(plugin))
 
-		WorkerTable(os.Stdout, list.Workers).Render()
+		WorkerTable(os.Stdout, list.Workers, nil).Render()
 	}
 
 	for _, plugin := range plugins {
 		var jst []*jobs.State
 
 		if err := client.Call(informerJobs, plugin, &jst); err != nil {
-			return errors.E(op, err)
+			JobsTable(os.Stdout, jst, fmt.Errorf("failed to receive information about %s plugin: %w", plugin, err)).Render()
+			continue
 		}
 
 		// eq to nil
@@ -137,8 +138,6 @@ func showWorkers(plugins []string, client *rpc.Client) error {
 		}
 
 		fmt.Printf("Jobs of [%s]:\n", color.HiYellowString(plugin))
-		JobsTable(os.Stdout, jst).Render()
+		JobsTable(os.Stdout, jst, nil).Render()
 	}
-
-	return nil
 }
