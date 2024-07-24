@@ -9,17 +9,17 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/roadrunner-server/amqp/v5 v5.0.0
-	github.com/roadrunner-server/api/v4 v4.15.0
+	github.com/roadrunner-server/api/v4 v4.16.0
 	github.com/roadrunner-server/app-logger/v5 v5.0.0
 	github.com/roadrunner-server/beanstalk/v5 v5.0.0
 	github.com/roadrunner-server/boltdb/v5 v5.0.0
 	github.com/roadrunner-server/centrifuge/v5 v5.0.0
 	github.com/roadrunner-server/config/v5 v5.0.0
-	github.com/roadrunner-server/endure/v2 v2.4.5
-	github.com/roadrunner-server/errors v1.4.0
+	github.com/roadrunner-server/endure/v2 v2.4.6
+	github.com/roadrunner-server/errors v1.4.1
 	github.com/roadrunner-server/fileserver/v5 v5.0.0
-	github.com/roadrunner-server/goridge/v3 v3.8.2
-	github.com/roadrunner-server/grpc/v5 v5.0.1
+	github.com/roadrunner-server/goridge/v3 v3.8.3
+	github.com/roadrunner-server/grpc/v5 v5.0.3
 	github.com/roadrunner-server/gzip/v5 v5.0.0
 	github.com/roadrunner-server/headers/v5 v5.0.0
 	github.com/roadrunner-server/http/v5 v5.0.0
@@ -34,7 +34,7 @@ require (
 	github.com/roadrunner-server/metrics/v5 v5.0.0
 	github.com/roadrunner-server/nats/v5 v5.0.0
 	github.com/roadrunner-server/otel/v5 v5.0.0
-	github.com/roadrunner-server/pool v1.0.0
+	github.com/roadrunner-server/pool v1.0.1
 	github.com/roadrunner-server/prometheus/v5 v5.0.0
 	github.com/roadrunner-server/proxy_ip_parser/v5 v5.0.0
 	github.com/roadrunner-server/redis/v5 v5.0.0
@@ -142,10 +142,10 @@ require (
 	github.com/redis/go-redis/v9 v9.5.3 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/roadrunner-server/context v1.0.0 // indirect
-	github.com/roadrunner-server/events v1.0.0 // indirect
+	github.com/roadrunner-server/events v1.0.1 // indirect
 	github.com/roadrunner-server/priority_queue v1.0.1 // indirect
 	github.com/roadrunner-server/redis/v4 v4.4.5 // indirect
-	github.com/roadrunner-server/tcplisten v1.5.0 // indirect
+	github.com/roadrunner-server/tcplisten v1.5.1 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/rs/cors v1.11.0 // indirect
 	github.com/sagikazarmark/locafero v0.6.0 // indirect
@@ -186,7 +186,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.28.0 // indirect
 	go.opentelemetry.io/otel/trace v1.28.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
-	go.temporal.io/api v1.35.0 // indirect
+	go.temporal.io/api v1.36.0 // indirect
 	go.temporal.io/sdk v1.27.0 // indirect
 	go.temporal.io/sdk/contrib/opentelemetry v0.6.0 // indirect
 	go.temporal.io/sdk/contrib/tally v0.2.0 // indirect
@@ -204,8 +204,8 @@ require (
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	golang.org/x/tools v0.23.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240709173604-40e1e62336c5 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240709173604-40e1e62336c5 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240722135656-d784300faade // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240723171418-e6d459c13d2a // indirect
 	google.golang.org/grpc v1.65.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
