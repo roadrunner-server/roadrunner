@@ -15,8 +15,8 @@ require (
 	github.com/roadrunner-server/boltdb/v5 v5.0.0
 	github.com/roadrunner-server/centrifuge/v5 v5.0.0
 	github.com/roadrunner-server/config/v5 v5.0.0
-	github.com/roadrunner-server/endure/v2 v2.4.5
-	github.com/roadrunner-server/errors v1.4.0
+	github.com/roadrunner-server/endure/v2 v2.4.6
+	github.com/roadrunner-server/errors v1.4.1
 	github.com/roadrunner-server/fileserver/v5 v5.0.0
 	github.com/roadrunner-server/goridge/v3 v3.8.2
 	github.com/roadrunner-server/grpc/v5 v5.0.1
@@ -31,7 +31,7 @@ require (
 	github.com/roadrunner-server/logger/v5 v5.0.0
 	github.com/roadrunner-server/memcached/v5 v5.0.0
 	github.com/roadrunner-server/memory/v5 v5.0.0
-	github.com/roadrunner-server/metrics/v5 v5.0.0
+	github.com/roadrunner-server/metrics/v5 v5.0.1
 	github.com/roadrunner-server/nats/v5 v5.0.0
 	github.com/roadrunner-server/otel/v5 v5.0.0
 	github.com/roadrunner-server/pool v1.0.0

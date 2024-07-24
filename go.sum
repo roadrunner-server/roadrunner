@@ -323,10 +323,10 @@ github.com/roadrunner-server/config/v5 v5.0.0 h1:spJCTdSwQMik+ZE/qMU7Si22ffOVYpC
 github.com/roadrunner-server/config/v5 v5.0.0/go.mod h1:Ct+yXRb3NWeebmNUvs6a56t0PrjAciSxPSt2nKggkg4=
 github.com/roadrunner-server/context v1.0.0 h1:KKqTQkiJPEzuesJW2v6CIy4T4WUYOOhmftITjUDBASE=
 github.com/roadrunner-server/context v1.0.0/go.mod h1:rF0U1emlrMXBwvVoocD4ER/uJMytzVoXYt/kuflKKnA=
-github.com/roadrunner-server/endure/v2 v2.4.5 h1:GoZm/1HjKCKm8TpaP/Pm2KbN0X9gLyN840cA3Fn/TCE=
-github.com/roadrunner-server/endure/v2 v2.4.5/go.mod h1:83UvLdt+RNxELTSna+SZMWQiu+Thj6wOz6hmlp65XFI=
-github.com/roadrunner-server/errors v1.4.0 h1:Odjg3VZrj1q5Y8ILwoN+JgERyv0pkhrWPNOM4h68iQ8=
-github.com/roadrunner-server/errors v1.4.0/go.mod h1:78PvraAFj+Sxy5nDmo0S+h6rEMLFIDszWZxA3B0sPAs=
+github.com/roadrunner-server/endure/v2 v2.4.6 h1:5qihRHjJVMwbyDMdyjrqc5h2hXLg4z1kDEw/zFIXIE8=
+github.com/roadrunner-server/endure/v2 v2.4.6/go.mod h1:DLuGeqBMEcyZwDG/oVZrprxe/b7MxPljICiE1OQc6eY=
+github.com/roadrunner-server/errors v1.4.1 h1:LKNeaCGiwd3t8IaL840ZNF3UA9yDQlpvHnKddnh0YRQ=
+github.com/roadrunner-server/errors v1.4.1/go.mod h1:qeffnIKG0e4j1dzGpa+OGY5VKSfMphizvqWIw8s2lAo=
 github.com/roadrunner-server/events v1.0.0 h1:r+DM2mVJbcJSxj7AoESvolgUQQYNcEjzKPdgTXz3lPI=
 github.com/roadrunner-server/events v1.0.0/go.mod h1:KMcez/tib0yky9TR/0Ag8SZcgAn3kjzXWciZL/n2Hu8=
 github.com/roadrunner-server/fileserver/v5 v5.0.0 h1:WhVlhnQg2Q+b/JWW0tJxvAF7uu+wb2+T9i/Sj2YC520=
@@ -357,8 +357,8 @@ github.com/roadrunner-server/memcached/v5 v5.0.0 h1:C714F+YmCFBNrIbgifbfIPKUpVLJ
 github.com/roadrunner-server/memcached/v5 v5.0.0/go.mod h1:DEPJ4pvOghjy8w43IduX9BZf85fIeU8s4QCYuka7tjE=
 github.com/roadrunner-server/memory/v5 v5.0.0 h1:95r0bMqNcM8p2gQl6Jc/iiyxyFoNGAal5kuvx6NqqAA=
 github.com/roadrunner-server/memory/v5 v5.0.0/go.mod h1:f/QqHDYw55SFaOoyF/W9L+fsg1HPSroqYC0q15NOc9U=
-github.com/roadrunner-server/metrics/v5 v5.0.0 h1:XBJgxD51eRmUweveNoJ01kCz+CEcBMLf4XtEHHkdiCk=
-github.com/roadrunner-server/metrics/v5 v5.0.0/go.mod h1:aitYkpmI/ryEysip6NKbrkp8b5inBnaQ2LfMrzji3uc=
+github.com/roadrunner-server/metrics/v5 v5.0.1 h1:u17SzoyZrgsAOs686FbQiY17sRmkkg0mtNvfsJ4vZH0=
+github.com/roadrunner-server/metrics/v5 v5.0.1/go.mod h1:eihCZzAcbiDCZDSTx8UjZ5DHuaZWBe+2WV36zbgvpkk=
 github.com/roadrunner-server/nats/v5 v5.0.0 h1:9Ynf+RAuC0kZuGPz00o5llo66zxFCURtqbhJSLpbS58=
 github.com/roadrunner-server/nats/v5 v5.0.0/go.mod h1:Do1cOtGJtcDbMsip//ZnsrnCWhpaj0z4CQuXQBaCPuo=
 github.com/roadrunner-server/otel/v5 v5.0.0 h1:GqmZGdqEWB4+vypab31E8D1mIH/6LsdsLyZDNfeqr/Y=
