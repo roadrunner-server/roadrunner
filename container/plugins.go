@@ -7,6 +7,7 @@ import (
 	"github.com/roadrunner-server/boltdb/v5"
 	"github.com/roadrunner-server/centrifuge/v5"
 	"github.com/roadrunner-server/fileserver/v5"
+	gps "github.com/roadrunner-server/google-pub-sub/v5"
 	grpcPlugin "github.com/roadrunner-server/grpc/v5"
 	"github.com/roadrunner-server/gzip/v5"
 	"github.com/roadrunner-server/headers/v5"
@@ -37,7 +38,7 @@ import (
 	rrt "github.com/temporalio/roadrunner-temporal/v5"
 )
 
-// Plugins returns active plugins for the endured container. Feel free to add or remove any plugins.
+// Plugins return active plugins for the endured container. Feel free to add or remove any plugins.
 func Plugins() []any { //nolint:funlen
 	return []any{
 		// bundled
@@ -69,6 +70,7 @@ func Plugins() []any { //nolint:funlen
 		&nats.Plugin{},
 		&kafka.Plugin{},
 		&beanstalk.Plugin{},
+		&gps.Plugin{},
 		// =========
 		//
 		// http server plugin with middleware
