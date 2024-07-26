@@ -1,5 +1,68 @@
 # CHANGELOG
 
+# 🚀 v2024.2.0 🚀
+
+# Upgrade guide: [link](https://docs.roadrunner.dev/docs/general/compatibility#upgrading-to-roadrunner-v2024.2.x)
+
+## Community plugins
+
+We are introducing a new term in the RoadRunner community — Community plugins. 
+If you have a brilliant idea for the http middleware or JOBS driver or even a new plugin - feel free to check our 
+[Customization](../customization) tutorials, create and notify us about your plugin.
+
+## Plugins updates:
+
+### 🔥 Meet the new JOBS driver - Google Pub/Sub
+RoadRunner now supports the Google Pub/Sub queues. Currently, this driver is released in **BETA** and has a few limitations which you may find in the [docs]()
+
+### `AMQP` and `Kafka` JOBS drivers
+
+- 🔥 Support an auto-restart pipeline on redial or some fatal problems when connecting to the RabbitMQ broker. Instead of silently exit from the pipeline, RR will try to re-initialize the pipeline.
+
+Thanks to our PHP team, [KV](https://github.com/roadrunner-php/kv/releases/tag/v4.3.0) now has `AsyncStorageInterface` support which makes your experience with the KV plugin even faster.
+Feel free to read the technical details here: [link](https://github.com/roadrunner-php/goridge/pull/22)
+
+### Samples repository
+
+- 🔥 Our RoadRunner samples repository was updated and now includes a `Jobs` driver example for the `Jobs` plugin.
+More info here: [link](https://github.com/roadrunner-server/samples).
+
+
+### Our Go-SDK was deprecated
+
+- 😭 Our Go-SDK was deprecated and split into separate packages. Read more in the Upgrade guide.
+
+
+### Velox configuration update
+
+- 🔥 Velox configuration was simplified:
+
+```yaml
+[roadrunner]
+# ref -> reference, tag, commit or branch
+ref = "v2024.2.0"
+
+# the debug option is used to build RR with debug symbols to profile it with pprof
+[debug]
+enabled = false
+
+## Rest is the same ....
+```
+
+Now, there is no need to include `linker` flags, and buildtime + build version would be inherited automatically.
+If you need to debug your binary, please, use the `debug` option set to `true`.
+
+### Special thanks to our sponsors:
+
+1. [Buhta](https://github.com/buhta)
+2. [Coderabbitai](https://https://github.com/coderabbitai)
+3. [Kaspiman](https://github.com/Kaspiman)
+4. [benalf](https://github.com/benalf)
+5. [rapita](https://github.com/rapita)
+6. [uzulla](https://github.com/uzulla)
+
+---
+
 # 🚀 v2024.1.5 🚀
 
 ### `Status` plugin:
