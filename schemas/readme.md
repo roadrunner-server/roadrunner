@@ -7,7 +7,7 @@ This directory contains public schemas for the most important parts of applicati
 - You can validate existing config file using the following command:
 
  ```bash
- $ docker run --rm -v "$(pwd):/src" -w "/src" node:14-alpine sh -c \
+docker run --rm -v "$(pwd):/src" -w "/src" node:14-alpine sh -c \
      "npm install -g ajv-cli && \
      ajv validate --all-errors --verbose \
        -s ./schemas/config/2.0.schema.json \
