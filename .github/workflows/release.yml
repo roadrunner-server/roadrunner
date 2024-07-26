@@ -191,9 +191,9 @@ jobs:
             spiralscout/roadrunner:${{ steps.values.outputs.version_full}}
             spiralscout/roadrunner:latest
             spiralscout/roadrunner:2024
-            spiralscout/roadrunner:2024.1
+            spiralscout/roadrunner:2024.2
 
             ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_full}}
             ghcr.io/roadrunner-server/roadrunner:latest
             ghcr.io/roadrunner-server/roadrunner:2024
-            ghcr.io/roadrunner-server/roadrunner:2024.1
+            ghcr.io/roadrunner-server/roadrunner:2024.2
