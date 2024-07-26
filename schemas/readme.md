@@ -10,6 +10,6 @@ This directory contains public schemas for the most important parts of applicati
 docker run --rm -v "$(pwd):/src" -w "/src" node:14-alpine sh -c \
      "npm install -g ajv-cli && \
      ajv validate --all-errors --verbose \
-       -s ./schemas/config/2.0.schema.json \
+       -s ./schemas/config/3.0.schema.json \
        -d ./.rr*.y*ml"
  ```
