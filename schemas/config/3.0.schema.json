@@ -2359,8 +2359,9 @@
         "Duration": {
             "description": "Time duration",
             "type": "string",
-            "pattern": "^[0-9]+[ms]|[s,h]",
+            "pattern": "^[0-9]+(h|m|s|ms)$",
             "examples": [
+                "9999h",
                 "10h",
                 "1m",
                 "1h",
