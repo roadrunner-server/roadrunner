@@ -55,7 +55,7 @@ If you need to debug your binary, please, use the `debug` option set to `true`.
 ### Special thanks to our sponsors:
 
 1. [Buhta](https://github.com/buhta)
-2. [Coderabbitai](https://https://github.com/coderabbitai)
+2. [Coderabbitai](https://github.com/coderabbitai)
 3. [Kaspiman](https://github.com/Kaspiman)
 4. [benalf](https://github.com/benalf)
 5. [rapita](https://github.com/rapita)
