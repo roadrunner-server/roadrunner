@@ -495,7 +495,7 @@ service:
 
     # Allowed time before stop.
     #
-    # Default: 0 (infinity), can be 1s, 2m, 2h (seconds, minutes, hours)
+    # Default: 0 (infinity), can be 1s, 2m, 2h (seconds, minutes, hours) and complex 2h2m1s.
     exec_timeout: 0s
 
     # Show the name of the service in logs (e.g. service.some_service_1)
@@ -547,7 +547,7 @@ service:
 
     # Allowed time before stop.
     #
-    # Default: 0 (infinity), can be 1s, 2m, 2h (seconds, minutes, hours)
+    # Default: 0 (infinity), can be 1s, 2m, 2h (seconds, minutes, hours) and complex 2h2m1s.
     exec_timeout: 0s
 
     # Remain process after exit. In other words, restart process after exit with any exit code.
@@ -1930,6 +1930,7 @@ grpc:
   #	zero or the connection establishment.
   #
   # This option is optional. Default value: infinity.
+  # Can be 1s, 2m, 2h (seconds, minutes, hours) and complex 2h2m1s.
   max_connection_idle: 0s
 
   # MaxConnectionAge is a duration for the maximum amount of time a
@@ -1938,11 +1939,13 @@ grpc:
   #	connection storms.
   #
   # This option is optional. Default value: infinity.
+  # Can be 1s, 2m, 2h (seconds, minutes, hours) and complex 2h2m1s.
   max_connection_age: 0s
 
   # MaxConnectionAgeGrace is an additive period after MaxConnectionAge after
   #	which the connection will be forcibly closed.
-  max_connection_age_grace: 0s8h
+  # Can be 1s, 2m, 2h (seconds, minutes, hours) and complex 2h2m1s.
+  max_connection_age_grace: 8h
 
   # MaxConnectionAgeGrace is an additive period after MaxConnectionAge after
   #	which the connection will be forcibly closed.
@@ -1955,6 +1958,7 @@ grpc:
   #	If set below 1s, a minimum value of 1s will be used instead.
   #
   # This option is optional. Default value: 2h
+  # Can be 1s, 2m, 2h (seconds, minutes, hours) and complex 2h2m1s.
   ping_time: 1s
 
   # After having pinged for keepalive check, the server waits for a duration
@@ -1962,6 +1966,7 @@ grpc:
   #	closed.
   #
   # This option is optional. Default value: 20s
+  # Can be 1s, 2m, 2h (seconds, minutes, hours) and complex 2h2m1s.
   timeout: 200s
 
   # Usual workers pool configuration

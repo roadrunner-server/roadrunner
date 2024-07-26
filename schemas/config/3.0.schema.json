@@ -2359,15 +2359,17 @@
         "Duration": {
             "description": "Time duration",
             "type": "string",
-            "pattern": "^[0-9]+(h|m|s|ms)",
+            "pattern": "^([0-9]*(\\.[0-9]*)?(ms|h|m|s))+$",
             "examples": [
-                "9999h",
-                "10h",
-                "1m",
-                "1h",
+				"1h",
+				"2.5h",
+				"2m",
+				".2m",
                 "30s",
-                "300ms"
-            ]
+                "30.03s",
+                "300ms",
+				"1h3m40s500ms"
+			]
         },
         "HostAndPortWithTCP": {
             "description": "Host and port with tcp:// prefix",
