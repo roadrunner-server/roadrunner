@@ -1,8 +1,7 @@
 module github.com/roadrunner-server/roadrunner/v2024
 
 go 1.22
-
-toolchain go1.22.5
+toolchain go1.23.0
 
 require (
 	github.com/buger/goterm v1.0.4
@@ -17,7 +16,7 @@ require (
 	github.com/roadrunner-server/boltdb/v5 v5.0.2
 	github.com/roadrunner-server/centrifuge/v5 v5.0.2
 	github.com/roadrunner-server/config/v5 v5.0.2
-	github.com/roadrunner-server/endure/v2 v2.4.6
+	github.com/roadrunner-server/endure/v2 v2.5.0
 	github.com/roadrunner-server/errors v1.4.1
 	github.com/roadrunner-server/fileserver/v5 v5.0.1
 	github.com/roadrunner-server/google-pub-sub/v5 v5.0.2
