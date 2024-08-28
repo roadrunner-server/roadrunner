@@ -27,7 +27,6 @@ func TestCommandFlags(t *testing.T) {
 	}
 
 	for _, tt := range cases {
-		tt := tt
 		t.Run(tt.giveName, func(t *testing.T) {
 			flag := cmd.Flag(tt.giveName)
 

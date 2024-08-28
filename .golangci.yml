@@ -40,7 +40,7 @@ linters: # All available linters list: <https://golangci-lint.run/usage/linters/
     - errcheck # Errcheck is a program for checking for unchecked errors in go programs. These unchecked errors can be critical bugs in some cases
     - errorlint # find code that will cause problems with the error wrapping scheme introduced in Go 1.13
     - exhaustive # check exhaustiveness of enum switch statements
-    - exportloopref # checks for pointers to enclosing loop variables
+    - copyloopvar    # checks for pointers to enclosing loop variables
     - gochecknoglobals # Checks that no globals are present in Go code
     - goconst # Finds repeated strings that could be replaced by a constant
     - gocritic # The most opinionated Go source code linter

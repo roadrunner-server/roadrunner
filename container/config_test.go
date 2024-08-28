@@ -53,7 +53,6 @@ func TestNewConfig_LoggingLevels(t *testing.T) {
 
 		{path: "test/endure_ok_foobar.yaml", giveLevel: "foobar", wantError: true},
 	} {
-		tt := tt
 		t.Run(tt.giveLevel, func(t *testing.T) {
 			cfgPlugin := &config.Plugin{Type: "yaml", ReadInCfg: []byte("endure:\n  log_level: " + tt.giveLevel)}
 			assert.NoError(t, cfgPlugin.Init())
