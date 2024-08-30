@@ -44,7 +44,7 @@ require (
 	github.com/roadrunner-server/resetter/v5 v5.0.2
 	github.com/roadrunner-server/rpc/v5 v5.0.2
 	github.com/roadrunner-server/send/v5 v5.0.1
-	github.com/roadrunner-server/server/v5 v5.0.2
+	github.com/roadrunner-server/server/v5 v5.1.0
 	github.com/roadrunner-server/service/v5 v5.0.2
 	github.com/roadrunner-server/sqs/v5 v5.0.2
 	github.com/roadrunner-server/static/v5 v5.0.1
