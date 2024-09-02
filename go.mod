@@ -17,7 +17,7 @@ require (
 	github.com/roadrunner-server/boltdb/v5 v5.0.2
 	github.com/roadrunner-server/centrifuge/v5 v5.0.2
 	github.com/roadrunner-server/config/v5 v5.0.2
-	github.com/roadrunner-server/endure/v2 v2.5.0
+	github.com/roadrunner-server/endure/v2 v2.6.1
 	github.com/roadrunner-server/errors v1.4.1
 	github.com/roadrunner-server/fileserver/v5 v5.0.1
 	github.com/roadrunner-server/google-pub-sub/v5 v5.0.2
