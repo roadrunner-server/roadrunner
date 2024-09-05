@@ -17,7 +17,7 @@ require (
 	github.com/roadrunner-server/boltdb/v5 v5.0.2
 	github.com/roadrunner-server/centrifuge/v5 v5.0.2
 	github.com/roadrunner-server/config/v5 v5.0.2
-	github.com/roadrunner-server/endure/v2 v2.5.0
+	github.com/roadrunner-server/endure/v2 v2.6.1
 	github.com/roadrunner-server/errors v1.4.1
 	github.com/roadrunner-server/fileserver/v5 v5.0.1
 	github.com/roadrunner-server/google-pub-sub/v5 v5.0.2
@@ -25,7 +25,7 @@ require (
 	github.com/roadrunner-server/grpc/v5 v5.0.4
 	github.com/roadrunner-server/gzip/v5 v5.0.2
 	github.com/roadrunner-server/headers/v5 v5.0.2
-	github.com/roadrunner-server/http/v5 v5.0.2
+	github.com/roadrunner-server/http/v5 v5.0.3
 	github.com/roadrunner-server/informer/v5 v5.0.2
 	github.com/roadrunner-server/jobs/v5 v5.0.3
 	github.com/roadrunner-server/kafka/v5 v5.0.2
@@ -37,7 +37,7 @@ require (
 	github.com/roadrunner-server/metrics/v5 v5.0.2
 	github.com/roadrunner-server/nats/v5 v5.0.2
 	github.com/roadrunner-server/otel/v5 v5.0.1
-	github.com/roadrunner-server/pool v1.0.1
+	github.com/roadrunner-server/pool v1.0.2
 	github.com/roadrunner-server/prometheus/v5 v5.0.1
 	github.com/roadrunner-server/proxy_ip_parser/v5 v5.0.2
 	github.com/roadrunner-server/redis/v5 v5.0.2
@@ -111,7 +111,7 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.7.0-rc.1 // indirect
-	github.com/google/pprof v0.0.0-20240827171923-fa2c70bbbfe5 // indirect
+	github.com/google/pprof v0.0.0-20240903155634-a8630aee4ab9 // indirect
 	github.com/google/s2a-go v0.1.8 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.3 // indirect
@@ -144,11 +144,11 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.21 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
-	github.com/prometheus/client_golang v1.20.2 // indirect
+	github.com/prometheus/client_golang v1.20.3 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.57.0 // indirect
+	github.com/prometheus/common v0.59.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
-	github.com/quic-go/qpack v0.4.0 // indirect
+	github.com/quic-go/qpack v0.5.0 // indirect
 	github.com/quic-go/quic-go v0.46.0 // indirect
 	github.com/rabbitmq/amqp091-go v1.10.0 // indirect
 	github.com/redis/go-redis/extra/rediscmd/v9 v9.5.3 // indirect
@@ -210,13 +210,13 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.26.0 // indirect
-	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948 // indirect
-	golang.org/x/mod v0.20.0 // indirect
+	golang.org/x/exp v0.0.0-20240904232852-e7e105dedf7e // indirect
+	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/oauth2 v0.22.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.24.0 // indirect
-	golang.org/x/text v0.17.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/text v0.18.0 // indirect
 	golang.org/x/time v0.6.0 // indirect
 	golang.org/x/tools v0.24.0 // indirect
 	google.golang.org/api v0.195.0 // indirect
