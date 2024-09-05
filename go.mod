@@ -37,7 +37,7 @@ require (
 	github.com/roadrunner-server/metrics/v5 v5.0.2
 	github.com/roadrunner-server/nats/v5 v5.0.2
 	github.com/roadrunner-server/otel/v5 v5.0.1
-	github.com/roadrunner-server/pool v1.0.1
+	github.com/roadrunner-server/pool v1.0.2
 	github.com/roadrunner-server/prometheus/v5 v5.0.1
 	github.com/roadrunner-server/proxy_ip_parser/v5 v5.0.2
 	github.com/roadrunner-server/redis/v5 v5.0.2

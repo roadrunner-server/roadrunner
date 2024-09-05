@@ -394,8 +394,8 @@ github.com/roadrunner-server/nats/v5 v5.0.2 h1:c0D8M8fyphJBeXAo0LB/YqnWH998YYr7W
 github.com/roadrunner-server/nats/v5 v5.0.2/go.mod h1:UwaNLCDooTu4MfhwrYcci2Q8LGSAvsnsqnKJaRZPAns=
 github.com/roadrunner-server/otel/v5 v5.0.1 h1:efvcLnR7nj7HiCw6fJYSC8fh1qj2wKT87p4acnndH24=
 github.com/roadrunner-server/otel/v5 v5.0.1/go.mod h1:Gc9gvWgMjek19o2yxC7ZxS/uguobMDKlj63ERYzeanc=
-github.com/roadrunner-server/pool v1.0.1 h1:biseQtnu1I/s0m2QolPQwH/9FhWIb2UgBy1OlOR+IrU=
-github.com/roadrunner-server/pool v1.0.1/go.mod h1:4/fbpcesO2+W9oBbE0CRTE55FUdi8zZA28GvG1F1PWE=
+github.com/roadrunner-server/pool v1.0.2 h1:wMg6w7msbzB3icUz4uviOSLPaCE+qK02sMz/0pVkeo0=
+github.com/roadrunner-server/pool v1.0.2/go.mod h1:cBFTlC5HfNs5v6Zo3jO6bUoByK8eJVnrxMP+qf9cfMQ=
 github.com/roadrunner-server/priority_queue v1.0.2 h1:UoseKFpkcWSWJVu0iWqCE+tCWC8z/qCKvilSkAzHHmM=
 github.com/roadrunner-server/priority_queue v1.0.2/go.mod h1:0Kayx9q+JM0Zk9+04eXD4nZPMiMxjTkR76+j1ZkHrD0=
 github.com/roadrunner-server/prometheus/v5 v5.0.1 h1:c8M1Y9DEt508UdCtxrtJGYK64sclXkkH4Qo0jg1p3Ak=
