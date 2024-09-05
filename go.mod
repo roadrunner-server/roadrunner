@@ -37,14 +37,14 @@ require (
 	github.com/roadrunner-server/metrics/v5 v5.0.2
 	github.com/roadrunner-server/nats/v5 v5.0.2
 	github.com/roadrunner-server/otel/v5 v5.0.1
-	github.com/roadrunner-server/pool v1.0.1
+	github.com/roadrunner-server/pool v1.0.2
 	github.com/roadrunner-server/prometheus/v5 v5.0.1
 	github.com/roadrunner-server/proxy_ip_parser/v5 v5.0.2
 	github.com/roadrunner-server/redis/v5 v5.0.2
 	github.com/roadrunner-server/resetter/v5 v5.0.2
 	github.com/roadrunner-server/rpc/v5 v5.0.2
 	github.com/roadrunner-server/send/v5 v5.0.1
-	github.com/roadrunner-server/server/v5 v5.0.2
+	github.com/roadrunner-server/server/v5 v5.1.1
 	github.com/roadrunner-server/service/v5 v5.0.2
 	github.com/roadrunner-server/sqs/v5 v5.0.2
 	github.com/roadrunner-server/static/v5 v5.0.1
@@ -210,13 +210,13 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.26.0 // indirect
-	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948 // indirect
+	golang.org/x/exp v0.0.0-20240904232852-e7e105dedf7e // indirect
 	golang.org/x/mod v0.20.0 // indirect
 	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/oauth2 v0.22.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.24.0 // indirect
-	golang.org/x/text v0.17.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/text v0.18.0 // indirect
 	golang.org/x/time v0.6.0 // indirect
 	golang.org/x/tools v0.24.0 // indirect
 	google.golang.org/api v0.195.0 // indirect
