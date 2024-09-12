@@ -364,6 +364,8 @@ github.com/roadrunner-server/google-pub-sub/v5 v5.0.4 h1:I9dxyxpD+0zmbNebb7dZm1Z
 github.com/roadrunner-server/google-pub-sub/v5 v5.0.4/go.mod h1:qRY4AYX767sxfjmdSP6mllEigkY/4VmBG/8ncaPnIes=
 github.com/roadrunner-server/goridge/v3 v3.8.3 h1:XmjrOFnI6ZbQTPaP39DEk8KwLUNTgjluK3pcZaW6ixQ=
 github.com/roadrunner-server/goridge/v3 v3.8.3/go.mod h1:4TZU8zgkKIZCsH51qwGMpvyXCT59u/8z6q8sCe4ZGAQ=
+github.com/roadrunner-server/grpc/v5 v5.0.6 h1:VYcRx2KIIYMRo2+mthxkztM+pd7oxWg93hQfZhOD27g=
+github.com/roadrunner-server/grpc/v5 v5.0.6/go.mod h1:LRkJGZuL2qb0RtouNnGq1ogitMtCB0N0ECY7bvA46q4=
 github.com/roadrunner-server/gzip/v5 v5.0.4 h1:TEH72KljBXIAQFOn/lhzA9dAza10rouxeqy4Xb6qoKA=
 github.com/roadrunner-server/gzip/v5 v5.0.4/go.mod h1:jjAXtcE4NKBFZtvNVb1WpFPht/aEmSXG7pMgv6GgFFM=
 github.com/roadrunner-server/headers/v5 v5.0.4 h1:R99ctkgSXwdkOmEUQ1z2tUNZYQo6pX++RbSOwVUxu2w=
@@ -471,6 +473,8 @@ github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsT
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
 github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8=
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
+github.com/temporalio/roadrunner-temporal/v5 v5.1.1 h1:UkhfBCw0jMobn8xGpI3+5rf/G82A0NYRabJxogA9vJg=
+github.com/temporalio/roadrunner-temporal/v5 v5.1.1/go.mod h1:2YV+uvKcRuamap57srmBVMIJ7mVGGwDPQTKissLgnMI=
 github.com/tklauser/go-sysconf v0.3.14 h1:g5vzr9iPFFz24v2KZXs/pvpvh8/V9Fw6vQK5ZZb78yU=
 github.com/tklauser/go-sysconf v0.3.14/go.mod h1:1ym4lWMLUOhuBOPGtRcJm7tEGX4SCYNEEEtghGG/8uY=
 github.com/tklauser/numcpus v0.8.0 h1:Mx4Wwe/FjZLeQsK/6kt2EOepwwSl7SmJrK5bV/dXYgY=

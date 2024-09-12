@@ -22,7 +22,7 @@ require (
 	github.com/roadrunner-server/fileserver/v5 v5.0.3
 	github.com/roadrunner-server/google-pub-sub/v5 v5.0.4
 	github.com/roadrunner-server/goridge/v3 v3.8.3
-	github.com/roadrunner-server/grpc/v5 v5.0.5
+	github.com/roadrunner-server/grpc/v5 v5.0.6
 	github.com/roadrunner-server/gzip/v5 v5.0.4
 	github.com/roadrunner-server/headers/v5 v5.0.4
 	github.com/roadrunner-server/http/v5 v5.0.4
@@ -53,13 +53,9 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
-	github.com/temporalio/roadrunner-temporal/v5 v5.1.0
+	github.com/temporalio/roadrunner-temporal/v5 v5.1.1
 	go.uber.org/automaxprocs v1.5.3
 )
-
-replace github.com/temporalio/roadrunner-temporal/v5 => ../plugins/roadrunner-temporal
-
-replace github.com/roadrunner-server/grpc/v5 => ../plugins/grpc
 
 replace github.com/uber-go/tally/v4 => github.com/uber-go/tally/v4 v4.1.10
 
