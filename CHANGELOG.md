@@ -1,13 +1,31 @@
 # CHANGELOG
 
+# 🚀 v2024.2.1 🚀
+
+### `OTEL` plugin:
+
+- 🔥: Several improvements by @devnev: Do not set `Endpoint` and `Headers` for gRPC if they're empty: [PR](https://github.com/roadrunner-server/otel/pull/62), Support standard `OTEL` exporter protocol environment variables: [PR](https://github.com/roadrunner-server/otel/pull/63). (thanks @devnev)
+
+### `RoadRunner-Temporal` plugin:
+- 🐛: gRPC client closed too early after shutdown: [BUG](https://github.com/roadrunner-server/roadrunner/issues/1986). (thanks @kkosowski-p)
+
+### `AMQP` driver:
+- 🐛: `redial_timeout` was not respected when dynamically creating pipeline. [BUG](https://github.com/roadrunner-server/roadrunner/issues/2000), (thanks @algirdasci)
+
+### <center>🧹 Chore:</center>
+
+- 🧑‍🏭: All plugins were updated to Go 1.23 (including `Velox` Dockerfile).
+
+---
+
 # 🚀 v2024.2.0 🚀
 
 # Upgrade guide: [link](https://docs.roadrunner.dev/docs/general/compatibility#upgrading-to-roadrunner-v2024.2.x)
 
 ## Community plugins
 
-We are introducing a new term in the RoadRunner community — Community plugins. 
-If you have a brilliant idea for the http middleware or JOBS driver or even a new plugin - feel free to check our 
+We are introducing a new term in the RoadRunner community — Community plugins.
+If you have a brilliant idea for the http middleware or JOBS driver or even a new plugin - feel free to check our
 [Customization](../customization) tutorials, create and notify us about your plugin.
 
 ## Plugins updates:
