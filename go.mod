@@ -54,7 +54,7 @@ require (
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
 	github.com/temporalio/roadrunner-temporal/v5 v5.1.1
-	go.uber.org/automaxprocs v1.5.3
+	go.uber.org/automaxprocs v1.6.0
 )
 
 replace github.com/uber-go/tally/v4 => github.com/uber-go/tally/v4 v4.1.10
