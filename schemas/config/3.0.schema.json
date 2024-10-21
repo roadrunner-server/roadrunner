@@ -2648,7 +2648,7 @@
 					"description": "Command to use for the pool. If provided, this will override the value of server.command for the pool."
 				},
 				"num_workers": {
-					"description": "The number of worker processes to start. Default/zero 0 means the number of logical CPUs.",
+					"description": "The number of worker processes to start. Default/zero means the number of logical CPUs.",
 					"type": "integer",
 					"minimum": 0,
 					"default": 0
@@ -2666,22 +2666,22 @@
 					"default": 0
 				},
 				"allocate_timeout": {
-					"description": "Timeout for worker allocation. Default/zero 0 means 60s.",
+					"description": "Timeout for worker allocation. Default/zero means 60s.",
 					"$ref": "#/definitions/Duration",
 					"default": "60s"
 				},
 				"reset_timeout": {
-					"description": "Timeout for the pool.Reset operation (./rr reset). Default/zero 0 means 60s.",
+					"description": "Timeout for the pool.Reset operation (./rr reset). Default/zero means 60s.",
 					"$ref": "#/definitions/Duration",
 					"default": "60s"
 				},
 				"stream_timeout": {
-					"description": "Timeout for stream cancellation. Default/zero 0 means 60s.",
+					"description": "Timeout for stream cancellation. Default/zero means 60s.",
 					"$ref": "#/definitions/Duration",
 					"default": "60s"
 				},
 				"destroy_timeout": {
-					"description": "Timeout when destroying a worker. If the worker has stopped within this timeout, its process will be killed. Default/zero 0 means 60s.",
+					"description": "Timeout when destroying a worker. If the worker has stopped within this timeout, its process will be killed. Default/zero means 60s.",
 					"$ref": "#/definitions/Duration",
 					"default": "60s"
 				},
