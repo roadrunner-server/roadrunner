@@ -1447,9 +1447,10 @@
 					"default": 60
 				},
 				"pipeline_size": {
-					"description": "Size of the internal priority queue. If the internal priority queue is full, you cannot send (push) additional jobs to the queue.",
+					"description": "Size of the internal priority queue. If the internal priority queue is full, you cannot send (push) additional jobs to the queue. If you set this value to zero, it defaults to 1 million.",
 					"type": "integer",
-					"default": 1000000
+					"default": 1000000,
+					"minimum": 0
 				},
 				"consume": {
 					"description": "A list of pipelines to be consumed by the server automatically when starting. You can omit this list if you want to start consuming manually. Each key in this list must be defined under `pipelines` as a consumer.",
@@ -1978,6 +1979,16 @@
 																		"type": "integer",
 																		"description": "The duration (in seconds) that a message received from a queue (by one consumer) will not be visible to the other message consumers. The visibility timeout begins when Amazon SQS returns a message. If the consumer fails to process and delete the message before the visibility timeout expires, the message becomes visible to other consumers. If a message must be received only once, your consumer must delete it within the duration of the visibility timeout.",
 																		"default": 0
+																	},
+																	"error_visibility_timeout": {
+																		"type": "integer",
+																		"description": "The visibility timeout to set for jobs that fail (NACK). If you set this, you must also set `retain_failed_jobs` to `true`.",
+																		"default": 0
+																	},
+																	"retain_failed_jobs": {
+																		"type": "boolean",
+																		"description": "Whether to keep failed (NACK'ed) jobs on the queue. By default, RR will delete and requeue failed jobs immediately. If you set this to `true`, RR does nothing to NACK'ed jobs on the queue and they will be consumed again after `visibility_timeout` or (`error_visibility_timeout`, if > 0) has passed. Jobs that are consumed multiple times will increment their receive count, which can be used to configure SQS to automatically move the jobs to a dead-letter queue.",
+																		"default": false
 																	},
 																	"wait_time_seconds": {
 																		"description": "The duration (in seconds) the call waits for a message to arrive in the queue before returning. If a message is available, the call returns immediately. If no messages are available and the wait time expires, the call returns with an empty list of messages",
