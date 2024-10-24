@@ -14,6 +14,7 @@
 	<a href="https://discord.gg/TFeEmCs"><img src="https://img.shields.io/badge/discord-chat-magenta.svg"></a>
 	<a href="https://packagist.org/packages/spiral/roadrunner"><img src="https://img.shields.io/packagist/dd/spiral/roadrunner?style=flat-square"></a>
     <img alt="All releases" src="https://img.shields.io/github/downloads/roadrunner-server/roadrunner/total">
+  <a href="https://gurubase.io/g/roadrunner"><img src="https://img.shields.io/badge/Gurubase-Ask%20RoadRunner%20Guru-006BFF?style=flat-square"></a>
 </p>
 
 RoadRunner is an open-source (MIT licensed) high-performance PHP application server, process manager written in Go and powered with plugins ❤️.
@@ -42,7 +43,8 @@ It supports running as a service with the ability to extend its functionality on
 	<a href="https://roadrunner.dev/"><b>Official Website</b></a> |
 	<a href="https://docs.roadrunner.dev/"><b>Documentation</b></a> |
     <a href="https://github.com/orgs/roadrunner-server/discussions"><b>Forum</b></a> |
-    <a href="https://github.com/orgs/roadrunner-server/projects/4"><b>Release schedule</b></a>
+    <a href="https://github.com/orgs/roadrunner-server/projects/4"><b>Release schedule</b></a> |
+    <a href="https://gurubase.io/g/roadrunner"><b>Ask RoadRunner Guru</b></a>
 </p>
 
 # Installation
