@@ -4,6 +4,7 @@
 #       MORE DOCS CAN BE FOUND HERE: <https://roadrunner.dev/docs/intro-config>      #
 ######################################################################################
 
+$schema: "./schemas/config/3.0.schema.json"
 # Production usage guide: https://roadrunner.dev/docs/app-server-production/2.x/en
 
 # Hint: RR will replace any config options using reference to environment variables,
@@ -40,8 +41,8 @@ server:
     #
     # Default: <empty map>
     env:
-      - SOME_KEY: "SOME_VALUE"
-      - SOME_KEY2: "SOME_VALUE2"
+      SOME_KEY: "SOME_VALUE"
+      SOME_KEY2: "SOME_VALUE2"
 
     # Username (not UID) of the user from whom the on_init command is executed. An empty value means to use the RR process user.
     #
@@ -67,8 +68,8 @@ server:
   #
   # Default: <empty map>
   env:
-    - SOME_KEY: "SOME_VALUE"
-    - SOME_KEY2: "SOME_VALUE2"
+    SOME_KEY: "SOME_VALUE"
+    SOME_KEY2: "SOME_VALUE2"
 
   # Worker relay can be: "pipes", TCP (eg.: tcp://127.0.0.1:6002), or socket (eg.: unix:///var/run/rr.sock).
   #
@@ -254,17 +255,17 @@ temporal:
     # Path to the key file
     #
     # This option is required
-    key: ""
+    key: "/ssl/key.pem"
 
     # Path to the certificate
     #
     # This option is required
-    cert: ""
+    cert: "/ssl/cert.crt"
 
     # Path to the CA certificate, defines the set of root certificate authorities that servers use if required to verify a client certificate. Used with the `client_auth_type` option.
     #
     # This option is optional
-    root_ca: ""
+    root_ca: "/ssl/ca.crt"
 
     # Client auth type.
     #
@@ -396,9 +397,9 @@ kv:
     #
     # This option is required to use local section, otherwise (us-central-kv) global configuration will be used.
     config:
-      # Driver specific section. Address of the memcached node.
+      # Driver specific section. Addresses of the memcached node(s).
       #
-      # Default: "localhost:11211"
+      # Default: [ "localhost:11211" ]
       addr: [ "localhost:11211" ]
 
   # User defined name of the section
@@ -455,14 +456,7 @@ kv:
     #
     # Default: none
     driver: memory
-    # Local configuration section
-    #
-    # This option is required to use local section, otherwise (local-memory) global configuration will be used.
-    config:
-      # TTL check interval in seconds
-      #
-      # Default: 60 seconds
-      interval: 1
+    config: {}
 
 # Service plugin settings
 service:
@@ -660,87 +654,6 @@ http:
       "fc00::/7",
       "fe80::/10",
     ]
-  # RFC 7234 RR Cache middleware
-  #
-  # Link: https://github.com/darkweak/souin
-  cache:
-    api:
-      basepath: /souin-api
-      prometheus:
-        basepath: /anything-for-prometheus-metrics
-      souin:
-        basepath: /anything-for-souin
-    cache_keys:
-      '.*\.css':
-        disable_body: true
-        disable_host: true
-        disable_method: true
-    cdn:
-      api_key: XXXX
-      provider: fastly
-      strategy: soft
-      dynamic: true
-    default_cache:
-      allowed_http_verbs:
-        - GET
-        - POST
-        - HEAD
-      cache_name: Souin
-      distributed: true
-      headers:
-        - Authorization
-      key:
-        disable_body: true
-        disable_host: true
-        disable_method: true
-      etcd:
-        configuration:
-          endpoints:
-            - etcd-1:2379
-            - etcd-2:2379
-            - etcd-3:2379
-      olric:
-        url: 'olric:3320'
-      regex:
-        exclude: 'ARegexHere'
-      stale: 1000s
-      timeout:
-        backend: 10s
-        cache: 20ms
-      ttl: 1000s
-      default_cache_control: no-store
-    log_level: INFO
-    ssl_providers:
-      - traefik
-    urls:
-      'https:\/\/domain.com\/first-.+':
-        ttl: 1000s
-      'https:\/\/domain.com\/second-route':
-        ttl: 10s
-        headers:
-          - Authorization
-      'https?:\/\/mysubdomain\.domain\.com':
-        ttl: 50s
-        headers:
-          - Authorization
-          - 'Content-Type'
-        default_cache_control: public, max-age=86400
-    ykeys:
-      The_First_Test:
-        headers:
-          Content-Type: '.+'
-      The_Second_Test:
-        url: 'the/second/.+'
-      The_Third_Test:
-      The_Fourth_Test:
-    surrogate_keys:
-      The_First_Test:
-        headers:
-          Content-Type: '.+'
-      The_Second_Test:
-        url: 'the/second/.+'
-      The_Third_Test:
-      The_Fourth_Test:
 
   # File uploading settings.
   uploads:
@@ -822,7 +735,7 @@ http:
     # File patterns to forbid
     #
     # Default: empty
-    forbid: [ "" ]
+    forbid: [ ]
 
     # Etag calculation (base on the body CRC32)
     #
@@ -936,6 +849,7 @@ http:
     address: "127.0.0.1:443"
 
     # Use ACME certificates provider (Let's encrypt)
+    # Must not be specified if key + cert is used.
     acme:
       # Directory to use as a certificate/pk, account info storage
       #
@@ -945,7 +859,7 @@ http:
       # User email
       #
       # Used to create LE account. Mandatory. Error on empty.
-      email: you-email-here@email
+      email: your-email-here@email
 
       # Alternate port for the http challenge. Challenge traffic should be redirected to this port if overridden.
       #
@@ -981,25 +895,25 @@ http:
     # Default: false
     redirect: true
 
-    # Path to the cert file. This option is required for SSL working.
+    # Path to the cert file. This option is required for SSL. Must not be specified if ACME is used.
     #
     # This option is required.
-    cert: /ssl/server.crt
+    # cert: "/ssl/cert.crt"
 
-    # Path to the cert key file.
+    # Path to the cert key file. Must not be specified if ACME is used.
     #
     # This option is required.
-    key: /ssl/server.key
+    # key: "/ssl/key.pem"
 
     # Path to the root certificate authority file.
     #
-    # This option is optional (required for the mTLS).
-    root_ca: /ssl/root.crt
+    # This option is optional (required for the mTLS). Must not be specified if ACME is used.
+    # root_ca: "/ssl/ca.crt"
 
-    # Client auth type (mTLS)
+    # Client auth type (mTLS). Must not be specified if ACME is used.
     #
     # This option is optional. Default value: no_client_certs. Possible values: request_client_cert, require_any_client_cert, verify_client_cert_if_given, require_and_verify_client_cert, no_client_certs
-    client_auth_type: no_client_certs
+    # client_auth_type: no_client_certs
 
   # FastCGI frontend support.
   fcgi:
@@ -1151,17 +1065,17 @@ amqp:
     # Path to the key file
     #
     # This option is required
-    key: ""
+    key: "/ssl/key.pem"
 
     # Path to the certificate
     #
     # This option is required
-    cert: ""
+    cert: "/ssl/cert.crt"
 
     # Path to the CA certificate, defines the set of root certificate authorities that servers use if required to verify a client certificate. Used with the `client_auth_type` option.
     #
     # This option is optional
-    root_ca: ""
+    root_ca: "/ssl/ca.crt"
 
     # Client auth type (mTLS, peer verification).
     #
@@ -1234,17 +1148,17 @@ kafka:
     # Path to the key file
     #
     # This option is required
-    key: ""
+    key: "/ssl/key.pem"
 
     # Path to the certificate
     #
     # This option is required
-    cert: ""
+    cert: "/ssl/cert.crt"
 
     # Path to the CA certificate, defines the set of root certificate authorities that servers use if required to verify a client certificate. Used with the `client_auth_type` option.
     #
     # This option is optional
-    root_ca: ""
+    root_ca: "/ssl/ca.crt"
 
     # Client auth type.
     #
@@ -1763,7 +1677,7 @@ jobs:
           # keep this less than a group's session timeout.
           #
           # Optional, default 40s. Possible values: 10s, 10m.
-          transaction_timeout: 100
+          transaction_timeout: 100s
 
           # compression_codec sets the compression codec to use for producing records.
           #
@@ -1897,17 +1811,17 @@ grpc:
     # Path to the key file
     #
     # This option is required
-    key: ""
+    key: "/ssl/key.pem"
 
     # Path to the certificate
     #
     # This option is required
-    cert: ""
+    cert: "/ssl/cert.crt"
 
     # Path to the CA certificate, defines the set of root certificate authorities that servers use if required to verify a client certificate. Used with the `client_auth_type` option.
     #
     # This option is optional
-    root_ca: ""
+    root_ca: "/ssl/ca.crt"
 
     # Client auth type.
     #
@@ -2269,12 +2183,12 @@ centrifuge:
     # TLS key
     #
     # Required
-    key: /path/to/key.pem
+    key: "/ssl/key.pem"
 
     # TLS certificate
     #
     # Required
-    cert: /path/to/cert.pem
+    cert: "/ssl/cert.crt"
 
 
 ## RoadRunner internal container configuration (docs: https://github.com/spiral/endure).
