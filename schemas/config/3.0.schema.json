@@ -1,2600 +1,1582 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Roadrunner config file schema version 3",
-    "description": "Roadrunner config file schema version 3",
-    "type": "object",
-    "additionalProperties": true,
-    "minProperties": 1,
-    "properties": {
-        "version": {
-            "description": "configuration version",
-            "type": "string",
-            "default": "3",
-            "enum": [
-                "3"
-            ]
-        },
-        "centrifuge": {
-            "description": "Centrifugo server plugin. Docs: https://centrifugal.dev/",
-            "type": "object",
-            "properties": {
-                "proxy_address": {
-                    "description": "Centrifugo server proxy address (docs: https://centrifugal.dev/docs/server/proxy#grpc-proxy)",
-                    "type": "string",
-                    "default": "tcp://127.0.0.1:30000"
-                },
-                "grpc_api_address": {
-                    "description": "gRPC server API address (docs: https://centrifugal.dev/docs/server/server_api#grpc-api)",
-                    "type": "string",
-                    "default": "tcp://127.0.0.1:30000"
-                },
-                "use_compressor": {
-                    "description": "Use gRPC gzip compressor",
-                    "type": "boolean",
-                    "default": false
-                },
-                "version": {
-                    "description": "Your application version",
-                    "type": "string",
-                    "default": "v1.0.0"
-                },
-                "name": {
-                    "description": "Your application name",
-                    "type": "string",
-                    "default": "roadrunner"
-                },
-                "pool": {
-                    "description": "Workers pool settings",
-                    "$ref": "#/definitions/WorkersPool"
-                },
-                "tls": {
-                    "description": "TLS settings",
-                    "type": "object",
-                    "properties": {
-                        "cert": {
-                            "description": "Path to the cert file",
-                            "type": "string",
-                            "minLength": 1,
-                            "examples": [
-                                "/ssl/server.crt"
-                            ]
-                        },
-                        "key": {
-                            "description": "Path to the cert key file",
-                            "type": "string",
-                            "minLength": 1,
-                            "examples": [
-                                "/ssl/server.key"
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "rpc": {
-            "type": "object",
-            "properties": {
-                "listen": {
-                    "description": "TCP address:port for listening",
-                    "type": "string",
-                    "default": "tcp://127.0.0.1:6001",
-                    "examples": [
-                        "tcp://127.0.0.1:6001"
-                    ],
-                    "pattern": "^tcp:\/\/[0-9a-zA-Z_.-]+:[0-9]{1,5}$"
-                }
-            }
-        },
-        "server": {
-            "type": "object",
-            "properties": {
-                "on_init": {
-                    "description": "Execute command or script before RR starts allocating workers",
-                    "type": "object",
-                    "properties": {
-                        "command": {
-                            "description": "Command to execute. It can be script or binary",
-                            "type": "string",
-                            "examples": [
-                                "php not-worker.php",
-                                "sh script.sh",
-                                "start script.bat"
-                            ]
-                        },
-                        "exec_timeout": {
-                            "description": "Script execute timeout",
-                            "$ref": "#/definitions/Duration",
-                            "default": "60s"
-                        },
-                        "user": {
-                            "description": "Username (not UID) of the user from whom the on_init command is executed. An empty value means to use the RR process user.",
-                            "type": "string",
-                            "default": "",
-                            "examples": [
-                                "www-data"
-                            ]
-                        },
-                        "env": {
-                            "description": "Environment variables for the worker processes",
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "patternProperties": {
-                                    "^[a-zA-Z0-9._-]+$": {
-                                        "type": "string"
-                                    }
-                                },
-                                "additionalProperties": false
-                            }
-                        }
-                    }
-                },
-                "command": {
-                    "description": "Worker starting command, with any required arguments",
-                    "type": "string",
-                    "examples": [
-                        "php psr-worker.php"
-                    ]
-                },
-                "user": {
-                    "description": "User name (not UID) for the worker processes. An empty value means to use the RR process user",
-                    "type": "string",
-                    "default": "",
-                    "examples": [
-                        "www-data"
-                    ]
-                },
-                "group": {
-                    "description": "Group name (not GID) for the worker processes. An empty value means to use the RR process user",
-                    "type": "string",
-                    "default": "",
-                    "examples": [
-                        "www-data"
-                    ]
-                },
-                "env": {
-                    "description": "Environment variables for the worker processes",
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "patternProperties": {
-                            "^[a-zA-Z0-9._-]+$": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false
-                    }
-                },
-                "relay": {
-                    "description": "Worker relay can be: 'pipes', TCP (eg.: tcp://127.0.0.1:6002), or socket (eg.: unix:///var/run/rr.sock)",
-                    "type": "string",
-                    "default": "pipes",
-                    "examples": [
-                        "pipes",
-                        "tcp://127.0.0.1:6002",
-                        "unix:///var/run/rr.sock"
-                    ]
-                }
-            },
-            "required": [
-                "command"
-            ]
-        },
-        "logs": {
-            "type": "object",
-            "properties": {
-                "mode": {
-                    "$ref": "#/definitions/LogMode",
-                    "default": "development"
-                },
-                "level": {
-                    "$ref": "#/definitions/LogLevel",
-                    "default": "debug"
-                },
-                "encoding": {
-                    "$ref": "#/definitions/LogEncoding",
-                    "default": "console"
-                },
-                "output": {
-                    "description": "Output",
-                    "$ref": "#/definitions/LogOutput",
-                    "default": "stderr"
-                },
-                "err_output": {
-                    "description": "Errors only output",
-                    "$ref": "#/definitions/LogOutput",
-                    "default": "stderr"
-                },
-                "channels": {
-                    "description": "You can configure each plugin log messages individually",
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "object",
-                        "properties": {
-                            "mode": {
-                                "$ref": "#/definitions/LogMode"
-                            },
-                            "level": {
-                                "$ref": "#/definitions/LogLevel"
-                            },
-                            "encoding": {
-                                "$ref": "#/definitions/LogEncoding"
-                            },
-                            "output": {
-                                "$ref": "#/definitions/LogOutput"
-                            },
-                            "err_output": {
-                                "$ref": "#/definitions/LogOutput"
-                            }
-                        }
-                    }
-                },
-                "file_logger_options": {
-                    "description": "file logger options",
-                    "type": "object",
-                    "properties": {
-                        "log_output": {
-                            "type": "string",
-                            "description": "path to the file"
-                        },
-                        "max_size": {
-                            "type": "integer",
-                            "description": "maximum file size in MB"
-                        },
-                        "max_age": {
-                            "type": "integer",
-                            "description": "The maximum number of days to retain old log files based on the timestamp encoded in their filename"
-                        },
-                        "max_backups": {
-                            "type": "integer",
-                            "description": "The maximum number of old log files to retain"
-                        },
-                        "compress": {
-                            "type": "boolean",
-                            "description": "compress files to save a disk space"
-                        }
-                    }
-                }
-            }
-        },
-        "temporal": {
-            "description": "Workflow and activity mesh service, https://docs.temporal.io/docs/php/introduction/",
-            "type": "object",
-            "properties": {
-                "address": {
-                    "description": "Address of temporal server",
-                    "type": "string",
-                    "default": "127.0.0.1:7233"
-                },
-                "cache_size": {
-                    "description": "Sticky cache size. Sticky workflow execution is the affinity between workflow tasks of a specific workflow execution to a specific worker. The benefit of sticky execution is that the workflow does not have to reconstruct state by replaying history from the beginning. The cache is shared between workers running within same process. This must be called before any worker is started. If not called, the default size of 10K (which may change) will be used",
-                    "type": "integer",
-                    "default": 10000
-                },
-                "namespace": {
-                    "description": "Namespace name for this client to work with",
-                    "type": "string",
-                    "default": "default"
-                },
-                "metrics": {
-                    "description": "Temporal metrics",
-                    "type": "object",
-                    "default": null,
-                    "properties": {
-                        "driver": {
-                            "description": "Metrics driver to use",
-                            "type": "string",
-                            "enum": [
-                                "prometheus",
-                                "statsd"
-                            ],
-                            "default": "prometheus"
-                        }
-                    },
-                    "anyOf": [
-                        {
-                            "type": "object",
-                            "properties": {
-                                "address": {
-                                    "description": "Server metrics address",
-                                    "type": "string",
-                                    "default": "127.0.0.1:9091"
-                                },
-                                "type": {
-                                    "type": "string",
-                                    "description": "Metrics type",
-                                    "anyOf": [
-                                        {
-                                            "type": "string",
-                                            "examples": [
-                                                "summary",
-                                                "histogram"
-                                            ]
-                                        }
-                                    ]
-                                },
-                                "prefix": {
-                                    "description": "Temporal metrics prefix",
-                                    "type": "string",
-                                    "default": null
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "host_port": {
-                                    "description": "The host and port of the statsd server",
-                                    "type": "string",
-                                    "default": "127.0.0.1:8125"
-                                },
-                                "prefix": {
-                                    "description": "The prefix to use in reporting to statsd",
-                                    "type": "string",
-                                    "default": null
-                                },
-                                "flush_interval": {
-                                    "description": "FlushInterval is the maximum interval for sending packets",
-                                    "type": "string",
-                                    "default": "1s"
-                                },
-                                "flush_bytes": {
-                                    "description": "FlushBytes specifies the maximum udp packet size you wish to send. If FlushBytes is unspecified, it defaults  to 1432 bytes, which is considered safe for local traffic.",
-                                    "type": "integer",
-                                    "default": 1432
-                                },
-                                "tags": {
-                                    "description": "Hashmap with tag:value values",
-                                    "$ref": "#/definitions/Hashmap"
-                                },
-                                "tag_prefix": {
-                                    "description": "Prefix for the tag",
-                                    "type": "string",
-                                    "default": null
-                                },
-                                "tag_separator": {
-                                    "description": "TagSeparator allows tags to be appended with a separator. If not specified tag keys and values are embedded to the stat name directly.",
-                                    "type": "string",
-                                    "default": null
-                                }
-                            }
-                        }
-                    ]
-                },
-                "activities": {
-                    "description": "Activities pool settings",
-                    "type": "object",
-                    "$ref": "#/definitions/WorkersPool"
-                },
-                "tls": {
-                    "description": "Temporal TLS configuration",
-                    "type": "object",
-                    "properties": {
-                        "key": {
-                            "description": "Path to the key file",
-                            "type": "string",
-                            "default": null
-                        },
-                        "cert": {
-                            "description": "Path to the certificate",
-                            "type": "string",
-                            "default": null
-                        },
-                        "root_ca": {
-                            "description": "Path to the CA certificate",
-                            "type": "string",
-                            "default": null
-                        },
-                        "client_auth_type": {
-                            "description": "Client auth type",
-                            "type": "string",
-                            "default": "no_client_certs",
-                            "enum": [
-                                "request_client_cert",
-                                "require_any_client_cert",
-                                "verify_client_cert_if_given",
-                                "no_client_certs",
-                                "require_and_verify_client_cert"
-                            ]
-                        },
-                        "server_name": {
-                            "description": "ServerName is used to verify the hostname on the returned certificates unless InsecureSkipVerify is given. It is also included in the client's handshake to support virtual hosting unless it is an IP address.",
-                            "type": "string",
-                            "default": null
-                        }
-                    }
-                }
-            }
-        },
-        "kv": {
-            "description": "Key value storages plugin",
-            "type": "object",
-            "minProperties": 1,
-            "patternProperties": {
-                "[a-zA-Z0-9_-]*": {
-                    "anyOf": [
-                        {
-                            "type": "object",
-                            "description": "boltdb driver",
-                            "properties": {
-                                "driver": {
-                                    "type": "string",
-                                    "description": "Driver which should be used for the storage"
-                                },
-                                "config": {
-                                    "anyOf": [
-                                        {
-                                            "type": "object",
-                                            "$ref": "#/definitions/BoltDB"
-                                        },
-                                        {
-                                            "type": "object",
-                                            "$ref": "#/definitions/Memcached"
-                                        },
-                                        {
-                                            "type": "object",
-                                            "$ref": "#/definitions/Redis"
-                                        },
-                                        {
-                                            "type": "object",
-                                            "$ref": "#/definitions/Memory"
-                                        }
-                                    ]
-                                }
-                            },
-                            "required": [
-                                "driver"
-                            ]
-                        }
-                    ]
-                }
-            }
-        },
-        "service": {
-            "description": "Service plugin settings",
-            "type": "object",
-            "patternProperties": {
-                "^[a-zA-Z0-9._-]+$": {
-                    "allOf": [
-                        {
-                            "description": "User defined services",
-                            "type": "object",
-                            "$ref": "#/definitions/Service"
-                        }
-                    ]
-                }
-            }
-        },
-        "otel": {
-            "description": "OpenTelemetry configuration",
-            "type": "object",
-            "properties": {
-                "insecure": {
-                    "description": "Use insecure endpoint",
-                    "type": "boolean",
-                    "default": false
-                },
-                "compress": {
-                    "description": "Use gzip compressor",
-                    "type": "boolean",
-                    "default": false
-                },
-                "exporter": {
-                    "description": "Provides functionality to emit telemetry to consumers",
-                    "type": "string",
-                    "items": {
-                        "type": "string",
-                        "enum": [
-                            "zipkin",
-                            "stdout",
-                            "stderr",
-                            "otlp",
-                            "jaeger",
-                            "jaeger_agent"
-                        ],
-                        "pattern": "^[0-9a-zA-Z_]+$"
-                    }
-                },
-                "custom_url": {
-                    "description": "Used for the http client to override the default URL",
-                    "type": "string",
-                    "default": ""
-                },
-                "endpoint": {
-                    "description": "Consumer's endpoint",
-                    "type": "string",
-                    "default": "127.0.0.1:4318"
-                },
-                "client": {
-                    "description": "Client to send the spans",
-                    "type": "string",
-                    "items": {
-                        "type": "string",
-                        "enum": [
-                            "http",
-                            "grpc"
-                        ],
-                        "pattern": "^[0-9a-zA-Z_]+$"
-                    }
-                },
-                "service_name": {
-                    "description": "User's service name",
-                    "type": "string",
-                    "default": "RoadRunner"
-                },
-                "service_version": {
-                    "description": "User's service version",
-                    "type": "string",
-                    "default": "1.0.0"
-                },
-                "headers": {
-                    "description": "User defined headers",
-                    "$ref": "#/definitions/Hashmap"
-                }
-            }
-        },
-        "http": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "description": "Host and port to listen on",
-                    "$ref": "#/definitions/HostAndPort",
-                    "examples": [
-                        "127.0.0.1:8080",
-                        ":8080"
-                    ]
-                },
-                "max_request_size": {
-                    "description": "Maximal incoming request size in megabytes. Zero means no limit",
-                    "type": "integer",
-                    "minimum": 0,
-                    "default": 0
-                },
-                "raw_body": {
-                    "description": "Send raw body (unescaped) to the PHP worker for the application/x-www-form-urlencoded content type",
-                    "type": "boolean",
-                    "default": false
-                },
-                "access_logs": {
-                    "description": "HTTP access logs",
-                    "type": "boolean",
-                    "default": false
-                },
-                "middleware": {
-                    "description": "Middleware for the http plugin, order is important",
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "enum": [
-                            "headers",
-                            "gzip",
-                            "static",
-                            "sendfile",
-                            "http_metrics",
-                            "cache",
-                            "proxy_ip_parser",
-                            "otel"
-                        ],
-                        "pattern": "^[0-9a-zA-Z_]+$"
-                    }
-                },
-                "trusted_subnets": {
-                    "description": "Allow incoming requests only from the following subnets",
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "examples": [
-                            "10.0.0.0/8",
-                            "127.0.0.0/8"
-                        ]
-                    },
-                    "default": [
-                        "10.0.0.0/8",
-                        "127.0.0.0/8",
-                        "172.16.0.0/12",
-                        "192.168.0.0/16",
-                        "::1/128",
-                        "fc00::/7",
-                        "fe80::/10"
-                    ]
-                },
-                "cache": {
-                    "description": "RFC 7234 Souin cache: https://github.com/darkweak/souin/tree/master/plugins/roadrunner",
-                    "type": "object",
-                    "properties": {
-                        "api": {
-                            "description": "The cache-handler API cache management",
-                            "type": "object",
-                            "properties": {
-                                "basepath": {
-                                    "description": "Default route basepath for every additional APIs to avoid conflicts with existing routes",
-                                    "type": "string",
-                                    "default": null
-                                },
-                                "prometheus": {
-                                    "type": "object",
-                                    "description": "Prometheus exposed metrics",
-                                    "properties": {
-                                        "basepath": {
-                                            "type": "string",
-                                            "default": null
-                                        }
-                                    }
-                                },
-                                "souin": {
-                                    "type": "object",
-                                    "description": "Souin listing keys and cache management",
-                                    "properties": {
-                                        "basepath": {
-                                            "type": "string",
-                                            "default": null
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "cache_keys": {
-                            "type": "object",
-                            "patternProperties": {
-                                "^[a-zA-Z0-9._-]+$": {
-                                    "description": "cache keys configuration",
-                                    "type": "object",
-                                    "properties": {
-                                        "disable_body": {
-                                            "type": "boolean",
-                                            "default": false
-                                        },
-                                        "disable_host": {
-                                            "type": "boolean",
-                                            "default": false
-                                        },
-                                        "disable_method": {
-                                            "type": "boolean",
-                                            "default": false
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "cdn": {
-                            "description": "If Souin is set after a CDN fill these information",
-                            "type": "object",
-                            "properties": {
-                                "api_key": {
-                                    "type": "string",
-                                    "description": "Your provider API key if mandatory"
-                                },
-                                "provider": {
-                                    "description": "The provider placed before Souin (e.g. fastly, cloudflare, akamai, varnish)",
-                                    "type": "string",
-                                    "enum": [
-                                        "fastly",
-                                        "cloudflare",
-                                        "akamai",
-                                        "varnish"
-                                    ]
-                                },
-                                "strategy": {
-                                    "description": "The strategy to purge the CDN cache based on tags (e.g. soft, hard)",
-                                    "type": "string",
-                                    "enum": [
-                                        "soft",
-                                        "hard"
-                                    ]
-                                },
-                                "dynamic": {
-                                    "description": "If true, you'll be able to add custom keys than the ones defined under the surrogate_keys key",
-                                    "type": "boolean",
-                                    "default": false
-                                }
-                            }
-                        },
-                        "default_cache": {
-                            "type": "object",
-                            "properties": {
-                                "allowed_http_verbs": {
-                                    "type": "array",
-                                    "default": [
-                                        "GET",
-                                        "POST"
-                                    ]
-                                },
-                                "cache_name": {
-                                    "description": "Override the cache name to use in the Cache-Status header",
-                                    "type": "string",
-                                    "default": "roadrunner"
-                                },
-                                "distributed": {
-                                    "type": "boolean",
-                                    "default": false,
-                                    "description": "Use Olric or Etcd distributed storage"
-                                },
-                                "headers": {
-                                    "description": "Default headers concatenated in stored keys",
-                                    "type": "array",
-                                    "default": null
-                                },
-                                "key": {
-                                    "type": "object",
-                                    "properties": {
-                                        "disable_body": {
-                                            "type": "boolean",
-                                            "default": false
-                                        },
-                                        "disable_host": {
-                                            "type": "boolean",
-                                            "default": false
-                                        },
-                                        "disable_method": {
-                                            "type": "boolean",
-                                            "default": false
-                                        }
-                                    }
-                                },
-                                "etcd": {
-                                    "description": "If distributed is set to true, you'll have to define either the etcd or olric section",
-                                    "type": "object",
-                                    "properties": {
-                                        "configuration": {
-                                            "type": "object",
-                                            "description": "Configure directly the Etcd client",
-                                            "properties": {
-                                                "endpoints": {
-                                                    "description": "Define multiple endpoints",
-                                                    "type": "array",
-                                                    "default": null
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                                "olric": {
-                                    "type": "object",
-                                    "description": "If distributed is set to true, you'll have to define either the etcd or olric section",
-                                    "properties": {
-                                        "url": {
-                                            "description": "Olric server",
-                                            "type": "string",
-                                            "default": "http://127.0.0.1:3320"
-                                        }
-                                    }
-                                },
-                                "regex": {
-                                    "type": "object",
-                                    "description": "Regex to exclude from cache",
-                                    "properties": {
-                                        "exclude": {
-                                            "type": "string",
-                                            "default": null
-                                        }
-                                    }
-                                },
-                                "stale": {
-                                    "type": "string",
-                                    "description": "Stale duration",
-                                    "default": "1000s"
-                                },
-                                "timeout": {
-                                    "description": "Timeout configuration",
-                                    "type": "object",
-                                    "properties": {
-                                        "backend": {
-                                            "description": "Backend timeout before returning an HTTP unavailable response",
-                                            "type": "string",
-                                            "default": "10s"
-                                        },
-                                        "cache": {
-                                            "description": "Cache provider (badger, etcd, nutsdb, olric, depending the configuration you set) timeout before returning a miss",
-                                            "type": "string",
-                                            "default": "20ms"
-                                        }
-                                    }
-                                },
-                                "ttl": {
-                                    "description": "Default TTL",
-                                    "type": "string",
-                                    "default": "1000s"
-                                },
-                                "default_cache_control": {
-                                    "description": "Set default value for Cache-Control response header if not set by upstream",
-                                    "type": "string",
-                                    "default": "no-store"
-                                }
-                            }
-                        },
-                        "log_level": {
-                            "type": "string",
-                            "description": "Logs verbosity",
-                            "default": "INFO",
-                            "enum": [
-                                "DEBUG",
-                                "INFO",
-                                "WARN",
-                                "DPANIC",
-                                "PANIC",
-                                "ERROR",
-                                "FATAL"
-                            ]
-                        }
-                    }
-                },
-                "uploads": {
-                    "type": "object",
-                    "properties": {
-                        "dir": {
-                            "description": "Directory for file uploads. Empty value means to use $TEMP based on your OS",
-                            "type": "string",
-                            "examples": [
-                                "/tmp"
-                            ],
-                            "default": ""
-                        },
-                        "forbid": {
-                            "description": "Deny files with the following extensions to upload",
-                            "type": "array",
-                            "items": {
-                                "type": "string",
-                                "examples": [
-                                    ".php",
-                                    ".exe"
-                                ]
-                            },
-                            "default": [
-                                ".php",
-                                ".exe",
-                                ".bat"
-                            ]
-                        },
-                        "allow": {
-                            "description": "Allow files with the following extensions to upload",
-                            "type": "array",
-                            "items": {
-                                "type": "string",
-                                "examples": [
-                                    ".html",
-                                    ".go"
-                                ]
-                            },
-                            "default": ""
-                        }
-                    }
-                },
-                "headers": {
-                    "description": "HTTP headers map",
-                    "type": "object",
-                    "properties": {
-                        "cors": {
-                            "description": "Allows to control CORS headers",
-                            "type": "object",
-                            "properties": {
-                                "allowed_origin": {
-                                    "description": "Controls 'Access-Control-Allow-Origin' header value",
-                                    "type": "string",
-                                    "examples": [
-                                        "*"
-                                    ],
-                                    "default": null
-                                },
-                                "allowed_origin_regex": {
-                                    "description": "Controls 'Access-Control-Allow-Origin' header value, regex version",
-                                    "type": "string",
-                                    "examples": [
-                                        "^https://foo"
-                                    ],
-                                    "default": null
-                                },
-                                "allowed_headers": {
-                                    "description": "Controls 'Access-Control-Allow-Headers' header value",
-                                    "type": "string",
-                                    "examples": [
-                                        "*"
-                                    ],
-                                    "default": ""
-                                },
-                                "allowed_methods": {
-                                    "description": "Controls 'Access-Control-Allow-Methods' header value",
-                                    "type": "string",
-                                    "examples": [
-                                        "GET,POST,PUT,DELETE"
-                                    ],
-                                    "default": ""
-                                },
-                                "allow_credentials": {
-                                    "description": "Controls 'Access-Control-Allow-Credentials' header value",
-                                    "type": "boolean",
-                                    "default": false
-                                },
-                                "exposed_headers": {
-                                    "description": "Controls 'Access-Control-Expose-Headers' header value",
-                                    "type": "string",
-                                    "examples": [
-                                        "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
-                                    ],
-                                    "default": ""
-                                },
-                                "max_age": {
-                                    "description": "Controls 'Access-Control-Max-Age' header value (in seconds)",
-                                    "type": "integer",
-                                    "examples": [
-                                        600
-                                    ],
-                                    "default": 0
-                                }
-                            }
-                        },
-                        "request": {
-                            "description": "Automatically add headers to every request passed to PHP",
-                            "$ref": "#/definitions/Hashmap"
-                        },
-                        "response": {
-                            "description": "Automatically add headers to every response",
-                            "$ref": "#/definitions/Hashmap"
-                        }
-                    }
-                },
-                "static": {
-                    "description": "Static assets serving settings",
-                    "type": "object",
-                    "properties": {
-                        "dir": {
-                            "description": "Path to the directory with static assets",
-                            "type": "string",
-                            "examples": [
-                                ".",
-                                "/var/www/html"
-                            ]
-                        },
-                        "forbid": {
-                            "description": "File extensions that should not be served",
-                            "type": "array",
-                            "items": {
-                                "type": "string",
-                                "examples": [
-                                    ".php",
-                                    ".htaccess"
-                                ]
-                            }
-                        },
-                        "allow": {
-                            "description": "File extensions which should be served",
-                            "type": "array",
-                            "items": {
-                                "type": "string",
-                                "examples": [
-                                    ".php",
-                                    ".htaccess"
-                                ]
-                            }
-                        },
-                        "calculate_etag": {
-                            "description": "Turn on etag computation for the static file",
-                            "type": "boolean"
-                        },
-                        "weak": {
-                            "description": "Use a weak generator (/W), it uses only filename to generate a CRC32 sum",
-                            "type": "boolean"
-                        },
-                        "response": {
-                            "description": "Custom headers for the static files",
-                            "$ref": "#/definitions/Hashmap"
-                        }
-                    },
-                    "required": [
-                        "dir"
-                    ]
-                },
-                "pool": {
-                    "description": "Workers pool settings",
-                    "$ref": "#/definitions/WorkersPool"
-                },
-                "ssl": {
-                    "description": "SSL (Secure Sockets Layer) settings",
-                    "type": "object",
-                    "properties": {
-                        "address": {
-                            "description": "Host and port to listen on",
-                            "$ref": "#/definitions/HostAndPort",
-                            "examples": [
-                                "127.0.0.1:443",
-                                ":8443"
-                            ]
-                        },
-                        "acme": {
-                            "description": "ACME certificates provider (Let's encrypt)",
-                            "type": "object",
-                            "properties": {
-                                "certs_dir": {
-                                    "description": "Directory to use as a certificate/pk, account info storage",
-                                    "type": "string",
-                                    "default": "rr_cache"
-                                },
-                                "email": {
-                                    "description": "User email, used to create LE account",
-                                    "type": "string"
-                                },
-                                "alt_http_port": {
-                                    "description": "Alternate port for the http challenge. Challenge traffic should be redirected to this port if overridden.",
-                                    "type": "integer",
-                                    "default": 80
-                                },
-                                "alt_tlsalpn_port": {
-                                    "description": "Alternate port for the tls-alpn-01 challenge. Challenge traffic should be redirected to this port if overridden.",
-                                    "type": "integer",
-                                    "default": 443
-                                },
-                                "challenge_type": {
-                                    "type": "string",
-                                    "enum": [
-                                        "http-01",
-                                        "tlsalpn-01"
-                                    ],
-                                    "description": "Challenge types",
-                                    "default": "http-01"
-                                },
-                                "use_production_endpoint": {
-                                    "description": "Use production or staging endpoint. NOTE, try to use staging endpoint to make sure, that everything works correctly.",
-                                    "type": "boolean",
-                                    "default": false
-                                },
-                                "domains": {
-                                    "type": "array",
-                                    "description": "List of your domains to obtain certificates"
-                                }
-                            },
-                            "required": [
-                                "domains",
-                                "email"
-                            ]
-                        },
-                        "redirect": {
-                            "description": "Automatic redirect from http to https schema",
-                            "type": "boolean",
-                            "default": false
-                        },
-                        "cert": {
-                            "description": "Path to the cert file",
-                            "type": "string",
-                            "minLength": 1,
-                            "examples": [
-                                "/ssl/server.crt"
-                            ]
-                        },
-                        "key": {
-                            "description": "Path to the cert key file",
-                            "type": "string",
-                            "minLength": 1,
-                            "examples": [
-                                "/ssl/server.key"
-                            ]
-                        },
-                        "root_ca": {
-                            "description": "Path to the root certificate authority file",
-                            "type": "string",
-                            "minLength": 1,
-                            "examples": [
-                                "/ssl/root.crt"
-                            ]
-                        },
-                        "client_auth_type": {
-                            "description": "Client auth type",
-                            "type": "string",
-                            "default": "no_client_certs",
-                            "enum": [
-                                "request_client_cert",
-                                "require_any_client_cert",
-                                "verify_client_cert_if_given",
-                                "no_client_certs",
-                                "require_and_verify_client_cert"
-                            ]
-                        }
-                    },
-                    "required": [
-                        "address",
-                        "cert",
-                        "key"
-                    ]
-                },
-                "fcgi": {
-                    "description": "FastCGI frontend support",
-                    "type": "object",
-                    "properties": {
-                        "address": {
-                            "description": "FastCGI connection DSN. Supported TCP and Unix sockets. An empty value disables this",
-                            "type": "string",
-                            "examples": [
-                                "tcp://0.0.0.0:7921"
-                            ]
-                        }
-                    },
-                    "required": [
-                        "address"
-                    ]
-                },
-                "http2": {
-                    "description": "HTTP/2 settings",
-                    "type": "object",
-                    "properties": {
-                        "h2c": {
-                            "description": "HTTP/2 over non-encrypted TCP connection using H2C",
-                            "type": "boolean",
-                            "default": false
-                        },
-                        "max_concurrent_streams": {
-                            "description": "Maximal concurrent streams count",
-                            "type": "integer",
-                            "default": 128,
-                            "minimum": 0
-                        }
-                    }
-                }
-            },
-            "required": [
-                "address"
-            ]
-        },
-        "redis": {
-            "description": "Redis section.",
-            "type": "object",
-            "$ref": "#/definitions/Redis"
-        },
-        "metrics": {
-            "description": "Application metrics in Prometheus format (docs: https://roadrunner.dev/docs/beep-beep-metrics)",
-            "type": "object",
-            "properties": {
-                "address": {
-                    "description": "Prometheus client address (path /metrics added automatically).",
-                    "type": "string",
-                    "default": "127.0.0.1:2112"
-                },
-                "collect": {
-                    "description": "Application-specific metrics (published using an RPC connection to the server)",
-                    "type": "object",
-                    "patternProperties": {
-                        "^[a-zA-Z0-9._-]+$": {
-                            "type": "object",
-                            "properties": {
-                                "type": {
-                                    "type": "string",
-                                    "enum": [
-                                        "histogram",
-                                        "gauge",
-                                        "counter",
-                                        "summary"
-                                    ]
-                                },
-                                "help": {
-                                    "type": "string",
-                                    "description": "Help message"
-                                },
-                                "labels": {
-                                    "type": "array",
-                                    "minItems": 1,
-                                    "description": "Metrics labels"
-                                },
-                                "buckets": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "number"
-                                    }
-                                },
-                                "objectives": {
-                                    "title": "map[float]float",
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "additionalProperties": {
-                                            "type": "number"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "status": {
-            "description": "Health check endpoint (docs: https://roadrunner.dev/docs/beep-beep-health). If response code is 200 - it means at least one worker ready to serve requests. 500 - there are no workers ready to service requests.",
-            "type": "object",
-            "properties": {
-                "address": {
-                    "description": "Host and port to listen on (eg.: `127.0.0.1:2114`). Use the following URL: http://127.0.0.1:2114/health?plugin=http. Multiple plugins must be separated using & - http://127.0.0.1:2114/health?plugin=http&plugin=rpc where http and rpc are active (connected) plugins.",
-                    "type": "string",
-                    "examples": [
-                        "127.0.0.1:2114"
-                    ]
-                },
-                "unavailable_status_code": {
-                    "description": "Response status code if a requested plugin not ready to handle requests. Valid for both /health and /ready endpoints",
-                    "type": "integer",
-                    "default": 503
-                }
-            },
-            "required": [
-                "address"
-            ]
-        },
-        "reload": {
-            "description": "Automatically detect PHP file changes and reload connected services",
-            "type": "object",
-            "properties": {
-                "interval": {
-                    "description": "Sync interval",
-                    "$ref": "#/definitions/Duration",
-                    "default": "1s"
-                },
-                "patterns": {
-                    "description": "Global patterns to sync",
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "examples": [
-                            ".php",
-                            ".json"
-                        ]
-                    },
-                    "default": [
-                        ".php"
-                    ]
-                },
-                "services": {
-                    "description": "List of included for sync services (this is a map, where key name is a plugin name)",
-                    "type": "object",
-                    "minProperties": 0,
-                    "patternProperties": {
-                        "^[a-zA-Z0-9._-]+$": {
-                            "type": "object",
-                            "properties": {
-                                "dirs": {
-                                    "description": "Directories to sync. If recursive is set to true, recursive sync will be applied only to the directories in 'dirs' section. Dot (.) means 'current working directory'",
-                                    "type": "array",
-                                    "default": [],
-                                    "items": {
-                                        "type": "string",
-                                        "examples": [
-                                            ".",
-                                            "/app/src"
-                                        ],
-                                        "minLength": 1
-                                    }
-                                },
-                                "recursive": {
-                                    "description": "Recursive search for file patterns to add",
-                                    "type": "boolean",
-                                    "default": false
-                                },
-                                "ignore": {
-                                    "description": "Ignored folders",
-                                    "type": "array",
-                                    "default": [],
-                                    "items": {
-                                        "type": "string",
-                                        "examples": [
-                                            "vendor",
-                                            "/app/logs"
-                                        ],
-                                        "minLength": 1
-                                    }
-                                },
-                                "patterns": {
-                                    "description": "Service specific file pattens to sync",
-                                    "type": "array",
-                                    "default": [],
-                                    "items": {
-                                        "type": "string",
-                                        "examples": [
-                                            ".php",
-                                            ".go",
-                                            ".md"
-                                        ],
-                                        "minLength": 1
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "additionalProperties": false
-                }
-            }
-        },
-        "nats": {
-            "$ref": "#/definitions/NATS_J"
-        },
-        "kafka": {
-            "$ref": "#/definitions/KAFKA_J"
-        },
-        "amqp": {
-            "description": "AMQP jobs driver",
-            "type": "object",
-            "properties": {
-                "addr": {
-                    "description": "AMQP Uri to connect to the rabbitmq server https://www.rabbitmq.com/uri-spec.html",
-                    "type": "string",
-                    "default": "amqp://guest:guest@127.0.0.1:5672"
-                },
-                "tls": {
-                    "description": "",
-                   "properties": {
-                    "key": {
-                        "description": "Path to the key file",
-                        "type": "string"
-                    },
-                    "cert": {
-                        "description": "Path to the cert file",
-                        "type": "string"
-                    },
-                    "root_ca": {
-                        "description": "Path to the CA certificate, defines the set of root certificate authorities that servers use if required to verify a client certificate. Used with the `client_auth_type` option.",
-                        "type": "string"
-                    },
-                    "client_auth_type": {
-                            "type": "string",
-                            "default": "no_client_certs",
-                            "enum": [
-                                "request_client_cert",
-                                "require_any_client_cert",
-                                "verify_client_cert_if_given",
-                                "no_client_certs",
-                                "require_and_verify_client_cert"
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "beanstalk": {
-            "description": "Beanstalk jobs driver",
-            "type": "object",
-            "properties": {
-                "addr": {
-                    "description": "Beanstalk server address",
-                    "type": "string",
-                    "default": "tcp://127.0.0.1:11300"
-                },
-                "timeout": {
-                    "description": "Beanstalk connect timeout",
-                    "type": "string",
-                    "$ref": "#/definitions/Duration",
-                    "default": "30s"
-                }
-            }
-        },
-        "sqs": {
-            "description": "SQS jobs driver (https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html)",
-            "type": "object",
-            "properties": {
-                "key": {
-                    "description": "AccessKey ID",
-                    "type": "string",
-                    "default": null
-                },
-                "secret": {
-                    "description": "Secret Access key",
-                    "type": "string",
-                    "default": null
-                },
-                "region": {
-                    "description": "AWS Region",
-                    "type": "string",
-                    "default": null
-                },
-                "session_token": {
-                    "description": "AWS Session token",
-                    "type": "string",
-                    "default": null
-                },
-                "endpoint": {
-                    "description": "AWS SQS endpoint to connect",
-                    "type": "string",
-                    "default": "http://127.0.0.1:9324"
-                }
-            }
-        },
-        "jobs": {
-            "description": "JOBS plugin",
-            "type": "object",
-            "properties": {
-                "num_pollers": {
-                    "description": "Number of threads which will try to obtain the job from the priority queue. Default is the number of workers+1",
-                    "type": "integer",
-                    "examples": [
-                        10,
-                        32
-                    ]
-                },
-                "timeout": {
-                    "description": "JOBS Push operation timeout in seconds",
-                    "type": "integer",
-                    "default": 60
-                },
-                "pipeline_size": {
-                    "description": "Size of the internal priority queue, if the internal PQ reach the max number of elements, the Push operation will be blocked",
-                    "type": "integer",
-                    "default": 1000000
-                },
-                "consume": {
-                    "description": "list of pipelines to be consumed by the server automatically at the start, keep empty if you want to start consuming manually",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "pool": {
-                    "description": "JOBS workers pool",
-                    "type": "object",
-                    "$ref": "#/definitions/WorkersPool"
-                },
-                "pipelines": {
-                    "description": "List of broker pipelines associated with the drivers. This option is not required since you can declare pipelines in the runtime. Pipeline driver should exist.",
-                    "type": "object",
-                    "properties": {
-                        "driver": {
-                            "type": "array",
-                            "description": "JOBS plugin driver",
-                            "items": {
-                                "type": "string",
-                                "enum": [
-                                    "amqp",
-                                    "sqs",
-                                    "beanstalk",
-                                    "boltdb",
-                                    "memory",
-                                    "nats",
-                                    "kafka"
-                                ]
-                            }
-                        },
-                        "config": {
-                            "type": "object",
-                            "description": "driver configurations",
-                            "patternProperties": {
-                                "^[a-zA-Z0-9._-]+$": {
-                                    "type": "object",
-                                    "maxProperties": 1,
-                                    "oneOf": [
-                                        {
-                                            "properties": {
-                                                "priority": {
-                                                    "description": "Pipeline priority. If the job pushed to the pipeline has priority set to 0, it will inherit the pipeline's priority",
-                                                    "type": "integer",
-                                                    "default": 10
-                                                },
-                                                "prefetch": {
-                                                    "description": "Number of job to prefetch from the driver",
-                                                    "type": "integer",
-                                                    "default": 100000
-                                                },
-                                                "permissions": {
-                                                    "description": "Permissions for the boltdb database file",
-                                                    "type": "integer",
-                                                    "default": 777
-                                                },
-                                                "file": {
-                                                    "description": "BoldDB file to create or DB to use",
-                                                    "type": "string",
-                                                    "default": "rr.db"
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "properties": {
-                                                "priority": {
-                                                    "description": "Pipeline priority. If the job pushed to the pipeline has priority set to 0, it will inherit the pipeline's priority",
-                                                    "type": "integer",
-                                                    "default": 10
-                                                },
-                                                "prefetch": {
-                                                    "description": "Number of job to prefetch from the driver",
-                                                    "type": "integer",
-                                                    "default": 100000
-                                                },
-                                                "consume_all": {
-                                                    "description": "Consume all payloads, even not Job structured",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "queue": {
-                                                    "type": "string",
-                                                    "description": "Queue name",
-                                                    "default": "default"
-                                                },
-                                                "exchange": {
-                                                    "description": "Exchange name",
-                                                    "type": "string",
-                                                    "default": "amqp.default"
-                                                },
-                                                "redial_timeout": {
-                                                    "description": "Redial timeout (in seconds). How long to try to reconnect to the AMQP server",
-                                                    "type": "integer",
-                                                    "default": 60
-                                                },
-                                                "exchange_durable": {
-                                                    "description": "Durable exchange (rabbitmq option: https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges)",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "consumer_id": {
-                                                    "description": "The consumer_id is identified by a string that is unique and scoped for all consumers on this channel",
-                                                    "type": "string",
-                                                    "default": "roadrunner+uuid"
-                                                },
-                                                "exchange_auto_deleted": {
-                                                    "description": "Auto-delete (exchange is deleted when last queue is unbound from it): https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "queue_auto_deleted": {
-                                                    "description": "Auto-delete (queue that has had at least one consumer is deleted when last consumer unsubscribes)",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "exchange_type": {
-                                                    "description": "Exchange type",
-                                                    "type": "string",
-                                                    "default": "direct"
-                                                },
-                                                "routing_key": {
-                                                    "description": "Routing key for the queue",
-                                                    "type": "string",
-                                                    "default": null
-                                                },
-                                                "exclusive": {
-                                                    "description": "Declare a queue exclusive at the exchange",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "multiple_ack": {
-                                                    "description": "When multiple is true, this delivery and all prior unacknowledged deliveries on the same channel will be acknowledged. This is useful for batch processing of deliveries",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "requeue_on_fail": {
-                                                    "description": "Use rabbitmq mechanism to requeue the job on fail",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "queue_headers": {
-                                                    "description": "Queue declare args, associated array (hashmap, key:val)",
-                                                    "$ref": "#/definitions/Hashmap",
-                                                    "default": null
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "properties": {
-                                                "priority": {
-                                                    "description": "Pipeline priority. If the job pushed to the pipeline has priority set to 0, it will inherit the pipeline's priority",
-                                                    "type": "integer",
-                                                    "default": 10
-                                                },
-                                                "auto_create_topics_enable": {
-                                                    "description": "Auto create topic for the consumer/producer",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "producer_options": {
-                                                    "description": "Kafka producer options",
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "disable_idempotent": {
-                                                            "description": "Disable_idempotent disables idempotent produce requests, opting out of Kafka server-side deduplication in the face of reissued requests due to transient network problems. Idempotent production is strictly a win, but does require the IDEMPOTENT_WRITE permission on CLUSTER (pre Kafka 3.0), and not all clients can have that permission.",
-                                                            "type": "boolean",
-                                                            "default": false
-                                                        },
-                                                        "required_acks": {
-                                                            "description": "Sets the required acks for produced records",
-                                                            "type": "string",
-                                                            "default": "AllISRAcks",
-                                                            "enum": [
-                                                                "NoAck",
-                                                                "LeaderAck",
-                                                                "AllISRAck"
-                                                            ]
-                                                        },
-                                                        "max_message_bytes": {
-                                                            "type": "integer",
-                                                            "default": 1000012
-                                                        },
-                                                        "request_timeout": {
-                                                            "description": "The maximum duration in seconds the broker will wait the receipt of the number of required_acks.",
-                                                            "default": 10,
-                                                            "type": "integer"
-                                                        },
-                                                        "compression_codec": {
-                                                            "type": "string",
-                                                            "default": "none",
-                                                            "enum": [
-                                                                "none",
-                                                                "gzip",
-                                                                "snappy",
-                                                                "lz4",
-                                                                "zstd"
-                                                            ]
-                                                        },
-                                                        "delivery_timeout": {
-                                                            "description": "The level of compression to use on messages.",
-                                                            "type": "integer",
-                                                            "default": null
-                                                        },
-                                                        "transaction_timeout": {
-                                                            "description": "If enabled, the producer will ensure that exactly one copy of each message is written.",
-                                                            "type": "boolean",
-                                                            "default": false
-                                                        }
-                                                    }
-                                                },
-                                                "group_options": {
-                                                    "description": "group_options sets the consumer group for the client to join and consume in. This option is required if using any other group options.",
-                                                    "properties": {
-                                                        "group_id":{
-                                                            "description": "Kafka group ID",
-                                                            "type": "string",
-                                                            "default": null
-                                                        },
-                                                        "block_rebalance_on_poll":{
-                                                            "description": "Switches the client to block rebalances whenever you poll",
-                                                            "type": "boolean",
-                                                            "default": false
-                                                        }
-                                                    }
-                                                },
-                                                "consumer_options": {
-                                                    "description": "Kafka consumer options",
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "topics": {
-                                                            "description": "List of the topics to consume. Regex also supported",
-                                                            "type": "array",
-                                                            "default": null
-                                                        },
-                                                        "consume_regexp": {
-                                                            "description": "consume_regexp sets the client to parse all topics passed to `topics` as regular expressions. When consuming via regex, every metadata request loads *all* topics, so that all topics can be passed to any regular expressions. Every topic is evaluated only once ever across all regular expressions; either it permanently is known to match, or is permanently known to not match.",
-                                                            "type": "boolean",
-                                                            "default": false
-                                                        },
-                                                        "max_fetch_message_size": {
-                                                            "type": "integer",
-                                                            "default": 50000
-                                                        },
-                                                        "min_fetch_message_size": {
-                                                            "type": "integer",
-                                                            "default": 1
-                                                        },
-                                                        "consume_offset": {
-                                                            "description": "consumer_offset sets the offset to start consuming from, or if OffsetOutOfRange is seen while fetching, to restart consuming from.",
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "type":{
-                                                                    "description": "Partition offset type",
-                                                                    "type": "string",
-                                                                    "default": null,
-                                                                    "enum": [
-                                                                       "AtEnd",
-                                                                        "At",
-                                                                        "AfterMilli",
-                                                                        "AtStart",
-                                                                        "Relative",
-                                                                        "WithEpoch"
-                                                                        ]
-                                                                    },
-                                                                "value": {
-                                                                    "description": "Value for the: At, AfterMilli, Relative and WithEpoch offsets",
-                                                                    "type": "integer",
-                                                                    "default": 0
-                                                                }
-                                                            }
-                                                        },
-                                                        "consume_partitions": {
-                                                            "patternProperties": {
-                                                                "^[a-zA-Z0-9._-]+$": {
-                                                                    "description": "Topic to consume",
-                                                                    "type":"string",
-                                                                    "default": null,
-                                                                    "patternProperties": {
-                                                                        "^[0-9]+$":{
-                                                                            "description": "Partition number",
-                                                                            "type": "integer",
-                                                                            "default": null,
-                                                                            "properties": {
-                                                                                "type":{
-                                                                                    "description": "Partition offset type",
-                                                                                    "type": "string",
-                                                                                    "default": null,
-                                                                                    "enum": [
-                                                                                        "AtEnd",
-                                                                                        "At",
-                                                                                        "AfterMilli",
-                                                                                        "AtStart",
-                                                                                        "Relative",
-                                                                                        "WithEpoch"
-                                                                                    ]
-                                                                                },
-                                                                                "value": {
-                                                                                    "description": "Value for the: At, AfterMilli, Relative and WithEpoch offsets",
-                                                                                    "type": "integer",
-                                                                                    "default": 0
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "properties": {
-                                                "priority": {
-                                                    "description": "Pipeline priority. If the job pushed to the pipeline has priority set to 0, it will inherit the pipeline's priority",
-                                                    "type": "integer",
-                                                    "default": 10
-                                                },
-                                                "prefetch": {
-                                                    "description": "Number of job to prefetch from the driver until ACK/NACK",
-                                                    "type": "integer",
-                                                    "default": 100000
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "properties": {
-                                                "priority": {
-                                                    "description": "Pipeline priority. If the job pushed to the pipeline has priority set to 0, it will inherit the pipeline's priority",
-                                                    "type": "integer",
-                                                    "default": 10
-                                                },
-                                                "prefetch": {
-                                                    "description": "Number of job to prefetch from the driver",
-                                                    "type": "integer",
-                                                    "default": 100000
-                                                },
-                                                "consume_all": {
-                                                    "description": "Consume all payloads, even not Job structured",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "tube_priority": {
-                                                    "description": "Beanstalk internal tube priority",
-                                                    "type": "integer",
-                                                    "default": 1
-                                                },
-                                                "tube": {
-                                                    "description": "Tube name",
-                                                    "type": "string",
-                                                    "default": "default"
-                                                },
-                                                "reserve_timeout": {
-                                                    "description": "If no job is available before this timeout has passed, Reserve returns a ConnError recording ErrTimeout",
-                                                    "$ref": "#/definitions/Duration",
-                                                    "default": "5s"
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "properties": {
-                                                "priority": {
-                                                    "description": "Pipeline priority. If the job pushed to the pipeline has priority set to 0, it will inherit the pipeline's priority",
-                                                    "type": "integer",
-                                                    "default": 10
-                                                },
-                                                "prefetch": {
-                                                    "description": "Number of job to prefetch from the driver until ACK/NACK",
-                                                    "type": "integer",
-                                                    "default": 100000
-                                                },
-                                                "skip_queue_declaration": {
-                                                    "description": "Get queue URL instead of declaring it",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "consume_all": {
-                                                    "description": "Consume all payloads, even not Job structured",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "visibility_timeout": {
-                                                    "type": "integer",
-                                                    "description": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. If a message is available, the call returns sooner than WaitTimeSeconds. If no messages are available and the wait time expires, the call returns successfully with an empty list of messages.",
-                                                    "default": 0
-                                                },
-                                                "wait_time_seconds": {
-                                                    "description": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. If a message is available, the call returns sooner than WaitTimeSeconds. If no messages are available and the wait time expires, the call returns successfully with an empty list of messages",
-                                                    "type": "integer",
-                                                    "default": 0
-                                                },
-                                                "queue": {
-                                                    "description": "Queue name",
-                                                    "type": "string",
-                                                    "default": "default"
-                                                },
-                                                "message_group_id": {
-                                                    "description": "Message Group ID: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_SendMessage.html#SQS-SendMessage-request-MessageGroupId",
-                                                    "type": "string",
-                                                    "default": null
-                                                },
-                                                "attributes": {
-                                                    "title": "map[string]number",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "object",
-                                                        "additionalProperties": {
-                                                            "type": "number"
-                                                        }
-                                                    }
-                                                },
-                                                "tags": {
-                                                    "title": "map[string]string",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "object",
-                                                        "additionalProperties": {
-                                                            "type": "string"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "properties": {
-                                                "priority": {
-                                                    "description": "Pipeline priority. If the job pushed to the pipeline has priority set to 0, it will inherit the pipeline's priority",
-                                                    "type": "integer",
-                                                    "default": 10
-                                                },
-                                                "prefetch": {
-                                                    "description": "Number of job to prefetch from the driver",
-                                                    "type": "integer",
-                                                    "default": 100000
-                                                },
-                                                "consume_all": {
-                                                    "description": "Consume all payloads, even not Job structured",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "subject": {
-                                                    "description": "NATS subject",
-                                                    "type": "string",
-                                                    "default": "default"
-                                                },
-                                                "stream": {
-                                                    "description": "NATS stream",
-                                                    "type": "string",
-                                                    "default": "default-stream"
-                                                },
-                                                "deliver_new": {
-                                                    "description": "The consumer will only start receiving messages that were created after the consumer was created",
-                                                    "type": "string",
-                                                    "default": "default-stream"
-                                                },
-                                                "rate_limit": {
-                                                    "description": "Consumer rate-limiter in bytes https://docs.nats.io/jetstream/concepts/consumers#ratelimit",
-                                                    "type": "integer",
-                                                    "default": 1000
-                                                },
-                                                "delete_stream_on_stop": {
-                                                    "description": "Delete the stream when after pipeline was stopped",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                },
-                                                "delete_after_ack": {
-                                                    "description": "Delete message from the stream after successful acknowledge",
-                                                    "type": "boolean",
-                                                    "default": false
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "tcp": {
-            "type": "object",
-            "description": "Plugin to handle RAW TCP packets, available since RR 2.6.0",
-            "properties": {
-                "servers": {
-                    "description": "TCP servers to allocate",
-                    "type": "object",
-                    "minProperties": 1,
-                    "patternProperties": {
-                        "^[a-zA-Z0-9._-]+$": {
-                            "allOf": [
-                                {
-                                    "description": "User defined TCP servers",
-                                    "type": "object",
-                                    "$ref": "#/definitions/TCPServers"
-                                }
-                            ]
-                        }
-                    }
-                },
-                "pool": {
-                    "type": "object",
-                    "description": "PHP static workers pool",
-                    "$ref": "#/definitions/WorkersPool"
-                }
-            }
-        },
-        "grpc": {
-            "description": "GRPC plugin",
-            "type": "object",
-            "properties": {
-                "listen": {
-                    "description": "GRPC address to listen",
-                    "type": "string",
-                    "$ref": "#/definitions/HostAndPortWithTCP"
-                },
-                "proto": {
-                    "type": "array",
-                    "description": "Proto file to use, multiply files supported [SINCE 2.6]. As of [v2023.1.4], wilcards are allowed in the proto field",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "tls": {
-                    "description": "GRPC TLS configuration",
-                    "type": "object",
-                    "properties": {
-                        "key": {
-                            "description": "Path to the key file",
-                            "type": "string",
-                            "default": null
-                        },
-                        "cert": {
-                            "description": "Path to the certificate",
-                            "type": "string",
-                            "default": null
-                        },
-                        "root_ca": {
-                            "description": "Path to the CA certificate",
-                            "type": "string",
-                            "default": null
-                        },
-                        "client_auth_type": {
-                            "description": "Client auth type",
-                            "type": "string",
-                            "default": "no_client_certs",
-                            "enum": [
-                                "request_client_cert",
-                                "require_any_client_cert",
-                                "verify_client_cert_if_given",
-                                "no_client_certs",
-                                "require_and_verify_client_cert"
-                            ]
-                        }
-                    }
-                },
-                "max_send_msg_size": {
-                    "type": "integer",
-                    "description": "Maximum send message size",
-                    "default": 50
-                },
-                "max_recv_msg_size": {
-                    "description": "Maximum receive message size",
-                    "default": 50,
-                    "type": "integer"
-                },
-                "max_connection_idle": {
-                    "description": " MaxConnectionIdle is a duration for the amount of time after which an idle connection would be closed by sending a GoAway. Idleness duration is defined since the most recent time the number of outstanding RPCs became zero or the connection establishment",
-                    "$ref": "#/definitions/Duration"
-                },
-                "max_connection_age": {
-                    "description": "MaxConnectionAge is a duration for the maximum amount of time a connection may exist before it will be closed by sending a GoAway. A random jitter of +/-10% will be added to MaxConnectionAge to spread out connection storms",
-                    "$ref": "#/definitions/Duration"
-                },
-                "max_connection_age_grace": {
-                    "description": "MaxConnectionAgeGrace is an additive period after MaxConnectionAge after which the connection will be forcibly closed",
-                    "$ref": "#/definitions/Duration"
-                },
-                "max_concurrent_streams": {
-                    "description": "MaxConnectionAgeGrace is an additive period after MaxConnectionAge after which the connection will be forcibly closed",
-                    "type": "integer",
-                    "default": 10
-                },
-                "ping_time": {
-                    "description": "After a duration of this time if the server doesn't see any activity it pings the client to see if the transport is still alive. If set below 1s, a minimum value of 1s will be used instead",
-                    "$ref": "#/definitions/Duration"
-                },
-                "timeout": {
-                    "description": "After having pinged for keepalive check, the server waits for a duration of Timeout and if no activity is seen even after that the connection is closed",
-                    "$ref": "#/definitions/Duration"
-                },
-                "pool": {
-                    "description": "GRPC workers pool",
-                    "type": "object",
-                    "$ref": "#/definitions/WorkersPool"
-                }
-            }
-        },
-        "fileserver": {
-            "description": "[SINCE 2.6] File server to serve static files",
-            "type": "object",
-            "properties": {
-                "address": {},
-                "calculate_etag": {},
-                "weak": {},
-                "stream_request_body": {},
-                "serve": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "prefix": {
-                                "description": "HTTP prefix",
-                                "type": "string",
-                                "examples": [
-                                    "/foo",
-                                    "/bar/baz"
-                                ]
-                            },
-                            "root": {
-                                "description": "Directory to serve",
-                                "default": ".",
-                                "type": "string"
-                            },
-                            "compress": {
-                                "description": "When set to true, the server tries minimizing CPU usage by caching compressed files",
-                                "type": "boolean",
-                                "default": false
-                            },
-                            "cache_duration": {
-                                "description": "Expiration duration for inactive file handlers. Units: seconds. Use negative number to disable",
-                                "type": "integer",
-                                "default": 10
-                            },
-                            "max_age": {
-                                "description": "The value for the Cache-Control HTTP-header. Units: seconds",
-                                "type": "integer",
-                                "default": 10
-                            },
-                            "bytes_range": {
-                                "description": "Enable range requests: https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests",
-                                "type": "boolean",
-                                "default": false
-                            }
-                        },
-                        "required": [
-                            "prefix"
-                        ]
-                    }
-                }
-            }
-        }
-    },
-    "required": [
-        "version"
-    ],
-    "definitions": {
-        "BoltDB": {
-            "description": "BoltDB config section",
-            "type": "object",
-            "properties": {
-                "file": {
-                    "description": "file name for the db",
-                    "type": "string",
-                    "default": "rr.db"
-                },
-                "permission": {
-                    "description": "Access permission for the DB file.",
-                    "type": "integer",
-                    "default": "0777"
-                },
-                "interval": {
-                    "description": "TTL keys check interval in seconds. It's safe to use 1 second here, but can be a little costly to performance",
-                    "type": "integer",
-                    "default": 60
-                }
-            }
-        },
-        "Memcached": {
-            "description": "In-memory config section",
-            "type": "object",
-            "properties": {
-                "addr": {
-                    "description": "Address of the memcached node",
-                    "type": "string",
-                    "default": "localhost:11211"
-                }
-            }
-        },
-        "Redis": {
-            "description": "Redis config section",
-            "type": "object",
-            "properties": {
-                "addrs": {
-                    "description": "Redis server addresses",
-                    "type": "array",
-                    "default": "localhost:6379"
-                },
-                "master_name": {
-                    "type": "string",
-                    "default": null
-                },
-                "username": {
-                    "type": "string",
-                    "default": null
-                },
-                "password": {
-                    "type": "string",
-                    "default": null
-                },
-                "db": {
-                    "description": "Redis db number",
-                    "type": "integer",
-                    "default": 0,
-                    "maximum": 10
-                },
-                "sentinel_password": {
-                    "type": "string",
-                    "default": null
-                },
-                "route_by_latency": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "route_randomly": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "dial_timeout": {
-                    "description": "dial timeout",
-                    "$ref": "#/definitions/Duration"
-                },
-                "max_retries": {
-                    "type": "integer",
-                    "default": 1
-                },
-                "min_retry_backoff": {
-                    "$ref": "#/definitions/Duration",
-                    "default": 0
-                },
-                "max_retry_backoff": {
-                    "$ref": "#/definitions/Duration",
-                    "default": 0
-                },
-                "pool_size": {
-                    "type": "integer",
-                    "default": 0
-                },
-                "min_idle_conns": {
-                    "type": "integer",
-                    "default": 0
-                },
-                "max_conn_age": {
-                    "$ref": "#/definitions/Duration"
-                },
-                "read_timeout": {
-                    "$ref": "#/definitions/Duration"
-                },
-                "write_timeout": {
-                    "$ref": "#/definitions/Duration"
-                },
-                "pool_timeout": {
-                    "$ref": "#/definitions/Duration"
-                },
-                "idle_timeout": {
-                    "$ref": "#/definitions/Duration"
-                },
-                "idle_check_freq": {
-                    "$ref": "#/definitions/Duration"
-                },
-                "read_only": {
-                    "type": "boolean",
-                    "default": false
-                }
-            }
-        },
-        "Memory": {
-            "description": "In-memory config section",
-            "type": "object",
-            "properties": {
-                "interval": {
-                    "description": "TTL keys check interval in seconds. It's safe to use 1 second here, but can be a little costly to performance",
-                    "type": "integer",
-                    "default": 60
-                }
-            }
-        },
-        "Service": {
-            "type": "object",
-            "description": "User defined service",
-            "properties": {
-                "command": {
-                    "description": "Command to execute. Can be any command here which can be executed.",
-                    "type": "string"
-                },
-                "env": {
-                    "description": "Environment variables for the process",
-                    "type": "object",
-                    "$ref": "#/definitions/Hashmap"
-                },
-                "timeout_stop_sec": {
-                    "description": "Timeout for the process stop operation",
-                    "type":"integer",
-                    "default": 5
-                },
-                "process_num": {
-                    "description": "Number of copies (processes) to start per command",
-                    "type": "integer",
-                    "default": 1
-                },
-                "exec_timeout": {
-                    "description": "Allowed time before stop",
-                    "type": "string",
-                    "$ref": "#/definitions/Duration"
-                },
-                "remain_after_exit": {
-                    "description": "Remain process after exit. In other words, restart process after exit with any exit code",
-                    "type": "boolean",
-                    "default": false
-                },
-                "restart_sec": {
-                    "description": "Number of seconds to wait before process restart",
-                    "type": "integer",
-                    "default": 30
-                }
-            },
-            "required": [
-                "command"
-            ]
-        },
-        "WorkersPool": {
-            "description": "Static pool with PHP workers",
-            "type": "object",
-            "properties": {
-                "debug": {
-                    "description": "Pool debug mode. Worker will be created right before RR passes request to it",
-                    "type": "boolean",
-                    "default": false
-                },
-                "command": {
-                    "type": "string",
-                    "default": null,
-                    "description": "Command to use for the pool. Will override the server's command"
-                },
-                "num_workers": {
-                    "description": "How many worker processes will be started. Zero (or nothing) means the number of logical CPUs",
-                    "type": "integer",
-                    "minimum": 0,
-                    "default": 0
-                },
-                "max_jobs": {
-                    "description": "Maximal count of worker executions. Zero (or nothing) means no limit",
-                    "type": "integer",
-                    "minimum": 0,
-                    "default": 0
-                },
-                "max_queue_size": {
-                    "description": "[2023.3.10]. Maximum size of the internal requests queue. After reaching the limit, all additional requests would be rejected with error.",
-                    "type": "integer",
-                    "minimum": 0,
-                    "default": 0
-                },
-                "allocate_timeout": {
-                    "description": "Timeout for worker allocation. Zero means the default limit - 60s",
-                    "$ref": "#/definitions/Duration",
-                    "default": "60s"
-                },
-                "reset_timeout": {
-                    "description": "Timeout for the pool.Reset operation (./rr reset). Zero means the default limit - 60s",
-                    "$ref": "#/definitions/Duration",
-                    "default": "60s"
-                },
-                "stream_timeout":
-                {
-                    "description": "Timeout for the stream cancellation. Zero means the default limit - 60s",
-                    "$ref": "#/definitions/Duration",
-                    "default": "60s"
-                },
-                "destroy_timeout": {
-                    "description": "Timeout for worker destroying before process killing. Zero means the default limit - 60s",
-                    "$ref": "#/definitions/Duration",
-                    "default": "60s"
-                },
-                "supervisor": {
-                    "description": "Supervisor is used to control http workers",
-                    "type": "object",
-                    "properties": {
-                        "watch_tick": {
-                            "description": "How often to check the state of the workers",
-                            "$ref": "#/definitions/Duration",
-                            "default": "1s"
-                        },
-                        "ttl": {
-                            "description": "Maximum time worker is allowed to live (soft limit). Zero means no limit",
-                            "$ref": "#/definitions/Duration",
-                            "default": "0s"
-                        },
-                        "idle_ttl": {
-                            "description": "How long worker can spend in IDLE mode after first using (soft limit). Zero means no limit",
-                            "$ref": "#/definitions/Duration",
-                            "default": "0s"
-                        },
-                        "max_worker_memory": {
-                            "description": "Maximal worker memory usage in megabytes (soft limit). Zero means no limit",
-                            "type": "integer",
-                            "minimum": 0,
-                            "default": 0
-                        },
-                        "exec_ttl": {
-                            "description": "Maximal job lifetime (hard limit). Zero means no limit",
-                            "$ref": "#/definitions/Duration",
-                            "default": "0s"
-                        }
-                    }
-                }
-            }
-        },
-        "TCPServers": {
-            "description": "TCP server",
-            "type": "object",
-            "properties": {
-                "addr": {
-                    "description": "Address to listen",
-                    "type": "string",
-                    "pattern": "^[0-9a-zA-Z_.-]+:[0-9]{1,5}$"
-                },
-                "delimiter": {
-                    "description": "Data packets delimiter. Every send should end either with EOF or with the delimiter",
-                    "type": "string",
-                    "default": "\r\n"
-                },
-                "read_buf_size": {
-                    "description": "Chunks that RR uses to read the data. In MB. If you expect big payloads on a TCP server, to reduce `read` syscalls, would be a good practice to use a fairly big enough buffer",
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 100,
-                    "default": 1
-                }
-            },
-            "required": [
-                "addr"
-            ]
-        },
-        "Duration": {
-            "description": "Time duration",
-            "type": "string",
-            "pattern": "^([0-9]*(\\.[0-9]*)?(ms|h|m|s))+$",
-            "examples": [
+	"$id": "https://raw.githubusercontent.com/roadrunner-server/roadrunner/refs/heads/master/schemas/config/3.0.schema.json",
+	"$schema": "https://json-schema.org/draft/2019-09/schema",
+	"title": "RoadRunner Main Configuration File",
+	"description": "This is your main RoadRunner configuration file. It contains all the plugins you want to load and their configuration.",
+	"type": "object",
+	"minProperties": 1,
+	"properties": {
+		"version": {
+			"description": "RoadRunner configuration file version.",
+			"type": "string",
+			"default": "3",
+			"enum": [
+				"3"
+			]
+		},
+		"centrifuge": {
+			"description": "Centrifugo server plugin. See https://centrifugal.dev/docs",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"proxy_address": {
+					"description": "The address of the Centrifugo proxy server.",
+					"type": "string",
+					"default": "tcp://127.0.0.1:30000"
+				},
+				"grpc_api_address": {
+					"description": "The address/port of the gRPC server API.",
+					"type": "string",
+					"default": "tcp://127.0.0.1:30000"
+				},
+				"use_compressor": {
+					"description": "Whether to use gRPC gzip compressor.",
+					"type": "boolean",
+					"default": false
+				},
+				"version": {
+					"description": "Your application version.",
+					"type": "string",
+					"default": "v1.0.0"
+				},
+				"name": {
+					"description": "Your application name",
+					"type": "string",
+					"default": "roadrunner"
+				},
+				"pool": {
+					"$ref": "#/definitions/WorkersPool"
+				},
+				"tls": {
+					"description": "TLS settings",
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"cert": {
+							"$ref": "#/definitions/TLSCertFile"
+						},
+						"key": {
+							"$ref": "#/definitions/TLSKeyFile"
+						}
+					},
+					"required": [
+						"cert",
+						"key"
+					]
+				}
+			}
+		},
+		"rpc": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"listen": {
+					"description": "The address and port for the RPC server to bind to.",
+					"type": "string",
+					"default": "tcp://127.0.0.1:6001",
+					"examples": [
+						"tcp://127.0.0.1:6001"
+					],
+					"pattern": "^tcp:\/\/[0-9a-zA-Z_.-]+:[0-9]{1,5}$"
+				}
+			}
+		},
+		"server": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"on_init": {
+					"description": "Arbitrary command to execute before RR starts allocating workers.",
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"command"
+					],
+					"properties": {
+						"command": {
+							"description": "Command to execute. It can be any script or binary.",
+							"type": "string",
+							"examples": [
+								"php not-worker.php",
+								"sh script.sh",
+								"start script.bat"
+							]
+						},
+						"exec_timeout": {
+							"description": "Script execution timeout.",
+							"$ref": "#/definitions/Duration",
+							"default": "60s"
+						},
+						"user": {
+							"description": "Username (not UID) of the user from whom the on_init command is executed. The RR process user will be used if not provided.",
+							"type": "string",
+							"examples": [
+								"www-data"
+							]
+						},
+						"env": {
+							"description": "Environment variables for the executed command.",
+							"$ref": "#/definitions/HashmapString"
+						}
+					}
+				},
+				"command": {
+					"description": "The command used to start workers, including any required arguments.",
+					"type": "string",
+					"examples": [
+						"php psr-worker.php"
+					]
+				},
+				"user": {
+					"description": "User name (not UID) for the worker processes. The RR process user will be used if not provided.",
+					"type": "string",
+					"examples": [
+						"www-data"
+					]
+				},
+				"group": {
+					"description": "Group name (not GID) for the worker processes. The RR process user group will be used if not provided.",
+					"type": "string",
+					"examples": [
+						"www-data"
+					]
+				},
+				"env": {
+					"description": "Environment variables for the worker processes.",
+					"$ref": "#/definitions/HashmapString"
+				},
+				"relay": {
+					"description": "Worker relay method. Can be 'pipes', a TCP address (e.g. tcp://127.0.0.1:6002) or a socket (e.g. unix:///var/run/rr.sock).",
+					"type": "string",
+					"default": "pipes",
+					"examples": [
+						"pipes",
+						"tcp://127.0.0.1:6002",
+						"unix:///var/run/rr.sock"
+					]
+				}
+			},
+			"required": [
+				"command"
+			]
+		},
+		"logs": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"mode": {
+					"$ref": "#/definitions/LogMode",
+					"default": "development"
+				},
+				"level": {
+					"$ref": "#/definitions/LogLevel",
+					"default": "debug"
+				},
+				"line_ending": {
+					"$ref": "#/definitions/LogLineEnding"
+				},
+				"encoding": {
+					"$ref": "#/definitions/LogEncoding",
+					"default": "console"
+				},
+				"output": {
+					"description": "Output",
+					"$ref": "#/definitions/LogOutput",
+					"default": "stderr"
+				},
+				"err_output": {
+					"description": "Errors only output",
+					"$ref": "#/definitions/LogOutput",
+					"default": "stderr"
+				},
+				"channels": {
+					"description": "You can configure logging for each plugin individually. The key is the plugin name and the value is logging options in same format as the parent.",
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"additionalProperties": false,
+						"properties": {
+							"mode": {
+								"$ref": "#/definitions/LogMode"
+							},
+							"level": {
+								"$ref": "#/definitions/LogLevel"
+							},
+							"line_ending": {
+								"$ref": "#/definitions/LogLineEnding"
+							},
+							"encoding": {
+								"$ref": "#/definitions/LogEncoding"
+							},
+							"output": {
+								"$ref": "#/definitions/LogOutput"
+							},
+							"err_output": {
+								"$ref": "#/definitions/LogOutput"
+							}
+						}
+					}
+				},
+				"file_logger_options": {
+					"description": "File logger options.",
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"log_output": {
+							"type": "string",
+							"description": "Path to the log file. Uses <processname>-lumberjack.log and the OS temp (i.e. `/tmp`) directory if empty."
+						},
+						"max_size": {
+							"type": "integer",
+							"description": "Maximum file size in MB.",
+							"minimum": 0,
+							"default": 100
+						},
+						"max_age": {
+							"type": "integer",
+							"description": "The maximum number of days to retain old log files based on the timestamp encoded in their filename.",
+							"default": 1
+						},
+						"max_backups": {
+							"type": "integer",
+							"description": "The maximum number of old log files to retain. Set to zero to retain all log files.",
+							"default": 5
+						},
+						"compress": {
+							"type": "boolean",
+							"description": "Whether to compress log files.",
+							"default": false
+						}
+					}
+				}
+			}
+		},
+		"temporal": {
+			"description": "Workflow and activity mesh service. See https://docs.temporal.io/docs/php/introduction/",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"address": {
+					"description": "Address of the Temporal server.",
+					"type": "string",
+					"default": "127.0.0.1:7233"
+				},
+				"cache_size": {
+					"description": "Sticky cache size. Sticky workflow execution is the affinity between workflow tasks of a specific workflow execution to a specific worker. The benefit of sticky execution is that the workflow does not have to reconstruct state by replaying history from the beginning. The cache is shared between workers running within same process. This must be called before any worker is started. If not called, the default size of 10K (which may change) will be used.",
+					"type": "integer",
+					"default": 10000
+				},
+				"namespace": {
+					"description": "Namespace name for this client to work with.",
+					"type": "string",
+					"default": "default"
+				},
+				"metrics": {
+					"description": "Temporal metrics.",
+					"type": "object",
+					"default": null,
+					"properties": {
+						"driver": {
+							"description": "Metrics driver to use.",
+							"type": "string",
+							"enum": [
+								"prometheus",
+								"statsd"
+							],
+							"default": "prometheus"
+						}
+					},
+					"anyOf": [
+						{
+							"type": "object",
+							"properties": {
+								"address": {
+									"description": "Server metrics address",
+									"type": "string",
+									"default": "127.0.0.1:9091"
+								},
+								"type": {
+									"type": "string",
+									"description": "Metrics type",
+									"anyOf": [
+										{
+											"type": "string",
+											"examples": [
+												"summary",
+												"histogram"
+											]
+										}
+									]
+								},
+								"prefix": {
+									"description": "Temporal metrics prefix",
+									"type": "string",
+									"default": null
+								}
+							}
+						},
+						{
+							"properties": {
+								"host_port": {
+									"description": "The host and port of the statsd server",
+									"type": "string",
+									"default": "127.0.0.1:8125"
+								},
+								"prefix": {
+									"description": "The prefix to use in reporting to statsd",
+									"type": "string",
+									"default": null
+								},
+								"flush_interval": {
+									"description": "FlushInterval is the maximum interval for sending packets",
+									"type": "string",
+									"default": "1s"
+								},
+								"flush_bytes": {
+									"description": "FlushBytes specifies the maximum udp packet size you wish to send. If FlushBytes is unspecified, it defaults  to 1432 bytes, which is considered safe for local traffic.",
+									"type": "integer",
+									"default": 1432
+								},
+								"tags": {
+									"description": "Hashmap with tag:value values",
+									"$ref": "#/definitions/HashmapString"
+								},
+								"tag_prefix": {
+									"description": "Prefix for the tag",
+									"type": "string",
+									"default": null
+								},
+								"tag_separator": {
+									"description": "TagSeparator allows tags to be appended with a separator. If not specified tag keys and values are embedded to the stat name directly.",
+									"type": "string",
+									"default": null
+								}
+							}
+						}
+					]
+				},
+				"activities": {
+					"description": "Activities pool settings",
+					"type": "object",
+					"$ref": "#/definitions/WorkersPool"
+				},
+				"tls": {
+					"description": "Temporal TLS configuration",
+					"type": "object",
+					"required": [
+						"key",
+						"cert"
+					],
+					"properties": {
+						"key": {
+							"$ref": "#/definitions/TLSKeyFile"
+						},
+						"cert": {
+							"$ref": "#/definitions/TLSCertFile"
+						},
+						"root_ca": {
+							"$ref": "#/definitions/TLSCAFile"
+						},
+						"client_auth_type": {
+							"$ref": "#/definitions/TLSClientAuthType"
+						},
+						"server_name": {
+							"description": "ServerName is used to verify the hostname on the returned certificates unless InsecureSkipVerify is given. It is also included in the client's handshake to support virtual hosting unless it is an IP address.",
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"kv": {
+			"$ref": "https://raw.githubusercontent.com/roadrunner-server/kv/refs/heads/master/schema.json"
+		},
+		"service": {
+			"description": "Service plugin settings",
+			"type": "object",
+			"patternProperties": {
+				"^[a-zA-Z0-9._-]+$": {
+					"description": "User defined services",
+					"type": "object",
+					"$ref": "#/definitions/Service"
+				}
+			}
+		},
+		"otel": {
+			"description": "OpenTelemetry configuration",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"resource": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"service_name": {
+							"description": "The name of the service.",
+							"type": "string",
+							"default": "RoadRunner",
+							"minLength": 1
+						},
+						"service_version": {
+							"type": "string",
+							"description": "The version of the service.",
+							"default": "1.0.0",
+							"minLength": 1
+						},
+						"service_namespace": {
+							"type": "string",
+							"description": "The namespace of the service.",
+							"default": "RoadRunner",
+							"minLength": 1
+						},
+						"service_instance_id": {
+							"type": "string",
+							"description": "The service instance ID. If not provided or empty, a UUID is generated.",
+							"minLength": 1
+						}
+					}
+				},
+				"insecure": {
+					"description": "Use insecure endpoint",
+					"type": "boolean",
+					"default": false
+				},
+				"compress": {
+					"description": "Use gzip compressor",
+					"type": "boolean",
+					"default": false
+				},
+				"exporter": {
+					"description": "Provides functionality to emit telemetry to consumers",
+					"type": "string",
+					"enum": [
+						"zipkin",
+						"stdout",
+						"stderr",
+						"otlp",
+						"jaeger",
+						"jaeger_agent"
+					]
+				},
+				"custom_url": {
+					"description": "Used for the http client to override the default URL, if provided.",
+					"type": "string"
+				},
+				"endpoint": {
+					"description": "Consumer's endpoint",
+					"type": "string",
+					"default": "127.0.0.1:4318"
+				},
+				"client": {
+					"description": "Client to send the spans",
+					"type": "string",
+					"enum": [
+						"http",
+						"grpc"
+					]
+				},
+				"service_name": {
+					"description": "User's service name",
+					"type": "string",
+					"default": "RoadRunner"
+				},
+				"service_version": {
+					"description": "User's service version",
+					"type": "string",
+					"default": "1.0.0"
+				},
+				"headers": {
+					"description": "User defined headers",
+					"$ref": "#/definitions/HashmapString"
+				}
+			}
+		},
+		"http": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"address": {
+					"description": "Host and port to listen on.",
+					"$ref": "#/definitions/HostAndPort",
+					"examples": [
+						"127.0.0.1:8080",
+						":8080"
+					]
+				},
+				"internal_error_code": {
+					"description": "The HTTP status code to use for internal roadrunner errors.",
+					"type": "integer",
+					"default": 500,
+					"minimum": 100,
+					"maximum": 599
+				},
+				"max_request_size": {
+					"description": "Maximal incoming request size in MB. Zero means no limit.",
+					"type": "integer",
+					"minimum": 0,
+					"default": 0
+				},
+				"raw_body": {
+					"description": "Whether to send the raw, encoded body for application/x-www-form-urlencoded content. By default, PHP workers will receive decoded content of this type.",
+					"type": "boolean",
+					"default": false
+				},
+				"access_logs": {
+					"description": "Whether to enable HTTP access logs.",
+					"type": "boolean",
+					"default": false
+				},
+				"middleware": {
+					"description": "Middlewares to load for the HTTP plugin. The order determines the order in which the middlewares are executed.",
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"type": "string",
+						"enum": [
+							"headers",
+							"gzip",
+							"static",
+							"sendfile",
+							"http_metrics",
+							"cache",
+							"proxy_ip_parser",
+							"otel"
+						]
+					}
+				},
+				"trusted_subnets": {
+					"description": "Allow incoming requests only from the provided subnets. Defaults to the usual private network ranges (192.168.*, 10.0.* and 172.16.*) as well as local/loopback interfaces (127.*).",
+					"type": "array",
+					"items": {
+						"type": "string",
+						"examples": [
+							"10.0.0.0/8",
+							"127.0.0.0/8"
+						]
+					},
+					"default": [
+						"10.0.0.0/8",
+						"127.0.0.0/8",
+						"172.16.0.0/12",
+						"192.168.0.0/16",
+						"::1/128",
+						"fc00::/7",
+						"fe80::/10"
+					]
+				},
+				"uploads": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"dir": {
+							"description": "Directory for file uploads. Empty/undefined value means the OS default temporary directory ($TEMP) will be used, i.e. `/tmp`.",
+							"type": "string",
+							"examples": [
+								"/tmp"
+							]
+						},
+						"forbid": {
+							"description": "Disallow upload of files with the provided extensions.",
+							"type": "array",
+							"items": {
+								"type": "string",
+								"minLength": 1,
+								"examples": [
+									".php",
+									".exe"
+								]
+							},
+							"default": [
+								".php",
+								".exe",
+								".bat"
+							]
+						},
+						"allow": {
+							"description": "Allow only upload of files with the provided extensions. Empty/undefined value means all files except explicitly disallowed (`forbid`) files are allowed.",
+							"type": "array",
+							"items": {
+								"type": "string",
+								"examples": [
+									".html",
+									".go"
+								]
+							}
+						}
+					}
+				},
+				"headers": {
+					"description": "HTTP headers map",
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"cors": {
+							"description": "Controls which CORS headers are returned. Additional headers `Vary: Origin`, `Vary: Access-Control-Request-Method` and `Vary: Access-Control-Request-Headers` will be added to responses. Omit this section to disable CORS headers.",
+							"type": "object",
+							"properties": {
+								"allowed_origin": {
+									"description": "Controls the value of 'Access-Control-Allow-Origin'.",
+									"type": "string",
+									"examples": [
+										"*"
+									]
+								},
+								"allowed_origin_regex": {
+									"description": "Controls the value of 'Access-Control-Allow-Origin' header value, but evaluated as regex.",
+									"type": "string",
+									"examples": [
+										"^https://foo"
+									]
+								},
+								"allowed_headers": {
+									"description": "Controls the value of 'Access-Control-Allow-Headers'.",
+									"type": "string",
+									"examples": [
+										"*"
+									]
+								},
+								"allowed_methods": {
+									"description": "Controls the value of 'Access-Control-Allow-Methods'. Provide a comma-separated string of HTTP verbs.",
+									"type": "string",
+									"examples": [
+										"GET,POST,PUT,DELETE"
+									]
+								},
+								"allow_credentials": {
+									"description": "Controls the value of 'Access-Control-Allow-Credentials'.",
+									"type": "boolean",
+									"default": false
+								},
+								"exposed_headers": {
+									"description": "Controls the value of 'Access-Control-Expose-Headers'. Provide a comma-separated list of HTTP headers.",
+									"type": "string",
+									"examples": [
+										"Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
+									]
+								},
+								"max_age": {
+									"description": "Controls the value of 'Access-Control-Max-Age' (in seconds).",
+									"type": "integer",
+									"examples": [
+										600
+									],
+									"default": 0
+								}
+							}
+						},
+						"request": {
+							"description": "Headers to add to every request passed to PHP.",
+							"$ref": "#/definitions/HashmapString"
+						},
+						"response": {
+							"description": "Headers added to every response.",
+							"$ref": "#/definitions/HashmapString"
+						}
+					}
+				},
+				"static": {
+					"description": "Configuratin options for serving static files.",
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"dir": {
+							"description": "Path to the directory with static assets. Defaults to the current working directory. Empty/undefined and `.` are equal and are both treated as current directory.",
+							"type": "string",
+							"examples": [
+								".",
+								"/var/www/html"
+							]
+						},
+						"forbid": {
+							"description": "File extensions of files that must not be served. Empty/undefined disallows no files. If files are specified in both `forbid` and `allow`, they will be disallowed. Defaults to an empty array, disallowing no files.",
+							"type": "array",
+							"items": {
+								"type": "string",
+								"minLength": 1,
+								"examples": [
+									".php",
+									".htaccess",
+									".sh"
+								]
+							}
+						},
+						"allow": {
+							"description": "File extensions of files that may be served. Empty/undefined allows all files, except files specified in `forbid`.",
+							"type": "array",
+							"items": {
+								"type": "string",
+								"minLength": 1,
+								"examples": [
+									".jpg",
+									".png",
+									".css",
+									".js"
+								]
+							}
+						},
+						"calculate_etag": {
+							"description": "Whether to enable ETag computation for static files.",
+							"type": "boolean",
+							"default": false
+						},
+						"weak": {
+							"description": "Whether to use a weak generator (/W), which uses only the filename to generate a CRC32 sum for et ETag. Disable to use the file contents.",
+							"type": "boolean",
+							"default": false
+						},
+						"response": {
+							"description": "Custom HTTP headers to add to responses to requests for static files.",
+							"$ref": "#/definitions/HashmapString"
+						},
+						"request": {
+							"description": "Custom HTTP headers to add to requests for static files.",
+							"$ref": "#/definitions/HashmapString"
+						}
+					}
+				},
+				"pool": {
+					"description": "Settings for workers in the HTTP pool.",
+					"$ref": "#/definitions/WorkersPool"
+				},
+				"ssl": {
+					"title": "SSL/TLS (HTTPS) Configuration",
+					"description": "Settings required to set up manual or automatic HTTPS for your server. Either `key` and `cert` *or* `acme` is required, but not both.",
+					"type": "object",
+					"additionalProperties": false,
+					"not": {
+						"anyOf": [
+							{
+								"required": [
+									"key",
+									"acme"
+								]
+							},
+							{
+								"required": [
+									"cert",
+									"acme"
+								]
+							},
+							{
+								"required": [
+									"root_ca",
+									"acme"
+								]
+							},
+							{
+								"required": [
+									"client_auth_type",
+									"acme"
+								]
+							}
+						]
+					},
+					"anyOf": [
+						{
+							"required": [
+								"acme"
+							]
+						},
+						{
+							"required": [
+								"key",
+								"cert"
+							]
+						}
+					],
+					"properties": {
+						"address": {
+							"description": "Host address (or port) to bind to.",
+							"$ref": "#/definitions/HostAndPort",
+							"examples": [
+								"127.0.0.1:443",
+								":8443"
+							]
+						},
+						"acme": {
+							"description": "ACME certificates provider (Let's encrypt). Do not specify this parameter if you use `key` and `cert`.",
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"certs_dir": {
+									"description": "Directory to use for certificates, private keys, Let's Encrypt configuration etc.",
+									"type": "string",
+									"default": "rr_cache"
+								},
+								"email": {
+									"description": "User email used to create a Let's Encrypt account. This is required.",
+									"type": "string",
+									"examples": [
+										"user@domain.com"
+									]
+								},
+								"alt_http_port": {
+									"description": "Alternate port for the HTTP challenge. Challenge traffic should be redirected to this port if overridden. See https://letsencrypt.org/docs/challenge-types/#http-01-challenge",
+									"type": "integer",
+									"default": 80
+								},
+								"alt_tlsalpn_port": {
+									"description": "Alternate port for the TLS-ALPN-01 challenge. Challenge traffic should be redirected to this port if overridden. See https://letsencrypt.org/docs/challenge-types/#tls-alpn-01",
+									"type": "integer",
+									"default": 443
+								},
+								"challenge_type": {
+									"type": "string",
+									"enum": [
+										"http-01",
+										"tlsalpn-01"
+									],
+									"description": "Challenge types",
+									"default": "http-01"
+								},
+								"use_production_endpoint": {
+									"description": "Whether to use the production endpoint. We recommend you use the staging endpoint to make sure everything works correctly before you deploy your certificate.",
+									"type": "boolean",
+									"default": false
+								},
+								"domains": {
+									"type": "array",
+									"minItems": 1,
+									"items": {
+										"type": "string",
+										"examples": [
+											"example.com"
+										]
+									},
+									"description": "List of domains to obtain certificates for. At least one domain is required."
+								}
+							},
+							"required": [
+								"domains",
+								"email"
+							]
+						},
+						"redirect": {
+							"description": "Whether to automatically redirect from HTTP to HTTPS.",
+							"type": "boolean",
+							"default": false
+						},
+						"cert": {
+							"$ref": "#/definitions/TLSCertFile"
+						},
+						"key": {
+							"$ref": "#/definitions/TLSKeyFile"
+						},
+						"root_ca": {
+							"$ref": "#/definitions/TLSCAFile"
+						},
+						"client_auth_type": {
+							"$ref": "#/definitions/TLSClientAuthType"
+						}
+					},
+					"required": [
+						"address"
+					]
+				},
+				"fcgi": {
+					"description": "FastCGI frontend support",
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"address": {
+							"description": "FastCGI connection DSN. Supports TCP and Unix sockets. An empty value disables this.",
+							"type": "string",
+							"examples": [
+								"tcp://0.0.0.0:7921"
+							]
+						}
+					},
+					"required": [
+						"address"
+					]
+				},
+				"http2": {
+					"description": "HTTP/2 settings",
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"h2c": {
+							"description": "Use HTTP/2 over non-encrypted TCP connection using H2C",
+							"type": "boolean",
+							"default": false
+						},
+						"max_concurrent_streams": {
+							"description": "Maximal concurrent streams.",
+							"type": "integer",
+							"default": 128,
+							"minimum": 0
+						}
+					}
+				}
+			},
+			"required": [
+				"address"
+			]
+		},
+		"redis": {
+			"$ref": "https://raw.githubusercontent.com/roadrunner-server/redis/refs/heads/master/schema.json"
+		},
+		"metrics": {
+			"description": "Application metrics in Prometheus format (docs: https://roadrunner.dev/docs/beep-beep-metrics)",
+			"type": "object",
+			"properties": {
+				"address": {
+					"description": "Prometheus client address (path /metrics added automatically).",
+					"type": "string",
+					"default": "127.0.0.1:2112"
+				},
+				"collect": {
+					"description": "Application-specific metrics (published using an RPC connection to the server)",
+					"type": "object",
+					"patternProperties": {
+						"^[a-zA-Z0-9._-]+$": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string",
+									"enum": [
+										"histogram",
+										"gauge",
+										"counter",
+										"summary"
+									]
+								},
+								"help": {
+									"type": "string",
+									"description": "Help message"
+								},
+								"labels": {
+									"type": "array",
+									"minItems": 1,
+									"description": "Metrics labels"
+								},
+								"buckets": {
+									"type": "array",
+									"items": {
+										"type": "number"
+									}
+								},
+								"objectives": {
+									"title": "map[float]float",
+									"type": "array",
+									"items": {
+										"type": "object",
+										"additionalProperties": {
+											"type": "number"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"status": {
+			"description": "Health check endpoint (docs: https://roadrunner.dev/docs/beep-beep-health). If response code is 200 - it means at least one worker ready to serve requests. 500 - there are no workers ready to service requests.",
+			"type": "object",
+			"properties": {
+				"address": {
+					"description": "Host and port to listen on (eg.: `127.0.0.1:2114`). Use the following URL: http://127.0.0.1:2114/health?plugin=http. Multiple plugins must be separated using & - http://127.0.0.1:2114/health?plugin=http&plugin=rpc where http and rpc are active (connected) plugins.",
+					"type": "string",
+					"examples": [
+						"127.0.0.1:2114"
+					]
+				},
+				"unavailable_status_code": {
+					"description": "Response status code if a requested plugin not ready to handle requests. Valid for both /health and /ready endpoints",
+					"type": "integer",
+					"default": 503
+				}
+			},
+			"required": [
+				"address"
+			]
+		},
+		"reload": {
+			"description": "Automatically detect PHP file changes and reload connected services",
+			"type": "object",
+			"properties": {
+				"interval": {
+					"description": "Sync interval",
+					"$ref": "#/definitions/Duration",
+					"default": "1s"
+				},
+				"patterns": {
+					"description": "Global patterns to sync",
+					"type": "array",
+					"items": {
+						"type": "string",
+						"examples": [
+							".php",
+							".json"
+						]
+					},
+					"default": [
+						".php"
+					]
+				},
+				"services": {
+					"description": "List of included for sync services (this is a map, where key name is a plugin name)",
+					"type": "object",
+					"minProperties": 0,
+					"patternProperties": {
+						"^[a-zA-Z0-9._-]+$": {
+							"type": "object",
+							"properties": {
+								"dirs": {
+									"description": "Directories to sync. If recursive is set to true, recursive sync will be applied only to the directories in 'dirs' section. Dot (.) means 'current working directory'",
+									"type": "array",
+									"default": [],
+									"items": {
+										"type": "string",
+										"examples": [
+											".",
+											"/app/src"
+										],
+										"minLength": 1
+									}
+								},
+								"recursive": {
+									"description": "Recursive search for file patterns to add",
+									"type": "boolean",
+									"default": false
+								},
+								"ignore": {
+									"description": "Ignored folders",
+									"type": "array",
+									"default": [],
+									"items": {
+										"type": "string",
+										"examples": [
+											"vendor",
+											"/app/logs"
+										],
+										"minLength": 1
+									}
+								},
+								"patterns": {
+									"description": "Service specific file pattens to sync",
+									"type": "array",
+									"default": [],
+									"items": {
+										"type": "string",
+										"examples": [
+											".php",
+											".go",
+											".md"
+										],
+										"minLength": 1
+									}
+								}
+							}
+						}
+					},
+					"additionalProperties": false
+				}
+			}
+		},
+		"nats": {
+			"$ref": "https://raw.githubusercontent.com/roadrunner-server/nats/refs/heads/master/schema.json#/definitions/driver"
+		},
+		"kafka": {
+			"$ref": "https://raw.githubusercontent.com/roadrunner-server/kafka/refs/heads/master/schema.json#/definitions/driver"
+		},
+		"amqp": {
+			"$ref": "https://raw.githubusercontent.com/roadrunner-server/amqp/refs/heads/master/schema.json#/definitions/driver"
+		},
+		"beanstalk": {
+			"$ref": "https://raw.githubusercontent.com/roadrunner-server/beanstalk/refs/heads/master/schema.json#/definitions/driver"
+		},
+		"sqs": {
+			"$ref": "https://raw.githubusercontent.com/roadrunner-server/sqs/refs/heads/master/schema.json#/definitions/driver"
+		},
+		"jobs": {
+			"$ref": "https://raw.githubusercontent.com/roadrunner-server/jobs/refs/heads/master/schema.json"
+		},
+		"tcp": {
+			"type": "object",
+			"description": "Plugin to handle RAW TCP packets.",
+			"additionalProperties": false,
+			"properties": {
+				"servers": {
+					"description": "TCP servers to allocate",
+					"type": "object",
+					"minProperties": 1,
+					"patternProperties": {
+						"^[a-zA-Z0-9._-]+$": {
+							"$ref": "#/definitions/TCPServers"
+						}
+					}
+				},
+				"pool": {
+					"$ref": "#/definitions/WorkersPool"
+				}
+			}
+		},
+		"grpc": {
+			"description": "GRPC plugin",
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"proto"
+			],
+			"properties": {
+				"listen": {
+					"description": "GRPC address to listen on.",
+					"type": "string",
+					"$ref": "#/definitions/HostAndPortWithTCP"
+				},
+				"proto": {
+					"type": "array",
+					"description": "Proto file to use. Multiple files are supported. Wildcards are allowed in the proto field.",
+					"items": {
+						"type": "string",
+						"examples": [
+							"*.proto",
+							"first.proto",
+							"second.proto"
+						]
+					}
+				},
+				"tls": {
+					"description": "GRPC TLS configuration",
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"key": {
+							"$ref": "#/definitions/TLSKeyFile"
+						},
+						"cert": {
+							"$ref": "#/definitions/TLSCertFile"
+						},
+						"root_ca": {
+							"$ref": "#/definitions/TLSCAFile"
+						},
+						"client_auth_type": {
+							"$ref": "#/definitions/TLSClientAuthType"
+						}
+					},
+					"required": [
+						"key",
+						"cert"
+					]
+				},
+				"max_send_msg_size": {
+					"type": "integer",
+					"description": "Maximum send message size in MB.",
+					"default": 50
+				},
+				"max_recv_msg_size": {
+					"description": "Maximum receive message size in MB.",
+					"default": 50,
+					"type": "integer"
+				},
+				"max_connection_idle": {
+					"description": " MaxConnectionIdle is a duration for the amount of time after which an idle connection would be closed by sending a GoAway. Idle duration is defined by the most recent time the number of outstanding RPCs became zero or since the connection was established.",
+					"$ref": "#/definitions/Duration"
+				},
+				"max_connection_age": {
+					"description": "The maximum duration a connection may exist before it will be closed by sending a GoAway. A random jitter of +/-10% will be added to MaxConnectionAge to spread out connection storms.",
+					"$ref": "#/definitions/Duration"
+				},
+				"max_connection_age_grace": {
+					"description": "The duration after MaxConnectionAge after which the connection will be forcibly closed.",
+					"$ref": "#/definitions/Duration"
+				},
+				"max_concurrent_streams": {
+					"description": "The maximum number of concurrent streams.",
+					"type": "integer",
+					"default": 10
+				},
+				"ping_time": {
+					"description": "Duration of no activity after which the server pings the client to see if the transport is still alive. If set below 1s, a minimum value of 1s will be used instead.",
+					"$ref": "#/definitions/Duration",
+					"default": "2h"
+				},
+				"timeout": {
+					"description": "The duration to wait for a response to a keepalive check, after which the connection is closed.",
+					"$ref": "#/definitions/Duration",
+					"default": "20s"
+				},
+				"pool": {
+					"description": "GRPC workers pool",
+					"type": "object",
+					"$ref": "#/definitions/WorkersPool"
+				}
+			}
+		},
+		"fileserver": {
+			"description": "File server to serve static files.",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"address": {
+					"description": "The address to listen on.",
+					"type": "string",
+					"examples": [
+						"127.0.0.1:10101"
+					]
+				},
+				"calculate_etag": {
+					"description": "Whether to calculate ETag for the file and add the ETag header. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag",
+					"type": "boolean",
+					"default": false
+				},
+				"weak": {
+					"description": "Whether to use only the filename when calculating the ETag value. If `false`, the entire file content is used.",
+					"default": false
+				},
+				"stream_request_body": {
+					"type": "boolean",
+					"description": "Whether to stream files larger than 4KB.",
+					"default": false
+				},
+				"serve": {
+					"description": "The URL prefixes to serve as static files. At least one entry is required.",
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"type": "object",
+						"properties": {
+							"prefix": {
+								"description": "Files matching this prefix will be served with this configuration.",
+								"type": "string",
+								"examples": [
+									"/img",
+									"/assets"
+								]
+							},
+							"root": {
+								"description": "Directory to serve these files from. Defaults to the root of the RR application directory.",
+								"default": ".",
+								"type": "string"
+							},
+							"compress": {
+								"description": "When set to true, the server attempts to minimize CPU usage by caching compressed files.",
+								"type": "boolean",
+								"default": false
+							},
+							"cache_duration": {
+								"description": "Expiration duration for inactive file handlers, given in seconds. Use any negative number (-1) to disable.",
+								"type": "integer",
+								"default": 10
+							},
+							"max_age": {
+								"description": "The value for the Cache-Control HTTP-header, given in seconds.",
+								"type": "integer",
+								"default": 10
+							},
+							"bytes_range": {
+								"description": "Enable range requests. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests",
+								"type": "boolean",
+								"default": false
+							}
+						},
+						"required": [
+							"prefix"
+						]
+					}
+				}
+			}
+		}
+	},
+	"required": [
+		"version"
+	],
+	"definitions": {
+		"TLSCAFile": {
+			"description": "Path to the CA certificate, if required. Always required for mTLS. Omit this option if unused.",
+			"type": "string",
+			"minLength": 1,
+			"examples": [
+				"/ssl/server/ca.crt"
+			]
+		},
+		"TLSCertFile": {
+			"description": "Path to the public certificate file.",
+			"type": "string",
+			"minLength": 1,
+			"examples": [
+				"/ssl/server/cert.crt"
+			]
+		},
+		"TLSKeyFile": {
+			"description": "Path to the private key for the certificate.",
+			"type": "string",
+			"minLength": 1,
+			"examples": [
+				"/ssl/server/key.pem"
+			]
+		},
+		"TLSClientAuthType": {
+			"description": "Authorization method for mTLS.",
+			"type": "string",
+			"default": "no_client_certs",
+			"enum": [
+				"request_client_cert",
+				"require_any_client_cert",
+				"verify_client_cert_if_given",
+				"no_client_certs",
+				"require_and_verify_client_cert"
+			]
+		},
+		"Service": {
+			"type": "object",
+			"description": "User defined service",
+			"additionalProperties": false,
+			"properties": {
+				"command": {
+					"description": "Command to execute. Can be any command here which can be executed.",
+					"type": "string"
+				},
+				"env": {
+					"description": "Environment variables for the process.",
+					"type": "object",
+					"$ref": "#/definitions/HashmapString"
+				},
+				"timeout_stop_sec": {
+					"description": "Timeout for the process stop operation. If it takes longer for this duration for the process to stop, it will be killed.",
+					"type": "integer",
+					"default": 5
+				},
+				"process_num": {
+					"description": "Number of copies (processes) to start per command execution.",
+					"type": "integer",
+					"default": 1
+				},
+				"exec_timeout": {
+					"description": "The maximum duration the service is allowed to run before RR will kill it. Default/zero means unlimited.",
+					"type": "string",
+					"$ref": "#/definitions/Duration",
+					"default": "0s"
+				},
+				"remain_after_exit": {
+					"description": "Whether to restart the process if it exists, regardless of the exit code.",
+					"type": "boolean",
+					"default": false
+				},
+				"restart_sec": {
+					"description": "Number of seconds to wait before process restart",
+					"type": "integer",
+					"default": 30
+				},
+				"service_name_in_log": {
+					"description": "Whether to include the name of the service in logs (e.g. service.some_service_1).",
+					"type": "boolean",
+					"default": false
+				}
+			},
+			"required": [
+				"command"
+			]
+		},
+		"WorkersPool": {
+			"description": "Static pool with PHP workers.",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"debug": {
+					"description": "Pool debug mode. A worker will be created right before RR passes a request to it.",
+					"type": "boolean",
+					"default": false
+				},
+				"command": {
+					"type": "string",
+					"description": "Command to use for the pool. If provided, this will override the value of server.command for the pool."
+				},
+				"num_workers": {
+					"description": "The number of worker processes to start. Default/zero means the number of logical CPUs.",
+					"type": "integer",
+					"minimum": 0,
+					"default": 0
+				},
+				"max_jobs": {
+					"description": "The maximum number of executions a worker is allowed to perform. Zero (or nothing) means no limit. When this value is reached, the worker is terminated and a new is created.",
+					"type": "integer",
+					"minimum": 0,
+					"default": 0
+				},
+				"max_queue_size": {
+					"description": "Maximum size of the internal request queue. After reaching this limit, additional requests will be rejected with an error.",
+					"type": "integer",
+					"minimum": 0,
+					"default": 0
+				},
+				"allocate_timeout": {
+					"description": "Timeout for worker allocation. Default/zero means 60s.",
+					"$ref": "#/definitions/Duration",
+					"default": "60s"
+				},
+				"reset_timeout": {
+					"description": "Timeout for the pool.Reset operation (./rr reset). Default/zero means 60s.",
+					"$ref": "#/definitions/Duration",
+					"default": "60s"
+				},
+				"stream_timeout": {
+					"description": "Timeout for stream cancellation. Default/zero means 60s.",
+					"$ref": "#/definitions/Duration",
+					"default": "60s"
+				},
+				"destroy_timeout": {
+					"description": "Timeout when destroying a worker. If the worker has stopped within this timeout, its process will be killed. Default/zero means 60s.",
+					"$ref": "#/definitions/Duration",
+					"default": "60s"
+				},
+				"supervisor": {
+					"description": "Supervisor is used to control HTTP workers, such as restarting them and limiting their memory consumption or execution time.",
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"watch_tick": {
+							"description": "How often to check the state of the workers. Defaults to 1 second.",
+							"$ref": "#/definitions/Duration",
+							"default": "1s"
+						},
+						"ttl": {
+							"description": "The maximum time the worker is allowed to live (soft limit). Default/zero means no limit. If the worker is processing a request while this expires, it will be restarted after it has completed its work.",
+							"$ref": "#/definitions/Duration",
+							"default": "0s"
+						},
+						"idle_ttl": {
+							"description": "How long worker can spend in idle mode after its first request (soft limit). Default/zero means no limit.",
+							"$ref": "#/definitions/Duration",
+							"default": "0s"
+						},
+						"max_worker_memory": {
+							"description": "The maximum amount of memory a worker is allowed to allocate in MB (soft limit). If a worker exceeds this limit during a request, it will be terminated and restarted once the request ends. Default/zero means no limit.",
+							"type": "integer",
+							"minimum": 0,
+							"default": 0,
+							"examples": [
+								256
+							]
+						},
+						"exec_ttl": {
+							"description": "The maximum time a request may take in seconds (hard limit). Default/zero means no limit.",
+							"$ref": "#/definitions/Duration",
+							"default": "0s"
+						}
+					}
+				}
+			}
+		},
+		"TCPServers": {
+			"description": "TCP server",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"addr": {
+					"description": "Address to listen on.",
+					"type": "string",
+					"pattern": "^[0-9a-zA-Z_.-]+:[0-9]{1,5}$",
+					"examples": [
+						"127.0.0.1:7778"
+					]
+				},
+				"delimiter": {
+					"description": "Data packet delimiter. Every send should end with either EOF or this delimiter.",
+					"type": "string",
+					"default": "\r\n"
+				},
+				"read_buf_size": {
+					"description": "Size of the chunks that RR reads data in, in MB. If you expect big payloads on a TCP server, you may reduce `read` system calls by using a big buffer.",
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 100,
+					"default": 1
+				}
+			},
+			"required": [
+				"addr"
+			]
+		},
+		"Duration": {
+			"description": "Time duration",
+			"type": "string",
+			"pattern": "^([0-9]*(\\.[0-9]*)?(ms|h|m|s))+$",
+			"examples": [
 				"1h",
 				"2.5h",
 				"2m",
 				".2m",
-                "30s",
-                "30.03s",
-                "300ms",
+				"30s",
+				"30.03s",
+				"300ms",
 				"1h3m40s500ms"
 			]
-        },
-        "HostAndPortWithTCP": {
-            "description": "Host and port with tcp:// prefix",
-            "type": "string",
-            "pattern": "^(((tcp://[0-9a-zA-Z_.-]+|)|\\$\\{([^}]+)\\}):([0-9]{1,5}||\\$\\{([^}]+)\\}))|\\$\\{([^}]+)\\}$",
-            "examples": [
-                "tcp://127.0.0.1:443",
-                "${TCP:-tcp://127.0.0.1:443}",
-                "tcp://127.0.0.1:${TCP_PORT}"
-            ]
-        },
-        "HostAndPort": {
-            "description": "Host and port",
-            "type": "string",
-            "pattern": "^((([0-9a-zA-Z_.-]+|)|\\$\\{([^}]+)\\}):([0-9]{1,5})|\\$\\{([^}]+)\\})|\\$\\{([^}]+)\\}$",
-            "examples": [
-                "127.0.0.1:443",
-                ":8080",
-                "0.0.0.0:${HTTP_PORT:-8080}",
-                "${HTTP_HOST:-127.0.0.1:8000}"
-            ]
-        },
-        "LogMode": {
-            "description": "Logging mode",
-            "type": "string",
-            "enum": [
-                "development",
-                "production",
-                "raw"
-            ]
-        },
-        "LogLevel": {
-            "description": "Logging level",
-            "type": "string",
-            "enum": [
-                "debug",
-                "info",
-                "warn",
-                "error",
-                "panic"
-            ]
-        },
-        "LogEncoding": {
-            "description": "Encoding format",
-            "type": "string",
-            "enum": [
-                "console",
-                "json"
-            ]
-        },
-        "LogOutput": {
-            "type": "string",
-            "examples": [
-                "stdout",
-                "stderr",
-                "/var/log/rr_errors.log"
-            ]
-        },
-        "Hashmap": {
-            "description": "Hashmap",
-            "type": "object",
-            "patternProperties": {
-                "^[a-zA-Z0-9._-]+$": {
-                    "type": "string",
-                    "examples": [
-                        "Any header value"
-                    ]
-                }
-            },
-            "additionalProperties": false
-        },
-        "Bucket": {
-            "description": "Hashmap with floats",
-            "type": "object",
-            "patternProperties": {
-                "[+-]?([0-9]*[.])?[0-9]+": {
-                    "type": "number",
-                    "examples": [
-                        1.1
-                    ]
-                }
-            },
-            "additionalProperties": false
-        },
-        "HashMapInt": {
-            "type": "object",
-            "additionalProperties": {
-                "type": "integer"
-            }
-        },
-        "NATS_J": {
-            "description": "NATS jobs driver",
-            "type": "object",
-            "properties": {
-                "addr": {
-                    "description": "NATS server address",
-                    "type": "string",
-                    "default": "demo.nats.io"
-                }
-            }
-        },
-        "KAFKA_J": {
-            "description": "Kafka jobs driver",
-            "type": "object",
-            "properties": {
-                "brokers": {
-                    "description": "Kafka broker addresses",
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "enum": [
-                            "127.0.0.1:9092",
-                            "127.0.0.1:9002"
-                        ]
-                    }
-                },
-                "tls": {
-                    "description": "Kafka TLS configuration",
-                    "type": "object",
-                    "properties": {
-                        "key": {
-                            "description": "Path to the key file",
-                            "type": "string",
-                            "default": null
-                        },
-                        "cert": {
-                            "description": "Path to the certificate",
-                            "type": "string",
-                            "default": null
-                        },
-                        "root_ca": {
-                            "description": "Path to the CA certificate",
-                            "type": "string",
-                            "default": null
-                        },
-                        "client_auth_type": {
-                            "description": "Client auth type",
-                            "type": "string",
-                            "default": "no_client_certs",
-                            "enum": [
-                                "request_client_cert",
-                                "require_any_client_cert",
-                                "verify_client_cert_if_given",
-                                "no_client_certs",
-                                "require_and_verify_client_cert"
-                            ]
-                        }
-                    }
-                },
-                "sasl": {
-                    "description": "Mechanism used for the authentication",
-                    "properties": {
-                        "mechanism":{
-                            "description": "Kafka brokers",
-                            "type": "string",
-                            "items": {
-                                "type": "string",
-                                "enum": [
-                                    "aws_msk_iam",
-                                    "plain",
-                                    "SCRAM-SHA-256",
-                                    "SCRAM-SHA-512"
-                                ]
-                            }
-                        },
-                        "username":{
-                            "description": "Username for authentication",
-                            "type": "string",
-                            "default": null
-                        },
-                        "password":{
-                            "description": "Password for authentication",
-                            "type": "string",
-                            "default": null
-                        },
-                        "nonce":{
-                            "description": "Optional for the SHA auth types. Empty by default",
-                            "type": "string",
-                            "default": null
-                        },
-                        "is_token":{
-                            "description": "If true, suffixes the tokenauth=true extra attribute to the initial authentication message. Set this to true if the user and pass are from a delegation token. Optional for the SHA auth types. Empty by default",
-                            "type": "boolean",
-                            "default": false
-                        },
-                        "zid":{
-                            "description": "Zid is an optional authorization ID to use in authenticating",
-                            "type": "string",
-                            "default": null
-                        },
-
-
-                        "access_key":{
-                            "description": "AWS Access key ID",
-                            "type": "string",
-                            "default": null
-                        },
-                        "secret_key":{
-                            "description": "AWS Secret Access key ID",
-                            "type": "string",
-                            "default": null
-                        },
-                        "session_token":{
-                            "description": "SessionToken, if non-empty, is a session / security token to use for authentication. See the following link for more details: https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html",
-                            "type": "string",
-                            "default": null
-                        },
-                        "user_agent":{
-                            "description": "UserAgent is the user agent to for the client to use when connecting to Kafka, overriding the default franz-go/<runtime.Version()>/<hostname>. Setting a UserAgent allows authorizing based on the aws:UserAgent condition key; see the following link for more details: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-useragent",
-                            "type": "string",
-                            "default": null
-                        }
-                    }
-                }
-            }
-        },
-        "BoltDB_J": {
-            "description": "Boltdb jobs driver",
-            "type": "object",
-            "properties": {
-                "permissions": {
-                    "type": "integer",
-                    "default": "0777"
-                }
-            }
-        }
-    }
+		},
+		"HostAndPortWithTCP": {
+			"description": "Host and port with tcp:// prefix",
+			"type": "string",
+			"pattern": "^(((tcp://[0-9a-zA-Z_.-]+|)|\\$\\{([^}]+)\\}):([0-9]{1,5}|\\$\\{([^}]+)\\}))|\\$\\{([^}]+)\\}$",
+			"examples": [
+				"tcp://127.0.0.1:443",
+				"${TCP:-tcp://127.0.0.1:443}",
+				"tcp://127.0.0.1:${TCP_PORT}"
+			]
+		},
+		"HostAndPort": {
+			"description": "Host and port",
+			"type": "string",
+			"pattern": "^((([0-9a-zA-Z_.-]+|)|\\$\\{([^}]+)\\}):([0-9]{1,5})|\\$\\{([^}]+)\\})|\\$\\{([^}]+)\\}$",
+			"examples": [
+				"127.0.0.1:443",
+				":8080",
+				"0.0.0.0:${HTTP_PORT:-8080}",
+				"${HTTP_HOST:-127.0.0.1:8000}"
+			]
+		},
+		"LogMode": {
+			"description": "Logging mode",
+			"type": "string",
+			"enum": [
+				"development",
+				"production",
+				"raw"
+			]
+		},
+		"LogLevel": {
+			"description": "Logging level",
+			"type": "string",
+			"enum": [
+				"debug",
+				"info",
+				"warn",
+				"error",
+				"panic"
+			]
+		},
+		"LogEncoding": {
+			"description": "Encoding format",
+			"type": "string",
+			"enum": [
+				"console",
+				"json"
+			]
+		},
+		"LogLineEnding": {
+			"description": "Line-ending to use for logging.",
+			"type": "string",
+			"default": "\n"
+		},
+		"LogOutput": {
+			"type": "string",
+			"examples": [
+				"stdout",
+				"stderr",
+				"/var/log/rr_errors.log"
+			]
+		},
+		"HashmapString": {
+			"description": "A hash map that only allows string values.",
+			"type": "object",
+			"patternProperties": {
+				"^[a-zA-Z0-9._-]+$": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		}
+	}
 }

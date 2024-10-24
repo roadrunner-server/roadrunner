@@ -24,7 +24,7 @@ jobs:
         run: npm install -g ajv-cli # Package page: <https://www.npmjs.com/package/ajv-cli>
 
       - name: Run linter
-        run: ajv validate --all-errors --verbose -s ./schemas/config/3.0.schema.json -d ./.rr.yaml
+        run: ajv validate --all-errors --verbose -s ./schemas/config/3.0.schema.json --spec=draft2019 -d ./.rr.yaml
 
   golangci-lint:
     name: Golang-CI (lint)
