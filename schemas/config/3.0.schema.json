@@ -4,7 +4,6 @@
 	"title": "RoadRunner Main Configuration File",
 	"description": "This is your main RoadRunner configuration file. It contains all the plugins you want to load and their configuration.",
 	"type": "object",
-	"additionalProperties": true,
 	"minProperties": 1,
 	"properties": {
 		"version": {
@@ -390,119 +389,7 @@
 			}
 		},
 		"kv": {
-			"description": "Key value storage plugin.",
-			"type": "object",
-			"minProperties": 1,
-			"patternProperties": {
-				"[a-zA-Z0-9_-]*": {
-					"description": "The name of the key-value storage, as used in your application.",
-					"type": "object",
-					"additionalProperties": false,
-					"required": [
-						"driver"
-					],
-					"properties": {
-						"driver": {
-							"description": "The driver to use.",
-							"type": "string",
-							"enum": [
-								"boltdb",
-								"memcached",
-								"memory",
-								"redis"
-							]
-						},
-						"config": {
-							"description": "You may override the global configuration of the driver. If you provided a global configuration for the plugin, this section can be omitted and the global configuration will be used instead. If neither are present, the KV storage will not load.",
-							"type": "object"
-						}
-					},
-					"if": {
-						"properties": {
-							"driver": {
-								"enum": [
-									"boltdb"
-								]
-							}
-						}
-					},
-					"then": {
-						"properties": {
-							"config": {
-								"$ref": "https://raw.githubusercontent.com/roadrunner-server/boltdb/refs/heads/master/schema.json#/definitions/driver"
-							}
-						}
-					},
-					"else": {
-						"if": {
-							"properties": {
-								"driver": {
-									"enum": [
-										"memcached"
-									]
-								}
-							}
-						},
-						"then": {
-							"properties": {
-								"config": {
-									"additionalProperties": false,
-									"type": "object",
-									"properties": {
-										"addr": {
-											"description": "Addresses of the memcached node(s).",
-											"type": "array",
-											"minItems": 1,
-											"items": {
-												"type": "string",
-												"minLength": 1,
-												"examples": [
-													"localhost:11211"
-												]
-											},
-											"default": [
-												"localhost:11211"
-											]
-										}
-									}
-								}
-							}
-						},
-						"else": {
-							"if": {
-								"properties": {
-									"driver": {
-										"enum": [
-											"redis"
-										]
-									}
-								}
-							},
-							"then": {
-								"properties": {
-									"config": {
-										"description": "Configuration parameters for the Redis KV store.",
-										"$ref": "#/definitions/Redis"
-									}
-								}
-							},
-							"else": {
-								"if": {
-									"properties": {
-										"driver": {
-											"enum": [
-												"memory"
-											]
-										}
-									}
-								},
-								"then": true,
-								"else": false
-							}
-						}
-					}
-				}
-			}
+			"$ref": "https://raw.githubusercontent.com/roadrunner-server/kv/refs/heads/master/schema.json"
 		},
 		"service": {
 			"description": "Service plugin settings",
@@ -1027,9 +914,7 @@
 			]
 		},
 		"redis": {
-			"description": "Configuration section for the Redis plugin.",
-			"type": "object",
-			"$ref": "#/definitions/Redis"
+			"$ref": "https://raw.githubusercontent.com/roadrunner-server/redis/refs/heads/master/schema.json"
 		},
 		"metrics": {
 			"description": "Application metrics in Prometheus format (docs: https://roadrunner.dev/docs/beep-beep-metrics)",
@@ -1400,43 +1285,6 @@
 		"version"
 	],
 	"definitions": {
-		"CacheKey": {
-			"description": "Configuration for a cache key.",
-			"type": "object",
-			"properties": {
-				"disable_body": {
-					"description": "Prevent the HTTP body from being evaluated by cache.",
-					"type": "boolean",
-					"default": false
-				},
-				"disable_host": {
-					"description": "Prevent the HTTP Host header from being evaluated by cache.",
-					"type": "boolean",
-					"default": false
-				},
-				"disable_method": {
-					"description": "Prevent the HTTP method (GET, POST etc.) from being evaluated by cache.",
-					"type": "boolean",
-					"default": false
-				},
-				"headers": {
-					"description": "Extra headers to add to the cache key.",
-					"type": "array",
-					"minItems": 1,
-					"items": {
-						"type": "string",
-						"minLength": 1
-					},
-					"examples": [
-						[
-							"Authorization",
-							"Content-Type",
-							"Vary"
-						]
-					]
-				}
-			}
-		},
 		"TLSCAFile": {
 			"description": "Path to the CA certificate, if required. Always required for mTLS. Omit this option if unused.",
 			"type": "string",
@@ -1472,145 +1320,6 @@
 				"no_client_certs",
 				"require_and_verify_client_cert"
 			]
-		},
-		"Redis": {
-			"type": "object",
-			"additionalProperties": false,
-			"properties": {
-				"addrs": {
-					"title": "Redis Endpoint",
-					"description": "The addresses or hostnames of the Redis server/cluster to connect to. If the number of addresses is 1 and master_name is empty, a single-node Redis Client will be returned, otherwise a ClusterClient or FailoverClient will be returned, depending on whether `master_name` is provided.",
-					"type": "array",
-					"minItems": 1,
-					"default": [
-						"localhost:6379"
-					]
-				},
-				"master_name": {
-					"title": "Redis Master Node Name",
-					"description": "The name of the master Redis node. A Sentinel-backed FailoverClient will be returned if this value is provided.",
-					"type": "string"
-				},
-				"username": {
-					"title": "Redis AUTH username.",
-					"description": "The username to provide for Redis authentication.",
-					"type": "string",
-					"examples": [
-						"my_username"
-					]
-				},
-				"password": {
-					"title": "Redis AUTH password.",
-					"description": "The password to provide for Redis authentication.",
-					"type": "string",
-					"examples": [
-						"super-secret-password"
-					]
-				},
-				"db": {
-					"title": "Redis DB Index",
-					"description": "The Redis DB index to select when connecting.",
-					"type": "integer",
-					"default": 0,
-					"maximum": 10
-				},
-				"sentinel_password": {
-					"title": "Sentinel Password",
-					"description": "The password for Redis Sentinel.",
-					"type": "string",
-					"examples": [
-						"super-secret-password"
-					]
-				},
-				"route_by_latency": {
-					"title": "Route by Latency",
-					"description": "Whether to route traffic to Redis nodes based on latency.",
-					"type": "boolean",
-					"default": false
-				},
-				"route_randomly": {
-					"title": "Route Randomly",
-					"description": "Whether to randomly route traffic to Redis nodes.",
-					"type": "boolean",
-					"default": false
-				},
-				"dial_timeout": {
-					"title": "Dial Timeout",
-					"description": "The timeout when attempting to connect to Redis. Default or zero means 5s.",
-					"$ref": "#/definitions/Duration",
-					"default": 0
-				},
-				"max_retries": {
-					"title": "Maximum Retries",
-					"description": "The maximum number of retry attempts when connecting to Redis. Default or zero means 3.",
-					"type": "integer",
-					"default": 0
-				},
-				"min_retry_backoff": {
-					"title": "Minimum Retry Backoff",
-					"description": "The minimum backoff duration when retrying connection attempts. Default or zero means 8s.",
-					"$ref": "#/definitions/Duration",
-					"default": 0
-				},
-				"max_retry_backoff": {
-					"title": "Maximum Retry Backoff",
-					"description": "The maximum backoff duration when retrying connection attempts. Default or zero means 512s.",
-					"$ref": "#/definitions/Duration",
-					"default": 0
-				},
-				"pool_size": {
-					"title": "Connection Pool Size",
-					"description": "The number of connections to keep in the Redis connection pool. Default or zero means 10 per logical CPU.",
-					"type": "integer",
-					"default": 0
-				},
-				"min_idle_conns": {
-					"title": "Minimum Idle Connections",
-					"description": "The minimum number of connections to keep in the pool. Defaults to 0, which means no idle connection pool.",
-					"type": "integer",
-					"default": 0
-				},
-				"max_conn_age": {
-					"title": "Maximum Connection Age",
-					"description": "The maximum age of open Redis connections. Default or zero means no limit.",
-					"$ref": "#/definitions/Duration",
-					"default": "0s"
-				},
-				"read_timeout": {
-					"title": "Read Timeout",
-					"description": "The timeout when reading from a Redis node. Default or zero means 3s.",
-					"$ref": "#/definitions/Duration",
-					"default": "0s"
-				},
-				"write_timeout": {
-					"title": "Write Timeout",
-					"description": "The timeout when writing to a Redis node. Default or zero means equivalent to `read_timeout`.",
-					"$ref": "#/definitions/Duration",
-					"default": "0s"
-				},
-				"pool_timeout": {
-					"title": "Pool Timeout",
-					"$ref": "#/definitions/Duration"
-				},
-				"idle_timeout": {
-					"title": "Idle Timeout",
-					"description": "The timeout of idle connections to Redis. Default or zero means 5m.",
-					"$ref": "#/definitions/Duration",
-					"default": "0s"
-				},
-				"idle_check_freq": {
-					"title": "Idle Check Frequency",
-					"description": "The time between checks for idle connections to Redis. Default or zero means 1m.",
-					"$ref": "#/definitions/Duration",
-					"default": "0s"
-				},
-				"read_only": {
-					"title": "Read-only",
-					"description": "Whether the Redis connection is in read-only mode. See https://redis.io/docs/latest/commands/readonly.",
-					"type": "boolean",
-					"default": false
-				}
-			}
 		},
 		"Service": {
 			"type": "object",
@@ -1868,15 +1577,6 @@
 				}
 			},
 			"additionalProperties": false
-		},
-		"HashmapInteger": {
-			"description": "A hash map that only allows integer values.",
-			"type": "object",
-			"patternProperties": {
-				"^[a-zA-Z0-9._-]+$": {
-					"type": "integer"
-				}
-			}
 		}
 	}
 }
