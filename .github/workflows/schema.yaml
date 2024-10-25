@@ -1,0 +1,29 @@
+name: rr_json_schema_validation
+
+on:
+  push:
+    branches:
+      - master
+      - stable
+  pull_request:
+
+jobs:
+  validate-json-schema:
+    name: Validate JSON Schema files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Test Script Dependencies
+        run: npm install
+        working-directory: ./schemas
+
+      - name: Run Script
+        run: node test.js
+        working-directory: ./schemas
