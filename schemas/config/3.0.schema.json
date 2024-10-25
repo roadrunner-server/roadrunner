@@ -2,7 +2,7 @@
 	"$id": "https://raw.githubusercontent.com/roadrunner-server/roadrunner/refs/heads/master/schemas/config/3.0.schema.json",
 	"$schema": "https://json-schema.org/draft/2019-09/schema",
 	"title": "RoadRunner Main Configuration File",
-	"description": "This is your main RoadRunner configuration file. It should contains all the plugins you want to load and their configuration.",
+	"description": "This is your main RoadRunner configuration file. It should contain all the plugins you want to load and their configuration.",
 	"type": "object",
 	"required": [
 		"version"
