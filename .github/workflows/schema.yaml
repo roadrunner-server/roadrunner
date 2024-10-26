@@ -5,12 +5,21 @@ on:
     branches:
       - master
       - stable
+    paths:
+      - 'schemas/**'
+      - '.github/workflows/schema.yaml'
   pull_request:
+    paths:
+      - 'schemas/**'
+      - '.github/workflows/schema.yaml'
 
 jobs:
   validate-json-schema:
     name: Validate JSON Schema files
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./schemas
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -18,12 +27,10 @@ jobs:
       - name: Setup nodejs
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "20"
 
       - name: Install Test Script Dependencies
         run: npm install
-        working-directory: ./schemas
 
       - name: Run Script
         run: node test.js
-        working-directory: ./schemas

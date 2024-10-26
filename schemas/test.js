@@ -12,7 +12,7 @@ function stripIds(schema, first) {
 			delete schema.$schema;
 		}
 		for (const key in schema) {
-			if (schema.hasOwnProperty(key)) {
+			if (Object.hasOwn(schema, key)) {
 				stripIds(schema[key], false);
 			}
 		}
@@ -25,7 +25,7 @@ const dereferenced = await $RefParser.dereference('./config/3.0.schema.json');
 // Remove $id and $schema from anything but the root
 stripIds(dereferenced, true);
 
-const ajv = new Ajv2019({strict: true})
+const ajv = new Ajv2019({strict: true, allErrors: true})
 const validator = ajv.compile(dereferenced)
 
 const data = fs.readFileSync('../.rr.yaml', 'utf-8');
@@ -33,5 +33,7 @@ const schema = yaml.load(data);
 
 // Validate the file
 if (!validator(schema)) {
-	throw new Error("Errors: " + JSON.stringify(validator.errors))
+	throw new Error(JSON.stringify(validator.errors, null, 2))
+} else {
+	console.log('No errors found in schemas.')
 }
