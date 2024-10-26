@@ -6,10 +6,12 @@ on:
       - master
       - stable
     paths:
+      - '.rr*'
       - 'schemas/**'
       - '.github/workflows/schema.yaml'
   pull_request:
     paths:
+      - '.rr*'
       - 'schemas/**'
       - '.github/workflows/schema.yaml'
 
