@@ -187,13 +187,11 @@ temporal:
   # Default: default
   namespace: default
 
+
   # Temporal metrics
   #
   # Optional section
   metrics:
-    # Server metrics address
-    # Required for the production. Default: 127.0.0.1:9091, for the metrics 127.0.0.1:9091/metrics
-    address: 127.0.0.1:9091
 
     # Metrics driver to use
     # Optional, default: prometheus. Available values: prometheus, statsd
@@ -201,6 +199,9 @@ temporal:
 
     # ---- Prometheus
     prometheus:
+      # Server metrics address
+      # Required for the production. Default: 127.0.0.1:9091, for the metrics 127.0.0.1:9091/metrics
+      address: 127.0.0.1:9091
       # Metrics type
       type: "summary"
       # Temporal metrics prefix
