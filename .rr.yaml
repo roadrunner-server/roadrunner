@@ -4,7 +4,6 @@
 #       MORE DOCS CAN BE FOUND HERE: <https://roadrunner.dev/docs/intro-config>      #
 ######################################################################################
 
-$schema: "./schemas/config/3.0.schema.json"
 # Production usage guide: https://roadrunner.dev/docs/app-server-production/2.x/en
 
 # Hint: RR will replace any config options using reference to environment variables,
@@ -47,7 +46,7 @@ server:
     # Username (not UID) of the user from whom the on_init command is executed. An empty value means to use the RR process user.
     #
     # Default: ""
-    user: ""
+    # user: ""
 
   # Worker starting command, with any required arguments.
   #
@@ -57,12 +56,12 @@ server:
   # Username (not UID) for the worker processes. An empty value means to use the RR process user.
   #
   # Default: ""
-  user: ""
+  # user: ""
 
   # Group name (not GID) for the worker processes. An empty value means to use the RR process group.
   #
   # Default: ""
-  group: ""
+  # group: ""
 
   # Environment variables for the worker processes.
   #
@@ -104,12 +103,12 @@ logs:
   # Output can be file (eg.: "/var/log/rr_errors.log"), "stderr" or "stdout".
   #
   # Default: "stderr"
-  output: stderr
+  output: [ stderr ]
 
   # Errors only output can be file (eg.: "/var/log/rr_errors.log"), "stderr" or "stdout".
   #
   # Default: "stderr"
-  err_output: stderr
+  err_output: [ stderr ]
 
   # File logger options
   #
@@ -150,20 +149,20 @@ logs:
       mode: development
       level: panic
       encoding: console
-      output: stdout
-      err_output: stderr
+      output: [ stdout ]
+      err_output: [ stderr ]
     server:
       mode: production
       level: info
       encoding: json
-      output: stdout
-      err_output: stdout
+      output: [ stdout ]
+      err_output: [ stdout ]
     rpc:
       mode: raw
       level: debug
       encoding: console
-      output: stderr
-      err_output: stdout
+      output: [ stderr ]
+      err_output: [ stdout ]
 
 # Workflow and activity mesh service.
 #
@@ -188,65 +187,52 @@ temporal:
   # Default: default
   namespace: default
 
+
   # Temporal metrics
   #
   # Optional section
   metrics:
 
-    # ---- Prometheus
-
     # Metrics driver to use
-    #
     # Optional, default: prometheus. Available values: prometheus, statsd
     driver: prometheus
-    # Server metrics address
-    #
-    # Required for the production. Default: 127.0.0.1:9091, for the metrics 127.0.0.1:9091/metrics
-    address: 127.0.0.1:9091
-    # Metrics type
-    #
-    # Default: "summary". Supported values: summary, histogram
-    type: "summary"
 
-    # Temporal metrics prefix
-    #
-    # Default: (empty)
-    prefix: "foobar"
+    # ---- Prometheus
+    prometheus:
+      # Server metrics address
+      # Required for the production. Default: 127.0.0.1:9091, for the metrics 127.0.0.1:9091/metrics
+      address: 127.0.0.1:9091
+      # Metrics type
+      type: "summary"
+      # Temporal metrics prefix
+      # Default: (empty)
+      prefix: "foobar"
 
     # ---- Statsd (uncomment)
-
-    # Metrics driver to use
-    #
-    # Optional, default: prometheus. Available values: prometheus, statsd
-    # driver: statsd
-
     # Statsd host and port
+    #statsd:
+    #  Optional
+    #  default: 127.0.0.1:8125
+    #  host_port: "127.0.0.1:8125"
     #
-    # Optional, default: 127.0.0.1:8125
-    # host_port: "127.0.0.1:8125"
-
-    # Prefix for the metrics
+    #  Prefix for the metrics
+    #  Optional, default: empty
+    #  prefix: "samples"
     #
-    # Optional, default: empty
-    # prefix: "samples"
-
-    # Flush interval is the maximum interval for sending packets.
+    #  Flush interval is the maximum interval for sending packets.
+    #  Optional, default: 1s
+    #  flush_interval: 1s
     #
-    # Optional, default: 1s
-    # flush_interval: 1s
-
-    # Flush bytes specifies the maximum udp packet size you wish to send.
-    # If FlushBytes is unspecified, it defaults  to 1432 bytes, which is
-    # considered safe for local traffic
+    #  Flush bytes specifies the maximum udp packet size you wish to send.
+    #  If FlushBytes is unspecified, it defaults  to 1432 bytes, which is
+    #  considered safe for local traffic
+    #  Optional, default: 1432
+    #  flush_bytes: 1432
     #
-    # Optional, default: 1432
-    # flush_bytes: 1432
-
-    # Tags passed to the statsd on init
-    #
-    # Optional, default: empty
+    #  Tags passed to the statsd on init
+    #  Optional, default: empty
     #tags:
-    #  - foo: bar
+    #  foo: bar
 
   # Temporal TLS configuration
   #
@@ -456,7 +442,7 @@ kv:
     #
     # Default: none
     driver: memory
-    config: {}
+    config: { }
 
 # Service plugin settings
 service:
@@ -560,25 +546,25 @@ otel:
   # https://github.com/open-telemetry/opentelemetry-specification/blob/v1.25.0/specification/resource/semantic_conventions/README.md
   resource:
 
-      # User's service name
-      #
-      # Default: RoadRunner
-      service_name: "rr_test"
+    # User's service name
+    #
+    # Default: RoadRunner
+    service_name: "rr_test"
 
-      # User's service version
-      #
-      # Default: RoadRunner
-      service_version: "1.0.0"
+    # User's service version
+    #
+    # Default: RoadRunner
+    service_version: "1.0.0"
 
-      # User's service namespace
-      #
-      # Default: RoadRunner
-      service_namespace: "RR-Shop"
+    # User's service namespace
+    #
+    # Default: RoadRunner
+    service_namespace: "RR-Shop"
 
-      # User's service instance id
-      #
-      # Default: Generated UUID
-      service_instance_id: "UUID"
+    # User's service instance id
+    #
+    # Default: Generated UUID
+    service_instance_id: "UUID"
   # Use insecure endpoint (http) or insecure gRPC
   #
   # Default: false
@@ -602,7 +588,7 @@ otel:
   # Used for the http client to override the default URL
   #
   # Default: empty
-  custom_url: ""
+  # custom_url: ""
 
   # Consumer's endpoint
   #
@@ -976,15 +962,19 @@ metrics:
 
   # Application-specific metrics (published using an RPC connection to the server).
   collect:
-    app_metric:
-      type: histogram
-      help: "Custom application metric"
+    app_metric_summary:
+      type: summary
+      help: "Custom summary application metric"
       labels: [ "type" ]
-      buckets: [ 0.1, 0.2, 0.3, 1.0 ]
       # Objectives defines the quantile rank estimates with their respective absolute error (for summary only).
       objectives:
-        - 1.4: 2.3
-        - 2.0: 1.4
+        0.1: 2.3
+        1.0: 1.4
+    app_metric_histogram:
+      type: histogram
+      help: "Custom histogram application metric"
+      labels: [ "type" ]
+      buckets: [ 0.1, 0.2, 0.3, 1.0 ]
 
 # Health check endpoint (docs: https://roadrunner.dev/docs/app-server-health/2.x/en). If response code is 200 - it means at
 # least one worker ready to serve requests. 500 - there are no workers ready to service requests.
@@ -1133,7 +1123,7 @@ kafka:
   # Kafka brokers addresses
   #
   # Required to use Kafka driver
-  brokers: ["127.0.0.1:9092", "127.0.0.1:9002"]
+  brokers: [ "127.0.0.1:9092", "127.0.0.1:9002" ]
 
   # SSL/TLS configuration
   #
@@ -1372,11 +1362,6 @@ jobs:
         # If the job has priority set to 0, it will inherit the pipeline's priority. Default: 10.
         priority: 1
 
-        # Consume any payload type (not only Jobs structured)
-        #
-        # Default: false
-        consume_all: false
-
         # Durable queue
         #
         # Default: false
@@ -1476,11 +1461,6 @@ jobs:
         # Default: 1
         tube_priority: 1
 
-        # Consume any payload type (not only Jobs structured)
-        #
-        # Default: false
-        consume_all: false
-
         # Tube name
         #
         # Default: default
@@ -1511,11 +1491,6 @@ jobs:
         #
         # Default: 10
         prefetch: 10
-
-        # Consume any payload type (not only Jobs structured)
-        #
-        # Default: false
-        consume_all: false
 
         # Get queue URL only
         #
@@ -1577,11 +1552,6 @@ jobs:
         #
         # Messages to read into the channel
         prefetch: 100
-
-        # Consume any payload type (not only Jobs structured)
-        #
-        # Default: false
-        consume_all: false
 
         # NATS subject
         #
@@ -1951,18 +1921,17 @@ tcp:
       # Default: CRLF (\r\n)
       delimiter: "\r\n"
 
-      # Chunks that RR uses to read the data. In MB. If you expect big payloads on a TCP server, to reduce `read` syscalls, would be a good practice to use a fairly big enough buffer.
-      #
-      # Default: 1MB
-      read_buf_size: 1
     server2:
       addr: 127.0.0.1:8811
-      read_buf_size: 10
     server3:
       addr: 127.0.0.1:8812
       delimiter: "\r\n"
-      read_buf_size: 1
+  # Chunks that RR uses to read the data. In MB. If you expect big payloads on a TCP server, to reduce `read` syscalls, would be a good practice to use a fairly big enough buffer.
+  #
+  # Default: 1MB
+  read_buf_size: 10
 
+  # The worker pool to use for the TCP service.
   pool:
     # Debug mode for the pool. In this mode, pool will not pre-allocate the worker. Worker (only 1, num_workers ignored) will be allocated right after the request arrived.
     #
