@@ -2,17 +2,12 @@ package serve
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"github.com/roadrunner-server/endure/v2"
 	"github.com/roadrunner-server/roadrunner/v2024/container"
 	"github.com/roadrunner-server/roadrunner/v2024/internal/meta"
 	"github.com/roadrunner-server/roadrunner/v2024/internal/sdnotify"
-	"gopkg.in/yaml.v3"
 	"os"
 	"os/signal"
-	"path/filepath"
-	"regexp"
-	"strings"
 	"syscall"
 
 	configImpl "github.com/roadrunner-server/config/v5"
@@ -20,88 +15,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// envVarPattern matches ${var} or $var or ${var:-default} patterns
-var envVarPattern = regexp.MustCompile(`\$\{([^{}:\-]+)(?::-([^{}]+))?\}|\$([A-Za-z0-9_]+)`)
-
-// expandEnvVars replaces environment variables in the input string
-func expandEnvVars(input string) string {
-	return envVarPattern.ReplaceAllStringFunc(input, func(match string) string {
-		// Case 1: ${VAR:-default}
-		if strings.Contains(match, ":-") {
-			parts := strings.Split(match[2:len(match)-1], ":-")
-			value := os.Getenv(parts[0])
-			if value != "" {
-				return value
-			}
-			return parts[1]
-		}
-
-		// Case 2: ${VAR} or $VAR
-		varName := match
-		if strings.HasPrefix(match, "${") {
-			varName = match[2 : len(match)-1]
-		} else {
-			varName = match[1:]
-		}
-
-		if value := os.Getenv(varName); value != "" {
-			return value
-		}
-
-		// Return original if not found
-		return match
-	})
-}
-
-// processConfig reads the config file, processes environment variables, and returns a path to the processed config
-func processConfig(cfgFile string) (string, error) {
-	content, err := os.ReadFile(cfgFile)
-	if err != nil {
-		return "", err
-	}
-
-	// Check if envfile is specified
-	var cfg map[string]interface{}
-	if err := yaml.Unmarshal(content, &cfg); err != nil {
-		return "", err
-	}
-
-	envFile, ok := cfg["envfile"].(string)
-	if !ok || envFile == "" {
-		return "", nil
-	}
-
-	// Load env file if specified
-	if !filepath.IsAbs(envFile) {
-		envFile = filepath.Join(filepath.Dir(cfgFile), envFile)
-	}
-
-	err = godotenv.Load(envFile)
-	if err != nil {
-		return "", err
-	}
-
-	// Perform environment variable substitution
-	expandedContent := expandEnvVars(string(content))
-
-	// Create temporary file with processed content
-	tmpFile, err := os.CreateTemp("", "rr-processed-*.yaml")
-	if err != nil {
-		return "", err
-	}
-	defer func() {
-		_ = tmpFile.Close()
-	}()
-
-	if err = os.WriteFile(tmpFile.Name(), []byte(expandedContent), 0644); err != nil {
-		return "", err
-	}
-
-	return tmpFile.Name(), nil
-}
-
 func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental *bool) *cobra.Command { //nolint:funlen
-
 	return &cobra.Command{
 		Use:   "serve",
 		Short: "Start RoadRunner server",
@@ -113,7 +27,7 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental 
 			}
 
 			// Process config and get temporary file path
-			tempFile, err := processConfig(*cfgFile)
+			tempFile, err := container.ProcessConfig(*cfgFile)
 			if err != nil {
 				return errors.E(op, err)
 			}

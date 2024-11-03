@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"os"
 	"runtime/debug"
 
 	configImpl "github.com/roadrunner-server/config/v5"
@@ -21,6 +22,18 @@ type RR struct {
 
 // NewRR creates a new RR instance that can then be started or stopped by the caller
 func NewRR(cfgFile string, override []string, pluginList []any) (*RR, error) {
+	// Process config and get temporary file path
+	tempFile, err := container.ProcessConfig(cfgFile)
+	if err != nil {
+		return nil, err
+	}
+	if len(tempFile) > 0 {
+		cfgFile = tempFile
+		defer func() {
+			_ = os.Remove(tempFile)
+		}()
+	}
+
 	// create endure container config
 	containerCfg, err := container.NewConfig(cfgFile)
 	if err != nil {
