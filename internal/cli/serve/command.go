@@ -55,17 +55,15 @@ func expandEnvVars(input string) string {
 
 // processConfig reads the config file, processes environment variables, and returns a path to the processed config
 func processConfig(cfgFile string) (string, error) {
-	const op = errors.Op("process_config")
-
 	content, err := os.ReadFile(cfgFile)
 	if err != nil {
-		return "", errors.E(op, fmt.Errorf("could not read config file: %w", err))
+		return "", err
 	}
 
 	// Check if envfile is specified
 	var cfg map[string]interface{}
 	if err := yaml.Unmarshal(content, &cfg); err != nil {
-		return "", fmt.Errorf("could not parse config: %w", err)
+		return "", err
 	}
 
 	envFile, ok := cfg["envfile"].(string)
@@ -89,11 +87,14 @@ func processConfig(cfgFile string) (string, error) {
 	// Create temporary file with processed content
 	tmpFile, err := os.CreateTemp("", "rr-processed-*.yaml")
 	if err != nil {
-		return "", errors.E(op, fmt.Errorf("could not create temporary config file: %w", err))
+		return "", err
 	}
+	defer func() {
+		_ = tmpFile.Close()
+	}()
 
 	if err = os.WriteFile(tmpFile.Name(), []byte(expandedContent), 0644); err != nil {
-		return "", errors.E(op, fmt.Errorf("could not write processed config: %w", err))
+		return "", err
 	}
 
 	return tmpFile.Name(), nil
