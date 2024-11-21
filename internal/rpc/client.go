@@ -33,9 +33,6 @@ func NewClient(cfg string, flags []string) (*rpc.Client, error) {
 		return nil, err
 	}
 
-	// automatically inject ENV variables using ${ENV} pattern
-	expandEnvViper(v)
-
 	// override config Flags
 	if len(flags) > 0 {
 		for _, f := range flags {
@@ -46,6 +43,20 @@ func NewClient(cfg string, flags []string) (*rpc.Client, error) {
 
 			v.Set(key, val)
 		}
+	}
+
+	ver := v.Get(versionKey)
+	if ver == nil {
+		return nil, fmt.Errorf("rr configuration file should contain a version e.g: version: 3")
+	}
+
+	if _, ok := ver.(string); !ok {
+		return nil, fmt.Errorf("version should be a string: `version: \"3\"`, actual type is: %T", ver)
+	}
+
+	err = handleInclude(ver.(string), v)
+	if err != nil {
+		return nil, fmt.Errorf("failed to handle includes: %w", err)
 	}
 
 	// rpc.listen might be set by the -o flags or env variable

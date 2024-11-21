@@ -1,0 +1,11 @@
+version: "3"
+
+server:
+  command: "php app-with-domain-specific-routes.php"
+
+logs:
+  level: debug
+  mode: development
+
+include:
+  - test/include1/.rr-include.yaml

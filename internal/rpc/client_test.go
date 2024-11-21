@@ -52,6 +52,20 @@ func TestNewClient_SuccessfullyConnected(t *testing.T) {
 	defer func() { assert.NoError(t, c.Close()) }()
 }
 
+func TestNewClient_WithIncludes(t *testing.T) {
+	l, err := net.Listen("tcp", "127.0.0.1:6010")
+	assert.NoError(t, err)
+
+	defer func() { assert.NoError(t, l.Close()) }()
+
+	c, err := rpc.NewClient("test/include1/.rr.yaml", nil)
+
+	assert.NotNil(t, c)
+	assert.NoError(t, err)
+
+	defer func() { assert.NoError(t, c.Close()) }()
+}
+
 func TestNewClient_SuccessfullyConnectedOverride(t *testing.T) {
 	l, err := net.Listen("tcp", "127.0.0.1:55554")
 	assert.NoError(t, err)
