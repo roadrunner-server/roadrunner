@@ -62,6 +62,8 @@ func TestNewClient_WithIncludes(t *testing.T) {
 
 	assert.NotNil(t, c)
 	assert.NoError(t, err)
+
+	assert.NoError(t, c.Close())
 }
 
 func TestNewClient_SuccessfullyConnectedOverride(t *testing.T) {

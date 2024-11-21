@@ -1,2 +1,4 @@
+version: "3"
+
 rpc:
   $foo bar

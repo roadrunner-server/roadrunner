@@ -37,6 +37,10 @@ func getConfiguration(path string) (map[string]any, string, error) {
 }
 
 func handleInclude(rootVersion string, v *viper.Viper) error {
+	// automatically inject ENV variables using ${ENV} pattern
+	// root config
+	expandEnvViper(v)
+
 	ifiles := v.GetStringSlice(includeKey)
 	if ifiles == nil {
 		return nil
