@@ -17,10 +17,11 @@ type RR struct {
 	container *endure.Endure
 	stop      chan struct{}
 	Version   string
+	cfg       *configImpl.Plugin
 }
 
 // NewRR creates a new RR instance that can then be started or stopped by the caller
-func NewRR(cfgFile string, override []string, pluginList []any) (*RR, error) {
+func NewRR(cfgFile string, override []string, pluginList []any, withExperimentalFeatures bool) (*RR, error) {
 	// create endure container config
 	containerCfg, err := container.NewConfig(cfgFile)
 	if err != nil {
@@ -28,10 +29,11 @@ func NewRR(cfgFile string, override []string, pluginList []any) (*RR, error) {
 	}
 
 	cfg := &configImpl.Plugin{
-		Path:    cfgFile,
-		Timeout: containerCfg.GracePeriod,
-		Flags:   override,
-		Version: getRRVersion(),
+		Path:                 cfgFile,
+		Timeout:              containerCfg.GracePeriod,
+		Flags:                override,
+		Version:              getRRVersion(),
+		ExperimentalFeatures: withExperimentalFeatures,
 	}
 
 	// create endure container
@@ -66,6 +68,7 @@ func NewRR(cfgFile string, override []string, pluginList []any) (*RR, error) {
 		container: endureContainer,
 		stop:      make(chan struct{}, 1),
 		Version:   cfg.Version,
+		cfg:       cfg,
 	}, nil
 }
 
@@ -115,4 +118,8 @@ func getRRVersion() string {
 	}
 
 	return ""
+}
+
+func (rr *RR) Config() *configImpl.Plugin {
+	return rr.cfg
 }
