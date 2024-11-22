@@ -1,0 +1,5 @@
+version: "3"
+
+rpc:
+  listen: tcp://127.0.0.1:6010
+
