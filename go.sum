@@ -378,8 +378,8 @@ github.com/roadrunner-server/jobs/v5 v5.0.5 h1:lzVuj5WGmnrXmHx1+bIS9nRE0ptZY5/WS
 github.com/roadrunner-server/jobs/v5 v5.0.5/go.mod h1:3WS0JkdShUQ/b3oxeL17PyRyTO4h2VpUHRpuEbMJoNI=
 github.com/roadrunner-server/kafka/v5 v5.0.4 h1:fkw2X78DA4O2B36Y7+LVFtS/d1WVKtj6suylDXZ5ZWc=
 github.com/roadrunner-server/kafka/v5 v5.0.4/go.mod h1:iA2elRQdMbMR4o9Dh2Je5SQYvJ27+R3L2rIyo38rRpg=
-github.com/roadrunner-server/kv/v5 v5.0.4 h1:V06EFkA1O/ymYi6USPthy5tomYf30h18ry25t4MRBOU=
-github.com/roadrunner-server/kv/v5 v5.0.4/go.mod h1:y1XzXDJzPTGCL7TLQiKwflKU9ONeejT+E5Eu3a0+vLM=
+github.com/roadrunner-server/kv/v5 v5.1.0 h1:j3k+k7PyQx4wK/Ucp3feZaUY6IMZLPBx5W/ZdPyY2Jc=
+github.com/roadrunner-server/kv/v5 v5.1.0/go.mod h1:j8wSl7U9rZmbteXQ/nP4WwzRL7IqSqQVKkA/dpqx+GE=
 github.com/roadrunner-server/lock/v5 v5.0.4 h1:k+v08WQL5pC9CCHBCw2NQSp9xEaf3kgzs6pPTsJygxM=
 github.com/roadrunner-server/lock/v5 v5.0.4/go.mod h1:irpWIlC5cno4syvQHSQqxjDrWsJGcBoad+Sz2Io0cnc=
 github.com/roadrunner-server/logger/v5 v5.0.4 h1:DiydGsyhiqLRR8HYaT8jarzdw1LS+WiJb0W684zeaz8=
