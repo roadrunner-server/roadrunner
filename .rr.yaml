@@ -802,6 +802,14 @@ http:
     # Default: 60s
     destroy_timeout: 60s
 
+    # Dynamic allocator settings.
+    #
+    # Default: empty
+    dynamic_allocator:
+        max_workers: 25
+        spawn_rate: 10
+        idle_timeout: 10s
+
     # Supervisor is used to control http workers (previous name was "limit", video: https://www.youtube.com/watch?v=NdrlZhyFqyQ).
     # "Soft" limits will not interrupt current request processing. "Hard"
     # limit on the contrary - interrupts the execution of the request.
@@ -1283,6 +1291,11 @@ jobs:
     #
     # Default: 60s
     destroy_timeout: 60s
+
+    dynamic_allocator:
+        max_workers: 25
+        spawn_rate: 10
+        idle_timeout: 10s
 
   # List of broker pipelines associated with the drivers.
   #
