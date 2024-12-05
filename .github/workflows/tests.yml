@@ -23,7 +23,7 @@ jobs:
       - name: Run linter
         uses: golangci/golangci-lint-action@v6.1.1
         with:
-          version: v1.60 # without patch version
+          version: v1.62 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
           args: -v --build-tags=race --timeout=10m
 
