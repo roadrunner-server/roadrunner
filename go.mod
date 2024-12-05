@@ -10,46 +10,46 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v5 v5.0.4
+	github.com/roadrunner-server/amqp/v5 v5.1.0
 	github.com/roadrunner-server/api/v4 v4.16.0
-	github.com/roadrunner-server/app-logger/v5 v5.0.4
-	github.com/roadrunner-server/beanstalk/v5 v5.0.4
-	github.com/roadrunner-server/boltdb/v5 v5.0.4
-	github.com/roadrunner-server/centrifuge/v5 v5.0.4
-	github.com/roadrunner-server/config/v5 v5.0.4
+	github.com/roadrunner-server/app-logger/v5 v5.1.0
+	github.com/roadrunner-server/beanstalk/v5 v5.1.0
+	github.com/roadrunner-server/boltdb/v5 v5.1.0
+	github.com/roadrunner-server/centrifuge/v5 v5.1.0
+	github.com/roadrunner-server/config/v5 v5.1.0
 	github.com/roadrunner-server/endure/v2 v2.6.1
 	github.com/roadrunner-server/errors v1.4.1
-	github.com/roadrunner-server/fileserver/v5 v5.0.3
-	github.com/roadrunner-server/google-pub-sub/v5 v5.0.4
+	github.com/roadrunner-server/fileserver/v5 v5.1.0
+	github.com/roadrunner-server/google-pub-sub/v5 v5.1.0
 	github.com/roadrunner-server/goridge/v3 v3.8.3
-	github.com/roadrunner-server/grpc/v5 v5.0.6
-	github.com/roadrunner-server/gzip/v5 v5.0.4
-	github.com/roadrunner-server/headers/v5 v5.0.4
-	github.com/roadrunner-server/http/v5 v5.0.4
-	github.com/roadrunner-server/informer/v5 v5.0.4
-	github.com/roadrunner-server/jobs/v5 v5.0.5
-	github.com/roadrunner-server/kafka/v5 v5.0.4
-	github.com/roadrunner-server/kv/v5 v5.1.0
-	github.com/roadrunner-server/lock/v5 v5.0.4
-	github.com/roadrunner-server/logger/v5 v5.0.4
-	github.com/roadrunner-server/memcached/v5 v5.0.4
-	github.com/roadrunner-server/memory/v5 v5.1.0
-	github.com/roadrunner-server/metrics/v5 v5.0.4
-	github.com/roadrunner-server/nats/v5 v5.0.4
-	github.com/roadrunner-server/otel/v5 v5.0.3
+	github.com/roadrunner-server/grpc/v5 v5.1.0
+	github.com/roadrunner-server/gzip/v5 v5.1.0
+	github.com/roadrunner-server/headers/v5 v5.1.0
+	github.com/roadrunner-server/http/v5 v5.1.0
+	github.com/roadrunner-server/informer/v5 v5.1.0
+	github.com/roadrunner-server/jobs/v5 v5.1.0
+	github.com/roadrunner-server/kafka/v5 v5.1.0
+	github.com/roadrunner-server/kv/v5 v5.2.0
+	github.com/roadrunner-server/lock/v5 v5.1.0
+	github.com/roadrunner-server/logger/v5 v5.1.0
+	github.com/roadrunner-server/memcached/v5 v5.1.0
+	github.com/roadrunner-server/memory/v5 v5.2.0
+	github.com/roadrunner-server/metrics/v5 v5.1.0
+	github.com/roadrunner-server/nats/v5 v5.1.0
+	github.com/roadrunner-server/otel/v5 v5.1.0
 	github.com/roadrunner-server/pool v1.1.1
-	github.com/roadrunner-server/prometheus/v5 v5.0.3
-	github.com/roadrunner-server/proxy_ip_parser/v5 v5.0.4
-	github.com/roadrunner-server/redis/v5 v5.0.4
-	github.com/roadrunner-server/resetter/v5 v5.0.5
-	github.com/roadrunner-server/rpc/v5 v5.0.4
-	github.com/roadrunner-server/send/v5 v5.0.3
-	github.com/roadrunner-server/server/v5 v5.1.2
-	github.com/roadrunner-server/service/v5 v5.0.4
-	github.com/roadrunner-server/sqs/v5 v5.0.4
-	github.com/roadrunner-server/static/v5 v5.0.3
-	github.com/roadrunner-server/status/v5 v5.0.4
-	github.com/roadrunner-server/tcp/v5 v5.0.4
+	github.com/roadrunner-server/prometheus/v5 v5.1.0
+	github.com/roadrunner-server/proxy_ip_parser/v5 v5.1.0
+	github.com/roadrunner-server/redis/v5 v5.1.0
+	github.com/roadrunner-server/resetter/v5 v5.1.0
+	github.com/roadrunner-server/rpc/v5 v5.1.0
+	github.com/roadrunner-server/send/v5 v5.1.0
+	github.com/roadrunner-server/server/v5 v5.2.0
+	github.com/roadrunner-server/service/v5 v5.1.0
+	github.com/roadrunner-server/sqs/v5 v5.1.0
+	github.com/roadrunner-server/static/v5 v5.1.0
+	github.com/roadrunner-server/status/v5 v5.1.0
+	github.com/roadrunner-server/tcp/v5 v5.1.0
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
