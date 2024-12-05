@@ -44,8 +44,8 @@ server:
     #
     # Default: <empty map>
     env:
-      - SOME_KEY: "SOME_VALUE"
-      - SOME_KEY2: "SOME_VALUE2"
+        SOME_KEY: "SOME_VALUE"
+        SOME_KEY2: "SOME_VALUE2"
 
     # Username (not UID) of the user from whom the on_init command is executed. An empty value means to use the RR process user.
     #
@@ -71,8 +71,8 @@ server:
   #
   # Default: <empty map>
   env:
-      - SOME_KEY: "SOME_VALUE"
-      - SOME_KEY2: "SOME_VALUE2"
+        SOME_KEY: "SOME_VALUE"
+        SOME_KEY2: "SOME_VALUE2"
 
   # Worker relay can be: "pipes", TCP (eg.: tcp://127.0.0.1:6002), or socket (eg.: unix:///var/run/rr.sock).
   #
@@ -107,12 +107,12 @@ logs:
   # Output can be file (eg.: "/var/log/rr_errors.log"), "stderr" or "stdout".
   #
   # Default: "stderr"
-  output: "stderr"
+  output: ["stderr"]
 
   # Errors only output can be file (eg.: "/var/log/rr_errors.log"), "stderr" or "stdout".
   #
-  # Default: "stderr"
-  err_output: "stderr"
+  # Default: ["stderr"]
+  err_output: ["stderr"]
 
   # File logger options
   #
@@ -153,20 +153,20 @@ logs:
       mode: development
       level: panic
       encoding: console
-      output: "stdout"
-      err_output: "stderr"
+      output: ["stdout"]
+      err_output: ["stderr"]
     server:
       mode: production
       level: info
       encoding: json
-      output: "stdout"
-      err_output: "stdout"
+      output: ["stdout"]
+      err_output: ["stdout"]
     rpc:
       mode: raw
       level: debug
       encoding: console
-      output: "stderr"
-      err_output: "stdout"
+      output: ["stderr"]
+      err_output: ["stdout"]
 
 # Workflow and activity mesh service.
 #
@@ -844,7 +844,7 @@ http:
       # Directory to use as a certificate/pk, account info storage
       #
       # Optional. Default: rr_cache
-      certs_dir: rr_le_certs
+      cache_dir: "rr_le_certs"
 
       # User email
       #
@@ -972,8 +972,8 @@ metrics:
       labels: [ "type" ]
       # Objectives defines the quantile rank estimates with their respective absolute error (for summary only).
       objectives:
-      - 0.1: 2.3
-      - 1.0: 1.4
+        0.1: 2.3
+        1.0: 1.4
     app_metric_histogram:
       type: histogram
       help: "Custom histogram application metric"
