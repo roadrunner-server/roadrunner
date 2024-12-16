@@ -37,7 +37,7 @@ require (
 	github.com/roadrunner-server/metrics/v5 v5.1.0
 	github.com/roadrunner-server/nats/v5 v5.1.0
 	github.com/roadrunner-server/otel/v5 v5.1.0
-	github.com/roadrunner-server/pool v1.1.1
+	github.com/roadrunner-server/pool v1.1.2
 	github.com/roadrunner-server/prometheus/v5 v5.1.0
 	github.com/roadrunner-server/proxy_ip_parser/v5 v5.1.0
 	github.com/roadrunner-server/redis/v5 v5.1.0
@@ -106,7 +106,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
-	github.com/goccy/go-json v0.10.3 // indirect
+	github.com/goccy/go-json v0.10.4 // indirect
 	github.com/gofiber/fiber/v2 v2.52.5 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
