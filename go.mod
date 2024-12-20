@@ -10,50 +10,50 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v5 v5.1.0
-	github.com/roadrunner-server/api/v4 v4.16.0
-	github.com/roadrunner-server/app-logger/v5 v5.1.0
-	github.com/roadrunner-server/beanstalk/v5 v5.1.0
-	github.com/roadrunner-server/boltdb/v5 v5.1.0
-	github.com/roadrunner-server/centrifuge/v5 v5.1.0
-	github.com/roadrunner-server/config/v5 v5.1.0
+	github.com/roadrunner-server/amqp/v5 v5.1.1
+	github.com/roadrunner-server/api/v4 v4.17.0
+	github.com/roadrunner-server/app-logger/v5 v5.1.1
+	github.com/roadrunner-server/beanstalk/v5 v5.1.1
+	github.com/roadrunner-server/boltdb/v5 v5.1.1
+	github.com/roadrunner-server/centrifuge/v5 v5.1.1
+	github.com/roadrunner-server/config/v5 v5.1.1
 	github.com/roadrunner-server/endure/v2 v2.6.1
 	github.com/roadrunner-server/errors v1.4.1
-	github.com/roadrunner-server/fileserver/v5 v5.1.0
-	github.com/roadrunner-server/google-pub-sub/v5 v5.1.0
+	github.com/roadrunner-server/fileserver/v5 v5.1.1
+	github.com/roadrunner-server/google-pub-sub/v5 v5.1.1
 	github.com/roadrunner-server/goridge/v3 v3.8.3
-	github.com/roadrunner-server/grpc/v5 v5.1.0
-	github.com/roadrunner-server/gzip/v5 v5.1.0
-	github.com/roadrunner-server/headers/v5 v5.1.0
-	github.com/roadrunner-server/http/v5 v5.1.0
-	github.com/roadrunner-server/informer/v5 v5.1.0
-	github.com/roadrunner-server/jobs/v5 v5.1.0
-	github.com/roadrunner-server/kafka/v5 v5.1.0
-	github.com/roadrunner-server/kv/v5 v5.2.0
-	github.com/roadrunner-server/lock/v5 v5.1.0
-	github.com/roadrunner-server/logger/v5 v5.1.0
-	github.com/roadrunner-server/memcached/v5 v5.1.0
-	github.com/roadrunner-server/memory/v5 v5.2.0
-	github.com/roadrunner-server/metrics/v5 v5.1.0
-	github.com/roadrunner-server/nats/v5 v5.1.0
-	github.com/roadrunner-server/otel/v5 v5.1.0
+	github.com/roadrunner-server/grpc/v5 v5.1.1
+	github.com/roadrunner-server/gzip/v5 v5.1.1
+	github.com/roadrunner-server/headers/v5 v5.1.1
+	github.com/roadrunner-server/http/v5 v5.1.1
+	github.com/roadrunner-server/informer/v5 v5.1.1
+	github.com/roadrunner-server/jobs/v5 v5.1.1
+	github.com/roadrunner-server/kafka/v5 v5.1.1
+	github.com/roadrunner-server/kv/v5 v5.2.1
+	github.com/roadrunner-server/lock/v5 v5.1.1
+	github.com/roadrunner-server/logger/v5 v5.1.1
+	github.com/roadrunner-server/memcached/v5 v5.1.1
+	github.com/roadrunner-server/memory/v5 v5.2.1
+	github.com/roadrunner-server/metrics/v5 v5.1.1
+	github.com/roadrunner-server/nats/v5 v5.1.1
+	github.com/roadrunner-server/otel/v5 v5.1.1
 	github.com/roadrunner-server/pool v1.1.2
-	github.com/roadrunner-server/prometheus/v5 v5.1.0
-	github.com/roadrunner-server/proxy_ip_parser/v5 v5.1.0
-	github.com/roadrunner-server/redis/v5 v5.1.0
-	github.com/roadrunner-server/resetter/v5 v5.1.0
-	github.com/roadrunner-server/rpc/v5 v5.1.0
-	github.com/roadrunner-server/send/v5 v5.1.0
-	github.com/roadrunner-server/server/v5 v5.2.1
-	github.com/roadrunner-server/service/v5 v5.1.0
-	github.com/roadrunner-server/sqs/v5 v5.1.0
-	github.com/roadrunner-server/static/v5 v5.1.0
-	github.com/roadrunner-server/status/v5 v5.1.0
-	github.com/roadrunner-server/tcp/v5 v5.1.0
+	github.com/roadrunner-server/prometheus/v5 v5.1.1
+	github.com/roadrunner-server/proxy_ip_parser/v5 v5.1.1
+	github.com/roadrunner-server/redis/v5 v5.1.1
+	github.com/roadrunner-server/resetter/v5 v5.1.1
+	github.com/roadrunner-server/rpc/v5 v5.1.1
+	github.com/roadrunner-server/send/v5 v5.1.1
+	github.com/roadrunner-server/server/v5 v5.2.2
+	github.com/roadrunner-server/service/v5 v5.1.1
+	github.com/roadrunner-server/sqs/v5 v5.1.1
+	github.com/roadrunner-server/static/v5 v5.1.1
+	github.com/roadrunner-server/status/v5 v5.1.1
+	github.com/roadrunner-server/tcp/v5 v5.1.1
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
-	github.com/temporalio/roadrunner-temporal/v5 v5.3.1
+	github.com/temporalio/roadrunner-temporal/v5 v5.3.2
 	go.uber.org/automaxprocs v1.6.0
 )
 
@@ -74,19 +74,19 @@ require (
 	cloud.google.com/go/pubsub v1.45.3 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/aws/aws-sdk-go v1.55.5 // indirect
-	github.com/aws/aws-sdk-go-v2 v1.32.6 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.28.6 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.17.47 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.21 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.25 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.25 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.32.7 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.28.7 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.48 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.22 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.26 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.26 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.8.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.12.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.12.6 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.37.2 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.24.7 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.28.6 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.33.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.12.7 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.37.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.24.8 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.28.7 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.33.3 // indirect
 	github.com/aws/smithy-go v1.22.1 // indirect
 	github.com/beanstalkd/go-beanstalk v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -114,7 +114,7 @@ require (
 	github.com/google/s2a-go v0.1.8 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.4 // indirect
-	github.com/googleapis/gax-go/v2 v2.14.0 // indirect
+	github.com/googleapis/gax-go/v2 v2.14.1 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.24.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
@@ -136,7 +136,7 @@ require (
 	github.com/nats-io/nkeys v0.4.9 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/nexus-rpc/sdk-go v0.1.0 // indirect
-	github.com/onsi/ginkgo/v2 v2.22.0 // indirect
+	github.com/onsi/ginkgo/v2 v2.22.1 // indirect
 	github.com/openzipkin/zipkin-go v0.4.3 // indirect
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
@@ -219,10 +219,10 @@ require (
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
 	golang.org/x/tools v0.28.0 // indirect
-	google.golang.org/api v0.213.0 // indirect
-	google.golang.org/genproto v0.0.0-20241216192217-9240e9c98484 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20241216192217-9240e9c98484 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241216192217-9240e9c98484 // indirect
+	google.golang.org/api v0.214.0 // indirect
+	google.golang.org/genproto v0.0.0-20241219192143-6b3ec007d9bb // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20241219192143-6b3ec007d9bb // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241219192143-6b3ec007d9bb // indirect
 	google.golang.org/grpc v1.69.2 // indirect
 	google.golang.org/protobuf v1.36.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
