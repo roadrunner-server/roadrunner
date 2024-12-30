@@ -19,17 +19,20 @@ body:
         - GRPC
         - HTTP
         - HTTP Middleware (any)
-        - JOBS
+        - Jobs
+        - Jobs driver
         - TCP
         - File server
         - Config
         - KV
+        - KV driver
         - Logger
         - Metrics
         - Temporal
         - Service
         - Server
         - Status
+        - Centrifuge
 
   - type: textarea
     id: idea
