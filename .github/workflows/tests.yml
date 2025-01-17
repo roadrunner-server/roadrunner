@@ -21,7 +21,7 @@ jobs:
           go-version: stable
 
       - name: Run linter
-        uses: golangci/golangci-lint-action@v6.1.1
+        uses: golangci/golangci-lint-action@v6.2.0
         with:
           version: v1.62 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
