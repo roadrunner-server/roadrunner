@@ -57,6 +57,8 @@ require (
 	go.uber.org/automaxprocs v1.6.0
 )
 
+replace github.com/temporalio/roadrunner-temporal/v5 => ../plugins/roadrunner-temporal
+
 replace github.com/uber-go/tally/v4 => github.com/uber-go/tally/v4 v4.1.10
 
 exclude (

@@ -2,7 +2,8 @@
 
 ## Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 2.8.x   | :white_check_mark: |
-
+| Version  | Supported |
+|----------|-----------|
+| 2.x      | No        |
+| 2023.x.x | No        |
+| 2024.x.x | Yes       |
