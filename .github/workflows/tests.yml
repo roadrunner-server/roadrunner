@@ -21,9 +21,9 @@ jobs:
           go-version: stable
 
       - name: Run linter
-        uses: golangci/golangci-lint-action@v6.3.2
+        uses: golangci/golangci-lint-action@v6.3.3
         with:
-          version: v1.62 # without patch version
+          version: v1.64 # without patch version
           only-new-issues: false # show only new issues if it's a pull request
           args: -v --build-tags=race --timeout=10m
 
@@ -58,7 +58,7 @@ jobs:
         continue-on-error: true
         uses: codecov/codecov-action@v5.3.1 # https://github.com/codecov/codecov-action
         with:
-          file: /tmp/coverage.txt
+          files: /tmp/coverage.txt
 
   build:
     name: Build for ${{ matrix.os }}
