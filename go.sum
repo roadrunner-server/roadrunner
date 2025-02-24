@@ -389,8 +389,8 @@ github.com/roadrunner-server/memory/v5 v5.2.4 h1:7WoyvuyokxL5jbH4hj+NrTatA537Jxf
 github.com/roadrunner-server/memory/v5 v5.2.4/go.mod h1:wdfMX5mJxq50EFfDxazmYgADfIgmJuQg7pgtR8aNbGM=
 github.com/roadrunner-server/metrics/v5 v5.1.4 h1:X1E6zNDCar5TQk6mK04MNNJYiFFgA3aavuzYSaXZmNE=
 github.com/roadrunner-server/metrics/v5 v5.1.4/go.mod h1:nV1F5ywqdSaL03/8qDrVEXtRMYsSsWnY/CQgFez2jqU=
-github.com/roadrunner-server/nats/v5 v5.1.4 h1:kmIOeXLSAZh33wzumjPY3ZSEzCj216+oVKWCt4ei2VY=
-github.com/roadrunner-server/nats/v5 v5.1.4/go.mod h1:dPhrvU7JLylWIAxHUpOVtC12dFrychoXoiWVhHx95m0=
+github.com/roadrunner-server/nats/v5 v5.1.5 h1:DP8Bz8Em2q5wzGj2hGaW0LO1x8eYC20FVJ7qHu1ebek=
+github.com/roadrunner-server/nats/v5 v5.1.5/go.mod h1:ZZA9tY0WaTaqYWh8q53s1NsmqG75lA+urx7ytrk1S+s=
 github.com/roadrunner-server/otel/v5 v5.1.4 h1:YX5eC2srcwmjG0n48Dy4VQnnbJqZJAvXWejIkEgQg80=
 github.com/roadrunner-server/otel/v5 v5.1.4/go.mod h1:+tH/JNolJ7ANGn04A2hZrVlbHU1wn9ExGCKs1+CMch4=
 github.com/roadrunner-server/pool v1.1.2 h1:jdXGh/WG2YUp7SrlvXP+ZDYbCWvHdAaecYOHL4+ub3c=

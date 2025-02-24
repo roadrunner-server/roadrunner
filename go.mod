@@ -35,7 +35,7 @@ require (
 	github.com/roadrunner-server/memcached/v5 v5.1.4
 	github.com/roadrunner-server/memory/v5 v5.2.4
 	github.com/roadrunner-server/metrics/v5 v5.1.4
-	github.com/roadrunner-server/nats/v5 v5.1.4
+	github.com/roadrunner-server/nats/v5 v5.1.5
 	github.com/roadrunner-server/otel/v5 v5.1.4
 	github.com/roadrunner-server/pool v1.1.2
 	github.com/roadrunner-server/prometheus/v5 v5.1.4
