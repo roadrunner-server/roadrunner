@@ -401,8 +401,8 @@ github.com/roadrunner-server/prometheus/v5 v5.1.4 h1:cEzk/eCp/OUYfLJnlOCod4D41nw
 github.com/roadrunner-server/prometheus/v5 v5.1.4/go.mod h1:4x2zVNabm47yL+mS9njHmHYKH3k4bMrl0c9ixo+F8tE=
 github.com/roadrunner-server/proxy_ip_parser/v5 v5.1.4 h1:yAkO0tb7qFSIJjlXE48fDFR9DZ45C2wryLZUGIKSHag=
 github.com/roadrunner-server/proxy_ip_parser/v5 v5.1.4/go.mod h1:K6Oel+j4DQh/nLvWakxr7fPs93i+bUlLPcPmFYn7dn8=
-github.com/roadrunner-server/redis/v5 v5.1.4 h1:jB+BCJe1H7B8fTc13XxHJYqV4qIEjKmuVKgw8Hxw1gM=
-github.com/roadrunner-server/redis/v5 v5.1.4/go.mod h1:Z+Gl+JFi4b/x0dbQLH6Y4TtoDzHGVAVPi4muvvfIfT4=
+github.com/roadrunner-server/redis/v5 v5.1.5 h1:gIL72XOoxco5Trdvy7Nq0NZVbqLp15eAjWLH3BPtLdA=
+github.com/roadrunner-server/redis/v5 v5.1.5/go.mod h1:5xeItq7fVldgESeuEeHBUZ0P+07naYJnS8wfesmsyEo=
 github.com/roadrunner-server/resetter/v5 v5.1.4 h1:mqD/F2F+bnqw85xcTVB+nysLd+RANpHxbT0afqu7TqQ=
 github.com/roadrunner-server/resetter/v5 v5.1.4/go.mod h1:7qrAJbaPrmSTNIY49jab85O8dYrPD5H+R6fa9gbuunw=
 github.com/roadrunner-server/rpc/v5 v5.1.4 h1:UGiRo/nEAK2CgQr6fBPtc7PpPSNlylG/CHjY4pLyIEg=
