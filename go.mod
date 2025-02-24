@@ -29,7 +29,7 @@ require (
 	github.com/roadrunner-server/informer/v5 v5.1.4
 	github.com/roadrunner-server/jobs/v5 v5.1.4
 	github.com/roadrunner-server/kafka/v5 v5.2.0
-	github.com/roadrunner-server/kv/v5 v5.2.4
+	github.com/roadrunner-server/kv/v5 v5.2.5
 	github.com/roadrunner-server/lock/v5 v5.1.4
 	github.com/roadrunner-server/logger/v5 v5.1.4
 	github.com/roadrunner-server/memcached/v5 v5.1.4
