@@ -179,8 +179,8 @@ github.com/google/go-cmp v0.5.3/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/go-cmp v0.5.4/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.6/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
-github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
-github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
+github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
+github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
 github.com/google/pprof v0.0.0-20250208200701-d0013a598941 h1:43XjGa6toxLpeksjcxs1jIoIyr+vUfOqY2c6HB4bpoc=
 github.com/google/pprof v0.0.0-20250208200701-d0013a598941/go.mod h1:vavhavw2zAxS5dIdcRluK6cSGGPlZynqzFM8NdvU144=
@@ -369,8 +369,8 @@ github.com/roadrunner-server/gzip/v5 v5.1.4 h1:PgpIDbFvpnd9VCWsRADy7I6uElFsobDQ8
 github.com/roadrunner-server/gzip/v5 v5.1.4/go.mod h1:vkkRVEXpWzNavZkrl87/8/Pz+eZK2hoMKP1hCMM39yM=
 github.com/roadrunner-server/headers/v5 v5.1.4 h1:1yOgk1Dsh5sGNmjU6W0VRk+/stKiO4xfD/WwBPgWXvA=
 github.com/roadrunner-server/headers/v5 v5.1.4/go.mod h1:ARfkfqsQBMC0N/XO6Ml/fLx4dKf7WIWLdO8d1/FvSbE=
-github.com/roadrunner-server/http/v5 v5.2.3 h1:cbTIy4yz3UL3egDAq33N7TR3MPMtFq3RKyd7scfcGhM=
-github.com/roadrunner-server/http/v5 v5.2.3/go.mod h1:simKoTWr0EHBUh2tGZcmw1vovJfAKONhevWGjKUdDcA=
+github.com/roadrunner-server/http/v5 v5.2.4 h1:yF0w4PnnLnb32SuSJuAbSOkfY++yTVbkB/Xz4lZj90c=
+github.com/roadrunner-server/http/v5 v5.2.4/go.mod h1:S+LZeSL+908Bmo+6AAaINEiP3GHsn7LbvPjqN7cninc=
 github.com/roadrunner-server/informer/v5 v5.1.4 h1:PGAlztMHk9ieWYckNp7TzoQgtYEdITkxrMeyIe6VtOI=
 github.com/roadrunner-server/informer/v5 v5.1.4/go.mod h1:8GuQfDPgkg4QH/7S9alK0/R28HMWdJ4QSutIIwAPFyg=
 github.com/roadrunner-server/jobs/v5 v5.1.4 h1:DAvDI53L8JY0v118+fobUKmYBoRBa4x6aBz3HNi0Rr8=
