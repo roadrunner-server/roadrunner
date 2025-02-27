@@ -10,50 +10,50 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/roadrunner-server/amqp/v5 v5.1.4
+	github.com/roadrunner-server/amqp/v5 v5.1.6
 	github.com/roadrunner-server/api/v4 v4.18.1
-	github.com/roadrunner-server/app-logger/v5 v5.1.4
-	github.com/roadrunner-server/beanstalk/v5 v5.1.4
-	github.com/roadrunner-server/boltdb/v5 v5.1.4
-	github.com/roadrunner-server/centrifuge/v5 v5.1.4
-	github.com/roadrunner-server/config/v5 v5.1.4
+	github.com/roadrunner-server/app-logger/v5 v5.1.6
+	github.com/roadrunner-server/beanstalk/v5 v5.1.6
+	github.com/roadrunner-server/boltdb/v5 v5.1.6
+	github.com/roadrunner-server/centrifuge/v5 v5.1.6
+	github.com/roadrunner-server/config/v5 v5.1.6
 	github.com/roadrunner-server/endure/v2 v2.6.1
 	github.com/roadrunner-server/errors v1.4.1
-	github.com/roadrunner-server/fileserver/v5 v5.1.4
-	github.com/roadrunner-server/google-pub-sub/v5 v5.1.4
+	github.com/roadrunner-server/fileserver/v5 v5.1.6
+	github.com/roadrunner-server/google-pub-sub/v5 v5.1.6
 	github.com/roadrunner-server/goridge/v3 v3.8.3
-	github.com/roadrunner-server/grpc/v5 v5.1.4
-	github.com/roadrunner-server/gzip/v5 v5.1.4
-	github.com/roadrunner-server/headers/v5 v5.1.4
-	github.com/roadrunner-server/http/v5 v5.2.3
-	github.com/roadrunner-server/informer/v5 v5.1.4
-	github.com/roadrunner-server/jobs/v5 v5.1.4
-	github.com/roadrunner-server/kafka/v5 v5.2.0
-	github.com/roadrunner-server/kv/v5 v5.2.4
-	github.com/roadrunner-server/lock/v5 v5.1.4
-	github.com/roadrunner-server/logger/v5 v5.1.4
-	github.com/roadrunner-server/memcached/v5 v5.1.4
-	github.com/roadrunner-server/memory/v5 v5.2.4
-	github.com/roadrunner-server/metrics/v5 v5.1.4
-	github.com/roadrunner-server/nats/v5 v5.1.4
-	github.com/roadrunner-server/otel/v5 v5.1.4
-	github.com/roadrunner-server/pool v1.1.2
-	github.com/roadrunner-server/prometheus/v5 v5.1.4
-	github.com/roadrunner-server/proxy_ip_parser/v5 v5.1.4
-	github.com/roadrunner-server/redis/v5 v5.1.4
-	github.com/roadrunner-server/resetter/v5 v5.1.4
-	github.com/roadrunner-server/rpc/v5 v5.1.4
+	github.com/roadrunner-server/grpc/v5 v5.1.6
+	github.com/roadrunner-server/gzip/v5 v5.1.6
+	github.com/roadrunner-server/headers/v5 v5.1.6
+	github.com/roadrunner-server/http/v5 v5.2.5
+	github.com/roadrunner-server/informer/v5 v5.1.6
+	github.com/roadrunner-server/jobs/v5 v5.1.6
+	github.com/roadrunner-server/kafka/v5 v5.2.2
+	github.com/roadrunner-server/kv/v5 v5.2.6
+	github.com/roadrunner-server/lock/v5 v5.1.6
+	github.com/roadrunner-server/logger/v5 v5.1.6
+	github.com/roadrunner-server/memcached/v5 v5.1.6
+	github.com/roadrunner-server/memory/v5 v5.2.6
+	github.com/roadrunner-server/metrics/v5 v5.1.6
+	github.com/roadrunner-server/nats/v5 v5.1.6
+	github.com/roadrunner-server/otel/v5 v5.1.6
+	github.com/roadrunner-server/pool v1.1.3
+	github.com/roadrunner-server/prometheus/v5 v5.1.5
+	github.com/roadrunner-server/proxy_ip_parser/v5 v5.1.6
+	github.com/roadrunner-server/redis/v5 v5.1.6
+	github.com/roadrunner-server/resetter/v5 v5.1.6
+	github.com/roadrunner-server/rpc/v5 v5.1.6
 	github.com/roadrunner-server/send/v5 v5.1.3
-	github.com/roadrunner-server/server/v5 v5.2.5
-	github.com/roadrunner-server/service/v5 v5.1.4
-	github.com/roadrunner-server/sqs/v5 v5.1.4
-	github.com/roadrunner-server/static/v5 v5.1.3
-	github.com/roadrunner-server/status/v5 v5.1.4
-	github.com/roadrunner-server/tcp/v5 v5.1.4
+	github.com/roadrunner-server/server/v5 v5.2.7
+	github.com/roadrunner-server/service/v5 v5.1.6
+	github.com/roadrunner-server/sqs/v5 v5.1.6
+	github.com/roadrunner-server/static/v5 v5.1.4
+	github.com/roadrunner-server/status/v5 v5.1.6
+	github.com/roadrunner-server/tcp/v5 v5.1.6
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
-	github.com/temporalio/roadrunner-temporal/v5 v5.5.1
+	github.com/temporalio/roadrunner-temporal/v5 v5.5.2
 	go.uber.org/automaxprocs v1.6.0
 )
 
@@ -121,7 +121,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
 	github.com/libdns/libdns v0.2.3 // indirect
 	github.com/magiconair/properties v1.8.9 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
@@ -156,8 +156,8 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/roadrunner-server/context v1.0.2 // indirect
 	github.com/roadrunner-server/events v1.0.1 // indirect
-	github.com/roadrunner-server/priority_queue v1.0.2 // indirect
-	github.com/roadrunner-server/tcplisten v1.5.1 // indirect
+	github.com/roadrunner-server/priority_queue v1.0.3 // indirect
+	github.com/roadrunner-server/tcplisten v1.5.2 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/rs/cors v1.11.1 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
@@ -199,30 +199,30 @@ require (
 	go.opentelemetry.io/otel/sdk v1.34.0 // indirect
 	go.opentelemetry.io/otel/trace v1.34.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.5.0 // indirect
-	go.temporal.io/api v1.44.1 // indirect
-	go.temporal.io/sdk v1.32.1 // indirect
+	go.temporal.io/api v1.45.0 // indirect
+	go.temporal.io/sdk v1.33.0 // indirect
 	go.temporal.io/sdk/contrib/opentelemetry v0.6.0 // indirect
 	go.temporal.io/sdk/contrib/tally v0.2.0 // indirect
-	go.temporal.io/server v1.27.0 // indirect
+	go.temporal.io/server v1.27.1 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/mock v0.5.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	go.uber.org/zap/exp v0.3.0 // indirect
-	golang.org/x/crypto v0.34.0 // indirect
+	golang.org/x/crypto v0.35.0 // indirect
 	golang.org/x/exp v0.0.0-20250218142911-aa4b98e5adaa // indirect
 	golang.org/x/mod v0.23.0 // indirect
 	golang.org/x/net v0.35.0 // indirect
-	golang.org/x/oauth2 v0.26.0 // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/sync v0.11.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
 	golang.org/x/time v0.10.0 // indirect
 	golang.org/x/tools v0.30.0 // indirect
-	google.golang.org/api v0.222.0 // indirect
-	google.golang.org/genproto v0.0.0-20250219182151-9fdb1cabc7b2 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20250219182151-9fdb1cabc7b2 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250219182151-9fdb1cabc7b2 // indirect
+	google.golang.org/api v0.223.0 // indirect
+	google.golang.org/genproto v0.0.0-20250224174004-546df14abb99 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20250224174004-546df14abb99 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250224174004-546df14abb99 // indirect
 	google.golang.org/grpc v1.70.0 // indirect
 	google.golang.org/protobuf v1.36.5 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
