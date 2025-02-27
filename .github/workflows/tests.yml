@@ -56,7 +56,7 @@ jobs:
 
       - name: Upload Coverage report to CodeCov
         continue-on-error: true
-        uses: codecov/codecov-action@v5.3.1 # https://github.com/codecov/codecov-action
+        uses: codecov/codecov-action@v5.4.0 # https://github.com/codecov/codecov-action
         with:
           files: /tmp/coverage.txt
 
