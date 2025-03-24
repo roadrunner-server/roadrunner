@@ -1,81 +1,92 @@
-# Documentation: <https://github.com/golangci/golangci-lint#config-file>
-
+version: "2"
 run:
-  timeout: 1m
   allow-parallel-runners: true
-
 output:
   formats:
-    - format: colored-line-number
-
-linters-settings:
-  wsl:
-    allow-assign-and-anything: true
-  godot:
-    scope: declarations
-    capital: true
-  dupl:
-    threshold: 100
-  goconst:
-    min-len: 2
-    min-occurrences: 3
-  misspell:
-    locale: US
-  lll:
-    line-length: 120
-  prealloc:
-    simple: true
-    range-loops: true
-    for-loops: true
-  nolintlint:
-    require-specific: true
-
-linters: # All available linters list: <https://golangci-lint.run/usage/linters/>
-  disable-all: true
+    text:
+      path: stdout
+linters:
+  default: none
   enable:
-    - asciicheck # Simple linter to check that your code does not contain non-ASCII identifiers
-    - bodyclose # Checks whether HTTP response body is closed successfully
-    - dogsled # Checks assignments with too many blank identifiers (e.g. x, _, _, _, := f())
-    - dupl # Tool for code clone detection
-    - errcheck # Errcheck is a program for checking for unchecked errors in go programs. These unchecked errors can be critical bugs in some cases
-    - errorlint # find code that will cause problems with the error wrapping scheme introduced in Go 1.13
-    - exhaustive # check exhaustiveness of enum switch statements
-    - copyloopvar    # checks for pointers to enclosing loop variables
-    - gochecknoglobals # Checks that no globals are present in Go code
-    - goconst # Finds repeated strings that could be replaced by a constant
-    - gocritic # The most opinionated Go source code linter
-    - gofmt # Gofmt checks whether code was gofmt-ed. By default this tool runs with -s option to check for code simplification
-    - goimports # Goimports does everything that gofmt does. Additionally it checks unused imports
+    - asciicheck
+    - bodyclose
+    - copyloopvar
+    - dogsled
+    - dupl
+    - errcheck
+    - errorlint
+    - exhaustive
+    - gochecknoglobals
+    - goconst
+    - gocritic
+    - goprintffuncname
+    - gosec
+    - govet
+    - ineffassign
+    - misspell
+    - nakedret
+    - noctx
+    - nolintlint
+    - prealloc
     - revive
-    - goprintffuncname # Checks that printf-like functions are named with `f` at the end
-    - gosec # Inspects source code for security problems
-    - gosimple # Linter for Go source code that specializes in simplifying a code
-    - govet # Vet examines Go source code and reports suspicious constructs, such as Printf calls whose arguments do not align with the format string
-    - ineffassign # Detects when assignments to existing variables are not used
-    - misspell # Finds commonly misspelled English words in comments
-    - nakedret # Finds naked returns in functions greater than a specified function length
-    - noctx # finds sending http request without context.Context
-    - nolintlint # Reports ill-formed or insufficient nolint directives
-    - prealloc # Finds slice declarations that could potentially be preallocated
-    - staticcheck # Staticcheck is a go vet on steroids, applying a ton of static analysis checks
-    - stylecheck # Stylecheck is a replacement for golint
-    - tparallel # detects inappropriate usage of t.Parallel() method in your Go test codes
-    - unconvert # Remove unnecessary type conversions
-    - unparam # Reports unused function parameters
-    - unused # Checks Go code for unused constants, variables, functions and types
-    - whitespace # Tool for detection of leading and trailing whitespace
-
-issues:
-  exclude-files:
-    # staticcheck internal file
-    - internal/debug/server_test.go
-  exclude-dirs:
-    - .github
-    - .git
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - dupl
-        - funlen
-        - scopelint
-        - gocognit
+    - staticcheck
+    - tparallel
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+  settings:
+    dupl:
+      threshold: 100
+    goconst:
+      min-len: 2
+      min-occurrences: 3
+    godot:
+      scope: declarations
+      capital: true
+    lll:
+      line-length: 120
+    misspell:
+      locale: US
+    nolintlint:
+      require-specific: true
+    prealloc:
+      simple: true
+      range-loops: true
+      for-loops: true
+    wsl:
+      allow-assign-and-anything: true
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - dupl
+          - funlen
+          - gocognit
+          - scopelint
+        path: _test\.go
+    paths:
+      - internal/debug/server_test.go
+      - .github
+      - .git
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - internal/debug/server_test.go
+      - .github
+      - .git
+      - third_party$
+      - builtin$
+      - examples$
