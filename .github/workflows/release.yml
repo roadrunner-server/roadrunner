@@ -88,8 +88,8 @@ jobs:
           CGO_ENABLED: 0
           LDFLAGS: >-
             -s
-            -X github.com/roadrunner-server/roadrunner/v2024/internal/meta.version=${{ steps.values.outputs.version }}
-            -X github.com/roadrunner-server/roadrunner/v2024/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
+            -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.version=${{ steps.values.outputs.version }}
+            -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
         run: |
           go build -pgo=roadrunner.pprof -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr
           stat "./${{ steps.values.outputs.binary-name }}"
@@ -190,10 +190,10 @@ jobs:
           tags: |
             spiralscout/roadrunner:${{ steps.values.outputs.version_full}}
             spiralscout/roadrunner:latest
-            spiralscout/roadrunner:2024
-            spiralscout/roadrunner:2024.3
+            spiralscout/roadrunner:2025
+            spiralscout/roadrunner:2025.1
 
             ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_full}}
             ghcr.io/roadrunner-server/roadrunner:latest
-            ghcr.io/roadrunner-server/roadrunner:2024
-            ghcr.io/roadrunner-server/roadrunner:2024.3
+            ghcr.io/roadrunner-server/roadrunner:2025
+            ghcr.io/roadrunner-server/roadrunner:2025.1

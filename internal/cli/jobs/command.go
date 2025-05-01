@@ -3,7 +3,7 @@ package jobs
 import (
 	"strings"
 
-	internalRpc "github.com/roadrunner-server/roadrunner/v2024/internal/rpc"
+	internalRpc "github.com/roadrunner-server/roadrunner/v2025/internal/rpc"
 
 	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"

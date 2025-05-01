@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/roadrunner-server/roadrunner/v2024/internal/debug"
+	"github.com/roadrunner-server/roadrunner/v2025/internal/debug"
 
 	"github.com/stretchr/testify/assert"
 )

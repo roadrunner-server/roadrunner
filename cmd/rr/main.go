@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/fatih/color"
-	"github.com/roadrunner-server/roadrunner/v2024/internal/cli"
+	"github.com/roadrunner-server/roadrunner/v2025/internal/cli"
 	"go.uber.org/automaxprocs/maxprocs"
 )
 
