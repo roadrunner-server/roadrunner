@@ -102,11 +102,11 @@ func StartWatchdog(interval int, stopCh <-chan struct{}) {
 					continue
 				}
 				// notification not supported, stop
-				if !supported && err == nil {
+				if !supported {
 					return
 				}
 				// notification supported, data has been sent, continue
-				if supported && err == nil {
+				if supported {
 					continue
 				}
 			}
