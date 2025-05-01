@@ -98,8 +98,7 @@ func StartWatchdog(interval int, stopCh <-chan struct{}) {
 			case <-ticker.C:
 				supported, err := SdNotify(Watchdog)
 				if err != nil {
-					// notification supported, but failure happened, retry
-					continue
+					return
 				}
 				// notification not supported, stop
 				if !supported {
