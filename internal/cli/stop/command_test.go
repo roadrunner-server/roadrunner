@@ -3,7 +3,7 @@ package stop_test
 import (
 	"testing"
 
-	"github.com/roadrunner-server/roadrunner/v2024/internal/cli/stop"
+	"github.com/roadrunner-server/roadrunner/v2025/internal/cli/stop"
 
 	"github.com/stretchr/testify/assert"
 )

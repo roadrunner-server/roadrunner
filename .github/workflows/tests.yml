@@ -98,8 +98,8 @@ jobs:
           GOARCH: amd64
           CGO_ENABLED: 0
           LDFLAGS: -s
-            -X github.com/roadrunner-server/roadrunner/v2024/internal/meta.version=${{ steps.values.outputs.version }}
-            -X github.com/roadrunner-server/roadrunner/v2024/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
+            -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.version=${{ steps.values.outputs.version }}
+            -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
         run: go build -pgo=roadrunner.pprof -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr
 
       - name: Try to execute

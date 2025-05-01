@@ -3,7 +3,7 @@ package workers_test
 import (
 	"testing"
 
-	"github.com/roadrunner-server/roadrunner/v2024/internal/cli/workers"
+	"github.com/roadrunner-server/roadrunner/v2025/internal/cli/workers"
 
 	"github.com/stretchr/testify/assert"
 )

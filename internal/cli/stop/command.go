@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/roadrunner-server/errors"
-	"github.com/roadrunner-server/roadrunner/v2024/internal/sdnotify"
+	"github.com/roadrunner-server/roadrunner/v2025/internal/sdnotify"
 	"github.com/spf13/cobra"
 )
 

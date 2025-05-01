@@ -1,5 +1,5 @@
 # Image page: <https://hub.docker.com/_/golang>
-FROM --platform=${TARGETPLATFORM:-linux/amd64} golang:1.24-alpine as builder
+FROM --platform=${TARGETPLATFORM:-linux/amd64} golang:1.24-alpine AS builder
 
 # app version and build date must be passed during image building (version without any prefix).
 # e.g.: `docker build --build-arg "APP_VERSION=1.2.3" --build-arg "BUILD_TIME=$(date +%FT%T%z)" .`
@@ -12,8 +12,8 @@ WORKDIR /src
 
 # arguments to pass on each go tool link invocation
 ENV LDFLAGS="-s \
--X github.com/roadrunner-server/roadrunner/v2024/internal/meta.version=$APP_VERSION \
--X github.com/roadrunner-server/roadrunner/v2024/internal/meta.buildTime=$BUILD_TIME"
+    -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.version=$APP_VERSION \
+    -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.buildTime=$BUILD_TIME"
 
 # compile binary file
 RUN set -x

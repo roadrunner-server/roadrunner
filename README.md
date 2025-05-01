@@ -6,7 +6,7 @@
 </a>
 <p align="center">
  <a href="https://packagist.org/packages/spiral/roadrunner"><img src="https://poser.pugx.org/spiral/roadrunner/version"></a>
-	<a href="https://pkg.go.dev/github.com/roadrunner-server/roadrunner/v2024?tab=doc"><img src="https://godoc.org/github.com/roadrunner-server/roadrunner/v2024?status.svg"></a>
+	<a href="https://pkg.go.dev/github.com/roadrunner-server/roadrunner/v2025?tab=doc"><img src="https://godoc.org/github.com/roadrunner-server/roadrunner/v2025?status.svg"></a>
     <a href="https://twitter.com/spiralphp"><img src="https://img.shields.io/twitter/follow/spiralphp?style=social"></a>
     <a href="https://codecov.io/gh/roadrunner-server/roadrunner/"><img src="https://codecov.io/gh/roadrunner-server/roadrunner/branch/master/graph/badge.svg"></a>
 	<a href="https://github.com/roadrunner-server/roadrunner/actions"><img src="https://github.com/roadrunner-server/roadrunner/workflows/rr_cli_tests/badge.svg" alt=""></a>
@@ -54,11 +54,11 @@ OSX, Linux, FreeBSD, and Windows. Instructions for using these binaries are on t
 
 ## Docker:
 
-To get the roadrunner binary file you can use our docker image: `ghcr.io/roadrunner-server/roadrunner:2024.X.X` (more information about
+To get the roadrunner binary file you can use our docker image: `ghcr.io/roadrunner-server/roadrunner:2025.X.X` (more information about
 image and tags can be found [here](https://github.com/roadrunner-server/roadrunner/pkgs/container/roadrunner)).
 
 ```dockerfile
-FROM ghcr.io/roadrunner-server/roadrunner:2024.X.X AS roadrunner
+FROM ghcr.io/roadrunner-server/roadrunner:2025.X.X AS roadrunner
 FROM php:8.3-cli
 
 COPY --from=roadrunner /usr/bin/rr /usr/local/bin/rr
@@ -89,8 +89,8 @@ Server binary will be available at the root of your project.
 ## Installation option for the Debian-derivatives (Ubuntu, Mint, MX, etc)
 
 ```bash
-wget https://github.com/roadrunner-server/roadrunner/releases/download/v2024.X.X/roadrunner-2024.X.X-linux-amd64.deb
-sudo dpkg -i roadrunner-2024.X.X-linux-amd64.deb
+wget https://github.com/roadrunner-server/roadrunner/releases/download/v2025.X.X/roadrunner-2025.X.X-linux-amd64.deb
+sudo dpkg -i roadrunner-2025.X.X-linux-amd64.deb
 ```
 
 ## Download the latest release via curl:
