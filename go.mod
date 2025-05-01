@@ -2,7 +2,7 @@ module github.com/roadrunner-server/roadrunner/v2025
 
 go 1.24
 
-toolchain go1.24.0
+toolchain go1.24.2
 
 require (
 	github.com/buger/goterm v1.0.4
