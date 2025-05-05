@@ -21,7 +21,7 @@ jobs:
           go-version: stable
 
       - name: Run linter
-        uses: golangci/golangci-lint-action@v7.0.0
+        uses: golangci/golangci-lint-action@v8.0.0
         with:
           only-new-issues: false # show only new issues if it's a pull request
           args: -v --build-tags=race --timeout=10m
