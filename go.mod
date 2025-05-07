@@ -2,7 +2,7 @@ module github.com/roadrunner-server/roadrunner/v2025
 
 go 1.24
 
-toolchain go1.24.2
+toolchain go1.24.3
 
 require (
 	github.com/buger/goterm v1.0.4
@@ -17,7 +17,7 @@ require (
 	github.com/roadrunner-server/boltdb/v5 v5.1.7
 	github.com/roadrunner-server/centrifuge/v5 v5.1.7
 	github.com/roadrunner-server/config/v5 v5.1.7
-	github.com/roadrunner-server/endure/v2 v2.6.1
+	github.com/roadrunner-server/endure/v2 v2.6.2
 	github.com/roadrunner-server/errors v1.4.1
 	github.com/roadrunner-server/fileserver/v5 v5.1.7
 	github.com/roadrunner-server/google-pub-sub/v5 v5.1.7
@@ -173,7 +173,7 @@ require (
 	github.com/twmb/murmur3 v1.1.8 // indirect
 	github.com/uber-go/tally/v4 v4.1.17-0.20240412215630-22fe011f5ff0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.61.0 // indirect
+	github.com/valyala/fasthttp v1.62.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
@@ -215,7 +215,7 @@ require (
 	golang.org/x/text v0.25.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	golang.org/x/tools v0.33.0 // indirect
-	google.golang.org/api v0.231.0 // indirect
+	google.golang.org/api v0.232.0 // indirect
 	google.golang.org/genproto v0.0.0-20250505200425-f936aa4a68b2 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250505200425-f936aa4a68b2 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250505200425-f936aa4a68b2 // indirect
