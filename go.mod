@@ -9,7 +9,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.18.0
 	github.com/joho/godotenv v1.5.1
-	github.com/olekukonko/tablewriter v0.0.5
+	github.com/olekukonko/tablewriter v1.0.5
 	github.com/roadrunner-server/amqp/v5 v5.2.1
 	github.com/roadrunner-server/api/v4 v4.20.0
 	github.com/roadrunner-server/app-logger/v5 v5.1.7
@@ -134,6 +134,8 @@ require (
 	github.com/nats-io/nkeys v0.4.11 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/nexus-rpc/sdk-go v0.3.0 // indirect
+	github.com/olekukonko/errors v0.0.0-20250405072817-4e6d85265da6 // indirect
+	github.com/olekukonko/ll v0.0.7 // indirect
 	github.com/onsi/ginkgo/v2 v2.23.4 // indirect
 	github.com/openzipkin/zipkin-go v0.4.3 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
