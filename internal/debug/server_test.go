@@ -26,7 +26,7 @@ func TestServer_StartingAndStopping(t *testing.T) {
 
 	defer func() { assert.NoError(t, s.Stop(context.Background())) }()
 
-	for i := 0; i < 100; i++ { // wait for server started state
+	for range 100 { // wait for server started state
 		if l, err := net.Dial("tcp", ":"+port); err != nil {
 			<-time.After(time.Millisecond)
 		} else {

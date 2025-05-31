@@ -204,7 +204,7 @@ func expandEnvViper(v *viper.Viper) {
 		case []any:
 			// for slice -> check if it's a slice of strings
 			strArr := make([]string, 0, len(t))
-			for i := 0; i < len(t); i++ {
+			for i := range t {
 				if valStr, ok := t[i].(string); ok {
 					strArr = append(strArr, parseEnvDefault(valStr))
 					continue
