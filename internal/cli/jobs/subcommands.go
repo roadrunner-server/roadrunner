@@ -17,7 +17,7 @@ func pause(client *rpc.Client, pause []string, silent *bool) error {
 	}
 
 	if !*silent {
-		renderPipelines(os.Stdout, pause).Render()
+		_ = renderPipelines(os.Stdout, pause).Render()
 	}
 
 	return nil
@@ -33,7 +33,7 @@ func resume(client *rpc.Client, resume []string, silent *bool) error {
 	}
 
 	if !*silent {
-		renderPipelines(os.Stdout, resume).Render()
+		_ = renderPipelines(os.Stdout, resume).Render()
 	}
 
 	return nil
@@ -49,7 +49,7 @@ func destroy(client *rpc.Client, destroy []string, silent *bool) error {
 	}
 
 	if !*silent {
-		renderPipelines(os.Stdout, resp.GetPipelines()).Render()
+		_ = renderPipelines(os.Stdout, resp.GetPipelines()).Render()
 	}
 
 	return nil
@@ -64,7 +64,7 @@ func list(client *rpc.Client) error {
 		return err
 	}
 
-	renderPipelines(os.Stdout, resp.GetPipelines()).Render()
+	_ = renderPipelines(os.Stdout, resp.GetPipelines()).Render()
 
 	return nil
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/tw"
 	"github.com/roadrunner-server/api/v4/plugins/v4/jobs"
 	"github.com/roadrunner-server/pool/state/process"
 )
@@ -20,17 +21,24 @@ const (
 
 // WorkerTable renders table with information about rr server workers.
 func WorkerTable(writer io.Writer, workers []*process.State, err error) *tablewriter.Table {
-	tw := tablewriter.NewWriter(writer)
-	tw.SetHeader([]string{"PID", "Status", "Execs", "Memory", "CPU%", "Created"})
-	tw.SetColMinWidth(0, 7)
-	tw.SetColMinWidth(1, 9)
-	tw.SetColMinWidth(2, 7)
-	tw.SetColMinWidth(3, 7)
-	tw.SetColMinWidth(4, 7)
-	tw.SetColMinWidth(5, 18)
+	cfg := tablewriter.Config{
+		Header: tw.CellConfig{
+			Formatting: tw.CellFormatting{
+				AutoFormat: tw.On,
+			},
+		},
+		MaxWidth: 150,
+		Row: tw.CellConfig{
+			Alignment: tw.CellAlignment{
+				Global: tw.AlignLeft,
+			},
+		},
+	}
+	tw := tablewriter.NewTable(writer, tablewriter.WithConfig(cfg))
+	tw.Header([]string{"PID", "Status", "Execs", "Memory", "CPU%", "Created"})
 
 	if err != nil {
-		tw.Append([]string{
+		_ = tw.Append([]string{
 			"0",
 			err.Error(),
 			"ERROR",
@@ -46,8 +54,8 @@ func WorkerTable(writer io.Writer, workers []*process.State, err error) *tablewr
 		return workers[i].Pid < workers[j].Pid
 	})
 
-	for i := 0; i < len(workers); i++ {
-		tw.Append([]string{
+	for i := range workers {
+		_ = tw.Append([]string{
 			strconv.Itoa(int(workers[i].Pid)),
 			renderStatus(workers[i].StatusStr),
 			renderJobs(workers[i].NumExecs),
@@ -66,17 +74,24 @@ func ServiceWorkerTable(writer io.Writer, workers []*process.State) *tablewriter
 		return workers[i].Pid < workers[j].Pid
 	})
 
-	tw := tablewriter.NewWriter(writer)
-	tw.SetAutoWrapText(false)
-	tw.SetHeader([]string{"PID", "Memory", "CPU%", "Command"})
-	tw.SetColMinWidth(0, 7)
-	tw.SetColMinWidth(1, 7)
-	tw.SetColMinWidth(2, 7)
-	tw.SetColMinWidth(3, 18)
-	tw.SetAlignment(tablewriter.ALIGN_LEFT)
+	cfg := tablewriter.Config{
+		Header: tw.CellConfig{
+			Formatting: tw.CellFormatting{
+				AutoFormat: tw.On,
+			},
+		},
+		MaxWidth: 150,
+		Row: tw.CellConfig{
+			Alignment: tw.CellAlignment{
+				Global: tw.AlignLeft,
+			},
+		},
+	}
+	tw := tablewriter.NewTable(writer, tablewriter.WithConfig(cfg))
+	tw.Header([]string{"PID", "Memory", "CPU%", "Command"})
 
-	for i := 0; i < len(workers); i++ {
-		tw.Append([]string{
+	for i := range workers {
+		_ = tw.Append([]string{
 			strconv.Itoa(int(workers[i].Pid)),
 			humanize.Bytes(workers[i].MemoryUsage),
 			renderCPU(workers[i].CPUPercent),
@@ -89,20 +104,25 @@ func ServiceWorkerTable(writer io.Writer, workers []*process.State) *tablewriter
 
 // JobsTable renders table with information about rr server jobs.
 func JobsTable(writer io.Writer, jobs []*jobs.State, err error) *tablewriter.Table {
-	tw := tablewriter.NewWriter(writer)
-	tw.SetAutoWrapText(false)
-	tw.SetHeader([]string{"Status", "Pipeline", "Driver", "Queue", "Active", "Delayed", "Reserved"})
-	tw.SetColWidth(10)
-	tw.SetColWidth(10)
-	tw.SetColWidth(7)
-	tw.SetColWidth(15)
-	tw.SetColWidth(10)
-	tw.SetColWidth(10)
-	tw.SetColWidth(10)
-	tw.SetAlignment(tablewriter.ALIGN_LEFT)
+	cfg := tablewriter.Config{
+		Header: tw.CellConfig{
+			Formatting: tw.CellFormatting{
+				AutoFormat: tw.On,
+				AutoWrap:   int(tw.Off),
+			},
+		},
+		MaxWidth: 150,
+		Row: tw.CellConfig{
+			Alignment: tw.CellAlignment{
+				Global: tw.AlignLeft,
+			},
+		},
+	}
+	tw := tablewriter.NewTable(writer, tablewriter.WithConfig(cfg))
+	tw.Header([]string{"Status", "Pipeline", "Driver", "Queue", "Active", "Delayed", "Reserved"})
 
 	if err != nil {
-		tw.Append([]string{
+		_ = tw.Append([]string{
 			err.Error(),
 			"ERROR",
 			"ERROR",
@@ -119,8 +139,8 @@ func JobsTable(writer io.Writer, jobs []*jobs.State, err error) *tablewriter.Tab
 		return jobs[i].Pipeline < jobs[j].Pipeline
 	})
 
-	for i := 0; i < len(jobs); i++ {
-		tw.Append([]string{
+	for i := range jobs {
+		_ = tw.Append([]string{
 			renderReady(jobs[i].Ready),
 			jobs[i].Pipeline,
 			jobs[i].Driver,

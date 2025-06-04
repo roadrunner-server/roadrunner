@@ -108,7 +108,7 @@ func getRRVersion() string {
 		return ""
 	}
 
-	for i := 0; i < len(bi.Deps); i++ {
+	for i := range bi.Deps {
 		if bi.Deps[i].Path == rrModule {
 			return bi.Deps[i].Version
 		}

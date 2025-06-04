@@ -104,7 +104,7 @@ func showWorkers(plugins []string, client *rpc.Client) {
 
 		if err := client.Call(informerWorkers, plugin, &list); err != nil {
 			// this is a special case, when we can't get workers list, we need to render an error message
-			WorkerTable(os.Stdout, list.Workers, fmt.Errorf("failed to receive information about %s plugin: %w", plugin, err)).Render()
+			_ = WorkerTable(os.Stdout, list.Workers, fmt.Errorf("failed to receive information about %s plugin: %w", plugin, err)).Render()
 			continue
 		}
 
@@ -114,21 +114,21 @@ func showWorkers(plugins []string, client *rpc.Client) {
 
 		if plugin == servicePluginName {
 			fmt.Printf("Workers of [%s]:\n", color.HiYellowString(plugin))
-			ServiceWorkerTable(os.Stdout, list.Workers).Render()
+			_ = ServiceWorkerTable(os.Stdout, list.Workers).Render()
 
 			continue
 		}
 
 		fmt.Printf("Workers of [%s]:\n", color.HiYellowString(plugin))
 
-		WorkerTable(os.Stdout, list.Workers, nil).Render()
+		_ = WorkerTable(os.Stdout, list.Workers, nil).Render()
 	}
 
 	for _, plugin := range plugins {
 		var jst []*jobs.State
 
 		if err := client.Call(informerJobs, plugin, &jst); err != nil {
-			JobsTable(os.Stdout, jst, fmt.Errorf("failed to receive information about %s plugin: %w", plugin, err)).Render()
+			_ = JobsTable(os.Stdout, jst, fmt.Errorf("failed to receive information about %s plugin: %w", plugin, err)).Render()
 			continue
 		}
 
@@ -138,6 +138,6 @@ func showWorkers(plugins []string, client *rpc.Client) {
 		}
 
 		fmt.Printf("Jobs of [%s]:\n", color.HiYellowString(plugin))
-		JobsTable(os.Stdout, jst, nil).Render()
+		_ = JobsTable(os.Stdout, jst, nil).Render()
 	}
 }
