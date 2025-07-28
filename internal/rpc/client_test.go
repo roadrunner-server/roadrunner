@@ -39,7 +39,7 @@ func TestNewClient_ConnectionError(t *testing.T) {
 }
 
 func TestNewClient_SuccessfullyConnected(t *testing.T) {
-	l, err := net.Listen("tcp", "127.0.0.1:55554")
+	l, err := net.Listen("tcp", "127.0.0.1:55554") //nolint:noctx
 	assert.NoError(t, err)
 
 	defer func() { assert.NoError(t, l.Close()) }()
@@ -53,7 +53,7 @@ func TestNewClient_SuccessfullyConnected(t *testing.T) {
 }
 
 func TestNewClient_WithIncludes(t *testing.T) {
-	l, err := net.Listen("tcp", "127.0.0.1:6010")
+	l, err := net.Listen("tcp", "127.0.0.1:6010") //nolint:noctx
 	assert.NoError(t, err)
 
 	defer func() { assert.NoError(t, l.Close()) }()
@@ -67,7 +67,7 @@ func TestNewClient_WithIncludes(t *testing.T) {
 }
 
 func TestNewClient_SuccessfullyConnectedOverride(t *testing.T) {
-	l, err := net.Listen("tcp", "127.0.0.1:55554")
+	l, err := net.Listen("tcp", "127.0.0.1:55554") //nolint:noctx
 	assert.NoError(t, err)
 
 	defer func() { assert.NoError(t, l.Close()) }()
@@ -82,7 +82,7 @@ func TestNewClient_SuccessfullyConnectedOverride(t *testing.T) {
 
 // ${} syntax
 func TestNewClient_SuccessfullyConnectedEnvDollarSyntax(t *testing.T) {
-	l, err := net.Listen("tcp", "127.0.0.1:55556")
+	l, err := net.Listen("tcp", "127.0.0.1:55556") //nolint:noctx
 	assert.NoError(t, err)
 
 	defer func() { assert.NoError(t, l.Close()) }()

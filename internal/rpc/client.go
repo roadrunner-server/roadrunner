@@ -79,7 +79,7 @@ func Dialer(addr string) (net.Conn, error) {
 		return nil, errors.New("invalid socket DSN (tcp://:6001, unix://file.sock)")
 	}
 
-	return net.Dial(dsn[0], dsn[1])
+	return net.Dial(dsn[0], dsn[1]) //nolint:noctx
 }
 
 func parseFlag(flag string) (string, string, error) {
@@ -166,7 +166,7 @@ func ExpandVal(s string, mapping func(string) string) string {
 
 // getShellName returns the name that begins the string and the number of bytes
 // consumed to extract it. If the name is enclosed in {}, it's part of a ${}
-// expansion and two more bytes are needed than the length of the name.
+// expansion, and two more bytes are needed than the length of the name.
 func getShellName(s string) (string, int) {
 	switch {
 	case s[0] == '{':
