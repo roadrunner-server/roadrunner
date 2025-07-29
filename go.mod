@@ -9,7 +9,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.18.0
 	github.com/joho/godotenv v1.5.1
-	github.com/olekukonko/tablewriter v1.0.8
+	github.com/olekukonko/tablewriter v1.0.9
 	github.com/roadrunner-server/amqp/v5 v5.2.2
 	github.com/roadrunner-server/api/v4 v4.21.0
 	github.com/roadrunner-server/app-logger/v5 v5.1.8
