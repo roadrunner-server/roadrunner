@@ -6,7 +6,6 @@ import (
 	"github.com/roadrunner-server/beanstalk/v5"
 	"github.com/roadrunner-server/boltdb/v5"
 	"github.com/roadrunner-server/centrifuge/v5"
-	"github.com/roadrunner-server/fileserver/v5"
 	gps "github.com/roadrunner-server/google-pub-sub/v5"
 	grpcPlugin "github.com/roadrunner-server/grpc/v5"
 	"github.com/roadrunner-server/gzip/v5"
@@ -83,7 +82,6 @@ func Plugins() []any { //nolint:funlen
 		&send.Plugin{},
 		&proxyIP.Plugin{},
 		&rrOtel.Plugin{},
-		&fileserver.Plugin{},
 		// ===================
 		// gRPC
 		&grpcPlugin.Plugin{},
