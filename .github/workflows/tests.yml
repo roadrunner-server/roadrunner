@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Go
         uses: actions/setup-go@v5 # action page: <https://github.com/actions/setup-go>
@@ -36,7 +36,7 @@ jobs:
           go-version: stable
 
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 2 # Fixes codecov error 'Issue detecting commit SHA'
 
@@ -74,7 +74,7 @@ jobs:
           go-version: stable
 
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Init Go modules Cache # Docs: <https://git.io/JfAKn#go---modules>
         uses: actions/cache@v4
@@ -120,7 +120,7 @@ jobs:
     needs: [ go-test ]
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build image
         run: docker build -t rr:local -f ./Dockerfile .
