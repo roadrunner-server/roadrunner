@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set up Go
-        uses: actions/setup-go@v5 # action page: <https://github.com/actions/setup-go>
+        uses: actions/setup-go@v6 # action page: <https://github.com/actions/setup-go>
         with:
           go-version: stable
 
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: stable
 
@@ -69,7 +69,7 @@ jobs:
         os: [ linux, darwin, windows, freebsd ]
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v5 # action page: <https://github.com/actions/setup-go>
+        uses: actions/setup-go@v6 # action page: <https://github.com/actions/setup-go>
         with:
           go-version: stable
 
