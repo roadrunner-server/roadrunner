@@ -932,6 +932,18 @@ http:
     # Default: 128
     max_concurrent_streams: 128
 
+  # HTTP/3 settings (experimental). Enable QUIC + HTTP/3 on a separate (optional) address.
+  # Provide key+cert here if ACME is not configured (same as for the TLS section above).
+  http3:
+    # Host and port to listen on for HTTP/3.
+    #
+    # Default: disabled (section absent)
+    address: 127.0.0.1:8443
+    # Path to the certificate (must be provided together with the key if section enabled).
+    # cert: "/ssl/cert.crt"
+    # Path to the private key.
+    # key: "/ssl/key.pem"
+
 # Redis section.
 redis:
   # UniversalClient is an abstract client which - based on the provided options -
@@ -963,6 +975,15 @@ redis:
   idle_timeout: 0s # accepted values [1s, 5m, 3h]
   idle_check_freq: 0s # accepted values [1s, 5m, 3h]
   read_only: false
+
+  # Optional TLS configuration for Redis (leave section absent to disable TLS).
+  # tls:
+  #   # Path to the CA certificate (required if section enabled).
+  #   root_ca: "/ssl/ca.crt"
+  #   # (Optional) Client certificate + key if mTLS required.
+  #   # cert: "/ssl/cert.crt"
+  #   # key: "/ssl/key.pem"
+  #   # client_auth_type: no_client_certs
 
 # Application metrics in Prometheus format (docs: https://roadrunner.dev/docs/plugins-metrics/2.x/en). Drop this section
 # for this feature disabling.
@@ -1004,6 +1025,12 @@ status:
   #
   # Default: 503
   unavailable_status_code: 503
+
+  # Maximum duration (in seconds) to wait for a complete response from the queried plugin(s).
+  # If the plugin does not respond within this time RR returns `unavailable_status_code`.
+  #
+  # Default: 60
+  check_timeout: 60
 
 # Automatically detect PHP file changes and reload connected services
 # (docs: https://roadrunner.dev/docs/plugins-reload/2.x/en). Drop this section for this feature disabling.
@@ -1671,6 +1698,10 @@ jobs:
           # Optional, default is chosen in the order preferred based on broker support. Possible values: gzip, snappy, lz4, zstd.
           compression_codec: gzip
 
+          # Partitioning strategy to use. Possible values: Manual, Uniform, RoundRobin, LeastBackup, Sticky.
+          # Default (if omitted): Uniform
+          partitioning_strategy: Uniform
+
         # Kafka Consumer options. Needed to consume messages from the Kafka cluster.
         #
         # Optional, needed only if `consume` is used.
@@ -1764,6 +1795,16 @@ jobs:
           #
           # Optional, default: false.
           block_rebalance_on_poll: true
+
+          # InstanceID switches the group member from dynamic to static membership.
+          # Optional.
+          # instance_id: rr-instance-1
+
+        # SASL options specific for this pipeline (optional). If omitted, global driver SASL settings are used.
+        sasl_options:
+          mechanism: plain
+          username: foo
+          password: bar
 
   # list of pipelines to be consumed by the server automatically at the start, keep empty if you want to start consuming manually
   consume:
@@ -2067,8 +2108,8 @@ centrifuge:
 
   # gRPC server API address (docs: https://centrifugal.dev/docs/server/server_api#grpc-api)
   #
-  # Optional, default: tcp://127.0.0.1:30000. Centrifugo: `grpc_api` should be set to true and `grpc_port` should be the same as in the RR's config.
-  grpc_api_address: tcp://127.0.0.1:30000
+  # Optional, default: tcp://127.0.0.1:10000. Centrifugo: `grpc_api` should be set to true and `grpc_port` should match this value.
+  grpc_api_address: tcp://127.0.0.1:10000
 
   # Use gRPC gzip compressor
   #
