@@ -53,7 +53,6 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
 	github.com/temporalio/roadrunner-temporal/v5 v5.9.0
-	go.uber.org/automaxprocs v1.6.0
 )
 
 exclude (
@@ -66,7 +65,7 @@ require (
 	cloud.google.com/go v0.122.0 // indirect
 	cloud.google.com/go/auth v0.16.5 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
-	cloud.google.com/go/compute/metadata v0.8.0 // indirect
+	cloud.google.com/go/compute/metadata v0.8.3 // indirect
 	cloud.google.com/go/iam v1.5.2 // indirect
 	cloud.google.com/go/pubsub/v2 v2.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.39.0 // indirect
@@ -173,7 +172,7 @@ require (
 	github.com/zeebo/blake3 v0.2.4 // indirect
 	go.etcd.io/bbolt v1.4.3 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
+	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/github.com/bradfitz/gomemcache/memcache/otelmemcache v0.43.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.63.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.63.0 // indirect
