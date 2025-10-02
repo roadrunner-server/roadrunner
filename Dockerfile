@@ -15,9 +15,6 @@ ENV LDFLAGS="-s \
     -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.version=$APP_VERSION \
     -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.buildTime=$BUILD_TIME"
 
-# enable Go greentea GC experiment during build
-ENV GOEXPERIMENT=greenteagc
-
 # compile binary file
 RUN set -x
 RUN go mod download
