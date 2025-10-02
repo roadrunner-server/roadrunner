@@ -315,8 +315,8 @@ github.com/redis/go-redis/extra/redisotel/v9 v9.15.1 h1:gvNK57rhjwIjAiGTSZH2+XO3
 github.com/redis/go-redis/extra/redisotel/v9 v9.15.1/go.mod h1:O41kV1OVBXIT0Tipo902iT8+rbqF0zL5v5paLxp5/7s=
 github.com/redis/go-redis/extra/redisprometheus/v9 v9.15.1 h1:GeKUxkPIKH4oxANTQ164PHrOCPSNDZlcT1yIQRYGGrs=
 github.com/redis/go-redis/extra/redisprometheus/v9 v9.15.1/go.mod h1:+PAFwJ7cRs29jHSwWo9x4exvKFjuiYnli3w1ojy8lC4=
-github.com/redis/go-redis/v9 v9.15.1 h1:BVn5z3pdIKIr5WI4Yv1MRXslB616gqBLBgVmhykiHIw=
-github.com/redis/go-redis/v9 v9.15.1/go.mod h1:u410H11HMLoB+TP67dz8rL9s6QW2j76l0//kSOd3370=
+github.com/redis/go-redis/v9 v9.14.0 h1:u4tNCjXOyzfgeLN+vAZaW1xUooqWDqVEsZN0U01jfAE=
+github.com/redis/go-redis/v9 v9.14.0/go.mod h1:huWgSWd8mW6+m0VPhJjSSQ+d6Nh1VICQ6Q5lHuCH/Iw=
 github.com/rivo/uniseg v0.4.7 h1:WUdvkW8uEhrYfLC4ZzdpI2ztxP1I582+49Oc5Mq64VQ=
 github.com/rivo/uniseg v0.4.7/go.mod h1:FN3SvrM+Zdj16jyLfmOkMNblXMcoc8DfTHruCPUcx88=
 github.com/roadrunner-server/amqp/v5 v5.2.3 h1:joOO8csUbv9IN2Q2E+dqlaMOkwi7fjmul9wNeG0AHHc=

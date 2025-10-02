@@ -58,6 +58,7 @@ require (
 
 exclude (
 	github.com/redis/go-redis/v9 v9.15.0
+	github.com/redis/go-redis/v9 v9.15.1
 	github.com/spf13/viper v1.18.0
 	github.com/spf13/viper v1.18.1
 	go.temporal.io/api v1.26.1
@@ -148,7 +149,7 @@ require (
 	github.com/redis/go-redis/extra/rediscmd/v9 v9.15.1 // indirect
 	github.com/redis/go-redis/extra/redisotel/v9 v9.15.1 // indirect
 	github.com/redis/go-redis/extra/redisprometheus/v9 v9.15.1 // indirect
-	github.com/redis/go-redis/v9 v9.15.1 // indirect
+	github.com/redis/go-redis/v9 v9.14.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/roadrunner-server/context v1.1.0 // indirect
 	github.com/roadrunner-server/events v1.0.1 // indirect
