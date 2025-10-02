@@ -86,7 +86,6 @@ jobs:
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
           GPG_PASS: ${{secrets.GPG_PASS}}
           CGO_ENABLED: 0
-          GOEXPERIMENT: greenteagc
           LDFLAGS: >-
             -s
             -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.version=${{ steps.values.outputs.version }}
