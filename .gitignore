@@ -21,7 +21,6 @@ coverage
 rr.exe
 .rr-sample-*
 .pid
-.vscode
 .DS_Store
 **/.DS_Store
 **/node_modules

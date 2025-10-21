@@ -16,6 +16,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// log outputs a message to stdout if silent mode is not enabled
+func log(msg string, silent bool) {
+	if !silent {
+		fmt.Println(msg)
+	}
+}
+
 func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental *bool) *cobra.Command { //nolint:funlen
 	return &cobra.Command{
 		Use:   "serve",
@@ -52,10 +59,9 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental 
 			// create endure container
 			ll, err := container.ParseLogLevel(containerCfg.LogLevel)
 			if err != nil {
-				if !*silent {
-					fmt.Println(fmt.Errorf("[WARN] Failed to parse log level, using default (error): %w", err))
-				}
+				log(fmt.Sprintf("[WARN] Failed to parse log level, using default (error): %v", err), *silent)
 			}
+
 			cont := endure.New(ll, endureOptions...)
 
 			// register plugins
@@ -76,8 +82,11 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental 
 				return errors.E(op, err)
 			}
 
-			oss, stop := make(chan os.Signal, 5), make(chan struct{}, 1) //nolint:gomnd
-			signal.Notify(oss, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGABRT)
+			oss, stop := make(chan os.Signal, 1), make(chan struct{}, 1)
+			signal.Notify(oss, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGABRT, syscall.SIGQUIT)
+
+			restartCh := make(chan os.Signal, 1)
+			signal.Notify(restartCh, syscall.SIGUSR2)
 
 			go func() {
 				// first catch - stop the container
@@ -88,51 +97,66 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental 
 				// notify about stopping
 				_, _ = sdnotify.SdNotify(sdnotify.Stopping)
 
-				// after first hit we are waiting for the second catch - exit from the process
+				// after the first hit we are waiting for the second catch - exit from the process
 				<-oss
-				fmt.Println("exit forced")
+				log("exit forced", *silent)
 				os.Exit(1)
 			}()
 
-			if !*silent {
-				fmt.Printf("[INFO] RoadRunner server started; version: %s, buildtime: %s\n", meta.Version(), meta.BuildTime())
-			}
+			log(fmt.Sprintf("[INFO] RoadRunner server started; version: %s, buildtime: %s", meta.Version(), meta.BuildTime()), *silent)
 
 			// at this moment, we're almost sure that the container is running (almost- because we don't know if the plugins won't report an error on the next step)
 			notified, err := sdnotify.SdNotify(sdnotify.Ready)
 			if err != nil {
-				if !*silent {
-					fmt.Printf("[WARN] sdnotify: %s\n", err)
-				}
+				log(fmt.Sprintf("[WARN] sdnotify: %s", err), *silent)
 			}
 
-			if !*silent {
-				if notified {
-					fmt.Println("[INFO] sdnotify: notified")
-					stopCh := make(chan struct{}, 1)
-					if containerCfg.WatchdogSec > 0 {
-						fmt.Printf("[INFO] sdnotify: watchdog enabled, timeout: %d seconds\n", containerCfg.WatchdogSec)
-						sdnotify.StartWatchdog(containerCfg.WatchdogSec, stopCh)
-					}
-
-					// if notified -> notify about stop
-					defer func() {
-						stopCh <- struct{}{}
-					}()
-				} else {
-					fmt.Println("[INFO] sdnotify: not notified")
+			if notified {
+				log("[INFO] sdnotify: notified", *silent)
+				stopCh := make(chan struct{}, 1)
+				if containerCfg.WatchdogSec > 0 {
+					log(fmt.Sprintf("[INFO] sdnotify: watchdog enabled, timeout: %d seconds", containerCfg.WatchdogSec), *silent)
+					sdnotify.StartWatchdog(containerCfg.WatchdogSec, stopCh)
 				}
+
+				// if notified -> notify about stop
+				defer func() {
+					stopCh <- struct{}{}
+				}()
 			}
 
 			for {
 				select {
 				case e := <-errCh:
 					return fmt.Errorf("error: %w\nplugin: %s", e.Error, e.VertexID)
-				case <-stop: // stop the container after first signal
-					fmt.Printf("stop signal received, grace timeout is: %0.f seconds\n", containerCfg.GracePeriod.Seconds())
+				case <-stop: // stop the container after the first signal
+					log(fmt.Sprintf("stop signal received, grace timeout is: %0.f seconds", containerCfg.GracePeriod.Seconds()), *silent)
 
 					if err = cont.Stop(); err != nil {
 						return fmt.Errorf("error: %w", err)
+					}
+
+					return nil
+
+				case <-restartCh:
+					log("restart signal [SIGUSR2] received", *silent)
+					executable, err := os.Executable()
+					if err != nil {
+						log(fmt.Sprintf("restart failed: %s", err), *silent)
+						return errors.E("failed to restart")
+					}
+					args := os.Args
+					env := os.Environ()
+
+					if err := cont.Stop(); err != nil {
+						log(fmt.Sprintf("restart failed: %s", err), *silent)
+						return errors.E("failed to restart")
+					}
+
+					err = syscall.Exec(executable, args, env)
+					if err != nil {
+						log(fmt.Sprintf("restart failed: %s", err), *silent)
+						return errors.E("failed to restart")
 					}
 
 					return nil
