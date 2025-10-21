@@ -1,4 +1,4 @@
-//go:build !windows
+//go:build windows
 
 package serve
 
@@ -87,9 +87,6 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental 
 			oss, stop := make(chan os.Signal, 1), make(chan struct{}, 1)
 			signal.Notify(oss, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGABRT, syscall.SIGQUIT)
 
-			restartCh := make(chan os.Signal, 1)
-			signal.Notify(restartCh, syscall.SIGUSR2)
-
 			go func() {
 				// first catch - stop the container
 				<-oss
@@ -136,29 +133,6 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental 
 
 					if err = cont.Stop(); err != nil {
 						return fmt.Errorf("error: %w", err)
-					}
-
-					return nil
-
-				case <-restartCh:
-					log("restart signal [SIGUSR2] received", *silent)
-					executable, err := os.Executable()
-					if err != nil {
-						log(fmt.Sprintf("restart failed: %s", err), *silent)
-						return errors.E("failed to restart")
-					}
-					args := os.Args
-					env := os.Environ()
-
-					if err := cont.Stop(); err != nil {
-						log(fmt.Sprintf("restart failed: %s", err), *silent)
-						return errors.E("failed to restart")
-					}
-
-					err = syscall.Exec(executable, args, env)
-					if err != nil {
-						log(fmt.Sprintf("restart failed: %s", err), *silent)
-						return errors.E("failed to restart")
 					}
 
 					return nil
