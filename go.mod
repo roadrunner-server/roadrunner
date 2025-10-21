@@ -62,8 +62,6 @@ exclude (
 	go.temporal.io/api v1.26.1
 )
 
-replace github.com/temporalio/roadrunner-temporal/v5 => ../plugins/roadrunner-temporal
-
 require (
 	cloud.google.com/go v0.123.0 // indirect
 	cloud.google.com/go/auth v0.17.0 // indirect
