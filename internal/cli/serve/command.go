@@ -160,8 +160,6 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental 
 						log(fmt.Sprintf("restart failed: %s", err), *silent)
 						return errors.E("failed to restart")
 					}
-
-					return nil
 				}
 			}
 		},
