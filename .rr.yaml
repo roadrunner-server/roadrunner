@@ -321,8 +321,8 @@ temporal:
     supervisor:
       # How often to check the state of the workers.
       #
-      # Default: 1s
-      watch_tick: 1s
+      # Default: 5s
+      watch_tick: 5s
 
       # Maximum time worker is allowed to live (soft limit). Zero means no limit.
       #
@@ -816,8 +816,8 @@ http:
     supervisor:
       # How often to check the state of the workers.
       #
-      # Default: 1s
-      watch_tick: 1s
+      # Default: 5s
+      watch_tick: 5s
 
       # Maximum time worker is allowed to live (soft limit). Zero means no limit.
       #
@@ -2180,8 +2180,8 @@ centrifuge:
     supervisor:
       # How often to check the state of the workers.
       #
-      # Default: 1s
-      watch_tick: 1s
+      # Default: 5s
+      watch_tick: 5s
 
       # Maximum time worker is allowed to live (soft limit). Zero means no limit.
       #
