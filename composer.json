@@ -5,9 +5,8 @@
     "license": "MIT",
     "homepage": "https://roadrunner.dev/",
     "support": {
-        "docs": "https://roadrunner.dev/docs",
+        "docs": "https://docs.roadrunner.dev/",
         "issues": "https://github.com/roadrunner-server/roadrunner/issues",
-        "forum": "https://forum.roadrunner.dev/",
         "chat": "https://discord.gg/V6EK4he"
     },
     "authors": [
