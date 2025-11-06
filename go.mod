@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v1.1.0
 	github.com/roadrunner-server/amqp/v5 v5.2.3
-	github.com/roadrunner-server/api/v4 v4.22.1
+	github.com/roadrunner-server/api/v4 v4.23.0
 	github.com/roadrunner-server/app-logger/v5 v5.1.9
 	github.com/roadrunner-server/beanstalk/v5 v5.1.9
 	github.com/roadrunner-server/boltdb/v5 v5.1.9
