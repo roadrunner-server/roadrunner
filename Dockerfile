@@ -12,21 +12,21 @@ WORKDIR /src
 
 # arguments to pass on each go tool link invocation
 ENV LDFLAGS="-s \
-    -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.version=$APP_VERSION \
-    -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.buildTime=$BUILD_TIME"
+	-X github.com/roadrunner-server/roadrunner/v2025/internal/meta.version=$APP_VERSION \
+	-X github.com/roadrunner-server/roadrunner/v2025/internal/meta.buildTime=$BUILD_TIME"
 
 # compile binary file
 RUN set -x
 RUN go mod download
 RUN go mod tidy
-RUN CGO_ENABLED=0 go build -pgo=roadrunner.pprof -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr
+RUN CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr
 RUN ./rr -v
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3
 
 RUN apk upgrade --update-cache --available && \
-    apk add openssl && \
-    rm -rf /var/cache/apk/*
+	apk add openssl && \
+	rm -rf /var/cache/apk/*
 
 # use same build arguments for image labels
 ARG APP_VERSION="undefined"

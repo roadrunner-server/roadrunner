@@ -97,6 +97,7 @@ jobs:
           GOOS: ${{ matrix.os }}
           GOARCH: amd64
           CGO_ENABLED: 0
+          GOEXPERIMENT: greenteagc
           LDFLAGS: -s
             -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.version=${{ steps.values.outputs.version }}
             -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}

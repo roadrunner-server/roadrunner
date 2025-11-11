@@ -52,6 +52,7 @@ jobs:
           CC: ${{ matrix.compiler }}
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
           GPG_PASS: ${{secrets.GPG_PASS}}
+          GOEXPERIMENT: greenteagc
           CGO_ENABLED: 0
           LDFLAGS: >-
             -s
