@@ -11,6 +11,6 @@
 	"dependencies": {
 		"@apidevtools/json-schema-ref-parser": "^11.7.2",
 		"ajv": "^8.17.1",
-		"js-yaml": "^4.1.0"
+		"js-yaml": "^4.1.1"
 	}
 }
