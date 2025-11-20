@@ -49,7 +49,7 @@ jobs:
           go-version: stable
 
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: 'roadrunner-server/grpc'
 
