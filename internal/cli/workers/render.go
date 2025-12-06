@@ -187,7 +187,7 @@ func renderStatus(status string) string {
 }
 
 func renderJobs(number uint64) string {
-	return humanize.Comma(int64(number)) //nolint:gosec
+	return humanize.Comma(int64(number))
 }
 
 func renderAlive(t time.Time) string {
