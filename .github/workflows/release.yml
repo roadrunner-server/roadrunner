@@ -131,7 +131,7 @@ jobs:
         run: zip -r -q "${{ steps.dist-arch.outputs.name }}" "${{ steps.dist-dir.outputs.name }}"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ steps.dist-dir.outputs.name }}
           path: ${{ steps.dist-arch.outputs.name }}
