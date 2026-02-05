@@ -1,5 +1,3 @@
-// Package rpc contains wrapper around RPC client ONLY for internal usage.
-// Should be in sync with the RPC plugin
 package rpc
 
 import (
