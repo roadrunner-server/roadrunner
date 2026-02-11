@@ -1,5 +1,5 @@
 # Image page: <https://hub.docker.com/_/golang>
-FROM --platform=${TARGETPLATFORM:-linux/amd64} golang:1.25-alpine AS builder
+FROM --platform=${TARGETPLATFORM:-linux/amd64} golang:1.26-alpine AS builder
 
 # app version and build date must be passed during image building (version without any prefix).
 # e.g.: `docker build --build-arg "APP_VERSION=1.2.3" --build-arg "BUILD_TIME=$(date +%FT%T%z)" .`
