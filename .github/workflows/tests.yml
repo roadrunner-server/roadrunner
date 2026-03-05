@@ -87,7 +87,7 @@ jobs:
         if: matrix.os == 'linux'
         run: ./rr -v
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: rr-${{ matrix.os }}
           path: ./rr
