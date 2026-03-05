@@ -66,7 +66,7 @@ jobs:
             echo "sign-cert-name=protoc-gen-php-grpc.asc" >> $GITHUB_OUTPUT
           fi
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@v7
         with:
           gpg_private_key: ${{ secrets.GPG_SIGNING_KEY }}
           passphrase: ${{ secrets.GPG_PASS }}
