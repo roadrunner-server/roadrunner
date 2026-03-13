@@ -8,3 +8,8 @@
 /bin
 composer.json
 vendor_php
+Makefile
+CHANGELOG.md
+LICENSE
+.golangci*
+.rr-sample-*.yaml
