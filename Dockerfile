@@ -26,7 +26,7 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr && ./r
 # ---- Final stage ----
 FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3
 
-RUN apk add --no-cache ca-certificates
+RUN apk upgrade --no-cache && apk add --no-cache ca-certificates
 
 # use same build arguments for image labels
 ARG APP_VERSION="undefined"
