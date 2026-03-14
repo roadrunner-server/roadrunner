@@ -6,27 +6,27 @@ FROM --platform=${TARGETPLATFORM:-linux/amd64} golang:1.26-alpine AS builder
 ARG APP_VERSION="undefined"
 ARG BUILD_TIME="undefined"
 
-COPY . /src
-
 WORKDIR /src
+
+# Copy module files first for layer caching
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source and build
+COPY . .
 
 # arguments to pass on each go tool link invocation
 ENV LDFLAGS="-s \
 	-X github.com/roadrunner-server/roadrunner/v2025/internal/meta.version=$APP_VERSION \
 	-X github.com/roadrunner-server/roadrunner/v2025/internal/meta.buildTime=$BUILD_TIME"
 
-# compile binary file
-RUN set -x
-RUN go mod download
-RUN go mod tidy
-RUN CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr
-RUN ./rr -v
+# compile and verify binary
+RUN CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr && ./rr -v
 
+# ---- Final stage ----
 FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3
 
-RUN apk upgrade --update-cache --available && \
-	apk add openssl && \
-	rm -rf /var/cache/apk/*
+RUN apk upgrade --no-cache && apk add --no-cache ca-certificates
 
 # use same build arguments for image labels
 ARG APP_VERSION="undefined"
@@ -42,9 +42,15 @@ LABEL org.opencontainers.image.version="$APP_VERSION"
 LABEL org.opencontainers.image.created="$BUILD_TIME"
 LABEL org.opencontainers.image.licenses="MIT"
 
+# Non-root user
+RUN addgroup -S rr && adduser -S -G rr rr
+
 # copy required files from builder image
 COPY --from=builder /src/rr /usr/bin/rr
 COPY --from=builder /src/.rr.yaml /etc/rr.yaml
 
+USER rr
+
 # use roadrunner binary as image entrypoint
 ENTRYPOINT ["/usr/bin/rr"]
+CMD ["serve", "-c", "/etc/rr.yaml"]
