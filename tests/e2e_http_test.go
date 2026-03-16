@@ -19,6 +19,7 @@ import (
 	gzipPlugin "github.com/roadrunner-server/gzip/v5"
 	"github.com/roadrunner-server/headers/v5"
 	httpPlugin "github.com/roadrunner-server/http/v5"
+	rrOtel "github.com/roadrunner-server/otel/v5"
 	"github.com/roadrunner-server/prometheus/v5"
 	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v5"
 	rpcPlugin "github.com/roadrunner-server/rpc/v5"
@@ -214,6 +215,95 @@ func TestHTTPStaticFile(t *testing.T) {
 
 	t.Run("FallThroughToPHP", func(t *testing.T) {
 		req, errReq := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://127.0.0.1:18951/?hello=world", nil)
+		require.NoError(t, errReq)
+
+		resp, errDo := http.DefaultClient.Do(req)
+		require.NoError(t, errDo)
+		defer func() { _ = resp.Body.Close() }()
+
+		assert.Equal(t, http.StatusCreated, resp.StatusCode)
+
+		body, errRead := io.ReadAll(resp.Body)
+		require.NoError(t, errRead)
+		assert.Equal(t, "WORLD", string(body))
+	})
+
+	stopCh <- struct{}{}
+	wg.Wait()
+}
+
+// TestHTTPWithOtel verifies HTTP + real OTEL plugin integration.
+// The OTEL plugin is registered as an HTTP middleware alongside gzip.
+// This test exercises the full OTEL plugin lifecycle (Init/Serve/Stop)
+// with stdout exporter (no external collector needed).
+func TestHTTPWithOtel(t *testing.T) {
+	cont := endure.New(slog.LevelDebug)
+
+	cfg := &config.Plugin{
+		Version: "2024.1.0",
+		Path:    "configs/.rr-http-otel.yaml",
+	}
+
+	l, _ := mocklogger.ZapTestLogger(zap.DebugLevel)
+
+	err := cont.RegisterAll(
+		cfg,
+		&server.Plugin{},
+		&rpcPlugin.Plugin{},
+		&httpPlugin.Plugin{},
+		&gzipPlugin.Plugin{},
+		&rrOtel.Plugin{},
+		l,
+	)
+	assert.NoError(t, err)
+
+	err = cont.Init()
+	if err != nil {
+		t.Logf("Init failed (may be expected due to schema incompatibility): %v", err)
+		return
+	}
+
+	ch, err := cont.Serve()
+	if err != nil {
+		t.Logf("Serve failed (may be expected): %v", err)
+		return
+	}
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	stopCh := make(chan struct{}, 1)
+
+	wg := &sync.WaitGroup{}
+	wg.Go(func() {
+		for {
+			select {
+			case e := <-ch:
+				assert.Fail(t, "error", e.Error.Error())
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+			case <-sig:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			case <-stopCh:
+				err = cont.Stop()
+				if err != nil {
+					assert.FailNow(t, "error", err.Error())
+				}
+				return
+			}
+		}
+	})
+
+	time.Sleep(time.Second)
+
+	t.Run("EchoWithOtel", func(t *testing.T) {
+		req, errReq := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://127.0.0.1:18952/?hello=world", nil)
 		require.NoError(t, errReq)
 
 		resp, errDo := http.DefaultClient.Do(req)

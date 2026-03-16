@@ -355,6 +355,7 @@ github.com/roadrunner-server/centrifuge/v5 v5.1.9/go.mod h1:N015rsGdTD7dDIkNeYid
 github.com/roadrunner-server/config/v5 v5.1.9 h1:ReWwts/prEvuC4yVJ0BRDmY5sxw/1c+hGTSdJ71hIQU=
 github.com/roadrunner-server/config/v5 v5.1.9/go.mod h1:R6YyTWahW61tWHOI2BfdkQU/0Zc/2d6/JbJ/KEvq8F8=
 github.com/roadrunner-server/context v1.3.0 h1:iyTXVORhPU2/26z7kdzEaggwG5P8yhIKUDLiePjylFQ=
+github.com/roadrunner-server/context v1.3.0/go.mod h1:KPAzAlnErXekQazW9t4h55U1S42Q2bk0WCaPQrezJw4=
 github.com/roadrunner-server/endure/v2 v2.6.2 h1:sIB4kTyE7gtT3fDhuYWUYn6Vt/dcPtiA6FoNS1eS+84=
 github.com/roadrunner-server/endure/v2 v2.6.2/go.mod h1:t/2+xpNYgGBwhzn83y2MDhvhZ19UVq1REcvqn7j7RB8=
 github.com/roadrunner-server/errors v1.4.1 h1:LKNeaCGiwd3t8IaL840ZNF3UA9yDQlpvHnKddnh0YRQ=
@@ -707,8 +708,11 @@ google.golang.org/genproto v0.0.0-20200513103714-09dca8ec2884/go.mod h1:55QSHmfG
 google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013/go.mod h1:NbSheEEYHJ7i3ixzK3sjbqSGDJWnxyFXZblF3eUsNvo=
 google.golang.org/genproto v0.0.0-20210909211513-a8c4777a87af/go.mod h1:eFjDcFEctNawg4eG61bRv87N7iHBWyVhJu7u1kqDUXY=
 google.golang.org/genproto v0.0.0-20260316180232-0b37fe3546d5 h1:JNfk58HZ8lfmXbYK2vx/UvsqIL59TzByCxPIX4TDmsE=
+google.golang.org/genproto v0.0.0-20260316180232-0b37fe3546d5/go.mod h1:x5julN69+ED4PcFk/XWayw35O0lf/nGa4aNgODCmNmw=
 google.golang.org/genproto/googleapis/api v0.0.0-20260316172706-e463d84ca32d h1:RdWlPmVySdTF0IBIZzvZJvSD0ZocPBNUsnE+uGBxj+4=
+google.golang.org/genproto/googleapis/api v0.0.0-20260316172706-e463d84ca32d/go.mod h1:X2gu9Qwng7Nn009s/r3RUxqkzQNqOrAy79bluY7ojIg=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20260316180232-0b37fe3546d5 h1:aJmi6DVGGIStN9Mobk/tZOOQUBbj0BPjZjjnOdoZKts=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20260316180232-0b37fe3546d5/go.mod h1:4Hqkh8ycfw05ld/3BWL7rJOSfebL2Q+DVDeRgYgxUU8=
 google.golang.org/grpc v1.12.0/go.mod h1:yo6s7OP7yaDglbqo1J04qKzAhqBH6lvTonzMVmEdcZw=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.23.0/go.mod h1:Y5yQAOtifL1yxbo5wqy6BxZv8vAUGQwXBOALyacEbxg=
