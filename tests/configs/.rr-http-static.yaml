@@ -1,0 +1,23 @@
+version: '3'
+
+rpc:
+  listen: tcp://127.0.0.1:6203
+
+server:
+  command: "php php_test_files/http/client.php echo pipes"
+  relay: "pipes"
+  relay_timeout: "20s"
+
+http:
+  address: 127.0.0.1:18951
+  max_request_size: 1024
+  middleware: ["static", "gzip"]
+  static:
+    dir: "testdata"
+    forbid: []
+    allow: [".txt"]
+  pool:
+    num_workers: 2
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 1s

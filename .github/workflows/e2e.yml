@@ -1,0 +1,57 @@
+name: e2e_tests
+on:
+  push:
+    branches:
+      - master
+      - stable
+  pull_request:
+    branches:
+      - master
+      - stable
+jobs:
+  e2e_test:
+    name: E2E tests (Go ${{ matrix.go }}, PHP ${{ matrix.php }}, OS ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        php: ["8.5"]
+        go: [stable]
+        os: ["ubuntu-latest"]
+    steps:
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ matrix.go }}
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: sockets
+      - name: Check out code
+        uses: actions/checkout@v6
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          cd tests/php_test_files
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Init Composer Cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+      - name: Install Composer dependencies
+        run: cd tests/php_test_files && composer update --prefer-dist --no-progress --ansi
+      - name: Init Go modules Cache
+        uses: actions/cache@v5
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+      - name: Install Go dependencies
+        run: cd tests && go mod download
+      - name: Run e2e tests
+        run: |
+          cd tests
+          go test -timeout 15m -v -race -failfast ./...

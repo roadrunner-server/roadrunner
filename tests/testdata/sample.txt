@@ -1,0 +1,2 @@
+Hello from RoadRunner e2e static file test!
+This file is served by the static middleware plugin.
