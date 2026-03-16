@@ -187,7 +187,7 @@ func (co *contextObserver) Write(ent zapcore.Entry, fields []zapcore.Field) erro
 	all := make([]zapcore.Field, 0, len(fields)+len(co.context))
 	all = append(all, co.context...)
 	all = append(all, fields...)
-	co.logs.add(LoggedEntry{ent, all})
+	co.logs.add(LoggedEntry{Entry: ent, Context: all})
 
 	return nil
 }

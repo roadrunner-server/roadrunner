@@ -10,7 +10,6 @@ import (
 	"github.com/google/uuid"
 	jobsProto "github.com/roadrunner-server/api/v4/build/jobs/v1"
 	goridgeRpc "github.com/roadrunner-server/goridge/v3/pkg/rpc"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,16 +18,25 @@ const (
 	pause   = "jobs.Pause"
 	destroy = "jobs.Destroy"
 	resume  = "jobs.Resume"
+
+	dialTimeout = 5 * time.Second
 )
 
-// rpcClient dials the given address and returns a Goridge RPC client.
+// rpcClient dials the given address with a timeout and returns a Goridge RPC
+// client. The client is automatically closed via t.Cleanup when the test ends.
 func rpcClient(t *testing.T, address string) *rpc.Client {
 	t.Helper()
 
-	conn, err := new(net.Dialer).DialContext(context.Background(), "tcp", address)
+	ctx, cancel := context.WithTimeout(context.Background(), dialTimeout)
+	defer cancel()
+
+	conn, err := new(net.Dialer).DialContext(ctx, "tcp", address)
 	require.NoError(t, err)
 
-	return rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
+	t.Cleanup(func() { _ = client.Close() })
+
+	return client
 }
 
 // callPipelines is a generic helper that calls the given RPC method
@@ -102,15 +110,16 @@ func DestroyPipelines(address string, pipes ...string) func(t *testing.T) {
 			pipe.GetPipelines()[i] = pipes[i]
 		}
 
+		var lastErr error
 		for range 10 {
 			er := &jobsProto.Empty{}
-			err := client.Call(destroy, pipe, er)
-			if err != nil {
+			lastErr = client.Call(destroy, pipe, er)
+			if lastErr != nil {
 				time.Sleep(time.Second)
 				continue
 			}
-			assert.NoError(t, err)
-			break
+			return
 		}
+		require.NoError(t, lastErr)
 	}
 }

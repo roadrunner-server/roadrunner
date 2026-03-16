@@ -68,20 +68,20 @@ func TestGrpcPing(t *testing.T) {
 			select {
 			case e := <-ch:
 				assert.Fail(t, "error", e.Error.Error())
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 			case <-sig:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 				return
 			case <-stopCh:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 				return
 			}
@@ -99,8 +99,11 @@ func TestGrpcPing(t *testing.T) {
 		require.NotNil(t, conn)
 		defer func() { _ = conn.Close() }()
 
+		ctx, cancel := context.WithTimeout(t.Context(), 5*time.Second)
+		defer cancel()
+
 		client := service.NewEchoClient(conn)
-		resp, errPing := client.Ping(context.Background(), &service.Message{Msg: "hello"})
+		resp, errPing := client.Ping(ctx, &service.Message{Msg: "hello"})
 		require.NoError(t, errPing)
 		require.Equal(t, "HELLO", resp.GetMsg())
 	})

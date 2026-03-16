@@ -67,7 +67,7 @@ func NewLog(log *zap.Logger) *Log {
 	}
 }
 
-// NamedLogger returns the underlying zap.Logger regardless of name.
-func (l *Log) NamedLogger(string) *zap.Logger {
-	return l.base
+// NamedLogger returns the underlying zap.Logger scoped with the given name.
+func (l *Log) NamedLogger(name string) *zap.Logger {
+	return l.base.Named(name)
 }

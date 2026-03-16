@@ -31,6 +31,11 @@ import (
 	"go.uber.org/zap"
 )
 
+// newHTTPClient returns an HTTP client with a reasonable request timeout for e2e tests.
+func newHTTPClient() *http.Client {
+	return &http.Client{Timeout: 5 * time.Second}
+}
+
 // TestHTTPWithMiddleware verifies that the HTTP plugin works end-to-end with
 // headers, gzip, prometheus metrics, proxy_ip_parser, and sendfile middleware
 // all wired together via the Endure DI container.
@@ -79,20 +84,20 @@ func TestHTTPWithMiddleware(t *testing.T) {
 			select {
 			case e := <-ch:
 				assert.Fail(t, "error", e.Error.Error())
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 			case <-sig:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 				return
 			case <-stopCh:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 				return
 			}
@@ -106,7 +111,7 @@ func TestHTTPWithMiddleware(t *testing.T) {
 		require.NoError(t, errReq)
 		req.Header.Set("Accept-Encoding", "gzip")
 
-		resp, errDo := http.DefaultClient.Do(req)
+		resp, errDo := newHTTPClient().Do(req)
 		require.NoError(t, errDo)
 		defer func() { _ = resp.Body.Close() }()
 
@@ -176,20 +181,20 @@ func TestHTTPStaticFile(t *testing.T) {
 			select {
 			case e := <-ch:
 				assert.Fail(t, "error", e.Error.Error())
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 			case <-sig:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 				return
 			case <-stopCh:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 				return
 			}
@@ -202,7 +207,7 @@ func TestHTTPStaticFile(t *testing.T) {
 		req, errReq := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://127.0.0.1:18951/sample.txt", nil)
 		require.NoError(t, errReq)
 
-		resp, errDo := http.DefaultClient.Do(req)
+		resp, errDo := newHTTPClient().Do(req)
 		require.NoError(t, errDo)
 		defer func() { _ = resp.Body.Close() }()
 
@@ -217,7 +222,7 @@ func TestHTTPStaticFile(t *testing.T) {
 		req, errReq := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://127.0.0.1:18951/?hello=world", nil)
 		require.NoError(t, errReq)
 
-		resp, errDo := http.DefaultClient.Do(req)
+		resp, errDo := newHTTPClient().Do(req)
 		require.NoError(t, errDo)
 		defer func() { _ = resp.Body.Close() }()
 
@@ -258,16 +263,10 @@ func TestHTTPWithOtel(t *testing.T) {
 	assert.NoError(t, err)
 
 	err = cont.Init()
-	if err != nil {
-		t.Logf("Init failed (may be expected due to schema incompatibility): %v", err)
-		return
-	}
+	require.NoError(t, err)
 
 	ch, err := cont.Serve()
-	if err != nil {
-		t.Logf("Serve failed (may be expected): %v", err)
-		return
-	}
+	require.NoError(t, err)
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
@@ -280,20 +279,20 @@ func TestHTTPWithOtel(t *testing.T) {
 			select {
 			case e := <-ch:
 				assert.Fail(t, "error", e.Error.Error())
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 			case <-sig:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 				return
 			case <-stopCh:
-				err = cont.Stop()
-				if err != nil {
-					assert.FailNow(t, "error", err.Error())
+				stopErr := cont.Stop()
+				if stopErr != nil {
+					assert.FailNow(t, "error", stopErr.Error())
 				}
 				return
 			}
@@ -306,7 +305,7 @@ func TestHTTPWithOtel(t *testing.T) {
 		req, errReq := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://127.0.0.1:18952/?hello=world", nil)
 		require.NoError(t, errReq)
 
-		resp, errDo := http.DefaultClient.Do(req)
+		resp, errDo := newHTTPClient().Do(req)
 		require.NoError(t, errDo)
 		defer func() { _ = resp.Body.Close() }()
 
