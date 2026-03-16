@@ -13,3 +13,5 @@ CHANGELOG.md
 LICENSE
 .golangci*
 .rr-sample-*.yaml
+go.work
+go.work.sum

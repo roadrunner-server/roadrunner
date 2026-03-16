@@ -1,0 +1,24 @@
+{
+  "name": "test/e2e",
+  "description": "PHP dependencies for RoadRunner e2e tests",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "nyholm/psr7": "^1.5",
+    "spiral/roadrunner-http": "^3.5",
+    "spiral/roadrunner-worker": "^3.5",
+    "spiral/roadrunner-jobs": "^4.0",
+    "spiral/roadrunner-grpc": "^3.0",
+    "spiral/goridge": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "": "grpc/src"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
+  }
+}

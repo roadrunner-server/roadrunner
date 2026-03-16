@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package service;
+option go_package = "./;service";
+
+service Echo {
+  rpc Ping(Message) returns (Message) {}
+}
+
+message Message { string msg = 1; }
