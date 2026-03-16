@@ -396,8 +396,8 @@ github.com/roadrunner-server/metrics/v5 v5.2.0 h1:54MWLO9t0tgx2It3sEx/Zz7rFwpYk6
 github.com/roadrunner-server/metrics/v5 v5.2.0/go.mod h1:GRr9V0zI2XY9CmoCwW3wyUcFSQq98Lm0ENp77jYgzF0=
 github.com/roadrunner-server/nats/v5 v5.1.9 h1:ZWXMSt+za709hIK6jUBYv6X92REk1DgsYa6zU0jbeKo=
 github.com/roadrunner-server/nats/v5 v5.1.9/go.mod h1:6R6q7wR7OKl9kxsLZd3Qz2jobwv0t5ohj1EZ/zSBXM8=
-github.com/roadrunner-server/otel/v5 v5.4.0 h1:5X+yF/4jiH7Pmq0ctsy7MmnSMsNxgZthZXul1ysT5vQ=
-github.com/roadrunner-server/otel/v5 v5.4.0/go.mod h1:1sK/RbNlH/JY4e+M6TSJzzAfDDBbSX7FAS3RxUVVQII=
+github.com/roadrunner-server/otel/v5 v5.5.0 h1:IYMw04K110sMANyZpauvQ3rRMnq0zZhwQbISHLisfQE=
+github.com/roadrunner-server/otel/v5 v5.5.0/go.mod h1:B1EaW4hC2VGUKCKLw9CZYKxuQid+2Zb7ojzXpRUb6oo=
 github.com/roadrunner-server/pool v1.1.3 h1:KMsiL6yuYBWGk73bdO0akwP+fJ63bxDF972JukCGsxI=
 github.com/roadrunner-server/pool v1.1.3/go.mod h1:8ceC7NvZKJRciv+KJmcyk5CeDugoel6GD+crm5kBFW0=
 github.com/roadrunner-server/priority_queue v1.0.6 h1:x8bcMyjWs2Z4ySbO9BTP8Dzy2prCuazJY9HHrVTmUVY=
@@ -554,8 +554,8 @@ go.opentelemetry.io/proto/otlp v0.7.0/go.mod h1:PqfVotwruBrMGOCsRd/89rSnXhoiJIqe
 go.opentelemetry.io/proto/otlp v1.10.0 h1:IQRWgT5srOCYfiWnpqUYz9CVmbO8bFmKcwYxpuCSL2g=
 go.opentelemetry.io/proto/otlp v1.10.0/go.mod h1:/CV4QoCR/S9yaPj8utp3lvQPoqMtxXdzn7ozvvozVqk=
 go.temporal.io/api v1.5.0/go.mod h1:BqKxEJJYdxb5dqf0ODfzfMxh8UEQ5L3zKS51FiIYYkA=
-go.temporal.io/api v1.62.2 h1:jFhIzlqNyJsJZTiCRQmTIMv6OTQ5BZ57z8gbgLGMaoo=
-go.temporal.io/api v1.62.2/go.mod h1:iaxoP/9OXMJcQkETTECfwYq4cw/bj4nwov8b3ZLVnXM=
+go.temporal.io/api v1.62.3 h1:ivSDI/SUDyzgaZUDTHrggncOE2KxcRED93n13DVt02g=
+go.temporal.io/api v1.62.3/go.mod h1:iaxoP/9OXMJcQkETTECfwYq4cw/bj4nwov8b3ZLVnXM=
 go.temporal.io/sdk v1.12.0/go.mod h1:lSp3lH1lI0TyOsus0arnO3FYvjVXBZGi/G7DjnAnm6o=
 go.temporal.io/sdk v1.41.0 h1:c9tayCQJDM5ZQdrqjGmjqk5ejxUtsEScJGF94sAVYpM=
 go.temporal.io/sdk v1.41.0/go.mod h1:/InXQT5guZ6AizYzpmzr5avQ/GMgq1ZObcKlKE2AhTc=
@@ -709,8 +709,8 @@ google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013/go.mod h1:NbSheEEY
 google.golang.org/genproto v0.0.0-20210909211513-a8c4777a87af/go.mod h1:eFjDcFEctNawg4eG61bRv87N7iHBWyVhJu7u1kqDUXY=
 google.golang.org/genproto v0.0.0-20260316180232-0b37fe3546d5 h1:JNfk58HZ8lfmXbYK2vx/UvsqIL59TzByCxPIX4TDmsE=
 google.golang.org/genproto v0.0.0-20260316180232-0b37fe3546d5/go.mod h1:x5julN69+ED4PcFk/XWayw35O0lf/nGa4aNgODCmNmw=
-google.golang.org/genproto/googleapis/api v0.0.0-20260316172706-e463d84ca32d h1:RdWlPmVySdTF0IBIZzvZJvSD0ZocPBNUsnE+uGBxj+4=
-google.golang.org/genproto/googleapis/api v0.0.0-20260316172706-e463d84ca32d/go.mod h1:X2gu9Qwng7Nn009s/r3RUxqkzQNqOrAy79bluY7ojIg=
+google.golang.org/genproto/googleapis/api v0.0.0-20260316180232-0b37fe3546d5 h1:CogIeEXn4qWYzzQU0QqvYBM8yDF9cFYzDq9ojSpv0Js=
+google.golang.org/genproto/googleapis/api v0.0.0-20260316180232-0b37fe3546d5/go.mod h1:EIQZ5bFCfRQDV4MhRle7+OgjNtZ6P1PiZBgAKuxXu/Y=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20260316180232-0b37fe3546d5 h1:aJmi6DVGGIStN9Mobk/tZOOQUBbj0BPjZjjnOdoZKts=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20260316180232-0b37fe3546d5/go.mod h1:4Hqkh8ycfw05ld/3BWL7rJOSfebL2Q+DVDeRgYgxUU8=
 google.golang.org/grpc v1.12.0/go.mod h1:yo6s7OP7yaDglbqo1J04qKzAhqBH6lvTonzMVmEdcZw=

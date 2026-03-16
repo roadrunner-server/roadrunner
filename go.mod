@@ -34,7 +34,7 @@ require (
 	github.com/roadrunner-server/memory/v5 v5.2.9
 	github.com/roadrunner-server/metrics/v5 v5.2.0
 	github.com/roadrunner-server/nats/v5 v5.1.9
-	github.com/roadrunner-server/otel/v5 v5.4.0
+	github.com/roadrunner-server/otel/v5 v5.5.0
 	github.com/roadrunner-server/pool v1.1.3
 	github.com/roadrunner-server/prometheus/v5 v5.2.0
 	github.com/roadrunner-server/proxy_ip_parser/v5 v5.1.9
@@ -195,7 +195,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.42.0 // indirect
 	go.opentelemetry.io/otel/trace v1.42.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.10.0 // indirect
-	go.temporal.io/api v1.62.2 // indirect
+	go.temporal.io/api v1.62.3 // indirect
 	go.temporal.io/sdk v1.41.0 // indirect
 	go.temporal.io/sdk/contrib/opentelemetry v0.7.0 // indirect
 	go.temporal.io/sdk/contrib/tally v0.2.0 // indirect
@@ -217,7 +217,7 @@ require (
 	golang.org/x/tools v0.43.0 // indirect
 	google.golang.org/api v0.271.0 // indirect
 	google.golang.org/genproto v0.0.0-20260316180232-0b37fe3546d5 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20260316172706-e463d84ca32d // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20260316180232-0b37fe3546d5 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260316180232-0b37fe3546d5 // indirect
 	google.golang.org/grpc v1.79.2 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
