@@ -1,0 +1,31 @@
+version: '3'
+
+rpc:
+  listen: tcp://127.0.0.1:6206
+
+server:
+  command: "php php_test_files/grpc/worker-grpc.php"
+  relay: "pipes"
+  relay_timeout: "20s"
+
+grpc:
+  listen: "tcp://127.0.0.1:9192"
+  proto:
+    - "proto/service/service.proto"
+  max_send_msg_size: 50
+  max_recv_msg_size: 50
+  max_concurrent_streams: 10
+  ping_time: 1s
+  timeout: 200s
+  pool:
+    num_workers: 2
+    max_jobs: 0
+    allocate_timeout: 60s
+    destroy_timeout: 60s
+
+otel:
+  resource:
+    service_name: "rr-e2e-grpc-otel"
+    service_version: "1.0.0"
+  insecure: true
+  exporter: stdout
