@@ -1,6 +1,8 @@
 package tests
 
 import (
+	"errors"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -65,27 +67,27 @@ func TestJobsInMemory(t *testing.T) {
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	stopCh := make(chan struct{}, 1)
+	errCh := make(chan error, 1)
 
+	// Background goroutine handles container lifecycle events.
+	// Errors are sent to errCh and checked on the main test goroutine
+	// because testing.T.Fatal/FailNow must not be called from non-test goroutines.
 	wg := &sync.WaitGroup{}
 	wg.Go(func() {
 		for {
 			select {
 			case e := <-ch:
-				assert.Fail(t, "error", e.Error.Error())
 				stopErr := cont.Stop()
-				if stopErr != nil {
-					assert.FailNow(t, "error", stopErr.Error())
-				}
+				errCh <- errors.Join(fmt.Errorf("vertex %s: %w", e.VertexID, e.Error), stopErr)
+				return
 			case <-sig:
-				stopErr := cont.Stop()
-				if stopErr != nil {
-					assert.FailNow(t, "error", stopErr.Error())
+				if stopErr := cont.Stop(); stopErr != nil {
+					errCh <- stopErr
 				}
 				return
 			case <-stopCh:
-				stopErr := cont.Stop()
-				if stopErr != nil {
-					assert.FailNow(t, "error", stopErr.Error())
+				if stopErr := cont.Stop(); stopErr != nil {
+					errCh <- stopErr
 				}
 				return
 			}
@@ -103,6 +105,12 @@ func TestJobsInMemory(t *testing.T) {
 
 	stopCh <- struct{}{}
 	wg.Wait()
+
+	select {
+	case err := <-errCh:
+		t.Fatal(err)
+	default:
+	}
 
 	require.GreaterOrEqual(t, oLogger.FilterMessageSnippet("pipeline was started").Len(), 2)
 	require.GreaterOrEqual(t, oLogger.FilterMessageSnippet("pipeline was stopped").Len(), 2)
@@ -149,27 +157,27 @@ func TestJobsInMemoryWithOtel(t *testing.T) {
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	stopCh := make(chan struct{}, 1)
+	errCh := make(chan error, 1)
 
+	// Background goroutine handles container lifecycle events.
+	// Errors are sent to errCh and checked on the main test goroutine
+	// because testing.T.Fatal/FailNow must not be called from non-test goroutines.
 	wg := &sync.WaitGroup{}
 	wg.Go(func() {
 		for {
 			select {
 			case e := <-ch:
-				assert.Fail(t, "error", e.Error.Error())
 				stopErr := cont.Stop()
-				if stopErr != nil {
-					assert.FailNow(t, "error", stopErr.Error())
-				}
+				errCh <- errors.Join(fmt.Errorf("vertex %s: %w", e.VertexID, e.Error), stopErr)
+				return
 			case <-sig:
-				stopErr := cont.Stop()
-				if stopErr != nil {
-					assert.FailNow(t, "error", stopErr.Error())
+				if stopErr := cont.Stop(); stopErr != nil {
+					errCh <- stopErr
 				}
 				return
 			case <-stopCh:
-				stopErr := cont.Stop()
-				if stopErr != nil {
-					assert.FailNow(t, "error", stopErr.Error())
+				if stopErr := cont.Stop(); stopErr != nil {
+					errCh <- stopErr
 				}
 				return
 			}
@@ -187,6 +195,12 @@ func TestJobsInMemoryWithOtel(t *testing.T) {
 
 	stopCh <- struct{}{}
 	wg.Wait()
+
+	select {
+	case err := <-errCh:
+		t.Fatal(err)
+	default:
+	}
 
 	require.GreaterOrEqual(t, oLogger.FilterMessageSnippet("pipeline was started").Len(), 2)
 	require.GreaterOrEqual(t, oLogger.FilterMessageSnippet("pipeline was stopped").Len(), 2)
