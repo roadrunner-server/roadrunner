@@ -5,7 +5,7 @@ go 1.26.1
 require (
 	github.com/buger/goterm v1.0.4
 	github.com/dustin/go-humanize v1.0.1
-	github.com/fatih/color v1.18.0
+	github.com/fatih/color v1.19.0
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v1.1.4
 	github.com/roadrunner-server/amqp/v5 v5.2.3
