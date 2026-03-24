@@ -45,7 +45,7 @@ jobs:
         run: go test -race -covermode=atomic -coverprofile /tmp/coverage.txt ./...
       - name: Upload Coverage report to CodeCov
         continue-on-error: true
-        uses: codecov/codecov-action@v5.5.2 # https://github.com/codecov/codecov-action
+        uses: codecov/codecov-action@v5.5.3 # https://github.com/codecov/codecov-action
         with:
           files: /tmp/coverage.txt
   build:
