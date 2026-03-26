@@ -16,7 +16,7 @@ require (
 	github.com/roadrunner-server/centrifuge/v5 v5.1.9
 	github.com/roadrunner-server/config/v5 v5.1.9
 	github.com/roadrunner-server/endure/v2 v2.6.2
-	github.com/roadrunner-server/errors v1.4.1
+	github.com/roadrunner-server/errors v1.5.0
 	github.com/roadrunner-server/fileserver/v5 v5.1.9
 	github.com/roadrunner-server/google-pub-sub/v5 v5.1.9
 	github.com/roadrunner-server/goridge/v3 v3.8.3
