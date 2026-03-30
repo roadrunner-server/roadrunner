@@ -72,7 +72,7 @@ require (
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.59.0 // indirect
 	github.com/roadrunner-server/context v1.3.0 // indirect
-	github.com/roadrunner-server/errors v1.4.1 // indirect
+	github.com/roadrunner-server/errors v1.5.0 // indirect
 	github.com/roadrunner-server/events v1.0.1 // indirect
 	github.com/roadrunner-server/pool v1.1.3 // indirect
 	github.com/roadrunner-server/priority_queue v1.0.6 // indirect
@@ -123,9 +123,9 @@ require (
 	golang.org/x/text v0.35.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
 	golang.org/x/tools v0.43.0 // indirect
-	google.golang.org/genproto v0.0.0-20260319201613-d00831a3d3e7 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20260319201613-d00831a3d3e7 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260319201613-d00831a3d3e7 // indirect
+	google.golang.org/genproto v0.0.0-20260330182312-d5a96adf58d8 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20260330182312-d5a96adf58d8 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260330182312-d5a96adf58d8 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
