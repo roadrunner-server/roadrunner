@@ -1,66 +1,32 @@
 package helpers
 
 import (
-	"context"
-	"net"
-	"net/rpc"
+	"net/http"
 	"testing"
 	"time"
 
+	"connectrpc.com/connect"
 	"github.com/google/uuid"
-	jobsProto "github.com/roadrunner-server/api/v4/build/jobs/v1"
-	goridgeRpc "github.com/roadrunner-server/goridge/v3/pkg/rpc"
+	jobsV2 "github.com/roadrunner-server/api-go/v6/jobs/v2"
+	"github.com/roadrunner-server/api-go/v6/jobs/v2/jobsV2connect"
 	"github.com/stretchr/testify/require"
 )
 
-const (
-	push    = "jobs.Push"
-	pause   = "jobs.Pause"
-	destroy = "jobs.Destroy"
-	resume  = "jobs.Resume"
-
-	dialTimeout = 5 * time.Second
-)
-
-// rpcClient dials the given address with a timeout and returns a Goridge RPC
-// client. The client is automatically closed via t.Cleanup when the test ends.
-func rpcClient(t *testing.T, address string) *rpc.Client {
+// jobsClient returns a JobsService connect client bound to the RoadRunner
+// Connect-RPC plane listening on the given tcp address.
+func jobsClient(t *testing.T, address string) jobsV2connect.JobsServiceClient {
 	t.Helper()
 
-	ctx, cancel := context.WithTimeout(context.Background(), dialTimeout)
-	defer cancel()
-
-	conn, err := new(net.Dialer).DialContext(ctx, "tcp", address)
-	require.NoError(t, err)
-
-	client := rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn))
-	t.Cleanup(func() { _ = client.Close() })
-
-	return client
-}
-
-// callPipelines is a generic helper that calls the given RPC method
-// on the specified pipelines.
-func callPipelines(t *testing.T, address, method string, pipes []string) {
-	t.Helper()
-
-	client := rpcClient(t, address)
-
-	pipe := &jobsProto.Pipelines{Pipelines: make([]string, len(pipes))}
-	for i := range pipes {
-		pipe.GetPipelines()[i] = pipes[i]
-	}
-
-	er := &jobsProto.Empty{}
-	err := client.Call(method, pipe, er)
-	require.NoError(t, err)
+	return jobsV2connect.NewJobsServiceClient(http.DefaultClient, "http://"+address)
 }
 
 // ResumePipes resumes the specified pipelines via RPC.
 func ResumePipes(address string, pipes ...string) func(t *testing.T) {
 	return func(t *testing.T) {
 		t.Helper()
-		callPipelines(t, address, resume, pipes)
+
+		_, err := jobsClient(t, address).Resume(t.Context(), connect.NewRequest(&jobsV2.Pipelines{Pipelines: pipes}))
+		require.NoError(t, err)
 	}
 }
 
@@ -68,7 +34,9 @@ func ResumePipes(address string, pipes ...string) func(t *testing.T) {
 func PausePipelines(address string, pipes ...string) func(t *testing.T) {
 	return func(t *testing.T) {
 		t.Helper()
-		callPipelines(t, address, pause, pipes)
+
+		_, err := jobsClient(t, address).Pause(t.Context(), connect.NewRequest(&jobsV2.Pipelines{Pipelines: pipes}))
+		require.NoError(t, err)
 	}
 }
 
@@ -77,14 +45,12 @@ func PushToPipe(pipeline string, autoAck bool, address string) func(t *testing.T
 	return func(t *testing.T) {
 		t.Helper()
 
-		client := rpcClient(t, address)
-
-		req := &jobsProto.PushRequest{Job: &jobsProto.Job{
+		req := &jobsV2.PushRequest{Job: &jobsV2.Job{
 			Job:     "some/php/namespace",
 			Id:      uuid.NewString(),
 			Payload: []byte(`{"hello":"world"}`),
-			Headers: map[string]*jobsProto.HeaderValue{"test": {Value: []string{"test2"}}},
-			Options: &jobsProto.Options{
+			Headers: map[string]*jobsV2.JobHeaderValue{"test": {Values: []string{"test2"}}},
+			Options: &jobsV2.Options{
 				AutoAck:  autoAck,
 				Priority: 1,
 				Pipeline: pipeline,
@@ -92,8 +58,7 @@ func PushToPipe(pipeline string, autoAck bool, address string) func(t *testing.T
 			},
 		}}
 
-		er := &jobsProto.Empty{}
-		err := client.Call(push, req, er)
+		_, err := jobsClient(t, address).Push(t.Context(), connect.NewRequest(req))
 		require.NoError(t, err)
 	}
 }
@@ -103,17 +68,12 @@ func DestroyPipelines(address string, pipes ...string) func(t *testing.T) {
 	return func(t *testing.T) {
 		t.Helper()
 
-		client := rpcClient(t, address)
-
-		pipe := &jobsProto.Pipelines{Pipelines: make([]string, len(pipes))}
-		for i := range pipes {
-			pipe.GetPipelines()[i] = pipes[i]
-		}
+		client := jobsClient(t, address)
+		pipe := &jobsV2.Pipelines{Pipelines: pipes}
 
 		var lastErr error
 		for range 10 {
-			er := &jobsProto.Empty{}
-			lastErr = client.Call(destroy, pipe, er)
+			_, lastErr = client.Destroy(t.Context(), connect.NewRequest(pipe))
 			if lastErr != nil {
 				time.Sleep(time.Second)
 				continue
