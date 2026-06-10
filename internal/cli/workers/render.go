@@ -10,8 +10,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/olekukonko/tablewriter/tw"
-	"github.com/roadrunner-server/api/v4/plugins/v4/jobs"
-	"github.com/roadrunner-server/pool/state/process"
+	informerV1 "github.com/roadrunner-server/api-go/v6/informer/v1"
 )
 
 const (
@@ -20,7 +19,7 @@ const (
 )
 
 // WorkerTable renders table with information about rr server workers.
-func WorkerTable(writer io.Writer, workers []*process.State, err error) *tablewriter.Table {
+func WorkerTable(writer io.Writer, workers []*informerV1.ProcessState, err error) *tablewriter.Table {
 	cfg := tablewriter.Config{
 		Header: tw.CellConfig{
 			Formatting: tw.CellFormatting{
@@ -51,17 +50,17 @@ func WorkerTable(writer io.Writer, workers []*process.State, err error) *tablewr
 	}
 
 	sort.Slice(workers, func(i, j int) bool {
-		return workers[i].Pid < workers[j].Pid
+		return workers[i].GetPid() < workers[j].GetPid()
 	})
 
 	for i := range workers {
 		_ = tw.Append([]string{
-			strconv.Itoa(int(workers[i].Pid)),
-			renderStatus(workers[i].StatusStr),
-			renderJobs(workers[i].NumExecs),
-			humanize.Bytes(workers[i].MemoryUsage),
-			renderCPU(workers[i].CPUPercent),
-			renderAlive(time.Unix(0, workers[i].Created)),
+			strconv.Itoa(int(workers[i].GetPid())),
+			renderStatus(workers[i].GetStatusStr()),
+			renderJobs(workers[i].GetNumExecs()),
+			humanize.Bytes(workers[i].GetMemoryUsage()),
+			renderCPU(float64(workers[i].GetCpuPercent())),
+			renderAlive(time.Unix(0, workers[i].GetCreated())),
 		})
 	}
 
@@ -69,9 +68,9 @@ func WorkerTable(writer io.Writer, workers []*process.State, err error) *tablewr
 }
 
 // ServiceWorkerTable renders table with information about rr server workers.
-func ServiceWorkerTable(writer io.Writer, workers []*process.State) *tablewriter.Table {
+func ServiceWorkerTable(writer io.Writer, workers []*informerV1.ProcessState) *tablewriter.Table {
 	sort.Slice(workers, func(i, j int) bool {
-		return workers[i].Pid < workers[j].Pid
+		return workers[i].GetPid() < workers[j].GetPid()
 	})
 
 	cfg := tablewriter.Config{
@@ -92,10 +91,10 @@ func ServiceWorkerTable(writer io.Writer, workers []*process.State) *tablewriter
 
 	for i := range workers {
 		_ = tw.Append([]string{
-			strconv.Itoa(int(workers[i].Pid)),
-			humanize.Bytes(workers[i].MemoryUsage),
-			renderCPU(workers[i].CPUPercent),
-			workers[i].Command,
+			strconv.Itoa(int(workers[i].GetPid())),
+			humanize.Bytes(workers[i].GetMemoryUsage()),
+			renderCPU(float64(workers[i].GetCpuPercent())),
+			workers[i].GetCommand(),
 		})
 	}
 
@@ -103,7 +102,7 @@ func ServiceWorkerTable(writer io.Writer, workers []*process.State) *tablewriter
 }
 
 // JobsTable renders table with information about rr server jobs.
-func JobsTable(writer io.Writer, jobs []*jobs.State, err error) *tablewriter.Table {
+func JobsTable(writer io.Writer, jobs []*informerV1.JobState, err error) *tablewriter.Table {
 	cfg := tablewriter.Config{
 		Header: tw.CellConfig{
 			Formatting: tw.CellFormatting{
@@ -136,18 +135,18 @@ func JobsTable(writer io.Writer, jobs []*jobs.State, err error) *tablewriter.Tab
 	}
 
 	sort.Slice(jobs, func(i, j int) bool {
-		return jobs[i].Pipeline < jobs[j].Pipeline
+		return jobs[i].GetPipeline() < jobs[j].GetPipeline()
 	})
 
 	for i := range jobs {
 		_ = tw.Append([]string{
-			renderReady(jobs[i].Ready),
-			jobs[i].Pipeline,
-			jobs[i].Driver,
-			jobs[i].Queue,
-			strconv.Itoa(int(jobs[i].Active)),
-			strconv.Itoa(int(jobs[i].Delayed)),
-			strconv.Itoa(int(jobs[i].Reserved)),
+			renderReady(jobs[i].GetReady()),
+			jobs[i].GetPipeline(),
+			jobs[i].GetDriver(),
+			jobs[i].GetQueue(),
+			strconv.Itoa(int(jobs[i].GetActive())),
+			strconv.Itoa(int(jobs[i].GetDelayed())),
+			strconv.Itoa(int(jobs[i].GetReserved())),
 		})
 	}
 

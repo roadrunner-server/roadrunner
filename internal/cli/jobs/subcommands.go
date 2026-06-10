@@ -1,17 +1,17 @@
 package jobs
 
 import (
-	"net/rpc"
+	"context"
 	"os"
 
-	jobsv1 "github.com/roadrunner-server/api/v4/build/jobs/v1"
+	"connectrpc.com/connect"
+	jobsV2 "github.com/roadrunner-server/api-go/v6/jobs/v2"
+	"github.com/roadrunner-server/api-go/v6/jobs/v2/jobsV2connect"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func pause(client *rpc.Client, pause []string, silent *bool) error {
-	pipes := &jobsv1.Pipelines{Pipelines: pause}
-	er := &jobsv1.Empty{}
-
-	err := client.Call(pauseRPC, pipes, er)
+func pause(ctx context.Context, client jobsV2connect.JobsServiceClient, pause []string, silent *bool) error {
+	_, err := client.Pause(ctx, connect.NewRequest(&jobsV2.Pipelines{Pipelines: pause}))
 	if err != nil {
 		return err
 	}
@@ -23,11 +23,8 @@ func pause(client *rpc.Client, pause []string, silent *bool) error {
 	return nil
 }
 
-func resume(client *rpc.Client, resume []string, silent *bool) error {
-	pipes := &jobsv1.Pipelines{Pipelines: resume}
-	er := &jobsv1.Empty{}
-
-	err := client.Call(resumeRPC, pipes, er)
+func resume(ctx context.Context, client jobsV2connect.JobsServiceClient, resume []string, silent *bool) error {
+	_, err := client.Resume(ctx, connect.NewRequest(&jobsV2.Pipelines{Pipelines: resume}))
 	if err != nil {
 		return err
 	}
@@ -39,32 +36,26 @@ func resume(client *rpc.Client, resume []string, silent *bool) error {
 	return nil
 }
 
-func destroy(client *rpc.Client, destroy []string, silent *bool) error {
-	pipes := &jobsv1.Pipelines{Pipelines: destroy}
-	resp := &jobsv1.Pipelines{}
-
-	err := client.Call(destroyRPC, pipes, resp)
+func destroy(ctx context.Context, client jobsV2connect.JobsServiceClient, destroy []string, silent *bool) error {
+	resp, err := client.Destroy(ctx, connect.NewRequest(&jobsV2.Pipelines{Pipelines: destroy}))
 	if err != nil {
 		return err
 	}
 
 	if !*silent {
-		_ = renderPipelines(os.Stdout, resp.GetPipelines()).Render()
+		_ = renderPipelines(os.Stdout, resp.Msg.GetPipelines()).Render()
 	}
 
 	return nil
 }
 
-func list(client *rpc.Client) error {
-	resp := &jobsv1.Pipelines{}
-	er := &jobsv1.Empty{}
-
-	err := client.Call(listRPC, er, resp)
+func list(ctx context.Context, client jobsV2connect.JobsServiceClient) error {
+	resp, err := client.List(ctx, connect.NewRequest(&emptypb.Empty{}))
 	if err != nil {
 		return err
 	}
 
-	_ = renderPipelines(os.Stdout, resp.GetPipelines()).Render()
+	_ = renderPipelines(os.Stdout, resp.Msg.GetPipelines()).Render()
 
 	return nil
 }

@@ -1,20 +1,21 @@
 package workers
 
 import (
+	"context"
 	"fmt"
-	"net/rpc"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/roadrunner-server/api/v4/plugins/v4/jobs"
 	internalRpc "github.com/roadrunner-server/roadrunner/v2025/internal/rpc"
 
+	"connectrpc.com/connect"
 	tm "github.com/buger/goterm"
 	"github.com/fatih/color"
+	informerV1 "github.com/roadrunner-server/api-go/v6/informer/v1"
+	"github.com/roadrunner-server/api-go/v6/informer/v1/informerV1connect"
 	"github.com/roadrunner-server/errors"
-	"github.com/roadrunner-server/informer/v5"
 	"github.com/spf13/cobra"
 )
 
@@ -26,32 +27,33 @@ func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:f
 	cmd := &cobra.Command{
 		Use:   "workers",
 		Short: "Show information about active RoadRunner workers",
-		RunE: func(_ *cobra.Command, args []string) error {
-			const (
-				op           = errors.Op("handle_workers_command")
-				informerList = "informer.List"
-			)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			const op = errors.Op("handle_workers_command")
 
 			if cfgFile == nil {
 				return errors.E(op, errors.Str("no configuration file provided"))
 			}
 
-			client, err := internalRpc.NewClient(*cfgFile, *override)
+			baseURL, httpClient, err := internalRpc.NewClient(*cfgFile, *override)
 			if err != nil {
 				return err
 			}
 
-			defer func() { _ = client.Close() }()
+			client := informerV1connect.NewInformerServiceClient(httpClient, baseURL)
+			ctx := cmd.Context()
 
 			plugins := args        // by default, we expect a plugin list from user
 			if len(plugins) == 0 { // but if nothing was passed - request all informers list
-				if err = client.Call(informerList, true, &plugins); err != nil {
-					return fmt.Errorf("failed to get list of plugins: %w", err)
+				resp, errL := client.ListPlugins(ctx, connect.NewRequest(&informerV1.ListPluginsRequest{}))
+				if errL != nil {
+					return fmt.Errorf("failed to get list of plugins: %w", errL)
 				}
+
+				plugins = resp.Msg.GetPlugins()
 			}
 
 			if !interactive {
-				showWorkers(plugins, client)
+				showWorkers(ctx, plugins, client)
 				return nil
 			}
 
@@ -72,7 +74,7 @@ func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:f
 					tm.MoveCursor(1, 1)
 					tm.Flush()
 
-					showWorkers(plugins, client)
+					showWorkers(ctx, plugins, client)
 				}
 			}
 		},
@@ -89,50 +91,43 @@ func NewCommand(cfgFile *string, override *[]string) *cobra.Command { //nolint:f
 	return cmd
 }
 
-func showWorkers(plugins []string, client *rpc.Client) {
-	const (
-		informerWorkers = "informer.Workers"
-		informerJobs    = "informer.Jobs"
-		// this is only one exception to Render the workers, service plugin has the same workers as other plugins,
-		// but they are RAW processes and needs to be handled in a different way. We don't need a special RPC call, but
-		// need a special render method.
-		servicePluginName = "service"
-	)
+func showWorkers(ctx context.Context, plugins []string, client informerV1connect.InformerServiceClient) {
+	// this is only one exception to Render the workers, service plugin has the same workers as other plugins,
+	// but they are RAW processes and needs to be handled in a different way. We don't need a special RPC call, but
+	// need a special render method.
+	const servicePluginName = "service"
 
 	for _, plugin := range plugins {
-		list := &informer.WorkerList{}
-
-		if err := client.Call(informerWorkers, plugin, &list); err != nil {
+		resp, err := client.GetWorkers(ctx, connect.NewRequest(&informerV1.GetWorkersRequest{Plugin: plugin}))
+		if err != nil {
 			// this is a special case, when we can't get workers list, we need to render an error message
-			_ = WorkerTable(os.Stdout, list.Workers, fmt.Errorf("failed to receive information about %s plugin: %w", plugin, err)).Render()
+			_ = WorkerTable(os.Stdout, nil, fmt.Errorf("failed to receive information about %s plugin: %w", plugin, err)).Render()
 			continue
 		}
 
-		if len(list.Workers) == 0 {
-			continue
-		}
-
-		if plugin == servicePluginName {
-			fmt.Printf("Workers of [%s]:\n", color.HiYellowString(plugin))
-			_ = ServiceWorkerTable(os.Stdout, list.Workers).Render()
-
+		workers := resp.Msg.GetWorkers()
+		if len(workers) == 0 {
 			continue
 		}
 
 		fmt.Printf("Workers of [%s]:\n", color.HiYellowString(plugin))
 
-		_ = WorkerTable(os.Stdout, list.Workers, nil).Render()
-	}
-
-	for _, plugin := range plugins {
-		var jst []*jobs.State
-
-		if err := client.Call(informerJobs, plugin, &jst); err != nil {
-			_ = JobsTable(os.Stdout, jst, fmt.Errorf("failed to receive information about %s plugin: %w", plugin, err)).Render()
+		if plugin == servicePluginName {
+			_ = ServiceWorkerTable(os.Stdout, workers).Render()
 			continue
 		}
 
-		// eq to nil
+		_ = WorkerTable(os.Stdout, workers, nil).Render()
+	}
+
+	for _, plugin := range plugins {
+		resp, err := client.GetJobs(ctx, connect.NewRequest(&informerV1.GetJobsRequest{Plugin: plugin}))
+		if err != nil {
+			_ = JobsTable(os.Stdout, nil, fmt.Errorf("failed to receive information about %s plugin: %w", plugin, err)).Render()
+			continue
+		}
+
+		jst := resp.Msg.GetStates()
 		if len(jst) == 0 {
 			continue
 		}

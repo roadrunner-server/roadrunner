@@ -1,15 +1,16 @@
 package rpc
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net"
-	"net/rpc"
+	"net/http"
 	"os"
 	"strings"
+	"time"
 
-	goridgeRpc "github.com/roadrunner-server/goridge/v3/pkg/rpc"
-	rpcPlugin "github.com/roadrunner-server/rpc/v5"
+	rpcPlugin "github.com/roadrunner-server/rpc/v6"
 	"github.com/spf13/viper"
 )
 
@@ -19,16 +20,16 @@ const (
 	envDefault = ":-"
 )
 
-// NewClient creates client ONLY for internal usage (communication between our application with RR side).
-// Client will be connected to the RPC.
-func NewClient(cfg string, flags []string) (*rpc.Client, error) {
+// NewClient creates a client ONLY for internal usage (communication between our application and the RR side).
+// It returns the base URL of the RoadRunner Connect-RPC plane together with an *http.Client configured for it.
+func NewClient(cfg string, flags []string) (string, *http.Client, error) {
 	v := viper.New()
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	v.SetConfigFile(cfg)
 
 	err := v.ReadInConfig()
 	if err != nil {
-		return nil, err
+		return "", nil, err
 	}
 
 	// override config Flags
@@ -36,7 +37,7 @@ func NewClient(cfg string, flags []string) (*rpc.Client, error) {
 		for _, f := range flags {
 			key, val, errP := parseFlag(f)
 			if errP != nil {
-				return nil, errP
+				return "", nil, errP
 			}
 
 			v.Set(key, val)
@@ -45,39 +46,58 @@ func NewClient(cfg string, flags []string) (*rpc.Client, error) {
 
 	ver := v.Get(versionKey)
 	if ver == nil {
-		return nil, fmt.Errorf("rr configuration file should contain a version e.g: version: 3")
+		return "", nil, fmt.Errorf("rr configuration file should contain a version e.g: version: 3")
 	}
 
 	if _, ok := ver.(string); !ok {
-		return nil, fmt.Errorf("version should be a string: `version: \"3\"`, actual type is: %T", ver)
+		return "", nil, fmt.Errorf("version should be a string: `version: \"3\"`, actual type is: %T", ver)
 	}
 
 	err = handleInclude(ver.(string), v)
 	if err != nil {
-		return nil, fmt.Errorf("failed to handle includes: %w", err)
+		return "", nil, fmt.Errorf("failed to handle includes: %w", err)
 	}
 
 	// rpc.listen might be set by the -o flags or env variable
 	if !v.IsSet(rpcPlugin.PluginName) {
-		return nil, errors.New("rpc service not specified in the configuration. Tip: add\n rpc:\n\r listen: rr_rpc_address")
+		return "", nil, errors.New("rpc service not specified in the configuration. Tip: add\n rpc:\n\r listen: rr_rpc_address")
 	}
 
-	conn, err := Dialer(v.GetString(rpcKey))
-	if err != nil {
-		return nil, err
-	}
-
-	return rpc.NewClientWithCodec(goridgeRpc.NewClientCodec(conn)), nil
+	return HTTPClient(v.GetString(rpcKey))
 }
 
-// Dialer creates rpc socket Dialer.
-func Dialer(addr string) (net.Conn, error) {
-	dsn := strings.Split(addr, "://")
-	if len(dsn) != 2 {
-		return nil, errors.New("invalid socket DSN (tcp://:6001, unix://file.sock)")
+// HTTPClient maps an rpc DSN (tcp://host:port, unix://file.sock) to the base
+// URL of the Connect-RPC plane plus an *http.Client able to reach it. The
+// endpoint is probed eagerly so an unreachable server fails fast, matching the
+// previous eager-dial behavior.
+func HTTPClient(addr string) (string, *http.Client, error) {
+	scheme, rest, ok := strings.Cut(addr, "://")
+	if !ok {
+		return "", nil, errors.New("invalid socket DSN (tcp://:6001, unix://file.sock)")
 	}
 
-	return net.Dial(dsn[0], dsn[1]) //nolint:noctx
+	probe := net.Dialer{Timeout: time.Second * 5}
+	conn, err := probe.DialContext(context.Background(), scheme, rest)
+	if err != nil {
+		return "", nil, err
+	}
+	_ = conn.Close()
+
+	switch scheme {
+	case "tcp":
+		return "http://" + rest, http.DefaultClient, nil
+	case "unix":
+		transport := &http.Transport{
+			DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
+				var d net.Dialer
+				return d.DialContext(ctx, "unix", rest)
+			},
+		}
+
+		return "http://localhost", &http.Client{Transport: transport}, nil
+	default:
+		return "", nil, fmt.Errorf("unsupported rpc DSN scheme: %q", scheme)
+	}
 }
 
 func parseFlag(flag string) (string, string, error) {

@@ -5,15 +5,9 @@ import (
 
 	internalRpc "github.com/roadrunner-server/roadrunner/v2025/internal/rpc"
 
+	"github.com/roadrunner-server/api-go/v6/jobs/v2/jobsV2connect"
 	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
-)
-
-const (
-	listRPC    string = "jobs.List"
-	pauseRPC   string = "jobs.Pause"
-	destroyRPC string = "jobs.Destroy"
-	resumeRPC  string = "jobs.Resume"
 )
 
 // NewCommand creates `jobs` command.
@@ -28,19 +22,20 @@ func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Comman
 	cmd := &cobra.Command{
 		Use:   "jobs",
 		Short: "Jobs pipelines manipulation",
-		RunE: func(_ *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			const op = errors.Op("jobs_command")
 
 			if cfgFile == nil {
 				return errors.E(op, errors.Str("no configuration file provided"))
 			}
 
-			client, err := internalRpc.NewClient(*cfgFile, *override)
+			baseURL, httpClient, err := internalRpc.NewClient(*cfgFile, *override)
 			if err != nil {
 				return err
 			}
 
-			defer func() { _ = client.Close() }()
+			client := jobsV2connect.NewJobsServiceClient(httpClient, baseURL)
+			ctx := cmd.Context()
 
 			switch {
 			case pausePipes:
@@ -49,23 +44,23 @@ func NewCommand(cfgFile *string, override *[]string, silent *bool) *cobra.Comman
 				}
 				split := strings.Split(strings.Trim(args[0], " "), ",")
 
-				return pause(client, split, silent)
+				return pause(ctx, client, split, silent)
 			case destroyPipes:
 				if len(args) == 0 {
 					return errors.Str("incorrect command usage, should be: rr jobs --destroy pipe1,pipe2")
 				}
 				split := strings.Split(strings.Trim(args[0], " "), ",")
 
-				return destroy(client, split, silent)
+				return destroy(ctx, client, split, silent)
 			case resumePipes:
 				if len(args) == 0 {
 					return errors.Str("incorrect command usage, should be: rr jobs --resume pipe1,pipe2")
 				}
 				split := strings.Split(strings.Trim(args[0], " "), ",")
 
-				return resume(client, split, silent)
+				return resume(ctx, client, split, silent)
 			case listPipes:
-				return list(client)
+				return list(ctx, client)
 			default:
 				return errors.Str("command should be in form of: `rr jobs --<destroy/resume/pause> pipe1,pipe2`")
 			}
