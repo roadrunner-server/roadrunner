@@ -36,7 +36,7 @@ require (
 	github.com/roadrunner-server/memory/v6 v6.0.0-beta.4
 	github.com/roadrunner-server/metrics/v6 v6.0.0-beta.4
 	github.com/roadrunner-server/nats/v6 v6.0.0-beta.4
-	github.com/roadrunner-server/otel/v6 v6.0.0-beta.4
+	github.com/roadrunner-server/otel/v6 v6.0.0-beta.4.0.20260531182915-7f0d504c98aa
 	github.com/roadrunner-server/prometheus/v6 v6.0.0-beta.2
 	github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0-beta.3
 	github.com/roadrunner-server/redis/v6 v6.0.0-beta.4

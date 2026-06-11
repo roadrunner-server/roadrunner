@@ -138,8 +138,8 @@ github.com/roadrunner-server/jobs/v6 v6.0.0-beta.7 h1:RNb8fkVk2GO02E3FFyCmYz6WFk
 github.com/roadrunner-server/jobs/v6 v6.0.0-beta.7/go.mod h1:kHTJXgjMe/7t9vJN4imEO3RlB7crnnp59X8TmgiEOqw=
 github.com/roadrunner-server/memory/v6 v6.0.0-beta.4 h1:jeqC7VH/FBuBcXTfOhPU/GafVUMS+OWNE3YkMKCXnQw=
 github.com/roadrunner-server/memory/v6 v6.0.0-beta.4/go.mod h1:T+em0XdZ4hYrlvmfckbFoH4PTSYYhuUp6kOPF5Bqm88=
-github.com/roadrunner-server/otel/v6 v6.0.0-beta.4 h1:M72UoDA9n7PostaOEhcO78acwU8yFwADayZdoQoiVdc=
-github.com/roadrunner-server/otel/v6 v6.0.0-beta.4/go.mod h1:/nroV5E/f1mqUTemQ+GnZac1w6MADSn6WGOIKxCIlVw=
+github.com/roadrunner-server/otel/v6 v6.0.0-beta.4.0.20260531182915-7f0d504c98aa h1:4CdUanaxoirgNSCohbZXisYYAoeynTg4fZfl3nfmzdo=
+github.com/roadrunner-server/otel/v6 v6.0.0-beta.4.0.20260531182915-7f0d504c98aa/go.mod h1:xeatwOA8Mgf8ZN5exIG2RCBh7Sa1JP+9QqZK8uOoAqg=
 github.com/roadrunner-server/pool/v2 v2.0.0-beta.1 h1:jpYXFtdD6QGAdAGPgMxrNi3j1CegCRpb2y+A+3GnXFA=
 github.com/roadrunner-server/pool/v2 v2.0.0-beta.1/go.mod h1:Bo1wT7RtL3eyQHXBUohNhtj/yAmRt6Rq8smuBg5pWkY=
 github.com/roadrunner-server/priority_queue v1.0.6 h1:x8bcMyjWs2Z4ySbO9BTP8Dzy2prCuazJY9HHrVTmUVY=

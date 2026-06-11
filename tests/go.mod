@@ -17,7 +17,7 @@ require (
 	github.com/roadrunner-server/informer/v6 v6.0.0-beta.2
 	github.com/roadrunner-server/jobs/v6 v6.0.0-beta.7
 	github.com/roadrunner-server/memory/v6 v6.0.0-beta.4
-	github.com/roadrunner-server/otel/v6 v6.0.0-beta.4
+	github.com/roadrunner-server/otel/v6 v6.0.0-beta.4.0.20260531182915-7f0d504c98aa
 	github.com/roadrunner-server/prometheus/v6 v6.0.0-beta.2
 	github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0-beta.3
 	github.com/roadrunner-server/resetter/v6 v6.0.0-beta.3
@@ -26,7 +26,6 @@ require (
 	github.com/roadrunner-server/server/v6 v6.0.0-beta.6
 	github.com/roadrunner-server/static/v6 v6.0.0-beta.4
 	github.com/stretchr/testify v1.11.1
-	go.uber.org/zap v1.28.0
 	google.golang.org/grpc v1.81.1
 	google.golang.org/protobuf v1.36.11
 )
@@ -113,6 +112,7 @@ require (
 	go.temporal.io/sdk v1.44.1 // indirect
 	go.temporal.io/sdk/contrib/opentelemetry v0.7.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
+	go.uber.org/zap v1.28.0 // indirect
 	go.uber.org/zap/exp v0.3.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/crypto v0.53.0 // indirect
