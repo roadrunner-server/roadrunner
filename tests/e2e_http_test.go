@@ -30,7 +30,6 @@ import (
 	"github.com/roadrunner-server/static/v6"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 // newHTTPClient returns an HTTP client with a reasonable request timeout for e2e tests.
@@ -49,7 +48,7 @@ func TestHTTPWithMiddleware(t *testing.T) {
 		Path:    "configs/.rr-http-middleware.yaml",
 	}
 
-	l, _ := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -155,7 +154,7 @@ func TestHTTPStaticFile(t *testing.T) {
 		Path:    "configs/.rr-http-static.yaml",
 	}
 
-	l, _ := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -263,7 +262,7 @@ func TestHTTPWithOtel(t *testing.T) {
 		Path:    "configs/.rr-http-otel.yaml",
 	}
 
-	l, _ := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,

@@ -26,7 +26,6 @@ import (
 	"github.com/roadrunner-server/server/v6"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 // TestJobsInMemory verifies the full jobs lifecycle using the in-memory driver:
@@ -39,7 +38,7 @@ func TestJobsInMemory(t *testing.T) {
 		Path:    "configs/.rr-jobs-memory.yaml",
 	}
 
-	l, oLogger := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, oLogger := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -128,7 +127,7 @@ func TestJobsInMemoryWithOtel(t *testing.T) {
 		Path:    "configs/.rr-jobs-memory-otel.yaml",
 	}
 
-	l, oLogger := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, oLogger := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,

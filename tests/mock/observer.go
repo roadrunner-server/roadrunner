@@ -1,46 +1,21 @@
 package mocklogger
 
-// Copyright (c) 2017 Uber Technologies, Inc.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
 import (
+	"context"
+	"log/slog"
+	"maps"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
-
-	"go.uber.org/zap/zapcore"
 )
 
-// LoggedEntry is an encoding-agnostic representation of a log message.
+// LoggedEntry is a representation of a log record captured by the observer.
 type LoggedEntry struct {
-	zapcore.Entry
-	Context []zapcore.Field
-}
-
-// ContextMap returns a map for all fields in Context.
-func (e LoggedEntry) ContextMap() map[string]any {
-	encoder := zapcore.NewMapObjectEncoder()
-	for _, f := range e.Context {
-		f.AddTo(encoder)
-	}
-	return encoder.Fields
+	Level   slog.Level
+	Message string
+	Time    time.Time
+	Attrs   map[string]any
 }
 
 // ObservedLogs is a concurrency-safe, ordered collection of observed logs.
@@ -77,7 +52,8 @@ func (o *ObservedLogs) TakeAll() []LoggedEntry {
 }
 
 // AllUntimed returns a copy of all the observed logs, but overwrites the
-// observed timestamps with time.Time's zero value.
+// observed timestamps with time.Time's zero value. This is useful when making
+// assertions in tests.
 func (o *ObservedLogs) AllUntimed() []LoggedEntry {
 	ret := o.All()
 	for i := range ret {
@@ -87,7 +63,7 @@ func (o *ObservedLogs) AllUntimed() []LoggedEntry {
 }
 
 // FilterLevelExact filters entries to those logged at exactly the given level.
-func (o *ObservedLogs) FilterLevelExact(level zapcore.Level) *ObservedLogs {
+func (o *ObservedLogs) FilterLevelExact(level slog.Level) *ObservedLogs {
 	return o.Filter(func(e LoggedEntry) bool {
 		return e.Level == level
 	})
@@ -100,35 +76,27 @@ func (o *ObservedLogs) FilterMessage(msg string) *ObservedLogs {
 	})
 }
 
-// FilterMessageSnippet filters entries to those that have a message containing
-// the specified snippet.
+// FilterMessageSnippet filters entries to those that have a message containing the specified snippet.
 func (o *ObservedLogs) FilterMessageSnippet(snippet string) *ObservedLogs {
 	return o.Filter(func(e LoggedEntry) bool {
 		return strings.Contains(e.Message, snippet)
 	})
 }
 
-// FilterField filters entries to those that have the specified field.
-func (o *ObservedLogs) FilterField(field zapcore.Field) *ObservedLogs {
+// FilterAttrKey filters entries to those that have the specified attribute key.
+func (o *ObservedLogs) FilterAttrKey(key string) *ObservedLogs {
 	return o.Filter(func(e LoggedEntry) bool {
-		for _, ctxField := range e.Context {
-			if ctxField.Equals(field) {
-				return true
-			}
-		}
-		return false
+		_, ok := e.Attrs[key]
+		return ok
 	})
 }
 
-// FilterFieldKey filters entries to those that have the specified key.
-func (o *ObservedLogs) FilterFieldKey(key string) *ObservedLogs {
+// FilterAttr filters entries to those that have the specified attribute key
+// AND value (compared with reflect.DeepEqual).
+func (o *ObservedLogs) FilterAttr(key string, value any) *ObservedLogs {
 	return o.Filter(func(e LoggedEntry) bool {
-		for _, ctxField := range e.Context {
-			if ctxField.Key == key {
-				return true
-			}
-		}
-		return false
+		v, ok := e.Attrs[key]
+		return ok && reflect.DeepEqual(v, value)
 	})
 }
 
@@ -147,51 +115,64 @@ func (o *ObservedLogs) Filter(keep func(LoggedEntry) bool) *ObservedLogs {
 	return &ObservedLogs{logs: filtered}
 }
 
-func (o *ObservedLogs) add(log LoggedEntry) {
+func (o *ObservedLogs) add(entry LoggedEntry) {
 	o.mu.Lock()
-	o.logs = append(o.logs, log)
+	o.logs = append(o.logs, entry)
 	o.mu.Unlock()
 }
 
-// New creates a new Core that buffers logs in memory (without any encoding).
-func New(enab zapcore.LevelEnabler) (zapcore.Core, *ObservedLogs) {
+// observerHandler is an slog.Handler that captures log records.
+type observerHandler struct {
+	level slog.Level
+	logs  *ObservedLogs
+	attrs map[string]any
+}
+
+// NewObserverHandler creates a new slog.Handler that buffers logs in memory.
+func NewObserverHandler(level slog.Level) (slog.Handler, *ObservedLogs) {
 	ol := &ObservedLogs{}
-	return &contextObserver{
-		LevelEnabler: enab,
-		logs:         ol,
+	return &observerHandler{
+		level: level,
+		logs:  ol,
+		attrs: make(map[string]any),
 	}, ol
 }
 
-type contextObserver struct {
-	zapcore.LevelEnabler
-	logs    *ObservedLogs
-	context []zapcore.Field
+func (h *observerHandler) Enabled(_ context.Context, level slog.Level) bool {
+	return level >= h.level
 }
 
-func (co *contextObserver) Check(ent zapcore.Entry, ce *zapcore.CheckedEntry) *zapcore.CheckedEntry {
-	if co.Enabled(ent.Level) {
-		return ce.AddCore(ent, co)
-	}
-	return ce
-}
+func (h *observerHandler) Handle(_ context.Context, r slog.Record) error {
+	attrs := make(map[string]any, len(h.attrs))
+	maps.Copy(attrs, h.attrs)
+	r.Attrs(func(a slog.Attr) bool {
+		attrs[a.Key] = a.Value.Any()
+		return true
+	})
 
-func (co *contextObserver) With(fields []zapcore.Field) zapcore.Core {
-	return &contextObserver{
-		LevelEnabler: co.LevelEnabler,
-		logs:         co.logs,
-		context:      append(co.context[:len(co.context):len(co.context)], fields...),
-	}
-}
-
-func (co *contextObserver) Write(ent zapcore.Entry, fields []zapcore.Field) error {
-	all := make([]zapcore.Field, 0, len(fields)+len(co.context))
-	all = append(all, co.context...)
-	all = append(all, fields...)
-	co.logs.add(LoggedEntry{Entry: ent, Context: all})
-
+	h.logs.add(LoggedEntry{
+		Level:   r.Level,
+		Message: r.Message,
+		Time:    r.Time,
+		Attrs:   attrs,
+	})
 	return nil
 }
 
-func (co *contextObserver) Sync() error {
-	return nil
+func (h *observerHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	newAttrs := make(map[string]any, len(h.attrs)+len(attrs))
+	maps.Copy(newAttrs, h.attrs)
+	for _, a := range attrs {
+		newAttrs[a.Key] = a.Value.Any()
+	}
+	return &observerHandler{
+		level: h.level,
+		logs:  h.logs,
+		attrs: newAttrs,
+	}
+}
+
+func (h *observerHandler) WithGroup(name string) slog.Handler {
+	_ = name
+	return h
 }

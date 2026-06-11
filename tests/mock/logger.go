@@ -1,73 +1,73 @@
 package mocklogger
 
 import (
+	"log/slog"
+
 	"github.com/roadrunner-server/endure/v2/dep"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 // Logger is the interface that the mock logger provides via Endure DI.
 type Logger interface {
-	NamedLogger(string) *zap.Logger
+	NamedLogger(string) *slog.Logger
 }
 
-// ZapLoggerMock is a mock logger plugin for integration tests.
+// SlogLoggerMock is a mock logger plugin for integration tests.
 // It captures all log entries for later assertion via ObservedLogs.
-type ZapLoggerMock struct {
-	l *zap.Logger
+type SlogLoggerMock struct {
+	l *slog.Logger
 }
 
-// ZapTestLogger creates a new mock logger plugin and returns the plugin
+// SlogTestLogger creates a new mock logger plugin and returns the plugin
 // instance along with an ObservedLogs for asserting on log messages.
-func ZapTestLogger(enab zapcore.LevelEnabler) (*ZapLoggerMock, *ObservedLogs) {
-	core, logs := New(enab)
-	obsLog := zap.New(core, zap.Development())
+func SlogTestLogger(level slog.Level) (*SlogLoggerMock, *ObservedLogs) {
+	handler, logs := NewObserverHandler(level)
+	obsLog := slog.New(handler)
 
-	return &ZapLoggerMock{
+	return &SlogLoggerMock{
 		l: obsLog,
 	}, logs
 }
 
-func (z *ZapLoggerMock) Init() error {
+func (z *SlogLoggerMock) Init() error {
 	return nil
 }
 
-func (z *ZapLoggerMock) Serve() chan error {
+func (z *SlogLoggerMock) Serve() chan error {
 	return make(chan error, 1)
 }
 
-func (z *ZapLoggerMock) Stop() error {
-	return z.l.Sync()
+func (z *SlogLoggerMock) Stop() error {
+	return nil
 }
 
-func (z *ZapLoggerMock) Provides() []*dep.Out {
+func (z *SlogLoggerMock) Provides() []*dep.Out {
 	return []*dep.Out{
 		dep.Bind((*Logger)(nil), z.ProvideLogger),
 	}
 }
 
-func (z *ZapLoggerMock) Weight() uint {
+func (z *SlogLoggerMock) Weight() uint {
 	return 100
 }
 
 // ProvideLogger returns the Log instance for Endure dependency injection.
-func (z *ZapLoggerMock) ProvideLogger() *Log {
+func (z *SlogLoggerMock) ProvideLogger() *Log {
 	return NewLog(z.l)
 }
 
-// Log wraps a zap.Logger to satisfy the Logger interface.
+// Log wraps an slog.Logger to satisfy the Logger interface.
 type Log struct {
-	base *zap.Logger
+	base *slog.Logger
 }
 
-// NewLog creates a new Log from a zap.Logger.
-func NewLog(log *zap.Logger) *Log {
+// NewLog creates a new Log from an slog.Logger.
+func NewLog(log *slog.Logger) *Log {
 	return &Log{
 		base: log,
 	}
 }
 
-// NamedLogger returns the underlying zap.Logger scoped with the given name.
-func (l *Log) NamedLogger(name string) *zap.Logger {
-	return l.base.Named(name)
+// NamedLogger returns the underlying slog.Logger scoped with the given name.
+func (l *Log) NamedLogger(name string) *slog.Logger {
+	return l.base.With(slog.String("plugin", name))
 }

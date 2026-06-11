@@ -23,7 +23,6 @@ import (
 	"github.com/roadrunner-server/server/v6"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -39,7 +38,7 @@ func TestGrpcPing(t *testing.T) {
 		Path:    "configs/.rr-grpc.yaml",
 	}
 
-	l, _ := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -132,7 +131,7 @@ func TestGrpcPingWithOtel(t *testing.T) {
 		Path:    "configs/.rr-grpc-otel.yaml",
 	}
 
-	l, _ := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
