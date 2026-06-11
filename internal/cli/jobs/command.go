@@ -3,7 +3,7 @@ package jobs
 import (
 	"strings"
 
-	internalRpc "github.com/roadrunner-server/roadrunner/v2025/internal/rpc"
+	internalRpc "github.com/roadrunner-server/roadrunner/v3/internal/rpc"
 
 	"github.com/roadrunner-server/api-go/v6/jobs/v2/jobsV2connect"
 	"github.com/roadrunner-server/errors"

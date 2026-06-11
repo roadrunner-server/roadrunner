@@ -6,11 +6,11 @@ import (
 
 	configImpl "github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/endure/v2"
-	"github.com/roadrunner-server/roadrunner/v2025/container"
+	"github.com/roadrunner-server/roadrunner/v3/container"
 )
 
 const (
-	rrModule string = "github.com/roadrunner-server/roadrunner/v2025"
+	rrModule string = "github.com/roadrunner-server/roadrunner/v3"
 )
 
 type RR struct {

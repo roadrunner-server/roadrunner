@@ -1,4 +1,4 @@
-module github.com/roadrunner-server/roadrunner/v2025
+module github.com/roadrunner-server/roadrunner/v3
 
 go 1.26.4
 

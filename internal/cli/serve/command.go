@@ -9,9 +9,9 @@ import (
 	"syscall"
 
 	"github.com/roadrunner-server/endure/v2"
-	"github.com/roadrunner-server/roadrunner/v2025/container"
-	"github.com/roadrunner-server/roadrunner/v2025/internal/meta"
-	"github.com/roadrunner-server/roadrunner/v2025/internal/sdnotify"
+	"github.com/roadrunner-server/roadrunner/v3/container"
+	"github.com/roadrunner-server/roadrunner/v3/internal/meta"
+	"github.com/roadrunner-server/roadrunner/v3/internal/sdnotify"
 
 	configImpl "github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/errors"

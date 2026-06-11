@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	internalRpc "github.com/roadrunner-server/roadrunner/v2025/internal/rpc"
+	internalRpc "github.com/roadrunner-server/roadrunner/v3/internal/rpc"
 
 	"connectrpc.com/connect"
 	tm "github.com/buger/goterm"

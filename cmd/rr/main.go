@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/fatih/color"
-	"github.com/roadrunner-server/roadrunner/v2025/internal/cli"
+	"github.com/roadrunner-server/roadrunner/v3/internal/cli"
 )
 
 // exitFn is a function for an application exiting.

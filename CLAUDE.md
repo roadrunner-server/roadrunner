@@ -121,7 +121,7 @@ RoadRunner communicates with PHP workers via:
 ## Important Notes
 
 - Go version: 1.25+ required (see go.mod)
-- Module path: `github.com/roadrunner-server/roadrunner/v2025`
+- Module path: `github.com/roadrunner-server/roadrunner/v3`
 - Some versions are explicitly excluded in go.mod (e.g., go-redis v9.15.0, viper v1.18.x)
 - Debug mode available via `--debug` flag (starts debug server on :6061)
 - Config overrides supported via `-o dot.notation=value` flag

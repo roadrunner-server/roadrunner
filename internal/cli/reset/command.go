@@ -4,8 +4,8 @@ import (
 	"log"
 	"sync"
 
-	internalRpc "github.com/roadrunner-server/roadrunner/v2025/internal/rpc"
-	"github.com/roadrunner-server/roadrunner/v2025/internal/sdnotify"
+	internalRpc "github.com/roadrunner-server/roadrunner/v3/internal/rpc"
+	"github.com/roadrunner-server/roadrunner/v3/internal/sdnotify"
 
 	"connectrpc.com/connect"
 	resetterV1 "github.com/roadrunner-server/api-go/v6/resetter/v1"
