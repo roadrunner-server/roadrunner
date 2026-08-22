@@ -35,6 +35,7 @@ import (
 	"github.com/roadrunner-server/sqs/v6"
 	"github.com/roadrunner-server/static/v6"
 	"github.com/roadrunner-server/status/v6"
+	rrt "github.com/temporalio/roadrunner-temporal/v6"
 )
 
 // Plugins return active plugins for the endured container. Feel free to add or remove any plugins.
@@ -97,5 +98,7 @@ func Plugins() []any { //nolint:funlen
 		&memcached.Plugin{},
 		&redis.Plugin{},
 		//  ==============
+		// temporal plugin
+		&rrt.Plugin{},
 	}
 }
