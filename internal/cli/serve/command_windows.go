@@ -13,7 +13,7 @@ import (
 	"github.com/roadrunner-server/roadrunner/v2025/internal/meta"
 	"github.com/roadrunner-server/roadrunner/v2025/internal/sdnotify"
 
-	configImpl "github.com/roadrunner-server/config/v5"
+	configImpl "github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/errors"
 	"github.com/spf13/cobra"
 )

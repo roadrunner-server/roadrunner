@@ -2710,57 +2710,6 @@
         }
       }
     },
-    "tcp": {
-      "$id": "https://raw.githubusercontent.com/roadrunner-server/tcp/refs/heads/master/schema.json",
-      "$schema": "https://json-schema.org/draft/2019-09/schema",
-      "description": "All the valid configuration parameters for the TCP plugin for RoadRunner.",
-      "type": "object",
-      "title": "roadrunner-tcp",
-      "additionalProperties": false,
-      "properties": {
-        "servers": {
-          "description": "The TCP servers to allocate.",
-          "type": "object",
-          "minProperties": 1,
-          "additionalProperties": false,
-          "patternProperties": {
-            "^[a-zA-Z0-9._-]+$": {
-              "description": "TCP server",
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "addr": {
-                  "description": "Address to listen on.",
-                  "type": "string",
-                  "minLength": 1,
-                  "examples": [
-                    "127.0.0.1:7778"
-                  ]
-                },
-                "delimiter": {
-                  "description": "Data packet delimiter. Every send should end with either EOF or this delimiter.",
-                  "type": "string",
-                  "default": "\r\n"
-                }
-              },
-              "required": [
-                "addr"
-              ]
-            }
-          }
-        },
-        "pool": {
-          "$ref": "https://raw.githubusercontent.com/roadrunner-server/pool/refs/heads/master/schema.json"
-        },
-        "read_buf_size": {
-          "description": "Size of the chunks that RR reads data in, in MB. If you expect big payloads on a TCP server, you may reduce `read` system calls by using a big buffer.",
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 100,
-          "default": 1
-        }
-      }
-    },
     "kv": {
       "$id": "https://raw.githubusercontent.com/roadrunner-server/kv/refs/heads/master/schema.json",
       "$schema": "https://json-schema.org/draft/2019-09/schema",

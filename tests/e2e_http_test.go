@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 	"testing"
@@ -16,21 +17,20 @@ import (
 
 	mocklogger "tests/mock"
 
-	"github.com/roadrunner-server/config/v5"
+	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/endure/v2"
-	gzipPlugin "github.com/roadrunner-server/gzip/v5"
-	"github.com/roadrunner-server/headers/v5"
-	httpPlugin "github.com/roadrunner-server/http/v5"
-	rrOtel "github.com/roadrunner-server/otel/v5"
-	"github.com/roadrunner-server/prometheus/v5"
-	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v5"
-	rpcPlugin "github.com/roadrunner-server/rpc/v5"
-	"github.com/roadrunner-server/send/v5"
-	"github.com/roadrunner-server/server/v5"
-	"github.com/roadrunner-server/static/v5"
+	gzipPlugin "github.com/roadrunner-server/gzip/v6"
+	"github.com/roadrunner-server/headers/v6"
+	httpPlugin "github.com/roadrunner-server/http/v6"
+	rrOtel "github.com/roadrunner-server/otel/v6"
+	"github.com/roadrunner-server/prometheus/v6"
+	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v6"
+	rpcPlugin "github.com/roadrunner-server/rpc/v6"
+	"github.com/roadrunner-server/send/v6"
+	"github.com/roadrunner-server/server/v6"
+	"github.com/roadrunner-server/static/v6"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 // newHTTPClient returns an HTTP client with a reasonable request timeout for e2e tests.
@@ -49,7 +49,7 @@ func TestHTTPWithMiddleware(t *testing.T) {
 		Path:    "configs/.rr-http-middleware.yaml",
 	}
 
-	l, _ := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, _ := mocklogger.TestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -109,7 +109,10 @@ func TestHTTPWithMiddleware(t *testing.T) {
 	time.Sleep(time.Second)
 
 	t.Run("EchoWithMiddleware", func(t *testing.T) {
-		req, errReq := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://127.0.0.1:18950/?hello=world", nil)
+		// The payload must exceed the gzip middleware minimum size (1400 bytes),
+		// responses below it are served uncompressed.
+		payload := strings.Repeat("world", 500)
+		req, errReq := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://127.0.0.1:18950/?hello="+payload, nil)
 		require.NoError(t, errReq)
 		req.Header.Set("Accept-Encoding", "gzip")
 
@@ -132,7 +135,7 @@ func TestHTTPWithMiddleware(t *testing.T) {
 
 		body, errRead := io.ReadAll(gr)
 		require.NoError(t, errRead)
-		assert.Equal(t, "WORLD", string(body))
+		assert.Equal(t, strings.Repeat("WORLD", 500), string(body))
 	})
 
 	stopCh <- struct{}{}
@@ -155,7 +158,7 @@ func TestHTTPStaticFile(t *testing.T) {
 		Path:    "configs/.rr-http-static.yaml",
 	}
 
-	l, _ := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, _ := mocklogger.TestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -263,7 +266,7 @@ func TestHTTPWithOtel(t *testing.T) {
 		Path:    "configs/.rr-http-otel.yaml",
 	}
 
-	l, _ := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, _ := mocklogger.TestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,

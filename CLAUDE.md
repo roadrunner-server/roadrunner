@@ -83,11 +83,10 @@ RoadRunner uses the **Endure** dependency injection container. All plugins are r
 **Protocol Servers:**
 - `http`: HTTP/1/2/3 and FastCGI server with middleware support
 - `grpc`: gRPC server
-- `tcp`: Raw TCP connection handling
 
 **Jobs/Queue Drivers:**
 - `jobs`: Core jobs plugin
-- `amqp`, `sqs`, `nats`, `kafka`, `beanstalk`: Queue backends
+- `amqp`, `sqs`, `nats`, `kafka`, `beanstalk`, `nsq`: Queue backends
 - `gps`: Google Pub/Sub
 
 **KV Stores:**

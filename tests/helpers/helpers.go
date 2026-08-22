@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	jobsProto "github.com/roadrunner-server/api/v4/build/jobs/v1"
-	goridgeRpc "github.com/roadrunner-server/goridge/v3/pkg/rpc"
+	jobsProto "github.com/roadrunner-server/api-go/v6/jobs/v1"
+	goridgeRpc "github.com/roadrunner-server/goridge/v4/pkg/rpc"
 	"github.com/stretchr/testify/require"
 )
 

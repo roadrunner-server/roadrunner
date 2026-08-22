@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/roadrunner-server/config/v5"
+	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/roadrunner/v2025/internal/rpc"
 	"github.com/stretchr/testify/require"
 

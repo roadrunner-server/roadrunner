@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	configImpl "github.com/roadrunner-server/config/v5"
+	configImpl "github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/endure/v2"
 	"github.com/roadrunner-server/roadrunner/v2025/container"
 )

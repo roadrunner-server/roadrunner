@@ -8,13 +8,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/roadrunner-server/api/v4/plugins/v4/jobs"
+	"github.com/roadrunner-server/api-plugins/v6/jobs"
 	internalRpc "github.com/roadrunner-server/roadrunner/v2025/internal/rpc"
 
 	tm "github.com/buger/goterm"
 	"github.com/fatih/color"
 	"github.com/roadrunner-server/errors"
-	"github.com/roadrunner-server/informer/v5"
+	"github.com/roadrunner-server/informer/v6"
 	"github.com/spf13/cobra"
 )
 

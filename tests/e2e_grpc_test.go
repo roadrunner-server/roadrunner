@@ -15,15 +15,14 @@ import (
 	mocklogger "tests/mock"
 	"tests/proto/service"
 
-	"github.com/roadrunner-server/config/v5"
+	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/endure/v2"
-	grpcPlugin "github.com/roadrunner-server/grpc/v5"
-	rrOtel "github.com/roadrunner-server/otel/v5"
-	rpcPlugin "github.com/roadrunner-server/rpc/v5"
-	"github.com/roadrunner-server/server/v5"
+	grpcPlugin "github.com/roadrunner-server/grpc/v6"
+	rrOtel "github.com/roadrunner-server/otel/v6"
+	rpcPlugin "github.com/roadrunner-server/rpc/v6"
+	"github.com/roadrunner-server/server/v6"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -39,7 +38,7 @@ func TestGrpcPing(t *testing.T) {
 		Path:    "configs/.rr-grpc.yaml",
 	}
 
-	l, _ := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, _ := mocklogger.TestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -132,7 +131,7 @@ func TestGrpcPingWithOtel(t *testing.T) {
 		Path:    "configs/.rr-grpc-otel.yaml",
 	}
 
-	l, _ := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, _ := mocklogger.TestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
