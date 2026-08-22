@@ -10,8 +10,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	"github.com/olekukonko/tablewriter/tw"
-	"github.com/roadrunner-server/api/v4/plugins/v4/jobs"
-	"github.com/roadrunner-server/pool/state/process"
+	"github.com/roadrunner-server/api-plugins/v6/jobs"
+	"github.com/roadrunner-server/pool/v2/state/process"
 )
 
 const (

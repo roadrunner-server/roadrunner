@@ -15,18 +15,17 @@ import (
 
 	"tests/helpers"
 
-	"github.com/roadrunner-server/config/v5"
+	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/endure/v2"
-	"github.com/roadrunner-server/informer/v5"
-	"github.com/roadrunner-server/jobs/v5"
-	"github.com/roadrunner-server/memory/v5"
-	rrOtel "github.com/roadrunner-server/otel/v5"
-	"github.com/roadrunner-server/resetter/v5"
-	rpcPlugin "github.com/roadrunner-server/rpc/v5"
-	"github.com/roadrunner-server/server/v5"
+	"github.com/roadrunner-server/informer/v6"
+	"github.com/roadrunner-server/jobs/v6"
+	"github.com/roadrunner-server/memory/v6"
+	rrOtel "github.com/roadrunner-server/otel/v6"
+	"github.com/roadrunner-server/resetter/v6"
+	rpcPlugin "github.com/roadrunner-server/rpc/v6"
+	"github.com/roadrunner-server/server/v6"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 // TestJobsInMemory verifies the full jobs lifecycle using the in-memory driver:
@@ -39,7 +38,7 @@ func TestJobsInMemory(t *testing.T) {
 		Path:    "configs/.rr-jobs-memory.yaml",
 	}
 
-	l, oLogger := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, oLogger := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -128,7 +127,7 @@ func TestJobsInMemoryWithOtel(t *testing.T) {
 		Path:    "configs/.rr-jobs-memory-otel.yaml",
 	}
 
-	l, oLogger := mocklogger.ZapTestLogger(zap.DebugLevel)
+	l, oLogger := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
