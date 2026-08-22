@@ -38,7 +38,7 @@ func TestJobsInMemory(t *testing.T) {
 		Path:    "configs/.rr-jobs-memory.yaml",
 	}
 
-	l, oLogger := mocklogger.TestLogger(slog.LevelDebug)
+	l, oLogger := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -127,7 +127,7 @@ func TestJobsInMemoryWithOtel(t *testing.T) {
 		Path:    "configs/.rr-jobs-memory-otel.yaml",
 	}
 
-	l, oLogger := mocklogger.TestLogger(slog.LevelDebug)
+	l, oLogger := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,

@@ -1,4 +1,4 @@
-// Package mocklogger provides a mock logger plugin for integration tests.
-// It implements the Endure plugin interface and captures log entries for
-// assertion via ObservedLogs.
+// Package mocklogger provides a slog logger that captures records in memory for
+// assertion. It implements the RoadRunner Logger interface and registers with
+// the endure dependency injection container in place of the logger plugin.
 package mocklogger

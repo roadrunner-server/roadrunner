@@ -49,7 +49,7 @@ func TestHTTPWithMiddleware(t *testing.T) {
 		Path:    "configs/.rr-http-middleware.yaml",
 	}
 
-	l, _ := mocklogger.TestLogger(slog.LevelDebug)
+	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -158,7 +158,7 @@ func TestHTTPStaticFile(t *testing.T) {
 		Path:    "configs/.rr-http-static.yaml",
 	}
 
-	l, _ := mocklogger.TestLogger(slog.LevelDebug)
+	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -266,7 +266,7 @@ func TestHTTPWithOtel(t *testing.T) {
 		Path:    "configs/.rr-http-otel.yaml",
 	}
 
-	l, _ := mocklogger.TestLogger(slog.LevelDebug)
+	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,

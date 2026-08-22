@@ -38,7 +38,7 @@ func TestGrpcPing(t *testing.T) {
 		Path:    "configs/.rr-grpc.yaml",
 	}
 
-	l, _ := mocklogger.TestLogger(slog.LevelDebug)
+	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
@@ -131,7 +131,7 @@ func TestGrpcPingWithOtel(t *testing.T) {
 		Path:    "configs/.rr-grpc-otel.yaml",
 	}
 
-	l, _ := mocklogger.TestLogger(slog.LevelDebug)
+	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
 	err := cont.RegisterAll(
 		cfg,
