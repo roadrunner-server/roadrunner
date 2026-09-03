@@ -24,7 +24,7 @@ require (
 	github.com/roadrunner-server/server/v6 v6.0.0-beta.7
 	github.com/roadrunner-server/static/v6 v6.0.0-beta.5
 	github.com/stretchr/testify v1.12.1
-	google.golang.org/grpc v1.83.1
+	google.golang.org/grpc v1.83.2
 	google.golang.org/protobuf v1.36.12
 )
 
