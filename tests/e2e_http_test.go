@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -25,6 +27,7 @@ import (
 	rrOtel "github.com/roadrunner-server/otel/v6"
 	"github.com/roadrunner-server/prometheus/v6"
 	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v6"
+	"github.com/roadrunner-server/roadrunner/v2025/container"
 	rpcPlugin "github.com/roadrunner-server/rpc/v6"
 	"github.com/roadrunner-server/send/v6"
 	"github.com/roadrunner-server/server/v6"
@@ -144,6 +147,57 @@ func TestHTTPWithMiddleware(t *testing.T) {
 	select {
 	case err := <-errCh:
 		t.Fatal(err)
+	default:
+	}
+}
+
+func TestHTTPWithRateLimiter(t *testing.T) {
+	cont := endure.New(slog.LevelError, endure.GracefulShutdownTimeout(10*time.Second))
+	cfg := &config.Plugin{
+		Version: "2024.1.0",
+		Path:    "configs/.rr-http-rate-limiter.yaml",
+	}
+	require.NoError(t, cont.RegisterAll(append(container.Plugins(), cfg)...))
+	require.NoError(t, cont.Init())
+	t.Cleanup(func() { assert.NoError(t, cont.Stop()) })
+	results, err := cont.Serve()
+	require.NoError(t, err)
+
+	dialer := net.Dialer{Timeout: time.Second}
+	require.Eventually(t, func() bool {
+		conn, err := dialer.DialContext(t.Context(), "tcp", "127.0.0.1:18953")
+		if err != nil {
+			return false
+		}
+		_ = conn.Close()
+		return true
+	}, 10*time.Second, 20*time.Millisecond)
+
+	client := newHTTPClient()
+	t.Cleanup(client.CloseIdleConnections)
+	for _, status := range []int{http.StatusCreated, http.StatusTooManyRequests} {
+		req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://127.0.0.1:18953/?hello=world", nil)
+		require.NoError(t, err)
+		resp, err := client.Do(req)
+		require.NoError(t, err)
+		body, err := io.ReadAll(resp.Body)
+		_ = resp.Body.Close()
+		require.NoError(t, err)
+		require.Equal(t, status, resp.StatusCode)
+		if status == http.StatusCreated {
+			require.Equal(t, "WORLD", string(body))
+		} else {
+			retryAfter, err := strconv.Atoi(resp.Header.Get("Retry-After"))
+			require.NoError(t, err)
+			require.GreaterOrEqual(t, retryAfter, 1)
+			require.LessOrEqual(t, retryAfter, 3600)
+			require.Equal(t, "no-store", resp.Header.Get("Cache-Control"))
+		}
+	}
+
+	select {
+	case result := <-results:
+		require.Nil(t, result, "unexpected plugin error")
 	default:
 	}
 }

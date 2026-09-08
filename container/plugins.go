@@ -26,6 +26,7 @@ import (
 	rrOtel "github.com/roadrunner-server/otel/v6"
 	"github.com/roadrunner-server/prometheus/v6"
 	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v6"
+	ratelimiter "github.com/roadrunner-server/rate-limiter/v6"
 	"github.com/roadrunner-server/redis/v6"
 	"github.com/roadrunner-server/resetter/v6"
 	rpcPlugin "github.com/roadrunner-server/rpc/v6"
@@ -83,6 +84,7 @@ func Plugins() []any { //nolint:funlen
 		&prometheus.Plugin{},
 		&send.Plugin{},
 		&proxyIP.Plugin{},
+		&ratelimiter.Plugin{},
 		&rrOtel.Plugin{},
 		&fileserver.Plugin{},
 		// ===================

@@ -441,6 +441,8 @@ github.com/roadrunner-server/prometheus/v6 v6.0.0-beta.3 h1:65ynsA6ZFPoMyR6I+oSU
 github.com/roadrunner-server/prometheus/v6 v6.0.0-beta.3/go.mod h1:HCI+0AOAX/vfu8TLPNDTQj4eyySQrDpsrSDmtGuQC60=
 github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0-beta.4 h1:C0affQFhSOtRa7VwNrYJ/wRl0C70B2X7Q7npdwJVlsk=
 github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0-beta.4/go.mod h1:mentPPiG4/bPq3u+AajQ/k6V2A0dQC8q5R5pbBX5rJg=
+github.com/roadrunner-server/rate-limiter/v6 v6.0.0-beta.1 h1:uV5t81icrW3yNf+XHoWKS/4bLjtNfqIpyp97e9EPe6w=
+github.com/roadrunner-server/rate-limiter/v6 v6.0.0-beta.1/go.mod h1:0avHut1xoSkjJGlAssxAD1xByzNUv0cWcALM8VdzKXg=
 github.com/roadrunner-server/redis/v6 v6.0.0-beta.5 h1:N7LCyiHzkgBCA+fbJlM8HkBtBQfbCRVPxhVdiSqpM7Y=
 github.com/roadrunner-server/redis/v6 v6.0.0-beta.5/go.mod h1:ZdZNb2efT8f9pTsvHvkwJg4bbghXYkegVODZG+6gEZc=
 github.com/roadrunner-server/resetter/v6 v6.0.0-beta.6 h1:+GSGvSNjsSMvE3AhDj9qQhUSA9+SGaFFDTihO/oko8g=

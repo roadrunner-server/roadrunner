@@ -627,8 +627,93 @@
               "http_metrics",
               "cache",
               "proxy_ip_parser",
-              "otel"
+              "otel",
+              "rate_limiter"
             ]
+          }
+        },
+        "rate_limiter": {
+          "description": "One rate-limit policy per RoadRunner process. Add rate_limiter to http.middleware to apply it.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rate"
+          ],
+          "properties": {
+            "key": {
+              "description": "Key mode: global for all requests, ip for the client IP, or header for a header value.",
+              "type": "string",
+              "enum": [
+                "global",
+                "ip",
+                "header"
+              ],
+              "default": "ip"
+            },
+            "header": {
+              "description": "HTTP header name. Required when key is header. Must be empty for other modes.",
+              "type": "string",
+              "default": ""
+            },
+            "rate": {
+              "description": "Requests per interval. Must be a positive integer.",
+              "type": "integer",
+              "minimum": 1
+            },
+            "interval": {
+              "description": "Interval for the request rate. Must be a positive duration.",
+              "type": "string",
+              "allOf": [
+                {
+                  "$ref": "https://raw.githubusercontent.com/roadrunner-server/roadrunner/refs/heads/master/schemas/config/3.0.schema.json#/definitions/Duration"
+                }
+              ],
+              "pattern": "[1-9]",
+              "default": "1s"
+            },
+            "burst": {
+              "description": "Maximum requests allowed at once per key.",
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "max_entries": {
+              "description": "Maximum stored keys per process.",
+              "type": "integer",
+              "minimum": 1,
+              "default": 10000
+            }
+          },
+          "if": {
+            "properties": {
+              "key": {
+                "const": "header"
+              }
+            },
+            "required": [
+              "key"
+            ]
+          },
+          "then": {
+            "properties": {
+              "header": {
+                "type": "string",
+                "minLength": 1,
+                "not": {
+                  "pattern": "[^!#$%&'*+.^_`|~0-9A-Za-z-]"
+                }
+              }
+            },
+            "required": [
+              "header"
+            ]
+          },
+          "else": {
+            "properties": {
+              "header": {
+                "const": ""
+              }
+            }
           }
         },
         "trusted_subnets": {
