@@ -626,10 +626,43 @@ http:
   # Optional, default: false
   raw_body: false
 
-  # Middlewares for the http plugin, order is important. Allowed values is: "headers", "gzip", "static", "sendfile",  [SINCE 2.6] -> "new_relic", [SINCE 2.6] -> "http_metrics", [SINCE 2.7] -> "cache"
+  # Select HTTP middleware. Requests pass through this list from left to right.
   #
   # Default value: []
   middleware: [ "headers", "gzip" ]
+
+  # One rate-limit policy per RoadRunner process. Add "rate_limiter" to http.middleware to apply it.
+  # Place "proxy_ip_parser" before "rate_limiter" to use forwarded client IPs.
+  rate_limiter:
+    # Key mode: global (all requests), ip (client IP), or header (header value).
+    #
+    # Default: ip
+    key: ip
+
+    # HTTP header name. Required for key: header. Must be empty for other modes.
+    #
+    # Default: ""
+    header: ""
+
+    # Requests per interval. Must be a positive integer.
+    #
+    # Required.
+    rate: 60
+
+    # Interval for the request rate. Must be a positive duration.
+    #
+    # Default: 1s
+    interval: 1m
+
+    # Maximum requests allowed at once per key. Must be a positive integer.
+    #
+    # Default: 1
+    burst: 10
+
+    # Maximum stored keys per process. Must be a positive integer.
+    #
+    # Default: 10000
+    max_entries: 10000
 
   # Allow incoming requests only from the following subnets (https://en.wikipedia.org/wiki/Reserved_IP_addresses).
   #

@@ -40,6 +40,7 @@ require (
 	github.com/roadrunner-server/pool/v2 v2.0.0-beta.1
 	github.com/roadrunner-server/prometheus/v6 v6.0.0-beta.3
 	github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0-beta.4
+	github.com/roadrunner-server/rate-limiter/v6 v6.0.0-beta.1
 	github.com/roadrunner-server/redis/v6 v6.0.0-beta.5
 	github.com/roadrunner-server/resetter/v6 v6.0.0-beta.6
 	github.com/roadrunner-server/rpc/v6 v6.0.0-beta.6
