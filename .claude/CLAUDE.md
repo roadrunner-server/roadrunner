@@ -1,0 +1,64 @@
+# Repository Instructions
+
+## Code Boundaries
+
+- Use Go 1.27 or later, as declared in `go.mod`, `tests/go.mod`, and `go.work`. The workspace contains two modules: the root module and `tests/`. Root `go test ./...` does not include the E2E module.
+- `container.Plugins()` in `container/plugins.go` defines the default plugin set for the Endure container. See Plugins And Endure below.
+- The CLI starts at `cmd/rr/main.go` and `internal/cli/root.go`. Lifecycle changes can affect three separate implementations: `internal/cli/serve/command.go` (non-Windows), `internal/cli/serve/command_windows.go` (Windows), and `lib/roadrunner.go` (embedding API).
+
+## Plugins And Endure
+
+- Every bundled plugin is a separate Go module and GitHub repository in the `roadrunner-server` organization with the import path `github.com/roadrunner-server/<name>/v6`. The Temporal plugin is `github.com/temporalio/roadrunner-temporal/v6`. Root `go.mod` pins every bundled plugin. `tests/go.mod` pins only the plugins that the E2E tests import.
+- Organization repositories: plugins at `https://github.com/roadrunner-server/<name>`, Endure at `https://github.com/roadrunner-server/endure`, error kinds at `https://github.com/roadrunner-server/errors`, cross-plugin contracts at `https://github.com/roadrunner-server/api-plugins`, generated protobuf Go bindings at `https://github.com/roadrunner-server/api-go`, protobuf sources at `https://github.com/roadrunner-server/api` (not a Go module), the worker pool at `https://github.com/roadrunner-server/pool`, example plugins at `https://github.com/roadrunner-server/samples`, the build tool at `https://github.com/roadrunner-server/velox`, and the user documentation at `https://github.com/roadrunner-server/docs`.
+- The build compiles plugins from the module cache. `go.work` covers both modules, so Go resolves each plugin to the highest version that `go.mod` or `tests/go.mod` requires. `go.mod` has no `replace` directives. To read a plugin's source at the pinned version, run `go list -m -f '{{.Dir}}' github.com/roadrunner-server/<name>/v6`. The `master` branch on GitHub can be ahead of that version.
+- To build or test against a local plugin checkout, write a `go.work` file outside this repository with absolute `use` paths for the repository root, `tests`, and the plugin directory. Run Go commands with `GOWORK=<absolute path to that file>`. Never commit a `replace` directive or a `use` entry that points outside this repository.
+- Run a plugin's unit tests with `go test ./...` from the plugin repository root. When the plugin has a `tests/` module, run its E2E tests from that directory, as the plugin CI does. That `tests/go.mod` replaces the plugin module with the parent directory.
+- Endure (`github.com/roadrunner-server/endure/v2`) is the dependency injection container. Its source is at `https://github.com/roadrunner-server/endure/blob/master/`: `container.go` declares the plugin interfaces, `edges.go` validates `Init` and builds the graph, `init.go` calls `Init`, handles disabled plugins, and registers `Provides` values, and `collects.go` runs the `Collects` callbacks. Read them at the pinned version before you change a plugin's `Init` parameters, `Provides`, or `Collects`.
+- Endure resolves dependencies by reflection over the `Init` method parameters. Every registered struct needs an `Init` method. Each `Init` parameter must be an interface type, and `Init` must return exactly one `error` value. A missing `Init`, a struct parameter, or a primitive parameter stops the whole container.
+- These interfaces are optional: `Service` (`Serve() chan error`, `Stop(context.Context) error`), `Named` (`Name() string`), `Provider` (`Provides() []*dep.Out`), `Collector` (`Collects() []*dep.In`), and `Weighted` (`Weight() uint`). Build `dep.Out` with `dep.Bind` and `dep.In` with `dep.Fits`. Both accept only a pointer to an interface type, such as `(*Middleware)(nil)`, and panic on other types. A method named in `Provides` takes no arguments and returns exactly one value.
+- Endure calls `Stop` of every active `Service` plugin concurrently, each with its own context that expires after `grace_period` (`stop.go` in the Endure repository). `grace_period` is a per-plugin timeout, not an overall deadline.
+- When two plugins satisfy the same `Init` parameter, Endure sorts the candidates by `Weight()` in descending order and takes the first. `tests/mock/logger.go` provides the `Logger` interface with weight 100 to replace the real logger plugin in E2E tests.
+- A plugin declares the interfaces it consumes in its own package, usually near the top of `plugin.go`. `http` and `grpc` declare most of them in `api/interfaces.go`. Shared contracts live in `github.com/roadrunner-server/api-plugins/v6`, and plugins import its `jobs`, `kv`, and `status` packages. A plugin that needs a logger declares its own interface with `NamedLogger(name string) *slog.Logger`.
+- An HTTP middleware plugin implements `Middleware(http.Handler) http.Handler` and `Name() string`. Its `Init` parameters are its own dependencies: `Init() error` in the `gzip` plugin, `Init(cfg Configurer, log Logger) error` in the `static` plugin. The `http` plugin collects every middleware plugin through `Collects` and wraps the handler with the names listed in `http.middleware`. The first listed name is the outermost and runs first. For an unknown name, the `http` plugin logs a warning and continues. `https://github.com/roadrunner-server/gzip/blob/master/plugin.go` is a complete example.
+- Other collection points work the same way: `rpc` collects `RPCer` (`RPC() any`, `Name()`), `informer` collects `Informer` (`Workers()`, `Name()`), `resetter` collects `Resetter` (`Reset() error`, `Name()`), and `jobs` and `kv` collect the `Constructor` contracts from `api-plugins`. A plugin that does not implement the matching interface is absent from `rr workers`, `rr reset`, or the RPC surface, and Endure reports nothing.
+- Endure disables a plugin when `Init` returns `errors.E(op, errors.Disabled)` from `github.com/roadrunner-server/errors`, or when no registered plugin satisfies one of its `Init` parameters. It also disables the direct dependents that lose their only provider. A deeper dependent that loses its provider during the `Init` pass makes Endure panic with `reflect: Call with too few input arguments`. Return the `Disabled` error unwrapped: `errors.Is` type-asserts `*errors.Error`, so a `fmt.Errorf` wrapper stops the container. Any other `Init` error stops the container.
+- Most config-gated plugins follow one pattern: `Init` calls `Configurer.Has(key)`, returns an error of kind `errors.Disabled` when the key is absent, then calls `UnmarshalKey(key, &cfg)`. A missing or misspelled section then disables the plugin without an error. Most HTTP middleware with config, such as `headers`, `static`, or `rate_limiter`, reads the nested key `http.<name>` and checks `http` first.
+- Endure logs disabled plugins at debug or warn level, with the Go type such as `*http.Plugin` and not the config name. When a plugin does not start, set `endure.log_level: debug` in the config. Then search the output for `plugin disabled`.
+- Plugin repository layout: `plugin.go` at the root, config in `config.go`, `config/`, or a driver subpackage such as `amqpjobs/config.go`, an optional `schema.json`, and E2E tests in a separate `tests/` module, usually with YAML fixtures in `tests/configs/`.
+- `https://github.com/roadrunner-server/plugin_template` targets Endure v1: `Stop() error` has no context, and `Init` takes `*zap.Logger`, a struct pointer that Endure v2 rejects. Do not copy it. Use a bundled v6 plugin such as `gzip` or `http` as the reference.
+- `container.Plugins()` does not include the config plugin (`github.com/roadrunner-server/config/v6`). `internal/cli/serve` registers it with `RegisterAll(append(container.Plugins(), cfg)...)`, `lib.NewRR` appends it to the caller's plugin list, and most E2E tests register `cfg` plus a short explicit plugin list. `container/config.go` parses the `endure:` config section: `grace_period`, `log_level`, and `print_graph` become container options, and `watchdog_sec` starts the sdnotify watchdog in `internal/cli/serve` only.
+- Bundling a plugin touches `go.mod`, `go.sum`, `container/plugins.go`, `.rr.yaml`, `schemas/config/3.0.schema.json`, `CHANGELOG.md`, a new `tests/configs/.rr-*.yaml` fixture, and an E2E test. Commit `444e4bf4` (rate limiter) is the reference. `tests/go.mod` needs no change when the test reaches the plugin through `container.Plugins()`. The user documentation goes to a separate PR in the docs repository.
+- Root `schemas/config/3.0.schema.json` inlines a hand-maintained section for most plugins under a `$id` that points at the plugin's `schema.json` on `master`. `pool` and `memory` come in through remote `$ref` entries only. The inlined sections drift from the plugin files. A config change for an inlined plugin needs an edit in the root schema and in the plugin's `schema.json` when that file exists. `node test.js` cannot validate an unmerged remote schema change.
+- Bump `go.mod` and `tests/go.mod` together and keep the versions equal for every module that both files require. Recent plugin bumps are hand-written commits. Dependabot Go PRs update both modules through the workspace.
+- Velox (`https://github.com/roadrunner-server/velox`) builds a custom `rr` binary from the plugin list in `velox.toml`. It generates its own `container/plugins.go` and adds `informer` and `resetter` from the upstream `go.mod`. A custom plugin must export a `Plugin` type from its module root.
+
+## Build And Checks
+
+- From the root, `make build` creates `./rr`. It sets `CGO_ENABLED=0` for the build only. Keep CGO enabled for race tests.
+- Root tests: `make test` runs `go test -v -race ./...`. Focus on one package with `go test -v -race ./internal/rpc`. Select one test with `go test -v -race ./internal/rpc -run '^TestNewClient_WithIncludes$'`.
+- Root lint: `golangci-lint run -v --build-tags=race --timeout=10m`, matching `.github/workflows/tests.yml`. Use golangci-lint v2 with `.golangci.yml`.
+- E2E setup matches `.github/workflows/e2e.yml`: Ubuntu, PHP 8.5 with the `sockets` extension, and Composer. Run `composer update --prefer-dist --no-progress --ansi` from `tests/php_test_files/`. The root `composer.json` is only a metapackage; it does not install the worker dependencies.
+- From `tests/`, run `go mod download`, then `go test -timeout 15m -v -race -failfast ./...`. For one E2E test, use `go test -timeout 15m -v -race -run '^TestHTTPWithMiddleware$' .`. Fixtures are in `tests/configs/` and `tests/php_test_files/`.
+- RPC and E2E tests use fixed local TCP ports. Library tests share `os.TempDir() + "/.rr.yaml"`. Avoid simultaneous runs of the same tests.
+
+## Runtime Configuration
+
+- Root `.rr.yaml` is an options reference with placeholder worker commands, not a ready-to-run application config. Config files use `version: '3'`.
+- The CLI changes to the config file's directory unless `-w` is set. With `-w`, it resolves `-c` from that working directory. It loads dotenv after this directory change. `DOTENV_PATH` takes precedence over `--dotenv` (`internal/cli/root.go`).
+- `make debug` refers to the missing `.rr-sample-bench-http.yaml`. Use `dlv debug cmd/rr/main.go -- serve -c <config>` with an existing configuration.
+
+## Public Schemas
+
+- Do not rename or remove `schemas/` or any path inside it. These are public schema URLs; see `schemas/readme.md`.
+- From `schemas/`, run `npm install`, then `node test.js` to validate root `.rr.yaml` against `config/3.0.schema.json`. `npm test` is a placeholder that exits with failure. The validator resolves remote plugin schema references and needs network access.
+
+## Documentation
+
+- User documentation is `https://github.com/roadrunner-server/docs` (GitBook, published at `https://docs.roadrunner.dev`). The `release/v3` branch is ahead of `master` and holds the v6 plugin beta and v3 migration material. The docs repository has its own `CLAUDE.md` with the Markdown conventions and a table of its directories.
+- Plugin authoring guides are in `https://github.com/roadrunner-server/docs/tree/release/v3/customization`: `plugin.md` (includes the v6 import migration table), `middleware.md`, `jobs-driver.md`, `build.md`, `embedding.md`, and `events-bus.md`. Plugin pages are grouped by area: `plugins/`, `http/`, `queues/`, `kv/`, `grpc/`, `lab/`, `workflow/`, and `community-plugins/`.
+- A new page needs an entry in `SUMMARY.md` of the docs repository. Release notes are `releases/v{YYYY}-{major}-{patch}.md` there.
+- A change to a plugin's behavior or configuration needs a separate PR in the docs repository. Update the matching page; one page can cover several plugins.
+
+## Contribution Requirements
+
+- `.github/pull_request_template.md` requires commit sign-off (`git commit -s`) and `CHANGELOG.md` entries for user-facing changes.
