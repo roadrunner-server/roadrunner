@@ -17,8 +17,8 @@ COPY . .
 
 # arguments to pass on each go tool link invocation
 ENV LDFLAGS="-s \
-	-X github.com/roadrunner-server/roadrunner/v2025/internal/meta.version=$APP_VERSION \
-	-X github.com/roadrunner-server/roadrunner/v2025/internal/meta.buildTime=$BUILD_TIME"
+	-X github.com/roadrunner-server/roadrunner/v3/internal/meta.version=$APP_VERSION \
+	-X github.com/roadrunner-server/roadrunner/v3/internal/meta.buildTime=$BUILD_TIME"
 
 # compile and verify binary
 RUN CGO_ENABLED=0 go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr && ./rr -v

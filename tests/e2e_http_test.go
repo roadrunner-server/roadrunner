@@ -25,7 +25,7 @@ import (
 	gzipPlugin "github.com/roadrunner-server/gzip/v6"
 	httpPlugin "github.com/roadrunner-server/http/v6"
 	rrOtel "github.com/roadrunner-server/otel/v6"
-	"github.com/roadrunner-server/roadrunner/v2025/container"
+	"github.com/roadrunner-server/roadrunner/v3/container"
 	rpcPlugin "github.com/roadrunner-server/rpc/v6"
 	"github.com/roadrunner-server/server/v6"
 	"github.com/roadrunner-server/static/v6"

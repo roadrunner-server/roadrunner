@@ -14,13 +14,13 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/roadrunner-server/errors"
-	"github.com/roadrunner-server/roadrunner/v2025/internal/cli/jobs"
-	"github.com/roadrunner-server/roadrunner/v2025/internal/cli/reset"
-	"github.com/roadrunner-server/roadrunner/v2025/internal/cli/serve"
-	"github.com/roadrunner-server/roadrunner/v2025/internal/cli/stop"
-	"github.com/roadrunner-server/roadrunner/v2025/internal/cli/workers"
-	dbg "github.com/roadrunner-server/roadrunner/v2025/internal/debug"
-	"github.com/roadrunner-server/roadrunner/v2025/internal/meta"
+	"github.com/roadrunner-server/roadrunner/v3/internal/cli/jobs"
+	"github.com/roadrunner-server/roadrunner/v3/internal/cli/reset"
+	"github.com/roadrunner-server/roadrunner/v3/internal/cli/serve"
+	"github.com/roadrunner-server/roadrunner/v3/internal/cli/stop"
+	"github.com/roadrunner-server/roadrunner/v3/internal/cli/workers"
+	dbg "github.com/roadrunner-server/roadrunner/v3/internal/debug"
+	"github.com/roadrunner-server/roadrunner/v3/internal/meta"
 	"github.com/spf13/cobra"
 )
 
