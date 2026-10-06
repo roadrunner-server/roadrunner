@@ -19,17 +19,14 @@ import (
 
 	mocklogger "tests/mock"
 
+	compressZstd "github.com/klauspost/compress/zstd"
 	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/endure/v2"
 	gzipPlugin "github.com/roadrunner-server/gzip/v6"
-	"github.com/roadrunner-server/headers/v6"
 	httpPlugin "github.com/roadrunner-server/http/v6"
 	rrOtel "github.com/roadrunner-server/otel/v6"
-	"github.com/roadrunner-server/prometheus/v6"
-	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v6"
 	"github.com/roadrunner-server/roadrunner/v2025/container"
 	rpcPlugin "github.com/roadrunner-server/rpc/v6"
-	"github.com/roadrunner-server/send/v6"
 	"github.com/roadrunner-server/server/v6"
 	"github.com/roadrunner-server/static/v6"
 	"github.com/stretchr/testify/assert"
@@ -41,9 +38,7 @@ func newHTTPClient() *http.Client {
 	return &http.Client{Timeout: 5 * time.Second}
 }
 
-// TestHTTPWithMiddleware verifies that the HTTP plugin works end-to-end with
-// headers, gzip, prometheus metrics, proxy_ip_parser, and sendfile middleware
-// all wired together via the Endure DI container.
+// TestHTTPWithMiddleware checks HTTP middleware in the default container.
 func TestHTTPWithMiddleware(t *testing.T) {
 	cont := endure.New(slog.LevelDebug)
 
@@ -54,18 +49,7 @@ func TestHTTPWithMiddleware(t *testing.T) {
 
 	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
-	err := cont.RegisterAll(
-		cfg,
-		&server.Plugin{},
-		&rpcPlugin.Plugin{},
-		&httpPlugin.Plugin{},
-		&headers.Plugin{},
-		&gzipPlugin.Plugin{},
-		&prometheus.Plugin{},
-		&proxyIP.Plugin{},
-		&send.Plugin{},
-		l,
-	)
+	err := cont.RegisterAll(append(container.Plugins(), cfg, l)...)
 	assert.NoError(t, err)
 
 	err = cont.Init()
@@ -111,35 +95,44 @@ func TestHTTPWithMiddleware(t *testing.T) {
 
 	time.Sleep(time.Second)
 
-	t.Run("EchoWithMiddleware", func(t *testing.T) {
-		// The payload must exceed the gzip middleware minimum size (1400 bytes),
-		// responses below it are served uncompressed.
-		payload := strings.Repeat("world", 500)
-		req, errReq := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://127.0.0.1:18950/?hello="+payload, nil)
-		require.NoError(t, errReq)
-		req.Header.Set("Accept-Encoding", "gzip")
+	for _, tc := range []struct {
+		name     string
+		encoding string
+	}{
+		{name: "Gzip", encoding: "gzip"},
+		{name: "Zstd", encoding: "zstd"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			payload := strings.Repeat("world", 500)
+			req, errReq := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://127.0.0.1:18950/?hello="+payload, nil)
+			require.NoError(t, errReq)
+			req.Header.Set("Accept-Encoding", tc.encoding)
 
-		resp, errDo := newHTTPClient().Do(req)
-		require.NoError(t, errDo)
-		defer func() { _ = resp.Body.Close() }()
+			resp, errDo := newHTTPClient().Do(req)
+			require.NoError(t, errDo)
+			defer func() { _ = resp.Body.Close() }()
 
-		assert.Equal(t, http.StatusCreated, resp.StatusCode)
+			assert.Equal(t, http.StatusCreated, resp.StatusCode)
+			assert.Equal(t, "e2e-roadrunner", resp.Header.Get("X-Test"))
+			require.Equal(t, tc.encoding, resp.Header.Get("Content-Encoding"))
 
-		// Verify the headers middleware added our custom response header.
-		assert.Equal(t, "e2e-roadrunner", resp.Header.Get("X-Test"))
+			var reader io.ReadCloser
+			if tc.encoding == "gzip" {
+				gr, err := compressGzip.NewReader(resp.Body)
+				require.NoError(t, err)
+				reader = gr
+			} else {
+				zr, err := compressZstd.NewReader(resp.Body)
+				require.NoError(t, err)
+				reader = zr.IOReadCloser()
+			}
+			defer func() { _ = reader.Close() }()
 
-		// Verify gzip encoding is applied.
-		assert.Equal(t, "gzip", resp.Header.Get("Content-Encoding"))
-
-		// Decompress and verify the response body.
-		gr, errGz := compressGzip.NewReader(resp.Body)
-		require.NoError(t, errGz)
-		defer func() { _ = gr.Close() }()
-
-		body, errRead := io.ReadAll(gr)
-		require.NoError(t, errRead)
-		assert.Equal(t, strings.Repeat("WORLD", 500), string(body))
-	})
+			body, errRead := io.ReadAll(reader)
+			require.NoError(t, errRead)
+			assert.Equal(t, strings.Repeat("WORLD", 500), string(body))
+		})
+	}
 
 	stopCh <- struct{}{}
 	wg.Wait()

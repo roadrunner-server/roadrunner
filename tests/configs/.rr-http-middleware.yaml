@@ -11,7 +11,7 @@ server:
 http:
   address: 127.0.0.1:18950
   max_request_size: 1024
-  middleware: ["headers", "gzip", "http_metrics", "proxy_ip_parser", "sendfile"]
+  middleware: ["headers", "gzip", "zstd", "http_metrics", "proxy_ip_parser", "sendfile"]
   headers:
     response:
       X-Test: "e2e-roadrunner"

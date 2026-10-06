@@ -25,6 +25,7 @@ import (
 	"github.com/roadrunner-server/nsq/v6"
 	rrOtel "github.com/roadrunner-server/otel/v6"
 	"github.com/roadrunner-server/prometheus/v6"
+	"github.com/roadrunner-server/protoreg/v6"
 	proxyIP "github.com/roadrunner-server/proxy_ip_parser/v6"
 	ratelimiter "github.com/roadrunner-server/rate-limiter/v6"
 	"github.com/roadrunner-server/redis/v6"
@@ -36,6 +37,7 @@ import (
 	"github.com/roadrunner-server/sqs/v6"
 	"github.com/roadrunner-server/static/v6"
 	"github.com/roadrunner-server/status/v6"
+	"github.com/roadrunner-server/zstd/v6"
 	rrt "github.com/temporalio/roadrunner-temporal/v6"
 )
 
@@ -81,6 +83,7 @@ func Plugins() []any { //nolint:funlen
 		&headers.Plugin{},
 		&status.Plugin{},
 		&gzip.Plugin{},
+		&zstd.Plugin{},
 		&prometheus.Plugin{},
 		&send.Plugin{},
 		&proxyIP.Plugin{},
@@ -90,6 +93,7 @@ func Plugins() []any { //nolint:funlen
 		// ===================
 		// gRPC
 		&grpcPlugin.Plugin{},
+		&protoreg.Plugin{},
 		// ===================
 		//  KV + Jobs
 		&memory.Plugin{},

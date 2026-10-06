@@ -627,6 +627,7 @@ http:
   raw_body: false
 
   # Select HTTP middleware. Requests pass through this list from left to right.
+  # Add "zstd" to enable Zstandard response compression.
   #
   # Default value: []
   middleware: [ "headers", "gzip" ]
@@ -1850,6 +1851,14 @@ jobs:
       "test-local-5",
       "test-local-6",
     ]
+
+# Optional descriptor registry for gRPC reflection. Requires the grpc section.
+protoreg:
+  # Required import directories for .proto files.
+  proto_path: ["."]
+
+  # Required file names relative to the import directories.
+  files: ["first.proto", "second.proto"]
 
 grpc:
   # GRPC address to listen

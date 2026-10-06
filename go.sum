@@ -66,6 +66,8 @@ github.com/bsm/ginkgo/v2 v2.12.0 h1:Ny8MWAHyOepLGlLKYmXG4IEkioBysk6GpaRTLC8zwWs=
 github.com/bsm/ginkgo/v2 v2.12.0/go.mod h1:SwYbGRRDovPVboqFv0tPTcG1sN61LM1Z4ARdbAV9g4c=
 github.com/bsm/gomega v1.27.10 h1:yeMWxP2pV2fG3FgAODIY8EiRE3dy0aeFYt4l7wh6yKA=
 github.com/bsm/gomega v1.27.10/go.mod h1:JyEr/xRbxbtgWNi8tIEVPUYZ5Dzef52k01W3YH0H+O0=
+github.com/bufbuild/protocompile v0.14.1 h1:iA73zAf/fyljNjQKwYzUHD6AD4R8KMasmwa/FBatYVw=
+github.com/bufbuild/protocompile v0.14.1/go.mod h1:ppVdAIhbr2H8asPk6k4pY7t9zB1OU5DoEw9xY/FUi1c=
 github.com/buger/goterm v1.0.4 h1:Z9YvGmOih81P0FbVtEYTFF6YsSgxSUKEhf/f9bTMXbY=
 github.com/buger/goterm v1.0.4/go.mod h1:HiFWV3xnkolgrBV3mY8m0X0Pumt4zg4QhbdOzQtB8tE=
 github.com/cactus/go-statsd-client/statsd v0.0.0-20200423205355-cb0885a1018c/go.mod h1:l/bIBLeOl9eX+wxJAzxS4TveKRtAqlyDpHjhkfO0MEI=
@@ -227,6 +229,8 @@ github.com/grpc-ecosystem/grpc-gateway/v2 v2.31.0/go.mod h1:nN7ts3dFXKtCZWc//yfk
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/jessevdk/go-flags v1.4.0/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=
+github.com/jhump/protoreflect v1.18.0 h1:TOz0MSR/0JOZ5kECB/0ufGnC2jdsgZ123Rd/k4Z5/2w=
+github.com/jhump/protoreflect v1.18.0/go.mod h1:ezWcltJIVF4zYdIFM+D/sHV4Oh5LNU08ORzCGfwvTz8=
 github.com/jhump/protoreflect/v2 v2.0.0-beta.2 h1:qZU+rEZUOYTz1Bnhi3xbwn+VxdXkLVeEpAeZzVXLY88=
 github.com/jhump/protoreflect/v2 v2.0.0-beta.2/go.mod h1:4tnOYkB/mq7QTyS3YKtVtNrJv4Psqout8HA1U+hZtgM=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
@@ -321,6 +325,8 @@ github.com/opentracing/opentracing-go v1.1.0/go.mod h1:UkNAQd3GIcIGf0SeVgPpRdFSt
 github.com/pborman/uuid v1.2.1/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtPdI/k=
 github.com/pelletier/go-toml/v2 v2.4.3 h1:GTRvJQutkOSftxIFD5xw9aepkYNuPWmVJpffdDPYVpY=
 github.com/pelletier/go-toml/v2 v2.4.3/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
+github.com/petermattis/goid v0.0.0-20260330135022-df67b199bc81 h1:WDsQxOJDy0N1VRAjXLpi8sCEZRSGarLWQevDxpTBRrM=
+github.com/petermattis/goid v0.0.0-20260330135022-df67b199bc81/go.mod h1:pxMtw7cyUw6B2bRH0ZBANSPg+AoSud1I1iyJHI69jH4=
 github.com/pierrec/lz4/v4 v4.1.33 h1:GjG1TJ1V4IzKP8L96muuuDNpTwd7D+l2ccXrjAbe014=
 github.com/pierrec/lz4/v4 v4.1.33/go.mod h1:7SE9MC2STkNtL4PIwGhjmyVwvILaGI9/COYQNBhKM/c=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
@@ -439,6 +445,8 @@ github.com/roadrunner-server/priority_queue v1.0.6 h1:x8bcMyjWs2Z4ySbO9BTP8Dzy2p
 github.com/roadrunner-server/priority_queue v1.0.6/go.mod h1:aJ2D9s18+OGpFfNgwoIduraaFYBGv4FKElnpzqO+TBI=
 github.com/roadrunner-server/prometheus/v6 v6.0.0-beta.3 h1:65ynsA6ZFPoMyR6I+oSUjjzqdxUv3pJefqccnx8Ayrc=
 github.com/roadrunner-server/prometheus/v6 v6.0.0-beta.3/go.mod h1:HCI+0AOAX/vfu8TLPNDTQj4eyySQrDpsrSDmtGuQC60=
+github.com/roadrunner-server/protoreg/v6 v6.0.0-beta.3 h1:S7+5GbwIHCEEJ0oEge1Z7OWiNyrt2mgT6a6WxJ539wM=
+github.com/roadrunner-server/protoreg/v6 v6.0.0-beta.3/go.mod h1:ggIiOMJ7PtMmriA0Q/UUO4O5qGtp4Omc2Tf7ixW9C2o=
 github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0-beta.4 h1:C0affQFhSOtRa7VwNrYJ/wRl0C70B2X7Q7npdwJVlsk=
 github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0-beta.4/go.mod h1:mentPPiG4/bPq3u+AajQ/k6V2A0dQC8q5R5pbBX5rJg=
 github.com/roadrunner-server/rate-limiter/v6 v6.0.0-beta.1 h1:uV5t81icrW3yNf+XHoWKS/4bLjtNfqIpyp97e9EPe6w=
@@ -463,6 +471,8 @@ github.com/roadrunner-server/status/v6 v6.0.0-beta.8 h1:Ya1/vZnPgRUc4eWDTVihLbpt
 github.com/roadrunner-server/status/v6 v6.0.0-beta.8/go.mod h1:y/TqFnBItSHmhvnvZD+xqX5hTcIRGcQBoVrltizy9Pg=
 github.com/roadrunner-server/tcplisten v1.6.0 h1:xfFeA2PZTmwJdwc/InhJGq200ew/lfTDReF3oa4AyI4=
 github.com/roadrunner-server/tcplisten v1.6.0/go.mod h1:M01BcmhsBiek8WfkiRQwVXwVamgZ5YV36Wa0hz937dA=
+github.com/roadrunner-server/zstd/v6 v6.0.0-20260906130426-2492ed3e00d6 h1:1zCUY/QKLyoJMQxC2AodwUiiRadEoH+190Dt6xkm9o4=
+github.com/roadrunner-server/zstd/v6 v6.0.0-20260906130426-2492ed3e00d6/go.mod h1:iX/N7TZC9KUs/kkZjbXp3/+QO1yma1TikzEjK6ub0wA=
 github.com/robfig/cron v1.2.0 h1:ZjScXvvxeQ63Dbyxy76Fj3AT3Ut0aKsyd2/tl3DTMuQ=
 github.com/robfig/cron v1.2.0/go.mod h1:JGuDeoQd7Z6yL4zQhZ3OPEVHB7fL6Ka6skscFHfmt2k=
 github.com/rogpeppe/fastuuid v1.2.0/go.mod h1:jVj6XXZzXRy/MSR5jhDC/2q6DgLz+nrA6LYCDYWNEvQ=
@@ -540,6 +550,7 @@ github.com/yuin/goldmark v1.4.1/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1
 github.com/yusufpapurcu/wmi v1.2.4 h1:zFUKzehAFReQwLys1b/iSMl+JQGSCSjtVqQn9bBrPo0=
 github.com/yusufpapurcu/wmi v1.2.4/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
 github.com/zeebo/assert v1.3.1 h1:vukIABvugfNMZMQO1ABsyQDJDTVQbn+LWSMy1ol1h6A=
+github.com/zeebo/assert v1.3.1/go.mod h1:Pq9JiuJQpG8JLJdtkwrJESF0Foym2/D9XMU5ciN/wJ0=
 github.com/zeebo/blake3 v0.2.4 h1:KYQPkhpRtcqh0ssGYcKLG1JYvddkEA8QwCM/yBqhaZI=
 github.com/zeebo/blake3 v0.2.4/go.mod h1:7eeQ6d2iXWRGF6npfaxl2CU+xy2Fjo2gxeyZGCRUjcE=
 github.com/zeebo/pcg v1.0.1 h1:lyqfGeWiv4ahac6ttHs+I5hwtH/+1mrhlCtVNQM2kHo=

@@ -369,8 +369,6 @@ github.com/roadrunner-server/gzip/v6 v6.0.0-beta.3 h1:EVbCKgT/LWApcpOFUcicyJGUc5
 github.com/roadrunner-server/gzip/v6 v6.0.0-beta.3/go.mod h1:FrleZoJdYCqK7uzWQUo1G8V7J7Q9pTGVycVc/8jj4OU=
 github.com/roadrunner-server/headers/v5 v5.2.0 h1:Q8SYxr+zhj5VskDPKq3JYyZA3XqcGxtYcb5uh4FytFY=
 github.com/roadrunner-server/headers/v5 v5.2.0/go.mod h1:BEeI6pI0CyVjE8gG6H5LVPRxZ2kDtMFoHupFE2SG2wU=
-github.com/roadrunner-server/headers/v6 v6.0.0-beta.3 h1:ihddIrgEPw/jSDZLRdeTLov/hxBizYWD7FatiU+jpC4=
-github.com/roadrunner-server/headers/v6 v6.0.0-beta.3/go.mod h1:nrPl9JEChItblbOoQdbQEBCDwUAJHkFDzMR7YUwyViY=
 github.com/roadrunner-server/http/v5 v5.3.0 h1:gsNdOQffWF3/hL7T+OTQat36SvCl5ZUjuotz41rONQ4=
 github.com/roadrunner-server/http/v5 v5.3.0/go.mod h1:JCM8jmgRtaPMFiKPcriOxNQ98ha821uzN5BQ5XJzc1I=
 github.com/roadrunner-server/http/v6 v6.0.0-beta.10 h1:Ic9RVlZc6HA1ixujr7WRoG/TvnYUlv/r+CKZOgIBl70=
@@ -413,12 +411,8 @@ github.com/roadrunner-server/priority_queue v1.0.6 h1:x8bcMyjWs2Z4ySbO9BTP8Dzy2p
 github.com/roadrunner-server/priority_queue v1.0.6/go.mod h1:aJ2D9s18+OGpFfNgwoIduraaFYBGv4FKElnpzqO+TBI=
 github.com/roadrunner-server/prometheus/v5 v5.2.0 h1:1KOacYOJL6ZN4vCf+SZIREFIqaYZ8WgWOiZifS88gns=
 github.com/roadrunner-server/prometheus/v5 v5.2.0/go.mod h1:tzN4CZataiCzNyY9V5E0leLqvDmcWySUVnSxcwxFIrc=
-github.com/roadrunner-server/prometheus/v6 v6.0.0-beta.3 h1:65ynsA6ZFPoMyR6I+oSUjjzqdxUv3pJefqccnx8Ayrc=
-github.com/roadrunner-server/prometheus/v6 v6.0.0-beta.3/go.mod h1:HCI+0AOAX/vfu8TLPNDTQj4eyySQrDpsrSDmtGuQC60=
 github.com/roadrunner-server/proxy_ip_parser/v5 v5.1.9 h1:GoEgKJ97jozcJRecBMa5orMDWByaCwXUqg2zSUXl2M8=
 github.com/roadrunner-server/proxy_ip_parser/v5 v5.1.9/go.mod h1:DWaHaqpitzUbDVfK1M5ojC7bqUeOn6CAa5oxntU00po=
-github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0-beta.4 h1:C0affQFhSOtRa7VwNrYJ/wRl0C70B2X7Q7npdwJVlsk=
-github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0-beta.4/go.mod h1:mentPPiG4/bPq3u+AajQ/k6V2A0dQC8q5R5pbBX5rJg=
 github.com/roadrunner-server/redis/v5 v5.1.10 h1:DLjkYAqmX/08+X8NLI8oAsAE7/uDs1Kzpk5bOde5V6M=
 github.com/roadrunner-server/redis/v5 v5.1.10/go.mod h1:IhGVdrKOVjf3ag3Dwprn/y+88k6OyvVxI3SLhRq/o0s=
 github.com/roadrunner-server/resetter/v5 v5.1.9 h1:rH1nxkgvItbMEp1/JFZqcijOkkav4zo0E4wcVXBcXa8=
@@ -433,8 +427,6 @@ github.com/roadrunner-server/rpc/v6 v6.0.0-beta.6 h1:AMo1Xl2ihZnRwU0L6s/epcrc2ay
 github.com/roadrunner-server/rpc/v6 v6.0.0-beta.6/go.mod h1:VhI4zwjYgSSJd2dKS7saM+LdRc9ycPv6NAmKHKSFySQ=
 github.com/roadrunner-server/send/v5 v5.2.0 h1:nQMaO7u9z+wYD1bInF/6ctImEaCJZFHscd3cjC1zNOc=
 github.com/roadrunner-server/send/v5 v5.2.0/go.mod h1:HmiJmpB6Lsd3jHLCy8pYG5J6E9R7IHURFr8icokNkog=
-github.com/roadrunner-server/send/v6 v6.0.0-beta.5 h1:XGZJ3StwJk09uZ0DkBGo1ocdZr1RsPqdB3uGwVDznyg=
-github.com/roadrunner-server/send/v6 v6.0.0-beta.5/go.mod h1:teZJojqFRjJPEM2Ls5K8GDAnhBC4NiVitcMLh4yxXTY=
 github.com/roadrunner-server/server/v5 v5.2.10 h1:IshR3mlXJ/fh+zY17tN3Q7GgaanMzA7H9wwEz4PxCSA=
 github.com/roadrunner-server/server/v5 v5.2.10/go.mod h1:oxXhRo2EDykCk8ujhdjyJCb2rPpoTt8AVy46RHRfeeo=
 github.com/roadrunner-server/server/v6 v6.0.0-beta.7 h1:EiRKdWFPOYLoYy53xoLbyU8854FQdmyTRSdtHRWoK2s=

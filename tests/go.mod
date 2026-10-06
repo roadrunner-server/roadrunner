@@ -4,24 +4,21 @@ go 1.27
 
 require (
 	github.com/google/uuid v1.6.0
+	github.com/klauspost/compress v1.20.1
 	github.com/roadrunner-server/api-go/v6 v6.0.0-beta.15
 	github.com/roadrunner-server/config/v6 v6.0.0-beta.4
 	github.com/roadrunner-server/endure/v2 v2.6.2
 	github.com/roadrunner-server/goridge/v4 v4.0.0-beta.3
 	github.com/roadrunner-server/grpc/v6 v6.0.0-beta.6
 	github.com/roadrunner-server/gzip/v6 v6.0.0-beta.3
-	github.com/roadrunner-server/headers/v6 v6.0.0-beta.3
 	github.com/roadrunner-server/http/v6 v6.0.0-beta.10
 	github.com/roadrunner-server/informer/v6 v6.0.0-beta.5
 	github.com/roadrunner-server/jobs/v6 v6.0.0-beta.10
 	github.com/roadrunner-server/memory/v6 v6.0.0-beta.5
 	github.com/roadrunner-server/otel/v6 v6.0.0-beta.5
-	github.com/roadrunner-server/prometheus/v6 v6.0.0-beta.3
-	github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0-beta.4
 	github.com/roadrunner-server/resetter/v6 v6.0.0-beta.6
 	github.com/roadrunner-server/roadrunner/v2025 v2025.1.15
 	github.com/roadrunner-server/rpc/v6 v6.0.0-beta.6
-	github.com/roadrunner-server/send/v6 v6.0.0-beta.5
 	github.com/roadrunner-server/server/v6 v6.0.0-beta.7
 	github.com/roadrunner-server/static/v6 v6.0.0-beta.5
 	github.com/stretchr/testify v1.12.1
@@ -82,7 +79,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.31.0 // indirect
 	github.com/jhump/protoreflect/v2 v2.0.0-beta.2 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
-	github.com/klauspost/compress v1.20.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.4.0 // indirect
 	github.com/libdns/libdns v1.1.1 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect

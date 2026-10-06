@@ -467,6 +467,38 @@
         }
       }
     },
+    "protoreg": {
+      "$id": "https://raw.githubusercontent.com/roadrunner-server/protoreg/refs/heads/master/schema.json",
+      "$schema": "https://json-schema.org/draft/2019-09/schema",
+      "description": "Descriptor registry for gRPC reflection. Requires the grpc section.",
+      "type": "object",
+      "title": "roadrunner-protoreg",
+      "additionalProperties": false,
+      "required": [
+        "proto_path",
+        "files"
+      ],
+      "properties": {
+        "proto_path": {
+          "description": "Import directories for .proto files.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "files": {
+          "description": "File names relative to the import directories.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
     "grpc": {
       "$id": "https://raw.githubusercontent.com/roadrunner-server/grpc/refs/heads/master/schema.json",
       "$schema": "https://json-schema.org/draft/2019-09/schema",
@@ -622,6 +654,7 @@
             "enum": [
               "headers",
               "gzip",
+              "zstd",
               "static",
               "sendfile",
               "http_metrics",

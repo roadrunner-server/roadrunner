@@ -19,12 +19,19 @@ import (
 	"github.com/roadrunner-server/endure/v2"
 	grpcPlugin "github.com/roadrunner-server/grpc/v6"
 	rrOtel "github.com/roadrunner-server/otel/v6"
+	"github.com/roadrunner-server/roadrunner/v2025/container"
 	rpcPlugin "github.com/roadrunner-server/rpc/v6"
 	"github.com/roadrunner-server/server/v6"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	reflection "google.golang.org/grpc/reflection/grpc_reflection_v1"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protodesc"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/dynamicpb"
 )
 
 // TestGrpcPing verifies the full gRPC lifecycle: container startup, PHP worker
@@ -40,13 +47,7 @@ func TestGrpcPing(t *testing.T) {
 
 	l, _ := mocklogger.SlogTestLogger(slog.LevelDebug)
 
-	err := cont.RegisterAll(
-		cfg,
-		&grpcPlugin.Plugin{},
-		&rpcPlugin.Plugin{},
-		&server.Plugin{},
-		l,
-	)
+	err := cont.RegisterAll(append(container.Plugins(), cfg, l)...)
 	assert.NoError(t, err)
 
 	err = cont.Init()
@@ -108,6 +109,42 @@ func TestGrpcPing(t *testing.T) {
 		resp, errPing := client.Ping(ctx, &service.Message{Msg: "hello"})
 		require.NoError(t, errPing)
 		require.Equal(t, "HELLO", resp.GetMsg())
+	})
+
+	t.Run("EchoFromReflection", func(t *testing.T) {
+		conn, err := grpc.NewClient("127.0.0.1:9191", grpc.WithTransportCredentials(insecure.NewCredentials()))
+		require.NoError(t, err)
+		defer func() { _ = conn.Close() }()
+
+		ctx, cancel := context.WithTimeout(t.Context(), 5*time.Second)
+		defer cancel()
+		stream, err := reflection.NewServerReflectionClient(conn).ServerReflectionInfo(ctx)
+		require.NoError(t, err)
+		// This path identifies the configured file in the Protoreg registry.
+		require.NoError(t, stream.Send(&reflection.ServerReflectionRequest{
+			MessageRequest: &reflection.ServerReflectionRequest_FileByFilename{FileByFilename: "service/service.proto"},
+		}))
+		response, err := stream.Recv()
+		require.NoError(t, err)
+		require.Nil(t, response.GetErrorResponse())
+		files := response.GetFileDescriptorResponse().GetFileDescriptorProto()
+		require.Len(t, files, 1)
+
+		file := &descriptorpb.FileDescriptorProto{}
+		require.NoError(t, proto.Unmarshal(files[0], file))
+		descriptor, err := protodesc.NewFile(file, nil)
+		require.NoError(t, err)
+		echo := descriptor.Services().ByName("Echo")
+		require.NotNil(t, echo)
+		ping := echo.Methods().ByName("Ping")
+		require.NotNil(t, ping)
+		request := dynamicpb.NewMessage(ping.Input())
+		msg := request.Descriptor().Fields().ByName("msg")
+		require.NotNil(t, msg)
+		request.Set(msg, protoreflect.ValueOfString("hello"))
+		reply := dynamicpb.NewMessage(ping.Output())
+		require.NoError(t, conn.Invoke(ctx, "/service.Echo/Ping", request, reply))
+		require.Equal(t, "HELLO", reply.Get(msg).String())
 	})
 
 	stopCh <- struct{}{}
