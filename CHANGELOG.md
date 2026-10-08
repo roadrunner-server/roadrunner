@@ -67,6 +67,8 @@ RoadRunner v3 uses v6 Go plugins. See [Upgrade from v2025 to v3](https://github.
 ### 📦 `kafka` driver
 
 - ✨ **Direct partition consumption**: Apply `consume_partitions` to select topic partitions and starting offsets. See [Kafka](https://github.com/roadrunner-server/docs/blob/release/v3/queues/kafka.md), [PR](https://github.com/roadrunner-server/kafka/pull/580).
+- 🐛 **Requeue isolation**: A requeued job, or a job nacked with redelivery, goes back to the RoadRunner priority queue. The driver no longer produces a copy to the source topic, so other consumer groups do not receive the retry. The driver honors the requested delay. A burst of retries no longer drops jobs. A retry waits in memory: it is lost after a stop, restart, or crash once a later offset of its partition is committed. See [Kafka](https://github.com/roadrunner-server/docs/blob/release/v3/queues/kafka.md), [BUG](https://github.com/roadrunner-server/roadrunner/issues/2413).
+- 🐛 **Consumer recovery**: When the consumer gets a non-retriable Kafka error, for example when the broker denies access to the topic or removes the consumer from the group, the `jobs` plugin restarts the pipeline. The old consumer closes, and a pipeline in `jobs.consume` continues with a new consumer. If the restart of a configured pipeline fails, RoadRunner stops with an error. See [Kafka](https://github.com/roadrunner-server/docs/blob/release/v3/queues/kafka.md), [BUG](https://github.com/roadrunner-server/roadrunner/issues/2391).
 
 ### 📦 `sqs` driver
 
