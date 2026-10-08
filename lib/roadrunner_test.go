@@ -7,7 +7,7 @@ import (
 
 	"github.com/roadrunner-server/informer/v6"
 	"github.com/roadrunner-server/resetter/v6"
-	"github.com/roadrunner-server/roadrunner/v2025/lib"
+	"github.com/roadrunner-server/roadrunner/v3/lib"
 	"github.com/stretchr/testify/assert"
 )
 

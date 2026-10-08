@@ -1,4 +1,4 @@
-module github.com/roadrunner-server/roadrunner/v2025
+module github.com/roadrunner-server/roadrunner/v3
 
 go 1.27
 
@@ -39,6 +39,7 @@ require (
 	github.com/roadrunner-server/otel/v6 v6.0.0-beta.5
 	github.com/roadrunner-server/pool/v2 v2.0.0-beta.1
 	github.com/roadrunner-server/prometheus/v6 v6.0.0-beta.3
+	github.com/roadrunner-server/protoreg/v6 v6.0.0-beta.3
 	github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0-beta.4
 	github.com/roadrunner-server/rate-limiter/v6 v6.0.0-beta.1
 	github.com/roadrunner-server/redis/v6 v6.0.0-beta.5
@@ -50,6 +51,7 @@ require (
 	github.com/roadrunner-server/sqs/v6 v6.0.0-beta.6
 	github.com/roadrunner-server/static/v6 v6.0.0-beta.5
 	github.com/roadrunner-server/status/v6 v6.0.0-beta.8
+	github.com/roadrunner-server/zstd/v6 v6.0.0-20260906130426-2492ed3e00d6
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.12.1
@@ -108,6 +110,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.15 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/mock v1.7.0-rc.1 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/google/s2a-go v0.1.11 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -116,6 +119,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.4 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.31.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/jhump/protoreflect v1.18.0 // indirect
 	github.com/jhump/protoreflect/v2 v2.0.0-beta.2 // indirect
 	github.com/klauspost/compress v1.20.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.4.0 // indirect
@@ -140,6 +144,7 @@ require (
 	github.com/olekukonko/ll v0.1.8 // indirect
 	github.com/opencontainers/runtime-spec v1.3.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
+	github.com/petermattis/goid v0.0.0-20260330135022-df67b199bc81 // indirect
 	github.com/pierrec/lz4/v4 v4.1.33 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/power-devops/perfstat v0.0.0-20260916203055-22a1a467d9f0 // indirect

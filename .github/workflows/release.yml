@@ -79,7 +79,7 @@ jobs:
           GPG_PASS: ${{secrets.GPG_PASS}}
           CGO_ENABLED: 0
           LDFLAGS: >-
-            -s -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.version=${{ steps.values.outputs.version }} -X github.com/roadrunner-server/roadrunner/v2025/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
+            -s -X github.com/roadrunner-server/roadrunner/v3/internal/meta.version=${{ steps.values.outputs.version }} -X github.com/roadrunner-server/roadrunner/v3/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
         run: |
           go build -trimpath -ldflags "$LDFLAGS" -o "./${{ steps.values.outputs.binary-name }}" ./cmd/rr
           stat "./${{ steps.values.outputs.binary-name }}"
@@ -177,10 +177,10 @@ jobs:
           tags: |
             spiralscout/roadrunner:${{ steps.values.outputs.version_full}}
             spiralscout/roadrunner:latest
-            spiralscout/roadrunner:2025
-            spiralscout/roadrunner:2025.1
+            spiralscout/roadrunner:3
+            spiralscout/roadrunner:3.0
 
             ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_full}}
             ghcr.io/roadrunner-server/roadrunner:latest
-            ghcr.io/roadrunner-server/roadrunner:2025
-            ghcr.io/roadrunner-server/roadrunner:2025.1
+            ghcr.io/roadrunner-server/roadrunner:3
+            ghcr.io/roadrunner-server/roadrunner:3.0
