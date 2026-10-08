@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "go",
+  "initial-version": "3.0.0",
+  "include-component-in-tag": false,
+  "bootstrap-sha": "321b817fab1056e404533ca1ddd200e77d1525fd",
+  "signoff": "RoadRunner Bot <bot@roadrunner.dev>",
+  "pull-request-header": "Release pull request. Merge it to create the release and start the artifact builds.",
+  "pull-request-footer": "See the README for the release process.",
+  "packages": {
+    ".": {}
+  }
+}
