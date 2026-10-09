@@ -8,7 +8,7 @@ require (
 	github.com/roadrunner-server/api-go/v6 v6.0.0-beta.15
 	github.com/roadrunner-server/config/v6 v6.0.0
 	github.com/roadrunner-server/endure/v2 v2.6.2
-	github.com/roadrunner-server/goridge/v4 v4.0.0-beta.3
+	github.com/roadrunner-server/goridge/v4 v4.0.0
 	github.com/roadrunner-server/grpc/v6 v6.0.0
 	github.com/roadrunner-server/gzip/v6 v6.0.0
 	github.com/roadrunner-server/http/v6 v6.0.0
@@ -134,7 +134,7 @@ require (
 	github.com/roadrunner-server/fileserver/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/google-pub-sub/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/headers/v6 v6.0.0 // indirect
-	github.com/roadrunner-server/kafka/v6 v6.0.0-beta.7 // indirect
+	github.com/roadrunner-server/kafka/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/kv/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/lock/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/logger/v6 v6.0.0 // indirect
@@ -142,7 +142,7 @@ require (
 	github.com/roadrunner-server/metrics/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/nats/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/nsq/v6 v6.0.0 // indirect
-	github.com/roadrunner-server/pool/v2 v2.0.0-beta.1 // indirect
+	github.com/roadrunner-server/pool/v2 v2.0.0 // indirect
 	github.com/roadrunner-server/priority_queue v1.1.0 // indirect
 	github.com/roadrunner-server/prometheus/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/protoreg/v6 v6.0.0 // indirect
