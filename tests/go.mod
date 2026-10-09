@@ -13,7 +13,7 @@ require (
 	github.com/roadrunner-server/gzip/v6 v6.0.0
 	github.com/roadrunner-server/http/v6 v6.0.0
 	github.com/roadrunner-server/informer/v6 v6.0.0
-	github.com/roadrunner-server/jobs/v6 v6.0.0
+	github.com/roadrunner-server/jobs/v6 v6.0.1
 	github.com/roadrunner-server/memory/v6 v6.0.0
 	github.com/roadrunner-server/otel/v6 v6.0.0
 	github.com/roadrunner-server/resetter/v6 v6.0.0

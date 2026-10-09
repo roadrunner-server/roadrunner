@@ -26,7 +26,7 @@ require (
 	github.com/roadrunner-server/headers/v6 v6.0.0
 	github.com/roadrunner-server/http/v6 v6.0.0
 	github.com/roadrunner-server/informer/v6 v6.0.0
-	github.com/roadrunner-server/jobs/v6 v6.0.0
+	github.com/roadrunner-server/jobs/v6 v6.0.1
 	github.com/roadrunner-server/kafka/v6 v6.0.0
 	github.com/roadrunner-server/kv/v6 v6.0.0
 	github.com/roadrunner-server/lock/v6 v6.0.0

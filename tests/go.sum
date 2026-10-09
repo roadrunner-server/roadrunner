@@ -400,8 +400,8 @@ github.com/roadrunner-server/http/v6 v6.0.0 h1:ZZnSzBTnC5NrnwQUEDY8NHuwYiiSm4VB4
 github.com/roadrunner-server/http/v6 v6.0.0/go.mod h1:7NwR+E4afyByC8ZoRV5Bs1pHE9FJURd+1cI6ZnbRnbc=
 github.com/roadrunner-server/informer/v6 v6.0.0 h1:h4J1fvbUYJJQ9pxIFw2BCAjFCGOr85N/SPoeOwabxVA=
 github.com/roadrunner-server/informer/v6 v6.0.0/go.mod h1:289u6hnZCwzHSR+V1OIYkPScC0Zbb2lKKoNDgpSfZqg=
-github.com/roadrunner-server/jobs/v6 v6.0.0 h1:M6WRd/+zMt3fFesfdilA8Clcoda25WI/pfTMuL8VS6o=
-github.com/roadrunner-server/jobs/v6 v6.0.0/go.mod h1:ZorW/LFPjznmgPL+UbMaz3GmF738FzCGRhu/qMILFUc=
+github.com/roadrunner-server/jobs/v6 v6.0.1 h1:rdFuFHYLNkvsA5Q7/d8d+Hi+GO6dKWPwX83Mlk7FrxE=
+github.com/roadrunner-server/jobs/v6 v6.0.1/go.mod h1:WgBLOO3Kd9o8/Ocf42o0Rlki4e2vPnIaPvkTELNuLWI=
 github.com/roadrunner-server/kafka/v6 v6.0.0 h1:xwKj04Apz4tm07eJhRNz5AijR9chWErmJO10bz6iM5Y=
 github.com/roadrunner-server/kafka/v6 v6.0.0/go.mod h1:vYaLNFxi3nlNo4gVt8IlTcn1kZCVVjuVirbG0WVERuw=
 github.com/roadrunner-server/kv/v6 v6.0.0 h1:Yq17dowqXEmz+usDXIar1DG/o398ERbkRDl1+c5iphQ=
