@@ -164,6 +164,25 @@ jobs:
         run: |
           echo "version_full=$(echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//')" >> $GITHUB_OUTPUT
           echo "timestamp=$(echo $(date +%FT%T%z))" >> $GITHUB_OUTPUT
+      - name: Compose image tags
+        id: tags
+        env:
+          VERSION: ${{ steps.values.outputs.version_full }}
+          PRERELEASE: ${{ github.event.release.prerelease }}
+        run: |
+          {
+            echo "list<<EOF"
+            for repo in spiralscout/roadrunner ghcr.io/roadrunner-server/roadrunner; do
+              echo "${repo}:${VERSION}"
+              # a prerelease must not move the latest, major (3) and minor (3.0) tags
+              if [ "${PRERELEASE}" = "false" ]; then
+                echo "${repo}:latest"
+                echo "${repo}:${VERSION%%.*}"
+                echo "${repo}:${VERSION%.*}"
+              fi
+            done
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
       - name: Build image
         uses: docker/build-push-action@v7 # Action page: <https://github.com/docker/build-push-action>
         with:
@@ -174,13 +193,4 @@ jobs:
           build-args: |
             APP_VERSION=${{ steps.values.outputs.version_full}}
             BUILD_TIME=${{ steps.values.outputs.timestamp }}
-          tags: |
-            spiralscout/roadrunner:${{ steps.values.outputs.version_full}}
-            spiralscout/roadrunner:latest
-            spiralscout/roadrunner:3
-            spiralscout/roadrunner:3.0
-
-            ghcr.io/roadrunner-server/roadrunner:${{ steps.values.outputs.version_full}}
-            ghcr.io/roadrunner-server/roadrunner:latest
-            ghcr.io/roadrunner-server/roadrunner:3
-            ghcr.io/roadrunner-server/roadrunner:3.0
+          tags: ${{ steps.tags.outputs.list }}
