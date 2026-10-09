@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - stable
   pull_request:
 jobs:
   golangci-lint:
