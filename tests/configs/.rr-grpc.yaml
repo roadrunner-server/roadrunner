@@ -8,6 +8,10 @@ server:
   relay: "pipes"
   relay_timeout: "20s"
 
+protoreg:
+  proto_path: ["proto"]
+  files: ["service/service.proto"]
+
 grpc:
   listen: "tcp://127.0.0.1:9191"
   proto:

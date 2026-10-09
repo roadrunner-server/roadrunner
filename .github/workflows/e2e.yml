@@ -3,11 +3,9 @@ on:
   push:
     branches:
       - master
-      - stable
   pull_request:
     branches:
       - master
-      - stable
 jobs:
   e2e_test:
     name: E2E tests (Go ${{ matrix.go }}, PHP ${{ matrix.php }}, OS ${{ matrix.os }})
