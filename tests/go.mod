@@ -5,9 +5,9 @@ go 1.27
 require (
 	github.com/google/uuid v1.6.0
 	github.com/klauspost/compress v1.20.1
-	github.com/roadrunner-server/api-go/v6 v6.0.0-beta.15
+	github.com/roadrunner-server/api-go/v6 v6.0.0
 	github.com/roadrunner-server/config/v6 v6.0.0
-	github.com/roadrunner-server/endure/v2 v2.6.2
+	github.com/roadrunner-server/endure/v2 v2.7.0
 	github.com/roadrunner-server/goridge/v4 v4.0.0
 	github.com/roadrunner-server/grpc/v6 v6.0.0
 	github.com/roadrunner-server/gzip/v6 v6.0.0
@@ -123,14 +123,14 @@ require (
 	github.com/redis/go-redis/extra/redisprometheus/v9 v9.23.0 // indirect
 	github.com/redis/go-redis/v9 v9.23.0 // indirect
 	github.com/roadrunner-server/amqp/v6 v6.0.0 // indirect
-	github.com/roadrunner-server/api-plugins/v6 v6.0.0-beta.2 // indirect
+	github.com/roadrunner-server/api-plugins/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/app-logger/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/beanstalk/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/boltdb/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/centrifuge/v6 v6.0.0 // indirect
-	github.com/roadrunner-server/context v1.3.0 // indirect
-	github.com/roadrunner-server/errors v1.5.0 // indirect
-	github.com/roadrunner-server/events v1.0.1 // indirect
+	github.com/roadrunner-server/context v1.4.0 // indirect
+	github.com/roadrunner-server/errors v1.6.0 // indirect
+	github.com/roadrunner-server/events v1.1.0 // indirect
 	github.com/roadrunner-server/fileserver/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/google-pub-sub/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/headers/v6 v6.0.0 // indirect
@@ -153,7 +153,7 @@ require (
 	github.com/roadrunner-server/service/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/sqs/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/status/v6 v6.0.0 // indirect
-	github.com/roadrunner-server/tcplisten v1.6.0 // indirect
+	github.com/roadrunner-server/tcplisten v1.6.1 // indirect
 	github.com/roadrunner-server/zstd/v6 v6.0.0 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/rs/cors v1.11.1 // indirect
@@ -207,7 +207,7 @@ require (
 	go.uber.org/zap/exp v0.3.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/crypto v0.57.0 // indirect
-	golang.org/x/net v0.59.0 // indirect
+	golang.org/x/net v0.60.0 // indirect
 	golang.org/x/oauth2 v0.37.0 // indirect
 	golang.org/x/sync v0.23.0 // indirect
 	golang.org/x/sys v0.48.0 // indirect

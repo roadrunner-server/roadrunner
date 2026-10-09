@@ -9,15 +9,15 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/olekukonko/tablewriter v1.1.5
 	github.com/roadrunner-server/amqp/v6 v6.0.0
-	github.com/roadrunner-server/api-go/v6 v6.0.0-beta.15
-	github.com/roadrunner-server/api-plugins/v6 v6.0.0-beta.2
+	github.com/roadrunner-server/api-go/v6 v6.0.0
+	github.com/roadrunner-server/api-plugins/v6 v6.0.0
 	github.com/roadrunner-server/app-logger/v6 v6.0.0
 	github.com/roadrunner-server/beanstalk/v6 v6.0.0
 	github.com/roadrunner-server/boltdb/v6 v6.0.0
 	github.com/roadrunner-server/centrifuge/v6 v6.0.0
 	github.com/roadrunner-server/config/v6 v6.0.0
-	github.com/roadrunner-server/endure/v2 v2.6.2
-	github.com/roadrunner-server/errors v1.5.0
+	github.com/roadrunner-server/endure/v2 v2.7.0
+	github.com/roadrunner-server/errors v1.6.0
 	github.com/roadrunner-server/fileserver/v6 v6.0.0
 	github.com/roadrunner-server/google-pub-sub/v6 v6.0.0
 	github.com/roadrunner-server/goridge/v4 v4.0.0
@@ -160,10 +160,10 @@ require (
 	github.com/redis/go-redis/extra/redisotel/v9 v9.23.0 // indirect
 	github.com/redis/go-redis/extra/redisprometheus/v9 v9.23.0 // indirect
 	github.com/redis/go-redis/v9 v9.23.0 // indirect
-	github.com/roadrunner-server/context v1.3.0 // indirect
-	github.com/roadrunner-server/events v1.0.1 // indirect
+	github.com/roadrunner-server/context v1.4.0 // indirect
+	github.com/roadrunner-server/events v1.1.0 // indirect
 	github.com/roadrunner-server/priority_queue v1.1.0 // indirect
-	github.com/roadrunner-server/tcplisten v1.6.0 // indirect
+	github.com/roadrunner-server/tcplisten v1.6.1 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/rs/cors v1.11.1 // indirect
 	github.com/sagikazarmark/locafero v0.12.0 // indirect
@@ -215,7 +215,7 @@ require (
 	go.uber.org/zap/exp v0.3.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/crypto v0.57.0 // indirect
-	golang.org/x/net v0.59.0 // indirect
+	golang.org/x/net v0.60.0 // indirect
 	golang.org/x/oauth2 v0.37.0 // indirect
 	golang.org/x/sync v0.23.0 // indirect
 	golang.org/x/sys v0.48.0 // indirect
