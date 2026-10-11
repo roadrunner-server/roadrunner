@@ -148,7 +148,7 @@ func NewCommand(cmdName string) *cobra.Command { //nolint:funlen,gocognit
 
 	f := cmd.PersistentFlags()
 
-	f.BoolVarP(experimental, "enable-experimental", "e", false, "enable experimental features")
+	f.BoolVarP(experimental, "enable-experimental", "e", false, "enable experimental features (none at the moment)")
 	f.BoolVarP(forceStop, "force", "f", false, "force stop")
 	f.BoolVarP(pidFile, "pid", "p", false, "create a .pid file")
 	f.StringVarP(cfgFile, "config", "c", ".rr.yaml", "config file")
