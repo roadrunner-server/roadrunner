@@ -1027,6 +1027,20 @@ metrics:
   # Default: "127.0.0.1:2112"
   address: "127.0.0.1:2112"
 
+  # Prefix prepended as-is to the names of the metrics provided by the RoadRunner plugins (rr_jobs_*, rr_http_*, ...).
+  # Add the trailing underscore yourself. The go_* and process_* metrics and the `collect` metrics are not prefixed.
+  #
+  # Default: ""
+  prefix: "myapp_"
+
+  # Constant labels added to the metrics provided by the RoadRunner plugins. A label name that a plugin metric already
+  # uses (pid, state, status, ...) fails the metrics plugin on start. The go_* and process_* metrics and the `collect`
+  # metrics get no labels.
+  #
+  # Default: empty
+  labels:
+    service: "my-microservice"
+
   # Application-specific metrics (published using an RPC connection to the server).
   collect:
     app_metric_summary:
