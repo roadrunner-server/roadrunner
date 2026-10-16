@@ -1604,7 +1604,6 @@
       ]
     },
     "logs": {
-      "$id": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json",
       "$schema": "https://json-schema.org/draft/2019-09/schema",
       "description": "All the valid configuration parameters for the Logger plugin for RoadRunner.",
       "type": "object",
@@ -1613,25 +1612,22 @@
       "additionalProperties": false,
       "properties": {
         "mode": {
-          "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogMode"
+          "$ref": "#/properties/logs/$defs/LogMode"
         },
         "level": {
-          "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogLevel"
+          "$ref": "#/properties/logs/$defs/LogLevel"
         },
         "line_ending": {
-          "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogLineEnding"
+          "$ref": "#/properties/logs/$defs/LogLineEnding"
         },
         "encoding": {
-          "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogEncoding"
+          "$ref": "#/properties/logs/$defs/LogEncoding"
         },
         "output": {
-          "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogOutput"
+          "$ref": "#/properties/logs/$defs/LogOutput"
         },
         "err_output": {
-          "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogOutput"
-        },
-        "file_logger_options": {
-          "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/FileLoggerOptions"
+          "$ref": "#/properties/logs/$defs/LogOutput"
         },
         "channels": {
           "description": "You can configure logging for each plugin individually. The key is the plugin name and the value is logging options in same format as the parent.",
@@ -1646,66 +1642,41 @@
               "minProperties": 1,
               "properties": {
                 "mode": {
-                  "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogMode"
+                  "$ref": "#/properties/logs/$defs/LogMode"
                 },
                 "level": {
-                  "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogLevel"
+                  "$ref": "#/properties/logs/$defs/LogLevel"
                 },
                 "line_ending": {
-                  "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogLineEnding"
+                  "$ref": "#/properties/logs/$defs/LogLineEnding"
                 },
                 "encoding": {
-                  "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogEncoding"
+                  "$ref": "#/properties/logs/$defs/LogEncoding"
                 },
                 "output": {
-                  "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogOutput"
+                  "$ref": "#/properties/logs/$defs/LogOutput"
                 },
                 "err_output": {
-                  "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/LogOutput"
+                  "$ref": "#/properties/logs/$defs/LogOutput"
                 },
-                "file_logger_options": {
-                  "$ref": "https://raw.githubusercontent.com/roadrunner-server/logger/refs/heads/master/schema.json#/$defs/FileLoggerOptions"
+                "format": {
+                  "$ref": "#/properties/logs/$defs/LogFormat"
+                },
+                "time_format": {
+                  "$ref": "#/properties/logs/$defs/LogTimeFormat"
                 }
               }
             }
           }
+        },
+        "format": {
+          "$ref": "#/properties/logs/$defs/LogFormat"
+        },
+        "time_format": {
+          "$ref": "#/properties/logs/$defs/LogTimeFormat"
         }
       },
       "$defs": {
-        "FileLoggerOptions": {
-          "description": "File logger options.",
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "log_output": {
-              "type": "string",
-              "description": "Path to the log file. Uses <processname>-lumberjack.log and the OS temp (i.e. `/tmp`) directory if empty."
-            },
-            "max_size": {
-              "type": "integer",
-              "description": "Maximum file size in MB.",
-              "minimum": 0,
-              "default": 100
-            },
-            "max_age": {
-              "type": "integer",
-              "description": "The maximum number of days to retain old log files based on the timestamp encoded in their filename. Empty or zero defaults to 24 days.",
-              "minimum": 0,
-              "default": 24
-            },
-            "max_backups": {
-              "type": "integer",
-              "description": "The maximum number of old log files to retain. Empty or zero defaults to 10.",
-              "minimum": 0,
-              "default": 10
-            },
-            "compress": {
-              "type": "boolean",
-              "description": "Whether to compress log files.",
-              "default": false
-            }
-          }
-        },
         "LogMode": {
           "description": "Logging mode",
           "type": "string",
@@ -1726,8 +1697,7 @@
             "debug",
             "info",
             "warn",
-            "error",
-            "panic"
+            "error"
           ]
         },
         "LogEncoding": {
@@ -1754,6 +1724,18 @@
           "description": "Line-ending to use for logging.",
           "type": "string",
           "default": "\n"
+        },
+        "LogFormat": {
+          "description": "Custom log format with %placeholder% tokens (e.g. \"%time% [%level%] %message% %attrs%\"). Overrides mode when set. Supported: %time%, %level%, %message%, %attrs%, %logger%, %source_file%, %source_line%, %source_func%.",
+          "type": "string"
+        },
+        "LogTimeFormat": {
+          "description": "Go time layout for the %time% placeholder in a custom format string. Defaults to RFC3339.",
+          "type": "string",
+          "examples": [
+            "2006-01-02 15:04:05",
+            "15:04:05"
+          ]
         }
       }
     },
