@@ -4,7 +4,7 @@ go 1.27
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/klauspost/compress v1.20.1
+	github.com/klauspost/compress v1.20.3
 	github.com/roadrunner-server/api-go/v6 v6.1.0
 	github.com/roadrunner-server/config/v6 v6.0.0
 	github.com/roadrunner-server/endure/v2 v2.7.0
