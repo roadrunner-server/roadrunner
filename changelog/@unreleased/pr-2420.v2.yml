@@ -1,0 +1,6 @@
+type: fix
+fix:
+  description: |-
+    Align the embedded logger configuration schema with the current logger schema. Logging property references now resolve locally, removed file logger options are no longer accepted, and format/time_format are included for root and channel settings.
+  links:
+  - https://github.com/roadrunner-server/roadrunner/issues/2420
