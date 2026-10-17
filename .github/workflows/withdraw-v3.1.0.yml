@@ -15,7 +15,7 @@ jobs:
     env:
       GHCR_USER: ${{ secrets.GHCR_LOGIN }}
       GHCR_TOKEN: ${{ secrets.GHCR_PASSWORD }}
-      API_TOKEN: ${{ github.token }}
+      API_TOKEN: ${{ secrets.GHCR_PASSWORD }}
     steps:
       - name: Restore stable tags and delete only v3.1.0 package versions
         run: |
@@ -29,8 +29,13 @@ jobs:
 
           def request(url, method='GET', data=None, headers=None):
               req = urllib.request.Request(url, data=data, headers=headers or {}, method=method)
-              with urllib.request.urlopen(req, timeout=30) as response:
-                  return response.status, response.read()
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as response:
+                      return response.status, response.read()
+              except urllib.error.HTTPError as error:
+                  if method != 'GET':
+                      print(f'{method} {url}: HTTP {error.code}: {error.read().decode()}', flush=True)
+                  raise
 
           basic = base64.b64encode(f"{os.environ['GHCR_USER']}:{os.environ['GHCR_TOKEN']}".encode()).decode()
           _, body = request(f'https://ghcr.io/token?service=ghcr.io&scope=repository:{package}:pull,push', headers={'Authorization': f'Basic {basic}'})
