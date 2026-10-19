@@ -11,7 +11,7 @@ require (
 	github.com/roadrunner-server/goridge/v4 v4.0.0
 	github.com/roadrunner-server/grpc/v6 v6.0.0
 	github.com/roadrunner-server/gzip/v6 v6.0.0
-	github.com/roadrunner-server/http/v6 v6.0.0
+	github.com/roadrunner-server/http/v6 v6.1.0
 	github.com/roadrunner-server/informer/v6 v6.0.0
 	github.com/roadrunner-server/jobs/v6 v6.0.1
 	github.com/roadrunner-server/memory/v6 v6.0.0
@@ -113,7 +113,7 @@ require (
 	github.com/power-devops/perfstat v0.0.0-20260916203055-22a1a467d9f0 // indirect
 	github.com/prometheus/client_golang v1.25.0 // indirect
 	github.com/prometheus/client_model v0.6.3 // indirect
-	github.com/prometheus/common v0.72.0 // indirect
+	github.com/prometheus/common v0.72.1 // indirect
 	github.com/prometheus/procfs v0.22.0 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.63.0 // indirect
@@ -214,7 +214,7 @@ require (
 	golang.org/x/text v0.43.0 // indirect
 	golang.org/x/time v0.16.0 // indirect
 	google.golang.org/api v0.300.0 // indirect
-	google.golang.org/genproto v0.0.0-20261005182115-fad411399dd8 // indirect
+	google.golang.org/genproto v0.0.0-20261012220534-4341edf3f941 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20261005182115-fad411399dd8 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20261005182115-fad411399dd8 // indirect
 )

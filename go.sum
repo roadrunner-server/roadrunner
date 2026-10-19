@@ -355,8 +355,8 @@ github.com/prometheus/client_model v0.6.3/go.mod h1:gpN5P9S7Rr6Yr92PiQ+Ixvhf6JZE
 github.com/prometheus/common v0.4.1/go.mod h1:TNfzLD0ON7rHzMJeJkieUDPYmFC7Snx/y86RQel1bk4=
 github.com/prometheus/common v0.10.0/go.mod h1:Tlit/dnDKsSWFlCLTWaA1cyBgKHSMdTB80sz/V91rCo=
 github.com/prometheus/common v0.26.0/go.mod h1:M7rCNAaPfAosfx8veZJCuw84e35h3Cfd9VFqTh1DIvc=
-github.com/prometheus/common v0.72.0 h1:tAYsE+sPJxIncDAobm4H5aQjmox9ZxEIIqPbiffa8G4=
-github.com/prometheus/common v0.72.0/go.mod h1:77NWqAQ2tXT7BIK40qjJdw5Acrsrg1TlHAnsQi3i6mk=
+github.com/prometheus/common v0.72.1 h1:ZAiQed/nk8IIcsdzb2TlJu23NEUDyDLQ9TXTN2WRK6Y=
+github.com/prometheus/common v0.72.1/go.mod h1:1IoBY4IRaJnhs2ESjNzjilP1cJ/P8pimGoomq7zRXrA=
 github.com/prometheus/procfs v0.0.0-20181005140218-185b4288413d/go.mod h1:c3At6R/oaqEKCNdg8wHV1ftS6bRYblBhIjjI8uT2IGk=
 github.com/prometheus/procfs v0.0.2/go.mod h1:TjEm7ze935MbeOT/UhFTIMYKhuLP4wbCsTZCD3I8kEA=
 github.com/prometheus/procfs v0.1.3/go.mod h1:lV6e/gmhEcM9IjHGsFOCxxuZ+z1YqCvr4OA4YeYWdaU=
@@ -415,8 +415,8 @@ github.com/roadrunner-server/gzip/v6 v6.0.0 h1:5T9dOEQgiKKM9lcG/GdUShjZs3fkrQ+Mn
 github.com/roadrunner-server/gzip/v6 v6.0.0/go.mod h1:PyjJC1Cag8R7y8TIEJHI8KOkw1J3XKGC/Z+idCvxUow=
 github.com/roadrunner-server/headers/v6 v6.0.0 h1:++CZu+3cilsuCeDw5tG9vF38/nXKoj3Ylx149s/ecOY=
 github.com/roadrunner-server/headers/v6 v6.0.0/go.mod h1:FgBhnKOuX9ZSHlPjh3MjGIiIekkgKt9p9MxNetDJUWU=
-github.com/roadrunner-server/http/v6 v6.0.0 h1:ZZnSzBTnC5NrnwQUEDY8NHuwYiiSm4VB4jjtXZ4j/yE=
-github.com/roadrunner-server/http/v6 v6.0.0/go.mod h1:7NwR+E4afyByC8ZoRV5Bs1pHE9FJURd+1cI6ZnbRnbc=
+github.com/roadrunner-server/http/v6 v6.1.0 h1:GOKBthnt9Xjaf5nImjJkexG2LBMzGWTff1Lwjz//6Jg=
+github.com/roadrunner-server/http/v6 v6.1.0/go.mod h1:2UDlY85Az1Oack3uE/KlCvxGmbI1upuxdriNzKeIBGY=
 github.com/roadrunner-server/informer/v6 v6.0.0 h1:h4J1fvbUYJJQ9pxIFw2BCAjFCGOr85N/SPoeOwabxVA=
 github.com/roadrunner-server/informer/v6 v6.0.0/go.mod h1:289u6hnZCwzHSR+V1OIYkPScC0Zbb2lKKoNDgpSfZqg=
 github.com/roadrunner-server/jobs/v6 v6.0.1 h1:rdFuFHYLNkvsA5Q7/d8d+Hi+GO6dKWPwX83Mlk7FrxE=
@@ -751,8 +751,8 @@ google.golang.org/genproto v0.0.0-20200423170343-7949de9c1215/go.mod h1:55QSHmfG
 google.golang.org/genproto v0.0.0-20200513103714-09dca8ec2884/go.mod h1:55QSHmfGQM9UVYDPBsyGGes0y52j32PQ3BqQfXhyH3c=
 google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013/go.mod h1:NbSheEEYHJ7i3ixzK3sjbqSGDJWnxyFXZblF3eUsNvo=
 google.golang.org/genproto v0.0.0-20210909211513-a8c4777a87af/go.mod h1:eFjDcFEctNawg4eG61bRv87N7iHBWyVhJu7u1kqDUXY=
-google.golang.org/genproto v0.0.0-20261005182115-fad411399dd8 h1:19ViM1+Odqvg4xpcB+8U1fTpy23WB3sMMyR3LSsJUpI=
-google.golang.org/genproto v0.0.0-20261005182115-fad411399dd8/go.mod h1:+ilrBox3TDCuZtI7U55k3p0uUJ/yNkMUkS1rVg+yxkg=
+google.golang.org/genproto v0.0.0-20261012220534-4341edf3f941 h1:CXq2XEi5aEyLjjPZIwqrmQH8ZY4ctUwK7uyAx3mjX/U=
+google.golang.org/genproto v0.0.0-20261012220534-4341edf3f941/go.mod h1:3gK0ehnhP0V7/x3ypGoLyT3d0n6TSi/EcsphIjHrcz4=
 google.golang.org/genproto/googleapis/api v0.0.0-20261005182115-fad411399dd8 h1:cFbkNigDInw+wVTXc+CyhUsoHGJCw0BR6mlNoRVfre0=
 google.golang.org/genproto/googleapis/api v0.0.0-20261005182115-fad411399dd8/go.mod h1:QK6p7IgD7IZEZJBhhSUCib5X2vMOzlrGCGUw2XyVDh0=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20261005182115-fad411399dd8 h1:0SXBqli5dnuCKMjI/X3FM226zEaEa0GUcSCJtN1vL2o=
