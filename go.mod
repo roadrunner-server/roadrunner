@@ -33,7 +33,7 @@ require (
 	github.com/roadrunner-server/logger/v6 v6.0.0
 	github.com/roadrunner-server/memcached/v6 v6.0.0
 	github.com/roadrunner-server/memory/v6 v6.0.0
-	github.com/roadrunner-server/metrics/v6 v6.0.0
+	github.com/roadrunner-server/metrics/v6 v6.1.0
 	github.com/roadrunner-server/nats/v6 v6.0.0
 	github.com/roadrunner-server/nsq/v6 v6.0.0
 	github.com/roadrunner-server/otel/v6 v6.0.0
@@ -151,7 +151,7 @@ require (
 	github.com/power-devops/perfstat v0.0.0-20260916203055-22a1a467d9f0 // indirect
 	github.com/prometheus/client_golang v1.25.0 // indirect
 	github.com/prometheus/client_model v0.6.3 // indirect
-	github.com/prometheus/common v0.72.0 // indirect
+	github.com/prometheus/common v0.72.1 // indirect
 	github.com/prometheus/procfs v0.22.0 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.63.0 // indirect

@@ -355,8 +355,8 @@ github.com/prometheus/client_model v0.6.3/go.mod h1:gpN5P9S7Rr6Yr92PiQ+Ixvhf6JZE
 github.com/prometheus/common v0.4.1/go.mod h1:TNfzLD0ON7rHzMJeJkieUDPYmFC7Snx/y86RQel1bk4=
 github.com/prometheus/common v0.10.0/go.mod h1:Tlit/dnDKsSWFlCLTWaA1cyBgKHSMdTB80sz/V91rCo=
 github.com/prometheus/common v0.26.0/go.mod h1:M7rCNAaPfAosfx8veZJCuw84e35h3Cfd9VFqTh1DIvc=
-github.com/prometheus/common v0.72.0 h1:tAYsE+sPJxIncDAobm4H5aQjmox9ZxEIIqPbiffa8G4=
-github.com/prometheus/common v0.72.0/go.mod h1:77NWqAQ2tXT7BIK40qjJdw5Acrsrg1TlHAnsQi3i6mk=
+github.com/prometheus/common v0.72.1 h1:ZAiQed/nk8IIcsdzb2TlJu23NEUDyDLQ9TXTN2WRK6Y=
+github.com/prometheus/common v0.72.1/go.mod h1:1IoBY4IRaJnhs2ESjNzjilP1cJ/P8pimGoomq7zRXrA=
 github.com/prometheus/procfs v0.0.0-20181005140218-185b4288413d/go.mod h1:c3At6R/oaqEKCNdg8wHV1ftS6bRYblBhIjjI8uT2IGk=
 github.com/prometheus/procfs v0.0.2/go.mod h1:TjEm7ze935MbeOT/UhFTIMYKhuLP4wbCsTZCD3I8kEA=
 github.com/prometheus/procfs v0.1.3/go.mod h1:lV6e/gmhEcM9IjHGsFOCxxuZ+z1YqCvr4OA4YeYWdaU=
@@ -433,8 +433,8 @@ github.com/roadrunner-server/memcached/v6 v6.0.0 h1:XxGZkq/3+3CvdL3/SK79Rn1A+0bA
 github.com/roadrunner-server/memcached/v6 v6.0.0/go.mod h1:WfUZN2ZR4dO8+ph/Vw4VFtO/cGhmqTtFYWxuND8w4kY=
 github.com/roadrunner-server/memory/v6 v6.0.0 h1:5HFrwGkkxxBzmR7MDkknm2zcj2jMvOROQ54T76uREXQ=
 github.com/roadrunner-server/memory/v6 v6.0.0/go.mod h1:vcHT6CNsejWgDJINE2/wAIUrMNxgNDiLL1n6509/jc4=
-github.com/roadrunner-server/metrics/v6 v6.0.0 h1:4VSCQ10Pm0X5OpaGUcuve7A6invcAZ0Vu3w63wG1+os=
-github.com/roadrunner-server/metrics/v6 v6.0.0/go.mod h1:F+vtixhRSuZy2Lr6U/LGlyrYpVQnkV1VfAT8Yw8BWTY=
+github.com/roadrunner-server/metrics/v6 v6.1.0 h1:eKoKS49SxZdTUn70Csew+ol39woMHZbfN8TnblGL3bE=
+github.com/roadrunner-server/metrics/v6 v6.1.0/go.mod h1:GZinEyLHaJInLKytv4EbD3REVJTubsT7U4EiMaad0YY=
 github.com/roadrunner-server/nats/v6 v6.0.0 h1:7Y9GcK5iD/s14iBsI7VNGsubKrnfGDqPFHlOCdTSlrg=
 github.com/roadrunner-server/nats/v6 v6.0.0/go.mod h1:DjsZ84Il3C7hmMlkupCTOftbYnEBNlfl5GDArUjdTL0=
 github.com/roadrunner-server/nsq/v6 v6.0.0 h1:C70t0LJp410csGiZbqbtcXfL5DyGUqqLij9UL0ZDT5Q=
