@@ -179,7 +179,7 @@ by [Spiral Scout](https://spiralscout.com).
 
 ## Releases
 
-[Release Please](https://github.com/googleapis/release-please) updates a release PR on `master` from [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). It updates `CHANGELOG.md` and `.release-please-manifest.json`. Merge the release PR to create the tag and GitHub release. The release workflows then build the binaries, Debian packages, gRPC compiler, and container images. Re-run failed jobs if a build fails.
+[Release Please](https://github.com/googleapis/release-please) updates release PRs on `master` and `3.0.x` from [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). Use `3.0.x` for patch releases based on `v3.0.0`. It updates `CHANGELOG.md` and `.release-please-manifest.json`. Merge the release PR to create the tag and GitHub release. The release workflows then build the binaries, Debian packages, gRPC compiler, and container images. Re-run failed jobs if a build fails.
 
 The workflow uses the organization secrets `RR_CICD_APP_ID` and `RR_CICD_PRIVATE_KEY`. The GitHub App needs write access to Contents, Issues, and Pull requests for this repository. Its token lets release PRs and releases [start GitHub Actions workflows](https://github.com/googleapis/release-please-action#other-actions-on-release-please-prs).
 
