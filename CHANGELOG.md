@@ -2,6 +2,12 @@
 
 releases: [docs](https://docs.roadrunner.dev/docs/releases)
 
+## 3.0.1 (2026-10-21)
+
+### 🎯 Core
+
+- 🐛 **Go security update**: RoadRunner uses Go `1.27.3` to address [CVE-2026-111943](https://pkg.go.dev/vuln/GO-2026-6809) in `crypto/x509`. The update rejects known untrusted intermediate certificates during certificate verification. See [BUG](https://github.com/roadrunner-server/roadrunner/issues/2449).
+
 ## 3.0.0 (2026-10-08)
 
 RoadRunner v3 uses v6 Go plugins. See [Upgrade from v2025 to v3](https://github.com/roadrunner-server/docs/blob/release/v3/intro/v3-migration.md) for the required configuration and API changes.
