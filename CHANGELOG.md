@@ -2,6 +2,14 @@
 
 releases: [docs](https://docs.roadrunner.dev/docs/releases)
 
+## [3.0.1](https://github.com/roadrunner-server/roadrunner/compare/v3.0.0...v3.0.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* build with Go 1.27.3 for v3.0.1 ([89db27e](https://github.com/roadrunner-server/roadrunner/commit/89db27e2e6cb17e43200519659af3d277a6c4ec1))
+* build with Go 1.27.3 for v3.0.1 ([096aeea](https://github.com/roadrunner-server/roadrunner/commit/096aeea07bdf254d5b49461cfb7c051b3a96b8d6)), closes [#2449](https://github.com/roadrunner-server/roadrunner/issues/2449)
+
 ## 3.0.0 (2026-10-08)
 
 RoadRunner v3 uses v6 Go plugins. See [Upgrade from v2025 to v3](https://github.com/roadrunner-server/docs/blob/release/v3/intro/v3-migration.md) for the required configuration and API changes.
