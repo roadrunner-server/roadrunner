@@ -3,13 +3,14 @@ on:
   push:
     branches:
       - master
+      - 3.0.x
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: release-please
+  group: release-please-${{ github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -30,4 +31,4 @@ jobs:
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
           token: ${{ steps.token.outputs.token }}
-          target-branch: master
+          target-branch: ${{ github.ref_name }}
