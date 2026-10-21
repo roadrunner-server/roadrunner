@@ -2,6 +2,14 @@
 
 releases: [docs](https://docs.roadrunner.dev/docs/releases)
 
+## [3.1.0](https://github.com/roadrunner-server/roadrunner/compare/v3.0.0...v3.1.0) (2026-10-21)
+
+
+### Features
+
+* add the metrics prefix and labels options to the reference config and schema ([6cf5f98](https://github.com/roadrunner-server/roadrunner/commit/6cf5f98374864725cd2b77038a0921949ed8f878))
+* add the metrics prefix and labels options to the reference config and schema ([094bf1b](https://github.com/roadrunner-server/roadrunner/commit/094bf1bbbddbd142f7b5cbf7c826456406ec0ebe))
+
 ## 3.0.0 (2026-10-08)
 
 RoadRunner v3 uses v6 Go plugins. See [Upgrade from v2025 to v3](https://github.com/roadrunner-server/docs/blob/release/v3/intro/v3-migration.md) for the required configuration and API changes.
