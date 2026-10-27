@@ -22,7 +22,7 @@ require (
 	github.com/roadrunner-server/server/v6 v6.0.0
 	github.com/roadrunner-server/static/v6 v6.0.0
 	github.com/stretchr/testify v1.12.1
-	google.golang.org/grpc v1.84.0
+	google.golang.org/grpc v1.85.0
 	google.golang.org/protobuf v1.36.12
 )
 
@@ -59,7 +59,6 @@ require (
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cilium/ebpf v0.22.0 // indirect
-	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/containerd/cgroups/v3 v3.1.3 // indirect
 	github.com/containerd/log v0.2.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.7.0 // indirect
@@ -74,7 +73,9 @@ require (
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/godbus/dbus/v5 v5.2.4 // indirect
-	github.com/gofiber/fiber/v2 v2.52.16 // indirect
+	github.com/gofiber/fiber/v3 v3.6.1 // indirect
+	github.com/gofiber/schema v1.9.0 // indirect
+	github.com/gofiber/utils/v2 v2.6.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/mock v1.7.0-rc.1 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
@@ -92,7 +93,6 @@ require (
 	github.com/lufia/plan9stats v0.0.0-20260802145828-341c2f0c90b5 // indirect
 	github.com/mattn/go-colorable v0.1.16 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
-	github.com/mattn/go-runewidth v0.0.31 // indirect
 	github.com/mholt/acmez v1.2.0 // indirect
 	github.com/mholt/acmez/v3 v3.1.7 // indirect
 	github.com/miekg/dns v1.1.73 // indirect
@@ -107,6 +107,7 @@ require (
 	github.com/opencontainers/runtime-spec v1.3.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
 	github.com/petermattis/goid v0.0.0-20260918085751-abfca077860b // indirect
+	github.com/philhofer/fwd v1.2.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.33 // indirect
 	github.com/pires/go-proxyproto v0.16.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
@@ -131,7 +132,7 @@ require (
 	github.com/roadrunner-server/context v1.4.0 // indirect
 	github.com/roadrunner-server/errors v1.6.0 // indirect
 	github.com/roadrunner-server/events v1.1.0 // indirect
-	github.com/roadrunner-server/fileserver/v6 v6.0.0 // indirect
+	github.com/roadrunner-server/fileserver/v6 v6.1.0 // indirect
 	github.com/roadrunner-server/google-pub-sub/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/headers/v6 v6.0.0 // indirect
 	github.com/roadrunner-server/kafka/v6 v6.1.0 // indirect
@@ -168,6 +169,7 @@ require (
 	github.com/stretchr/objx v0.8.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/temporalio/roadrunner-temporal/v6 v6.0.0 // indirect
+	github.com/tinylib/msgp v1.6.5 // indirect
 	github.com/tklauser/go-sysconf v0.4.0 // indirect
 	github.com/tklauser/numcpus v0.12.0 // indirect
 	github.com/twmb/franz-go v1.22.2 // indirect

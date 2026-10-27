@@ -18,7 +18,7 @@ require (
 	github.com/roadrunner-server/config/v6 v6.0.0
 	github.com/roadrunner-server/endure/v2 v2.7.0
 	github.com/roadrunner-server/errors v1.6.0
-	github.com/roadrunner-server/fileserver/v6 v6.0.0
+	github.com/roadrunner-server/fileserver/v6 v6.1.0
 	github.com/roadrunner-server/google-pub-sub/v6 v6.0.0
 	github.com/roadrunner-server/goridge/v4 v4.0.0
 	github.com/roadrunner-server/grpc/v6 v6.0.0
@@ -109,7 +109,9 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/goccy/go-json v0.11.2 // indirect
 	github.com/godbus/dbus/v5 v5.2.4 // indirect
-	github.com/gofiber/fiber/v2 v2.52.16 // indirect
+	github.com/gofiber/fiber/v3 v3.6.1 // indirect
+	github.com/gofiber/schema v1.9.0 // indirect
+	github.com/gofiber/utils/v2 v2.6.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/mock v1.7.0-rc.1 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
@@ -147,6 +149,7 @@ require (
 	github.com/opencontainers/runtime-spec v1.3.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
 	github.com/petermattis/goid v0.0.0-20260918085751-abfca077860b // indirect
+	github.com/philhofer/fwd v1.2.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.33 // indirect
 	github.com/pires/go-proxyproto v0.16.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
@@ -177,6 +180,7 @@ require (
 	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/stretchr/objx v0.8.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
+	github.com/tinylib/msgp v1.6.5 // indirect
 	github.com/tklauser/go-sysconf v0.4.0 // indirect
 	github.com/tklauser/numcpus v0.12.0 // indirect
 	github.com/twmb/franz-go v1.22.2 // indirect
@@ -227,7 +231,7 @@ require (
 	google.golang.org/genproto v0.0.0-20261026165753-2ffab32bce7e // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20261026165753-2ffab32bce7e // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20261026165753-2ffab32bce7e // indirect
-	google.golang.org/grpc v1.84.0 // indirect
+	google.golang.org/grpc v1.85.0 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
 )
 
