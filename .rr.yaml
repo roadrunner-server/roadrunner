@@ -966,7 +966,7 @@ http:
     # Default: 128
     max_concurrent_streams: 128
 
-  # HTTP/3 settings (experimental). Enable QUIC + HTTP/3 on a separate (optional) address.
+  # HTTP/3 settings. Enable QUIC + HTTP/3 on a separate (optional) address.
   # Provide key+cert here if ACME is not configured (same as for the TLS section above).
   http3:
     # Host and port to listen on for HTTP/3.

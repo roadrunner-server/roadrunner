@@ -1125,7 +1125,7 @@
           }
         },
         "HTTP3": {
-          "description": "HTTP/3 settings. **Experimental**: Requires that RoadRunner has experimental features enabled. Unless you configured `acme`, you must provide a `key` and `cert` here.",
+          "description": "HTTP/3 settings. Unless you configured `acme`, you must provide a `key` and `cert` here.",
           "type": "object",
           "additionalProperties": false,
           "required": [

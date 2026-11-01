@@ -1,5 +1,5 @@
 {
-    "name": "spiral/roadrunner",
+    "name": "roadrunner/roadrunner",
     "type": "metapackage",
     "description": "RoadRunner: High-performance PHP application server and process manager written in Go and powered with plugins",
     "license": "MIT",
