@@ -1,0 +1,52 @@
+name: release_rpm
+on:
+  release: # Docs: <https://help.github.com/en/articles/events-that-trigger-workflows#release-event-release>
+    types:
+      - released
+      - prereleased
+jobs:
+  build:
+    name: Build for linux (${{ matrix.arch }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [amd64, arm64]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version: stable
+      - name: Download dependencies
+        run: go mod download
+      - name: Install nfpm
+        run: go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
+      - name: Generate builder values
+        id: values
+        run: |
+          echo "version=$(echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//')" >> $GITHUB_OUTPUT
+          echo "timestamp=$(echo $(date +%FT%T%z))" >> $GITHUB_OUTPUT
+      - name: Compile binary file
+        env:
+          GOOS: linux
+          GOARCH: ${{ matrix.arch }}
+          CGO_ENABLED: 0
+          LDFLAGS: >-
+            -s -X github.com/roadrunner-server/roadrunner/v3/internal/meta.version=${{ steps.values.outputs.version }} -X github.com/roadrunner-server/roadrunner/v3/internal/meta.buildTime=${{ steps.values.outputs.timestamp }}
+        run: |
+          go build -trimpath -ldflags "$LDFLAGS" -o ./rr ./cmd/rr
+          stat ./rr
+      - name: Build RPM package
+        env:
+          ARCH: ${{ matrix.arch }}
+          VERSION: ${{ steps.values.outputs.version }}
+        run: nfpm package --packager rpm --target roadrunner-${{ steps.values.outputs.version }}-linux-${{ matrix.arch }}.rpm
+      - name: Upload rpm to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: roadrunner-${{ steps.values.outputs.version }}-linux-${{ matrix.arch }}.rpm
+          asset_name: roadrunner-${{ steps.values.outputs.version }}-linux-${{ matrix.arch }}.rpm
+          tag: ${{ github.ref }}

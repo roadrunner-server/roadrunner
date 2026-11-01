@@ -138,6 +138,26 @@ jobs:
           file: ${{ steps.dist-arch.outputs.name }}
           asset_name: ${{ steps.dist-arch.outputs.name }}
           tag: ${{ github.ref }}
+  winget:
+    name: Submit winget manifest
+    runs-on: windows-latest # wingetcreate runs on Windows only
+    needs: build # the windows zip must be on the release before wingetcreate downloads it
+    if: ${{ !github.event.release.prerelease }} # winget-pkgs accepts stable releases only
+    env:
+      # Classic PAT with the public_repo scope: <https://github.com/microsoft/winget-create/blob/main/doc/token.md>
+      WINGET_CREATE_GITHUB_TOKEN: ${{ secrets.WINGET_TOKEN }}
+    steps:
+      - name: Generate builder values
+        id: values
+        shell: bash
+        run: echo "version=$(echo ${GITHUB_REF##*/} | sed -e 's/^[vV ]*//')" >> $GITHUB_OUTPUT
+      - name: Submit manifest using wingetcreate
+        run: |
+          curl.exe -sSL -o wingetcreate.exe https://aka.ms/wingetcreate/latest
+          .\wingetcreate.exe update SpiralScout.RoadRunner `
+            --version ${{ steps.values.outputs.version }} `
+            --urls https://github.com/roadrunner-server/roadrunner/releases/download/${{ github.event.release.tag_name }}/roadrunner-${{ steps.values.outputs.version }}-windows-amd64.zip `
+            --submit
   docker:
     name: Build docker image
     runs-on: ubuntu-latest
