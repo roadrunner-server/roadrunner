@@ -2,6 +2,11 @@
 
 releases: [docs](https://docs.roadrunner.dev/docs/releases)
 
+## Unreleased
+
+- 🐛 **Logger configuration schema**: RoadRunner uses the logger plugin's schema for global and channel settings. It accepts `format` and `time_format` and rejects `file_logger_options`. [#2420](https://github.com/roadrunner-server/roadrunner/issues/2420).
+- 🐛 **AMQP configuration**: The schema and sample use named connections and nested `exchange` and `queue` settings.
+
 ## 3.0.0 (2026-10-08)
 
 RoadRunner v3 uses v6 Go plugins. See [Upgrade from v2025 to v3](https://github.com/roadrunner-server/docs/blob/release/v3/intro/v3-migration.md) for the required configuration and API changes.
