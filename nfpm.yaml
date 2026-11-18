@@ -1,0 +1,14 @@
+# Package metadata for the RPM build in .github/workflows/release_rpm.yml.
+# Reference: <https://nfpm.goreleaser.com/docs/configuration/>
+name: roadrunner
+arch: ${ARCH}
+platform: linux
+version: ${VERSION}
+maintainer: roadrunner.dev
+description: High-performance PHP application server, load-balancer, process manager written in Go and powered with plugins.
+vendor: Spiral Scout
+homepage: https://roadrunner.dev
+license: MIT
+contents:
+  - src: ./rr
+    dst: /usr/bin/rr
