@@ -965,7 +965,8 @@ redis:
   master_name: ""
   username: ""
   password: ""
-  db: 0
+  # The Jobs example uses a separate database from fast-kv-fr.
+  db: 1
   sentinel_password: ""
   route_by_latency: false
   route_randomly: false
@@ -1328,6 +1329,15 @@ jobs:
   #
   # This option is not required since you can declare pipelines in the runtime. Pipeline driver should exist.
   pipelines:
+    test-redis:
+      driver: redis
+      config:
+        # Uses the connection settings in the redis section.
+        queue: mail
+        prefetch: 10
+        # Includes time waiting for a worker and execution time.
+        visibility_timeout: 5m
+
     # Pipeline name
     #
     # This option is required when defining pipelines via configuration.

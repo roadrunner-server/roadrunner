@@ -42,7 +42,7 @@ require (
 	github.com/roadrunner-server/protoreg/v6 v6.0.0
 	github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0
 	github.com/roadrunner-server/rate-limiter/v6 v6.0.0
-	github.com/roadrunner-server/redis/v6 v6.0.0
+	github.com/roadrunner-server/redis/v6 v6.0.1-0.20261118193447-18e0ba8bfbc7
 	github.com/roadrunner-server/resetter/v6 v6.0.0
 	github.com/roadrunner-server/rpc/v6 v6.0.0
 	github.com/roadrunner-server/send/v6 v6.0.0
@@ -147,7 +147,7 @@ require (
 	github.com/olekukonko/errors v1.3.0 // indirect
 	github.com/olekukonko/ll v0.1.9 // indirect
 	github.com/opencontainers/runtime-spec v1.3.0 // indirect
-	github.com/pandatix/go-abnf v0.5.4 // indirect
+	github.com/pandatix/go-abnf v0.5.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
 	github.com/petermattis/goid v0.0.0-20261031101841-61454ab5fe79 // indirect
 	github.com/philhofer/fwd v1.2.1 // indirect
@@ -168,7 +168,7 @@ require (
 	github.com/redis/go-redis/v9 v9.23.0 // indirect
 	github.com/roadrunner-server/context v1.4.0 // indirect
 	github.com/roadrunner-server/events v1.1.0 // indirect
-	github.com/roadrunner-server/priority_queue v1.1.0 // indirect
+	github.com/roadrunner-server/priority_queue v1.2.0 // indirect
 	github.com/roadrunner-server/tcplisten v1.6.1 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/rs/cors v1.11.1 // indirect
@@ -220,7 +220,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.28.0 // indirect
 	go.uber.org/zap/exp v0.3.0 // indirect
-	go.yaml.in/yaml/v3 v3.0.5 // indirect
+	go.yaml.in/yaml/v3 v3.0.6 // indirect
 	golang.org/x/crypto v0.58.0 // indirect
 	golang.org/x/net v0.62.0 // indirect
 	golang.org/x/oauth2 v0.37.0 // indirect

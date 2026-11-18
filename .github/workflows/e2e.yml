@@ -11,6 +11,11 @@ jobs:
     name: E2E tests (Go ${{ matrix.go }}, PHP ${{ matrix.php }}, OS ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
+    services:
+      redis:
+        image: redis:8.0
+        ports: ["16379:6379"]
+        options: --init --health-cmd "redis-cli ping" --health-interval 2s --health-timeout 2s --health-retries 15
     strategy:
       matrix:
         php: ["8.5"]
