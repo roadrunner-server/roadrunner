@@ -79,17 +79,14 @@ server:
   # Default: "pipes"
   relay: pipes
 
-# Logging settings (docs: https://roadrunner.dev/docs/plugins-logger/2.x/en)
+# Logging settings: https://github.com/roadrunner-server/docs/blob/release/v3/lab/logger.md
 logs:
-  # Logging mode can be "development", "production" or "raw". Do not forget to change this value for production environment.
-  #
-  # Development mode (which makes DPanicLevel logs panic), uses a console encoder, writes to standard error, and
-  # disables sampling. Stacktraces are automatically included on logs of WarnLevel and above.
+  # Logging mode: "development", "production", "raw", "off", or "none".
   #
   # Default: "development"
   mode: development
 
-  # Logging level can be "panic", "error", "warn", "info", "debug".
+  # Logging level: "error", "warn", "info", or "debug".
   #
   # Default: "debug"
   level: debug
@@ -114,35 +111,11 @@ logs:
   # Default: ["stderr"]
   err_output: ["stderr"]
 
-  # File logger options
-  #
-  # Default: null
-  file_logger_options:
+  # Optional format for log records.
+  # format: "%time% [%level%] %message% %attrs%"
 
-    # Path to the file
-    #
-    # Default: It uses <processname>-lumberjack.log name in the os tempdir if empty.
-    log_output: "/tmp/my.log"
-
-    # Max file size in MB
-    #
-    # Default: 100
-    max_size: 100
-
-    # max_age is the maximum number of days to retain old log files based on the timestamp encoded in their filename.
-    #
-    # Default: 1 (day)
-    max_age: 1
-
-    # max_backups is the maximum number of old log files to retain.
-    #
-    # Default: retain all (if set to 0)
-    max_backups: 5
-
-    # Compress determines if the rotated log files should be compressed using gzip.
-    #
-    # Default: false
-    compress: false
+  # Optional time format for the %time% placeholder.
+  # time_format: "15:04:05"
 
   # You can configure each plugin log messages individually (key is plugin name, and value is logging options in same
   # format as above).
@@ -151,7 +124,7 @@ logs:
   channels:
     http:
       mode: development
-      level: panic
+      level: error
       encoding: console
       output: ["stdout"]
       err_output: ["stderr"]
@@ -1126,38 +1099,17 @@ reload:
 nats:
   addr: "demo.nats.io"
 
-# AMQP jobs driver
-#
-# This option is required to use AMQP driver
+# Named AMQP connections: https://github.com/roadrunner-server/docs/blob/release/v3/queues/amqp.md
 amqp:
-  # AMQP Uri to connect to the rabbitmq server https://www.rabbitmq.com/uri-spec.html
-  #
-  # This option is required for the production. Default: amqp(s)://guest:guest@127.0.0.1:5672
-  addr: amqp://guest:guest@127.0.0.1:5672/
+  local:
+    addr: amqps://guest:guest@127.0.0.1:5671/
 
-  # AMQPS TLS configuration
-  #
-  # This section is optional
-  tls:
-    # Path to the key file
-    #
-    # This option is required
-    key: "/ssl/key.pem"
-
-    # Path to the certificate
-    #
-    # This option is required
-    cert: "/ssl/cert.crt"
-
-    # Path to the CA certificate, defines the set of root certificate authorities that servers use if required to verify a client certificate. Used with the `client_auth_type` option.
-    #
-    # This option is optional
-    root_ca: "/ssl/ca.crt"
-
-    # Client auth type (mTLS, peer verification).
-    #
-    # This option is optional. Default value: no_client_certs. Possible values: request_client_cert, require_any_client_cert, verify_client_cert_if_given, require_and_verify_client_cert, no_client_certs
-    client_auth_type: no_client_certs
+    # The optional TLS section requires both key and cert.
+    tls:
+      key: "/ssl/key.pem"
+      cert: "/ssl/cert.crt"
+      root_ca: "/ssl/ca.crt"
+      client_auth_type: no_client_certs
 
 # Beanstalk jobs driver
 #
@@ -1443,6 +1395,8 @@ jobs:
       #
       # Should not be empty
       config:
+        # Name of the connection in the amqp section.
+        connection: local
 
         # QoS - prefetch.
         #
@@ -1454,83 +1408,30 @@ jobs:
         # If the job has priority set to 0, it will inherit the pipeline's priority. Default: 10.
         priority: 1
 
-        # Durable queue
-        #
-        # Default: false
-        durable: false
-
-        # Durable exchange (rabbitmq option: https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges)
-        #
-        # Default: false
-        exchange_durable: false
-
-        # Auto-delete (exchange is deleted when last queue is unbound from it): https://www.rabbitmq.com/tutorials/amqp-concepts.html#exchanges
-        #
-        # Default: false
-        exchange_auto_delete: false
-
-        # Auto-delete (queue that has had at least one consumer is deleted when last consumer unsubscribes) (rabbitmq option: https://www.rabbitmq.com/queues.html#properties)
-        #
-        # Default: false
-        queue_auto_delete: false
-
-        # Delete queue when stopping the pipeline
-        #
-        # Default: false
-        delete_queue_on_stop: false
-
-        # Queue name
-        #
-        # Default: default
-        queue: test-1-queue
-
-        # Exchange name
-        #
-        # Default: amqp.default
-        exchange: default
-
         # Redial timeout (in seconds). How long to try to reconnect to the AMQP server.
         #
         # Default: 60
         redial_timeout: 60
 
-        # Exchange type
-        #
-        # Default: direct.
-        exchange_type: direct
+        exchange:
+          name: default
+          type: direct
+          durable: false
+          auto_delete: false
 
-        # Routing key for the queue
-        #
-        # Default: empty.
-        routing_key: test
-
-        # Declare a queue exclusive at the exchange
-        #
-        # Default: false
-        exclusive: false
-
-        # When multiple is true, this delivery and all prior unacknowledged deliveries
-        # on the same channel will be acknowledged.  This is useful for batch processing
-        # of deliveries
-        #
-        # Default: false
-        multiple_ack: false
-
-        # The consumer_id is identified by a string that is unique and scoped for all consumers on this channel.
-        #
-        # Default: "roadrunner" + uuid.
-        consumer_id: "roadrunner-uuid"
-
-        # Use rabbitmq mechanism to requeue the job on fail
-        #
-        # Default: false
-        requeue_on_fail: false
-
-        # Queue headers
-        #
-        # Default: null
-        queue_headers:
-          x-queue-mode: lazy
+        queue:
+          name: test-1-queue
+          routing_key: test
+          durable: false
+          auto_delete: false
+          exclusive: false
+          delete_on_stop: false
+          consumer_id: "roadrunner-uuid"
+          # Also acknowledge earlier deliveries on this channel.
+          multiple_ack: false
+          requeue_on_fail: false
+          headers:
+            x-queue-mode: lazy
 
     test-local-3:
       # Driver name
