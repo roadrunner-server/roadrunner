@@ -91,6 +91,13 @@ wget https://github.com/roadrunner-server/roadrunner/releases/download/v3.0.0/ro
 sudo dpkg -i roadrunner-3.0.0-linux-amd64.deb
 ```
 
+## Installation option for the RPM-based distributions (Fedora, RHEL, Rocky, Alma, openSUSE, etc)
+
+```bash
+wget https://github.com/roadrunner-server/roadrunner/releases/download/v3.0.0/roadrunner-3.0.0-linux-amd64.rpm
+sudo rpm -i roadrunner-3.0.0-linux-amd64.rpm
+```
+
 ## Download the latest release via curl:
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf  https://raw.githubusercontent.com/roadrunner-server/roadrunner/master/download-latest.sh | sh
@@ -179,7 +186,7 @@ by [Spiral Scout](https://spiralscout.com).
 
 ## Releases
 
-[Release Please](https://github.com/googleapis/release-please) updates a release PR on `master` from [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). It updates `CHANGELOG.md` and `.release-please-manifest.json`. Merge the release PR to create the tag and GitHub release. The release workflows then build the binaries, Debian packages, gRPC compiler, and container images. Re-run failed jobs if a build fails.
+[Release Please](https://github.com/googleapis/release-please) updates a release PR on `master` from [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). It updates `CHANGELOG.md` and `.release-please-manifest.json`. Merge the release PR to create the tag and GitHub release. The release workflows then build the binaries, Debian and RPM packages, gRPC compiler, and container images. Re-run failed jobs if a build fails.
 
 
 ## Contributors
