@@ -463,8 +463,8 @@ github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0 h1:V3bDMBh6ak0jWBDLJknHv5
 github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0/go.mod h1:7vBeVQVTIBoNbrSIP51PEBdcdq9uBQShG62PtXJtYq4=
 github.com/roadrunner-server/rate-limiter/v6 v6.0.0 h1:qNqg+ChTtuvPIE63xOwm460ZESIb6/FxydTM2uIRPg4=
 github.com/roadrunner-server/rate-limiter/v6 v6.0.0/go.mod h1:GOzVboOHr7QOj0thKuLuL4YDj/srylwZkah35a6aOXc=
-github.com/roadrunner-server/redis/v6 v6.0.1-0.20261119152155-ebcc54009aec h1:smLD2uHyi5HAqfYfZXCCxI5LUGGE2za8Ve+OWylBF78=
-github.com/roadrunner-server/redis/v6 v6.0.1-0.20261119152155-ebcc54009aec/go.mod h1:5nm0or63qMYJ7W3Z2iDwkUzaEOuEs1b7Yf993uj15/M=
+github.com/roadrunner-server/redis/v6 v6.0.1-0.20261119152707-8a55f72a65b2 h1:tK8IFZgjRZqL2/nT7yhE95vybMmxKw77mXCCtCW/WXM=
+github.com/roadrunner-server/redis/v6 v6.0.1-0.20261119152707-8a55f72a65b2/go.mod h1:5nm0or63qMYJ7W3Z2iDwkUzaEOuEs1b7Yf993uj15/M=
 github.com/roadrunner-server/resetter/v6 v6.0.0 h1:EIsV+ycJ1309CoyO1NcSNKGzbeRnIhGsQaVP30XxQh0=
 github.com/roadrunner-server/resetter/v6 v6.0.0/go.mod h1:JtohrcwpIM+Hx8b0vn1T3DIn1v4o7XgI6sG8IpAiEdU=
 github.com/roadrunner-server/rpc/v6 v6.0.0 h1:B63RuOl3Md+X8qooXXICBTSnNQNOkOvyuPQ/CU8QpI0=

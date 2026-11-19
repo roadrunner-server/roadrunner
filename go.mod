@@ -42,7 +42,7 @@ require (
 	github.com/roadrunner-server/protoreg/v6 v6.0.0
 	github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0
 	github.com/roadrunner-server/rate-limiter/v6 v6.0.0
-	github.com/roadrunner-server/redis/v6 v6.0.1-0.20261119152155-ebcc54009aec
+	github.com/roadrunner-server/redis/v6 v6.0.1-0.20261119152707-8a55f72a65b2
 	github.com/roadrunner-server/resetter/v6 v6.0.0
 	github.com/roadrunner-server/rpc/v6 v6.0.0
 	github.com/roadrunner-server/send/v6 v6.0.0
