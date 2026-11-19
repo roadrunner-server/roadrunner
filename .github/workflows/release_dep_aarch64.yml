@@ -60,7 +60,7 @@ jobs:
         run: touch dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-arm64/DEBIAN/control
       - name: Build Debian package
         run: |
-          echo "Package: roadrunner-${{ steps.values.outputs.version }}-linux-arm64.deb" >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-arm64/DEBIAN/control
+          echo "Package: roadrunner" >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-arm64/DEBIAN/control
           echo "Version: ${{ steps.values.outputs.version }}" >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-arm64/DEBIAN/control
           echo "Section: custom" >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-arm64/DEBIAN/control
           echo "Priority: optional" >> dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-arm64/DEBIAN/control
@@ -71,7 +71,7 @@ jobs:
           cat dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-arm64/DEBIAN/control
 
           cp "./${{ steps.values.outputs.binary-name }}" dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-arm64/usr/bin/
-          dpkg --build dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-arm64
+          dpkg-deb --root-owner-group --build dist/ubuntu/roadrunner-${{ steps.values.outputs.version }}-linux-arm64
       - name: Upload dep to release
         uses: svenstaro/upload-release-action@v2
         with:

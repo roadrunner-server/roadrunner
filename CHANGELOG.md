@@ -6,6 +6,7 @@ releases: [docs](https://docs.roadrunner.dev/docs/releases)
 
 - 🐛 **Logger configuration schema**: RoadRunner uses the logger plugin's schema for global and channel settings. It accepts `format` and `time_format` and rejects `file_logger_options`. [#2420](https://github.com/roadrunner-server/roadrunner/issues/2420).
 - 🐛 **AMQP configuration**: The schema and sample use named connections and nested `exchange` and `queue` settings.
+- 🐛 **Debian package** package renamed to "roadrunner", and installed files as owned by root.
 
 ## 3.0.0 (2026-10-08)
 
