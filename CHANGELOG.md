@@ -8,6 +8,28 @@ releases: [docs](https://docs.roadrunner.dev/docs/releases)
 - 🐛 **AMQP configuration**: The schema and sample use named connections and nested `exchange` and `queue` settings.
 - 🐛 **Debian package** package renamed to "roadrunner", and installed files as owned by root.
 
+## [3.2.0](https://github.com/roadrunner-server/roadrunner/compare/v3.0.0...v3.2.0) (2026-11-19)
+
+
+### Features
+
+* add the metrics prefix and labels options to the reference config and schema ([6cf5f98](https://github.com/roadrunner-server/roadrunner/commit/6cf5f98374864725cd2b77038a0921949ed8f878))
+* add the metrics prefix and labels options to the reference config and schema ([094bf1b](https://github.com/roadrunner-server/roadrunner/commit/094bf1bbbddbd142f7b5cbf7c826456406ec0ebe))
+* **linux:** debian packages: package name and file ownership ([24d19af](https://github.com/roadrunner-server/roadrunner/commit/24d19afde90d87bcaaf53b866857a63fda0d31f5))
+
+
+### Bug Fixes
+
+* change file sownership to root in debian packages ([7155b8c](https://github.com/roadrunner-server/roadrunner/commit/7155b8c253fbf4f3bd8e262e0b6a1c51e64bd488))
+* name debian packages as "roadrunner" to allow package upgrading ([7155b8c](https://github.com/roadrunner-server/roadrunner/commit/7155b8c253fbf4f3bd8e262e0b6a1c51e64bd488))
+* **schema:** restore v3 configuration validation ([3b3f902](https://github.com/roadrunner-server/roadrunner/commit/3b3f902e5a146a7780b6b5a51f245156a2d8b098))
+* **schema:** restore v3 configuration validation ([#2461](https://github.com/roadrunner-server/roadrunner/issues/2461)) ([2f1bdb5](https://github.com/roadrunner-server/roadrunner/commit/2f1bdb5d2d25a5927f901c89952a3ee69dbe11d8))
+
+
+### Miscellaneous Chores
+
+* set next release to 3.2.0 ([906c470](https://github.com/roadrunner-server/roadrunner/commit/906c4701b8cacb96b98ea59f0adb9753472f21fd))
+
 ## 3.0.0 (2026-10-08)
 
 RoadRunner v3 uses v6 Go plugins. See [Upgrade from v2025 to v3](https://github.com/roadrunner-server/docs/blob/release/v3/intro/v3-migration.md) for the required configuration and API changes.
