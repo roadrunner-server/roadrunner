@@ -1084,6 +1084,9 @@
                   "$ref": "https://raw.githubusercontent.com/roadrunner-server/nats/refs/heads/master/schema.json#/definitions/pipeline"
                 },
                 {
+                  "$ref": "https://raw.githubusercontent.com/roadrunner-server/redis/8a55f72a65b23e91e74fa3517daa3a4be2393ca0/schema.json#/definitions/pipeline"
+                },
+                {
                   "$ref": "https://raw.githubusercontent.com/roadrunner-server/sqs/refs/heads/master/schema.json#/definitions/pipeline"
                 }
               ]

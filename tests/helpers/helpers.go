@@ -22,9 +22,9 @@ const (
 	dialTimeout = 5 * time.Second
 )
 
-// rpcClient dials the given address with a timeout and returns a Goridge RPC
+// RPCClient dials the given address with a timeout and returns a Goridge RPC
 // client. The client is automatically closed via t.Cleanup when the test ends.
-func rpcClient(t *testing.T, address string) *rpc.Client {
+func RPCClient(t *testing.T, address string) *rpc.Client {
 	t.Helper()
 
 	ctx, cancel := context.WithTimeout(context.Background(), dialTimeout)
@@ -44,7 +44,7 @@ func rpcClient(t *testing.T, address string) *rpc.Client {
 func callPipelines(t *testing.T, address, method string, pipes []string) {
 	t.Helper()
 
-	client := rpcClient(t, address)
+	client := RPCClient(t, address)
 
 	pipe := &jobsProto.Pipelines{Pipelines: make([]string, len(pipes))}
 	for i := range pipes {
@@ -77,7 +77,7 @@ func PushToPipe(pipeline string, autoAck bool, address string) func(t *testing.T
 	return func(t *testing.T) {
 		t.Helper()
 
-		client := rpcClient(t, address)
+		client := RPCClient(t, address)
 
 		req := &jobsProto.PushRequest{Job: &jobsProto.Job{
 			Job:     "some/php/namespace",
@@ -103,7 +103,7 @@ func DestroyPipelines(address string, pipes ...string) func(t *testing.T) {
 	return func(t *testing.T) {
 		t.Helper()
 
-		client := rpcClient(t, address)
+		client := RPCClient(t, address)
 
 		pipe := &jobsProto.Pipelines{Pipelines: make([]string, len(pipes))}
 		for i := range pipes {

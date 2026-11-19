@@ -42,6 +42,8 @@ const cases = [
 	{ name: 'flat AMQP address', config: { version: '3', amqp: { addr: 'amqp://localhost:5672/' } }, valid: false },
 	{ name: 'Kafka TLS with a root CA', config: { version: '3', kafka: { brokers, tls: { root_ca: '/ssl/ca.crt' } } }, valid: true },
 	{ name: 'Kafka TLS with only a key', config: { version: '3', kafka: { brokers, tls: { key: '/ssl/key.pem' } } }, valid: false },
+	{ name: 'Redis Jobs pipeline', config: { version: '3', jobs: { pipelines: { mail: { driver: 'redis', config: { queue: 'mail', visibility_timeout: '2m' } } } } }, valid: true },
+	{ name: 'Redis Jobs negative prefetch', config: { version: '3', jobs: { pipelines: { mail: { driver: 'redis', config: { prefetch: -1 } } } } }, valid: false },
 	{ name: '.rr.yaml', config: yaml.load(data), valid: true },
 ];
 

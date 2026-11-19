@@ -328,8 +328,8 @@ github.com/olekukonko/tablewriter v1.1.5/go.mod h1:+kedxuyTtgoZLwif3P1Em4hARJs+m
 github.com/opencontainers/runtime-spec v1.3.0 h1:YZupQUdctfhpZy3TM39nN9Ika5CBWT5diQ8ibYCRkxg=
 github.com/opencontainers/runtime-spec v1.3.0/go.mod h1:jwyrGlmzljRJv/Fgzds9SsS/C5hL+LL3ko9hs6T5lQ0=
 github.com/opentracing/opentracing-go v1.1.0/go.mod h1:UkNAQd3GIcIGf0SeVgPpRdFStlNbqXla1AfSYxPUl2o=
-github.com/pandatix/go-abnf v0.5.4 h1:Ds32m+31oMVBw/vJB2uCI0qGa0zwmEftl0ZQkXClYDQ=
-github.com/pandatix/go-abnf v0.5.4/go.mod h1:AE0KD3/VNoCjGzc1gqetRKshbI4SYErXQ/8kPenR5mc=
+github.com/pandatix/go-abnf v0.5.5 h1:EXex5KkRQx4Dm6GnpAcQnIMBs9KiK0uf8p/wq+4t9PM=
+github.com/pandatix/go-abnf v0.5.5/go.mod h1:AE0KD3/VNoCjGzc1gqetRKshbI4SYErXQ/8kPenR5mc=
 github.com/pborman/uuid v1.2.1/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtPdI/k=
 github.com/pelletier/go-toml/v2 v2.4.3 h1:GTRvJQutkOSftxIFD5xw9aepkYNuPWmVJpffdDPYVpY=
 github.com/pelletier/go-toml/v2 v2.4.3/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
@@ -453,8 +453,8 @@ github.com/roadrunner-server/otel/v6 v6.0.0 h1:APEE7cTOOSbRmAC1TonoAyn2tO4/wynHz
 github.com/roadrunner-server/otel/v6 v6.0.0/go.mod h1:3setO5EcLim3a4PFRhYi8Sswv07l/jkVx3oKMp6ouOw=
 github.com/roadrunner-server/pool/v2 v2.0.0 h1:rtxGvX6jt/WfSmNuV9zCOZ3NKdEGa/aTxpVPD14uHrU=
 github.com/roadrunner-server/pool/v2 v2.0.0/go.mod h1:DVi2a3IAqy/hQin8V3EJjmEOLPqS/sI2q3bQL8Qd0OY=
-github.com/roadrunner-server/priority_queue v1.1.0 h1:ecZfrLy7mq4E/yeI5KrXKPwM7jp8j3jUyMGf1IGB9IA=
-github.com/roadrunner-server/priority_queue v1.1.0/go.mod h1:1zWE7phLEfzC/j+SD49xIi3cvSNW/+6KGka278QCriI=
+github.com/roadrunner-server/priority_queue v1.2.0 h1:d886ba17GnE2WQ8NI+bwPNpyyqbqbV99tOSiMXheykI=
+github.com/roadrunner-server/priority_queue v1.2.0/go.mod h1:sjFW0tQK3NSdiPFmuUty0fMydHGg50YoMjfN/EpZIdw=
 github.com/roadrunner-server/prometheus/v6 v6.0.0 h1:q0N6wx21YqtZXmZyLRIoCKtseEYCh6AncSrLyyj+qEg=
 github.com/roadrunner-server/prometheus/v6 v6.0.0/go.mod h1:+AjN1a4Q3GHzzJn93h0Pj7DCLAo2dgSyWwZsOXW65kQ=
 github.com/roadrunner-server/protoreg/v6 v6.0.0 h1:Q4Y7CnwT7zG9oME6TvB9OzXw7jF+sK4Tc+yipO2AufI=
@@ -463,8 +463,8 @@ github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0 h1:V3bDMBh6ak0jWBDLJknHv5
 github.com/roadrunner-server/proxy_ip_parser/v6 v6.0.0/go.mod h1:7vBeVQVTIBoNbrSIP51PEBdcdq9uBQShG62PtXJtYq4=
 github.com/roadrunner-server/rate-limiter/v6 v6.0.0 h1:qNqg+ChTtuvPIE63xOwm460ZESIb6/FxydTM2uIRPg4=
 github.com/roadrunner-server/rate-limiter/v6 v6.0.0/go.mod h1:GOzVboOHr7QOj0thKuLuL4YDj/srylwZkah35a6aOXc=
-github.com/roadrunner-server/redis/v6 v6.0.0 h1:1h5TWfGayhcZ6S8xBDa0nXxQH+hMl6QV6MHMdjkbJTE=
-github.com/roadrunner-server/redis/v6 v6.0.0/go.mod h1:GmH7sesPYsdr/FFvMjnofKpL3u/Z8+Xqt97He7BBjsE=
+github.com/roadrunner-server/redis/v6 v6.0.1-0.20261119152707-8a55f72a65b2 h1:tK8IFZgjRZqL2/nT7yhE95vybMmxKw77mXCCtCW/WXM=
+github.com/roadrunner-server/redis/v6 v6.0.1-0.20261119152707-8a55f72a65b2/go.mod h1:5nm0or63qMYJ7W3Z2iDwkUzaEOuEs1b7Yf993uj15/M=
 github.com/roadrunner-server/resetter/v6 v6.0.0 h1:EIsV+ycJ1309CoyO1NcSNKGzbeRnIhGsQaVP30XxQh0=
 github.com/roadrunner-server/resetter/v6 v6.0.0/go.mod h1:JtohrcwpIM+Hx8b0vn1T3DIn1v4o7XgI6sG8IpAiEdU=
 github.com/roadrunner-server/rpc/v6 v6.0.0 h1:B63RuOl3Md+X8qooXXICBTSnNQNOkOvyuPQ/CU8QpI0=
@@ -646,8 +646,8 @@ go.uber.org/zap/exp v0.3.0/go.mod h1:5I384qq7XGxYyByIhHm6jg5CHkGY0nsTfbDLgDDlgJQ
 go.yaml.in/yaml/v2 v2.4.4 h1:tuyd0P+2Ont/d6e2rl3be67goVK4R6deVxCUX5vyPaQ=
 go.yaml.in/yaml/v2 v2.4.4/go.mod h1:gMZqIpDtDqOfM0uNfy0SkpRhvUryYH0Z6wdMYcacYXQ=
 go.yaml.in/yaml/v3 v3.0.4/go.mod h1:DhzuOOF2ATzADvBadXxruRBLzYTpT36CKvDb3+aBEFg=
-go.yaml.in/yaml/v3 v3.0.5 h1:N6y/pJk8buWs9NY5ERU2HSMfm+IuD/OtfdAnq6kESPw=
-go.yaml.in/yaml/v3 v3.0.5/go.mod h1:HVTZu1O7/Vkt2N+BFy8Zza+lnLsABggaTM2ZpNIGuKg=
+go.yaml.in/yaml/v3 v3.0.6 h1:zcDfvjXEqTQmpjniUBLc91xYJMB2c4QOFxEF/LCEckM=
+go.yaml.in/yaml/v3 v3.0.6/go.mod h1:HVTZu1O7/Vkt2N+BFy8Zza+lnLsABggaTM2ZpNIGuKg=
 golang.org/x/crypto v0.0.0-20180904163835-0709b304e793/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
