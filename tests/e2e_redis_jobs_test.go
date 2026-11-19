@@ -44,15 +44,21 @@ func TestRedisJobsPHPRequeue(t *testing.T) {
 	require.False(t, stats.GetStats()[0].GetReady())
 	require.EqualValues(t, 1, stats.GetStats()[0].GetReserved())
 
-	require.NoError(t, client.Call("jobs.Resume", &pb.Pipelines{Pipelines: []string{"mail"}}, &pb.Pipelines{}))
+	require.NoError(t, client.Call("jobs.Declare", &pb.DeclareRequest{Pipeline: map[string]string{
+		"name": "worker", "driver": "redis", "queue": queue, "prefetch": "1", "visibility_timeout": "5s",
+	}}, &pb.Empty{}))
+	require.NoError(t, client.Call("jobs.Resume", &pb.Pipelines{Pipelines: []string{"worker"}}, &pb.Pipelines{}))
 	require.EventuallyWithT(t, func(c *assert.CollectT) {
 		out, err := os.ReadFile(result)
 		require.NoError(c, err)
-		require.JSONEq(c, fmt.Sprintf(`["123","redis","mail",%q,"AP8q",["one","two"],["yes"]]`, queue), string(out))
+		require.JSONEq(c, fmt.Sprintf(`["123","redis","worker",%q,"AP8q",["one","two"],["yes"]]`, queue), string(out))
 		state := &pb.Stats{}
 		require.NoError(c, client.Call("jobs.Stat", &pb.Empty{}, state))
-		require.Len(c, state.GetStats(), 1)
-		s := state.GetStats()[0]
-		require.Zero(c, s.GetActive()+s.GetReserved()+s.GetDelayed())
+		require.Len(c, state.GetStats(), 2)
+		for _, s := range state.GetStats() {
+			require.Zero(c, s.GetActive())
+			require.Zero(c, s.GetReserved())
+			require.Zero(c, s.GetDelayed())
+		}
 	}, 10*time.Second, 20*time.Millisecond)
 }
