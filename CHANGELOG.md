@@ -7,6 +7,7 @@ releases: [docs](https://docs.roadrunner.dev/docs/releases)
 - 🐛 **Logger configuration schema**: RoadRunner uses the logger plugin's schema for global and channel settings. It accepts `format` and `time_format` and rejects `file_logger_options`. [#2420](https://github.com/roadrunner-server/roadrunner/issues/2420).
 - 🐛 **AMQP configuration**: The schema and sample use named connections and nested `exchange` and `queue` settings.
 - 🐛 **Debian package** package renamed to "roadrunner", and installed files as owned by root.
+- 🔒 **Dependencies**: Go 1.27.4 and updated Go dependencies, including `golang.org/x/net` v0.63.0 and `golang.org/x/crypto` v0.59.0. Fixes CVE-2026-78661 and the stdlib CVE-2026-111943. [#2456](https://github.com/roadrunner-server/roadrunner/issues/2456).
 
 ## 3.0.0 (2026-10-08)
 
