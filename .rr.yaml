@@ -965,7 +965,10 @@ redis:
   master_name: ""
   username: ""
   password: ""
-  db: 0
+  # On one Redis server, Jobs uses database 1 and fast-kv-fr uses database 0.
+  # With Redis Cluster, use database 0 and separate clusters for Jobs and KV.
+  # See https://redis.io/docs/latest/commands/select/
+  db: 1
   sentinel_password: ""
   route_by_latency: false
   route_randomly: false
@@ -1328,6 +1331,15 @@ jobs:
   #
   # This option is not required since you can declare pipelines in the runtime. Pipeline driver should exist.
   pipelines:
+    test-redis:
+      driver: redis
+      config:
+        # Uses the connection settings in the redis section.
+        queue: mail
+        prefetch: 10
+        # Includes time waiting for a worker and execution time.
+        visibility_timeout: 5m
+
     # Pipeline name
     #
     # This option is required when defining pipelines via configuration.
@@ -1758,6 +1770,7 @@ jobs:
   # list of pipelines to be consumed by the server automatically at the start, keep empty if you want to start consuming manually
   consume:
     [
+      "test-redis",
       "test-local",
       "test-local-1",
       "test-local-2",

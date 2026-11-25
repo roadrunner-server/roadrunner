@@ -4,6 +4,7 @@ releases: [docs](https://docs.roadrunner.dev/docs/releases)
 
 ## Unreleased
 
+- ✨ **Redis Jobs**: Use `driver: redis` with Redis 8.0 or later. Jobs supports delayed delivery and recovery of unacknowledged jobs. [#965](https://github.com/roadrunner-server/roadrunner/issues/965).
 - 🐛 **Logger configuration schema**: RoadRunner uses the logger plugin's schema for global and channel settings. It accepts `format` and `time_format` and rejects `file_logger_options`. [#2420](https://github.com/roadrunner-server/roadrunner/issues/2420).
 - 🐛 **AMQP configuration**: The schema and sample use named connections and nested `exchange` and `queue` settings.
 - 🐛 **Debian package** package renamed to "roadrunner", and installed files as owned by root.

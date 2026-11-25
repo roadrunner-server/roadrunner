@@ -1,0 +1,20 @@
+version: '3'
+
+rpc:
+  listen: tcp://127.0.0.1:6209
+server:
+  command: "php php_test_files/jobs/redis_receipt.php"
+  env:
+    RR_REDIS_JOB_RESULT: "${RR_REDIS_JOB_RESULT}"
+redis:
+  addrs: ["127.0.0.1:16379"]
+  db: 2
+jobs:
+  pool:
+    num_workers: 1
+  pipelines:
+    mail:
+      driver: redis
+      config:
+        queue: "${RR_REDIS_JOB_QUEUE}"
+        prefetch: 1

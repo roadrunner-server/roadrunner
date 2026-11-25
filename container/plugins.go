@@ -99,10 +99,10 @@ func Plugins() []any { //nolint:funlen
 		&memory.Plugin{},
 		//  KV + Jobs
 		&boltdb.Plugin{},
+		&redis.Plugin{},
 		//  ============== KV
 		&kv.Plugin{},
 		&memcached.Plugin{},
-		&redis.Plugin{},
 		//  ==============
 		// temporal plugin
 		&rrt.Plugin{},
