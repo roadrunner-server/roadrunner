@@ -38,6 +38,7 @@
 - Root tests: `make test` runs `go test -v -race ./...`. Focus on one package with `go test -v -race ./internal/rpc`. Select one test with `go test -v -race ./internal/rpc -run '^TestNewClient_WithIncludes$'`.
 - Root lint: `golangci-lint run -v --build-tags=race --timeout=10m`, matching `.github/workflows/tests.yml`. Use golangci-lint v2 with `.golangci.yml`.
 - E2E setup matches `.github/workflows/e2e.yml`: Ubuntu, PHP 8.5 with the `sockets` extension, and Composer. Run `composer update --prefer-dist --no-progress --ansi` from `tests/php_test_files/`. The root `composer.json` is only a metapackage; it does not install the worker dependencies.
+- Before the Redis Jobs E2E test, start Redis 8.0 or later at `127.0.0.1:16379`.
 - From `tests/`, run `go mod download`, then `go test -timeout 15m -v -race -failfast ./...`. For one E2E test, use `go test -timeout 15m -v -race -run '^TestHTTPWithMiddleware$' .`. Fixtures are in `tests/configs/` and `tests/php_test_files/`.
 - RPC and E2E tests use fixed local TCP ports. Library tests share `os.TempDir() + "/.rr.yaml"`. Avoid simultaneous runs of the same tests.
 

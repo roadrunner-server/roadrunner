@@ -965,7 +965,9 @@ redis:
   master_name: ""
   username: ""
   password: ""
-  # The Jobs example uses a separate database from fast-kv-fr.
+  # On one Redis server, Jobs uses database 1 and fast-kv-fr uses database 0.
+  # With Redis Cluster, use database 0 and separate clusters for Jobs and KV.
+  # See https://redis.io/docs/latest/commands/select/
   db: 1
   sentinel_password: ""
   route_by_latency: false
