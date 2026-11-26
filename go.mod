@@ -24,13 +24,13 @@ require (
 	github.com/roadrunner-server/grpc/v6 v6.0.0
 	github.com/roadrunner-server/gzip/v6 v6.0.0
 	github.com/roadrunner-server/headers/v6 v6.0.0
-	github.com/roadrunner-server/http/v6 v6.1.0
+	github.com/roadrunner-server/http/v6 v6.1.1
 	github.com/roadrunner-server/informer/v6 v6.0.0
-	github.com/roadrunner-server/jobs/v6 v6.0.1
+	github.com/roadrunner-server/jobs/v6 v6.1.0
 	github.com/roadrunner-server/kafka/v6 v6.1.0
 	github.com/roadrunner-server/kv/v6 v6.0.0
 	github.com/roadrunner-server/lock/v6 v6.0.0
-	github.com/roadrunner-server/logger/v6 v6.0.0
+	github.com/roadrunner-server/logger/v6 v6.0.1
 	github.com/roadrunner-server/memcached/v6 v6.0.0
 	github.com/roadrunner-server/memory/v6 v6.0.0
 	github.com/roadrunner-server/metrics/v6 v6.1.0
@@ -65,20 +65,20 @@ require (
 	cloud.google.com/go/compute/metadata v0.10.0 // indirect
 	cloud.google.com/go/iam v1.15.1 // indirect
 	cloud.google.com/go/pubsub/v2 v2.9.0 // indirect
-	github.com/aws/aws-sdk-go-v2 v1.48.0 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.33.21 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.21.3 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.20.9 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.5.12 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.8.12 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/v4a v1.5.12 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.13.25 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.14.12 // indirect
-	github.com/aws/aws-sdk-go-v2/service/signin v1.14.0 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.53.0 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.39.5 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.44.5 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.53.0 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.48.1 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.33.22 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.21.4 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.20.10 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.5.13 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.8.13 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/v4a v1.5.13 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.13.26 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.14.13 // indirect
+	github.com/aws/aws-sdk-go-v2/service/signin v1.14.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.53.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.39.6 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.44.6 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.53.1 // indirect
 	github.com/aws/smithy-go v1.28.10 // indirect
 	github.com/beanstalkd/go-beanstalk v0.2.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -183,7 +183,7 @@ require (
 	github.com/tklauser/go-sysconf v0.4.0 // indirect
 	github.com/tklauser/numcpus v0.12.0 // indirect
 	github.com/twmb/franz-go v1.22.3 // indirect
-	github.com/twmb/franz-go/pkg/kmsg v1.15.1 // indirect
+	github.com/twmb/franz-go/pkg/kmsg v1.15.2 // indirect
 	github.com/twmb/murmur3 v1.2.2 // indirect
 	github.com/uber-go/tally/v4 v4.1.17 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
