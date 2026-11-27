@@ -2,6 +2,14 @@
 
 releases: [docs](https://docs.roadrunner.dev/docs/releases)
 
+## [3.2.1](https://github.com/roadrunner-server/roadrunner/compare/v3.2.0...v3.2.1) (2026-11-27)
+
+
+### Bug Fixes
+
+* **config:** load endure settings through config plugin ([bf62005](https://github.com/roadrunner-server/roadrunner/commit/bf620058b14e7d3495edfad619a3cb850e6bd566))
+* **logs:** preserve in-flight logs during shutdown ([2790025](https://github.com/roadrunner-server/roadrunner/commit/279002501773750ec8aa5b7ba707a6c0037d4059))
+
 ## 3.2.0 (2026-11-26)
 
 ### 🎯 Core
