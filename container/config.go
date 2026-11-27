@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/spf13/viper"
+	configImpl "github.com/roadrunner-server/config/v6"
 )
 
 // Config defines endure container configuration.
@@ -24,11 +24,13 @@ const (
 )
 
 // NewConfig creates endure container configuration.
-func NewConfig(cfgFile string) (*Config, error) {
-	v := viper.New()
-	v.SetConfigFile(cfgFile)
+func NewConfig(cfgFile string, flags ...string) (*Config, error) {
+	cfgPlugin := &configImpl.Plugin{
+		Path:  cfgFile,
+		Flags: flags,
+	}
 
-	err := v.ReadInConfig()
+	err := cfgPlugin.Init()
 	if err != nil {
 		return nil, err
 	}
@@ -39,11 +41,11 @@ func NewConfig(cfgFile string) (*Config, error) {
 		PrintGraph:  false,
 	}
 
-	if !v.IsSet(endureKey) {
+	if !cfgPlugin.Has(endureKey) {
 		return cfg, nil
 	}
 
-	err = v.UnmarshalKey(endureKey, cfg)
+	err = cfgPlugin.UnmarshalKey(endureKey, cfg)
 	if err != nil {
 		return nil, err
 	}

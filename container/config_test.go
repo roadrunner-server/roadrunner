@@ -1,13 +1,17 @@
 package container_test
 
 import (
+	"fmt"
 	"log/slog"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
 	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/roadrunner/v3/container"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewConfig_SuccessfulReading(t *testing.T) {
@@ -69,6 +73,114 @@ func TestNewConfig_LoggingLevels(t *testing.T) {
 				assert.NoError(t, err2)
 				assert.Equal(t, tt.wantLevel, ll.Level())
 			}
+		})
+	}
+}
+
+func TestNewConfig_Includes(t *testing.T) {
+	tests := []struct {
+		name            string
+		mainBody        string
+		includeBody     string
+		flags           []string
+		wantGracePeriod time.Duration
+		wantLogLevel    string
+		wantPrintGraph  bool
+	}{
+		{
+			name:     "included grace_period applies when main omits endure",
+			mainBody: "",
+			includeBody: `version: "3"
+endure:
+  grace_period: 15s
+`,
+			wantGracePeriod: 15 * time.Second,
+			wantLogLevel:    "error",
+		},
+		{
+			name: "included grace_period overrides main endure",
+			mainBody: `endure:
+  grace_period: 45s
+`,
+			includeBody: `version: "3"
+endure:
+  grace_period: 15s
+`,
+			wantGracePeriod: 15 * time.Second,
+			wantLogLevel:    "error",
+		},
+		{
+			name: "split endure settings merge across main and include",
+			mainBody: `endure:
+  log_level: debug
+  print_graph: true
+`,
+			includeBody: `version: "3"
+endure:
+  grace_period: 15s
+`,
+			wantGracePeriod: 15 * time.Second,
+			wantLogLevel:    "debug",
+			wantPrintGraph:  true,
+		},
+		{
+			name:     "included env default expands for endure grace_period",
+			mainBody: "",
+			includeBody: `version: "3"
+endure:
+  grace_period: ${RR_TEST_ENDURE_GRACE:-12s}
+`,
+			wantGracePeriod: 12 * time.Second,
+			wantLogLevel:    "error",
+		},
+		{
+			name:            "CLI flag sets endure grace_period when main omits endure",
+			mainBody:        "",
+			flags:           []string{"endure.grace_period=20s"},
+			wantGracePeriod: 20 * time.Second,
+			wantLogLevel:    "error",
+		},
+		{
+			name: "CLI flag overrides main endure grace_period",
+			mainBody: `endure:
+  grace_period: 45s
+`,
+			flags:           []string{"endure.grace_period=20s"},
+			wantGracePeriod: 20 * time.Second,
+			wantLogLevel:    "error",
+		},
+		{
+			name: "single file control",
+			mainBody: `endure:
+  grace_period: 15s
+  log_level: info
+`,
+			wantGracePeriod: 15 * time.Second,
+			wantLogLevel:    "info",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			mainContent := "version: \"3\"\n"
+			if tc.includeBody != "" {
+				incPath := filepath.Join(dir, "base.yaml")
+				require.NoError(t, os.WriteFile(incPath, []byte(tc.includeBody), 0o600))
+				mainContent += fmt.Sprintf("include:\n  - %q\n", incPath)
+			}
+			mainContent += tc.mainBody
+
+			mainPath := filepath.Join(dir, "main.yaml")
+			require.NoError(t, os.WriteFile(mainPath, []byte(mainContent), 0o600))
+
+			cfg, err := container.NewConfig(mainPath, tc.flags...)
+			require.NoError(t, err)
+			require.NotNil(t, cfg)
+
+			assert.Equal(t, tc.wantGracePeriod, cfg.GracePeriod)
+			assert.Equal(t, tc.wantLogLevel, cfg.LogLevel)
+			assert.Equal(t, tc.wantPrintGraph, cfg.PrintGraph)
 		})
 	}
 }

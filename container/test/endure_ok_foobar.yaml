@@ -1,3 +1,4 @@
+version: "3"
 endure:
   grace_period: 10s
   print_graph: true
