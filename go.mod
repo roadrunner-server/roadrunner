@@ -16,7 +16,7 @@ require (
 	github.com/roadrunner-server/boltdb/v6 v6.0.0
 	github.com/roadrunner-server/centrifuge/v6 v6.0.0
 	github.com/roadrunner-server/config/v6 v6.0.1
-	github.com/roadrunner-server/endure/v2 v2.7.1
+	github.com/roadrunner-server/endure/v2 v2.7.2
 	github.com/roadrunner-server/errors v1.6.0
 	github.com/roadrunner-server/fileserver/v6 v6.1.0
 	github.com/roadrunner-server/google-pub-sub/v6 v6.0.0
@@ -26,7 +26,7 @@ require (
 	github.com/roadrunner-server/headers/v6 v6.0.0
 	github.com/roadrunner-server/http/v6 v6.1.1
 	github.com/roadrunner-server/informer/v6 v6.0.0
-	github.com/roadrunner-server/jobs/v6 v6.1.0
+	github.com/roadrunner-server/jobs/v6 v6.1.1
 	github.com/roadrunner-server/kafka/v6 v6.1.0
 	github.com/roadrunner-server/kv/v6 v6.0.0
 	github.com/roadrunner-server/lock/v6 v6.0.0
