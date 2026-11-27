@@ -4,11 +4,18 @@ releases: [docs](https://docs.roadrunner.dev/docs/releases)
 
 ## [3.2.1](https://github.com/roadrunner-server/roadrunner/compare/v3.2.0...v3.2.1) (2026-11-27)
 
+### 🎯 Core
 
-### Bug Fixes
+- 🐛 **Graceful shutdown order**: Stop plugins in reverse dependency order through `endure/v2` `v2.7.2` so log writers stay open while in-flight requests finish after `SIGTERM`, and collect initial stop roots before launching stop goroutines to prevent `sync: negative WaitGroup counter` panics. See [BUG #2471](https://github.com/roadrunner-server/roadrunner/issues/2471), [PR #2472](https://github.com/roadrunner-server/roadrunner/pull/2472), [endure PR #236](https://github.com/roadrunner-server/endure/pull/236), and [endure PR #238](https://github.com/roadrunner-server/endure/pull/238).
+- 🐛 **Included configuration and Endure settings**: Load `endure` container settings through `config/v6` `v6.0.1` so `include`, `envfile`, environment expansion, and `-o` override flags apply consistently, and merge included leaf keys without overwriting main-only section settings. See [BUG #2444](https://github.com/roadrunner-server/roadrunner/issues/2444), [BUG #2445](https://github.com/roadrunner-server/roadrunner/issues/2445), [PR #2474](https://github.com/roadrunner-server/roadrunner/pull/2474), and [config PR #121](https://github.com/roadrunner-server/config/pull/121).
+- 🐛 **Toolchain and dependencies**: Update Go in `go.mod`, `go.work`, and `tests/go.mod` to `1.27.4` and bump `jobs/v6` to `v6.1.1` and `endure/v2` to `v2.7.2`. See [PR #2472](https://github.com/roadrunner-server/roadrunner/pull/2472) and [PR #2475](https://github.com/roadrunner-server/roadrunner/pull/2475).
 
-* **config:** load endure settings through config plugin ([bf62005](https://github.com/roadrunner-server/roadrunner/commit/bf620058b14e7d3495edfad619a3cb850e6bd566))
-* **logs:** preserve in-flight logs during shutdown ([2790025](https://github.com/roadrunner-server/roadrunner/commit/279002501773750ec8aa5b7ba707a6c0037d4059))
+### 📦 `jobs` plugin
+
+- 🐛 **Concurrent pipeline declarations**: Serialize concurrent `Declare` calls for the same pipeline name so one declaration cannot replace or orphan another running driver. See [BUG #2438](https://github.com/roadrunner-server/roadrunner/issues/2438), [BUG #2433](https://github.com/roadrunner-server/roadrunner/issues/2433), and [jobs PR #164](https://github.com/roadrunner-server/jobs/pull/164).
+- 🐛 **Declared pipeline restarts**: Restore declared pipelines to their prior running state after an automatic worker pool restart, and send a service error when restarting a declared pipeline fails. See [BUG #2440](https://github.com/roadrunner-server/roadrunner/issues/2440), [BUG #2439](https://github.com/roadrunner-server/roadrunner/issues/2439), [jobs PR #166](https://github.com/roadrunner-server/jobs/pull/166), and [jobs PR #167](https://github.com/roadrunner-server/jobs/pull/167).
+- 🐛 **Graceful shutdown with running handlers**: Destroy worker pools during `Stop` without blocking on running handlers so shutdown completes within the grace period. See [BUG #2443](https://github.com/roadrunner-server/roadrunner/issues/2443) and [jobs PR #168](https://github.com/roadrunner-server/jobs/pull/168).
+- 🐛 **Worker allocation timeout**: Retain unstarted jobs without acknowledging them when worker allocation times out. See [BUG #2447](https://github.com/roadrunner-server/roadrunner/issues/2447) and [jobs PR #169](https://github.com/roadrunner-server/jobs/pull/169).
 
 ## 3.2.0 (2026-11-26)
 
