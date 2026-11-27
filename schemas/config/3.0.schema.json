@@ -2360,14 +2360,14 @@
           ]
         },
         "unavailable_status_code": {
-          "description": "Response HTTP status code if a requested plugin is not ready to handle requests. Valid for both /health and /ready endpoints. Defaults to 503 if undefined or zero.",
+          "description": "Response HTTP status code returned when a checked plugin is unavailable, and by /ready, /readyz, and /jobs during graceful shutdown. The /health and /livez endpoints return 200 during shutdown. Defaults to 503 if undefined or zero.",
           "type": "integer",
           "minimum": 100,
           "maximum": 599,
           "default": 503
         },
         "check_timeout": {
-          "description": "The maximum duration to wait for a complete response from the queried plugin(s), in seconds. Defaults to 60.",
+          "description": "HTTP request and header read timeout for the status server, in seconds. Defaults to 60.",
           "type": "integer",
           "minimum": 1,
           "default": 60

@@ -1033,9 +1033,9 @@ metrics:
       labels: [ "type" ]
       buckets: [ 0.1, 0.2, 0.3, 1.0 ]
 
-# Health check endpoint (docs: https://roadrunner.dev/docs/app-server-health/2.x/en). If response code is 200 - it means at
-# least one worker ready to serve requests. 500 - there are no workers ready to service requests.
-# Drop this section for this feature disabling.
+# Health check endpoint (docs: https://roadrunner.dev/docs/app-server-health/2.x/en). Status code 200 means at least
+# one active worker can serve requests. `unavailable_status_code` (503 by default) means no active workers are available
+# or `/ready`, `/readyz`, or `/jobs` runs during shutdown. Drop this section to disable this feature.
 status:
   # Host and port to listen on (eg.: `127.0.0.1:2114`). Use the following URL: http://127.0.0.1:2114/health?plugin=http
   # Multiple plugins must be separated using "&" - http://127.0.0.1:2114/health?plugin=http&plugin=rpc where "http" and
@@ -1044,14 +1044,13 @@ status:
   # This option is required.
   address: 127.0.0.1:2114
 
-  # Response status code if a requested plugin not ready to handle requests
-  # Valid for both /health and /ready endpoints
+  # Response status code if a checked plugin is unavailable, and for /ready, /readyz, and /jobs during shutdown.
+  # Valid for /health, /livez, /ready, /readyz, and /jobs (/health and /livez return 200 during shutdown).
   #
   # Default: 503
   unavailable_status_code: 503
 
-  # Maximum duration (in seconds) to wait for a complete response from the queried plugin(s).
-  # If the plugin does not respond within this time RR returns `unavailable_status_code`.
+  # HTTP request and header read timeout for the status server, in seconds.
   #
   # Default: 60
   check_timeout: 60
