@@ -1,6 +1,6 @@
 module github.com/roadrunner-server/roadrunner/v3
 
-go 1.27.3
+go 1.27.4
 
 require (
 	github.com/buger/goterm v1.0.4
@@ -16,7 +16,7 @@ require (
 	github.com/roadrunner-server/boltdb/v6 v6.0.0
 	github.com/roadrunner-server/centrifuge/v6 v6.0.0
 	github.com/roadrunner-server/config/v6 v6.0.0
-	github.com/roadrunner-server/endure/v2 v2.7.0
+	github.com/roadrunner-server/endure/v2 v2.7.1
 	github.com/roadrunner-server/errors v1.6.0
 	github.com/roadrunner-server/fileserver/v6 v6.1.0
 	github.com/roadrunner-server/google-pub-sub/v6 v6.0.0

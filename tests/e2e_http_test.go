@@ -8,8 +8,10 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -386,6 +388,151 @@ func TestHTTPWithOtel(t *testing.T) {
 	select {
 	case err := <-errCh:
 		t.Fatal(err)
+	default:
+	}
+}
+
+func TestHTTPShutdownLogsInFlight(t *testing.T) {
+	dir := t.TempDir()
+	baseLog := filepath.Join(dir, "base.log")
+	serverLog := filepath.Join(dir, "server.log")
+	httpLog := filepath.Join(dir, "http.log")
+	readyFile := filepath.Join(dir, "ready")
+
+	var lc net.ListenConfig
+	ln, err := lc.Listen(t.Context(), "tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	addr := ln.Addr().String()
+	require.NoError(t, ln.Close())
+
+	cfgPath := filepath.Join(dir, ".rr.yaml")
+	cfgData := fmt.Sprintf(`version: '3'
+
+server:
+  command: "php php_test_files/http/client.php slow_stderr pipes"
+  relay: pipes
+
+http:
+  address: %q
+  pool:
+    num_workers: 2
+    allocate_timeout: 10s
+    destroy_timeout: 5s
+
+logs:
+  mode: production
+  level: warn
+  output:
+    - %q
+  channels:
+    server:
+      mode: raw
+      level: info
+      output:
+        - %q
+    http:
+      mode: production
+      level: info
+      output:
+        - %q
+`, addr, filepath.ToSlash(baseLog), filepath.ToSlash(serverLog), filepath.ToSlash(httpLog))
+	require.NoError(t, os.WriteFile(cfgPath, []byte(cfgData), 0o600))
+
+	cont := endure.New(slog.LevelError, endure.GracefulShutdownTimeout(10*time.Second))
+	cfg := &config.Plugin{
+		Version: "3.2.0",
+		Path:    cfgPath,
+	}
+	require.NoError(t, cont.RegisterAll(append(container.Plugins(), cfg)...))
+	require.NoError(t, cont.Init())
+
+	stopped := false
+	t.Cleanup(func() {
+		if !stopped {
+			assert.NoError(t, cont.Stop())
+		}
+	})
+
+	results, err := cont.Serve()
+	require.NoError(t, err)
+
+	dialer := net.Dialer{Timeout: time.Second}
+	require.Eventually(t, func() bool {
+		conn, dialErr := dialer.DialContext(t.Context(), "tcp", addr)
+		if dialErr != nil {
+			return false
+		}
+		_ = conn.Close()
+		return true
+	}, 10*time.Second, 20*time.Millisecond)
+
+	client := newHTTPClient()
+	t.Cleanup(client.CloseIdleConnections)
+
+	// Warm up the worker pool and verify pre-shutdown access logging.
+	okReq, err := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://"+addr+"/ok", nil)
+	require.NoError(t, err)
+	okResp, err := client.Do(okReq)
+	require.NoError(t, err)
+	_, err = io.ReadAll(okResp.Body)
+	_ = okResp.Body.Close()
+	require.NoError(t, err)
+	require.Equal(t, http.StatusOK, okResp.StatusCode)
+
+	type slowResult struct {
+		status int
+		body   string
+		err    error
+	}
+	slowURI := "/slow?ready=" + url.QueryEscape(readyFile)
+	slowCh := make(chan slowResult, 1)
+	go func() {
+		req, reqErr := http.NewRequestWithContext(t.Context(), http.MethodGet, "http://"+addr+slowURI, nil)
+		if reqErr != nil {
+			slowCh <- slowResult{err: reqErr}
+			return
+		}
+		resp, doErr := client.Do(req)
+		if doErr != nil {
+			slowCh <- slowResult{err: doErr}
+			return
+		}
+		body, readErr := io.ReadAll(resp.Body)
+		_ = resp.Body.Close()
+		slowCh <- slowResult{status: resp.StatusCode, body: string(body), err: readErr}
+	}()
+
+	root, err := os.OpenRoot(dir)
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = root.Close() })
+
+	require.Eventually(t, func() bool {
+		_, statErr := root.Stat("ready")
+		return statErr == nil
+	}, 5*time.Second, 20*time.Millisecond)
+
+	stopped = true
+	require.NoError(t, cont.Stop())
+
+	slowRes := <-slowCh
+	require.NoError(t, slowRes.err)
+	require.Equal(t, http.StatusOK, slowRes.status)
+	require.Equal(t, "done", slowRes.body)
+
+	serverOutput, err := root.ReadFile("server.log")
+	require.NoError(t, err)
+	assert.Contains(t, string(serverOutput), `"message":"request finished"`)
+	assert.Contains(t, string(serverOutput), `"path":"/slow"`)
+	assert.Contains(t, string(serverOutput), "destroy signal received")
+
+	httpOutput, err := root.ReadFile("http.log")
+	require.NoError(t, err)
+	assert.Contains(t, string(httpOutput), `"URI":"/ok"`)
+	assert.Contains(t, string(httpOutput), fmt.Sprintf(`"URI":%q`, slowURI))
+
+	select {
+	case result := <-results:
+		require.Nil(t, result, "unexpected plugin error")
 	default:
 	}
 }
