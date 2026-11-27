@@ -108,6 +108,11 @@ curl --proto '=https' --tlsv1.2 -sSf  https://raw.githubusercontent.com/roadrunn
 brew install roadrunner
 ```
 
+## Windows using [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/):
+```bash
+winget install SpiralScout.RoadRunner
+```
+
 ## Windows using [Chocolatey](https://community.chocolatey.org/):
 ```bash
 choco install roadrunner
@@ -188,6 +193,7 @@ by [Spiral Scout](https://spiralscout.com).
 
 [Release Please](https://github.com/googleapis/release-please) updates a release PR on `master` from [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). It updates `CHANGELOG.md` and `.release-please-manifest.json`. Merge the release PR to create the tag and GitHub release. The release workflows then build the binaries, Debian and RPM packages, gRPC compiler, and container images. Re-run failed jobs if a build fails.
 
+For stable releases, the release workflow uses `wingetcreate` to submit the new version to [winget-pkgs](https://github.com/microsoft/winget-pkgs).
 
 ## Contributors
 
