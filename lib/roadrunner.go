@@ -22,7 +22,7 @@ type RR struct {
 // NewRR creates a new RR instance that can then be started or stopped by the caller
 func NewRR(cfgFile string, override []string, pluginList []any) (*RR, error) {
 	// create endure container config
-	containerCfg, err := container.NewConfig(cfgFile)
+	containerCfg, err := container.NewConfig(cfgFile, override...)
 	if err != nil {
 		return nil, err
 	}

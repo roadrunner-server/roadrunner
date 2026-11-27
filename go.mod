@@ -15,7 +15,7 @@ require (
 	github.com/roadrunner-server/beanstalk/v6 v6.0.0
 	github.com/roadrunner-server/boltdb/v6 v6.0.0
 	github.com/roadrunner-server/centrifuge/v6 v6.0.0
-	github.com/roadrunner-server/config/v6 v6.0.0
+	github.com/roadrunner-server/config/v6 v6.0.1
 	github.com/roadrunner-server/endure/v2 v2.7.1
 	github.com/roadrunner-server/errors v1.6.0
 	github.com/roadrunner-server/fileserver/v6 v6.1.0

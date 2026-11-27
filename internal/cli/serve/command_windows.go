@@ -36,8 +36,13 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental 
 				return errors.E(op, errors.Str("no configuration file provided"))
 			}
 
+			var flags []string
+			if override != nil {
+				flags = *override
+			}
+
 			// create endure container config
-			containerCfg, err := container.NewConfig(*cfgFile)
+			containerCfg, err := container.NewConfig(*cfgFile, flags...)
 			if err != nil {
 				return errors.E(op, err)
 			}
@@ -45,7 +50,7 @@ func NewCommand(override *[]string, cfgFile *string, silent *bool, experimental 
 			cfg := &configImpl.Plugin{
 				Path:                 *cfgFile,
 				Timeout:              containerCfg.GracePeriod,
-				Flags:                *override,
+				Flags:                flags,
 				Version:              meta.Version(),
 				ExperimentalFeatures: *experimental,
 			}
