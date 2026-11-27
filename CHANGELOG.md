@@ -2,12 +2,45 @@
 
 releases: [docs](https://docs.roadrunner.dev/docs/releases)
 
-## Unreleased
+## 3.2.0 (2026-11-26)
 
-- ✨ **Redis Jobs**: Use `driver: redis` with Redis 8.0 or later. Jobs supports delayed delivery and recovery of unacknowledged jobs. [#965](https://github.com/roadrunner-server/roadrunner/issues/965).
-- 🐛 **Logger configuration schema**: RoadRunner uses the logger plugin's schema for global and channel settings. It accepts `format` and `time_format` and rejects `file_logger_options`. [#2420](https://github.com/roadrunner-server/roadrunner/issues/2420).
-- 🐛 **AMQP configuration**: The schema and sample use named connections and nested `exchange` and `queue` settings.
-- 🐛 **Debian package** package renamed to "roadrunner", and installed files as owned by root.
+### 🎯 Core
+
+- ✨ **Linux packages**: Install RoadRunner from an RPM on amd64 or arm64. Debian packages now use the name `roadrunner` across versions and set file ownership to `root`. See [RPM packages](https://github.com/roadrunner-server/roadrunner/pull/2460) and [Debian packages](https://github.com/roadrunner-server/roadrunner/pull/2467).
+- ✨ **Composer package**: The v3 metapackage moved from `spiral/roadrunner` to `roadrunner/roadrunner`. See [PR #2431](https://github.com/roadrunner-server/roadrunner/pull/2431).
+- 🐛 **Configuration schema**: RoadRunner uses the `logger` and `amqp` plugin schemas for v3 validation. The logger schema accepts `format` and `time_format`, rejects `file_logger_options`, and removes a trailing comma in channel options. The AMQP schema and sample configuration use named connections and nested `exchange` and `queue` settings. See [BUG #2420](https://github.com/roadrunner-server/roadrunner/issues/2420), [PR #2461](https://github.com/roadrunner-server/roadrunner/pull/2461), and [logger PR #128](https://github.com/roadrunner-server/logger/pull/128).
+- 🐛 **Security and dependencies**: Update Go in `go.mod` to `1.27.3` ([CVE-2026-111943](https://pkg.go.dev/vuln/GO-2026-6809)) and `golang.org/x/net` to `v0.63.0` ([CVE-2026-78661](https://www.cve.org/CVERecord?id=CVE-2026-78661)). Retract the accidentally published `v3.1.0` Go module version. See [Issue #2456](https://github.com/roadrunner-server/roadrunner/issues/2456) and [PR #2429](https://github.com/roadrunner-server/roadrunner/pull/2429).
+
+### 📦 `http` plugin
+
+- ✨ **HTTP/3**: Configure `http.http3` to start the HTTP/3 listener without the `-e` flag. See [PR #294](https://github.com/roadrunner-server/http/pull/294).
+- 🐛 **Multipart upload cleanup**: Remove temporary multipart files when request form parsing fails. This prevents unauthenticated temporary disk fill on HTTP/3 and FastCGI listeners. See [GHSA-f9gq-r78x-2pg4](https://github.com/roadrunner-server/roadrunner/security/advisories/GHSA-f9gq-r78x-2pg4) and [PR #314](https://github.com/roadrunner-server/http/pull/314).
+- 🐛 **ACME issuer and renewal**: Apply `email`, `use_production_endpoint`, `challenge_type`, and alternate port settings to the configured CertMagic issuer and restore certificate renewal. See [BUG #2455](https://github.com/roadrunner-server/roadrunner/issues/2455) and [PR #307](https://github.com/roadrunner-server/http/pull/307).
+
+### 📦 `fileserver` plugin
+
+- ✨ **Fiber v3**: Use Fiber v3 for static file serving and match URL prefixes at path-segment boundaries. See [PR #107](https://github.com/roadrunner-server/fileserver/pull/107).
+
+### 📦 `jobs` plugin
+
+- ✨ **Redis Streams**: Use `driver: redis` to run Jobs pipelines on Redis 8.0 or later. The driver supports delayed delivery and recovers unacknowledged jobs when a consumer stops. See [FR #965](https://github.com/roadrunner-server/roadrunner/issues/965) and [PR #2466](https://github.com/roadrunner-server/roadrunner/pull/2466).
+
+### 📦 `kafka` driver
+
+- ✨ **Partition ordering**: Set `consumer_options.pipelining_strategy` to `Serial` to finish each record and its retries before processing the next record from that partition. Other partitions can still run in parallel. See [FR #2222](https://github.com/roadrunner-server/roadrunner/issues/2222) and [PR #632](https://github.com/roadrunner-server/kafka/pull/632).
+- 🐛 **Pause and resume**: Start one consumer listener per pipeline across pause and resume operations. See [PR #632](https://github.com/roadrunner-server/kafka/pull/632).
+
+### 📦 `redis` driver
+
+- ✨ **Native Redis commands**: Call Redis commands over RPC using a named Redis KV connection. For example, use `redis.IncrBy` for atomic counters, `redis.HSet` for hashes, and `redis.ZAdd` for sorted sets. See [FR #1195](https://github.com/roadrunner-server/roadrunner/issues/1195) and [PR #250](https://github.com/roadrunner-server/redis/pull/250).
+
+### 📦 `metrics` plugin
+
+- ✨ **Prometheus metrics**: Set `metrics.prefix` and `metrics.labels` to add a name prefix and constant labels to metrics from RoadRunner plugins. Application, Go, and process metrics keep their names and labels. See [FR #2145](https://github.com/roadrunner-server/roadrunner/issues/2145) and [PR #208](https://github.com/roadrunner-server/metrics/pull/208).
+
+### 📦 `temporal` plugin
+
+- ✨ **Activity resets**: `temporal.RecordActivityHeartbeat` returns `"reset": true` when the server resets a running activity. With [Temporal PHP SDK 2.19](https://github.com/temporalio/sdk-php/releases/tag/v2.19) or later, `Activity::heartbeat()` throws `ActivityResetException` so PHP code can distinguish a reset from cancellation. See [FR #2249](https://github.com/roadrunner-server/roadrunner/issues/2249) and [PR #842](https://github.com/temporalio/roadrunner-temporal/pull/842).
 
 ## 3.0.0 (2026-10-08)
 

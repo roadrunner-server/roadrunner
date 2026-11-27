@@ -53,10 +53,10 @@ OSX, Linux, FreeBSD, and Windows. Instructions for using these binaries are on t
 
 ## Docker:
 
-Use `ghcr.io/roadrunner-server/roadrunner:3.0.0` to copy the RoadRunner binary into your application image. See the [image tags](https://github.com/roadrunner-server/roadrunner/pkgs/container/roadrunner).
+Use `ghcr.io/roadrunner-server/roadrunner:3.2.0` to copy the RoadRunner binary into your application image. See the [image tags](https://github.com/roadrunner-server/roadrunner/pkgs/container/roadrunner).
 
 ```dockerfile
-FROM ghcr.io/roadrunner-server/roadrunner:3.0.0 AS roadrunner
+FROM ghcr.io/roadrunner-server/roadrunner:3.2.0 AS roadrunner
 FROM php:8.3-cli
 
 COPY --from=roadrunner /usr/bin/rr /usr/local/bin/rr
@@ -87,15 +87,15 @@ Server binary will be available at the root of your project.
 ## Installation option for the Debian-derivatives (Ubuntu, Mint, MX, etc)
 
 ```bash
-wget https://github.com/roadrunner-server/roadrunner/releases/download/v3.0.0/roadrunner-3.0.0-linux-amd64.deb
-sudo dpkg -i roadrunner-3.0.0-linux-amd64.deb
+wget https://github.com/roadrunner-server/roadrunner/releases/download/v3.2.0/roadrunner-3.2.0-linux-amd64.deb
+sudo dpkg -i roadrunner-3.2.0-linux-amd64.deb
 ```
 
 ## Installation option for the RPM-based distributions (Fedora, RHEL, Rocky, Alma, openSUSE, etc)
 
 ```bash
-wget https://github.com/roadrunner-server/roadrunner/releases/download/v3.0.0/roadrunner-3.0.0-linux-amd64.rpm
-sudo rpm -i roadrunner-3.0.0-linux-amd64.rpm
+wget https://github.com/roadrunner-server/roadrunner/releases/download/v3.2.0/roadrunner-3.2.0-linux-amd64.rpm
+sudo rpm -i roadrunner-3.2.0-linux-amd64.rpm
 ```
 
 ## Download the latest release via curl:
